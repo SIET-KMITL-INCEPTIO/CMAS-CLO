@@ -1,0 +1,11 @@
+{
+  // Typechecks the test files that tsconfig.json deliberately excludes from the
+  // emitting build. noEmit, so it produces nothing — it only reports errors.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vitest/globals", "node"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

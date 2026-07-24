@@ -3,56 +3,206 @@
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* ── Enter ── */
-@keyframes fadeIn     { from { opacity: 0; }                              to { opacity: 1; } }
-@keyframes fadeUp     { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeDown   { from { opacity: 0; transform: translateY(-20px);} to { opacity: 1; transform: translateY(0); } }
-@keyframes slideRight { from { opacity: 0; transform: translateX(-16px);} to { opacity: 1; transform: translateX(0); } }
-@keyframes slideLeft  { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes scaleIn    { from { opacity: 0; transform: scale(0.92); }      to { opacity: 1; transform: scale(1); } }
-@keyframes springIn   { from { opacity: 0; transform: scale(0.85); }      to { opacity: 1; transform: scale(1); } }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes springIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
 /* ── Loop ── */
-@keyframes spin    { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes pulse   { 0%, 100% { transform: scale(1); opacity: 1; }        50% { transform: scale(1.2); opacity: 0.7; } }
-@keyframes breathe { 0%, 100% { transform: scale(0.97); opacity: 0.6; }   50% { transform: scale(1); opacity: 1; } }
-@keyframes float   { 0%, 100% { transform: translateY(0); }               50% { transform: translateY(-6px); } }
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-@keyframes indeterminate { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(0.97);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
 
 /* ── Drag & drop settle ── */
 @keyframes dropSettle {
-  0%   { transform: scale(1.02); box-shadow: var(--shadow-3); }
-  60%  { transform: scale(0.99); }
-  100% { transform: scale(1);    box-shadow: none; }
+  0% {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-3);
+  }
+  60% {
+    transform: scale(0.99);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
 }
 
 @layer utilities {
-  .animate-fade-up  { animation: fadeUp    var(--duration-slowest) var(--ease-enter) both; }
-  .animate-fade-in  { animation: fadeIn    var(--duration-slow)    var(--ease-enter) both; }
-  .animate-fade-down{ animation: fadeDown  var(--duration-default) var(--ease-enter) both; }
-  .animate-slide-in { animation: slideRight var(--duration-slow)   var(--ease-enter) both; }
-  .animate-scale-in { animation: scaleIn   var(--duration-slow)    var(--ease-spring) both; }
-  .animate-spin     { animation: spin      1s var(--ease-linear) infinite; }
-  .animate-pulse    { animation: pulse     2s var(--ease-default) infinite; }
-  .animate-breathe  { animation: breathe   2.5s ease infinite; }
-  .animate-float    { animation: float     3s ease infinite; }
+  .animate-fade-up {
+    animation: fadeUp var(--duration-slowest) var(--ease-enter) both;
+  }
+  .animate-fade-in {
+    animation: fadeIn var(--duration-slow) var(--ease-enter) both;
+  }
+  .animate-fade-down {
+    animation: fadeDown var(--duration-default) var(--ease-enter) both;
+  }
+  .animate-slide-in {
+    animation: slideRight var(--duration-slow) var(--ease-enter) both;
+  }
+  .animate-scale-in {
+    animation: scaleIn var(--duration-slow) var(--ease-spring) both;
+  }
+  .animate-spin {
+    animation: spin 1s var(--ease-linear) infinite;
+  }
+  .animate-pulse {
+    animation: pulse 2s var(--ease-default) infinite;
+  }
+  .animate-breathe {
+    animation: breathe 2.5s ease infinite;
+  }
+  .animate-float {
+    animation: float 3s ease infinite;
+  }
 
   /* Skeleton shimmer */
   .skeleton {
-    background: linear-gradient(90deg,
+    background: linear-gradient(
+      90deg,
       var(--md-surface-container) 25%,
       var(--md-surface-container-high) 50%,
-      var(--md-surface-container) 75%);
+      var(--md-surface-container) 75%
+    );
     background-size: 200%;
     animation: shimmer 1.8s var(--ease-linear) infinite;
     border-radius: var(--radius-sm);
   }
 
   /* Stagger helpers */
-  .delay-1 { animation-delay: 0.05s; }
-  .delay-2 { animation-delay: 0.10s; }
-  .delay-3 { animation-delay: 0.15s; }
-  .delay-4 { animation-delay: 0.20s; }
-  .delay-5 { animation-delay: 0.25s; }
-  .delay-6 { animation-delay: 0.30s; }
+  .delay-1 {
+    animation-delay: 0.05s;
+  }
+  .delay-2 {
+    animation-delay: 0.1s;
+  }
+  .delay-3 {
+    animation-delay: 0.15s;
+  }
+  .delay-4 {
+    animation-delay: 0.2s;
+  }
+  .delay-5 {
+    animation-delay: 0.25s;
+  }
+  .delay-6 {
+    animation-delay: 0.3s;
+  }
 }

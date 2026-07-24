@@ -14,19 +14,40 @@
     "build": "npm run build -w app/client && npm run build -w app/server",
     "build:client": "npm run build -w app/client",
     "build:server": "npm run build -w app/server",
+    "start": "npm run start -w app/server",
     "lint": "npm run lint -w app/client && npm run lint -w app/server",
+    "lint:fix": "npm run lint -w app/client -- --fix && npm run lint -w app/server -- --fix",
+    "typecheck": "npm run typecheck -w app/client && npm run typecheck -w app/server",
+    "test": "npm run test -w app/client && npm run test -w app/server",
+    "test:watch": "npm run test:watch -w app/server",
+    "test:coverage": "npm run test:coverage -w app/client && npm run test:coverage -w app/server",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build",
+    "clean": "rimraf app/client/dist app/server/dist \"**/*.tsbuildinfo\" coverage",
     "db:generate": "prisma generate --schema=database/schema.prisma",
     "db:migrate:dev": "prisma migrate dev --schema=database/schema.prisma",
     "db:migrate:deploy": "prisma migrate deploy --schema=database/schema.prisma",
     "db:studio": "prisma studio --schema=database/schema.prisma",
-    "db:seed": "node database/seed.js"
+    "db:format": "prisma format --schema=database/schema.prisma",
+    "db:validate": "prisma validate --schema=database/schema.prisma",
+    "db:seed": "tsx database/seed.ts",
+    "docker:up": "docker compose up",
+    "docker:build": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docs:build": "npm --prefix docs/_generator run build",
+    "setup": "node scripts/setup.mjs"
   },
   "devDependencies": {
     "concurrently": "^10.0.3",
-    "prisma": "^6.19.3"
+    "prettier": "^3.4.2",
+    "prisma": "^6.19.3",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.23.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3"

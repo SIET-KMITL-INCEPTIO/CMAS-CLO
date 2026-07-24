@@ -1,15 +1,8 @@
-import { z } from "zod"
+import { envSchema, type Env } from "./env.schema.js"
 
-const envSchema = z.object({
-  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-  PORT: z.coerce.number().default(3001),
-  DATABASE_URL: z.string().min(1),
-  JWT_SECRET: z.string().min(32, "JWT_SECRET must be at least 32 characters"),
-  JWT_ACCESS_EXPIRES_IN: z.string().default("15m"),
-  JWT_REFRESH_EXPIRES_IN: z.string().default("7d"),
-  CORS_ORIGIN: z.string().default("http://localhost:5173"),
-  RATE_LIMIT_MAX: z.coerce.number().default(100),
-  RATE_LIMIT_WINDOW: z.string().default("1 minute"),
-})
-
-export const env = envSchema.parse(process.env)
+/**
+ * Parsed at import time on purpose: the server must refuse to boot when
+ * DATABASE_URL or JWT_SECRET are missing/too short rather than failing later
+ * on the first request. See docs/markdown/dev/dev.md §2.3.
+ */
+export const env: Env = envSchema.parse(process.env)

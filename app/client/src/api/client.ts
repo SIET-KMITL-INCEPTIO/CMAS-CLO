@@ -11,7 +11,10 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
-    body: isFormData || options.body === undefined ? (options.body as BodyInit) : JSON.stringify(options.body),
+    body:
+      isFormData || options.body === undefined
+        ? (options.body as BodyInit)
+        : JSON.stringify(options.body),
     headers: {
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

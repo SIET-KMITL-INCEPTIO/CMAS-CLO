@@ -17,6 +17,6 @@ export const useAuthStore = create<AuthState>()(
       setAuth: (user, accessToken) => set({ user, accessToken }),
       clearAuth: () => set({ user: null, accessToken: null }),
     }),
-    { name: "clo-auth" }
-  )
+    { name: "clo-auth" },
+  ),
 )

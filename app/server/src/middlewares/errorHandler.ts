@@ -6,7 +6,7 @@ import { badRequest, notFound, serverError } from "../lib/response.js"
 export function errorHandler(
   err: FastifyError | Error,
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   request.log.error(err)
 

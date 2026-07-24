@@ -1,0 +1,47 @@
+# Normalize line endings so Windows/macOS/Linux teammates don't churn whole
+# files on every commit. Without this, git reported "LF will be replaced by
+# CRLF" for all 113 files in the initial commit.
+
+# Default: normalize to LF in the repo, check out native on Windows.
+* text=auto eol=lf
+
+# Source and config — always LF (tsx/vite/eslint tooling assumes LF)
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.js    text eol=lf
+*.mjs   text eol=lf
+*.cjs   text eol=lf
+*.json  text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.sql   text eol=lf
+*.prisma text eol=lf
+
+# Shell scripts must be LF or they fail to execute in containers
+*.sh    text eol=lf
+Dockerfile*     text eol=lf
+.env.example    text eol=lf
+.gitignore      text eol=lf
+.dockerignore   text eol=lf
+
+# Binary — never touch
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary
+*.mwb   binary
+*.bak   binary
+*.xlsx  binary
+*.xlsm  binary
+
+# Generated / vendored — collapse in diffs and exclude from language stats
+package-lock.json   linguist-generated=true -diff
+docs/html/**        linguist-generated=true
+docs/html/assets/mermaid.min.js  binary
