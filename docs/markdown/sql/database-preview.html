@@ -1,0 +1,517 @@
+<title>CMAS Database Schema</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@font-face { font-family:'Mono'; src: local('Cascadia Code'),local('JetBrains Mono'),local('Fira Code'),local('Consolas'),local('monospace'); }
+
+:root {
+  --bg:#f4f3f0; --bg2:#eae9e5; --surface:#fff; --surface2:#fafaf8;
+  --text:#1b1b1b; --text2:#555550; --text3:#8a8a82;
+  --border:#ddd9d2; --border2:#c5c1ba;
+  --accent:#1d4ed8; --accent-soft:#dbeafe; --accent2:#3b82f6;
+  --indigo:#6366f1; --violet:#8b5cf6; --emerald:#059669; --orange:#ea580c;
+  --rose:#dc2626; --slate:#64748b; --cyan:#0891b2;
+  --pk:#a855f7; --pk-bg:#f3e8ff; --fk:#0891b2; --fk-bg:#ecfeff; --uq:#d97706; --uq-bg:#fffbeb;
+  --shadow:0 1px 3px rgba(0,0,0,.05);
+  --shadow2:0 4px 16px rgba(0,0,0,.08);
+  --line:#94a3b8;
+  --step-done:#059669; --step-line:#ddd9d2;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0f0f11;--bg2:#18181b;--surface:#1c1c20;--surface2:#222226;
+  --text:#e4e2de;--text2:#9e9b93;--text3:#6b6860;
+  --border:#2c2c30;--border2:#3a3a40;
+  --accent:#60a5fa;--accent-soft:#1e3a5f;--accent2:#93bbfd;
+  --indigo:#818cf8;--violet:#a78bfa;--emerald:#34d399;--orange:#fb923c;
+  --rose:#f87171;--slate:#94a3b8;--cyan:#22d3ee;
+  --pk:#c084fc;--pk-bg:#2e1a47;--fk:#22d3ee;--fk-bg:#0c3644;--uq:#fbbf24;--uq-bg:#2e2410;
+  --shadow:0 1px 3px rgba(0,0,0,.3);--shadow2:0 4px 16px rgba(0,0,0,.4);
+  --line:#475569;--step-done:#34d399;--step-line:#2c2c30;
+}}
+:root[data-theme="dark"]{
+  --bg:#0f0f11;--bg2:#18181b;--surface:#1c1c20;--surface2:#222226;
+  --text:#e4e2de;--text2:#9e9b93;--text3:#6b6860;
+  --border:#2c2c30;--border2:#3a3a40;
+  --accent:#60a5fa;--accent-soft:#1e3a5f;--accent2:#93bbfd;
+  --indigo:#818cf8;--violet:#a78bfa;--emerald:#34d399;--orange:#fb923c;
+  --rose:#f87171;--slate:#94a3b8;--cyan:#22d3ee;
+  --pk:#c084fc;--pk-bg:#2e1a47;--fk:#22d3ee;--fk-bg:#0c3644;--uq:#fbbf24;--uq-bg:#2e2410;
+  --shadow:0 1px 3px rgba(0,0,0,.3);--shadow2:0 4px 16px rgba(0,0,0,.4);
+  --line:#475569;--step-done:#34d399;--step-line:#2c2c30;
+}
+:root[data-theme="light"]{
+  --bg:#f4f3f0;--bg2:#eae9e5;--surface:#fff;--surface2:#fafaf8;
+  --text:#1b1b1b;--text2:#555550;--text3:#8a8a82;
+  --border:#ddd9d2;--border2:#c5c1ba;
+  --accent:#1d4ed8;--accent-soft:#dbeafe;--accent2:#3b82f6;
+  --indigo:#6366f1;--violet:#8b5cf6;--emerald:#059669;--orange:#ea580c;
+  --rose:#dc2626;--slate:#64748b;--cyan:#0891b2;
+  --pk:#a855f7;--pk-bg:#f3e8ff;--fk:#0891b2;--fk-bg:#ecfeff;--uq:#d97706;--uq-bg:#fffbeb;
+  --shadow:0 1px 3px rgba(0,0,0,.05);--shadow2:0 4px 16px rgba(0,0,0,.08);
+  --line:#94a3b8;--step-done:#059669;--step-line:#ddd9d2;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.65;}
+
+/* ---------- NAV ---------- */
+.topnav{position:sticky;top:0;z-index:90;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:10px 24px;backdrop-filter:blur(12px);}
+.topnav .logo{font-weight:700;font-size:15px;letter-spacing:-.02em;white-space:nowrap;}
+.topnav .logo span{color:var(--text3);font-weight:400;}
+.nav-pills{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;}
+.nav-pills a{font-size:12px;padding:5px 12px;border-radius:4px;color:var(--text2);text-decoration:none;white-space:nowrap;transition:background .15s,color .15s;}
+.nav-pills a:hover,.nav-pills a.active{background:var(--accent-soft);color:var(--accent);}
+.nav-pills a:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+.chip{font-family:'Mono',monospace;font-size:10px;padding:2px 7px;border-radius:3px;background:var(--accent-soft);color:var(--accent);font-weight:500;margin-left:auto;white-space:nowrap;}
+
+/* ---------- SECTIONS ---------- */
+.wrapper{max-width:1060px;margin:0 auto;padding:0 24px 80px;}
+section{padding-top:48px;}
+.sec-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;font-weight:600;}
+.sec-title{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+.sec-sub{font-size:14px;color:var(--text2);margin-bottom:24px;max-width:680px;}
+
+/* ---------- HERO ---------- */
+.hero{text-align:center;padding:56px 0 32px;}
+.hero h1{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px;}
+.hero h1 span{color:var(--accent);}
+.hero p{font-size:15px;color:var(--text2);max-width:540px;margin:0 auto 20px;}
+.hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;}
+.hero-stat{text-align:center;}
+.hero-stat .num{font-size:28px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+.hero-stat .label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;}
+
+/* ---------- OVERVIEW GRID ---------- */
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:8px;}
+.ov-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 18px;transition:box-shadow .15s,border-color .15s;cursor:default;}
+.ov-card:hover{box-shadow:var(--shadow2);border-color:var(--border2);}
+.ov-card .ov-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.ov-card .ov-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ov-card .ov-name{font-family:'Mono',monospace;font-size:13px;font-weight:700;}
+.ov-card .ov-desc{font-size:12.5px;color:var(--text2);line-height:1.55;}
+
+/* ---------- ER CANVAS ---------- */
+.er-wrap{position:relative;width:100%;height:640px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:grab;}
+.er-wrap.dragging{cursor:grabbing;}
+.er-inner{position:absolute;transform-origin:0 0;}
+.er-svg{position:absolute;top:0;left:0;pointer-events:none;overflow:visible;}
+.er-line{fill:none;stroke:var(--line);stroke-width:1.4;transition:stroke .15s,opacity .15s;}
+.er-line.hi{stroke:var(--accent);stroke-width:2.2;opacity:1!important;}
+.er-line.dim{opacity:.12;}
+.er-dot{fill:var(--line);transition:fill .15s;}
+.er-dot.hi{fill:var(--accent);}
+.er-lbl{font-family:'Mono',monospace;font-size:9px;fill:var(--text3);text-anchor:middle;transition:fill .15s,opacity .15s;}
+.er-lbl.hi{fill:var(--accent);font-weight:600;}
+.er-lbl.dim{opacity:.12;}
+.tbl{position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:6px;box-shadow:var(--shadow);min-width:195px;max-width:250px;cursor:pointer;user-select:none;transition:box-shadow .15s,border-color .15s,opacity .2s;}
+.tbl:hover,.tbl.hi{box-shadow:var(--shadow2);border-color:var(--border2);z-index:10;}
+.tbl.dim{opacity:.18;}
+.tbl.hi{opacity:1;}
+.tbl-h{padding:7px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:6px;border-radius:6px 6px 0 0;}
+.tbl-n{font-family:'Mono',monospace;font-size:12px;font-weight:700;}
+.tbl-d{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.tbl-cols{padding:3px 0;}
+.cr{display:flex;align-items:center;padding:2px 10px;gap:6px;font-size:11px;transition:background .08s;}
+.cr:hover{background:var(--surface2);}
+.cn{font-family:'Mono',monospace;font-size:10.5px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ct{font-family:'Mono',monospace;font-size:9px;color:var(--text3);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.cb{font-size:7px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 3px;border-radius:2px;white-space:nowrap;flex-shrink:0;}
+.cb.pk{background:var(--pk-bg);color:var(--pk);}
+.cb.fk{background:var(--fk-bg);color:var(--fk);}
+.cb.uq{background:var(--uq-bg);color:var(--uq);}
+
+.er-zoom{position:absolute;bottom:10px;right:10px;display:flex;flex-direction:column;gap:3px;z-index:5;}
+.er-zoom button{width:28px;height:28px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:4px;cursor:pointer;font-family:'Mono',monospace;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .1s;}
+.er-zoom button:hover{background:var(--surface2);}
+.er-zoom button:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+
+.er-detail{position:absolute;bottom:10px;left:10px;right:80px;background:var(--surface);border:1px solid var(--border);border-radius:6px;box-shadow:var(--shadow2);padding:10px 14px;z-index:5;font-size:12px;transform:translateY(120%);transition:transform .2s ease;}
+.er-detail.vis{transform:translateY(0);}
+.er-detail .dt{font-family:'Mono',monospace;font-weight:700;font-size:13px;margin-bottom:2px;}
+.er-detail .dd{color:var(--text2);font-size:11.5px;line-height:1.5;}
+
+/* ---------- DATA FLOW ---------- */
+.flow{display:flex;flex-direction:column;gap:0;position:relative;padding-left:28px;}
+.flow::before{content:'';position:absolute;left:11px;top:18px;bottom:18px;width:2px;background:var(--step-line);}
+.flow-step{position:relative;padding:14px 0 14px 20px;}
+.flow-dot{position:absolute;left:-22px;top:18px;width:18px;height:18px;border-radius:50%;background:var(--surface);border:2px solid var(--step-line);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--text3);z-index:1;}
+.flow-step.active .flow-dot{border-color:var(--step-done);color:var(--step-done);}
+.flow-title{font-size:14px;font-weight:700;margin-bottom:2px;}
+.flow-desc{font-size:13px;color:var(--text2);line-height:1.55;}
+.flow-tables{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+.flow-tag{font-family:'Mono',monospace;font-size:10px;padding:2px 8px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);}
+
+/* ---------- EXAMPLE ---------- */
+.example-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.ex-header{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.ex-header .ex-icon{font-size:16px;}
+.ex-body{padding:16px;font-size:13px;line-height:1.7;color:var(--text2);}
+.ex-body strong{color:var(--text);font-weight:600;}
+.ex-body .ex-row{display:flex;gap:12px;align-items:baseline;padding:4px 0;}
+.ex-body .ex-step{flex-shrink:0;font-family:'Mono',monospace;font-size:11px;color:var(--accent);font-weight:700;min-width:20px;}
+.ex-body .ex-text{flex:1;}
+.ex-arrow{text-align:center;color:var(--text3);font-size:11px;padding:2px 0;}
+
+/* ---------- FOOTER ---------- */
+.footer{text-align:center;padding:40px 0 24px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);margin-top:48px;}
+
+@media(max-width:600px){
+  .hero h1{font-size:22px;}
+  .hero-stats{gap:20px;}
+  .er-wrap{height:420px;}
+  .nav-pills{display:none;}
+  .overview-grid{grid-template-columns:1fr;}
+}
+</style>
+
+<!-- ===== NAV ===== -->
+<nav class="topnav">
+  <div class="logo">CMAS <span>Database</span></div>
+  <div class="nav-pills">
+    <a href="#overview">Overview</a>
+    <a href="#er">ER Diagram</a>
+    <a href="#flow">Data Flow</a>
+    <a href="#example">Scenario</a>
+    <a href="#tables">Tables</a>
+  </div>
+  <div class="chip">11 tables</div>
+</nav>
+
+<div class="wrapper">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <h1>ฐานข้อมูลระบบ <span>CMAS</span></h1>
+  <p>Course Monitoring and Assessment System<br>ติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO)</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num" style="color:var(--accent)">11</div><div class="label">Tables</div></div>
+    <div class="hero-stat"><div class="num" style="color:var(--fk)">10</div><div class="label">Foreign Keys</div></div>
+    <div class="hero-stat"><div class="num" style="color:var(--emerald)">6</div><div class="label">Clusters</div></div>
+    <div class="hero-stat"><div class="num" style="color:var(--orange)">3</div><div class="label">Junction Tables</div></div>
+  </div>
+</div>
+
+<!-- ===== OVERVIEW ===== -->
+<section id="overview">
+  <div class="sec-label">Section 1</div>
+  <div class="sec-title">Overview &mdash; 6 กลุ่มตาราง</div>
+  <div class="sec-sub">ฐานข้อมูลแบ่งออกเป็น 6 กลุ่มตามหน้าที่ แต่ละกลุ่มมีสีที่ตรงกับ ER Diagram ด้านล่าง</div>
+
+  <div class="overview-grid">
+    <div class="ov-card"><div class="ov-head"><div class="ov-dot" style="background:var(--indigo)"></div><div class="ov-name">Identity</div></div><div class="ov-desc"><strong>User</strong> &mdash; ผู้ใช้ระบบ (อาจารย์ / ผู้ดูแล) เข้าสู่ระบบด้วย email + password มีบทบาท ADMIN หรือ INSTRUCTOR</div></div>
+    <div class="ov-card"><div class="ov-head"><div class="ov-dot" style="background:var(--violet)"></div><div class="ov-name">Template</div></div><div class="ov-desc"><strong>Curriculum &rarr; CurriculumCourse</strong> &mdash; หลักสูตรแม่แบบ เก็บแค่โครงสร้างหลักสูตรและรายวิชา (หน่วยกิต) &mdash; ส่วน CLO/วัตถุประสงค์/เกณฑ์ ปล่อยให้วิชาจริงกำหนดเองอย่างอิสระ</div></div>
+    <div class="ov-card"><div class="ov-head"><div class="ov-dot" style="background:var(--emerald)"></div><div class="ov-name">Live Course</div></div><div class="ov-desc"><strong>Course &rarr; CLO &rarr; BehavioralObjective</strong> &mdash; วิชาจริงที่เปิดสอน ผลลัพธ์การเรียนรู้ และวัตถุประสงค์เชิงพฤติกรรมของแต่ละ CLO</div></div>
+    <div class="ov-card"><div class="ov-head"><div class="ov-dot" style="background:var(--orange)"></div><div class="ov-name">Assessment</div></div><div class="ov-desc"><strong>Activity &rarr; AssessmentCriteria</strong> &mdash; กิจกรรมประเมินผล (สอบ / โปรเจกต์ / ฯลฯ) และเกณฑ์ที่เชื่อม Activity กับ CLO</div></div>
+    <div class="ov-card"><div class="ov-head"><div class="ov-dot" style="background:var(--rose)"></div><div class="ov-name">Scoring</div></div><div class="ov-desc"><strong>Student &rarr; Score</strong> &mdash; นักศึกษาที่ลงทะเบียนในวิชา และคะแนนที่ได้รับจากแต่ละกิจกรรม</div></div>
+    <div class="ov-card"><div class="ov-head"><div class="ov-dot" style="background:var(--slate)"></div><div class="ov-name">Audit</div></div><div class="ov-desc"><strong>ScoreUploadLog</strong> &mdash; บันทึกการอัพโหลดไฟล์ Excel (ใคร เมื่อไร ไฟล์อะไร สำเร็จ/ล้มเหลวกี่แถว) ไม่มี FK &mdash; เป็น log เท่านั้น</div></div>
+  </div>
+</section>
+
+<!-- ===== ER DIAGRAM ===== -->
+<section id="er">
+  <div class="sec-label">Section 2</div>
+  <div class="sec-title">ER Diagram</div>
+  <div class="sec-sub">คลิกที่ตารางเพื่อไฮไลท์ความสัมพันธ์ &middot; ลากเมาส์เพื่อเลื่อน &middot; Scroll เพื่อซูม</div>
+
+  <div class="er-wrap" id="erWrap">
+    <div class="er-inner" id="erInner">
+      <svg class="er-svg" id="erSvg"></svg>
+    </div>
+    <div class="er-zoom">
+      <button id="zi" title="Zoom in">+</button>
+      <button id="zo" title="Zoom out">&minus;</button>
+      <button id="zf" title="Fit" style="font-size:10px">Fit</button>
+    </div>
+    <div class="er-detail" id="erDetail">
+      <div class="dt" id="erDt"></div>
+      <div class="dd" id="erDd"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DATA FLOW ===== -->
+<section id="flow">
+  <div class="sec-label">Section 3</div>
+  <div class="sec-title">Data Flow &mdash; ข้อมูลไหลอย่างไร</div>
+  <div class="sec-sub">ลำดับการทำงานจริงของระบบ ตั้งแต่ Admin สร้างหลักสูตร จนถึงระบบคำนวณผลสัมฤทธิ์</div>
+
+  <div class="flow">
+    <div class="flow-step active">
+      <div class="flow-dot">1</div>
+      <div class="flow-title">Admin สร้างหลักสูตรแม่แบบ</div>
+      <div class="flow-desc">กำหนดชื่อหลักสูตร สถาบัน ปีการศึกษา &rarr; เพิ่มรายวิชาในหลักสูตร (รหัสวิชา / ชื่อ / หน่วยกิต) &mdash; แม่แบบเก็บแค่โครงสร้าง ไม่ล็อก CLO</div>
+      <div class="flow-tables"><span class="flow-tag">Curriculum</span><span class="flow-tag">CurriculumCourse</span></div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-dot">2</div>
+      <div class="flow-title">อาจารย์สร้างวิชาจริง</div>
+      <div class="flow-desc">สร้าง Course (วิชา X / ภาคเรียน Y / ปี Z) &rarr; เพิ่ม CLO จริง (อาจคัดลอกจาก Template) &rarr; กำหนดวัตถุประสงค์เชิงพฤติกรรมสำหรับแต่ละ CLO</div>
+      <div class="flow-tables"><span class="flow-tag">User</span><span class="flow-tag">Course</span><span class="flow-tag">CLO</span><span class="flow-tag">BehavioralObjective</span></div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-dot">3</div>
+      <div class="flow-title">กำหนดกิจกรรมและเกณฑ์</div>
+      <div class="flow-desc">สร้าง Activity (เช่น Midterm 100 คะแนน น้ำหนัก 30%) &rarr; เชื่อม Activity กับ CLO ผ่าน AssessmentCriteria พร้อมกำหนดสัดส่วน</div>
+      <div class="flow-tables"><span class="flow-tag">Activity</span><span class="flow-tag">AssessmentCriteria</span></div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-dot">4</div>
+      <div class="flow-title">เพิ่มนักศึกษาลงวิชา</div>
+      <div class="flow-desc">เพิ่ม Student เข้าในวิชา (1 row = นักศึกษา 1 คน ใน 1 วิชา) ใช้รหัสนักศึกษา + วิชาเป็น Unique Key</div>
+      <div class="flow-tables"><span class="flow-tag">Student</span></div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-dot">5</div>
+      <div class="flow-title">บันทึกคะแนน (Excel Upload)</div>
+      <div class="flow-desc">อาจารย์อัพโหลดไฟล์ Excel &rarr; ระบบสร้าง Score (1 row = นักศึกษา 1 คน + Activity 1 อัน = คะแนนเท่าไร) &rarr; บันทึก log ว่าอัพไฟล์อะไร สำเร็จ/ล้มเหลวกี่แถว</div>
+      <div class="flow-tables"><span class="flow-tag">Score</span><span class="flow-tag">ScoreUploadLog</span></div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-dot">6</div>
+      <div class="flow-title">ระบบคำนวณผลสัมฤทธิ์ CLO</div>
+      <div class="flow-desc">ดึง Score &times; AssessmentCriteria.weight &rarr; คำนวณคะแนนรวมต่อ CLO ของนักศึกษาแต่ละคน &rarr; เทียบกับ CLO.threshold (60%) &rarr; แจ้งเตือนกลุ่มเสี่ยง</div>
+      <div class="flow-tables"><span class="flow-tag">Score</span><span class="flow-tag">AssessmentCriteria</span><span class="flow-tag">CLO</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EXAMPLE ===== -->
+<section id="example">
+  <div class="sec-label">Section 4</div>
+  <div class="sec-title">Scenario &mdash; ตัวอย่างการใช้งานจริง</div>
+  <div class="sec-sub">สมมติ อ.สมชาย สอนวิชา Computer Technology ภาคเรียน 1/2568</div>
+
+  <div class="example-box">
+    <div class="ex-header">เรื่องราวของ อ.สมชาย กับ CMAS</div>
+    <div class="ex-body">
+
+      <div class="ex-row"><div class="ex-step">1</div><div class="ex-text"><strong>เข้าสู่ระบบ</strong> &rarr; อ.สมชาย login ด้วย email &rarr; ระบบดึง <strong>User</strong> (role = INSTRUCTOR)</div></div>
+      <div class="ex-arrow">&darr;</div>
+      <div class="ex-row"><div class="ex-step">2</div><div class="ex-text"><strong>สร้างวิชา</strong> &rarr; <strong>Course</strong> {code: "03376116", name: "Computer Technology", semester: 1, year: 2568}</div></div>
+      <div class="ex-arrow">&darr;</div>
+      <div class="ex-row"><div class="ex-step">3</div><div class="ex-text"><strong>กำหนด CLO 3 ข้อ:</strong><br>
+        &bull; <strong>CLO</strong> #1 &mdash; "ออกแบบฐานข้อมูลเชิงสัมพันธ์ได้" (เกณฑ์ผ่าน 60%)<br>
+        &bull; <strong>CLO</strong> #2 &mdash; "เขียน SQL Query ได้" (เกณฑ์ผ่าน 60%)<br>
+        &bull; <strong>CLO</strong> #3 &mdash; "วิเคราะห์ประสิทธิภาพ Query ได้" (เกณฑ์ผ่าน 60%)</div></div>
+      <div class="ex-arrow">&darr;</div>
+      <div class="ex-row"><div class="ex-step">4</div><div class="ex-text"><strong>สร้าง 2 กิจกรรม:</strong><br>
+        &bull; <strong>Activity</strong> "Midterm" &mdash; คะแนนเต็ม 100, น้ำหนัก 40%<br>
+        &bull; <strong>Activity</strong> "Project" &mdash; คะแนนเต็ม 100, น้ำหนัก 60%</div></div>
+      <div class="ex-arrow">&darr;</div>
+      <div class="ex-row"><div class="ex-step">5</div><div class="ex-text"><strong>เชื่อมเกณฑ์:</strong><br>
+        &bull; <strong>AssessmentCriteria</strong> &rarr; Midterm วัด CLO #1 (0.5) + CLO #2 (0.5)<br>
+        &bull; <strong>AssessmentCriteria</strong> &rarr; Project วัด CLO #2 (0.3) + CLO #3 (0.7)</div></div>
+      <div class="ex-arrow">&darr;</div>
+      <div class="ex-row"><div class="ex-step">6</div><div class="ex-text"><strong>เพิ่มนักศึกษา 30 คน</strong> &rarr; <strong>Student</strong> {studentCode: "66065001"..., courseId: &lt;วิชานี้&gt;}</div></div>
+      <div class="ex-arrow">&darr;</div>
+      <div class="ex-row"><div class="ex-step">7</div><div class="ex-text"><strong>อัพโหลดคะแนน Midterm.xlsx</strong> &rarr; สร้าง <strong>Score</strong> 30 rows + <strong>ScoreUploadLog</strong> {recordsOk: 28, recordsFail: 2}</div></div>
+      <div class="ex-arrow">&darr;</div>
+      <div class="ex-row"><div class="ex-step">8</div><div class="ex-text"><strong>ระบบคำนวณ:</strong> นักศึกษา 66065007 ได้ CLO #1 = 48% (&lt; 60%) &rarr; <span style="color:var(--rose);font-weight:700">กลุ่มเสี่ยง</span> &rarr; แจ้งเตือนอาจารย์</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TABLES DETAIL ===== -->
+<section id="tables">
+  <div class="sec-label">Section 5</div>
+  <div class="sec-title">Tables &mdash; รายละเอียดทุกตาราง</div>
+  <div class="sec-sub">แต่ละตารางมี column อะไรบ้าง PK / FK / Unique Key อยู่ตรงไหน</div>
+  <div id="tableDetail"></div>
+</section>
+
+<div class="footer">CMAS &mdash; Course Monitoring and Assessment System &middot; database/schema.prisma &rarr; MySQL 8 translation</div>
+</div>
+
+<script>
+const T={
+  User:{c:'var(--indigo)',g:'identity',d:'ผู้ใช้ระบบ (อาจารย์/ผู้ดูแล)',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัสผู้ใช้ (Primary Key)'},{n:'email',t:'VARCHAR(255)',uq:1,th:'อีเมล (ใช้ล็อกอิน, ห้ามซ้ำ)'},{n:'name',t:'VARCHAR(255)',th:'ชื่อ-นามสกุล'},{n:'passwordHash',t:'VARCHAR(255)',th:'รหัสผ่าน (เข้ารหัสแล้ว)'},{n:'role',t:'ENUM(ADMIN,INSTRUCTOR)',th:'บทบาท (ผู้ดูแล / อาจารย์)'},{n:'isActive',t:'TINYINT(1)',th:'สถานะใช้งาน (เปิด/ปิด)'},{n:'createdAt',t:'DATETIME(3)',th:'วันที่สร้างบัญชี'}]},
+  Curriculum:{c:'var(--violet)',g:'template',d:'หลักสูตรแม่แบบ',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัสหลักสูตร (Primary Key)'},{n:'name',t:'VARCHAR(255)',th:'ชื่อหลักสูตร'},{n:'year',t:'INT',th:'ปีของหลักสูตร'},{n:'institution',t:'VARCHAR(255)',th:'สถาบัน/คณะ'},{n:'clonedFrom',t:'VARCHAR(30)',th:'โคลนมาจากหลักสูตรเดิม (รหัส)'},{n:'createdAt',t:'DATETIME(3)',th:'วันที่สร้าง'}]},
+  CurriculumCourse:{c:'var(--violet)',g:'template',d:'วิชาในหลักสูตรแม่แบบ',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัสวิชาในแม่แบบ (Primary Key)'},{n:'curriculumId',t:'VARCHAR(30)',fk:'Curriculum',th:'อ้างอิงหลักสูตรที่สังกัด'},{n:'courseCode',t:'VARCHAR(50)',th:'รหัสวิชา'},{n:'courseName',t:'VARCHAR(255)',th:'ชื่อวิชา'},{n:'credits',t:'INT',th:'จำนวนหน่วยกิต'}]},
+  Course:{c:'var(--emerald)',g:'live',d:'วิชาจริงที่เปิดสอน',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัสวิชาที่เปิดสอนจริง (Primary Key)'},{n:'code',t:'VARCHAR(50)',th:'รหัสวิชา'},{n:'name',t:'VARCHAR(255)',th:'ชื่อวิชา'},{n:'semester',t:'INT',th:'ภาคเรียน'},{n:'year',t:'INT',th:'ปีการศึกษา'},{n:'instructorId',t:'VARCHAR(30)',fk:'User',th:'อ้างอิงอาจารย์ผู้สอน'}]},
+  CLO:{c:'var(--emerald)',g:'live',d:'ผลลัพธ์การเรียนรู้ของวิชาจริง',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัส CLO (Primary Key)'},{n:'courseId',t:'VARCHAR(30)',fk:'Course',th:'อ้างอิงวิชาที่สอนจริง'},{n:'number',t:'INT',th:'ลำดับ CLO (ข้อที่)'},{n:'description',t:'VARCHAR(1000)',th:'คำอธิบายผลลัพธ์การเรียนรู้'},{n:'threshold',t:'DOUBLE',th:'เกณฑ์ผ่าน (%) ค่าเริ่มต้น 60'}]},
+  BehavioralObjective:{c:'var(--emerald)',g:'live',d:'วัตถุประสงค์เชิงพฤติกรรม',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัสวัตถุประสงค์ (Primary Key)'},{n:'cloId',t:'VARCHAR(30)',fk:'CLO',th:'อ้างอิง CLO ที่สังกัด'},{n:'description',t:'VARCHAR(1000)',th:'คำอธิบายพฤติกรรมที่วัดได้'}]},
+  Activity:{c:'var(--orange)',g:'assessment',d:'กิจกรรมประเมินผล',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัสกิจกรรม (Primary Key)'},{n:'courseId',t:'VARCHAR(30)',fk:'Course',th:'อ้างอิงวิชาที่สอนจริง'},{n:'name',t:'VARCHAR(255)',th:'ชื่อกิจกรรม (สอบ/โปรเจกต์)'},{n:'method',t:'VARCHAR(255)',th:'วิธีวัดผล'},{n:'maxScore',t:'DOUBLE',th:'คะแนนเต็ม'},{n:'order',t:'INT',th:'ลำดับการแสดงผล'},{n:'weight',t:'DOUBLE',th:'น้ำหนักในวิชา (%)'}]},
+  AssessmentCriteria:{c:'var(--orange)',g:'assessment',d:'เกณฑ์ประเมิน (เชื่อม Activity กับ CLO)',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัสเกณฑ์ (Primary Key)'},{n:'activityId',t:'VARCHAR(30)',fk:'Activity',th:'อ้างอิงกิจกรรม'},{n:'cloId',t:'VARCHAR(30)',fk:'CLO',th:'อ้างอิง CLO ที่กิจกรรมนี้วัด'},{n:'weight',t:'DOUBLE',th:'สัดส่วนน้ำหนักที่วัด CLO นี้'}]},
+  Student:{c:'var(--rose)',g:'scoring',d:'นักศึกษาในวิชา',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัสภายในระบบ (Primary Key)'},{n:'studentCode',t:'VARCHAR(50)',th:'รหัสนักศึกษา'},{n:'name',t:'VARCHAR(255)',th:'ชื่อนักศึกษา'},{n:'courseId',t:'VARCHAR(30)',fk:'Course',th:'อ้างอิงวิชาที่ลงทะเบียน'}]},
+  Score:{c:'var(--rose)',g:'scoring',d:'คะแนน (1 row = 1 นักศึกษา + 1 กิจกรรม)',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัสคะแนน (Primary Key)'},{n:'studentId',t:'VARCHAR(30)',fk:'Student',th:'อ้างอิงนักศึกษา'},{n:'activityId',t:'VARCHAR(30)',fk:'Activity',th:'อ้างอิงกิจกรรม'},{n:'score',t:'DOUBLE',th:'คะแนนที่ได้'},{n:'uploadedAt',t:'DATETIME(3)',th:'วันที่บันทึกคะแนน'}]},
+  ScoreUploadLog:{c:'var(--slate)',g:'audit',d:'บันทึกการอัพโหลด Excel (audit)',cols:[
+    {n:'id',t:'VARCHAR(30)',pk:1,th:'รหัส log (Primary Key)'},{n:'courseId',t:'VARCHAR(30)',th:'รหัสวิชา (ข้อความ ไม่ใช่ FK)'},{n:'uploadedBy',t:'VARCHAR(30)',th:'ผู้อัพโหลด (ข้อความ ไม่ใช่ FK)'},{n:'fileName',t:'VARCHAR(255)',th:'ชื่อไฟล์ที่อัพโหลด'},{n:'recordsOk',t:'INT',th:'จำนวนแถวที่สำเร็จ'},{n:'recordsFail',t:'INT',th:'จำนวนแถวที่ล้มเหลว'},{n:'createdAt',t:'DATETIME(3)',th:'วันที่อัพโหลด'}]}
+};
+const GROUPS={
+  identity:{label:'Identity · ผู้ใช้ระบบ',c:'var(--indigo)'},
+  template:{label:'Template · แม่แบบหลักสูตร — ออกแบบครั้งเดียว ใช้ซ้ำได้ (ยังไม่มีการสอนจริง)',c:'var(--violet)'},
+  live:{label:'Live Course · วิชาที่สอนจริง — เกิดใหม่ทุกครั้งที่เปิดสอน มีนักศึกษาและคะแนนจริง',c:'var(--emerald)'},
+  assessment:{label:'Assessment · การประเมินผล',c:'var(--orange)'},
+  scoring:{label:'Scoring · นักศึกษาและคะแนน',c:'var(--rose)'},
+  audit:{label:'Audit · บันทึกระบบ (ตารางอิสระ ไม่มี FK)',c:'var(--slate)'}
+};
+const R=[
+  {f:'Course',t:'User',fc:'instructorId',tc:'id',l:'N:1'},
+  {f:'CurriculumCourse',t:'Curriculum',fc:'curriculumId',tc:'id',l:'N:1'},
+  {f:'CLO',t:'Course',fc:'courseId',tc:'id',l:'N:1'},
+  {f:'BehavioralObjective',t:'CLO',fc:'cloId',tc:'id',l:'N:1'},
+  {f:'Activity',t:'Course',fc:'courseId',tc:'id',l:'N:1'},
+  {f:'AssessmentCriteria',t:'Activity',fc:'activityId',tc:'id',l:'N:1'},
+  {f:'AssessmentCriteria',t:'CLO',fc:'cloId',tc:'id',l:'N:1'},
+  {f:'Student',t:'Course',fc:'courseId',tc:'id',l:'N:1'},
+  {f:'Score',t:'Student',fc:'studentId',tc:'id',l:'N:1'},
+  {f:'Score',t:'Activity',fc:'activityId',tc:'id',l:'N:1'},
+];
+const P={
+  User:{x:40,y:60},Curriculum:{x:40,y:380},CurriculumCourse:{x:40,y:600},
+  Course:{x:340,y:60},CLO:{x:340,y:340},BehavioralObjective:{x:340,y:570},
+  Activity:{x:640,y:60},AssessmentCriteria:{x:640,y:340},Student:{x:640,y:560},
+  Score:{x:940,y:240},ScoreUploadLog:{x:940,y:510}
+};
+
+/* ===== ER Diagram ===== */
+const wrap=document.getElementById('erWrap'),inner=document.getElementById('erInner'),svg=document.getElementById('erSvg');
+const detEl=document.getElementById('erDetail'),dtEl=document.getElementById('erDt'),ddEl=document.getElementById('erDd');
+let pan={x:20,y:10},sc=.68,drag=false,ds={x:0,y:0},sel=null;
+const cards={},lines=[];
+
+function buildER(){
+  for(const[nm,tb]of Object.entries(T)){
+    const el=document.createElement('div');el.className='tbl';el.style.left=P[nm].x+'px';el.style.top=P[nm].y+'px';
+    const h=document.createElement('div');h.className='tbl-h';
+    const n=document.createElement('div');n.className='tbl-n';n.textContent=nm;n.style.color=tb.c;
+    const d=document.createElement('div');d.className='tbl-d';d.style.background=tb.c;
+    h.append(n,d);
+    const cs=document.createElement('div');cs.className='tbl-cols';
+    for(const col of tb.cols){
+      const r=document.createElement('div');r.className='cr';
+      const cn=document.createElement('div');cn.className='cn';cn.textContent=col.n;
+      r.append(cn);
+      if(col.pk){const b=document.createElement('span');b.className='cb pk';b.textContent='PK';r.append(b);}
+      if(col.fk){const b=document.createElement('span');b.className='cb fk';b.textContent='FK';r.append(b);}
+      if(col.uq){const b=document.createElement('span');b.className='cb uq';b.textContent='UQ';r.append(b);}
+      const ct=document.createElement('div');ct.className='ct';ct.textContent=col.t;r.append(ct);
+      cs.append(r);
+    }
+    el.append(h,cs);inner.append(el);cards[nm]=el;
+    el.addEventListener('click',e=>{e.stopPropagation();toggleSel(nm);});
+  }
+}
+
+function rect(nm){const el=cards[nm];const x=parseFloat(el.style.left),y=parseFloat(el.style.top),w=el.offsetWidth,h=el.offsetHeight;return{x,y,w,h};}
+
+function drawLines(){
+  svg.innerHTML='';lines.length=0;const ns='http://www.w3.org/2000/svg';
+  for(const r of R){
+    const fr=rect(r.f),tr=rect(r.t);
+    const fcx=fr.x+fr.w/2,fcy=fr.y+fr.h/2,tcx=tr.x+tr.w/2,tcy=tr.y+tr.h/2;
+    let x1,y1,x2,y2;
+    if(Math.abs(fcx-tcx)>Math.abs(fcy-tcy)){
+      if(fcx<tcx){x1=fr.x+fr.w;y1=fcy;x2=tr.x;y2=tcy;}else{x1=fr.x;y1=fcy;x2=tr.x+tr.w;y2=tcy;}
+    }else{
+      if(fcy<tcy){x1=fcx;y1=fr.y+fr.h;x2=tcx;y2=tr.y;}else{x1=fcx;y1=fr.y;x2=tcx;y2=tr.y+tr.h;}
+    }
+    const dx=Math.abs(x2-x1)*.4,dy=Math.abs(y2-y1)*.4;
+    const d=Math.abs(x2-x1)>Math.abs(y2-y1)?`M${x1} ${y1}C${x1+dx} ${y1},${x2-dx} ${y2},${x2} ${y2}`:`M${x1} ${y1}C${x1} ${y1+dy},${x2} ${y2-dy},${x2} ${y2}`;
+    const p=document.createElementNS(ns,'path');p.setAttribute('d',d);p.classList.add('er-line');svg.append(p);
+    const c=document.createElementNS(ns,'circle');c.setAttribute('cx',x2);c.setAttribute('cy',y2);c.setAttribute('r',3.5);c.classList.add('er-dot');svg.append(c);
+    const mx=(x1+x2)/2,my=(y1+y2)/2;
+    const lb=document.createElementNS(ns,'text');lb.setAttribute('x',mx);lb.setAttribute('y',my-5);lb.classList.add('er-lbl');lb.textContent=r.l;svg.append(lb);
+    lines.push({p,c,lb,f:r.f,t:r.t});
+  }
+}
+
+function toggleSel(nm){
+  if(sel===nm){sel=null;clearHL();detEl.classList.remove('vis');return;}
+  sel=nm;const tb=T[nm];
+  const rel=new Set([nm]);
+  for(const r of R){if(r.f===nm)rel.add(r.t);if(r.t===nm)rel.add(r.f);}
+  for(const[n,el]of Object.entries(cards)){el.classList.toggle('hi',rel.has(n));el.classList.toggle('dim',!rel.has(n));}
+  for(const l of lines){const hit=l.f===nm||l.t===nm;l.p.classList.toggle('hi',hit);l.p.classList.toggle('dim',!hit);l.c.classList.toggle('hi',hit);l.lb.classList.toggle('hi',hit);l.lb.classList.toggle('dim',!hit);}
+  dtEl.innerHTML=`<span style="color:${tb.c}">${nm}</span>`;ddEl.textContent=tb.d;detEl.classList.add('vis');
+}
+function clearHL(){for(const el of Object.values(cards))el.classList.remove('hi','dim');for(const l of lines){l.p.classList.remove('hi','dim');l.c.classList.remove('hi');l.lb.classList.remove('hi','dim');}}
+function applyTr(){inner.style.transform=`translate(${pan.x}px,${pan.y}px) scale(${sc})`;}
+
+wrap.addEventListener('mousedown',e=>{if(e.target.closest('.tbl'))return;drag=true;ds={x:e.clientX-pan.x,y:e.clientY-pan.y};wrap.classList.add('dragging');});
+window.addEventListener('mousemove',e=>{if(!drag)return;pan.x=e.clientX-ds.x;pan.y=e.clientY-ds.y;applyTr();});
+window.addEventListener('mouseup',()=>{drag=false;wrap.classList.remove('dragging');});
+wrap.addEventListener('wheel',e=>{e.preventDefault();const d=e.deltaY>0?.92:1.08;const ns=Math.max(.25,Math.min(3,sc*d));const r=wrap.getBoundingClientRect();const mx=e.clientX-r.left,my=e.clientY-r.top;pan.x=mx-(mx-pan.x)*(ns/sc);pan.y=my-(my-pan.y)*(ns/sc);sc=ns;applyTr();},{passive:false});
+wrap.addEventListener('click',e=>{if(!e.target.closest('.tbl')){sel=null;clearHL();detEl.classList.remove('vis');}});
+let ts=null,td=null;
+wrap.addEventListener('touchstart',e=>{if(e.touches.length===1)ts={x:e.touches[0].clientX-pan.x,y:e.touches[0].clientY-pan.y};else if(e.touches.length===2)td=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY);},{passive:true});
+wrap.addEventListener('touchmove',e=>{if(e.touches.length===1&&ts){pan.x=e.touches[0].clientX-ts.x;pan.y=e.touches[0].clientY-ts.y;applyTr();}else if(e.touches.length===2&&td){const nd=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY);sc=Math.max(.25,Math.min(3,sc*(nd/td)));td=nd;applyTr();}},{passive:true});
+document.getElementById('zi').onclick=()=>{sc=Math.min(3,sc*1.2);applyTr();};
+document.getElementById('zo').onclick=()=>{sc=Math.max(.25,sc*.8);applyTr();};
+document.getElementById('zf').onclick=()=>{sc=.68;pan={x:20,y:10};applyTr();};
+
+buildER();
+requestAnimationFrame(()=>{drawLines();applyTr();});
+
+/* ===== Tables Detail Section ===== */
+const tdWrap=document.getElementById('tableDetail');
+let curGroup=null;
+for(const[nm,tb]of Object.entries(T)){
+  if(tb.g!==curGroup){
+    curGroup=tb.g;const gi=GROUPS[curGroup];
+    const gh=document.createElement('div');
+    gh.style.cssText='display:flex;align-items:center;gap:8px;margin:22px 0 10px;padding-bottom:6px;border-bottom:2px solid '+gi.c+';';
+    gh.innerHTML='<span style="width:10px;height:10px;border-radius:50%;background:'+gi.c+';flex-shrink:0;"></span>'
+      +'<span style="font-size:13px;font-weight:700;color:'+gi.c+';">'+gi.label+'</span>';
+    tdWrap.append(gh);
+  }
+  const card=document.createElement('div');card.className='ov-card';card.style.marginBottom='10px';
+  const head=document.createElement('div');head.className='ov-head';
+  const dot=document.createElement('div');dot.className='ov-dot';dot.style.background=tb.c;
+  const name=document.createElement('div');name.className='ov-name';name.textContent=nm;name.style.color=tb.c;
+  const desc=document.createElement('div');desc.style.cssText='font-size:12px;color:var(--text2);margin-bottom:8px;';desc.textContent=tb.d;
+  head.append(dot,name);
+
+  const scroll=document.createElement('div');scroll.style.cssText='overflow-x:auto;';
+  const tbl=document.createElement('table');tbl.style.cssText='width:100%;border-collapse:collapse;font-size:11.5px;min-width:520px;';
+  const thead=document.createElement('thead');
+  const thCss='text-align:left;padding:4px 8px;font-weight:600;color:var(--text3);font-size:10px;letter-spacing:.05em;text-transform:uppercase;';
+  thead.innerHTML='<tr style="border-bottom:1px solid var(--border);">'
+    +'<th style="'+thCss+'">Column</th>'
+    +'<th style="'+thCss+'">ความหมาย (ไทย)</th>'
+    +'<th style="'+thCss+'">Type</th>'
+    +'<th style="'+thCss+'">Key</th>'
+    +'<th style="'+thCss+'">Ref</th></tr>';
+  const tbody=document.createElement('tbody');
+  for(const col of tb.cols){
+    const tr=document.createElement('tr');tr.style.borderBottom='1px solid var(--border)';
+    const tdN=document.createElement('td');tdN.style.cssText='padding:4px 8px;font-family:"Mono",monospace;font-size:11px;white-space:nowrap;';tdN.textContent=col.n;
+    const tdTh=document.createElement('td');tdTh.style.cssText='padding:4px 8px;font-size:11.5px;color:var(--text2);';tdTh.textContent=col.th||'';
+    const tdT=document.createElement('td');tdT.style.cssText='padding:4px 8px;font-family:"Mono",monospace;font-size:10px;color:var(--text3);white-space:nowrap;';tdT.textContent=col.t;
+    const tdK=document.createElement('td');tdK.style.cssText='padding:4px 8px;white-space:nowrap;';
+    if(col.pk)tdK.innerHTML='<span style="font-size:8px;font-weight:700;padding:1px 4px;border-radius:2px;background:var(--pk-bg);color:var(--pk);">PK</span>';
+    if(col.fk)tdK.innerHTML+='<span style="font-size:8px;font-weight:700;padding:1px 4px;border-radius:2px;background:var(--fk-bg);color:var(--fk);margin-left:3px;">FK</span>';
+    if(col.uq)tdK.innerHTML+='<span style="font-size:8px;font-weight:700;padding:1px 4px;border-radius:2px;background:var(--uq-bg);color:var(--uq);margin-left:3px;">UQ</span>';
+    const tdR=document.createElement('td');tdR.style.cssText='padding:4px 8px;font-family:"Mono",monospace;font-size:10px;color:var(--fk);white-space:nowrap;';
+    if(col.fk)tdR.textContent=col.fk+'.id';
+    tr.append(tdN,tdTh,tdT,tdK,tdR);tbody.append(tr);
+  }
+  tbl.append(thead,tbody);
+  scroll.append(tbl);
+  card.append(head,desc,scroll);
+  tdWrap.append(card);
+}
+
+/* ===== Nav active state ===== */
+const navLinks=document.querySelectorAll('.nav-pills a');
+const sections=document.querySelectorAll('section[id]');
+const obs=new IntersectionObserver(entries=>{
+  for(const e of entries){
+    if(e.isIntersecting){
+      navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));
+    }
+  }
+},{threshold:.3,rootMargin:'-60px 0px -40% 0px'});
+sections.forEach(s=>obs.observe(s));
+</script>

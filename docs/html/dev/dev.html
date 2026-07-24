@@ -1,0 +1,1398 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Standard &amp; Workflow</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a class="active" href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<h1 id="technical-standard--workflow" tabindex="-1"><a class="header-anchor" href="#technical-standard--workflow"><span>Technical Standard &amp; Workflow</span></a></h1>
+<p>See also: <a href="../sql/schema.html">Schema</a> · <span class="wikilink-missing" title="unresolved: Summary Project">Summary Project</span> · <span class="wikilink-missing" title="unresolved: website final">website final</span> · <span class="wikilink-missing" title="unresolved: concept-clo MOC">concept-clo MOC</span></p>
+<h2 id="ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา-clo-system" tabindex="-1"><a class="header-anchor" href="#ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา-clo-system"><span>ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO System)</span></a></h2>
+<blockquote>
+<p><strong>Version:</strong> 2.0.0 | <strong>Updated:</strong> 2026-07 | <strong>Owner:</strong> ทีมพัฒนา 67030098 / 67030110 / 67030120</p>
+</blockquote>
+<hr>
+<h2 id="สารบัญ" tabindex="-1"><a class="header-anchor" href="#สารบัญ"><span>สารบัญ</span></a></h2>
+<ol>
+<li><a href="#1-tech-stack">Tech Stack</a></li>
+<li><a href="#2-environment-setup">Environment Setup</a></li>
+<li><a href="#3-project-structure">Project Structure</a></li>
+<li><a href="#4-naming-conventions">Naming Conventions</a></li>
+<li><a href="#5-git-workflow">Git Workflow</a></li>
+<li><a href="#6-frontend-standards-react-19--vite">Frontend Standards (React 19 + Vite)</a></li>
+<li><a href="#7-backend-standards-fastify--node">Backend Standards (Fastify + Node)</a></li>
+<li><a href="#8-database-standards-prisma-6--supabase">Database Standards (Prisma 6 + Supabase)</a></li>
+<li><a href="#9-api-design-standards-rest">API Design Standards (REST)</a></li>
+<li><a href="#10-error-handling-standards">Error Handling Standards</a></li>
+<li><a href="#11-testing-standards">Testing Standards</a></li>
+<li><a href="#12-cicd--deployment">CI/CD &amp; Deployment</a></li>
+<li><a href="#13-code-review-checklist">Code Review Checklist</a></li>
+<li><a href="#14-forbidden-patterns">Forbidden Patterns</a></li>
+<li><a href="#15-version-decisions-log">Version Decisions Log</a></li>
+</ol>
+<hr>
+<h2 id="1-tech-stack" tabindex="-1"><a class="header-anchor" href="#1-tech-stack"><span>1. Tech Stack</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technology</th>
+<th>Version</th>
+<th>หมายเหตุ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frontend Framework</td>
+<td>React</td>
+<td>19.x</td>
+<td>SPA (<code>ssr: false</code>), not framework/SSR mode</td>
+</tr>
+<tr>
+<td>Routing</td>
+<td>React Router</td>
+<td>7.x</td>
+<td>Explicit route table (<code>pages.config.ts</code>), client-side only</td>
+</tr>
+<tr>
+<td>Build Tool</td>
+<td>Vite</td>
+<td>7.x</td>
+<td>Held one major behind latest (8.x) — see §15</td>
+</tr>
+<tr>
+<td>React Plugin</td>
+<td><code>@vitejs/plugin-react-swc</code></td>
+<td>latest</td>
+<td>SWC, not Babel — faster builds</td>
+</tr>
+<tr>
+<td>UI Framework</td>
+<td>Tailwind CSS</td>
+<td>4.x</td>
+<td>Via <code>@tailwindcss/vite</code> plugin — no PostCSS config needed</td>
+</tr>
+<tr>
+<td>Component Library</td>
+<td>shadcn/ui</td>
+<td>latest</td>
+<td>Copy-paste, not installed as dep (<code>components.json</code> present)</td>
+</tr>
+<tr>
+<td>State / Cache</td>
+<td>TanStack Query</td>
+<td>5.x</td>
+<td>Server state management</td>
+</tr>
+<tr>
+<td>Client State</td>
+<td>Zustand</td>
+<td>5.x</td>
+<td>Auth state only, <code>persist</code> middleware</td>
+</tr>
+<tr>
+<td>Forms</td>
+<td>React Hook Form + Zod</td>
+<td>latest</td>
+<td>Planned — not yet wired into any page</td>
+</tr>
+<tr>
+<td>Charts</td>
+<td>Recharts</td>
+<td>3.x</td>
+<td>CLO dashboard</td>
+</tr>
+<tr>
+<td>Toast / Notifications</td>
+<td>Sonner</td>
+<td>2.x</td>
+<td><code>&lt;Toaster /&gt;</code> mounted once in <code>App.tsx</code></td>
+</tr>
+<tr>
+<td>Excel Processing</td>
+<td>xlsx (SheetJS)</td>
+<td>0.20.3</td>
+<td><strong>Installed from <code>cdn.sheetjs.com</code>, not npm registry</strong> — see §15</td>
+</tr>
+<tr>
+<td>Backend Framework</td>
+<td>Fastify</td>
+<td>5.x</td>
+<td>TypeScript-first</td>
+</tr>
+<tr>
+<td>Runtime</td>
+<td>Node.js</td>
+<td>≥20 LTS</td>
+<td></td>
+</tr>
+<tr>
+<td>Language</td>
+<td>TypeScript</td>
+<td>5.9.x</td>
+<td>Held back from 7.x (native compiler) — see §15</td>
+</tr>
+<tr>
+<td>ORM</td>
+<td>Prisma</td>
+<td>6.19.x</td>
+<td>Held back from 7.x (breaking config model) — see §15</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>PostgreSQL</td>
+<td>15+ (Supabase)</td>
+<td></td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>JWT (<code>jose</code>)</td>
+<td>6.x</td>
+<td>Access token 15m + refresh token 7d, not a 30d single token</td>
+</tr>
+<tr>
+<td>Password Hashing</td>
+<td>argon2</td>
+<td>latest</td>
+<td></td>
+</tr>
+<tr>
+<td>Security Middleware</td>
+<td><code>@fastify/helmet</code>, <code>@fastify/rate-limit</code>, <code>@fastify/cors</code></td>
+<td>latest</td>
+<td></td>
+</tr>
+<tr>
+<td>File Upload</td>
+<td><code>@fastify/multipart</code></td>
+<td>latest</td>
+<td>10MB cap</td>
+</tr>
+<tr>
+<td>Monorepo</td>
+<td>npm workspaces</td>
+<td>—</td>
+<td><strong>Not pnpm</strong> — see §15</td>
+</tr>
+<tr>
+<td>Linting</td>
+<td>ESLint 10 + typescript-eslint</td>
+<td>latest</td>
+<td>Flat config, both apps</td>
+</tr>
+<tr>
+<td>Formatting</td>
+<td><em>(not yet decided)</em></td>
+<td>—</td>
+<td>No Prettier/Biome configured yet</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td><em>(not yet implemented)</em></td>
+<td>—</td>
+<td>Vitest/Playwright are planned, not installed</td>
+</tr>
+<tr>
+<td>CI/CD</td>
+<td><em>(not yet implemented)</em></td>
+<td>—</td>
+<td>GitHub Actions workflows are planned, not present</td>
+</tr>
+<tr>
+<td>Hosting API</td>
+<td>Railway / <a href="http://Fly.io" target="_blank" rel="noopener">Fly.io</a></td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td>Hosting Web</td>
+<td>Vercel</td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td>Hosting DB</td>
+<td>Supabase</td>
+<td>—</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-environment-setup" tabindex="-1"><a class="header-anchor" href="#2-environment-setup"><span>2. Environment Setup</span></a></h2>
+<h3 id="21-prerequisites" tabindex="-1"><a class="header-anchor" href="#21-prerequisites"><span>2.1 Prerequisites</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment"># ตรวจสอบ version ก่อนเริ่มต้น</span>
+node --version    <span class="hljs-comment"># ต้องเป็น 20.x+</span>
+npm --version     <span class="hljs-comment"># มากับ Node อยู่แล้ว — ไม่ต้องติดตั้ง pnpm</span>
+git --version     <span class="hljs-comment"># ต้องเป็น 2.40+</span>
+</code></pre>
+<blockquote>
+<p><strong>หมายเหตุ:</strong> โปรเจกต์นี้ใช้ <strong>npm workspaces</strong> ไม่ใช่ pnpm — เหตุผลอยู่ใน <a href="#15-version-decisions-log">§15</a></p>
+</blockquote>
+<h3 id="22-การ-clone-และติดตั้ง" tabindex="-1"><a class="header-anchor" href="#22-การ-clone-และติดตั้ง"><span>2.2 การ Clone และติดตั้ง</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment"># 1. Clone repository</span>
+git <span class="hljs-built_in">clone</span> https://github.com/&lt;org&gt;/clo-system.git
+<span class="hljs-built_in">cd</span> CMAS
+
+<span class="hljs-comment"># 2. ติดตั้ง dependencies ทั้ง monorepo (client + server) จาก root เดียว</span>
+npm install
+
+<span class="hljs-comment"># 3. Copy environment files</span>
+<span class="hljs-built_in">cp</span> database/.env.example database/.env
+<span class="hljs-built_in">cp</span> app/server/.env.example app/server/.env
+<span class="hljs-built_in">cp</span> app/client/.env.example app/client/.env
+<span class="hljs-comment"># แก้ DATABASE_URL, DIRECT_URL, JWT_SECRET (32+ ตัวอักษร) ให้เป็นค่าจริง</span>
+
+<span class="hljs-comment"># 4. Setup database</span>
+npm run db:generate       <span class="hljs-comment"># สร้าง Prisma Client</span>
+npm run db:migrate:dev    <span class="hljs-comment"># run migrations</span>
+
+<span class="hljs-comment"># 5. รัน development server</span>
+npm run dev                <span class="hljs-comment"># รัน client (:5173) + server (:3001) พร้อมกัน</span>
+npm run dev:client         <span class="hljs-comment"># client อย่างเดียว</span>
+npm run dev:server         <span class="hljs-comment"># server อย่างเดียว</span>
+</code></pre>
+<h3 id="23-environment-variables" tabindex="-1"><a class="header-anchor" href="#23-environment-variables"><span>2.3 Environment Variables</span></a></h3>
+<p><strong><code>database/.env</code></strong></p>
+<pre class="hljs"><code>DATABASE_URL=&quot;postgresql://postgres:[password]@db.[ref].supabase.co:5432/postgres&quot;
+DIRECT_URL=&quot;postgresql://postgres:[password]@db.[ref].supabase.co:5432/postgres&quot;
+</code></pre>
+<p><strong><code>app/server/.env</code></strong></p>
+<pre class="hljs"><code># Database (mirrors database/.env)
+DATABASE_URL=&quot;postgresql://postgres:[password]@db.[ref].supabase.co:5432/postgres&quot;
+DIRECT_URL=&quot;postgresql://postgres:[password]@db.[ref].supabase.co:5432/postgres&quot;
+
+# Auth
+JWT_SECRET=&quot;[random-256-bit-string, ต้องยาว 32+ ตัวอักษร — env.ts จะ throw ถ้าสั้นกว่านี้]&quot;
+JWT_ACCESS_EXPIRES_IN=&quot;15m&quot;
+JWT_REFRESH_EXPIRES_IN=&quot;7d&quot;
+
+# App
+NODE_ENV=&quot;development&quot;
+PORT=3001
+CORS_ORIGIN=&quot;http://localhost:5173&quot;
+
+# Rate limiting
+RATE_LIMIT_MAX=100
+RATE_LIMIT_WINDOW=&quot;1 minute&quot;
+</code></pre>
+<p><strong><code>app/client/.env</code></strong></p>
+<pre class="hljs"><code>VITE_API_URL=&quot;http://localhost:3001&quot;
+VITE_APP_NAME=&quot;CLO System&quot;
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>ห้าม commit ไฟล์ <code>.env</code> ลง git เด็ดขาด</strong> — มีใน <code>.gitignore</code> แล้ว</p>
+<p>เซิร์ฟเวอร์จะ <strong>refuse to boot</strong> ถ้า <code>DATABASE_URL</code> หรือ <code>JWT_SECRET</code> หาย/สั้นเกินไป (<code>src/lib/env.ts</code> validate ด้วย Zod ตอน startup) — นี่คือ fail-fast โดยตั้งใจ ไม่ใช่บั๊ก</p>
+</blockquote>
+<h3 id="24-vs-code-extensions-แนะนำ" tabindex="-1"><a class="header-anchor" href="#24-vs-code-extensions-แนะนำ"><span>2.4 VS Code Extensions (แนะนำ)</span></a></h3>
+<p><strong><code>.vscode/extensions.json</code></strong></p>
+<pre class="hljs"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;recommendations&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-string">&quot;prisma.prisma&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-string">&quot;bradlc.vscode-tailwindcss&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-string">&quot;dbaeumer.vscode-eslint&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-string">&quot;ms-vscode.vscode-typescript-next&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-string">&quot;christian-kohler.path-intellisense&quot;</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<hr>
+<h2 id="3-project-structure" tabindex="-1"><a class="header-anchor" href="#3-project-structure"><span>3. Project Structure</span></a></h2>
+<h3 id="31-monorepo-root-ตามที่-implement-จริง" tabindex="-1"><a class="header-anchor" href="#31-monorepo-root-ตามที่-implement-จริง"><span>3.1 Monorepo Root (ตามที่ implement จริง)</span></a></h3>
+<pre class="hljs"><code>CMAS/
+├── app/
+│   ├── client/          # React 19 + React Router 7 (SPA) — deploys to Vercel
+│   └── server/           # Node.js + Fastify + TypeScript — deploys to Railway/Fly.io
+├── database/
+│   ├── schema.prisma      # single source of truth, shared by all tooling
+│   └── .env.example
+├── docs/
+│   ├── markdown/          # เอกสารทั้งหมด (ไฟล์นี้อยู่ที่นี่)
+│   └── pdf/                # PD01 อนุมัติหัวข้อโครงงาน
+├── .gitignore
+├── package.json            # root workspace scripts
+└── README.md
+</code></pre>
+<p>แต่ละแอปใน <code>app/</code> deploy แยกจากกันได้อิสระ — <code>client</code> build เป็น static files, <code>server</code> build เป็น standalone Node process ไม่มี dependency ข้ามกัน ยกเว้น <code>database/schema.prisma</code> ที่ทั้งคู่อ้างอิงร่วมกัน</p>
+<h3 id="32-frontend-structure-appclient" tabindex="-1"><a class="header-anchor" href="#32-frontend-structure-appclient"><span>3.2 Frontend Structure (<code>app/client/</code>)</span></a></h3>
+<pre class="hljs"><code>app/client/
+├── src/
+│   ├── api/                          # เรียก Fastify backend
+│   │   ├── client.ts                 # fetch wrapper + JWT header + toast on error
+│   │   ├── auth.ts
+│   │   ├── courses.ts
+│   │   ├── clos.ts
+│   │   ├── excel.ts                  # downloadTemplate() / uploadScores()
+│   │   └── dashboard.ts
+│   ├── components/
+│   │   ├── ui/                       # shadcn/ui
+│   │   ├── layout/                   # AppShell, Sidebar, Topbar
+│   │   ├── clo/
+│   │   ├── dashboard/                # CloBarChart, AtRiskDonut, StudentRadar
+│   │   └── excel/
+│   │       ├── TemplateDownloadButton.tsx
+│   │       └── ScoreUploadDialog.tsx
+│   ├── hooks/
+│   │   ├── useAuth.ts
+│   │   ├── useClos.ts
+│   │   └── useDashboard.ts
+│   ├── lib/
+│   │   ├── utils.ts                  # cn() — shadcn helper
+│   │   └── constants.ts
+│   ├── pages/
+│   │   ├── auth/Login.tsx
+│   │   ├── admin/Users.tsx           # 5.1 จัดการสิทธิ์ผู้ใช้
+│   │   └── courses/
+│   │       ├── CourseList.tsx        # 5.2.1
+│   │       └── [courseId]/
+│   │           ├── Clos.tsx          # 5.2.2
+│   │           ├── Assessment.tsx    # 5.2.3
+│   │           ├── Excel.tsx         # 5.2.4
+│   │           └── dashboard/
+│   │               ├── index.tsx     # 5.3.1
+│   │               ├── Students.tsx  # 5.3.2
+│   │               └── Report.tsx    # 5.3.3
+│   ├── store/
+│   │   └── authStore.ts              # Zustand + persist (auth state เท่านั้น)
+│   ├── types/
+│   │   └── index.ts                  # User, Role, ApiResponse&lt;T&gt;
+│   ├── App.tsx                       # &lt;Toaster /&gt; (sonner) + &lt;BrowserRouter&gt; + Suspense
+│   ├── main.tsx
+│   ├── index.css                     # @import &quot;tailwindcss&quot;;
+│   ├── pages.config.ts               # route table — เพิ่มหน้าใหม่ที่นี่
+│   └── vite-env.d.ts
+├── components.json                    # shadcn config (tsx: true)
+├── eslint.config.ts
+├── index.html
+├── package.json
+├── tsconfig.json / tsconfig.app.json / tsconfig.node.json
+└── vite.config.ts                     # plugins: [react(), tailwindcss()]
+</code></pre>
+<blockquote>
+<p><strong>ไม่มี</strong> <code>tailwind.config.ts</code> — Tailwind v4 ผ่าน <code>@tailwindcss/vite</code> ตรวจจับ content อัตโนมัติจาก module graph ไม่ต้องตั้ง content globs เอง</p>
+</blockquote>
+<h3 id="33-backend-structure-appserver" tabindex="-1"><a class="header-anchor" href="#33-backend-structure-appserver"><span>3.3 Backend Structure (<code>app/server/</code>)</span></a></h3>
+<pre class="hljs"><code>app/server/
+├── src/
+│   ├── index.ts                    # Fastify app + register plugins (helmet, cors, rate-limit, multipart)
+│   ├── routes/
+│   │   ├── index.ts                # registerRoutes() — รวมทุก route
+│   │   ├── health.route.ts         # GET /health
+│   │   ├── auth.route.ts           # (TODO)
+│   │   ├── users.route.ts          # (TODO)
+│   │   ├── courses.route.ts        # (TODO)
+│   │   ├── clos.route.ts           # (TODO)
+│   │   ├── excel.route.ts          # (TODO)
+│   │   └── dashboard.route.ts      # (TODO)
+│   ├── controllers/                # thin request/response layer (ยังไม่ implement)
+│   ├── services/                   # Business logic ทั้งหมดอยู่นี่ (ยังไม่ implement)
+│   ├── middlewares/
+│   │   ├── auth.middleware.ts      # JWT verify → request.userId / request.userRole
+│   │   ├── rbac.middleware.ts      # rbac(&quot;ADMIN&quot; | &quot;INSTRUCTOR&quot;)
+│   │   └── errorHandler.ts         # ZodError / Prisma error → standardized response
+│   ├── validators/                 # Zod schemas ต่อ resource (ยังไม่ implement)
+│   ├── lib/
+│   │   ├── env.ts                  # Zod-validated process.env, fail-fast on boot
+│   │   ├── prisma.ts               # PrismaClient singleton
+│   │   ├── jwt.ts                  # signAccessToken / signRefreshToken / verifyToken (jose)
+│   │   └── response.ts             # ok / created / badRequest / unauthorized / forbidden / notFound / serverError
+│   └── types/                       # (ว่าง — เพิ่มเมื่อจำเป็น)
+├── eslint.config.ts
+├── package.json
+└── tsconfig.json
+</code></pre>
+<h3 id="34-database-database" tabindex="-1"><a class="header-anchor" href="#34-database-database"><span>3.4 Database (<code>database/</code>)</span></a></h3>
+<pre class="hljs"><code>database/
+├── schema.prisma    # User, Curriculum, CurriculumCourse,
+│                     # Course, CLO, BehavioralObjective, Activity,
+│                     # AssessmentCriteria, Student, Score, ScoreUploadLog
+└── .env.example
+</code></pre>
+<p>Prisma client generate ไปที่ root <code>node_modules/@prisma/client</code> (npm workspace hoisting) — ทั้ง <code>app/server</code> และ tooling ที่ root เรียกใช้ <code>@prisma/client</code> ตัวเดียวกันได้โดยไม่ต้อง custom output path</p>
+<hr>
+<h2 id="4-naming-conventions" tabindex="-1"><a class="header-anchor" href="#4-naming-conventions"><span>4. Naming Conventions</span></a></h2>
+<h3 id="41-กฎหลักด้านภาษา" tabindex="-1"><a class="header-anchor" href="#41-กฎหลักด้านภาษา"><span>4.1 กฎหลักด้านภาษา</span></a></h3>
+<blockquote>
+<p>ชื่อทุกอย่างในโค้ด <strong>ใช้ภาษาอังกฤษเท่านั้น</strong> — comment และ commit message เขียนไทยได้</p>
+</blockquote>
+<h3 id="42-ไฟล์และโฟลเดอร์" tabindex="-1"><a class="header-anchor" href="#42-ไฟล์และโฟลเดอร์"><span>4.2 ไฟล์และโฟลเดอร์</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ประเภท</th>
+<th>รูปแบบ</th>
+<th>ตัวอย่าง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>React Component</td>
+<td><code>PascalCase.tsx</code></td>
+<td><code>CloListItem.tsx</code></td>
+</tr>
+<tr>
+<td>React Page</td>
+<td><code>PascalCase.tsx</code> (ใน <code>pages/</code>)</td>
+<td><code>CourseList.tsx</code></td>
+</tr>
+<tr>
+<td>Hook</td>
+<td><code>camelCase.ts</code> ขึ้นต้นด้วย <code>use</code></td>
+<td><code>useCloReorder.ts</code></td>
+</tr>
+<tr>
+<td>Utility / Helper</td>
+<td><code>camelCase.ts</code></td>
+<td><code>formatDate.ts</code></td>
+</tr>
+<tr>
+<td>Fastify Route</td>
+<td><code>camelCase.route.ts</code></td>
+<td><code>clos.route.ts</code></td>
+</tr>
+<tr>
+<td>Controller</td>
+<td><code>camelCase.controller.ts</code></td>
+<td><code>courses.controller.ts</code></td>
+</tr>
+<tr>
+<td>Service</td>
+<td><code>camelCase.service.ts</code></td>
+<td><code>clo.service.ts</code></td>
+</tr>
+<tr>
+<td>Validator</td>
+<td><code>camelCase.validator.ts</code></td>
+<td><code>clo.validator.ts</code></td>
+</tr>
+<tr>
+<td>Type / Interface</td>
+<td><code>camelCase.ts</code>, ใช้ <code>type</code> แทน <code>interface</code></td>
+<td><code>course.ts</code></td>
+</tr>
+<tr>
+<td>Test</td>
+<td>ชื่อไฟล์ที่ test + <code>.test.ts</code></td>
+<td><code>cloScore.test.ts</code></td>
+</tr>
+<tr>
+<td>Constant</td>
+<td><code>constants.ts</code> หรือ <code>SCREAMING_SNAKE_CASE.ts</code></td>
+<td><code>constants.ts</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="43-variables--functions" tabindex="-1"><a class="header-anchor" href="#43-variables--functions"><span>4.3 Variables &amp; Functions</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// ✅ ถูก</span>
+<span class="hljs-keyword">const</span> courseId = <span class="hljs-string">&quot;abc123&quot;</span>                    <span class="hljs-comment">// camelCase</span>
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">MAX_CLO_COUNT</span> = <span class="hljs-number">10</span>                      <span class="hljs-comment">// SCREAMING_SNAKE_CASE สำหรับ constant</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">computeCloScore</span>(<span class="hljs-params"></span>) {}                 <span class="hljs-comment">// camelCase, verb-first</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">getCourseById</span>(<span class="hljs-params"></span>) {}                   <span class="hljs-comment">// get + entity + qualifier</span>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">createCourse</span>(<span class="hljs-params"></span>) {}              <span class="hljs-comment">// async keyword ต้องมีเสมอ</span>
+
+<span class="hljs-comment">// ✅ React Component — named export (ไม่ default export)</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">CloListItem</span>(<span class="hljs-params"></span>) {}
+
+<span class="hljs-comment">// ✅ Types — PascalCase, ใช้ type แทน interface</span>
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">CloScore</span> = { <span class="hljs-comment">/* ... */</span> }
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">CreateCloInput</span> = { <span class="hljs-comment">/* ... */</span> }            <span class="hljs-comment">// suffix Input สำหรับ request body</span>
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">CloResponse</span> = { <span class="hljs-comment">/* ... */</span> }               <span class="hljs-comment">// suffix Response สำหรับ response</span>
+
+<span class="hljs-comment">// ❌ ผิด</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title class_">CourseId</span> = <span class="hljs-string">&quot;abc123&quot;</span>                     <span class="hljs-comment">// PascalCase สำหรับ variable</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">get_course</span> = (<span class="hljs-params"></span>) =&gt; {}                   <span class="hljs-comment">// snake_case</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">course</span>(<span class="hljs-params"></span>) {}                          <span class="hljs-comment">// ไม่มี verb</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title class_">IClo</span> { <span class="hljs-comment">/* ... */</span> }                  <span class="hljs-comment">// Hungarian notation (I prefix)</span>
+</code></pre>
+<h3 id="44-prisma--database" tabindex="-1"><a class="header-anchor" href="#44-prisma--database"><span>4.4 Prisma / Database</span></a></h3>
+<pre class="hljs"><code>// ✅ ถูก
+model Course { /* ... */ }      // PascalCase singular
+courseId     String             // camelCase field name
+@@unique([courseId, semester])
+
+// ❌ ผิด
+model courses { /* ... */ }     // lowercase / plural
+course_id    String             // snake_case field
+</code></pre>
+<h3 id="45-api-endpoints" tabindex="-1"><a class="header-anchor" href="#45-api-endpoints"><span>4.5 API Endpoints</span></a></h3>
+<pre class="hljs"><code>// ✅ ถูก — noun plural, kebab-case, resource-based
+GET    /courses
+GET    /courses/:courseId
+POST   /courses
+PATCH  /courses/:courseId
+DELETE /courses/:courseId
+GET    /courses/:courseId/clos
+PATCH  /courses/:courseId/clos/reorder   // action exception
+POST   /excel/upload
+
+// ❌ ผิด
+GET    /getCourse           // verb ใน URL
+GET    /course               // singular
+POST   /courses/create       // redundant verb
+GET    /Course                // PascalCase
+</code></pre>
+<hr>
+<h2 id="5-git-workflow" tabindex="-1"><a class="header-anchor" href="#5-git-workflow"><span>5. Git Workflow</span></a></h2>
+<h3 id="51-branch-strategy-github-flow" tabindex="-1"><a class="header-anchor" href="#51-branch-strategy-github-flow"><span>5.1 Branch Strategy (GitHub Flow)</span></a></h3>
+<pre class="hljs"><code>main
+  └── production เสมอ — protected branch, ห้าม push โดยตรง
+
+feature/[issue-number]-[short-description]
+  └── ตัวอย่าง: feature/12-clo-drag-reorder
+
+fix/[issue-number]-[short-description]
+  └── ตัวอย่าง: fix/34-score-upload-crash
+
+hotfix/[short-description]
+  └── ตัวอย่าง: hotfix/jwt-expiry-null-check
+
+chore/[description]
+  └── ตัวอย่าง: chore/upgrade-fastify-v6
+</code></pre>
+<h3 id="52-commit-message-convention-conventional-commits" tabindex="-1"><a class="header-anchor" href="#52-commit-message-convention-conventional-commits"><span>5.2 Commit Message Convention (Conventional Commits)</span></a></h3>
+<pre class="hljs"><code>&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;
+</code></pre>
+<p><strong>Types:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>ใช้เมื่อ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feat</code></td>
+<td>เพิ่ม feature ใหม่</td>
+</tr>
+<tr>
+<td><code>fix</code></td>
+<td>แก้บัค</td>
+</tr>
+<tr>
+<td><code>refactor</code></td>
+<td>เปลี่ยน code โดยไม่เพิ่ม feature หรือแก้บัค</td>
+</tr>
+<tr>
+<td><code>style</code></td>
+<td>แก้ formatting ไม่กระทบ logic</td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td>เพิ่ม/แก้ test</td>
+</tr>
+<tr>
+<td><code>docs</code></td>
+<td>แก้ documentation</td>
+</tr>
+<tr>
+<td><code>chore</code></td>
+<td>แก้ build, config, dependencies</td>
+</tr>
+<tr>
+<td><code>perf</code></td>
+<td>ปรับปรุง performance</td>
+</tr>
+<tr>
+<td><code>ci</code></td>
+<td>แก้ CI/CD config</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Scopes:</strong> <code>client</code> · <code>server</code> · <code>db</code> · <code>auth</code> · <code>clo</code> · <code>course</code> · <code>score</code> · <code>dashboard</code> · <code>excel</code></p>
+<p><strong>ตัวอย่าง:</strong></p>
+<pre class="hljs"><code><span class="hljs-comment"># ✅ ถูก</span>
+feat(clo): เพิ่ม drag-and-drop reorder สำหรับ CLO list
+fix(score): แก้ไข weight computation เมื่อ activity ไม่มี CLO mapping
+refactor(dashboard): แยก computation logic ออกจาก component
+chore(server): upgrade fastify และ plugins เป็น major ล่าสุด
+
+<span class="hljs-comment"># ✅ มี body และ footer</span>
+feat(excel): เพิ่ม endpoint upload คะแนนจาก Excel template
+
+เพิ่ม endpoint POST /excel/upload รับไฟล์ .xlsx ผ่าน multipart
+parse ด้วย xlsx (SheetJS) แล้ว validate ทีละแถวก่อนบันทึก
+
+Closes <span class="hljs-comment">#42</span>
+
+<span class="hljs-comment"># ❌ ผิด</span>
+update stuff                    <span class="hljs-comment"># ไม่มี type</span>
+feat: แก้บัค                    <span class="hljs-comment"># type ไม่ตรงกับ action</span>
+FEAT(CLO): ...                  <span class="hljs-comment"># uppercase type</span>
+</code></pre>
+<h3 id="53-pull-request-workflow" tabindex="-1"><a class="header-anchor" href="#53-pull-request-workflow"><span>5.3 Pull Request Workflow</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment"># 1. สร้าง branch จาก main</span>
+git checkout main
+git pull origin main
+git checkout -b feature/42-excel-upload
+
+<span class="hljs-comment"># 2. พัฒนา + commit แบบ selective</span>
+git add -p
+git commit -m <span class="hljs-string">&quot;feat(excel): เพิ่ม endpoint upload คะแนน&quot;</span>
+
+<span class="hljs-comment"># 3. Push</span>
+git push origin feature/42-excel-upload
+
+<span class="hljs-comment"># 4. ก่อน merge — sync กับ main ด้วย rebase (ไม่ใช่ merge)</span>
+git fetch origin
+git rebase origin/main
+
+<span class="hljs-comment"># 5. แก้ conflict (ถ้ามี)</span>
+git rebase --<span class="hljs-built_in">continue</span>
+
+<span class="hljs-comment"># 6. Force push หลัง rebase</span>
+git push --force-with-lease origin feature/42-excel-upload
+</code></pre>
+<p><strong>PR Requirements:</strong></p>
+<ul>
+<li>Title ต้องเป็น Conventional Commit format</li>
+<li>ผ่าน CI ทั้งหมด (lint + typecheck + build) — เมื่อตั้งค่า CI แล้ว (ดู §12)</li>
+<li>Reviewer อย่างน้อย 1 คน approve</li>
+<li>Merge แบบ <strong>Squash and Merge</strong> เสมอ</li>
+<li>ลบ branch หลัง merge</li>
+</ul>
+<h3 id="54-กฎที่ห้ามทำกับ-git" tabindex="-1"><a class="header-anchor" href="#54-กฎที่ห้ามทำกับ-git"><span>5.4 กฎที่ห้ามทำกับ Git</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment"># ❌ ห้าม force push ที่ main</span>
+git push --force origin main
+
+<span class="hljs-comment"># ❌ ห้าม commit โดยตรงที่ main</span>
+git checkout main &amp;&amp; git commit ...
+
+<span class="hljs-comment"># ❌ ห้าม commit ไฟล์เหล่านี้</span>
+.<span class="hljs-built_in">env</span>, .env.local, .env.production
+node_modules/
+dist/, build/
+uploads/
+*.xlsm (ไฟล์ที่ generate)
+</code></pre>
+<hr>
+<h2 id="6-frontend-standards-react-19--vite" tabindex="-1"><a class="header-anchor" href="#6-frontend-standards-react-19--vite"><span>6. Frontend Standards (React 19 + Vite)</span></a></h2>
+<h3 id="61-component-rules" tabindex="-1"><a class="header-anchor" href="#61-component-rules"><span>6.1 Component Rules</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// ✅ named export เสมอ (ไม่ใช้ default export) — ยกเว้นไฟล์ page ที่ lazy() ต้องการ default export</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">CloListItem</span>(<span class="hljs-params">{ clo, onDelete }: <span class="hljs-title class_">CloListItemProps</span></span>) {
+  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>...<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+}
+
+<span class="hljs-comment">// ✅ Props type อยู่เหนือ component</span>
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">CloListItemProps</span> = {
+  <span class="hljs-attr">clo</span>: <span class="hljs-title class_">CloWithObjectives</span>
+  <span class="hljs-attr">onDelete</span>: <span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>
+  <span class="hljs-attr">className</span>?: <span class="hljs-built_in">string</span>
+}
+
+<span class="hljs-comment">// ✅ ใช้ cn() สำหรับ conditional className</span>
+<span class="hljs-keyword">import</span> { cn } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@/lib/utils&quot;</span>
+
+&lt;div className={<span class="hljs-title function_">cn</span>(
+  <span class="hljs-string">&quot;flex items-center gap-2 rounded-md border p-3&quot;</span>,
+  isAtRisk &amp;&amp; <span class="hljs-string">&quot;border-red-300 bg-red-50 text-red-700&quot;</span>,
+)} /&gt;
+
+<span class="hljs-comment">// ❌ ห้าม any</span>
+<span class="hljs-keyword">const</span> <span class="hljs-attr">data</span>: <span class="hljs-built_in">any</span> = <span class="hljs-comment">/* ... */</span>
+
+<span class="hljs-comment">// ❌ ห้าม useEffect สำหรับ data fetching</span>
+<span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> { <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;/api/clos&quot;</span>) }, [])
+</code></pre>
+<blockquote>
+<p><strong>หมายเหตุ:</strong> หน้า <code>pages/*.tsx</code> ต้องเป็น <code>export default</code> เพราะ <code>pages.config.ts</code> ใช้ <code>lazy(() =&gt; import(...))</code> ซึ่งต้องการ default export — นี่คือข้อยกเว้นเดียวของกฎ named-export</p>
+</blockquote>
+<h3 id="62-routing-pattern-react-router-7--explicit-route-table-ไม่ใช่-file-based" tabindex="-1"><a class="header-anchor" href="#62-routing-pattern-react-router-7--explicit-route-table-ไม่ใช่-file-based"><span>6.2 Routing Pattern (React Router 7 — explicit route table, ไม่ใช่ file-based)</span></a></h3>
+<p>โปรเจกต์นี้รันเป็น <strong>SPA</strong> (<code>react-router.config</code> เทียบเท่า คือ <code>vite.config.ts</code> ธรรมดา ไม่มี framework mode) route ทั้งหมดประกาศไว้ที่ <code>src/pages.config.ts</code> แบบ explicit ไม่ใช่ file-based routing:</p>
+<pre class="hljs"><code><span class="hljs-comment">// src/pages.config.ts</span>
+<span class="hljs-keyword">import</span> { lazy, <span class="hljs-keyword">type</span> <span class="hljs-title class_">ComponentType</span>, <span class="hljs-keyword">type</span> <span class="hljs-title class_">LazyExoticComponent</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-title class_">CourseList</span> = <span class="hljs-title function_">lazy</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">&quot;./pages/courses/CourseList.tsx&quot;</span>))
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">AppRoute</span> = { <span class="hljs-attr">path</span>: <span class="hljs-built_in">string</span>; <span class="hljs-attr">element</span>: <span class="hljs-title class_">LazyExoticComponent</span>&lt;<span class="hljs-title class_">ComponentType</span>&gt; }
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-attr">routes</span>: <span class="hljs-title class_">AppRoute</span>[] = [
+  { <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/courses&quot;</span>, <span class="hljs-attr">element</span>: <span class="hljs-title class_">CourseList</span> },
+  <span class="hljs-comment">// เพิ่มหน้าใหม่ที่นี่</span>
+]
+</code></pre>
+<pre class="hljs"><code><span class="hljs-comment">// src/App.tsx — รวม routes เข้ากับ &lt;Routes&gt;</span>
+{routes.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">{ path, element: Element }</span>) =&gt;</span> (
+  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{path}</span> <span class="hljs-attr">path</span>=<span class="hljs-string">{path}</span> <span class="hljs-attr">element</span>=<span class="hljs-string">{</span>&lt;<span class="hljs-attr">Element</span> /&gt;</span>} /&gt;</span>
+))}
+</code></pre>
+<h3 id="63-data-fetching-pattern-tanstack-query--apiclient" tabindex="-1"><a class="header-anchor" href="#63-data-fetching-pattern-tanstack-query--apiclient"><span>6.3 Data Fetching Pattern (TanStack Query + <code>apiClient</code>)</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// api/clos.ts — API function layer</span>
+<span class="hljs-keyword">import</span> { apiClient } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./client.ts&quot;</span>
+<span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-title class_">CloResponse</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../types/index.ts&quot;</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">getClosByCourse</span> = (<span class="hljs-params"><span class="hljs-attr">courseId</span>: <span class="hljs-built_in">string</span></span>) =&gt;
+  apiClient.<span class="hljs-property">get</span>&lt;<span class="hljs-title class_">CloResponse</span>[]&gt;(<span class="hljs-string">`/courses/<span class="hljs-subst">${courseId}</span>/clos`</span>)
+
+<span class="hljs-comment">// hooks/useClos.ts — Query hook</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">useClos</span>(<span class="hljs-params"><span class="hljs-attr">courseId</span>: <span class="hljs-built_in">string</span></span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">useQuery</span>({
+    <span class="hljs-attr">queryKey</span>: [<span class="hljs-string">&quot;clos&quot;</span>, courseId],
+    <span class="hljs-attr">queryFn</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">getClosByCourse</span>(courseId),
+    <span class="hljs-attr">enabled</span>: <span class="hljs-title class_">Boolean</span>(courseId),
+  })
+}
+
+<span class="hljs-comment">// Component — ใช้ hook เท่านั้น ไม่ fetch เอง</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">CloList</span>(<span class="hljs-params">{ courseId }: { courseId: <span class="hljs-built_in">string</span> }</span>) {
+  <span class="hljs-keyword">const</span> { <span class="hljs-attr">data</span>: clos, isLoading, isError } = <span class="hljs-title function_">useClos</span>(courseId)
+
+  <span class="hljs-keyword">if</span> (isLoading) <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">CloListSkeleton</span> /&gt;</span></span>
+  <span class="hljs-keyword">if</span> (isError) <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ErrorState</span> /&gt;</span></span>
+  <span class="hljs-keyword">if</span> (!clos?.<span class="hljs-property">length</span>) <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">EmptyState</span> /&gt;</span></span>
+
+  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{clos.map((c) =&gt; <span class="hljs-tag">&lt;<span class="hljs-name">CloListItem</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{c.id}</span> <span class="hljs-attr">clo</span>=<span class="hljs-string">{c}</span> /&gt;</span>)}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+}
+</code></pre>
+<p><code>apiClient</code> (<code>src/api/client.ts</code>) แนบ JWT header อัตโนมัติจาก <code>authStore</code>, และเรียก <code>toast.error()</code> (sonner) ให้เองเมื่อ request ล้มเหลว — ไม่ต้องเขียน error toast ซ้ำในทุกที่ที่เรียก API</p>
+<h3 id="64-excel-upload-pattern" tabindex="-1"><a class="header-anchor" href="#64-excel-upload-pattern"><span>6.4 Excel Upload Pattern</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// components/excel/ScoreUploadDialog.tsx</span>
+<span class="hljs-comment">// ใช้ xlsx (client-side) พรีวิวแถวก่อน submit เท่านั้น</span>
+<span class="hljs-comment">// การ parse+validate จริงเกิดที่ server (excel.service.ts) เสมอ — ห้าม trust ฝั่ง client</span>
+</code></pre>
+<h3 id="65-css--tailwind-rules" tabindex="-1"><a class="header-anchor" href="#65-css--tailwind-rules"><span>6.5 CSS / Tailwind Rules</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// ✅ utility-first + cn() สำหรับ conditional</span>
+&lt;div className={<span class="hljs-title function_">cn</span>(
+  <span class="hljs-string">&quot;flex items-center gap-2 rounded-lg border p-3 text-sm&quot;</span>,
+  isAtRisk &amp;&amp; <span class="hljs-string">&quot;border-red-300 bg-red-50 text-red-700&quot;</span>,
+  isActive &amp;&amp; <span class="hljs-string">&quot;ring-2 ring-blue-500&quot;</span>
+)} /&gt;
+
+<span class="hljs-comment">// ✅ shadcn variant pattern</span>
+<span class="hljs-keyword">const</span> badgeVariants = <span class="hljs-title function_">cva</span>(<span class="hljs-string">&quot;inline-flex items-center rounded-full px-2 py-0.5&quot;</span>, {
+  <span class="hljs-attr">variants</span>: {
+    <span class="hljs-attr">status</span>: {
+      <span class="hljs-attr">pass</span>: <span class="hljs-string">&quot;bg-green-100 text-green-800&quot;</span>,
+      <span class="hljs-attr">risk</span>: <span class="hljs-string">&quot;bg-red-100 text-red-800&quot;</span>,
+      <span class="hljs-attr">warn</span>: <span class="hljs-string">&quot;bg-yellow-100 text-yellow-800&quot;</span>,
+    },
+  },
+})
+
+<span class="hljs-comment">// ❌ ห้าม inline style ถ้า Tailwind ทำได้</span>
+&lt;div style={{ <span class="hljs-attr">color</span>: <span class="hljs-string">&quot;red&quot;</span>, <span class="hljs-attr">fontSize</span>: <span class="hljs-string">&quot;14px&quot;</span> }} /&gt;
+
+<span class="hljs-comment">// ✅ exception — dynamic value ที่ Tailwind ทำไม่ได้</span>
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">width:</span> `${<span class="hljs-attr">percentage</span>}%` }} /&gt;</span></span>
+</code></pre>
+<hr>
+<h2 id="7-backend-standards-fastify--node" tabindex="-1"><a class="header-anchor" href="#7-backend-standards-fastify--node"><span>7. Backend Standards (Fastify + Node)</span></a></h2>
+<h3 id="71-request-flow" tabindex="-1"><a class="header-anchor" href="#71-request-flow"><span>7.1 Request Flow</span></a></h3>
+<pre class="hljs"><code>Request
+  → Route      (path + middleware registration)
+  → Controller (parse request, call service, return response)
+  → Service    (all business logic lives here)
+  → Prisma     (database layer)
+</code></pre>
+<p><strong>Route (<code>clos.route.ts</code>)</strong> — ลงทะเบียน path + middleware เท่านั้น:</p>
+<pre class="hljs"><code><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-title class_">FastifyInstance</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;fastify&quot;</span>
+<span class="hljs-keyword">import</span> { authMiddleware } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../middlewares/auth.middleware.js&quot;</span>
+<span class="hljs-keyword">import</span> { rbac } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../middlewares/rbac.middleware.js&quot;</span>
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">CloController</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../controllers/clos.controller.js&quot;</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">closRoutes</span>(<span class="hljs-params"><span class="hljs-attr">app</span>: <span class="hljs-title class_">FastifyInstance</span></span>) {
+  <span class="hljs-keyword">const</span> ctrl = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CloController</span>()
+
+  app.<span class="hljs-title function_">addHook</span>(<span class="hljs-string">&quot;preHandler&quot;</span>, authMiddleware)
+  app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;/&quot;</span>, ctrl.<span class="hljs-property">list</span>)
+  app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&quot;/&quot;</span>, { <span class="hljs-attr">preHandler</span>: <span class="hljs-title function_">rbac</span>(<span class="hljs-string">&quot;INSTRUCTOR&quot;</span>) }, ctrl.<span class="hljs-property">create</span>)
+  app.<span class="hljs-title function_">patch</span>(<span class="hljs-string">&quot;/reorder&quot;</span>, { <span class="hljs-attr">preHandler</span>: <span class="hljs-title function_">rbac</span>(<span class="hljs-string">&quot;INSTRUCTOR&quot;</span>) }, ctrl.<span class="hljs-property">reorder</span>)
+}
+</code></pre>
+<p><strong>Controller (<code>clos.controller.ts</code>)</strong> — บาง (thin layer), ไม่มี logic:</p>
+<pre class="hljs"><code><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-title class_">FastifyReply</span>, <span class="hljs-title class_">FastifyRequest</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;fastify&quot;</span>
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">CloService</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../services/clo.service.js&quot;</span>
+<span class="hljs-keyword">import</span> { createCloSchema } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../validators/clo.validator.js&quot;</span>
+<span class="hljs-keyword">import</span> { ok, created } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../lib/response.js&quot;</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CloController</span> {
+  <span class="hljs-keyword">private</span> service = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CloService</span>()
+
+  list = <span class="hljs-title function_">async</span> (<span class="hljs-attr">request</span>: <span class="hljs-title class_">FastifyRequest</span>&lt;{ <span class="hljs-title class_">Params</span>: { <span class="hljs-attr">courseId</span>: <span class="hljs-built_in">string</span> } }&gt;, <span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span>) =&gt; {
+    <span class="hljs-keyword">const</span> clos = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">service</span>.<span class="hljs-title function_">listByCourse</span>(request.<span class="hljs-property">params</span>.<span class="hljs-property">courseId</span>)
+    <span class="hljs-keyword">return</span> <span class="hljs-title function_">ok</span>(reply, clos)
+  }
+
+  create = <span class="hljs-title function_">async</span> (<span class="hljs-attr">request</span>: <span class="hljs-title class_">FastifyRequest</span>, <span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span>) =&gt; {
+    <span class="hljs-keyword">const</span> parsed = createCloSchema.<span class="hljs-title function_">parse</span>(request.<span class="hljs-property">body</span>) <span class="hljs-comment">// throws ZodError → errorHandler จัดการ</span>
+    <span class="hljs-keyword">const</span> clo = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">service</span>.<span class="hljs-title function_">create</span>(parsed)
+    <span class="hljs-keyword">return</span> <span class="hljs-title function_">created</span>(reply, clo)
+  }
+}
+</code></pre>
+<p><strong>Service (<code>clo.service.ts</code>)</strong> — business logic ทั้งหมด:</p>
+<pre class="hljs"><code><span class="hljs-keyword">import</span> { prisma } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../lib/prisma.js&quot;</span>
+<span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-title class_">CreateCloInput</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../validators/clo.validator.js&quot;</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CloService</span> {
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">listByCourse</span>(<span class="hljs-params"><span class="hljs-attr">courseId</span>: <span class="hljs-built_in">string</span></span>) {
+    <span class="hljs-keyword">return</span> prisma.<span class="hljs-property">cLO</span>.<span class="hljs-title function_">findMany</span>({
+      <span class="hljs-attr">where</span>: { courseId },
+      <span class="hljs-attr">include</span>: { <span class="hljs-attr">objectives</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">criteria</span>: <span class="hljs-literal">true</span> },
+      <span class="hljs-attr">orderBy</span>: { <span class="hljs-attr">number</span>: <span class="hljs-string">&quot;asc&quot;</span> },
+    })
+  }
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">create</span>(<span class="hljs-params"><span class="hljs-attr">data</span>: <span class="hljs-title class_">CreateCloInput</span></span>) {
+    <span class="hljs-keyword">const</span> last = <span class="hljs-keyword">await</span> prisma.<span class="hljs-property">cLO</span>.<span class="hljs-title function_">findFirst</span>({
+      <span class="hljs-attr">where</span>: { <span class="hljs-attr">courseId</span>: data.<span class="hljs-property">courseId</span> },
+      <span class="hljs-attr">orderBy</span>: { <span class="hljs-attr">number</span>: <span class="hljs-string">&quot;desc&quot;</span> },
+    })
+    <span class="hljs-keyword">return</span> prisma.<span class="hljs-property">cLO</span>.<span class="hljs-title function_">create</span>({
+      <span class="hljs-attr">data</span>: { ...data, <span class="hljs-attr">number</span>: (last?.<span class="hljs-property">number</span> ?? <span class="hljs-number">0</span>) + <span class="hljs-number">1</span> },
+    })
+  }
+}
+</code></pre>
+<h3 id="72-middleware-fastify-prehandler-hooks" tabindex="-1"><a class="header-anchor" href="#72-middleware-fastify-prehandler-hooks"><span>7.2 Middleware (Fastify <code>preHandler</code> hooks)</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// middlewares/auth.middleware.ts — ดูของจริงที่ app/server/src/middlewares/auth.middleware.ts</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">authMiddleware</span>(<span class="hljs-params"><span class="hljs-attr">request</span>: <span class="hljs-title class_">FastifyRequest</span>, <span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span></span>) {
+  <span class="hljs-keyword">const</span> header = request.<span class="hljs-property">headers</span>.<span class="hljs-property">authorization</span>
+  <span class="hljs-keyword">const</span> token = header?.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;Bearer &quot;</span>) ? header.<span class="hljs-title function_">slice</span>(<span class="hljs-number">7</span>) : <span class="hljs-literal">undefined</span>
+  <span class="hljs-keyword">if</span> (!token) <span class="hljs-keyword">return</span> <span class="hljs-title function_">unauthorized</span>(reply)
+
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> payload = <span class="hljs-keyword">await</span> <span class="hljs-title function_">verifyToken</span>(token)
+    request.<span class="hljs-property">userId</span> = payload.<span class="hljs-property">sub</span>
+    request.<span class="hljs-property">userRole</span> = payload.<span class="hljs-property">role</span>
+  } <span class="hljs-keyword">catch</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-title function_">unauthorized</span>(reply, <span class="hljs-string">&quot;Invalid or expired token&quot;</span>)
+  }
+}
+
+<span class="hljs-comment">// middlewares/rbac.middleware.ts</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">rbac</span>(<span class="hljs-params"><span class="hljs-attr">requiredRole</span>: <span class="hljs-string">&quot;ADMIN&quot;</span> | <span class="hljs-string">&quot;INSTRUCTOR&quot;</span></span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">async</span> (<span class="hljs-attr">request</span>: <span class="hljs-title class_">FastifyRequest</span>, <span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span>) =&gt; {
+    <span class="hljs-keyword">if</span> (request.<span class="hljs-property">userRole</span> !== requiredRole &amp;&amp; request.<span class="hljs-property">userRole</span> !== <span class="hljs-string">&quot;ADMIN&quot;</span>) {
+      <span class="hljs-keyword">return</span> <span class="hljs-title function_">forbidden</span>(reply)
+    }
+  }
+}
+</code></pre>
+<h3 id="73-standardized-response-libresponsets" tabindex="-1"><a class="header-anchor" href="#73-standardized-response-libresponsets"><span>7.3 Standardized Response (<code>lib/response.ts</code>)</span></a></h3>
+<pre class="hljs"><code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ApiResponse</span>&lt;T&gt; = { <span class="hljs-attr">success</span>: <span class="hljs-built_in">boolean</span>; <span class="hljs-attr">data</span>?: T; <span class="hljs-attr">message</span>?: <span class="hljs-built_in">string</span>; <span class="hljs-attr">errors</span>?: <span class="hljs-built_in">unknown</span> }
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> ok        = &lt;T&gt;<span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span>, <span class="hljs-attr">data</span>: T</span>) =&gt;</span> reply.<span class="hljs-title function_">status</span>(<span class="hljs-number">200</span>).<span class="hljs-title function_">send</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, data })
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> created    = &lt;T&gt;<span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span>, <span class="hljs-attr">data</span>: T</span>) =&gt;</span> reply.<span class="hljs-title function_">status</span>(<span class="hljs-number">201</span>).<span class="hljs-title function_">send</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, data })
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">badRequest</span> = (<span class="hljs-params"><span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span>, <span class="hljs-attr">errors</span>: <span class="hljs-built_in">unknown</span></span>) =&gt; reply.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">send</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">false</span>, errors })
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">unauthorized</span> = (<span class="hljs-params"><span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span>, message = <span class="hljs-string">&quot;Unauthorized&quot;</span></span>) =&gt; reply.<span class="hljs-title function_">status</span>(<span class="hljs-number">401</span>).<span class="hljs-title function_">send</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">false</span>, message })
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">forbidden</span>  = (<span class="hljs-params"><span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span>, message = <span class="hljs-string">&quot;Forbidden&quot;</span></span>) =&gt; reply.<span class="hljs-title function_">status</span>(<span class="hljs-number">403</span>).<span class="hljs-title function_">send</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">false</span>, message })
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">notFound</span>   = (<span class="hljs-params"><span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span>, message = <span class="hljs-string">&quot;Not found&quot;</span></span>) =&gt; reply.<span class="hljs-title function_">status</span>(<span class="hljs-number">404</span>).<span class="hljs-title function_">send</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">false</span>, message })
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">serverError</span> = (<span class="hljs-params"><span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span>, message = <span class="hljs-string">&quot;Internal server error&quot;</span></span>) =&gt; reply.<span class="hljs-title function_">status</span>(<span class="hljs-number">500</span>).<span class="hljs-title function_">send</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">false</span>, message })
+</code></pre>
+<h3 id="74-auth-token-policy" tabindex="-1"><a class="header-anchor" href="#74-auth-token-policy"><span>7.4 Auth Token Policy</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// lib/jwt.ts — access token สั้น + refresh token แยก (ไม่ใช่ token เดียวอายุ 30 วัน)</span>
+<span class="hljs-variable constant_">JWT_ACCESS_EXPIRES_IN</span>  = <span class="hljs-string">&quot;15m&quot;</span>
+<span class="hljs-variable constant_">JWT_REFRESH_EXPIRES_IN</span> = <span class="hljs-string">&quot;7d&quot;</span>
+</code></pre>
+<hr>
+<h2 id="8-database-standards-prisma-6--supabase" tabindex="-1"><a class="header-anchor" href="#8-database-standards-prisma-6--supabase"><span>8. Database Standards (Prisma 6 + Supabase)</span></a></h2>
+<h3 id="81-migration-rules" tabindex="-1"><a class="header-anchor" href="#81-migration-rules"><span>8.1 Migration Rules</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment"># สร้าง migration ใหม่ (development เท่านั้น)</span>
+npm run db:migrate:dev
+
+<span class="hljs-comment"># Apply ใน production</span>
+npm run db:migrate:deploy
+
+<span class="hljs-comment"># ❌ ห้าม edit migration file ที่ถูก apply ไปแล้ว</span>
+<span class="hljs-comment"># ❌ ห้าม prisma db push ใน production</span>
+<span class="hljs-comment"># ✅ สร้าง migration ใหม่เสมอเมื่อต้องการเปลี่ยน schema</span>
+</code></pre>
+<blockquote>
+<p><strong>สำคัญ:</strong> โปรเจกต์นี้ค้างอยู่ที่ <strong>Prisma 6.19.x โดยตั้งใจ</strong> — Prisma 7 ย้าย <code>url</code>/<code>directUrl</code> ออกจาก <code>schema.prisma</code> ไปอยู่ใน <code>prisma.config.ts</code> และบังคับใช้ driver adapter (<code>@prisma/adapter-pg</code>) แทน ก่อน upgrade ต้องอ่าน <a href="https://pris.ly/d/config-datasource" target="_blank" rel="noopener">Prisma 7 migration guide</a> และวางแผน migration เป็นงานแยกต่างหาก ไม่ใช่ patch bump</p>
+</blockquote>
+<h3 id="82-prisma-query-rules" tabindex="-1"><a class="header-anchor" href="#82-prisma-query-rules"><span>8.2 Prisma Query Rules</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// ✅ select เฉพาะ field ที่ต้องการ</span>
+<span class="hljs-keyword">const</span> course = <span class="hljs-keyword">await</span> prisma.<span class="hljs-property">course</span>.<span class="hljs-title function_">findFirst</span>({
+  <span class="hljs-attr">where</span>: { <span class="hljs-attr">id</span>: courseId },
+  <span class="hljs-attr">select</span>: {
+    <span class="hljs-attr">id</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">name</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">code</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">clos</span>: { <span class="hljs-attr">select</span>: { <span class="hljs-attr">id</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">number</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">description</span>: <span class="hljs-literal">true</span> } },
+  },
+})
+
+<span class="hljs-comment">// ✅ Transaction สำหรับ operation ที่ต้อง atomic</span>
+<span class="hljs-keyword">await</span> prisma.$transaction(<span class="hljs-title function_">async</span> (tx) =&gt; {
+  <span class="hljs-keyword">const</span> course = <span class="hljs-keyword">await</span> tx.<span class="hljs-property">course</span>.<span class="hljs-title function_">create</span>({ <span class="hljs-attr">data</span>: { <span class="hljs-comment">/* ... */</span> } })
+  <span class="hljs-keyword">await</span> tx.<span class="hljs-property">cLO</span>.<span class="hljs-title function_">createMany</span>({ <span class="hljs-attr">data</span>: clos.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">c</span>) =&gt;</span> ({ ...c, <span class="hljs-attr">courseId</span>: course.<span class="hljs-property">id</span> })) })
+  <span class="hljs-keyword">return</span> course
+})
+
+<span class="hljs-comment">// ✅ ใช้ OrThrow variants แทนการ check null เอง</span>
+<span class="hljs-keyword">const</span> clo = <span class="hljs-keyword">await</span> prisma.<span class="hljs-property">cLO</span>.<span class="hljs-title function_">findUniqueOrThrow</span>({ <span class="hljs-attr">where</span>: { id } })
+
+<span class="hljs-comment">// ❌ ห้าม N+1 query</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> course <span class="hljs-keyword">of</span> courses) {
+  course.<span class="hljs-property">clos</span> = <span class="hljs-keyword">await</span> prisma.<span class="hljs-property">cLO</span>.<span class="hljs-title function_">findMany</span>({ <span class="hljs-attr">where</span>: { <span class="hljs-attr">courseId</span>: course.<span class="hljs-property">id</span> } })
+}
+<span class="hljs-comment">// ✅ ใช้ include แทน</span>
+<span class="hljs-keyword">const</span> courses = <span class="hljs-keyword">await</span> prisma.<span class="hljs-property">course</span>.<span class="hljs-title function_">findMany</span>({ <span class="hljs-attr">include</span>: { <span class="hljs-attr">clos</span>: <span class="hljs-literal">true</span> } })
+
+<span class="hljs-comment">// ❌ ห้าม raw query ถ้า Prisma ทำได้</span>
+<span class="hljs-keyword">await</span> prisma.<span class="hljs-property">$queryRaw</span><span class="hljs-string">`SELECT * FROM &quot;CLO&quot;`</span>
+</code></pre>
+<h3 id="83-score-audit-trail" tabindex="-1"><a class="header-anchor" href="#83-score-audit-trail"><span>8.3 Score Audit Trail</span></a></h3>
+<p><code>ScoreUploadLog</code> model บันทึกทุกครั้งที่มีการ upload คะแนนผ่าน Excel (<code>courseId</code>, <code>uploadedBy</code>, <code>fileName</code>, <code>recordsOk</code>, <code>recordsFail</code>) — ใช้สำหรับตรวจสอบย้อนหลังเมื่อมีข้อพิพาทเรื่องคะแนน</p>
+<hr>
+<h2 id="9-api-design-standards-rest" tabindex="-1"><a class="header-anchor" href="#9-api-design-standards-rest"><span>9. API Design Standards (REST)</span></a></h2>
+<h3 id="91-response-format-ใช้ทุก-endpoint" tabindex="-1"><a class="header-anchor" href="#91-response-format-ใช้ทุก-endpoint"><span>9.1 Response Format (ใช้ทุก endpoint)</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// Success</span>
+<span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;...&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;...&quot;</span> <span class="hljs-punctuation">}</span> <span class="hljs-punctuation">}</span>
+
+<span class="hljs-comment">// List พร้อม pagination</span>
+<span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;...&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;meta&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;total&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">35</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;page&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;perPage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">20</span> <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+
+<span class="hljs-comment">// Error</span>
+<span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;CLO not found&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;errors&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;...&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;...&quot;</span> <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<h3 id="92-http-status-codes" tabindex="-1"><a class="header-anchor" href="#92-http-status-codes"><span>9.2 HTTP Status Codes</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>ใช้เมื่อ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>200</code></td>
+<td>GET / PATCH / DELETE สำเร็จ</td>
+</tr>
+<tr>
+<td><code>201</code></td>
+<td>POST สร้าง resource สำเร็จ</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td>Validation error, malformed body</td>
+</tr>
+<tr>
+<td><code>401</code></td>
+<td>ไม่มี token หรือ token expired</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td>มี token แต่ role ไม่มีสิทธิ์</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td>Resource ไม่พบ</td>
+</tr>
+<tr>
+<td><code>409</code></td>
+<td>Conflict (duplicate key)</td>
+</tr>
+<tr>
+<td><code>422</code></td>
+<td>Logic error (weight &gt; 100%, score &gt; maxScore)</td>
+</tr>
+<tr>
+<td><code>429</code></td>
+<td>Rate limit เกิน (<code>@fastify/rate-limit</code>)</td>
+</tr>
+<tr>
+<td><code>500</code></td>
+<td>Unexpected server error</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="10-error-handling-standards" tabindex="-1"><a class="header-anchor" href="#10-error-handling-standards"><span>10. Error Handling Standards</span></a></h2>
+<h3 id="101-backend--global-error-handler-appseterrorhandler" tabindex="-1"><a class="header-anchor" href="#101-backend--global-error-handler-appseterrorhandler"><span>10.1 Backend — Global Error Handler (<code>app.setErrorHandler</code>)</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// middlewares/errorHandler.ts — ของจริงอยู่ที่ app/server/src/middlewares/errorHandler.ts</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">errorHandler</span>(<span class="hljs-params"><span class="hljs-attr">err</span>: <span class="hljs-title class_">FastifyError</span> | <span class="hljs-title class_">Error</span>, <span class="hljs-attr">request</span>: <span class="hljs-title class_">FastifyRequest</span>, <span class="hljs-attr">reply</span>: <span class="hljs-title class_">FastifyReply</span></span>) {
+  request.<span class="hljs-property">log</span>.<span class="hljs-title function_">error</span>(err)
+
+  <span class="hljs-keyword">if</span> (err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ZodError</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">badRequest</span>(reply, err.<span class="hljs-title function_">flatten</span>())
+
+  <span class="hljs-keyword">if</span> (err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Prisma</span>.<span class="hljs-property">PrismaClientKnownRequestError</span>) {
+    <span class="hljs-keyword">if</span> (err.<span class="hljs-property">code</span> === <span class="hljs-string">&quot;P2002&quot;</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">badRequest</span>(reply, <span class="hljs-string">&quot;Duplicate entry&quot;</span>)
+    <span class="hljs-keyword">if</span> (err.<span class="hljs-property">code</span> === <span class="hljs-string">&quot;P2025&quot;</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">notFound</span>(reply, <span class="hljs-string">&quot;Record not found&quot;</span>)
+  }
+
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">serverError</span>(reply)
+}
+
+<span class="hljs-comment">// index.ts</span>
+app.<span class="hljs-title function_">setErrorHandler</span>(errorHandler)
+</code></pre>
+<h3 id="102-frontend--api-error-handling" tabindex="-1"><a class="header-anchor" href="#102-frontend--api-error-handling"><span>10.2 Frontend — API Error Handling</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// apiClient (src/api/client.ts) throw + toast.error() ให้อัตโนมัติเมื่อ res.ok เป็น false</span>
+<span class="hljs-comment">// Component ใช้ isError จาก TanStack Query สำหรับ inline error state</span>
+<span class="hljs-keyword">const</span> { data, isError, error } = <span class="hljs-title function_">useQuery</span>(<span class="hljs-comment">/* ... */</span>)
+<span class="hljs-keyword">if</span> (isError) <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ErrorState</span> <span class="hljs-attr">message</span>=<span class="hljs-string">{error.message}</span> /&gt;</span></span>
+
+<span class="hljs-comment">// ❌ ห้าม silent catch</span>
+<span class="hljs-keyword">try</span> {
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">doSomething</span>()
+} <span class="hljs-keyword">catch</span> {
+  <span class="hljs-comment">// ไม่ทำอะไรเลย ❌</span>
+}
+</code></pre>
+<hr>
+<h2 id="11-testing-standards" tabindex="-1"><a class="header-anchor" href="#11-testing-standards"><span>11. Testing Standards</span></a></h2>
+<blockquote>
+<p><strong>สถานะปัจจุบัน: ยังไม่ implement</strong> — ส่วนนี้เป็นแผนที่ตกลงกันไว้ ไม่ใช่สิ่งที่มีอยู่จริงในโค้ดตอนนี้ อย่าอ้างอิงว่า &quot;มี test&quot; จนกว่าจะติดตั้งจริง</p>
+</blockquote>
+<h3 id="111-แผน--unit-tests-vitest" tabindex="-1"><a class="header-anchor" href="#111-แผน--unit-tests-vitest"><span>11.1 แผน — Unit Tests (Vitest)</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// ตัวอย่างเป้าหมาย: computation logic ล้วนๆ ไม่มี side effect</span>
+<span class="hljs-title function_">describe</span>(<span class="hljs-string">&quot;computeCloScore&quot;</span>, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-title function_">it</span>(<span class="hljs-string">&quot;คำนวณถูกต้องเมื่อมีหลาย activity&quot;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">const</span> result = <span class="hljs-title function_">computeCloScore</span>({
+      <span class="hljs-attr">activities</span>: [
+        { <span class="hljs-attr">score</span>: <span class="hljs-number">8</span>, <span class="hljs-attr">maxScore</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">weight</span>: <span class="hljs-number">0.4</span> },
+        { <span class="hljs-attr">score</span>: <span class="hljs-number">25</span>, <span class="hljs-attr">maxScore</span>: <span class="hljs-number">50</span>, <span class="hljs-attr">weight</span>: <span class="hljs-number">0.6</span> },
+      ],
+    })
+    <span class="hljs-title function_">expect</span>(result).<span class="hljs-title function_">toBeCloseTo</span>(<span class="hljs-number">62</span>, <span class="hljs-number">0</span>)
+  })
+})
+</code></pre>
+<p><strong>Coverage Targets (เมื่อเริ่ม implement):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Min Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>computation logic (คำนวณ CLO score, at-risk)</td>
+<td>90%</td>
+</tr>
+<tr>
+<td><code>app/server/src/services</code></td>
+<td>80%</td>
+</tr>
+<tr>
+<td><code>app/server/src/validators</code></td>
+<td>90%</td>
+</tr>
+<tr>
+<td><code>app/client/src/hooks</code></td>
+<td>70%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="112-แผน--integration--e2e" tabindex="-1"><a class="header-anchor" href="#112-แผน--integration--e2e"><span>11.2 แผน — Integration &amp; E2E</span></a></h3>
+<p>Integration tests (Fastify <code>inject()</code>) และ E2E (Playwright) ยังไม่ตั้งค่า — จะเพิ่มเมื่อ auth flow เสร็จและมี endpoint จริงให้ทดสอบ</p>
+<hr>
+<h2 id="12-cicd--deployment" tabindex="-1"><a class="header-anchor" href="#12-cicd--deployment"><span>12. CI/CD &amp; Deployment</span></a></h2>
+<blockquote>
+<p><strong>สถานะปัจจุบัน: ยังไม่ตั้งค่า GitHub Actions จริง</strong> — ตารางด้านล่างคือ deploy target ที่ตั้งใจไว้และ verify แล้วว่า build ผ่านจริง (<code>npm run build</code> ที่ root รัน client + server สำเร็จ)</p>
+</blockquote>
+<h3 id="121-deploy-targets" tabindex="-1"><a class="header-anchor" href="#121-deploy-targets"><span>12.1 Deploy Targets</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>App</th>
+<th>Target</th>
+<th>Root directory setting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>app/client</code></td>
+<td>Vercel</td>
+<td><code>app/client</code></td>
+</tr>
+<tr>
+<td><code>app/server</code></td>
+<td>Railway / <a href="http://Fly.io" target="_blank" rel="noopener">Fly.io</a></td>
+<td><code>app/server</code></td>
+</tr>
+<tr>
+<td>Database</td>
+<td>Supabase (Postgres)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>ตั้ง &quot;root directory&quot; ของแต่ละ deploy target ไปที่โฟลเดอร์ <code>app/*</code> ที่เกี่ยวข้อง — ทำให้แต่ละ platform install เฉพาะ dependency ของ workspace นั้น ไม่ต้อง build ทั้ง monorepo และ client/server ship แยกรอบกันได้</p>
+<h3 id="122-pre-deploy-checklist-ทำทุกครั้งก่อน-merge-to-main" tabindex="-1"><a class="header-anchor" href="#122-pre-deploy-checklist-ทำทุกครั้งก่อน-merge-to-main"><span>12.2 Pre-Deploy Checklist (ทำทุกครั้งก่อน merge to main)</span></a></h3>
+<pre class="hljs"><code>[ ] npm run build          — client + server ไม่มี error
+[ ] npm run typecheck -w app/client
+[ ] npm run typecheck -w app/server
+[ ] npm run lint -w app/client
+[ ] npm run lint -w app/server
+[ ] npm audit               — 0 vulnerabilities
+[ ] Environment variables ครบทุกตัวบน Railway/Vercel
+[ ] npm run db:migrate:deploy — migration apply สำเร็จ
+[ ] CORS_ORIGIN ตรงกับ production domain
+[ ] JWT_SECRET ใช้ค่า random จริง (32+ ตัวอักษร) ไม่ใช่ placeholder
+[ ] Supabase database backup ก่อน run migration
+</code></pre>
+<h3 id="123-environments" tabindex="-1"><a class="header-anchor" href="#123-environments"><span>12.3 Environments</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Environment</th>
+<th>Branch</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Development</td>
+<td>local</td>
+<td><code>localhost:5173</code> + <code>localhost:3001</code></td>
+</tr>
+<tr>
+<td>Preview</td>
+<td><code>feature/*</code></td>
+<td>Auto-deploy Vercel Preview</td>
+</tr>
+<tr>
+<td>Production</td>
+<td><code>main</code></td>
+<td>TBD</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="13-code-review-checklist" tabindex="-1"><a class="header-anchor" href="#13-code-review-checklist"><span>13. Code Review Checklist</span></a></h2>
+<p>ใช้รายการนี้ทุกครั้งก่อน approve PR:</p>
+<h3 id="correctness" tabindex="-1"><a class="header-anchor" href="#correctness"><span>Correctness</span></a></h3>
+<ul>
+<li>[ ] Logic ถูกต้อง ทดสอบ edge case แล้ว</li>
+<li>[ ] ไม่มี N+1 query</li>
+<li>[ ] Transaction ครอบ operation ที่ต้องเป็น atomic</li>
+</ul>
+<h3 id="code-quality" tabindex="-1"><a class="header-anchor" href="#code-quality"><span>Code Quality</span></a></h3>
+<ul>
+<li>[ ] ไม่มี <code>any</code> type</li>
+<li>[ ] ไม่มี hardcoded string ที่ควรเป็น constant หรือ env</li>
+<li>[ ] Function ทำสิ่งเดียว (Single Responsibility)</li>
+<li>[ ] ชื่อ variable/function สื่อความหมาย อ่านแล้วเข้าใจ</li>
+</ul>
+<h3 id="security" tabindex="-1"><a class="header-anchor" href="#security"><span>Security</span></a></h3>
+<ul>
+<li>[ ] Input validation ครบทุก endpoint (Zod)</li>
+<li>[ ] ไม่มีข้อมูล sensitive ใน log หรือ response</li>
+<li>[ ] Authorization check ครบ (ไม่ใช่แค่ Authentication — ต้อง check resource ownership ด้วย เช่น instructor แก้ได้เฉพาะ course ตัวเอง)</li>
+<li>[ ] ไม่มี secret/credential hardcode ในโค้ด</li>
+<li>[ ] Excel upload validate ทั้ง file type, size, และเนื้อหาแต่ละแถวก่อนบันทึก</li>
+</ul>
+<h3 id="testing" tabindex="-1"><a class="header-anchor" href="#testing"><span>Testing</span></a></h3>
+<ul>
+<li>[ ] มี test ครอบ happy path (เมื่อเริ่มมี testing infra แล้ว)</li>
+<li>[ ] มี test ครอบ error/edge case</li>
+</ul>
+<h3 id="git" tabindex="-1"><a class="header-anchor" href="#git"><span>Git</span></a></h3>
+<ul>
+<li>[ ] Commit message ถูกต้องตาม Conventional Commits</li>
+<li>[ ] ไม่มีไฟล์ที่ไม่เกี่ยวข้องติดมาใน PR</li>
+<li>[ ] ไม่มีไฟล์ <code>.env</code> หรือ secrets</li>
+</ul>
+<hr>
+<h2 id="14-forbidden-patterns" tabindex="-1"><a class="header-anchor" href="#14-forbidden-patterns"><span>14. Forbidden Patterns</span></a></h2>
+<p>รายการนี้จะถูก <strong>reject ทันที</strong> ใน code review:</p>
+<pre class="hljs"><code><span class="hljs-comment">// ❌ 1. ใช้ any</span>
+<span class="hljs-keyword">const</span> <span class="hljs-attr">data</span>: <span class="hljs-built_in">any</span> = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-comment">/* ... */</span>)
+
+<span class="hljs-comment">// ❌ 2. Business logic อยู่ใน route หรือ controller</span>
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;/clos&quot;</span>, <span class="hljs-title function_">async</span> (request, reply) =&gt; {
+  <span class="hljs-keyword">const</span> clos = <span class="hljs-keyword">await</span> prisma.<span class="hljs-property">cLO</span>.<span class="hljs-title function_">findMany</span>()  <span class="hljs-comment">// query ตรงใน route</span>
+  <span class="hljs-keyword">return</span> reply.<span class="hljs-title function_">send</span>(clos)
+})
+
+<span class="hljs-comment">// ❌ 3. useEffect สำหรับ data fetching</span>
+<span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> { <span class="hljs-title function_">fetchClos</span>() }, [courseId])
+
+<span class="hljs-comment">// ❌ 4. Inline style ที่ Tailwind ทำได้</span>
+&lt;div style={{ <span class="hljs-attr">color</span>: <span class="hljs-string">&quot;red&quot;</span>, <span class="hljs-attr">fontSize</span>: <span class="hljs-string">&quot;14px&quot;</span> }} /&gt;
+
+<span class="hljs-comment">// ❌ 5. Default export สำหรับ component (ยกเว้นไฟล์ page ที่ pages.config.ts lazy-import)</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">CloList</span>(<span class="hljs-params"></span>) {}
+
+<span class="hljs-comment">// ❌ 6. Commit .env</span>
+git add .<span class="hljs-property">env</span> &amp;&amp; git commit ...
+
+<span class="hljs-comment">// ❌ 7. Force push main</span>
+git push --force origin main
+
+<span class="hljs-comment">// ❌ 8. Silent error catch</span>
+<span class="hljs-keyword">try</span> { <span class="hljs-comment">/* ... */</span> } <span class="hljs-keyword">catch</span> {}
+
+<span class="hljs-comment">// ❌ 9. Fetch data ในตัว component โดยตรง (bypass query hooks / apiClient)</span>
+<span class="hljs-keyword">const</span> [data, setData] = <span class="hljs-title function_">useState</span>(<span class="hljs-literal">null</span>)
+<span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;/api/clos&quot;</span>).<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> r.<span class="hljs-title function_">json</span>()).<span class="hljs-title function_">then</span>(setData)
+}, [])
+
+<span class="hljs-comment">// ❌ 10. Commit generated files</span>
+git add dist/ node_modules/
+
+<span class="hljs-comment">// ❌ 11. String concatenation กับ SQL</span>
+db.<span class="hljs-title function_">query</span>(<span class="hljs-string">&quot;SELECT * FROM clo WHERE id = &quot;</span> + id)   <span class="hljs-comment">// SQL Injection</span>
+
+<span class="hljs-comment">// ❌ 12. Hardcode secrets</span>
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">JWT_SECRET</span> = <span class="hljs-string">&quot;mysecret123&quot;</span>  <span class="hljs-comment">// ต้องมาจาก process.env เสมอ (validate ผ่าน env.ts)</span>
+
+<span class="hljs-comment">// ❌ 13. N+1 Query</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> course <span class="hljs-keyword">of</span> courses) {
+  course.<span class="hljs-property">clos</span> = <span class="hljs-keyword">await</span> prisma.<span class="hljs-property">cLO</span>.<span class="hljs-title function_">findMany</span>({ <span class="hljs-attr">where</span>: { <span class="hljs-attr">courseId</span>: course.<span class="hljs-property">id</span> } })
+}
+
+<span class="hljs-comment">// ❌ 14. ติดตั้ง xlsx จาก npm registry ตรงๆ</span>
+<span class="hljs-string">&quot;xlsx&quot;</span>: <span class="hljs-string">&quot;^0.18.5&quot;</span>   <span class="hljs-comment">// เวอร์ชันนี้บน npm มีช่องโหว่ ReDoS + prototype pollution ที่ไม่มี patch</span>
+<span class="hljs-comment">// ✅ ต้องติดตั้งจาก SheetJS CDN แทน (ดู §15)</span>
+<span class="hljs-string">&quot;xlsx&quot;</span>: <span class="hljs-string">&quot;https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz&quot;</span>
+</code></pre>
+<hr>
+<h2 id="15-version-decisions-log" tabindex="-1"><a class="header-anchor" href="#15-version-decisions-log"><span>15. Version Decisions Log</span></a></h2>
+<p>เอกสารนี้บันทึกเหตุผลของ version ที่ <strong>ตั้งใจไม่ใช้ล่าสุด</strong> เพื่อไม่ให้ใครเผลอ <code>npm update</code> แล้วพังโดยไม่รู้สาเหตุ</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Held at</th>
+<th>Latest available</th>
+<th>เหตุผล</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prisma</code> / <code>@prisma/client</code></td>
+<td>6.19.3</td>
+<td>7.8.0</td>
+<td>Prisma 7 ลบ <code>url</code>/<code>directUrl</code> ออกจาก <code>schema.prisma</code> ทั้งหมด ย้ายไป <code>prisma.config.ts</code> และบังคับใช้ driver adapter (<code>@prisma/adapter-pg</code>) แทน — เป็นการเปลี่ยนสถาปัตยกรรมจริง ไม่ใช่แค่ bump version ทีมเล็ก 3 คน ระยะเวลาโปรเจกต์จำกัด ไม่คุ้มความเสี่ยง</td>
+</tr>
+<tr>
+<td><code>typescript</code></td>
+<td>5.9.3</td>
+<td>7.0.2</td>
+<td>TS 7 คือ native compiler ที่เขียนใหม่ด้วย Go ยังใหม่มาก ความเข้ากันได้กับ <code>tsx</code>/<code>typescript-eslint</code> ยังไม่ยืนยัน</td>
+</tr>
+<tr>
+<td><code>vite</code></td>
+<td>7.3.6</td>
+<td>8.1.4</td>
+<td>เลือก pin ตามหลัง latest หนึ่ง major แบบระมัดระวัง แทนที่จะไล่ตาม major ล่าสุดทันที</td>
+</tr>
+<tr>
+<td><code>xlsx</code></td>
+<td>0.20.3 (จาก <code>cdn.sheetjs.com</code>)</td>
+<td>—</td>
+<td>เวอร์ชันบน <strong>npm registry เก่าและไม่มี patch</strong> สำหรับช่องโหว่ ReDoS + prototype pollution (GHSA-4r6h-8v6p-xvw6, GHSA-5pgg-2g8v-p4x9) SheetJS ปล่อย patch ผ่าน CDN ของตัวเองเท่านั้น ไม่ผ่าน npm — ต้องติดตั้งจาก URL ตรง</td>
+</tr>
+<tr>
+<td>Package manager</td>
+<td>npm workspaces</td>
+<td>—</td>
+<td>เดิมตั้งใจใช้ pnpm ตามแผนแรก แต่ <code>corepack enable</code> ต้องการสิทธิ์ admin ที่ไม่มีในเครื่อง dev — เปลี่ยนมาใช้ npm workspaces เพราะไม่ต้องติดตั้งอะไรเพิ่มเลย (มากับ Node อยู่แล้ว) ลดแรงเสียดทานตอน setup ให้เพื่อนร่วมทีม</td>
+</tr>
+<tr>
+<td>Backend framework</td>
+<td>Fastify (ไม่ใช่ Hono)</td>
+<td>—</td>
+<td>เปลี่ยนจาก Hono → Node/Express → <strong>Fastify</strong> เพื่อ throughput สูงกว่า (schema-based serialization) และ schema validation ในตัวที่ช่วยเรื่อง security ไปพร้อมกัน</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>กฎ:</strong> ก่อน upgrade package ในตารางนี้ ต้องอ่านเหตุผลด้านบนก่อน ถ้าเหตุผลนั้นไม่ valid แล้ว (เช่น Prisma 7 มี migration guide ที่ชัดเจนขึ้น หรือ TS 7 เสถียรแล้ว) ให้เปิด PR แยกสำหรับ upgrade นั้นโดยเฉพาะ พร้อม verify ว่า build/typecheck/boot ผ่านจริงก่อน merge — อย่า bump รวมกับ PR feature อื่น</p>
+</blockquote>
+<hr>
+<h2 id="appendix-a-root-packagejson-scripts" tabindex="-1"><a class="header-anchor" href="#appendix-a-root-packagejson-scripts"><span>Appendix A: Root <code>package.json</code> Scripts</span></a></h2>
+<pre class="hljs"><code><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;scripts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;dev&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;concurrently -n CLIENT,SERVER -c blue,green \&quot;npm run dev -w app/client\&quot; \&quot;npm run dev -w app/server\&quot;&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;dev:client&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run dev -w app/client&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;dev:server&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run dev -w app/server&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;build&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run build -w app/client &amp;&amp; npm run build -w app/server&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;build:client&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run build -w app/client&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;build:server&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run build -w app/server&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;lint&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run lint -w app/client &amp;&amp; npm run lint -w app/server&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;db:generate&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;prisma generate --schema=database/schema.prisma&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;db:migrate:dev&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;prisma migrate dev --schema=database/schema.prisma&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;db:migrate:deploy&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;prisma migrate deploy --schema=database/schema.prisma&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;db:studio&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;prisma studio --schema=database/schema.prisma&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;db:seed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;node database/seed.js&quot;</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<h2 id="appendix-b-gitignore" tabindex="-1"><a class="header-anchor" href="#appendix-b-gitignore"><span>Appendix B: <code>.gitignore</code></span></a></h2>
+<pre class="hljs"><code># Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.production
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+*.swp
+
+# Logs
+*.log
+logs/
+
+# Generated Excel files / uploads
+*.xlsm
+uploads/
+</code></pre>
+<hr>
+<p><em>เอกสารนี้มีผลบังคับใช้กับทุกสมาชิกในทีม</em> <em>หากต้องการเปลี่ยนแปลง standard ให้ทำ PR แก้ไขเอกสารนี้และ vote เห็นชอบอย่างน้อย 2 ใน 3 คนก่อน merge</em></p>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

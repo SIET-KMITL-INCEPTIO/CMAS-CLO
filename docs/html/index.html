@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CMAS Documentation</title>
+<link rel="stylesheet" href="./assets/style.css">
+<link rel="stylesheet" href="./assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="./assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="./index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="./dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="./dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="./dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="./dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="./graph/tech-stack.html">Tech Stack</a></li><li><a href="./graph/usecase.html">Use Case Diagram</a></li><li><a href="./graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="./graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="./rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="./rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="./rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="./sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="./sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="./sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<div class="markdown-body"><h1>CMAS Documentation</h1><p>เอกสารทั้งหมดที่แปลงจาก Markdown เป็น HTML สำหรับพรีวิว</p><h2>dev</h2><ul class="index-list"><li><a href="./dev/features-pages.html">Feature List &amp; Page Count — CMAS</a> <span class="muted">dev/features-pages.html</span></li><li><a href="./dev/material.html">Material Tonal Logic — Design System</a> <span class="muted">dev/material.html</span></li><li><a href="./dev/dev.html">Technical Standard &amp; Workflow</a> <span class="muted">dev/dev.html</span></li><li><a href="./dev/design-system.html">Verdure Design System</a> <span class="muted">dev/design-system.html</span></li></ul><h2>graph</h2><ul class="index-list"><li><a href="./graph/tech-stack.html">Tech Stack</a> <span class="muted">graph/tech-stack.html</span></li><li><a href="./graph/usecase.html">Use Case Diagram</a> <span class="muted">graph/usecase.html</span></li><li><a href="./graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a> <span class="muted">graph/fishbone-4m.html</span></li><li><a href="./graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a> <span class="muted">graph/fishbone1.html</span></li></ul><h2>rule</h2><ul class="index-list"><li><a href="./rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a> <span class="muted">rule/code-rule.html</span></li><li><a href="./rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a> <span class="muted">rule/git-rule.html</span></li><li><a href="./rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a> <span class="muted">rule/security-rule.html</span></li></ul><h2>sql</h2><ul class="index-list"><li><a href="./sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a> <span class="muted">sql/mysql/README.html</span></li><li><a href="./sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a> <span class="muted">sql/mysql-er-diagram.html</span></li><li><a href="./sql/schema.html">schema</a> <span class="muted">sql/schema.html</span></li></ul></div>
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="./assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

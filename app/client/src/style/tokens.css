@@ -1,0 +1,259 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   VERDURE DESIGN SYSTEM — TOKENS  ·  v1.4.0
+   Source of truth for colors, type, spacing, shape, elevation, motion.
+   See: docs/markdown/design-system.md
+
+   Two layers:
+   1. @theme        → registers fonts / radius / text-scale / shadows with
+                      Tailwind v4 (generates utilities + emits :root vars).
+   2. :root         → semantic M3 tokens (--md-*), status, accents, spacing,
+                      weights, motion — consumed by component classes.
+   3. @theme inline → bridges the M3 colors into Tailwind utilities
+                      (bg-primary, text-on-surface, border-outline, …)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Tailwind theme: fonts, shape, type scale, elevation ─────────────── */
+@theme {
+  /* Single typeface — all roles map to IBM Plex Sans Thai */
+  --font-sans:  'IBM Plex Sans Thai', 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-serif: 'IBM Plex Sans Thai', 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-mono:  'IBM Plex Sans Thai', 'IBM Plex Sans', -apple-system, sans-serif;
+
+  /* Border radius (rounded-xs … rounded-2xl, rounded-full) */
+  --radius-none: 0px;
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   16px;   /* ★ default — buttons, inputs */
+  --radius-lg:   24px;
+  --radius-xl:   32px;
+  --radius-2xl:  48px;
+  --radius-full: 9999px;
+
+  /* Type scale (text-display … text-code) */
+  --text-display:  clamp(36px, 5vw, 48px);
+  --text-h1:       clamp(28px, 4vw, 36px);
+  --text-h2:       clamp(20px, 3vw, 26px);
+  --text-h3:       20px;
+  --text-h4:       17px;
+  --text-body-lg:  16px;
+  --text-body:     14px;
+  --text-body-sm:  13px;
+  --text-label:    12px;
+  --text-caption:  11px;
+  --text-overline: 10px;
+  --text-code:     13px;
+
+  /* Elevation (shadow-1 … shadow-4, shadow-glass) */
+  --shadow-1: 0px 12px 32px rgba(var(--shadow-color), 0.04);
+  --shadow-2: 0px 20px 48px rgba(var(--shadow-color), 0.07);
+  --shadow-3: 0px 32px 80px rgba(var(--shadow-color), 0.10);
+  --shadow-4: 0px 40px 100px rgba(var(--shadow-color), 0.14);
+  --shadow-glass: 0 8px 32px rgba(var(--shadow-color), 0.06);
+}
+
+/* ── 2. Design tokens (M3 roles, status, accents, spacing, motion) ──────── */
+:root {
+  /* ── TYPOGRAPHY (weights / leading / tracking) ── */
+  --weight-light: 300; --weight-regular: 400; --weight-medium: 500;
+  --weight-semibold: 600; --weight-bold: 700;
+  --leading-tight: 1.1; --leading-snug: 1.3; --leading-normal: 1.5;
+  --leading-relaxed: 1.7; --leading-loose: 1.9;
+  --tracking-tight: -0.02em; --tracking-normal: 0; --tracking-wide: 0.05em;
+  --tracking-wider: 0.1em; --tracking-widest: 0.15em;
+
+  /* ── SURFACE ── */
+  --md-page-frame:                #e2e2e4;
+  --md-surface:                   #f9f9fb;
+  --md-surface-dim:               #d9dadc;
+  --md-surface-bright:            #f9f9fb;
+  --md-surface-container-lowest:  #ffffff;
+  --md-surface-container-low:     #f3f3f5;
+  --md-surface-container:         #eeeef0;
+  --md-surface-container-high:    #e8e8ea;
+  --md-surface-container-highest: #e2e2e4;
+  --md-surface-variant:           #e2e2e4;
+  --md-background:                #f9f9fb;
+  --md-on-background:             #1a1c1d;
+
+  /* ── ON-SURFACE / INVERSE ── */
+  --md-on-surface:          #1a1c1d;
+  --md-on-surface-variant:  #4a454a;
+  --md-inverse-surface:     #2f3132;
+  --md-inverse-on-surface:  #f0f0f2;
+
+  /* ── OUTLINE ── */
+  --md-outline:         #7b757b;
+  --md-outline-variant: #ccc4ca;
+
+  /* ── PRIMARY (near-black) ── */
+  --md-primary:                  #19151b;
+  --md-on-primary:               #ffffff;
+  --md-primary-container:        #2e2930;
+  --md-on-primary-container:     #978f98;
+  --md-inverse-primary:          #cdc4cd;
+  --md-surface-tint:             #19151b;
+  --md-primary-hover:            #44405a;
+  --md-primary-fixed:            #f4f4f6;
+  --md-primary-fixed-dim:        #cdc4cd;
+  --md-on-primary-fixed:         #19151b;
+  --md-on-primary-fixed-variant: #44405a;
+
+  /* ── SECONDARY (slate-violet) ── */
+  --md-secondary:                  #5c5c78;
+  --md-on-secondary:               #ffffff;
+  --md-secondary-container:        #deddfe;
+  --md-on-secondary-container:     #60607c;
+  --md-secondary-fixed:            #deddfe;
+  --md-secondary-fixed-dim:        #c5c3e4;
+  --md-on-secondary-fixed:         #19151b;
+  --md-on-secondary-fixed-variant: #5c5c78;
+
+  /* ── TERTIARY (deep charcoal) ── */
+  --md-tertiary:                  #1d1418;
+  --md-on-tertiary:               #ffffff;
+  --md-tertiary-container:        #32282c;
+  --md-on-tertiary-container:     #9d8e93;
+  --md-tertiary-fixed:            #e9e0e9;
+  --md-tertiary-fixed-dim:        #cdc4cd;
+  --md-on-tertiary-fixed:         #1d1418;
+  --md-on-tertiary-fixed-variant: #635c64;
+
+  /* ── ERROR ── */
+  --md-error:              #ba1a1a;
+  --md-on-error:           #ffffff;
+  --md-error-container:    #ffdad6;
+  --md-on-error-container: #93000a;
+
+  /* ── JP ACCENT PALETTE (decorative — gradients, avatars, illustration) ── */
+  --jp-fuji:    #a6a5c4;
+  --jp-shikoku: #2e2930;
+  --jp-toki:    #e4d2d8;
+  --jp-white:   #f4f4f6;
+  --hue-fg:     #b8bed7;
+  --hue-cool:   #afaecc;
+  --hue-mount:  #85758f;
+  --hue-vlight: #524e68;
+  --hue-vdark:  #44405a;
+
+  /* ── STATUS — Google Colors (semantic status only, never decorative) ── */
+  --google-blue:   #4285f4;
+  --google-green:  #34a853;
+  --google-yellow: #fbbc05;
+  --google-red:    #ea4335;
+  --status-info-bg:        #eaf1fe;
+  --status-info-border:    #93baf9;
+  --status-info-text:      #1a56c4;
+  --status-success-bg:     #e6f4ea;
+  --status-success-border: #81c995;
+  --status-success-text:   #137333;
+  --status-warning-bg:     #fef7e0;
+  --status-warning-border: #fdd663;
+  --status-warning-text:   #b06000;
+  --status-danger-bg:      #fce8e6;
+  --status-danger-border:  #f28b82;
+  --status-danger-text:    #c5221f;
+
+  /* ── SPACING (base 4) ── */
+  --space-0: 0px;   --space-1: 4px;   --space-2: 8px;   --space-3: 12px;
+  --space-4: 16px;  --space-5: 20px;  --space-6: 24px;  --space-8: 32px;
+  --space-10: 40px; --space-12: 48px; --space-16: 64px; --space-20: 80px;
+  --space-24: 96px;
+
+  /* ── ELEVATION helpers ── */
+  --shadow-color: 46, 41, 48;   /* #2e2930 jp-shikoku */
+  --shadow-0: none;
+  --shadow-focus-primary:   0 0 0 3px rgba(25, 21, 27, 0.20);
+  --shadow-focus-secondary: 0 0 0 3px rgba(92, 92, 120, 0.28);
+  --shadow-focus-danger:    0 0 0 3px rgba(186, 26, 26, 0.25);
+  --tint-elev-1: rgba(25, 21, 27, 0.03);
+  --tint-elev-2: rgba(25, 21, 27, 0.05);
+  --tint-elev-3: rgba(25, 21, 27, 0.08);
+  --tint-elev-4: rgba(25, 21, 27, 0.10);
+  --tint-elev-5: rgba(25, 21, 27, 0.12);
+
+  /* ── MOTION ── */
+  --ease-default: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-enter:   cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-exit:    cubic-bezier(0.4, 0.0, 1.0, 1);
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-linear:  linear;
+  --duration-instant: 80ms;  --duration-fast: 150ms;  --duration-default: 180ms;
+  --duration-slow: 300ms;    --duration-slower: 450ms; --duration-slowest: 600ms;
+  --duration-progress: 1200ms;
+
+  /* ── Z-INDEX ── */
+  --z-base: 0; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200;
+  --z-overlay: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+}
+
+/* ── 3. Tailwind utility bridge — M3 colors → bg-/text-/border- utilities ─ */
+@theme inline {
+  /* Surface */
+  --color-page-frame:             var(--md-page-frame);
+  --color-surface:                var(--md-surface);
+  --color-surface-dim:            var(--md-surface-dim);
+  --color-surface-container-lowest:  var(--md-surface-container-lowest);
+  --color-surface-container-low:     var(--md-surface-container-low);
+  --color-surface-container:         var(--md-surface-container);
+  --color-surface-container-high:    var(--md-surface-container-high);
+  --color-surface-container-highest: var(--md-surface-container-highest);
+  --color-background:             var(--md-background);
+
+  /* On-surface / inverse / outline */
+  --color-on-surface:         var(--md-on-surface);
+  --color-on-surface-variant: var(--md-on-surface-variant);
+  --color-inverse-surface:    var(--md-inverse-surface);
+  --color-inverse-on-surface: var(--md-inverse-on-surface);
+  --color-outline:            var(--md-outline);
+  --color-outline-variant:    var(--md-outline-variant);
+
+  /* Primary */
+  --color-primary:              var(--md-primary);
+  --color-on-primary:           var(--md-on-primary);
+  --color-primary-container:    var(--md-primary-container);
+  --color-on-primary-container: var(--md-on-primary-container);
+  --color-primary-hover:        var(--md-primary-hover);
+  --color-primary-fixed:        var(--md-primary-fixed);
+
+  /* Secondary */
+  --color-secondary:              var(--md-secondary);
+  --color-on-secondary:           var(--md-on-secondary);
+  --color-secondary-container:    var(--md-secondary-container);
+  --color-on-secondary-container: var(--md-on-secondary-container);
+
+  /* Tertiary */
+  --color-tertiary:            var(--md-tertiary);
+  --color-on-tertiary:         var(--md-on-tertiary);
+  --color-tertiary-container:  var(--md-tertiary-container);
+
+  /* Error */
+  --color-error:              var(--md-error);
+  --color-on-error:           var(--md-on-error);
+  --color-error-container:    var(--md-error-container);
+  --color-on-error-container: var(--md-on-error-container);
+
+  /* JP accents */
+  --color-jp-fuji:    var(--jp-fuji);
+  --color-jp-shikoku: var(--jp-shikoku);
+  --color-jp-toki:    var(--jp-toki);
+  --color-jp-white:   var(--jp-white);
+  --color-hue-fg:     var(--hue-fg);
+  --color-hue-cool:   var(--hue-cool);
+  --color-hue-mount:  var(--hue-mount);
+  --color-hue-vlight: var(--hue-vlight);
+  --color-hue-vdark:  var(--hue-vdark);
+
+  /* Status (Google) — semantic */
+  --color-info:    var(--google-blue);
+  --color-success: var(--google-green);
+  --color-warning: var(--google-yellow);
+  --color-danger:  var(--google-red);
+  --color-info-bg:     var(--status-info-bg);
+  --color-info-text:   var(--status-info-text);
+  --color-success-bg:  var(--status-success-bg);
+  --color-success-text:var(--status-success-text);
+  --color-warning-bg:  var(--status-warning-bg);
+  --color-warning-text:var(--status-warning-text);
+  --color-danger-bg:   var(--status-danger-bg);
+  --color-danger-text: var(--status-danger-text);
+}

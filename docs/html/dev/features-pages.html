@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feature List &amp; Page Count — CMAS</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a class="active" href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<h1 id="feature-list--page-count--cmas" tabindex="-1"><a class="header-anchor" href="#feature-list--page-count--cmas"><span>Feature List &amp; Page Count — CMAS</span></a></h1>
+<p>See also: <a href="./dev.html">dev</a> · <a href="../rule/code-rule.html">code-rule</a> · <span class="wikilink-missing" title="unresolved: database-schema">database-schema</span> · <a href="../sql/schema.html">schema</a></p>
+<blockquote>
+<p>อ้างอิงจาก <code>database/schema.prisma</code> ปัจจุบัน (11 models: User, Curriculum, CurriculumCourse, Course, CLO, BehavioralObjective, Activity, AssessmentCriteria, Student, Score, ScoreUploadLog) และโครงสร้าง route ที่มีอยู่ใน <code>app/client/src/pages/</code></p>
+</blockquote>
+<hr>
+<h2 id="1-feature-list" tabindex="-1"><a class="header-anchor" href="#1-feature-list"><span>1. Feature List</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Feature</th>
+<th>Role ที่ใช้ได้</th>
+<th>อิงจาก Model</th>
+<th>สถานะปัจจุบัน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Authentication</strong> — login, logout, JWT session</td>
+<td>ทุกคน</td>
+<td><code>User</code></td>
+<td>มีหน้า <code>Login.tsx</code> แล้ว</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>User Management</strong> — CRUD ผู้ใช้, เปิด/ปิดบัญชี (<code>isActive</code>), กำหนด role</td>
+<td>ADMIN</td>
+<td><code>User</code></td>
+<td>มีหน้า <code>Users.tsx</code> แล้ว</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Curriculum Management</strong> — CRUD หลักสูตร, clone หลักสูตรเดิม (<code>clonedFrom</code>)</td>
+<td>ADMIN</td>
+<td><code>Curriculum</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Curriculum Course</strong> — จัดการรายวิชาในหลักสูตร (รหัสวิชา / ชื่อ / หน่วยกิต)</td>
+<td>ADMIN</td>
+<td><code>CurriculumCourse</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Course Management</strong> — CRUD รายวิชาที่เปิดสอนจริงต่อเทอม, มอบหมายอาจารย์</td>
+<td>ADMIN / INSTRUCTOR</td>
+<td><code>Course</code></td>
+<td>มีหน้า <code>CourseList.tsx</code> แล้ว</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>CLO Management</strong> — CRUD CLO ต่อวิชา, drag-reorder (<code>number</code>), ตั้ง threshold</td>
+<td>INSTRUCTOR</td>
+<td><code>CLO</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Behavioral Objectives</strong> — CRUD จุดประสงค์เชิงพฤติกรรมต่อ CLO</td>
+<td>INSTRUCTOR</td>
+<td><code>BehavioralObjective</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Activity Management</strong> — CRUD กิจกรรมประเมิน (สอบ/งาน), drag-reorder (<code>order</code>), กำหนด <code>weight</code>/<code>maxScore</code></td>
+<td>INSTRUCTOR</td>
+<td><code>Activity</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Assessment Criteria Mapping</strong> — ผูก Activity ↔ CLO พร้อม weight ต่อคู่</td>
+<td>INSTRUCTOR</td>
+<td><code>AssessmentCriteria</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Student Roster</strong> — CRUD รายชื่อนักศึกษาในวิชา</td>
+<td>INSTRUCTOR</td>
+<td><code>Student</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Score Entry (manual)</strong> — กรอกคะแนนรายกิจกรรมต่อนักศึกษา</td>
+<td>INSTRUCTOR</td>
+<td><code>Score</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>Score Import/Export (Excel)</strong> — อัปโหลด/ดาวน์โหลดคะแนนเป็นไฟล์ Excel</td>
+<td>INSTRUCTOR</td>
+<td><code>Score</code>, <code>ScoreUploadLog</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>Score Upload Log</strong> — ดูประวัติการอัปโหลดไฟล์, จำนวนแถวสำเร็จ/ล้มเหลว</td>
+<td>INSTRUCTOR</td>
+<td><code>ScoreUploadLog</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>CLO Attainment Dashboard</strong> — กราฟสรุปผล CLO ต่อวิชา, at-risk detection</td>
+<td>INSTRUCTOR</td>
+<td>คำนวณจาก <code>Score</code> + <code>AssessmentCriteria</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>Student Individual Report</strong> — ดูความก้าวหน้ารายบุคคลต่อ CLO</td>
+<td>INSTRUCTOR</td>
+<td>คำนวณจาก <code>Score</code> ของ <code>Student</code></td>
+<td>ยังไม่มีหน้า</td>
+</tr>
+</tbody>
+</table>
+<p><strong>สรุป:</strong> 15 feature หลัก — เสร็จแล้ว 3 (Auth, User Mgmt, Course List) เหลือ 12 ที่ต้องพัฒนา</p>
+<hr>
+<h2 id="2-page-count" tabindex="-1"><a class="header-anchor" href="#2-page-count"><span>2. Page Count</span></a></h2>
+<p>แผนที่หน้า (routes) ที่ต้องมีตามโครงสร้าง <code>app/client/src/pages/</code> (อิงรูปแบบจาก <a href="./dev.html">dev</a> §3.2):</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Route</th>
+<th>หน้าจอ</th>
+<th>Feature ที่เกี่ยวข้อง</th>
+<th>สถานะ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>/</code></td>
+<td>Home / redirect</td>
+<td>—</td>
+<td>✅ มีแล้ว</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>/auth/login</code></td>
+<td>Login</td>
+<td>1</td>
+<td>✅ มีแล้ว</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>/admin/users</code></td>
+<td>User Management</td>
+<td>2</td>
+<td>✅ มีแล้ว</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>/curricula</code></td>
+<td>Curriculum List</td>
+<td>3</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>/curricula/:curriculumId</code></td>
+<td>Curriculum Detail (รายวิชาในหลักสูตร)</td>
+<td>3, 4</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>/courses</code></td>
+<td>Course List</td>
+<td>5</td>
+<td>✅ มีแล้ว</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>/courses/new</code></td>
+<td>Create Course</td>
+<td>5</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>/courses/:courseId</code></td>
+<td>Course Overview</td>
+<td>5</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>/courses/:courseId/clos</code></td>
+<td>CLO Management (list + drag reorder + objectives)</td>
+<td>6, 7</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>/courses/:courseId/activities</code></td>
+<td>Activity Management (list + drag reorder + criteria mapping)</td>
+<td>8, 9</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>/courses/:courseId/students</code></td>
+<td>Student Roster</td>
+<td>10</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>/courses/:courseId/scores</code></td>
+<td>Score Entry + Excel Import/Export</td>
+<td>11, 12</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>/courses/:courseId/scores/uploads</code></td>
+<td>Score Upload Log</td>
+<td>13</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>/courses/:courseId/dashboard</code></td>
+<td>CLO Attainment Dashboard</td>
+<td>14</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>/courses/:courseId/dashboard/students/:studentId</code></td>
+<td>Student Individual Report</td>
+<td>15</td>
+<td>⬜ ต้องทำ</td>
+</tr>
+</tbody>
+</table>
+<p><strong>รวมทั้งหมด: 15 หน้า</strong> (เสร็จแล้ว 3 หน้า / เหลือ 12 หน้า)</p>
+<blockquote>
+<p>หมายเหตุ: บาง route (เช่น <code>/courses/:courseId/scores/uploads</code>) อาจรวมเป็น tab เดียวกับหน้าอื่นแทนการแยกหน้าจริง หากทีมตัดสินใจตอน implement — ให้ปรับตารางนี้และแจ้งในรายงานประจำสัปดาห์ (ดู <a href="../rule/code-rule.html">code-rule</a> §7)</p>
+</blockquote>
+<hr>
+<h2 id="3-suggested-split-งาน-3-คน" tabindex="-1"><a class="header-anchor" href="#3-suggested-split-งาน-3-คน"><span>3. Suggested Split งาน 3 คน</span></a></h2>
+<p>แบ่งตาม module เพื่อลด conflict (แต่ละคนคุม end-to-end: route + component + service + controller ของ module ตัวเอง ตาม <a href="../rule/code-rule.html">code-rule</a>):</p>
+<table>
+<thead>
+<tr>
+<th>คน</th>
+<th>รับผิดชอบ</th>
+<th>Feature #</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dev A</td>
+<td>Curriculum + Course module</td>
+<td>3, 4, 5</td>
+</tr>
+<tr>
+<td>Dev B</td>
+<td>CLO + Activity + Assessment Criteria (core CLO system)</td>
+<td>6, 7, 8, 9</td>
+</tr>
+<tr>
+<td>Dev C</td>
+<td>Student + Score (entry/import/export/log) + Dashboard</td>
+<td>10, 11, 12, 13, 14, 15</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>การแบ่งนี้เป็นข้อเสนอเบื้องต้น — ให้ทีมคุยและ confirm scope ก่อนเริ่ม แล้วรายงานแผนสุดท้ายกลับให้เจ้าของโปรเจกต์ตาม <a href="../rule/code-rule.html">code-rule</a> §7</p>
+</blockquote>
+<hr>
+<p><em>อัปเดตเอกสารนี้ทุกครั้งที่ feature scope เปลี่ยน — ถือเป็น source of truth ของ scope ทั้งโปรเจกต์</em></p>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+# Dependencies (will be reinstalled in container)
+node_modules
+app/client/node_modules
+app/server/node_modules
+
+# Build outputs (rebuilt in container)
+app/client/dist
+app/server/dist
+dist
+build
+
+# Documentation (not needed in container)
+docs
+*.md
+
+# Version control
+.git
+.gitignore
+.github
+
+# Environment files (use env_file or -e in compose instead)
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs
+npm-debug.log*
+
+# Uploads (persistent volume in production)
+uploads
+
+# Editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# Tests (only in dev)
+**/*.test.ts
+**/*.spec.ts
+.vitest

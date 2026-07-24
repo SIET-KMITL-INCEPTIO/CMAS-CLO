@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Use Case Diagram</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a class="active" href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<h1 id="use-case-diagram" tabindex="-1"><a class="header-anchor" href="#use-case-diagram"><span>Use Case Diagram</span></a></h1>
+<blockquote>
+<p>อ้างอิงจากเอกสารอนุมัติหัวข้อ (PD01) หน้า 5 และ §5 ขีดความสามารถของโครงงาน</p>
+</blockquote>
+<pre class="mermaid">flowchart LR
+    admin([&quot;👤 ผู้ดูแลระบบ&lt;br/&gt;Admin&quot;])
+    instructor([&quot;👤 ผู้สอน&lt;br/&gt;Instructor&quot;])
+
+    subgraph SYSTEM[&quot;ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ (CLO System)&quot;]
+        direction TB
+        UC1([&quot;จัดการผู้ใช้งาน&quot;])
+        UC2([&quot;กรอกข้อมูลรายวิชา&quot;])
+        UC3([&quot;กำหนด CLOs ของรายวิชา&quot;])
+        UC4([&quot;เพิ่มวัตถุประสงค์เชิงพฤติกรรม&quot;])
+        UC5([&quot;เพิ่มวิธีการประเมิน&quot;])
+        UC6([&quot;เพิ่มเกณฑ์การประเมิน&quot;])
+        UC7([&quot;นำเข้า/ส่งออก CSV/Excel&lt;br/&gt;คะแนนกิจกรรม&quot;])
+        UC8([&quot;นำเข้า/ส่งออก CSV/Excel&lt;br/&gt;ชื่อนักศึกษา&quot;])
+        UC9([&quot;วิเคราะห์และสรุปข้อมูล CLOs&lt;br/&gt;ของรายวิชา (Dashboard)&quot;])
+        UC10([&quot;ติดตามผู้เรียนรายบุคคล&quot;])
+        UC11([&quot;ส่งออกรายงาน&quot;])
+    end
+
+    admin --- UC1
+
+    instructor --- UC2
+    instructor --- UC3
+    instructor --- UC4
+    instructor --- UC7
+    instructor --- UC8
+    instructor --- UC9
+
+    UC4 -. &quot;«include»&quot; .-&gt; UC5
+    UC5 -. &quot;«include»&quot; .-&gt; UC6
+
+    UC10 -. &quot;«extend»&quot; .-&gt; UC9
+    UC11 -. &quot;«extend»&quot; .-&gt; UC9
+</pre>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

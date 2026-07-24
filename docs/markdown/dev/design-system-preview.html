@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdure Design System — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   VERDURE DESIGN SYSTEM — TOKENS (from §11 Token Reference)
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* Typography */
+  --font-serif: 'IBM Plex Sans Thai', 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-sans:  'IBM Plex Sans Thai', 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-mono:  'IBM Plex Sans Thai', 'IBM Plex Sans', -apple-system, sans-serif;
+
+  --text-display: clamp(36px, 5vw, 48px);
+  --text-h1: clamp(28px, 4vw, 36px);
+  --text-h2: clamp(20px, 3vw, 26px);
+  --text-h3: 20px; --text-h4: 17px;
+  --text-body-lg: 16px; --text-body: 14px; --text-body-sm: 13px;
+  --text-label: 12px; --text-caption: 11px; --text-overline: 10px; --text-code: 13px;
+
+  --weight-light: 300; --weight-regular: 400; --weight-medium: 500;
+  --weight-semibold: 600; --weight-bold: 700;
+  --leading-tight: 1.1; --leading-snug: 1.3; --leading-normal: 1.5;
+  --leading-relaxed: 1.7; --leading-loose: 1.9;
+  --tracking-tight: -0.02em; --tracking-normal: 0; --tracking-wide: 0.05em;
+  --tracking-wider: 0.1em; --tracking-widest: 0.15em;
+
+  /* Surface */
+  --md-page-frame: #e2e2e4; --md-surface: #f9f9fb; --md-surface-dim: #d9dadc;
+  --md-surface-bright: #f9f9fb;
+  --md-surface-container-lowest: #ffffff; --md-surface-container-low: #f3f3f5;
+  --md-surface-container: #eeeef0; --md-surface-container-high: #e8e8ea;
+  --md-surface-container-highest: #e2e2e4; --md-surface-variant: #e2e2e4;
+  --md-background: #f9f9fb; --md-on-background: #1a1c1d;
+
+  /* On-surface */
+  --md-on-surface: #1a1c1d; --md-on-surface-variant: #4a454a;
+  --md-inverse-surface: #2f3132; --md-inverse-on-surface: #f0f0f2;
+
+  /* Outline */
+  --md-outline: #7b757b; --md-outline-variant: #ccc4ca;
+
+  /* Primary */
+  --md-primary: #19151b; --md-on-primary: #ffffff; --md-primary-container: #2e2930;
+  --md-on-primary-container: #978f98; --md-inverse-primary: #cdc4cd;
+  --md-surface-tint: #19151b; --md-primary-hover: #44405a; --md-primary-fixed: #f4f4f6;
+  --md-primary-fixed-dim: #cdc4cd; --md-on-primary-fixed: #19151b;
+  --md-on-primary-fixed-variant: #44405a;
+
+  /* Secondary */
+  --md-secondary: #5c5c78; --md-on-secondary: #ffffff; --md-secondary-container: #deddfe;
+  --md-on-secondary-container: #60607c; --md-secondary-fixed: #deddfe;
+  --md-secondary-fixed-dim: #c5c3e4; --md-on-secondary-fixed: #19151b;
+  --md-on-secondary-fixed-variant: #5c5c78;
+
+  /* Tertiary */
+  --md-tertiary: #1d1418; --md-on-tertiary: #ffffff; --md-tertiary-container: #32282c;
+  --md-on-tertiary-container: #9d8e93; --md-tertiary-fixed: #e9e0e9;
+  --md-tertiary-fixed-dim: #cdc4cd; --md-on-tertiary-fixed: #1d1418;
+  --md-on-tertiary-fixed-variant: #635c64;
+
+  /* Error */
+  --md-error: #ba1a1a; --md-on-error: #ffffff; --md-error-container: #ffdad6;
+  --md-on-error-container: #93000a;
+
+  /* JP Accent */
+  --jp-fuji: #a6a5c4; --jp-shikoku: #2e2930; --jp-toki: #e4d2d8; --jp-white: #f4f4f6;
+  --hue-fg: #b8bed7; --hue-cool: #afaecc; --hue-mount: #85758f;
+  --hue-vlight: #524e68; --hue-vdark: #44405a;
+
+  /* Status — Google */
+  --google-blue: #4285F4; --google-green: #34A853; --google-yellow: #FBBC05; --google-red: #EA4335;
+  --status-info-bg: #EAF1FE; --status-info-border: #93BAF9; --status-info-text: #1A56C4;
+  --status-success-bg: #E6F4EA; --status-success-border: #81C995; --status-success-text: #137333;
+  --status-warning-bg: #FEF7E0; --status-warning-border: #FDD663; --status-warning-text: #B06000;
+  --status-danger-bg: #FCE8E6; --status-danger-border: #F28B82; --status-danger-text: #C5221F;
+
+  /* Spacing */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
+  --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-16: 64px;
+  --space-20: 80px; --space-24: 96px;
+
+  /* Radius (§11) */
+  --radius-none: 0px; --radius-xs: 4px; --radius-sm: 8px; --radius-md: 16px;
+  --radius-lg: 24px; --radius-xl: 32px; --radius-2xl: 48px; --radius-full: 9999px;
+
+  /* Elevation */
+  --shadow-color: 46, 41, 48;
+  --shadow-0: none;
+  --shadow-1: 0px 12px 32px rgba(var(--shadow-color), 0.04);
+  --shadow-2: 0px 20px 48px rgba(var(--shadow-color), 0.07);
+  --shadow-3: 0px 32px 80px rgba(var(--shadow-color), 0.10);
+  --shadow-4: 0px 40px 100px rgba(var(--shadow-color), 0.14);
+  --shadow-glass: 0 8px 32px rgba(var(--shadow-color), 0.06);
+  --shadow-focus-primary:   0 0 0 3px rgba(25, 21, 27, 0.20);
+  --shadow-focus-secondary: 0 0 0 3px rgba(92, 92, 120, 0.28);
+  --shadow-focus-danger:    0 0 0 3px rgba(186, 26, 26, 0.25);
+
+  /* Motion */
+  --ease-default: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-enter:   cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-exit:    cubic-bezier(0.4, 0.0, 1.0, 1);
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-linear:  linear;
+  --duration-instant: 80ms; --duration-fast: 150ms; --duration-default: 180ms;
+  --duration-slow: 300ms; --duration-slower: 450ms; --duration-slowest: 600ms;
+
+  /* Z-index */
+  --z-raised: 10; --z-sticky: 200; --z-tooltip: 600;
+
+  /* ── Legacy alias map — lets later-section component CSS render ── */
+  --color-neutral-0:   #ffffff;
+  --color-neutral-50:  #f3f3f5;
+  --color-neutral-100: #eeeef0;
+  --color-neutral-200: #ccc4ca;
+  --color-neutral-400: #7b757b;
+  --color-neutral-600: #4a454a;
+  --color-neutral-800: #1a1c1d;
+  --color-neutral-900: #19151b;
+  --color-primary-50:  #deddfe;
+  --color-primary-400: #5c5c78;
+  --color-primary-600: #19151b;
+  --color-primary-800: #19151b;
+  --color-secondary-50:  #deddfe;
+  --color-secondary-400: #5c5c78;
+  --color-secondary-900: #60607c;
+  --color-tertiary-50:  #e9e0e9;
+  --color-tertiary-400: #635c64;
+  --color-tertiary-800: #1d1418;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BASE + PREVIEW SHELL
+   ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  background: var(--md-page-frame);
+  color: var(--md-on-surface);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--md-outline-variant); border-radius: 4px; }
+
+.layout { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; }
+
+/* Sidebar */
+.side {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--md-surface-container-lowest);
+  border-right: 1px solid var(--md-outline-variant);
+  padding: var(--space-6) var(--space-4);
+}
+.side-brand { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2); }
+.side-mark {
+  width: 34px; height: 34px; border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--hue-vdark), var(--md-primary));
+  display: grid; place-items: center; color: #fff; font-family: var(--font-serif);
+  font-weight: 700; font-size: 18px; flex-shrink: 0;
+}
+.side-title { font-family: var(--font-serif); font-size: 16px; font-weight: 700; line-height: 1.1; }
+.side-ver { font-size: var(--text-caption); color: var(--md-on-surface-variant); }
+.side-nav { margin-top: var(--space-6); display: flex; flex-direction: column; gap: 1px; }
+.side-nav a {
+  display: block; padding: 7px 12px; border-radius: var(--radius-sm);
+  font-size: var(--text-body-sm); font-weight: 500; color: var(--md-on-surface-variant);
+  text-decoration: none; transition: all 150ms var(--ease-default);
+}
+.side-nav a:hover { background: var(--md-surface-container); color: var(--md-on-surface); }
+.side-foot { margin-top: var(--space-8); font-size: var(--text-caption); color: var(--md-outline); line-height: 1.6; }
+
+/* Content */
+.main { padding: var(--space-12) var(--space-12) var(--space-24); max-width: 1080px; }
+.hero { margin-bottom: var(--space-16); }
+.hero .eyebrow {
+  font-size: var(--text-overline); font-weight: 700; text-transform: uppercase;
+  letter-spacing: var(--tracking-widest); color: var(--md-secondary); margin-bottom: var(--space-3);
+}
+.hero h1 { font-family: var(--font-serif); font-size: var(--text-display); font-weight: 700; letter-spacing: var(--tracking-tight); line-height: 1.05; }
+.hero p { margin-top: var(--space-4); font-size: var(--text-body-lg); color: var(--md-on-surface-variant); line-height: var(--leading-relaxed); max-width: 640px; }
+
+section.block { margin-bottom: var(--space-16); scroll-margin-top: var(--space-6); }
+.sec-head { display: flex; align-items: baseline; gap: var(--space-3); margin-bottom: var(--space-6); padding-bottom: var(--space-3); border-bottom: 1px solid var(--md-outline-variant); }
+.sec-num { font-family: var(--font-mono); font-size: var(--text-body-sm); color: var(--md-secondary); font-weight: 500; }
+.sec-head h2 { font-family: var(--font-serif); font-size: var(--text-h2); font-weight: 600; }
+.sub { font-size: var(--text-overline); font-weight: 700; text-transform: uppercase; letter-spacing: var(--tracking-wider); color: var(--md-on-surface-variant); margin: var(--space-8) 0 var(--space-4); }
+.row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.grid { display: grid; gap: var(--space-4); }
+.note { font-size: var(--text-body-sm); color: var(--md-on-surface-variant); margin-bottom: var(--space-4); line-height: var(--leading-relaxed); }
+
+.panel { background: var(--md-surface-container-lowest); border: 1px solid var(--md-outline-variant); border-radius: var(--radius-lg); padding: var(--space-6); }
+
+/* ── Color swatches ── */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-3); }
+.swatch { border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--md-outline-variant); background: var(--md-surface-container-lowest); }
+.swatch .chip { height: 68px; }
+.swatch .meta { padding: 8px 10px; }
+.swatch .name { font-size: var(--text-caption); font-weight: 600; }
+.swatch .hex { font-family: var(--font-mono); font-size: 10px; color: var(--md-on-surface-variant); text-transform: uppercase; }
+
+/* ── Type specimens ── */
+.type-row { display: flex; align-items: baseline; gap: var(--space-6); padding: var(--space-3) 0; border-bottom: 1px dashed var(--md-outline-variant); }
+.type-row .tag { font-family: var(--font-mono); font-size: 11px; color: var(--md-secondary); width: 130px; flex-shrink: 0; }
+
+/* ═══════════════ COMPONENT CSS (from doc §8, §12, §15) ═══════════════ */
+.btn { display: inline-flex; align-items: center; gap: var(--space-2); padding: 9px 18px; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: var(--text-body-sm); font-weight: var(--weight-semibold); line-height: 1; cursor: pointer; border: none; transition: all 180ms ease; text-decoration: none; white-space: nowrap; user-select: none; }
+.btn:focus-visible { outline: none; box-shadow: var(--shadow-focus-primary); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.38; cursor: not-allowed; }
+.btn--primary { background: var(--md-primary); color: var(--md-on-primary); }
+.btn--primary:hover { background: var(--md-primary-hover); }
+.btn--secondary { background: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+.btn--secondary:hover { background: color-mix(in srgb, var(--md-secondary-container) 88%, var(--md-on-surface)); }
+.btn--tertiary { background: var(--md-tertiary); color: var(--md-on-tertiary); }
+.btn--outlined { background: transparent; color: var(--md-primary); border: 1.5px solid var(--md-outline); }
+.btn--outlined:hover { background: color-mix(in srgb, var(--md-primary) 8%, transparent); border-color: var(--md-primary); }
+.btn--ghost { background: transparent; color: var(--md-primary); border: none; }
+.btn--ghost:hover { background: color-mix(in srgb, var(--md-primary) 8%, transparent); }
+.btn--neutral { background: var(--md-surface-container-high); color: var(--md-on-surface); }
+.btn--neutral:hover { background: var(--md-surface-container-highest); }
+.btn--inverted { background: var(--md-inverse-surface); color: var(--md-inverse-on-surface); }
+.btn--danger { background: var(--md-error); color: var(--md-on-error); }
+.btn--danger:focus-visible { box-shadow: var(--shadow-focus-danger); }
+.btn--xs { padding: 4px 10px; font-size: var(--text-overline); border-radius: var(--radius-sm); }
+.btn--sm { padding: 6px 13px; font-size: var(--text-caption); }
+.btn--lg { padding: 12px 24px; font-size: var(--text-body-lg); border-radius: var(--radius-lg); }
+
+.form-label { display: block; font-family: var(--font-sans); font-size: var(--text-label); font-weight: var(--weight-semibold); color: var(--md-on-surface); margin-bottom: var(--space-1); }
+.form-label--required::after { content: ' *'; color: var(--md-error); }
+.input { width: 100%; font-family: var(--font-sans); font-size: var(--text-body-sm); color: var(--md-on-surface); background: var(--md-surface-container-lowest); border: 1.5px solid var(--md-outline); border-radius: var(--radius-md); padding: 9px 13px; transition: border-color 180ms ease, box-shadow 180ms ease; outline: none; }
+.input::placeholder { color: var(--md-on-surface-variant); opacity: 0.6; }
+.input:hover { border-color: var(--md-on-surface); }
+.input:focus { border-color: var(--md-primary); box-shadow: var(--shadow-focus-primary); }
+.input--error { border-color: var(--md-error); }
+.form-hint { font-size: var(--text-caption); color: var(--md-on-surface-variant); margin-top: var(--space-1); }
+.form-error { font-size: var(--text-caption); color: var(--md-error); margin-top: var(--space-1); }
+.select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2347464d' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 40px; cursor: pointer; }
+.textarea { resize: vertical; min-height: 90px; line-height: var(--leading-relaxed); }
+
+.toggle-track { width: 44px; height: 24px; background: var(--md-surface-container-highest); border: 2px solid var(--md-outline); border-radius: var(--radius-full); position: relative; transition: background 200ms ease, border-color 200ms ease; cursor: pointer; outline: none; flex-shrink: 0; }
+.toggle-track.is-on { background: var(--md-primary); border-color: var(--md-primary); }
+.toggle-thumb { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: var(--md-outline); border-radius: 50%; box-shadow: 0 1px 3px rgba(var(--shadow-color), 0.15); transition: transform 220ms cubic-bezier(0.4,0,0.2,1), background 200ms ease, width 100ms ease; }
+.toggle-track.is-on .toggle-thumb { transform: translateX(20px); background: var(--md-on-primary); width: 18px; }
+.checkbox, .radio { width: 18px; height: 18px; border: 2px solid var(--md-outline); background: transparent; cursor: pointer; transition: all 180ms ease; appearance: none; display: grid; place-items: center; }
+.checkbox { border-radius: var(--radius-xs); }
+.radio { border-radius: var(--radius-full); }
+.checkbox:checked, .radio:checked { background: var(--md-primary); border-color: var(--md-primary); }
+.checkbox:checked::after { content: '✓'; color: #fff; font-size: 12px; line-height: 1; }
+.radio:checked::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #fff; }
+
+.badge { display: inline-flex; align-items: center; gap: var(--space-1); padding: 3px 9px; border-radius: var(--radius-sm); font-family: var(--font-sans); font-size: var(--text-caption); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); white-space: nowrap; line-height: 1.4; }
+.badge--primary { background: var(--md-primary-container); color: var(--md-on-primary-container); }
+.badge--secondary { background: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+.badge--tertiary { background: var(--md-tertiary-container); color: var(--md-on-tertiary-container); }
+.badge--dark { background: var(--md-inverse-surface); color: var(--md-inverse-on-surface); }
+.badge--neutral { background: var(--md-surface-container-high); color: var(--md-on-surface-variant); }
+.badge--info { background: var(--status-info-bg); color: var(--status-info-text); }
+.badge--success { background: var(--status-success-bg); color: var(--status-success-text); }
+.badge--warning { background: var(--status-warning-bg); color: var(--status-warning-text); }
+.badge--danger { background: var(--status-danger-bg); color: var(--status-danger-text); }
+.tag { display: inline-flex; align-items: center; gap: var(--space-1); padding: 5px 12px; border-radius: var(--radius-full); font-size: var(--text-caption); font-weight: var(--weight-semibold); border: 1.5px solid; cursor: default; transition: transform 180ms ease, box-shadow 180ms ease; }
+.tag:hover { transform: translateY(-2px); box-shadow: var(--shadow-1); }
+.tag--primary { background: var(--md-primary-fixed); border-color: var(--md-primary-container); color: var(--md-on-primary-fixed); }
+.tag--secondary { background: var(--md-secondary-fixed); border-color: var(--md-secondary-container); color: var(--md-on-secondary-fixed); }
+.tag--tertiary { background: var(--md-tertiary-fixed); border-color: var(--md-tertiary-container); color: var(--md-on-tertiary-fixed); }
+
+.card { background: var(--md-surface-container-lowest); border: 1px solid var(--md-outline-variant); border-radius: var(--radius-lg); padding: var(--space-6); position: relative; overflow: hidden; transition: transform 220ms ease, box-shadow 220ms ease; }
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+.card--primary::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--md-primary); }
+.card--secondary::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--md-secondary); }
+.card--tertiary::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--md-tertiary); }
+.card-meta { font-size: var(--text-overline); font-weight: var(--weight-bold); text-transform: uppercase; letter-spacing: var(--tracking-wider); color: var(--md-on-surface-variant); margin-bottom: var(--space-1); }
+.card-title { font-family: var(--font-serif); font-size: var(--text-h4); font-weight: var(--weight-semibold); color: var(--md-on-surface); margin-bottom: var(--space-1); }
+.card-body { font-size: var(--text-body-sm); color: var(--md-on-surface-variant); line-height: var(--leading-relaxed); }
+.card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--md-outline-variant); }
+.card--dark { background: var(--md-inverse-surface); border-color: var(--md-inverse-surface); }
+.card--dark .card-meta { color: color-mix(in srgb, var(--md-inverse-on-surface) 50%, transparent); }
+.card--dark .card-title { color: var(--md-inverse-on-surface); }
+.card--dark .card-body { color: color-mix(in srgb, var(--md-inverse-on-surface) 65%, transparent); }
+.card--dark .card-footer { border-color: color-mix(in srgb, var(--md-inverse-on-surface) 15%, transparent); }
+.card--tonal { background: var(--md-surface-container); border-color: transparent; }
+
+.alert { display: flex; align-items: flex-start; gap: var(--space-3); padding: 14px 16px; border-radius: var(--radius-md); border-left: 3px solid; }
+.alert-icon { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert-title { font-size: var(--text-body-sm); font-weight: var(--weight-bold); margin-bottom: 3px; }
+.alert-body { font-size: var(--text-caption); line-height: var(--leading-relaxed); opacity: 0.85; }
+.alert--info { background: var(--status-info-bg); border-color: var(--google-blue); color: var(--status-info-text); }
+.alert--success { background: var(--status-success-bg); border-color: var(--google-green); color: var(--status-success-text); }
+.alert--warning { background: var(--status-warning-bg); border-color: var(--google-yellow); color: var(--status-warning-text); }
+.alert--danger { background: var(--status-danger-bg); border-color: var(--google-red); color: var(--status-danger-text); }
+.alert--brand { background: var(--md-primary-fixed); border-color: var(--md-primary); color: var(--md-on-primary-fixed-variant); }
+
+.progress { margin-bottom: var(--space-4); }
+.progress-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.progress-label { font-size: var(--text-label); font-weight: var(--weight-semibold); color: var(--md-on-surface); }
+.progress-value { font-size: var(--text-label); font-weight: var(--weight-bold); }
+.progress-track { height: 7px; background: var(--md-surface-container); border-radius: var(--radius-full); overflow: hidden; }
+.progress-fill { height: 100%; border-radius: var(--radius-full); transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+.progress-fill--primary { background: var(--md-primary); }
+.progress-fill--secondary { background: var(--md-secondary); }
+.progress-fill--success { background: var(--google-green); }
+.progress-fill--warning { background: var(--google-yellow); }
+.progress-fill--danger { background: var(--google-red); }
+.progress-fill--info { background: var(--google-blue); }
+
+.avatar { display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-full); font-family: var(--font-sans); font-weight: var(--weight-semibold); border: 2.5px solid var(--md-surface-container-lowest); overflow: hidden; flex-shrink: 0; transition: transform 200ms ease; user-select: none; }
+.avatar:hover { transform: scale(1.08) translateY(-2px); z-index: 10; }
+.avatar--xs { width: 24px; height: 24px; font-size: 9px; }
+.avatar--sm { width: 32px; height: 32px; font-size: 11px; }
+.avatar--md { width: 40px; height: 40px; font-size: 13px; }
+.avatar--lg { width: 48px; height: 48px; font-size: 16px; }
+.avatar--xl { width: 64px; height: 64px; font-size: 20px; }
+.avatar--primary { background: var(--md-secondary-container); color: var(--md-primary); }
+.avatar--secondary { background: var(--jp-fuji); color: #fff; }
+.avatar--tertiary { background: var(--md-tertiary-fixed); color: var(--md-tertiary); }
+.avatar--dark { background: var(--md-primary); color: #fff; }
+.avatar-stack { display: flex; flex-direction: row-reverse; }
+.avatar-stack .avatar { margin-left: -10px; }
+.avatar-stack .avatar:last-child { margin-left: 0; }
+
+/* Status dot */
+.status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.status-dot--online { background: var(--google-green); animation: pulse 2s ease infinite; }
+.status-dot--pending { background: var(--google-yellow); }
+.status-dot--error { background: var(--google-red); }
+.status-dot--info { background: var(--google-blue); }
+.status-dot--offline { background: var(--md-outline-variant); }
+@keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } }
+
+/* Domain — score badge / status chip / heatmap */
+.score-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: var(--radius-sm); font-size: var(--text-caption); font-weight: var(--weight-bold); font-family: var(--font-mono); letter-spacing: 0.03em; }
+.score-badge--high { background: var(--status-success-bg); color: var(--status-success-text); border: 1px solid var(--status-success-border); }
+.score-badge--medium { background: var(--status-warning-bg); color: var(--status-warning-text); border: 1px solid var(--status-warning-border); }
+.score-badge--low { background: var(--status-danger-bg); color: var(--status-danger-text); border: 1px solid var(--status-danger-border); }
+.score-badge--inprogress { background: var(--status-info-bg); color: var(--status-info-text); border: 1px solid var(--status-info-border); }
+.status-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: var(--radius-full); font-size: var(--text-caption); font-weight: var(--weight-semibold); white-space: nowrap; }
+.status-chip--inprogress { background: var(--status-info-bg); color: var(--status-info-text); }
+.status-chip--inprogress .chip-dot { background: var(--google-blue); animation: pulse 2s ease infinite; }
+.status-chip--completed { background: var(--status-success-bg); color: var(--status-success-text); }
+.status-chip--completed .chip-dot { background: var(--google-green); }
+.status-chip--warning { background: var(--status-warning-bg); color: var(--status-warning-text); }
+.status-chip--warning .chip-dot { background: var(--google-yellow); }
+.status-chip--overdue { background: var(--status-danger-bg); color: var(--status-danger-text); }
+.status-chip--overdue .chip-dot { background: var(--google-red); }
+.chip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.heatmap-grid { display: grid; gap: 4px; width: max-content; }
+.hm-corner { }
+.hm-col-head { font-size: 10px; font-weight: 700; color: var(--md-on-surface-variant); text-align: center; padding-bottom: 2px; }
+.hm-row-head { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface); padding-right: var(--space-3); display: flex; align-items: center; white-space: nowrap; }
+.heatmap-legend { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--md-outline-variant); }
+.hm-key { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-caption); color: var(--md-on-surface-variant); }
+.hm-key .heatmap-cell { cursor: default; }
+.hm-key .heatmap-cell:hover { transform: none; box-shadow: none; }
+.heatmap-cell { width: 28px; height: 28px; border-radius: var(--radius-xs); cursor: pointer; transition: transform 100ms ease, box-shadow 100ms ease; display: grid; place-items: center; font-size: 9px; font-weight: var(--weight-bold); color: rgba(255,255,255,0.9); }
+.heatmap-cell:hover { transform: scale(1.25); box-shadow: var(--shadow-2); z-index: 10; }
+.heatmap-cell--high { background: var(--google-green); }
+.heatmap-cell--medium { background: var(--google-yellow); color: rgba(0,0,0,0.65); }
+.heatmap-cell--low { background: var(--google-red); }
+.heatmap-cell--inprogress { background: var(--google-blue); }
+.heatmap-cell--empty { background: var(--md-surface-container); }
+
+/* Stat card */
+.stat-card { background: var(--md-surface-container-lowest); border: 1px solid var(--md-outline-variant); border-radius: var(--radius-lg); padding: var(--space-5) var(--space-6); display: flex; flex-direction: column; gap: var(--space-2); position: relative; overflow: hidden; transition: box-shadow 180ms ease; }
+.stat-card:hover { box-shadow: var(--shadow-2); }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; }
+.stat-card--blue::before { background: var(--google-blue); }
+.stat-card--green::before { background: var(--google-green); }
+.stat-card--yellow::before { background: var(--google-yellow); }
+.stat-card--red::before { background: var(--google-red); }
+.stat-label { font-size: var(--text-caption); font-weight: var(--weight-semibold); color: var(--md-on-surface-variant); text-transform: uppercase; letter-spacing: var(--tracking-wider); }
+.stat-value { font-family: var(--font-serif); font-size: 32px; font-weight: var(--weight-bold); color: var(--md-on-surface); line-height: 1; }
+.stat-sub { font-size: var(--text-caption); color: var(--md-on-surface-variant); }
+
+/* Context menu */
+.context-menu { width: 220px; background: var(--md-surface-container-lowest); border: 1px solid var(--md-outline-variant); border-radius: var(--radius-lg); box-shadow: var(--shadow-3); padding: var(--space-1) 0; }
+.context-menu-item { display: flex; align-items: center; gap: var(--space-3); padding: 7px 14px; font-family: var(--font-sans); font-size: var(--text-body-sm); color: var(--md-on-surface); cursor: pointer; transition: background 100ms ease; border: none; background: transparent; width: 100%; text-align: left; }
+.context-menu-item:hover { background: var(--md-surface-container-low); }
+.context-menu-item .menu-shortcut { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--md-outline); }
+.context-menu-item--danger { color: var(--status-danger-text); }
+.context-menu-item--danger:hover { background: var(--status-danger-bg); }
+.context-menu-separator { height: 1px; background: var(--md-surface-container); margin: var(--space-1) 0; }
+.context-menu-label { padding: 5px 14px 3px; font-size: var(--text-overline); font-weight: var(--weight-bold); text-transform: uppercase; letter-spacing: var(--tracking-widest); color: var(--md-outline); }
+
+/* kbd */
+.kbd { display: inline-flex; align-items: center; padding: 1px 6px; background: var(--md-surface-container); border: 1px solid var(--md-outline-variant); border-bottom: 2px solid var(--md-outline-variant); border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 11px; font-weight: var(--weight-medium); color: var(--md-on-surface-variant); }
+
+/* Elevation demo */
+.elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-6); }
+.elev-box { height: 96px; background: var(--md-surface-container-lowest); border-radius: var(--radius-lg); display: grid; place-items: center; font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); }
+
+/* Radius demo */
+.radius-box { width: 90px; height: 90px; background: linear-gradient(135deg, var(--jp-fuji), var(--hue-vlight)); display: grid; place-items: end; padding: 8px; color: #fff; font-family: var(--font-mono); font-size: 10px; }
+
+/* Gradients */
+.grad { height: 90px; border-radius: var(--radius-md); display: flex; align-items: flex-end; padding: 8px 12px; color: #fff; font-family: var(--font-mono); font-size: 10px; text-shadow: 0 1px 3px rgba(0,0,0,.4); }
+.gradient-product { background: linear-gradient(145deg, var(--md-surface-container-high) 0%, var(--md-surface-dim) 50%, var(--md-outline-variant) 100%); color: var(--md-on-surface); text-shadow: none; }
+.gradient-lens { background: linear-gradient(135deg, var(--hue-vdark) 0%, var(--md-primary) 100%); }
+.gradient-feature-light { background: linear-gradient(135deg, var(--jp-toki) 0%, var(--hue-fg) 50%, var(--hue-cool) 100%); color: var(--md-on-surface); text-shadow: none; }
+.gradient-feature-dark { background: linear-gradient(135deg, var(--hue-cool) 0%, var(--hue-vlight) 100%); }
+.gradient-camera { background: linear-gradient(180deg, var(--hue-fg) 0%, var(--jp-fuji) 50%, var(--hue-mount) 100%); }
+
+/* Motion demo */
+.motion-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--space-4); }
+.motion-box { aspect-ratio: 1; background: var(--md-surface-container-low); border: 1px solid var(--md-outline-variant); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font-size: var(--text-caption); color: var(--md-on-surface-variant); }
+.dot { width: 26px; height: 26px; border-radius: 50%; background: var(--md-primary); }
+.animate-spin { animation: spin 1s var(--ease-linear) infinite; border-radius: var(--radius-xs); }
+.animate-pulse { animation: pulse 2s var(--ease-default) infinite; }
+.animate-float { animation: float 3s ease infinite; }
+.animate-breathe { animation: breathe 2.5s ease infinite; }
+@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes breathe { 0%,100% { transform: scale(0.85); opacity: 0.6; } 50% { transform: scale(1); opacity: 1; } }
+
+.skeleton { background: linear-gradient(90deg, var(--md-surface-container) 25%, var(--md-surface-container-high) 50%, var(--md-surface-container) 75%); background-size: 200%; animation: shimmer 1.8s var(--ease-linear) infinite; border-radius: var(--radius-sm); height: 14px; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* Spacing demo */
+.space-row { display: flex; align-items: center; gap: var(--space-4); margin-bottom: 6px; }
+.space-row .lbl { font-family: var(--font-mono); font-size: 11px; width: 130px; color: var(--md-on-surface-variant); }
+.space-bar { height: 16px; background: var(--md-secondary); border-radius: 3px; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .side { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--md-outline-variant); }
+  .side-nav { flex-direction: row; flex-wrap: wrap; }
+  .main { padding: var(--space-8) var(--space-6) var(--space-16); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- ── SIDEBAR ── -->
+  <aside class="side">
+    <div class="side-brand">
+      <div class="side-mark">V</div>
+      <div>
+        <div class="side-title">Verdure</div>
+        <div class="side-ver">v1.3.0 · Preview</div>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="#typography">Typography</a>
+      <a href="#color">Color System</a>
+      <a href="#status">Status Colors</a>
+      <a href="#spacing">Spacing &amp; Shape</a>
+      <a href="#elevation">Elevation</a>
+      <a href="#gradients">Gradients</a>
+      <a href="#buttons">Buttons</a>
+      <a href="#forms">Inputs &amp; Forms</a>
+      <a href="#badges">Badges &amp; Tags</a>
+      <a href="#cards">Cards</a>
+      <a href="#alerts">Alerts</a>
+      <a href="#progress">Progress</a>
+      <a href="#avatars">Avatars</a>
+      <a href="#domain">Education Domain</a>
+      <a href="#contextmenu">Context Menu</a>
+      <a href="#motion">Motion</a>
+    </nav>
+    <div class="side-foot">Rendered from<br>docs/markdown/design-system.md</div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+    <header class="hero">
+      <div class="eyebrow">Material Design 3 · Cool Neutral Violet</div>
+      <h1>Verdure Design System</h1>
+      <p>ระบบออกแบบที่สร้างบนรากฐาน Material Design 3 Color System — palette สี Cool Neutral Violet ที่ sophisticated, อ่านง่าย และ accessible ในทุก surface layer ผสมกับ typography ที่สมดุลระหว่างมรดกทางวัฒนธรรมและประสิทธิภาพในการใช้งาน</p>
+    </header>
+
+    <!-- TYPOGRAPHY -->
+    <section class="block" id="typography">
+      <div class="sec-head"><span class="sec-num">02</span><h2>Typography</h2></div>
+      <div class="panel">
+        <div class="type-row"><span class="tag">display · 700</span><span style="font-family:var(--font-serif);font-size:var(--text-display);font-weight:700;line-height:1.05">ผลลัพธ์การเรียนรู้</span></div>
+        <div class="type-row"><span class="tag">h1 · 700</span><span style="font-family:var(--font-serif);font-size:var(--text-h1);font-weight:700">Course Outcomes</span></div>
+        <div class="type-row"><span class="tag">h2 · 600</span><span style="font-family:var(--font-serif);font-size:var(--text-h2);font-weight:600">Section Title</span></div>
+        <div class="type-row"><span class="tag">h3 · Plex Sans</span><span style="font-size:var(--text-h3);font-weight:700">Sub-section Header</span></div>
+        <div class="type-row"><span class="tag">h4 · Plex Sans</span><span style="font-size:var(--text-h4);font-weight:600">Card Title</span></div>
+        <div class="type-row"><span class="tag">body-lg</span><span style="font-size:var(--text-body-lg)">Primary reading text — อ่านง่ายสบายตา</span></div>
+        <div class="type-row"><span class="tag">body</span><span style="font-size:var(--text-body)">Default body copy สำหรับเนื้อหาทั่วไป</span></div>
+        <div class="type-row"><span class="tag">body-sm</span><span style="font-size:var(--text-body-sm)">Supporting text and secondary info</span></div>
+        <div class="type-row"><span class="tag">label</span><span style="font-size:var(--text-label);font-weight:600">FORM LABEL</span></div>
+        <div class="type-row"><span class="tag">caption</span><span style="font-size:var(--text-caption)">Metadata · timestamps</span></div>
+        <div class="type-row"><span class="tag">overline</span><span style="font-size:var(--text-overline);font-weight:700;letter-spacing:var(--tracking-wider);text-transform:uppercase">Section Tag</span></div>
+        <div class="type-row" style="border-bottom:none"><span class="tag">code · mono token</span><span style="font-family:var(--font-mono);font-size:var(--text-code)">--md-primary: #19151b;</span></div>
+      </div>
+    </section>
+
+    <!-- COLOR -->
+    <section class="block" id="color">
+      <div class="sec-head"><span class="sec-num">03</span><h2>Color System</h2></div>
+      <p class="note">M3 color roles โดยค่า hex ตรงกับ production palette — Surface, Primary (near-black), Secondary (slate-violet), Tertiary และ JP Accents</p>
+
+      <div class="sub">Surface Hierarchy</div>
+      <div class="swatches" id="sw-surface"></div>
+      <div class="sub">Primary · Secondary · Tertiary</div>
+      <div class="swatches" id="sw-brand"></div>
+      <div class="sub">JP Accent Palette</div>
+      <div class="swatches" id="sw-jp"></div>
+    </section>
+
+    <!-- STATUS -->
+    <section class="block" id="status">
+      <div class="sec-head"><span class="sec-num">04</span><h2>Status Colors</h2></div>
+      <p class="note">Google Material colors เป็น semantic layer — สื่อสาร status ได้ทันทีโดยไม่ต้องตีความ</p>
+      <div class="swatches" id="sw-status"></div>
+      <div class="sub">Status Dots</div>
+      <div class="row" style="gap:var(--space-6)">
+        <span class="row" style="gap:6px"><span class="status-dot status-dot--online"></span>Online</span>
+        <span class="row" style="gap:6px"><span class="status-dot status-dot--pending"></span>Pending</span>
+        <span class="row" style="gap:6px"><span class="status-dot status-dot--error"></span>Error</span>
+        <span class="row" style="gap:6px"><span class="status-dot status-dot--info"></span>Info</span>
+        <span class="row" style="gap:6px"><span class="status-dot status-dot--offline"></span>Offline</span>
+      </div>
+    </section>
+
+    <!-- SPACING -->
+    <section class="block" id="spacing">
+      <div class="sec-head"><span class="sec-num">05</span><h2>Spacing &amp; Shape</h2></div>
+      <div class="sub">Spacing Scale (Base 4)</div>
+      <div class="panel" id="space-demo"></div>
+      <div class="sub">Border Radius</div>
+      <div class="row" style="gap:var(--space-4)">
+        <div class="radius-box" style="border-radius:var(--radius-xs)">xs·4</div>
+        <div class="radius-box" style="border-radius:var(--radius-sm)">sm·8</div>
+        <div class="radius-box" style="border-radius:var(--radius-md)">md·16★</div>
+        <div class="radius-box" style="border-radius:var(--radius-lg)">lg·24</div>
+        <div class="radius-box" style="border-radius:var(--radius-xl)">xl·32</div>
+        <div class="radius-box" style="border-radius:var(--radius-full)">full</div>
+      </div>
+    </section>
+
+    <!-- ELEVATION -->
+    <section class="block" id="elevation">
+      <div class="sec-head"><span class="sec-num">06</span><h2>Elevation &amp; Shadow</h2></div>
+      <p class="note">Tonal elevation + soft shadow — shadow color = jp-shikoku #2e2930</p>
+      <div class="elev-grid">
+        <div class="elev-box" style="box-shadow:var(--shadow-1)">shadow-1</div>
+        <div class="elev-box" style="box-shadow:var(--shadow-2)">shadow-2</div>
+        <div class="elev-box" style="box-shadow:var(--shadow-3)">shadow-3</div>
+        <div class="elev-box" style="box-shadow:var(--shadow-4)">shadow-4</div>
+        <div class="elev-box" style="box-shadow:var(--shadow-glass)">glass</div>
+      </div>
+    </section>
+
+    <!-- GRADIENTS -->
+    <section class="block" id="gradients">
+      <div class="sec-head"><span class="sec-num">03b</span><h2>JP Accent Gradients</h2></div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">
+        <div class="grad gradient-product">.gradient-product</div>
+        <div class="grad gradient-lens">.gradient-lens</div>
+        <div class="grad gradient-feature-light">.gradient-feature-light</div>
+        <div class="grad gradient-feature-dark">.gradient-feature-dark</div>
+        <div class="grad gradient-camera">.gradient-camera</div>
+      </div>
+    </section>
+
+    <!-- BUTTONS -->
+    <section class="block" id="buttons">
+      <div class="sec-head"><span class="sec-num">8.1</span><h2>Buttons</h2></div>
+      <div class="sub">Variants</div>
+      <div class="row">
+        <button class="btn btn--primary">Primary</button>
+        <button class="btn btn--secondary">Secondary</button>
+        <button class="btn btn--tertiary">Tertiary</button>
+        <button class="btn btn--outlined">Outlined</button>
+        <button class="btn btn--ghost">Ghost</button>
+        <button class="btn btn--neutral">Neutral</button>
+        <button class="btn btn--inverted">Inverted</button>
+        <button class="btn btn--danger">Danger</button>
+        <button class="btn btn--primary" disabled>Disabled</button>
+      </div>
+      <div class="sub">Sizes</div>
+      <div class="row">
+        <button class="btn btn--primary btn--xs">Extra Small</button>
+        <button class="btn btn--primary btn--sm">Small</button>
+        <button class="btn btn--primary">Medium</button>
+        <button class="btn btn--primary btn--lg">Large</button>
+      </div>
+    </section>
+
+    <!-- FORMS -->
+    <section class="block" id="forms">
+      <div class="sec-head"><span class="sec-num">8.2</span><h2>Inputs &amp; Forms</h2></div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));max-width:760px">
+        <div>
+          <label class="form-label form-label--required">Course Name</label>
+          <input class="input" placeholder="เช่น Introduction to Design">
+          <div class="form-hint">ชื่อรายวิชาที่จะแสดงในระบบ</div>
+        </div>
+        <div>
+          <label class="form-label">Category</label>
+          <select class="input select"><option>เลือกหมวดหมู่</option><option>Core</option><option>Elective</option></select>
+        </div>
+        <div>
+          <label class="form-label">Error state</label>
+          <input class="input input--error" value="invalid@">
+          <div class="form-error">รูปแบบอีเมลไม่ถูกต้อง</div>
+        </div>
+        <div>
+          <label class="form-label">Notes</label>
+          <textarea class="input textarea" placeholder="เพิ่มรายละเอียด..."></textarea>
+        </div>
+      </div>
+      <div class="sub">Toggle · Checkbox · Radio</div>
+      <div class="row" style="gap:var(--space-8)">
+        <span class="row" style="gap:10px"><span class="toggle-track is-on"><span class="toggle-thumb"></span></span> On</span>
+        <span class="row" style="gap:10px"><span class="toggle-track"><span class="toggle-thumb"></span></span> Off</span>
+        <label class="row" style="gap:8px"><input type="checkbox" class="checkbox" checked> Checked</label>
+        <label class="row" style="gap:8px"><input type="checkbox" class="checkbox"> Unchecked</label>
+        <label class="row" style="gap:8px"><input type="radio" name="r" class="radio" checked> Radio A</label>
+        <label class="row" style="gap:8px"><input type="radio" name="r" class="radio"> Radio B</label>
+      </div>
+    </section>
+
+    <!-- BADGES -->
+    <section class="block" id="badges">
+      <div class="sec-head"><span class="sec-num">8.3</span><h2>Badges &amp; Tags</h2></div>
+      <div class="sub">Brand Badges</div>
+      <div class="row">
+        <span class="badge badge--primary">PRIMARY</span>
+        <span class="badge badge--secondary">SECONDARY</span>
+        <span class="badge badge--tertiary">TERTIARY</span>
+        <span class="badge badge--dark">DARK</span>
+        <span class="badge badge--neutral">NEUTRAL</span>
+      </div>
+      <div class="sub">Status Badges</div>
+      <div class="row">
+        <span class="badge badge--info">INFO</span>
+        <span class="badge badge--success">SUCCESS</span>
+        <span class="badge badge--warning">WARNING</span>
+        <span class="badge badge--danger">DANGER</span>
+      </div>
+      <div class="sub">Interactive Tags</div>
+      <div class="row">
+        <span class="tag tag--primary">Design</span>
+        <span class="tag tag--secondary">Research</span>
+        <span class="tag tag--tertiary">Archived</span>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section class="block" id="cards">
+      <div class="sec-head"><span class="sec-num">8.4</span><h2>Cards</h2></div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
+        <div class="card card--primary">
+          <div class="card-meta">Course</div>
+          <div class="card-title">Design Foundations</div>
+          <div class="card-body">พื้นฐานการออกแบบสำหรับผู้เริ่มต้น ครอบคลุมทฤษฎีสีและ typography</div>
+          <div class="card-footer"><span class="badge badge--success">Active</span><button class="btn btn--ghost btn--sm">เปิด</button></div>
+        </div>
+        <div class="card card--secondary">
+          <div class="card-meta">CLO</div>
+          <div class="card-title">Learning Outcome 3</div>
+          <div class="card-body">นักเรียนสามารถวิเคราะห์และประยุกต์หลักการออกแบบได้อย่างเหมาะสม</div>
+          <div class="card-footer"><span class="score-badge score-badge--medium">72%</span><button class="btn btn--ghost btn--sm">ดู</button></div>
+        </div>
+        <div class="card card--dark">
+          <div class="card-meta">Insight</div>
+          <div class="card-title">Cohort Summary</div>
+          <div class="card-body">ภาพรวมผลสัมฤทธิ์ของนักเรียนทั้งหมดใน semester นี้</div>
+          <div class="card-footer"><span class="badge badge--neutral">Q3</span><button class="btn btn--inverted btn--sm">รายละเอียด</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALERTS -->
+    <section class="block" id="alerts">
+      <div class="sec-head"><span class="sec-num">8.5</span><h2>Alerts</h2></div>
+      <div class="grid" style="max-width:680px">
+        <div class="alert alert--info">
+          <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <div><div class="alert-title">ข้อมูล</div><div class="alert-body">มี CLO ใหม่ 3 รายการรอการตรวจสอบ</div></div>
+        </div>
+        <div class="alert alert--success">
+          <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <div><div class="alert-title">บันทึกสำเร็จ</div><div class="alert-body">ข้อมูลของคุณได้รับการบันทึกเรียบร้อยแล้ว</div></div>
+        </div>
+        <div class="alert alert--warning">
+          <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          <div><div class="alert-title">โปรดตรวจสอบ</div><div class="alert-body">มีงาน 5 รายการใกล้ถึงกำหนดส่ง</div></div>
+        </div>
+        <div class="alert alert--danger">
+          <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86L7.86 2Z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+          <div><div class="alert-title">เกิดข้อผิดพลาด</div><div class="alert-body">ไม่สามารถบันทึกได้ กรุณาลองใหม่อีกครั้ง</div></div>
+        </div>
+        <div class="alert alert--brand">
+          <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+          <div><div class="alert-title">Verdure Tip</div><div class="alert-body">ใช้คีย์ลัด <span class="kbd">N</span> เพื่อสร้าง CLO ใหม่ได้ทันที</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section class="block" id="progress">
+      <div class="sec-head"><span class="sec-num">8.7</span><h2>Progress</h2></div>
+      <div class="panel" style="max-width:560px">
+        <div class="progress"><div class="progress-header"><span class="progress-label">Primary</span><span class="progress-value">72%</span></div><div class="progress-track"><div class="progress-fill progress-fill--primary" style="width:72%"></div></div></div>
+        <div class="progress"><div class="progress-header"><span class="progress-label">Success</span><span class="progress-value">88%</span></div><div class="progress-track"><div class="progress-fill progress-fill--success" style="width:88%"></div></div></div>
+        <div class="progress"><div class="progress-header"><span class="progress-label">Warning</span><span class="progress-value">54%</span></div><div class="progress-track"><div class="progress-fill progress-fill--warning" style="width:54%"></div></div></div>
+        <div class="progress"><div class="progress-header"><span class="progress-label">Danger</span><span class="progress-value">31%</span></div><div class="progress-track"><div class="progress-fill progress-fill--danger" style="width:31%"></div></div></div>
+        <div class="progress" style="margin-bottom:0"><div class="progress-header"><span class="progress-label">Info</span><span class="progress-value">45%</span></div><div class="progress-track"><div class="progress-fill progress-fill--info" style="width:45%"></div></div></div>
+      </div>
+    </section>
+
+    <!-- AVATARS -->
+    <section class="block" id="avatars">
+      <div class="sec-head"><span class="sec-num">8.8</span><h2>Avatars</h2></div>
+      <div class="sub">Sizes</div>
+      <div class="row">
+        <span class="avatar avatar--xs avatar--primary">XS</span>
+        <span class="avatar avatar--sm avatar--primary">SM</span>
+        <span class="avatar avatar--md avatar--secondary">MD</span>
+        <span class="avatar avatar--lg avatar--tertiary">LG</span>
+        <span class="avatar avatar--xl avatar--dark">XL</span>
+      </div>
+      <div class="sub">Stack</div>
+      <div class="avatar-stack">
+        <span class="avatar avatar--md avatar--dark">+5</span>
+        <span class="avatar avatar--md avatar--tertiary">C</span>
+        <span class="avatar avatar--md avatar--secondary">B</span>
+        <span class="avatar avatar--md avatar--primary">A</span>
+      </div>
+    </section>
+
+    <!-- DOMAIN -->
+    <section class="block" id="domain">
+      <div class="sec-head"><span class="sec-num">12</span><h2>Educational Domain</h2></div>
+      <div class="sub">Stat Cards — KPI</div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">
+        <div class="stat-card stat-card--blue"><span class="stat-label">In Progress</span><span class="stat-value">128</span><span class="stat-sub">นักเรียนกำลังเรียน</span></div>
+        <div class="stat-card stat-card--green"><span class="stat-label">Completed</span><span class="stat-value">94</span><span class="stat-sub">ผ่านเกณฑ์ทั้งหมด</span></div>
+        <div class="stat-card stat-card--yellow"><span class="stat-label">Watch</span><span class="stat-value">17</span><span class="stat-sub">ต้องเฝ้าระวัง</span></div>
+        <div class="stat-card stat-card--red"><span class="stat-label">At Risk</span><span class="stat-value">6</span><span class="stat-sub">ต่ำกว่าเกณฑ์</span></div>
+      </div>
+      <div class="sub">Score Badges &amp; Status Chips</div>
+      <div class="row">
+        <span class="score-badge score-badge--high">88/100 Passed</span>
+        <span class="score-badge score-badge--medium">65/100 Watch</span>
+        <span class="score-badge score-badge--low">42/100 At Risk</span>
+        <span class="score-badge score-badge--inprogress">— In Progress</span>
+      </div>
+      <div class="row" style="margin-top:var(--space-4)">
+        <span class="status-chip status-chip--inprogress"><span class="chip-dot"></span>In Progress</span>
+        <span class="status-chip status-chip--completed"><span class="chip-dot"></span>Completed</span>
+        <span class="status-chip status-chip--warning"><span class="chip-dot"></span>Warning</span>
+        <span class="status-chip status-chip--overdue"><span class="chip-dot"></span>Overdue</span>
+      </div>
+      <div class="sub">Heatmap — Cohort × CLO Attainment</div>
+      <p class="note">แต่ละ cell = ผลสัมฤทธิ์ของนักเรียน 1 คน ใน CLO 1 ข้อ — สีสื่อถึง <strong>status การบรรลุเกณฑ์</strong> ไม่ใช่การตกแต่ง</p>
+      <div class="panel" style="overflow-x:auto">
+        <div class="heatmap-grid" id="heatmap"></div>
+        <div class="heatmap-legend">
+          <span class="hm-key"><span class="heatmap-cell heatmap-cell--high" style="width:16px;height:16px"></span> ผ่านเกณฑ์ (≥75%)</span>
+          <span class="hm-key"><span class="heatmap-cell heatmap-cell--medium" style="width:16px;height:16px"></span> เฝ้าระวัง (50–74%)</span>
+          <span class="hm-key"><span class="heatmap-cell heatmap-cell--low" style="width:16px;height:16px"></span> ต่ำกว่าเกณฑ์ (&lt;50%)</span>
+          <span class="hm-key"><span class="heatmap-cell heatmap-cell--inprogress" style="width:16px;height:16px"></span> กำลังดำเนินการ</span>
+          <span class="hm-key"><span class="heatmap-cell heatmap-cell--empty" style="width:16px;height:16px"></span> ไม่มีข้อมูล</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTEXT MENU -->
+    <section class="block" id="contextmenu">
+      <div class="sec-head"><span class="sec-num">15</span><h2>Context Menu &amp; Shortcuts</h2></div>
+      <div class="row" style="align-items:flex-start;gap:var(--space-8)">
+        <div class="context-menu">
+          <button class="context-menu-item">Rename<span class="menu-shortcut">F2</span></button>
+          <div class="context-menu-separator"></div>
+          <div class="context-menu-label">Clipboard</div>
+          <button class="context-menu-item">Copy<span class="menu-shortcut">Ctrl+C</span></button>
+          <button class="context-menu-item">Cut<span class="menu-shortcut">Ctrl+X</span></button>
+          <button class="context-menu-item">Paste Below<span class="menu-shortcut">Ctrl+V</span></button>
+          <div class="context-menu-separator"></div>
+          <button class="context-menu-item">Duplicate<span class="menu-shortcut">Ctrl+D</span></button>
+          <button class="context-menu-item context-menu-item--danger">Delete<span class="menu-shortcut">Del</span></button>
+        </div>
+        <div>
+          <div class="sub" style="margin-top:0">Keyboard Shortcuts</div>
+          <div class="grid" style="gap:8px">
+            <div class="row"><span class="kbd">N</span><span style="font-size:var(--text-body-sm);color:var(--md-on-surface-variant)">New CLO</span></div>
+            <div class="row"><span class="kbd">T</span><span style="font-size:var(--text-body-sm);color:var(--md-on-surface-variant)">New Task</span></div>
+            <div class="row"><span class="kbd">/</span><span style="font-size:var(--text-body-sm);color:var(--md-on-surface-variant)">Focus search</span></div>
+            <div class="row"><span class="kbd">Alt+↑</span><span style="font-size:var(--text-body-sm);color:var(--md-on-surface-variant)">Move row up</span></div>
+            <div class="row"><span class="kbd">Ctrl+Z</span><span style="font-size:var(--text-body-sm);color:var(--md-on-surface-variant)">Undo</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOTION -->
+    <section class="block" id="motion">
+      <div class="sec-head"><span class="sec-num">09</span><h2>Motion &amp; Animation</h2></div>
+      <div class="motion-grid">
+        <div class="motion-box"><div class="dot animate-spin"></div>spin</div>
+        <div class="motion-box"><div class="dot animate-pulse"></div>pulse</div>
+        <div class="motion-box"><div class="dot animate-float"></div>float</div>
+        <div class="motion-box"><div class="dot animate-breathe"></div>breathe</div>
+      </div>
+      <div class="sub">Skeleton Shimmer</div>
+      <div class="panel" style="max-width:420px;display:grid;gap:10px">
+        <div class="skeleton" style="width:60%"></div>
+        <div class="skeleton" style="width:90%"></div>
+        <div class="skeleton" style="width:75%"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// ── Build color swatches from token values ──
+function swatchHTML(list){
+  return list.map(function(t){
+    var v = getComputedStyle(document.documentElement).getPropertyValue(t.var).trim();
+    return '<div class="swatch"><div class="chip" style="background:'+v+'"></div>'+
+           '<div class="meta"><div class="name">'+t.name+'</div><div class="hex">'+v+'</div></div></div>';
+  }).join('');
+}
+document.getElementById('sw-surface').innerHTML = swatchHTML([
+  {name:'page-frame', var:'--md-page-frame'},
+  {name:'surface', var:'--md-surface'},
+  {name:'container-lowest', var:'--md-surface-container-lowest'},
+  {name:'container-low', var:'--md-surface-container-low'},
+  {name:'container', var:'--md-surface-container'},
+  {name:'container-high', var:'--md-surface-container-high'},
+  {name:'container-highest', var:'--md-surface-container-highest'},
+  {name:'surface-dim', var:'--md-surface-dim'},
+]);
+document.getElementById('sw-brand').innerHTML = swatchHTML([
+  {name:'primary', var:'--md-primary'},
+  {name:'primary-hover', var:'--md-primary-hover'},
+  {name:'primary-container', var:'--md-primary-container'},
+  {name:'secondary', var:'--md-secondary'},
+  {name:'secondary-container', var:'--md-secondary-container'},
+  {name:'tertiary', var:'--md-tertiary'},
+  {name:'on-surface', var:'--md-on-surface'},
+  {name:'on-surface-variant', var:'--md-on-surface-variant'},
+  {name:'outline', var:'--md-outline'},
+  {name:'outline-variant', var:'--md-outline-variant'},
+  {name:'inverse-surface', var:'--md-inverse-surface'},
+  {name:'error', var:'--md-error'},
+]);
+document.getElementById('sw-jp').innerHTML = swatchHTML([
+  {name:'jp-fuji', var:'--jp-fuji'},
+  {name:'jp-shikoku', var:'--jp-shikoku'},
+  {name:'jp-toki', var:'--jp-toki'},
+  {name:'hue-fg', var:'--hue-fg'},
+  {name:'hue-cool', var:'--hue-cool'},
+  {name:'hue-mount', var:'--hue-mount'},
+  {name:'hue-vlight', var:'--hue-vlight'},
+  {name:'hue-vdark', var:'--hue-vdark'},
+]);
+document.getElementById('sw-status').innerHTML = swatchHTML([
+  {name:'blue · info', var:'--google-blue'},
+  {name:'green · success', var:'--google-green'},
+  {name:'yellow · warning', var:'--google-yellow'},
+  {name:'red · danger', var:'--google-red'},
+]);
+
+// ── Spacing demo ──
+var spaces=[['space-1','4px'],['space-2','8px'],['space-3','12px'],['space-4','16px'],['space-5','20px'],['space-6','24px'],['space-8','32px'],['space-12','48px'],['space-16','64px'],['space-24','96px']];
+document.getElementById('space-demo').innerHTML = spaces.map(function(s){
+  return '<div class="space-row"><span class="lbl">--'+s[0]+' · '+s[1]+'</span><div class="space-bar" style="width:'+s[1]+'"></div></div>';
+}).join('');
+
+// ── Heatmap — Cohort (rows) × CLO (columns) status matrix ──
+(function(){
+  var students=['สมชาย ก.','อารยา ท.','กิตติ ว.','นภา ส.','ปิยะ พ.','วีรพล จ.'];
+  var closN=8;
+  // each row = one student's attainment status across CLO1..CLO8
+  var matrix=[
+    ['high','high','high','medium','high','high','high','high'],
+    ['high','medium','high','high','high','high','medium','high'],
+    ['medium','high','low','medium','high','inprogress','high','medium'],
+    ['high','high','high','high','high','high','high','high'],
+    ['low','medium','low','medium','inprogress','low','medium','low'],
+    ['high','high','medium','high','high','high','inprogress','high']
+  ];
+  var pct={high:'88',medium:'64',low:'41',inprogress:'—',empty:''};
+  var grid=document.getElementById('heatmap');
+  grid.style.gridTemplateColumns='auto repeat('+closN+', 28px)';
+  var html='<div class="hm-corner"></div>';
+  for(var c=0;c<closN;c++){ html+='<div class="hm-col-head">C'+(c+1)+'</div>'; }
+  for(var r=0;r<students.length;r++){
+    html+='<div class="hm-row-head">'+students[r]+'</div>';
+    for(var c2=0;c2<closN;c2++){
+      var lv=matrix[r][c2];
+      html+='<div class="heatmap-cell heatmap-cell--'+lv+'" title="'+students[r]+' · CLO '+(c2+1)+' · '+lv+'">'+pct[lv]+'</div>';
+    }
+  }
+  grid.innerHTML=html;
+})();
+</script>
+</body>
+</html>

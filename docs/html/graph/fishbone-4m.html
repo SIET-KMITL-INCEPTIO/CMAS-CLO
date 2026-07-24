@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แผนภาพก้างปลา (Fishbone / 4M) — CMAS</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a class="active" href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<h1 id="แผนภาพก้างปลา-fishbone--4m--cmas" tabindex="-1"><a class="header-anchor" href="#แผนภาพก้างปลา-fishbone--4m--cmas"><span>แผนภาพก้างปลา (Fishbone / 4M) — CMAS</span></a></h1>
+<blockquote>
+<p><strong>ที่มาข้อมูล:</strong> <code>docs/pdf/เอกสารอนุมัติหัวข้อโปรเจคกลุ่ม-gxx.pdf</code> (PD01 — แบบขออนุมัติหัวข้อโครงงาน)
+<strong>โครงงาน:</strong> ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CMAS)
+<strong>วิธีวิเคราะห์:</strong> แผนภาพก้างปลา (Ishikawa) จัดกลุ่มสาเหตุตามหมวดมาตรฐาน <strong>4M</strong> — Man / Method / Machine / Material</p>
+</blockquote>
+<p>ดูเพิ่มเติม: <span class="wikilink-missing" title="unresolved: fishbone">fishbone</span> (ฉบับวิเคราะห์ 5 Why) · <a href="../dev/features-pages.html">features-pages</a> · <a href="../dev/dev.html">dev</a></p>
+<hr>
+<h2 id="-ปัญหาหลัก-หัวปลา" tabindex="-1"><a class="header-anchor" href="#-ปัญหาหลัก-หัวปลา"><span>🎯 ปัญหาหลัก (หัวปลา)</span></a></h2>
+<blockquote>
+<p><strong>ข้อจำกัดในการติดตามและช่วยเหลือนักศึกษากลุ่มเสี่ยงอย่างทันท่วงที</strong>
+<em>Lack of Timely Intervention for At-Risk Students</em></p>
+</blockquote>
+<p>ในการสอนแบบเน้นผลลัพธ์ (OBE) อาจารย์ต้องการช่วยนักศึกษาที่เรียนไม่ทันให้ทันก่อนหมดภาคเรียน แต่ปัจจุบันทำได้ยาก เพราะกว่าจะเห็นสัญญาณความเสี่ยงก็มักเป็นช่วงปลายภาคเรียนแล้ว</p>
+<hr>
+<h2 id="แผนภาพก้างปลา-4m" tabindex="-1"><a class="header-anchor" href="#แผนภาพก้างปลา-4m"><span>แผนภาพก้างปลา (4M)</span></a></h2>
+<pre class="hljs"><code>   MAN (บุคลากร)                          METHOD (วิธีการ)
+        │                                       │
+  • อาจารย์มีข้อจำกัดด้านเวลา            • การประเมินผลมักทำแบบรวบยอด
+    ในการจัดการข้อมูลนักศึกษารายบุคคล        ในช่วงปลายภาคเรียน
+  • ข้อจำกัดด้านเครื่องมืออำนวย           • ขาดระบบติดตามผลระหว่างเรียน
+    ความสะดวกในการประเมินผล                 → ขาดตัวบ่งชี้ความเสี่ยงที่ชัดเจน
+        │                                       │
+        ╲                                       ╱
+         ╲                                     ╱
+  ════════════════════════════════════════════════▶ ┏━━━━━━━━━━━━━━━━━━━━━┓
+         ╱                                     ╲     ┃ ข้อจำกัดในการติดตาม  ┃
+        ╱                                       ╲    ┃ และช่วยเหลือนักศึกษา ┃
+        │                                       │    ┃ กลุ่มเสี่ยงอย่าง     ┃
+  • ระบบเดิมรองรับการบันทึกคะแนน         • ไม่มีเทมเพลตไฟล์ฟอร์ม      ┃ ทันท่วงที           ┃
+    CLOs แต่กระบวนการซับซ้อน                บันทึกคะแนนมาตรฐานเดียวกัน  ┗━━━━━━━━━━━━━━━━━━━━━┛
+  • ผู้สอนต้องแยกบันทึกคะแนนลงใน         • คะแนนดิบเก็บใน Excel
+    แต่ละช่องของนักศึกษารายบุคคล             หลายรูปแบบ → ยากต่อการประมวลผล
+        │                                       │
+ MACHINE / TECHNOLOGY                     MATERIAL (ข้อมูล/วัสดุ)
+   (เครื่องมือ/เทคโนโลยี)
+</code></pre>
+<h3 id="แบบเรนเดอร์-mermaid" tabindex="-1"><a class="header-anchor" href="#แบบเรนเดอร์-mermaid"><span>แบบเรนเดอร์ (Mermaid)</span></a></h3>
+<pre class="mermaid">flowchart LR
+    %% ---- MAN ----
+    M1[&quot;อาจารย์มีข้อจำกัดด้านเวลา&lt;br/&gt;ในการจัดการข้อมูลนักศึกษารายบุคคล&quot;] --&gt; MAN
+    M2[&quot;ข้อจำกัดด้านเครื่องมือ&lt;br/&gt;อำนวยความสะดวกในการประเมินผล&quot;] --&gt; MAN
+    %% ---- METHOD ----
+    T1[&quot;การประเมินผลมักทำแบบรวบยอด&lt;br/&gt;ในช่วงปลายภาคเรียน&quot;] --&gt; METHOD
+    T2[&quot;ขาดระบบติดตามผลระหว่างเรียน&lt;br/&gt;→ ขาดตัวบ่งชี้ความเสี่ยงที่ชัดเจน&quot;] --&gt; METHOD
+    %% ---- MACHINE ----
+    C1[&quot;ระบบเดิมรองรับบันทึกคะแนน CLOs&lt;br/&gt;แต่กระบวนการซับซ้อน&quot;] --&gt; MACHINE
+    C2[&quot;ผู้สอนต้องแยกบันทึกคะแนน&lt;br/&gt;ลงแต่ละช่องของนักศึกษารายบุคคล&quot;] --&gt; MACHINE
+    %% ---- MATERIAL ----
+    R1[&quot;ไม่มีเทมเพลตไฟล์ฟอร์ม&lt;br/&gt;บันทึกคะแนนมาตรฐานเดียวกัน&quot;] --&gt; MATERIAL
+    R2[&quot;คะแนนดิบเก็บใน Excel หลายรูปแบบ&lt;br/&gt;→ ยากต่อการนำมาประมวลผล&quot;] --&gt; MATERIAL
+
+    MAN[&quot;MAN&lt;br/&gt;บุคลากร&quot;] --&gt; P
+    METHOD[&quot;METHOD&lt;br/&gt;วิธีการ&quot;] --&gt; P
+    MACHINE[&quot;MACHINE / TECHNOLOGY&lt;br/&gt;เครื่องมือ/เทคโนโลยี&quot;] --&gt; P
+    MATERIAL[&quot;MATERIAL&lt;br/&gt;ข้อมูล/วัสดุ&quot;] --&gt; P
+
+    P[&quot;🎯 ข้อจำกัดในการติดตามและช่วยเหลือ&lt;br/&gt;นักศึกษากลุ่มเสี่ยงอย่างทันท่วงที&quot;]
+
+    classDef head fill:#C0392B,color:#fff,stroke:#7d2018,font-weight:bold;
+    classDef man fill:#C77DE0,color:#000,stroke:#7d2018,font-weight:bold;
+    classDef method fill:#F5D34E,color:#000,stroke:#b8991f,font-weight:bold;
+    classDef machine fill:#A6D858,color:#000,stroke:#5f8a1f,font-weight:bold;
+    classDef material fill:#EE8A6B,color:#000,stroke:#b8542f,font-weight:bold;
+    class P head;
+    class MAN man;
+    class METHOD method;
+    class MACHINE machine;
+    class MATERIAL material;
+</pre>
+<hr>
+<h2 id="สาเหตุตามหมวด-4m" tabindex="-1"><a class="header-anchor" href="#สาเหตุตามหมวด-4m"><span>สาเหตุตามหมวด 4M</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>หมวด</th>
+<th>สาเหตุ (Cause)</th>
+<th>เชื่อมโยงกับปัญหาหลัก</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MAN</strong> บุคลากร</td>
+<td>อาจารย์มีข้อจำกัดด้านเวลาในการจัดการข้อมูลนักศึกษาเป็นรายบุคคล</td>
+<td>เวลาไม่พอ → ติดตามรายคนไม่ไหว</td>
+</tr>
+<tr>
+<td></td>
+<td>อาจารย์ประสบปัญหาข้อจำกัดด้านเครื่องมืออำนวยความสะดวกในการประเมินผล</td>
+<td>ไม่มีเครื่องมือช่วย → งานประเมินหนัก</td>
+</tr>
+<tr>
+<td><strong>METHOD</strong> วิธีการ</td>
+<td>การประเมินผลมักทำแบบรวบยอดในช่วงปลายภาคเรียน</td>
+<td>รู้ผลช้า → สายเกินช่วยเหลือ</td>
+</tr>
+<tr>
+<td></td>
+<td>ขาดระบบติดตามผลผู้เรียนระหว่างการเรียน ทำให้ขาดตัวบ่งชี้ความเสี่ยงที่ชัดเจน</td>
+<td>ไม่มีสัญญาณเตือน → มองไม่เห็นความเสี่ยง</td>
+</tr>
+<tr>
+<td><strong>MACHINE / TECHNOLOGY</strong> เครื่องมือ/เทคโนโลยี</td>
+<td>ระบบเดิมรองรับการบันทึกคะแนน CLOs แต่กระบวนการซับซ้อน</td>
+<td>ใช้งานยาก → กรอกไม่ต่อเนื่อง</td>
+</tr>
+<tr>
+<td></td>
+<td>ระบบเดิม ผู้สอนต้องแยกบันทึกคะแนนลงในแต่ละช่องข้อมูลของนักศึกษาเป็นรายบุคคล</td>
+<td>กรอกทีละช่องทีละคน → ใช้เวลามาก</td>
+</tr>
+<tr>
+<td><strong>MATERIAL</strong> ข้อมูล/วัสดุ</td>
+<td>ไม่มีเทมเพลตไฟล์แบบฟอร์มบันทึกคะแนนที่เป็นมาตรฐานเดียวกัน</td>
+<td>ฟอร์มไม่มาตรฐาน → รวมข้อมูลยาก</td>
+</tr>
+<tr>
+<td></td>
+<td>ข้อมูลคะแนนดิบถูกเก็บในโปรแกรมตารางคำนวณ (Excel) ในรูปแบบที่หลากหลาย ทำให้ยากต่อการนำมาประมวลผล</td>
+<td>รูปแบบหลากหลาย → ประมวลผลอัตโนมัติไม่ได้</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="จาก-4m--ทางแก้ในโครงงาน-cmas" tabindex="-1"><a class="header-anchor" href="#จาก-4m--ทางแก้ในโครงงาน-cmas"><span>จาก 4M → ทางแก้ในโครงงาน CMAS</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>หมวด 4M</th>
+<th>แก่นของปัญหา</th>
+<th>ฟีเจอร์ CMAS ที่ตอบโจทย์</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MAN</strong></td>
+<td>ภาระเวลา + เครื่องมือไม่เอื้อ</td>
+<td>นำเข้าคะแนนเป็นชุด (Excel import) แทนการกรอกทีละคน — ลดเวลางานของอาจารย์</td>
+</tr>
+<tr>
+<td><strong>METHOD</strong></td>
+<td>ประเมินรวบยอด ไม่มีการติดตามระหว่างเรียน</td>
+<td>ติดตามผล CLO ต่อเนื่องรายกิจกรรม + แดชบอร์ดกลุ่มเสี่ยงระหว่างภาค</td>
+</tr>
+<tr>
+<td><strong>MACHINE</strong></td>
+<td>ระบบเดิมซับซ้อน กรอกทีละช่อง</td>
+<td>ระบบกลางกรอก/นำเข้าคะแนนแล้วคำนวณผลสัมฤทธิ์ให้อัตโนมัติ</td>
+</tr>
+<tr>
+<td><strong>MATERIAL</strong></td>
+<td>ไฟล์คะแนนไม่มาตรฐาน หลากหลายรูปแบบ</td>
+<td>เทมเพลต Excel มาตรฐาน + ตัวตรวจรูปแบบตอนนำเข้า</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="อ้างอิง-จาก-pd01-หน้า-9" tabindex="-1"><a class="header-anchor" href="#อ้างอิง-จาก-pd01-หน้า-9"><span>อ้างอิง (จาก PD01 หน้า 9)</span></a></h2>
+<ul>
+<li><strong>[1] Chefrour et al. (2024)</strong> — การระบุนักศึกษากลุ่มเสี่ยงตั้งแต่เนิ่น ๆ ช่วยให้เข้าช่วยเหลือได้ทันเวลา</li>
+<li><strong>[2] Helal et al. (2018)</strong> — การระบุปัจจัยเสี่ยงระหว่างเรียนเป็นสิ่งจำเป็นต่อการช่วยเหลืออย่างมีประสิทธิภาพ</li>
+<li><strong>[3] Jisc (2016)</strong> — กรณีศึกษา Signals ที่ Purdue: การรอผลกลางภาคมักสายเกินกว่าจะช่วยเหลือได้ทัน</li>
+<li><strong>[4] Seliwati &amp; Al Razaq (2024)</strong> — การออกแบบฟีเจอร์เตือนภัยล่วงหน้าในระบบจัดการคะแนน</li>
+</ul>
+<p><em>ฉบับนี้จัดกลุ่มสาเหตุตามหมวด 4M ให้ตรงกับแผนภาพก้างปลาที่ทีมจัดทำ — ใช้คู่กับ <span class="wikilink-missing" title="unresolved: fishbone">fishbone</span> ที่เจาะรากปัญหาแบบ 5 Why อัปเดตไฟล์นี้ทุกครั้งที่กรอบปัญหาใน PD01 เปลี่ยน</em></p>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

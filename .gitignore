@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+app/client/node_modules/
+app/server/node_modules/
+
+# Build output
+dist/
+build/
+app/client/dist/
+app/server/dist/
+
+# Environment
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Prisma
+database/generated/
+*.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+*.swp
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Generated Excel files (round-trip artifacts, never commit)
+*.xlsm
+uploads/

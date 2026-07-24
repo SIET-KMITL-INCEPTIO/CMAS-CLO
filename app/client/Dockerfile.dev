@@ -1,0 +1,18 @@
+# Dev-only image: Vite dev server with hot reload, source mounted as a volume
+# by docker-compose.
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+COPY app/client/package.json app/client/package.json
+COPY app/server/package.json app/server/package.json
+
+RUN npm install
+
+COPY app/client ./app/client
+
+EXPOSE 5173
+
+# --host 0.0.0.0 so the dev server is reachable from outside the container.
+CMD ["npm", "run", "dev", "-w", "app/client", "--", "--host", "0.0.0.0"]

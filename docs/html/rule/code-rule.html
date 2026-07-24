@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Rules — CMAS (ทีม 3 คน)</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a class="active" href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<h1 id="code-rules--cmas-ทีม-3-คน" tabindex="-1"><a class="header-anchor" href="#code-rules--cmas-ทีม-3-คน"><span>Code Rules — CMAS (ทีม 3 คน)</span></a></h1>
+<p>See also: <a href="./git-rule.html">git-rule</a> · <a href="./security-rule.html">security-rule</a> · <a href="../dev/features-pages.html">features-pages</a> · <a href="../dev/dev.html">dev</a></p>
+<blockquote>
+<p><strong>Scope:</strong> กฎการเขียนโค้ดของโปรเจกต์ CMAS (Course-level Learning Outcome Assessment &amp; Tracking System) — ทีม 3 คน (67030098 / 67030110 / 67030120) เขียนทับ/เสริมจาก <a href="../dev/dev.html">dev</a> ให้เข้มงวดขึ้นในสองเรื่องหลัก: <strong>OOP</strong> และ <strong>1 ไฟล์ : 1 หน้าที่</strong></p>
+</blockquote>
+<hr>
+<h2 id="1-หลักการหลัก" tabindex="-1"><a class="header-anchor" href="#1-หลักการหลัก"><span>1. หลักการหลัก</span></a></h2>
+<ol>
+<li><strong>OOP-first</strong> — logic ที่มีสถานะ (state) หรือ dependency (เช่น Prisma client, config) ต้องอยู่ใน <strong>class</strong> เสมอ ห้ามกระจาย logic ไว้เป็นฟังก์ชันลอยในไฟล์เดียวกันหลายตัว</li>
+<li><strong>1 File : 1 Function/Class</strong> — ไฟล์หนึ่งไฟล์ต้อง export ของอย่างเดียวเป็น &quot;หน่วยหลัก&quot; (1 class หรือ 1 pure function เท่านั้น) ชื่อไฟล์ = ชื่อสิ่งที่ export</li>
+<li><strong>Single Responsibility</strong> — ทุก class มีหน้าที่เดียว ทุก method ทำสิ่งเดียว ถ้าเมธอดเริ่มยาวเกิน ~30 บรรทัด หรือมีมากกว่า 1 เหตุผลที่จะแก้ไข ให้แตกออก</li>
+<li><strong>ห้าม default export</strong> — ใช้ named export เท่านั้น (ยกเว้น React Route lazy-loaded files ที่ framework บังคับ)</li>
+</ol>
+<hr>
+<h2 id="2-โครงสร้าง-1-ไฟล์--1-หน้าที่" tabindex="-1"><a class="header-anchor" href="#2-โครงสร้าง-1-ไฟล์--1-หน้าที่"><span>2. โครงสร้าง &quot;1 ไฟล์ : 1 หน้าที่&quot;</span></a></h2>
+<h3 id="21-กติกาไฟล์" tabindex="-1"><a class="header-anchor" href="#21-กติกาไฟล์"><span>2.1 กติกาไฟล์</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ประเภทของ</th>
+<th>อยู่ใน 1 ไฟล์</th>
+<th>ชื่อไฟล์</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Class (Service / Controller / Repository)</td>
+<td>1 class ต่อไฟล์</td>
+<td><code>PascalCase.ts</code> ตรงกับชื่อ class</td>
+</tr>
+<tr>
+<td>Pure function (helper / computation)</td>
+<td>1 function ต่อไฟล์</td>
+<td><code>camelCase.ts</code> ตรงกับชื่อ function</td>
+</tr>
+<tr>
+<td>React Component</td>
+<td>1 component ต่อไฟล์</td>
+<td><code>PascalCase.tsx</code></td>
+</tr>
+<tr>
+<td>React Hook</td>
+<td>1 hook ต่อไฟล์</td>
+<td><code>useXxx.ts</code></td>
+</tr>
+<tr>
+<td>Type/Interface ของ entity เดียว</td>
+<td>อยู่รวมกันได้ถ้าเป็น type ของ entity เดียวกัน (เช่น <code>CourseInput</code>, <code>CourseResponse</code> ใน <code>course.types.ts</code>)</td>
+<td><code>camelCase.types.ts</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="hljs"><code><span class="hljs-comment">// ❌ ผิด — 2 ฟังก์ชันไม่เกี่ยวข้องกันอยู่ไฟล์เดียว</span>
+<span class="hljs-comment">// utils.ts</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">computeCloScore</span>(<span class="hljs-params"></span>) { ... }
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">formatDate</span>(<span class="hljs-params"></span>) { ... }
+
+<span class="hljs-comment">// ✅ ถูก — แยกไฟล์ตามหน้าที่</span>
+<span class="hljs-comment">// computation/computeCloScore.ts</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">computeCloScore</span>(<span class="hljs-params"><span class="hljs-attr">input</span>: <span class="hljs-title class_">CloScoreInput</span></span>): <span class="hljs-built_in">number</span> | <span class="hljs-literal">null</span> { ... }
+
+<span class="hljs-comment">// utils/formatDate.ts</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">formatDate</span>(<span class="hljs-params"><span class="hljs-attr">date</span>: <span class="hljs-title class_">Date</span></span>): <span class="hljs-built_in">string</span> { ... }
+</code></pre>
+<pre class="hljs"><code><span class="hljs-comment">// ❌ ผิด — class ใหญ่ทำหลายหน้าที่ (score + excel + email)</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CourseService</span> {
+  <span class="hljs-title function_">computeScore</span>(<span class="hljs-params"></span>) { ... }
+  <span class="hljs-title function_">exportExcel</span>(<span class="hljs-params"></span>) { ... }
+  <span class="hljs-title function_">sendEmail</span>(<span class="hljs-params"></span>) { ... }
+}
+
+<span class="hljs-comment">// ✅ ถูก — แยกเป็นคนละ class คนละไฟล์ ประกอบกันด้วย composition</span>
+<span class="hljs-comment">// services/CourseService.ts</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CourseService</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> <span class="hljs-attr">scoreService</span>: <span class="hljs-title class_">ScoreService</span>,
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> <span class="hljs-attr">excelService</span>: <span class="hljs-title class_">ExcelService</span>,
+  </span>) {}
+}
+</code></pre>
+<h3 id="22-ข้อยกเว้นที่อนุญาต" tabindex="-1"><a class="header-anchor" href="#22-ข้อยกเว้นที่อนุญาต"><span>2.2 ข้อยกเว้นที่อนุญาต</span></a></h3>
+<ul>
+<li><code>index.ts</code> — ใช้ re-export รวม module เท่านั้น (barrel file) ห้ามมี logic</li>
+<li><code>*.types.ts</code> — รวม type ที่เกี่ยวข้องกับ entity เดียวกันได้</li>
+<li><code>*.test.ts</code> — รวม test case หลายเคสของหน่วยเดียวกันได้</li>
+<li><code>constants.ts</code> — รวม constant ที่เกี่ยวข้องกันได้ (เช่น <code>CLO_COLORS</code>, <code>MAX_CLO_COUNT</code>)</li>
+</ul>
+<hr>
+<h2 id="3-oop-layer-pattern-backend--hono" tabindex="-1"><a class="header-anchor" href="#3-oop-layer-pattern-backend--hono"><span>3. OOP Layer Pattern (Backend — Hono)</span></a></h2>
+<p>ทุก endpoint ไหลผ่าน 4 ชั้น class เสมอ ห้ามข้ามชั้น:</p>
+<pre class="hljs"><code>Route (ลงทะเบียน path)
+  → Controller class (รับ/ส่ง request-response เท่านั้น ไม่มี logic)
+    → Service class (business logic ทั้งหมด)
+      → Repository class (คุยกับ Prisma เท่านั้น — ไม่มี business rule)
+</code></pre>
+<pre class="hljs"><code><span class="hljs-comment">// repositories/CourseRepository.ts — 1 class, คุยกับ DB อย่างเดียว</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CourseRepository</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> <span class="hljs-attr">prisma</span>: <span class="hljs-title class_">PrismaClient</span></span>) {}
+
+  <span class="hljs-title function_">findById</span>(<span class="hljs-params"><span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">prisma</span>.<span class="hljs-property">course</span>.<span class="hljs-title function_">findUniqueOrThrow</span>({ <span class="hljs-attr">where</span>: { id } })
+  }
+
+  <span class="hljs-title function_">listByInstructor</span>(<span class="hljs-params"><span class="hljs-attr">instructorId</span>: <span class="hljs-built_in">string</span></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">prisma</span>.<span class="hljs-property">course</span>.<span class="hljs-title function_">findMany</span>({ <span class="hljs-attr">where</span>: { instructorId } })
+  }
+}
+
+<span class="hljs-comment">// services/CourseService.ts — 1 class, business logic</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CourseService</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> <span class="hljs-attr">courseRepo</span>: <span class="hljs-title class_">CourseRepository</span></span>) {}
+
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">getCourseOverview</span>(<span class="hljs-params"><span class="hljs-attr">courseId</span>: <span class="hljs-built_in">string</span></span>) {
+    <span class="hljs-keyword">const</span> course = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">courseRepo</span>.<span class="hljs-title function_">findById</span>(courseId)
+    <span class="hljs-comment">// business rule ต่างๆ อยู่ตรงนี้</span>
+    <span class="hljs-keyword">return</span> course
+  }
+}
+
+<span class="hljs-comment">// controllers/CourseController.ts — 1 class, ผอมมาก</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CourseController</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> <span class="hljs-attr">courseService</span>: <span class="hljs-title class_">CourseService</span></span>) {}
+
+  getOverview = <span class="hljs-title function_">async</span> (<span class="hljs-attr">c</span>: <span class="hljs-title class_">Context</span>) =&gt; {
+    <span class="hljs-keyword">const</span> courseId = c.<span class="hljs-property">req</span>.<span class="hljs-title function_">param</span>(<span class="hljs-string">&quot;courseId&quot;</span>)
+    <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">courseService</span>.<span class="hljs-title function_">getCourseOverview</span>(courseId)
+    <span class="hljs-keyword">return</span> <span class="hljs-title function_">ok</span>(c, data)
+  }
+}
+</code></pre>
+<ul>
+<li><strong>ห้าม</strong> เรียก <code>prisma.*</code> ตรงๆ ใน Service หรือ Controller — ต้องผ่าน Repository เท่านั้น</li>
+<li><strong>ห้าม</strong> เขียน business rule ใน Repository — Repository คืน data ดิบเท่านั้น</li>
+<li>Constructor injection เท่านั้น (ไม่ใช้ Service Locator / global singleton ที่ซ่อน dependency)</li>
+</ul>
+<hr>
+<h2 id="4-oop-pattern-frontend--react" tabindex="-1"><a class="header-anchor" href="#4-oop-pattern-frontend--react"><span>4. OOP Pattern (Frontend — React)</span></a></h2>
+<p>React component ยังคงเป็น function component (ตาม <a href="../dev/dev.html">dev</a> §6.1) — &quot;OOP&quot; ฝั่ง frontend ใช้กับ <strong>domain logic / API client</strong> เท่านั้น ไม่ใช้กับ component:</p>
+<pre class="hljs"><code><span class="hljs-comment">// api/CourseApiClient.ts — 1 class ต่อ 1 resource</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CourseApiClient</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> <span class="hljs-attr">http</span>: <span class="hljs-title class_">ApiClient</span></span>) {}
+
+  <span class="hljs-title function_">list</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">http</span>.<span class="hljs-property">get</span>&lt;<span class="hljs-title class_">CourseResponse</span>[]&gt;(<span class="hljs-string">&quot;/courses&quot;</span>)
+  }
+
+  <span class="hljs-title function_">create</span>(<span class="hljs-params"><span class="hljs-attr">input</span>: <span class="hljs-title class_">CreateCourseInput</span></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">http</span>.<span class="hljs-property">post</span>&lt;<span class="hljs-title class_">CourseResponse</span>&gt;(<span class="hljs-string">&quot;/courses&quot;</span>, input)
+  }
+}
+</code></pre>
+<pre class="hljs"><code>DO    ใช้ class สำหรับ: API client, store logic ที่ซับซ้อน, computation ที่มี config/state
+DO    ใช้ function component + hook สำหรับ UI ทั้งหมด (ตาม dev.md)
+DON'T สร้าง class component
+DON'T ใส่ business logic ไว้ใน component — เรียกผ่าน hook → class/service เท่านั้น
+</code></pre>
+<hr>
+<h2 id="5-naming--เสริมจาก-dev-4" tabindex="-1"><a class="header-anchor" href="#5-naming--เสริมจาก-dev-4"><span>5. Naming — เสริมจาก <a href="../dev/dev.html">dev</a> §4</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>ประเภท</th>
+<th>รูปแบบ</th>
+<th>ตัวอย่าง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Class</td>
+<td><code>PascalCase</code> + suffix บอกบทบาท</td>
+<td><code>CourseService</code>, <code>CourseRepository</code>, <code>CourseController</code></td>
+</tr>
+<tr>
+<td>Interface สำหรับ dependency (ถ้าจำเป็น)</td>
+<td><code>PascalCase</code> ไม่ใช้ <code>I</code> prefix</td>
+<td><code>CourseRepositoryContract</code> (ใช้เท่าที่จำเป็นจริงๆ เท่านั้น)</td>
+</tr>
+<tr>
+<td>Pure function file</td>
+<td>ชื่อไฟล์ = ชื่อฟังก์ชัน</td>
+<td><code>computeCloScore.ts</code> → <code>export function computeCloScore()</code></td>
+</tr>
+<tr>
+<td>Private field</td>
+<td><code>private readonly</code> + camelCase</td>
+<td><code>private readonly prisma: PrismaClient</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="6-code-review-checklist-เพิ่มเติมจาก-dev-13" tabindex="-1"><a class="header-anchor" href="#6-code-review-checklist-เพิ่มเติมจาก-dev-13"><span>6. Code Review Checklist (เพิ่มเติมจาก <a href="../dev/dev.html">dev</a> §13)</span></a></h2>
+<ul>
+<li>[ ] ไฟล์นี้ export <strong>สิ่งเดียว</strong> เท่านั้น (1 class หรือ 1 function)</li>
+<li>[ ] ชื่อไฟล์ตรงกับชื่อ class/function ที่ export</li>
+<li>[ ] ไม่มี business logic หลุดเข้าไปใน Controller หรือ Repository</li>
+<li>[ ] Service ไม่เรียก <code>prisma</code> ตรงๆ (ต้องผ่าน Repository)</li>
+<li>[ ] Class ใหม่มี dependency ชัดเจนผ่าน constructor เท่านั้น</li>
+<li>[ ] ไม่มี default export (ยกเว้น route lazy-load ที่ framework บังคับ)</li>
+</ul>
+<hr>
+<h2 id="7-การรายงานงาน-บังคับทุกคน" tabindex="-1"><a class="header-anchor" href="#7-การรายงานงาน-บังคับทุกคน"><span>7. การรายงานงาน (บังคับทุกคน)</span></a></h2>
+<blockquote>
+<p>ทีมนี้มี 3 คน ทุกคนต้อง <strong>รายงานทุก task ที่ทำเสร็จกลับให้เจ้าของโปรเจกต์ (Project Owner)</strong> — ไม่ใช่แค่เปิด PR เฉยๆ</p>
+</blockquote>
+<p><strong>กติกา:</strong></p>
+<ol>
+<li>ก่อนเริ่ม task ใหม่ — แจ้งในกลุ่มทีมว่ากำลังทำอะไร (ชื่อ feature/บั๊ก + branch)</li>
+<li>เมื่อ task เสร็จ (commit + push + เปิด PR แล้ว) — ต้องส่งรายงานสรุปให้เจ้าของโปรเจกต์ ประกอบด้วย:
+<ul>
+<li>Task/Feature ที่ทำ</li>
+<li>ไฟล์/module ที่แก้ไข (list สั้นๆ)</li>
+<li>ลิงก์ PR</li>
+<li>สถานะ (รอ review / ติด blocker / เสร็จสมบูรณ์)</li>
+</ul>
+</li>
+<li>ถ้าเจอ blocker หรือ decision ที่กระทบ scope/architecture — ต้องรายงานทันที ไม่ต้องรอจน task เสร็จ</li>
+<li>สรุปงานรายสัปดาห์ (weekly) ส่งให้เจ้าของโปรเจกต์ทุกสัปดาห์ แม้ไม่มี PR ใหม่ก็ต้องแจ้งความคืบหน้า</li>
+</ol>
+<p><strong>เหตุผล:</strong> โปรเจกต์นี้มีเจ้าของ (Project Owner) ที่ต้องติดตามภาพรวมทั้งหมดของทีม 3 คน การรายงานสม่ำเสมอช่วยให้ตัดสินใจเรื่อง scope/timeline ได้ทันเวลา ไม่ใช่มารู้ตอนใกล้ deadline</p>
+<hr>
+<p><em>เอกสารนี้มีผลบังคับใช้ร่วมกับ <a href="../dev/dev.html">dev</a> และ <a href="./git-rule.html">git-rule</a> — หากขัดแย้งกัน ให้เอกสารนี้ (code-rule) เป็นหลักในเรื่อง OOP/file structure</em></p>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

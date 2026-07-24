@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CMAS — MySQL ER Diagram</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a class="active" href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<h1 id="cmas--mysql-er-diagram" tabindex="-1"><a class="header-anchor" href="#cmas--mysql-er-diagram"><span>CMAS — MySQL ER Diagram</span></a></h1>
+<p>Companion doc for the MySQL-dialect DDL used to generate <strong>Entity–Relationship
+(EER) diagrams in MySQL Workbench</strong>. The scripts live in
+<a href="./mysql/"><code>mysql/</code></a>; this page explains what they contain and how the
+entities relate.</p>
+<p>See also: <a href="./database-schema.html"><code>database-schema.md</code></a> (PostgreSQL enterprise
+schema narrative) · <a href="./schema.sql"><code>schema.sql</code></a> (PostgreSQL source) ·
+<a href="../../../database/schema.prisma"><code>../../../database/schema.prisma</code></a> (app source of truth).</p>
+<h2 id="files" tabindex="-1"><a class="header-anchor" href="#files"><span>Files</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Model</th>
+<th>Size</th>
+<th>Translated from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="./mysql/cmas_enterprise_mysql.sql"><code>mysql/cmas_enterprise_mysql.sql</code></a></td>
+<td>Full institutional design</td>
+<td>36 tables, 4 views, 59 FKs</td>
+<td><code>schema.sql</code> (PostgreSQL 14+)</td>
+</tr>
+<tr>
+<td><a href="./mysql/cmas_app_mysql.sql"><code>mysql/cmas_app_mysql.sql</code></a></td>
+<td>Live application schema</td>
+<td>11 tables, 10 FKs</td>
+<td><code>database/schema.prisma</code> (Prisma)</td>
+</tr>
+<tr>
+<td><a href="./mysql/README.html"><code>mysql/README.md</code></a></td>
+<td>How-to</td>
+<td>—</td>
+<td>Workbench steps + translation table</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Requires MySQL 8.0.16+</strong> (for <code>CHECK</code>, expression defaults, and the stored
+generated column). All tables are <code>InnoDB</code> + <code>utf8mb4</code> so Thai <code>_th</code> columns
+store correctly.</p>
+<blockquote>
+<p>These <code>.sql</code> files are a <strong>diagramming / presentation artifact</strong>. The
+authoritative schemas remain <code>schema.prisma</code> (app) and <code>schema.sql</code> (full
+design), both PostgreSQL. Regenerate the MySQL files if those models change.</p>
+</blockquote>
+<hr>
+<h2 id="how-to-build-the-diagram" tabindex="-1"><a class="header-anchor" href="#how-to-build-the-diagram"><span>How to build the diagram</span></a></h2>
+<p>MySQL Workbench → <strong>File ▸ Import ▸ Reverse Engineer MySQL Create Script…</strong> →
+pick a <code>.sql</code> file → tick <strong>&quot;Place imported objects on a diagram&quot;</strong> → <strong>Execute</strong>.
+An EER canvas opens with every table and all FK relationship lines. Then
+<strong>Arrange ▸ Autolayout</strong>, and export via <strong>File ▸ Export ▸ Export as SVG/PNG/PDF</strong>.</p>
+<p>Full steps (including the live-database route and the <code>.mwb</code> model save) are in
+<a href="./mysql/README.html"><code>mysql/README.md</code></a>.</p>
+<hr>
+<h2 id="enterprise-model--entity-groups" tabindex="-1"><a class="header-anchor" href="#enterprise-model--entity-groups"><span>Enterprise model — entity groups</span></a></h2>
+<p>The 36-table enterprise diagram breaks into nine functional clusters.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Cluster</th>
+<th>Tables</th>
+<th>Core relationships</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Institutional hierarchy</strong></td>
+<td><code>institutions</code>, <code>faculties</code>, <code>departments</code>, <code>programs</code>, <code>curriculum_versions</code></td>
+<td>strict 1→N chain; a program has many curriculum revisions over time</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Curriculum structure</strong></td>
+<td><code>course_categories</code> (self-ref หมวด→กลุ่ม), <code>courses</code>, <code>course_category_map</code>, <code>course_code_segments</code>, <code>course_prerequisites</code></td>
+<td>N↔N course⇄category via map; course⇄course prereqs; 1:1 code segments</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Learning outcomes</strong></td>
+<td><code>plos</code>, <code>clos</code>, <code>clo_plo_map</code>, <code>identity_categories</code>, <code>identity_attributes</code>, <code>identity_attribute_plo_map</code></td>
+<td><strong>CLO⇄PLO N↔N with I/R/M strength (1–3)</strong> — the OBE traceability core</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Study plan</strong></td>
+<td><code>study_plan_terms</code>, <code>study_plan_courses</code></td>
+<td>term→course rows, nullable course for elective slots</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Academic operations</strong></td>
+<td><code>academic_years</code>, <code>terms</code>, <code>instructors</code>, <code>course_sections</code>, <code>section_instructors</code>, <code>students</code>, <code>enrollments</code></td>
+<td>SIS-style; section⇄instructor N↔N (co-teaching)</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Assessment &amp; CLO scoring</strong></td>
+<td><code>assessment_methods</code>, <code>assessment_instruments</code>, <code>clo_instrument_map</code>, <code>student_clo_scores</code></td>
+<td>one instrument → many CLOs; <code>student_clo_scores</code> is the atomic fact table</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Attainment rollups</strong></td>
+<td><code>clo_attainment_results</code>, <code>plo_attainment_results</code></td>
+<td>cached batch aggregates per section / per cohort</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Field experience</strong></td>
+<td><code>field_experience_types</code>, <code>field_experience_learning_outcomes</code>, <code>field_experience_placements</code>, <code>field_experience_scores</code></td>
+<td>practicum/internship, dual evaluator (supervisor + advisor)</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Audit</strong></td>
+<td><code>curriculum_change_log</code></td>
+<td>change history per curriculum version</td>
+</tr>
+</tbody>
+</table>
+<h3 id="key-cardinalities-enterprise" tabindex="-1"><a class="header-anchor" href="#key-cardinalities-enterprise"><span>Key cardinalities (enterprise)</span></a></h3>
+<pre class="hljs"><code>institutions 1─N faculties 1─N departments 1─N programs 1─N curriculum_versions
+curriculum_versions 1─N course_categories ─┐ (self-ref parent_category_id)
+courses N─N course_categories        (via course_category_map)
+courses 1─1 course_code_segments
+courses N─N courses                  (via course_prerequisites)
+courses 1─N clos      ;   curriculum_versions 1─N plos
+clos   N─N plos                      (via clo_plo_map, strength 1–3)
+courses 1─N course_sections N─1 terms N─1 academic_years
+course_sections N─N instructors      (via section_instructors)
+students 1─N enrollments N─1 course_sections
+assessment_instruments N─N clos      (via clo_instrument_map)
+enrollments 1─N student_clo_scores N─1 assessment_instruments, N─1 clos   ← fact table
+</code></pre>
+<p>The atomic grain is <strong><code>student_clo_scores</code></strong>: one row per (enrollment,
+instrument, CLO). <code>percent_score</code> is a <strong>stored generated column</strong>
+(<code>raw_score / max_score * 100</code>). Everything in cluster 7 aggregates from it.</p>
+<hr>
+<h2 id="application-model--entity-groups" tabindex="-1"><a class="header-anchor" href="#application-model--entity-groups"><span>Application model — entity groups</span></a></h2>
+<p>The 11-table app diagram is the working system today (React + Fastify + Prisma).
+<code>cuid()</code> string PKs; simpler than the enterprise design.</p>
+<table>
+<thead>
+<tr>
+<th>Cluster</th>
+<th>Tables</th>
+<th>Relationships</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Identity</strong></td>
+<td><code>User</code> (role ADMIN/INSTRUCTOR)</td>
+<td>1─N <code>Course</code> (as instructor)</td>
+</tr>
+<tr>
+<td><strong>Curriculum template</strong></td>
+<td><code>Curriculum</code> 1─N <code>CurriculumCourse</code></td>
+<td>structure + course list only, cloneable curricula (CLOs live on the real course)</td>
+</tr>
+<tr>
+<td><strong>Live course</strong></td>
+<td><code>Course</code> 1─N <code>CLO</code> 1─N <code>BehavioralObjective</code></td>
+<td>per-offering outcomes</td>
+</tr>
+<tr>
+<td><strong>Assessment</strong></td>
+<td><code>Course</code> 1─N <code>Activity</code>; <code>Activity</code> N─N <code>CLO</code> via <code>AssessmentCriteria</code></td>
+<td>weighted CLO tagging per activity</td>
+</tr>
+<tr>
+<td><strong>Enrollment &amp; scoring</strong></td>
+<td><code>Course</code> 1─N <code>Student</code>; <code>Student</code> N─N <code>Activity</code> via <code>Score</code></td>
+<td>one score per (student, activity)</td>
+</tr>
+<tr>
+<td><strong>Audit</strong></td>
+<td><code>ScoreUploadLog</code></td>
+<td>standalone — no FKs (matches Prisma model)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="key-cardinalities-app" tabindex="-1"><a class="header-anchor" href="#key-cardinalities-app"><span>Key cardinalities (app)</span></a></h3>
+<pre class="hljs"><code>User 1─N Course 1─N CLO 1─N BehavioralObjective
+Course 1─N Activity ;  Activity N─N CLO   (via AssessmentCriteria)
+Course 1─N Student  ;  Student  N─N Activity (via Score, one per student+activity)
+Curriculum 1─N CurriculumCourse
+ScoreUploadLog — no relations
+</code></pre>
+<hr>
+<h2 id="translation--fidelity-notes" tabindex="-1"><a class="header-anchor" href="#translation--fidelity-notes"><span>Translation &amp; fidelity notes</span></a></h2>
+<p>Postgres/Prisma → MySQL 8 highlights (full table in
+<a href="./mysql/README.html"><code>mysql/README.md</code></a>):</p>
+<ul>
+<li><code>BIGSERIAL</code> → <code>BIGINT AUTO_INCREMENT</code>; Prisma <code>cuid()</code> PKs → <code>VARCHAR(30)</code>.</li>
+<li><code>TIMESTAMPTZ</code>/<code>now()</code> → <code>TIMESTAMP</code>/<code>DATETIME(3)</code> + <code>CURRENT_TIMESTAMP</code>;
+<code>updated_at</code> gains <code>ON UPDATE CURRENT_TIMESTAMP</code>.</li>
+<li><code>TEXT</code> used in a <code>UNIQUE</code>/<code>PK</code> → <code>VARCHAR(n)</code> (MySQL can't index full <code>TEXT</code>).</li>
+<li><code>NUMERIC</code>→<code>DECIMAL</code>, <code>Float</code>→<code>DOUBLE</code>, <code>Boolean</code>→<code>TINYINT(1)</code>.</li>
+<li>FKs are <strong>table-level</strong> constraints (MySQL ignores inline <code>REFERENCES</code>) — this
+is what makes Workbench draw the relationship lines.</li>
+<li><code>plo_attainment_results.cohort_label</code> became <code>NOT NULL DEFAULT ''</code> so its
+unique key keeps the one-row-per-cohort rule (MySQL treats multiple NULLs as
+distinct).</li>
+<li><code>ScoreUploadLog</code> has no FKs — <code>courseId</code>/<code>uploadedBy</code> are plain strings in the
+Prisma model.</li>
+</ul>
+<blockquote>
+<p><strong>Not yet loaded against a live MySQL server</strong> in this environment (no local
+MySQL/Docker daemon). Verified offline: all 36 source tables present, FK
+constraint names globally unique, reserved words back-ticked. Run one
+<code>mysql &lt; file.sql</code> against 8.0.16+ before treating as production-blessed.</p>
+</blockquote>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

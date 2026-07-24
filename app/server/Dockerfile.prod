@@ -1,0 +1,60 @@
+# Multi-stage production build for Fastify server
+# Deployment targets: Railway, Fly.io
+# Usage: docker build -f app/server/Dockerfile.prod -t cmas-server:latest .
+
+# Stage 1: Build
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy workspace manifests
+COPY package.json package-lock.json* ./
+COPY app/server/package.json app/server/package.json
+COPY app/client/package.json app/client/package.json
+
+# Install dependencies
+RUN npm install --production=false
+
+# Copy source and schema
+COPY database ./database
+COPY app/server ./app/server
+
+# Generate Prisma client at build time
+RUN npx prisma generate --schema=database/schema.prisma
+
+# Build the server
+RUN npm run build -w app/server
+
+# Stage 2: Runtime
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy only workspace manifests
+COPY package.json package-lock.json* ./
+COPY app/server/package.json app/server/package.json
+COPY app/client/package.json app/client/package.json
+
+# Install production dependencies only
+RUN npm install --production=true
+
+# Copy Prisma schema and generated client from builder
+COPY --from=builder /app/database ./database
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+
+# Copy built server from builder
+COPY --from=builder /app/app/server/dist ./app/server/dist
+
+# Create a non-root user for security
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
+USER nodejs
+
+EXPOSE 3001
+
+ENV NODE_ENV=production
+
+# Ensure environment variables are set before boot
+# The app will fail-fast if DATABASE_URL or JWT_SECRET are missing (by design)
+CMD ["node", "app/server/dist/index.js"]

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>schema</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a class="active" href="../sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<p>See also: <a href="../dev/dev.html">dev</a> · <span class="wikilink-missing" title="unresolved: Summary Project">Summary Project</span> · <span class="wikilink-missing" title="unresolved: concept-clo MOC">concept-clo MOC</span></p>
+<pre class="hljs"><code>enum Role { ADMIN  INSTRUCTOR }
+
+model <span class="hljs-keyword">User</span> {
+  id           String   <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
+  email        String   <span class="hljs-variable">@unique</span>
+  name         String
+  passwordHash String
+  role         Role     <span class="hljs-variable">@default</span>(INSTRUCTOR)
+  isActive     <span class="hljs-type">Boolean</span>  <span class="hljs-variable">@default</span>(<span class="hljs-literal">true</span>)
+  courses      Course[]
+  createdAt    DateTime <span class="hljs-variable">@default</span>(now())
+}
+
+model Curriculum {
+  id          String             <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
+  name        String
+  <span class="hljs-keyword">year</span>        <span class="hljs-type">Int</span>
+  institution String
+  courses     CurriculumCourse[]
+  clonedFrom  String?
+  createdBy   <span class="hljs-keyword">User</span>               <span class="hljs-variable">@relation</span>(...)
+}
+
+model CurriculumCourse {
+  id           String       <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
+  curriculum   Curriculum   <span class="hljs-variable">@relation</span>(...)
+  courseCode   String
+  courseName   String
+  credits      <span class="hljs-type">Int</span>
+}
+
+model Course {
+  id           String     <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
+  code         String
+  name         String
+  semester     <span class="hljs-type">Int</span>
+  <span class="hljs-keyword">year</span>         <span class="hljs-type">Int</span>
+  instructorId String
+  instructor   <span class="hljs-keyword">User</span>       <span class="hljs-variable">@relation</span>(...)
+  clos         CLO[]
+  students     Student[]
+  activities   Activity[]
+  @<span class="hljs-variable">@unique</span>([code, semester, <span class="hljs-keyword">year</span>, instructorId])
+}
+
+model CLO {
+  id          String               <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
+  courseId    String
+  course      Course               <span class="hljs-variable">@relation</span>(...)
+  number      <span class="hljs-type">Int</span>                  <span class="hljs-operator">/</span><span class="hljs-operator">/</span> ลำดับที่ (drag<span class="hljs-operator">-</span>reorder อัปเดตค่านี้)
+  description String
+  threshold   <span class="hljs-type">Float</span> <span class="hljs-variable">@default</span>(<span class="hljs-number">60</span>)
+  objectives  BehavioralObjective[]
+  criteria    AssessmentCriteria[]
+}
+
+model Activity {
+  id        String               <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
+  courseId  String
+  course    Course               <span class="hljs-variable">@relation</span>(...)
+  name      String
+  <span class="hljs-keyword">method</span>    String
+  maxScore  <span class="hljs-type">Float</span>
+  <span class="hljs-keyword">order</span>     <span class="hljs-type">Int</span>                  <span class="hljs-operator">/</span><span class="hljs-operator">/</span> drag<span class="hljs-operator">-</span>reorder อัปเดตค่านี้
+  weight    <span class="hljs-type">Float</span>
+  criteria  AssessmentCriteria[]
+  scores    Score[]
+}
+
+model AssessmentCriteria {
+  id         String   <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
+  activityId String
+  activity   Activity <span class="hljs-variable">@relation</span>(...)
+  cloId      String
+  clo        CLO      <span class="hljs-variable">@relation</span>(...)
+  weight     <span class="hljs-type">Float</span>
+  @<span class="hljs-variable">@unique</span>([activityId, cloId])
+}
+
+model Student {
+  id          String  <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
+  studentCode String
+  name        String
+  courseId    String
+  course      Course  <span class="hljs-variable">@relation</span>(...)
+  scores      Score[]
+  @<span class="hljs-variable">@unique</span>([studentCode, courseId])
+}
+
+model Score {
+  id         String   <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
+  studentId  String
+  student    Student  <span class="hljs-variable">@relation</span>(...)
+  activityId String
+  activity   Activity <span class="hljs-variable">@relation</span>(...)
+  score      <span class="hljs-type">Float</span>
+  uploadedAt DateTime <span class="hljs-variable">@default</span>(now())
+  @<span class="hljs-variable">@unique</span>([studentId, activityId])
+}
+
+model ScoreUploadLog {
+  id         String   <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
+  courseId   String
+  uploadedBy String
+  fileName   String
+  recordsOk  <span class="hljs-type">Int</span>
+  recordsFail <span class="hljs-type">Int</span>
+  createdAt  DateTime <span class="hljs-variable">@default</span>(now())
+}
+</code></pre>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

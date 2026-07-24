@@ -1,0 +1,291 @@
+// ============================================================================
+// CMAS / CLO SYSTEM — Prisma schema
+//
+// Kept in sync with docs/markdown/sql/mysql/cmas_app_production.sql.
+//
+// Prisma CANNOT express three things that schema relies on, so they live in a
+// manual migration and must never be dropped by `prisma migrate`:
+//   1. CHECK constraints  (score >= 0, threshold 0-100, maxScore > 0, ...)
+//   2. Triggers           (score <= maxScore; Activity/CLO same-course; ...)
+//   3. "at most one LEAD per course" — on Postgres this is a partial index:
+//        CREATE UNIQUE INDEX uq_courseinstructor_lead
+//            ON "CourseInstructor" ("courseId") WHERE role = 'LEAD';
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  INSTRUCTOR
+}
+
+// Role a person plays on ONE course. Belongs to the pairing, not to the
+// person and not to the course — which is why CourseInstructor is a table.
+enum CourseRole {
+  LEAD // ผู้ประสานงานรายวิชา — at most one per course
+  CO // ผู้สอนร่วม
+  ASSISTANT // ผู้ช่วยสอน / TA
+}
+
+// Seven courses (90641004-90641010) are graded ผ่าน (S) / ไม่ผ่าน (U)
+// instead of on a percentage scale.
+enum GradingType {
+  LETTER
+  PASS_FAIL
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(INSTRUCTOR)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  // Never hard-delete a User who still teaches or has uploaded scores —
+  // set isActive = false instead. Both relations are Restrict on purpose.
+  courseAssignments CourseInstructor[]
+  uploadLogs        ScoreUploadLog[]
+}
+
+// ---------------------------------------------------------------------------
+// THE PLAN — what a programme requires. Written a year before anything runs.
+// ---------------------------------------------------------------------------
+
+model Curriculum {
+  id          String   @id @default(cuid())
+  name        String
+  year        Int
+  institution String
+  createdAt   DateTime @default(now())
+
+  // Self-relation: which curriculum this one was cloned from.
+  // SetNull, not Cascade — deleting the ancestor must not delete its clones,
+  // it only breaks the lineage pointer.
+  clonedFrom    String?
+  clonedFromRef Curriculum?  @relation("CurriculumClone", fields: [clonedFrom], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  clones        Curriculum[] @relation("CurriculumClone")
+
+  courses CurriculumCourse[]
+
+  @@unique([institution, name, year])
+}
+
+model CurriculumCourse {
+  id           String     @id @default(cuid())
+  curriculumId String
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+
+  // Optional link to the real offering. NULL until the course is actually
+  // opened, so a curriculum can still be drafted and cloned ahead of time.
+  courseId String?
+  course   Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  // Denormalised ON PURPOSE. A published curriculum is an approved document:
+  // it must not silently change when someone edits Course years later.
+  courseCode   String
+  courseName   String
+  courseNameEn String?
+
+  // The curriculum prints credits as "3 (2-2-5)" —
+  // credits (lecture-practice-selfStudy). An Int kept only the first number.
+  // Decimal, and the floor is 0: 90641008 is a real 0 (0-0-45) prerequisite.
+  credits        Decimal @db.Decimal(3, 1)
+  lectureHours   Decimal @default(0) @db.Decimal(4, 1)
+  practiceHours  Decimal @default(0) @db.Decimal(4, 1)
+  selfStudyHours Decimal @default(0) @db.Decimal(4, 1)
+
+  // Courses 90641004-90641010 are graded ผ่าน (S) / ไม่ผ่าน (U).
+  gradingType GradingType @default(LETTER)
+
+  @@unique([curriculumId, courseCode])
+}
+
+// ---------------------------------------------------------------------------
+// THE REALITY — what is actually taught this term.
+// ---------------------------------------------------------------------------
+
+model Course {
+  id       String @id @default(cuid())
+  code     String
+  name     String
+  semester Int
+  year     Int
+
+  // Section discriminator. This used to be instructorId's hidden second job:
+  // it sat in the unique key, so "same course, different teacher" meant
+  // "different section". Teaching is M:N now, so that meaning needed a column
+  // of its own — without it the key would allow only one section per term.
+  section String @default("01")
+
+  instructors       CourseInstructor[]
+  clos              CLO[]
+  students          Student[]
+  activities        Activity[]
+  curriculumCourses CurriculumCourse[]
+  uploadLogs        ScoreUploadLog[]
+
+  @@unique([code, semester, year, section])
+  @@index([year, semester])
+}
+
+// Many instructors teach many courses. The junction carries `role`, which is
+// the signal that this had to be a table and not two foreign keys.
+model CourseInstructor {
+  id         String     @id @default(cuid())
+  courseId   String
+  course     Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Restrict)
+  role       CourseRole @default(CO)
+  assignedAt DateTime   @default(now())
+
+  // "At least one LEAD per course" is NOT enforced here: the course row must
+  // exist before anyone can be assigned, so the first insert would be
+  // impossible. Enforce in the application layer.
+  @@unique([courseId, userId])
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// THE CRITERIA — what is measured, with what, at what weight.
+// ---------------------------------------------------------------------------
+
+model CLO {
+  id          String @id @default(cuid())
+  courseId    String
+  course      Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  number      Int
+  description String
+  threshold   Float  @default(60) // pass mark as a PERCENTAGE, per CLO
+
+  objectives BehavioralObjective[]
+  criteria   AssessmentCriteria[]
+
+  // CLO numbering must be unique inside a course — two "CLO 1" in one course
+  // silently corrupts every attainment report.
+  @@unique([courseId, number])
+}
+
+// จุดประสงค์เชิงพฤติกรรม — the observable statements a CLO breaks down into.
+model BehavioralObjective {
+  id          String @id @default(cuid())
+  cloId       String
+  clo         CLO    @relation(fields: [cloId], references: [id], onDelete: Cascade)
+  number      Int
+  description String
+
+  assessments ObjectiveAssessment[]
+
+  @@unique([cloId, number])
+}
+
+model Activity {
+  id       String @id @default(cuid())
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  name     String
+  method   String
+  maxScore Float // must be > 0 — every attainment view divides by it
+  order    Int
+  weight   Float
+
+  criteria AssessmentCriteria[]
+  scores   Score[]
+
+  @@index([courseId, order])
+}
+
+// Associative entity: Activity <-> CLO is M:N, and `weight` belongs to the
+// pairing rather than to either side.
+model AssessmentCriteria {
+  id         String   @id @default(cuid())
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  cloId      String
+  clo        CLO      @relation(fields: [cloId], references: [id], onDelete: Cascade)
+  weight     Float
+
+  objectives ObjectiveAssessment[]
+
+  // A trigger additionally enforces that Activity and CLO belong to the SAME
+  // course. Prisma cannot express that; do not drop it.
+  @@unique([activityId, cloId])
+}
+
+// Records WHICH behavioural objectives a criterion provides evidence for.
+// Attaches to AssessmentCriteria rather than Activity, so mapping objectives
+// is optional traceability and never changes a computed CLO score.
+// A trigger enforces that the objective belongs to the criterion's own CLO.
+model ObjectiveAssessment {
+  id          String              @id @default(cuid())
+  criteriaId  String
+  criteria    AssessmentCriteria  @relation(fields: [criteriaId], references: [id], onDelete: Cascade)
+  objectiveId String
+  objective   BehavioralObjective @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
+
+  @@unique([criteriaId, objectiveId])
+  @@index([objectiveId])
+}
+
+// ---------------------------------------------------------------------------
+// THE FACTS — who scored what.
+// ---------------------------------------------------------------------------
+
+// NOTE: this models an ENROLMENT, not a person. One human taking five courses
+// produces five rows with a duplicated name. Splitting Student (person) from
+// Enrolment (person x course) is the next refactor worth doing.
+model Student {
+  id          String @id @default(cuid())
+  studentCode String
+  name        String
+  courseId    String
+  course      Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  scores Score[]
+
+  @@unique([studentCode, courseId])
+  @@index([studentCode])
+}
+
+model Score {
+  id         String   @id @default(cuid())
+  studentId  String
+  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  score      Float
+  uploadedAt DateTime @default(now())
+
+  // Triggers also enforce: score <= Activity.maxScore, and that the Student
+  // and the Activity belong to the same Course.
+  @@unique([studentId, activityId])
+}
+
+// ---------------------------------------------------------------------------
+// AUDIT — outside the calculation path. Nothing references these rows.
+// ---------------------------------------------------------------------------
+
+model ScoreUploadLog {
+  id          String   @id @default(cuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  uploadedBy  String
+  uploader    User     @relation(fields: [uploadedBy], references: [id], onDelete: Restrict)
+  fileName    String
+  recordsOk   Int
+  recordsFail Int
+  createdAt   DateTime @default(now())
+
+  @@index([courseId])
+  @@index([createdAt])
+}

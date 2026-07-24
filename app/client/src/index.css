@@ -1,0 +1,16 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   VERDURE DESIGN SYSTEM — entry stylesheet
+   Imported once in main.tsx. Order matters:
+     1. Tailwind v4 core
+     2. Design tokens (defines @theme + :root + Tailwind utility bridge)
+     3. Base document styles
+     4. Components
+     5. Animations
+   Font (IBM Plex Sans Thai) is loaded via <link> in index.html.
+   ═══════════════════════════════════════════════════════════════════════ */
+@import "tailwindcss";
+
+@import "./style/tokens.css";
+@import "./style/base.css";
+@import "./style/components.css";
+@import "./style/animations.css";

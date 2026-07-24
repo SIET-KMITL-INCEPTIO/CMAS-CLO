@@ -1,0 +1,29 @@
+# Production-like compose for local testing (not for actual deployment)
+# Uses Supabase for database (same as production)
+# Usage: docker-compose -f docker-compose.prod.yml up
+# Note: In real production, use Railway.app or Fly.io instead
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: app/server/Dockerfile.prod
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      CORS_ORIGIN: "http://localhost:5173"
+    env_file:
+      - ./app/server/.env
+    restart: unless-stopped
+
+  client:
+    build:
+      context: .
+      dockerfile: app/client/Dockerfile.prod
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+    restart: unless-stopped

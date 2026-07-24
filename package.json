@@ -1,0 +1,34 @@
+{
+  "name": "clo-system",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Course Monitoring and Assessment System for Course Learning Outcomes (CLO System)",
+  "workspaces": [
+    "app/client",
+    "app/server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n CLIENT,SERVER -c blue,green \"npm run dev -w app/client\" \"npm run dev -w app/server\"",
+    "dev:client": "npm run dev -w app/client",
+    "dev:server": "npm run dev -w app/server",
+    "build": "npm run build -w app/client && npm run build -w app/server",
+    "build:client": "npm run build -w app/client",
+    "build:server": "npm run build -w app/server",
+    "lint": "npm run lint -w app/client && npm run lint -w app/server",
+    "db:generate": "prisma generate --schema=database/schema.prisma",
+    "db:migrate:dev": "prisma migrate dev --schema=database/schema.prisma",
+    "db:migrate:deploy": "prisma migrate deploy --schema=database/schema.prisma",
+    "db:studio": "prisma studio --schema=database/schema.prisma",
+    "db:seed": "node database/seed.js"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3",
+    "prisma": "^6.19.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3"
+  }
+}

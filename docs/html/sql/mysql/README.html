@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CMAS — MySQL DDL for MySQL Workbench ER Diagrams</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../../index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../../graph/tech-stack.html">Tech Stack</a></li><li><a href="../../graph/usecase.html">Use Case Diagram</a></li><li><a href="../../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a class="active" href="../../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../../sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<h1 id="cmas--mysql-ddl-for-mysql-workbench-er-diagrams" tabindex="-1"><a class="header-anchor" href="#cmas--mysql-ddl-for-mysql-workbench-er-diagrams"><span>CMAS — MySQL DDL for MySQL Workbench ER Diagrams</span></a></h1>
+<p>MySQL-dialect DDL scripts translated from the project's PostgreSQL/Prisma
+sources, so MySQL Workbench can <strong>reverse-engineer</strong> them into EER (ER) diagrams.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Model</th>
+<th>Tables</th>
+<th>Translated from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cmas_enterprise_mysql.sql</code></td>
+<td>Full institutional design (curriculum versioning, PLO/CLO mapping, sections, enrollments, CLO/PLO attainment, field experience, audit)</td>
+<td>36 tables + 4 views</td>
+<td><code>../schema.sql</code> (PostgreSQL 14+)</td>
+</tr>
+<tr>
+<td><code>cmas_app_mysql.sql</code></td>
+<td>The schema the running app actually uses today</td>
+<td>12 tables</td>
+<td><code>../../../../database/schema.prisma</code> (Prisma)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Requires MySQL 8.0.16+</strong> — uses <code>CHECK</code> constraints, expression column
+defaults (<code>DEFAULT (CURRENT_DATE)</code>), and a <code>STORED</code> generated column
+(<code>student_clo_scores.percent_score</code>). All tables are <code>InnoDB</code> + <code>utf8mb4</code> so the
+Thai <code>_th</code> columns store correctly.</p>
+<blockquote>
+<p>Status: written to the MySQL 8 dialect but <strong>not yet loaded against a live
+MySQL server</strong> in this environment (no local MySQL / Docker daemon available).
+Run once against MySQL 8.0.16+ to confirm before relying on it in production.</p>
+</blockquote>
+<hr>
+<h2 id="option-a--reverse-engineer-directly-from-the-sql-script-no-db-needed" tabindex="-1"><a class="header-anchor" href="#option-a--reverse-engineer-directly-from-the-sql-script-no-db-needed"><span>Option A — Reverse-engineer directly from the .sql script (no DB needed)</span></a></h2>
+<p>Best for just getting the diagram.</p>
+<ol>
+<li>MySQL Workbench → <strong>File ▸ Import ▸ Reverse Engineer MySQL Create Script…</strong></li>
+<li><strong>Browse</strong> to <code>cmas_enterprise_mysql.sql</code> (or <code>cmas_app_mysql.sql</code>).</li>
+<li>Tick <strong>&quot;Place imported objects on a diagram&quot;</strong> → <strong>Execute</strong> → <strong>Finish</strong>.</li>
+<li>An EER diagram opens with every table and all foreign-key relationship lines.</li>
+<li>Tidy layout: <strong>Arrange ▸ Autolayout</strong>, then drag clusters apart.</li>
+</ol>
+<h2 id="option-b--reverse-engineer-from-a-live-database-round-trips-data-too" tabindex="-1"><a class="header-anchor" href="#option-b--reverse-engineer-from-a-live-database-round-trips-data-too"><span>Option B — Reverse-engineer from a live database (round-trips data too)</span></a></h2>
+<ol>
+<li>Create the schema and load the DDL:<pre class="hljs"><code>mysql -u root -p -e <span class="hljs-string">&quot;CREATE DATABASE cmas CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;&quot;</span>
+mysql -u root -p cmas &lt; cmas_enterprise_mysql.sql
+</code></pre>
+</li>
+<li>Workbench → <strong>Database ▸ Reverse Engineer…</strong> (Ctrl+R) → pick the connection →
+select the <code>cmas</code> schema → <strong>Next</strong> through, then <strong>Finish</strong>.</li>
+</ol>
+<h2 id="export-the-diagram" tabindex="-1"><a class="header-anchor" href="#export-the-diagram"><span>Export the diagram</span></a></h2>
+<p><strong>File ▸ Export ▸ Export as PNG / SVG / PDF…</strong> (SVG scales best for docs).
+To hand the model to someone else, save the Workbench model itself:
+<strong>File ▸ Save Model As…</strong> → produces a <code>.mwb</code> file.</p>
+<hr>
+<h2 id="what-changed-in-translation-postgresprisma--mysql-8" tabindex="-1"><a class="header-anchor" href="#what-changed-in-translation-postgresprisma--mysql-8"><span>What changed in translation (Postgres/Prisma → MySQL 8)</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>MySQL 8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BIGSERIAL</code></td>
+<td><code>BIGINT AUTO_INCREMENT</code></td>
+</tr>
+<tr>
+<td><code>@id @default(cuid())</code> (Prisma)</td>
+<td><code>VARCHAR(30)</code> PK (app-generated, no auto-increment)</td>
+</tr>
+<tr>
+<td><code>enum Role</code> (Prisma)</td>
+<td><code>ENUM('ADMIN','INSTRUCTOR')</code></td>
+</tr>
+<tr>
+<td><code>TIMESTAMPTZ</code> + <code>now()</code></td>
+<td><code>TIMESTAMP</code> / <code>DATETIME(3)</code> + <code>CURRENT_TIMESTAMP</code>; <code>updated_at</code> gets <code>ON UPDATE CURRENT_TIMESTAMP</code></td>
+</tr>
+<tr>
+<td><code>TEXT</code> used in a <code>UNIQUE</code>/<code>PK</code></td>
+<td><code>VARCHAR(n)</code> (MySQL can't index full <code>TEXT</code>)</td>
+</tr>
+<tr>
+<td><code>NUMERIC(p,s)</code></td>
+<td><code>DECIMAL(p,s)</code></td>
+</tr>
+<tr>
+<td><code>Float</code> (Prisma)</td>
+<td><code>DOUBLE</code></td>
+</tr>
+<tr>
+<td><code>Boolean</code></td>
+<td><code>TINYINT(1)</code></td>
+</tr>
+<tr>
+<td><code>CHECK (x IN (...))</code></td>
+<td>kept (enforced on 8.0.16+, drawn by Workbench)</td>
+</tr>
+<tr>
+<td><code>GENERATED ALWAYS AS (…) STORED</code></td>
+<td>same syntax (MySQL 8)</td>
+</tr>
+<tr>
+<td><code>DEFAULT CURRENT_DATE</code></td>
+<td><code>DEFAULT (CURRENT_DATE)</code> (expression default)</td>
+</tr>
+<tr>
+<td><code>CREATE EXTENSION pgcrypto</code></td>
+<td>removed (Postgres-only)</td>
+</tr>
+<tr>
+<td>reserved words <code>order</code>, <code>role</code></td>
+<td>back-ticked</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fidelity-caveats" tabindex="-1"><a class="header-anchor" href="#fidelity-caveats"><span>Fidelity caveats</span></a></h3>
+<ul>
+<li><strong>Foreign keys are table-level constraints</strong> (MySQL silently ignores inline
+column-level <code>REFERENCES</code>), which is what makes Workbench draw the relationship
+lines. Enterprise FKs default to <code>RESTRICT</code>; add <code>ON DELETE</code>/<code>ON UPDATE</code> rules
+if your app needs cascades.</li>
+<li><code>plo_attainment_results.cohort_label</code> and any Postgres <code>TEXT</code> that sat inside a
+<code>UNIQUE</code> constraint became <code>VARCHAR</code>. <code>cohort_label</code> was nullable in Postgres;
+in MySQL it's <code>NOT NULL DEFAULT ''</code> so the unique key behaves the same
+(MySQL treats multiple NULLs as distinct, which would have broken the intended
+one-row-per-cohort rule).</li>
+<li><code>ScoreUploadLog</code> (app schema) has <strong>no</strong> foreign keys — <code>courseId</code>/<code>uploadedBy</code>
+are plain strings in the Prisma model, so it renders as a standalone audit
+table. That matches the source; wire up FKs only if you decide to.</li>
+<li>On Linux MySQL, table-name case sensitivity is controlled by
+<code>lower_case_table_names</code>. The app schema uses mixed-case names
+(<code>User</code>, <code>Course</code>, …) exactly as Prisma emits them.</li>
+</ul>
+<blockquote>
+<p>These files are a <strong>presentation/diagramming artifact</strong>. The authoritative
+schema for the app remains <code>database/schema.prisma</code>; the authoritative
+full design remains <code>docs/markdown/sql/schema.sql</code> (PostgreSQL). Keep those
+as the source of truth and regenerate these if the models change.</p>
+</blockquote>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="../../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

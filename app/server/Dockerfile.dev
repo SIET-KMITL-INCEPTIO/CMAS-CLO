@@ -1,0 +1,23 @@
+# Dev-only image: hot reload via tsx watch, source mounted as a volume by docker-compose.
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy just the workspace manifests first so `npm install` is cached
+# independently of source changes.
+COPY package.json package-lock.json* ./
+COPY app/server/package.json app/server/package.json
+COPY app/client/package.json app/client/package.json
+
+RUN npm install
+
+COPY database ./database
+COPY app/server ./app/server
+
+# Prisma client is generated into node_modules, which is NOT bind-mounted at
+# runtime, so it must be generated here at build time.
+RUN npx prisma generate --schema=database/schema.prisma
+
+EXPOSE 3001
+
+CMD ["npm", "run", "dev", "-w", "app/server"]

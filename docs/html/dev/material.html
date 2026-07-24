@@ -1,0 +1,2122 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material Tonal Logic — Design System</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a class="active" href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<h1 id="material-tonal-logic--design-system" tabindex="-1"><a class="header-anchor" href="#material-tonal-logic--design-system"><span>Material Tonal Logic — Design System</span></a></h1>
+<p>See also: <span class="wikilink-missing" title="unresolved: design-system-obe">design-system-obe</span> · <span class="wikilink-missing" title="unresolved: Design System Strategy">Design System Strategy</span> · <span class="wikilink-missing" title="unresolved: concept-clo MOC">concept-clo MOC</span></p>
+<blockquote>
+<p><strong>Version</strong> 1.0.0 · <strong>Status</strong> Active · <strong>Maintainers</strong> UI Design, UX Design, Product Design, UX Research, Design Systems</p>
+</blockquote>
+<hr>
+<h2 id="table-of-contents" tabindex="-1"><a class="header-anchor" href="#table-of-contents"><span>Table of Contents</span></a></h2>
+<ol>
+<li><a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#1-overview--philosophy" target="_blank" rel="noopener">Overview &amp; Philosophy</a></li>
+<li><a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#2-core-principles" target="_blank" rel="noopener">Core Principles</a></li>
+<li><a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#3-design-tokens" target="_blank" rel="noopener">Design Tokens</a>
+<ul>
+<li>3.1 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#31-color-system" target="_blank" rel="noopener">Color System</a></li>
+<li>3.2 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#32-typography-scale" target="_blank" rel="noopener">Typography Scale</a></li>
+<li>3.3 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#33-spacing--grid" target="_blank" rel="noopener">Spacing &amp; Grid</a></li>
+<li>3.4 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#34-shape-language" target="_blank" rel="noopener">Shape Language</a></li>
+<li>3.5 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#35-elevation--depth" target="_blank" rel="noopener">Elevation &amp; Depth</a></li>
+<li>3.6 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#36-motion--animation" target="_blank" rel="noopener">Motion &amp; Animation</a></li>
+</ul>
+</li>
+<li><a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#4-component-reference" target="_blank" rel="noopener">Component Reference</a>
+<ul>
+<li>4.1 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#41-buttons" target="_blank" rel="noopener">Buttons</a></li>
+<li>4.2 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#42-cards" target="_blank" rel="noopener">Cards</a></li>
+<li>4.3 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#43-text-fields" target="_blank" rel="noopener">Text Fields</a></li>
+<li>4.4 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#44-navigation" target="_blank" rel="noopener">Navigation</a></li>
+<li>4.5 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#45-chips" target="_blank" rel="noopener">Chips</a></li>
+<li>4.6 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#46-dialogs" target="_blank" rel="noopener">Dialogs</a></li>
+<li>4.7 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#47-fab--floating-action-button" target="_blank" rel="noopener">FAB — Floating Action Button</a></li>
+<li>4.8 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#48-lists" target="_blank" rel="noopener">Lists</a></li>
+<li>4.9 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#49-progress-indicators" target="_blank" rel="noopener">Progress Indicators</a></li>
+<li>4.10 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#410-badges--avatars" target="_blank" rel="noopener">Badges &amp; Avatars</a></li>
+<li>4.11 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#411-snackbars--toasts" target="_blank" rel="noopener">Snackbars &amp; Toasts</a></li>
+</ul>
+</li>
+<li><a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#5-pattern-library" target="_blank" rel="noopener">Pattern Library</a>
+<ul>
+<li>5.1 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#51-page-layout" target="_blank" rel="noopener">Page Layout</a></li>
+<li>5.2 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#52-forms" target="_blank" rel="noopener">Forms</a></li>
+<li>5.3 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#53-data-tables--file-lists" target="_blank" rel="noopener">Data Tables &amp; File Lists</a></li>
+<li>5.4 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#54-hero-sections" target="_blank" rel="noopener">Hero Sections</a></li>
+<li>5.5 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#55-empty-states" target="_blank" rel="noopener">Empty States</a></li>
+<li>5.6 <a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#56-error--validation-states" target="_blank" rel="noopener">Error &amp; Validation States</a></li>
+</ul>
+</li>
+<li><a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#6-accessibility-standards" target="_blank" rel="noopener">Accessibility Standards</a></li>
+<li><a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#7-implementation-guide" target="_blank" rel="noopener">Implementation Guide</a></li>
+<li><a href="https://claude.ai/chat/34ab32ca-3f17-4247-91b3-8403a8b1afd9#8-governance--contribution" target="_blank" rel="noopener">Governance &amp; Contribution</a></li>
+</ol>
+<hr>
+<h2 id="1-overview--philosophy" tabindex="-1"><a class="header-anchor" href="#1-overview--philosophy"><span>1. Overview &amp; Philosophy</span></a></h2>
+<p><strong>Material Tonal Logic</strong> is a design system built on Material Design 3 (M3) principles, adapted for corporate and educational SaaS products. It prioritizes <strong>clarity</strong>, <strong>tonal hierarchy</strong>, and <strong>adaptive layout</strong> — moving away from sharp shadows and aggressive chrome in favor of surface layering, expressive rounding, and systematic whitespace.</p>
+<h3 id="what-this-system-is" tabindex="-1"><a class="header-anchor" href="#what-this-system-is"><span>What This System Is</span></a></h3>
+<p>A single source of truth for every visual and interaction decision across products. It is not a component library alone — it defines how components think, breathe, relate to each other, and respond to users.</p>
+<h3 id="what-this-system-is-not" tabindex="-1"><a class="header-anchor" href="#what-this-system-is-not"><span>What This System Is Not</span></a></h3>
+<p>A rigid cage. Components and patterns are composable constraints, not pixel-perfect mandates. The system gives teams a shared language, not a set of handcuffs.</p>
+<h3 id="brand-personality" tabindex="-1"><a class="header-anchor" href="#brand-personality"><span>Brand Personality</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Systematic</strong></td>
+<td>Every element follows a strict placement and sizing rule derived from an 8px baseline</td>
+</tr>
+<tr>
+<td><strong>Adaptive</strong></td>
+<td>Fluid container logic ensures the system feels native at every breakpoint</td>
+</tr>
+<tr>
+<td><strong>Tactile</strong></td>
+<td>Ripple effects, state transitions, and tonal shifts reward interaction</td>
+</tr>
+<tr>
+<td><strong>Approachable</strong></td>
+<td>Expressive rounded shapes and breathable spacing prevent information density from feeling oppressive</td>
+</tr>
+<tr>
+<td><strong>Accessible</strong></td>
+<td>All color pairings maintain a minimum 4.5:1 contrast ratio; all interactive targets hit 48px minimum</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-core-principles" tabindex="-1"><a class="header-anchor" href="#2-core-principles"><span>2. Core Principles</span></a></h2>
+<h3 id="p1--tonal-hierarchy-over-shadow" tabindex="-1"><a class="header-anchor" href="#p1--tonal-hierarchy-over-shadow"><span>P1 — Tonal Hierarchy Over Shadow</span></a></h3>
+<p>Depth is communicated through surface container tiers, not drop shadows. Use shadow only as a secondary reinforcement at Level 1 and Level 2 elevation. Never use hard, dark shadows.</p>
+<h3 id="p2--functional-color-roles" tabindex="-1"><a class="header-anchor" href="#p2--functional-color-roles"><span>P2 — Functional Color Roles</span></a></h3>
+<p>Every color has a declared semantic role. Never hardcode a hex value in a component — always reference a token. The palette is built on tonal palettes; brand accent anchors the primary role, secondary and tertiary provide organizational contrast.</p>
+<h3 id="p3--touch-safety-always" tabindex="-1"><a class="header-anchor" href="#p3--touch-safety-always"><span>P3 — Touch Safety Always</span></a></h3>
+<p>Every interactive element must present a minimum 48×48px touch target, regardless of its visual footprint. A visually compact chip still needs an invisible tap area.</p>
+<h3 id="p4--on-color-pairing-is-mandatory" tabindex="-1"><a class="header-anchor" href="#p4--on-color-pairing-is-mandatory"><span>P4 — On-Color Pairing Is Mandatory</span></a></h3>
+<p>Text and iconography must always use the &quot;on-&quot; variant of their background role. <code>on-primary</code> on <code>primary</code>, <code>on-surface</code> on <code>surface</code>, and so on. This is the primary mechanism for maintaining contrast without manual color picking.</p>
+<h3 id="p5--typography-communicates-hierarchy-not-decoration" tabindex="-1"><a class="header-anchor" href="#p5--typography-communicates-hierarchy-not-decoration"><span>P5 — Typography Communicates Hierarchy, Not Decoration</span></a></h3>
+<p>Use type scale roles purposefully. Display for landmark moments; Headline for section identity; Title for component headers; Body for reading; Label for interactive affordances.</p>
+<h3 id="p6--motion-reinforces-meaning" tabindex="-1"><a class="header-anchor" href="#p6--motion-reinforces-meaning"><span>P6 — Motion Reinforces Meaning</span></a></h3>
+<p>All transitions should explain a spatial relationship or a state change. Motion is never decorative. Default to 200–300ms easing curves for most micro-interactions; reserve longer durations for complex transitions.</p>
+<hr>
+<h2 id="3-design-tokens" tabindex="-1"><a class="header-anchor" href="#3-design-tokens"><span>3. Design Tokens</span></a></h2>
+<p>Tokens are the atomic layer. No component, pattern, or layout decision should reference a raw value — only a token.</p>
+<hr>
+<h3 id="31-color-system" tabindex="-1"><a class="header-anchor" href="#31-color-system"><span>3.1 Color System</span></a></h3>
+<h4 id="tonal-palette-architecture" tabindex="-1"><a class="header-anchor" href="#tonal-palette-architecture"><span>Tonal Palette Architecture</span></a></h4>
+<p>The system is built on three named palette families — <strong>Primary (Royal Amethyst)</strong>, <strong>Secondary (Muted Violet)</strong>, and <strong>Tertiary (Rose)</strong>. Each palette generates a range of tonal values that map to semantic roles.</p>
+<h4 id="surface-container-tiers" tabindex="-1"><a class="header-anchor" href="#surface-container-tiers"><span>Surface Container Tiers</span></a></h4>
+<p>Use these tiers to build depth through layering, not shadow:</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>surface</code></td>
+<td><code>#fef7ff</code></td>
+<td>Base background — Page canvas</td>
+</tr>
+<tr>
+<td><code>surface-dim</code></td>
+<td><code>#ded8df</code></td>
+<td>Subdued background — Scrim overlays</td>
+</tr>
+<tr>
+<td><code>surface-bright</code></td>
+<td><code>#fef7ff</code></td>
+<td>Highlighted surface variant</td>
+</tr>
+<tr>
+<td><code>surface-container-lowest</code></td>
+<td><code>#ffffff</code></td>
+<td>Highest emphasis container — Modals, dialogs</td>
+</tr>
+<tr>
+<td><code>surface-container-low</code></td>
+<td><code>#f8f2f9</code></td>
+<td>Elevated cards, compose buttons</td>
+</tr>
+<tr>
+<td><code>surface-container</code></td>
+<td><code>#f2ecf3</code></td>
+<td>Navigation bars, sidebars, section panels</td>
+</tr>
+<tr>
+<td><code>surface-container-high</code></td>
+<td><code>#ece6ed</code></td>
+<td>Hover states, active containers</td>
+</tr>
+<tr>
+<td><code>surface-container-highest</code></td>
+<td><code>#e6e1e8</code></td>
+<td>Focus states, pressed containers, footers</td>
+</tr>
+<tr>
+<td><code>surface-variant</code></td>
+<td><code>#e6e1e8</code></td>
+<td>Dividers, inactive chip backgrounds</td>
+</tr>
+</tbody>
+</table>
+<h4 id="on-surface-roles-text--icon" tabindex="-1"><a class="header-anchor" href="#on-surface-roles-text--icon"><span>On-Surface Roles (Text &amp; Icon)</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>on-surface</code></td>
+<td><code>#1d1b20</code></td>
+<td>Primary text — Body copy, headlines</td>
+</tr>
+<tr>
+<td><code>on-surface-variant</code></td>
+<td><code>#494551</code></td>
+<td>Secondary text — Helper text, captions, inactive labels</td>
+</tr>
+<tr>
+<td><code>inverse-surface</code></td>
+<td><code>#322f35</code></td>
+<td>Text on dark overlays</td>
+</tr>
+<tr>
+<td><code>inverse-on-surface</code></td>
+<td><code>#f5eff6</code></td>
+<td>Body text on inverse surfaces</td>
+</tr>
+</tbody>
+</table>
+<h4 id="outline-roles-borders--dividers" tabindex="-1"><a class="header-anchor" href="#outline-roles-borders--dividers"><span>Outline Roles (Borders &amp; Dividers)</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>outline</code></td>
+<td><code>#7a7582</code></td>
+<td>Text field borders, explicit dividers</td>
+</tr>
+<tr>
+<td><code>outline-variant</code></td>
+<td><code>#cbc4d2</code></td>
+<td>Subtle dividers, card borders, chip strokes</td>
+</tr>
+</tbody>
+</table>
+<h4 id="primary-palette" tabindex="-1"><a class="header-anchor" href="#primary-palette"><span>Primary Palette</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>primary</code></td>
+<td><code>#4f378a</code></td>
+<td>Brand CTA — Filled button background, active nav indicators</td>
+</tr>
+<tr>
+<td><code>on-primary</code></td>
+<td><code>#ffffff</code></td>
+<td>Text/icons on primary surfaces</td>
+</tr>
+<tr>
+<td><code>primary-container</code></td>
+<td><code>#6750a4</code></td>
+<td>Hero section backgrounds, prominent containers</td>
+</tr>
+<tr>
+<td><code>on-primary-container</code></td>
+<td><code>#e0d2ff</code></td>
+<td>Text/icons inside primary-container</td>
+</tr>
+<tr>
+<td><code>inverse-primary</code></td>
+<td><code>#cfbcff</code></td>
+<td>Primary-colored elements on dark surfaces</td>
+</tr>
+<tr>
+<td><code>primary-fixed</code></td>
+<td><code>#e9ddff</code></td>
+<td>Stable primary tint — always light regardless of mode</td>
+</tr>
+<tr>
+<td><code>primary-fixed-dim</code></td>
+<td><code>#cfbcff</code></td>
+<td>Dimmed stable primary tint</td>
+</tr>
+<tr>
+<td><code>on-primary-fixed</code></td>
+<td><code>#22005d</code></td>
+<td>Text on primary-fixed</td>
+</tr>
+<tr>
+<td><code>on-primary-fixed-variant</code></td>
+<td><code>#4f378a</code></td>
+<td>Secondary text on primary-fixed</td>
+</tr>
+<tr>
+<td><code>surface-tint</code></td>
+<td><code>#6750a4</code></td>
+<td>Tint overlay for elevated surfaces at Level 1+</td>
+</tr>
+</tbody>
+</table>
+<h4 id="secondary-palette" tabindex="-1"><a class="header-anchor" href="#secondary-palette"><span>Secondary Palette</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>secondary</code></td>
+<td><code>#625b71</code></td>
+<td>Secondary brand color — Focus rings, mentor availability labels</td>
+</tr>
+<tr>
+<td><code>on-secondary</code></td>
+<td><code>#ffffff</code></td>
+<td>Text/icons on secondary surfaces</td>
+</tr>
+<tr>
+<td><code>secondary-container</code></td>
+<td><code>#e8def9</code></td>
+<td>Active nav pill, tonal button background, selected chip</td>
+</tr>
+<tr>
+<td><code>on-secondary-container</code></td>
+<td><code>#686177</code></td>
+<td>Text/icons inside secondary-container</td>
+</tr>
+<tr>
+<td><code>secondary-fixed</code></td>
+<td><code>#e8def9</code></td>
+<td>Stable secondary tint</td>
+</tr>
+<tr>
+<td><code>secondary-fixed-dim</code></td>
+<td><code>#ccc2dc</code></td>
+<td>Dimmed stable secondary tint</td>
+</tr>
+<tr>
+<td><code>on-secondary-fixed</code></td>
+<td><code>#1e192b</code></td>
+<td>Text on secondary-fixed</td>
+</tr>
+<tr>
+<td><code>on-secondary-fixed-variant</code></td>
+<td><code>#4a4358</code></td>
+<td>Secondary text on secondary-fixed</td>
+</tr>
+</tbody>
+</table>
+<h4 id="tertiary-palette" tabindex="-1"><a class="header-anchor" href="#tertiary-palette"><span>Tertiary Palette</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tertiary</code></td>
+<td><code>#633b48</code></td>
+<td>Supporting accent — study group labels, decorative callouts</td>
+</tr>
+<tr>
+<td><code>on-tertiary</code></td>
+<td><code>#ffffff</code></td>
+<td>Text/icons on tertiary surfaces</td>
+</tr>
+<tr>
+<td><code>tertiary-container</code></td>
+<td><code>#7d5260</code></td>
+<td>Workshop tags, status badges, study group identifiers</td>
+</tr>
+<tr>
+<td><code>on-tertiary-container</code></td>
+<td><code>#ffcbda</code></td>
+<td>Text/icons inside tertiary-container</td>
+</tr>
+<tr>
+<td><code>tertiary-fixed</code></td>
+<td><code>#ffd9e3</code></td>
+<td>Stable tertiary tint</td>
+</tr>
+<tr>
+<td><code>tertiary-fixed-dim</code></td>
+<td><code>#eeb8c8</code></td>
+<td>Dimmed stable tertiary tint</td>
+</tr>
+<tr>
+<td><code>on-tertiary-fixed</code></td>
+<td><code>#31111d</code></td>
+<td>Text on tertiary-fixed</td>
+</tr>
+<tr>
+<td><code>on-tertiary-fixed-variant</code></td>
+<td><code>#633b48</code></td>
+<td>Secondary text on tertiary-fixed</td>
+</tr>
+</tbody>
+</table>
+<h4 id="error-palette" tabindex="-1"><a class="header-anchor" href="#error-palette"><span>Error Palette</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error</code></td>
+<td><code>#ba1a1a</code></td>
+<td>Destructive actions, validation errors, LIVE badge backgrounds</td>
+</tr>
+<tr>
+<td><code>on-error</code></td>
+<td><code>#ffffff</code></td>
+<td>Text/icons on error surfaces</td>
+</tr>
+<tr>
+<td><code>error-container</code></td>
+<td><code>#ffdad6</code></td>
+<td>Error message backgrounds, inline validation banners</td>
+</tr>
+<tr>
+<td><code>on-error-container</code></td>
+<td><code>#93000a</code></td>
+<td>Text inside error-container</td>
+</tr>
+</tbody>
+</table>
+<h4 id="semantic-backgroundsurface-aliases" tabindex="-1"><a class="header-anchor" href="#semantic-backgroundsurface-aliases"><span>Semantic Background/Surface Aliases</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>background</code></td>
+<td><code>#fef7ff</code></td>
+<td>Alias of <code>surface</code> — use <code>surface</code> in components</td>
+</tr>
+<tr>
+<td><code>on-background</code></td>
+<td><code>#1d1b20</code></td>
+<td>Alias of <code>on-surface</code> — use <code>on-surface</code> in components</td>
+</tr>
+</tbody>
+</table>
+<h4 id="state-overlays" tabindex="-1"><a class="header-anchor" href="#state-overlays"><span>State Overlays</span></a></h4>
+<p>Applied as overlay on top of any interactive component's base color. Never use these as a stand-alone fill.</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Overlay</th>
+<th>Opacity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hover</td>
+<td><code>#000000</code> (on light) / <code>#ffffff</code> (on dark)</td>
+<td>8%</td>
+</tr>
+<tr>
+<td>Focus</td>
+<td><code>#000000</code> / <code>#ffffff</code></td>
+<td>10%</td>
+</tr>
+<tr>
+<td>Pressed (Ripple)</td>
+<td><code>#000000</code> / <code>#ffffff</code></td>
+<td>10%</td>
+</tr>
+<tr>
+<td>Dragged</td>
+<td><code>#000000</code> / <code>#ffffff</code></td>
+<td>16%</td>
+</tr>
+<tr>
+<td>Disabled</td>
+<td><code>on-surface</code></td>
+<td>38% opacity on text; 12% on container</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="32-typography-scale" tabindex="-1"><a class="header-anchor" href="#32-typography-scale"><span>3.2 Typography Scale</span></a></h3>
+<p>All type uses <strong>Roboto</strong> as the system default. Google Sans may substitute at Display/Headline for brand-heavy contexts.</p>
+<h4 id="type-roles" tabindex="-1"><a class="header-anchor" href="#type-roles"><span>Type Roles</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Role Token</th>
+<th>Font</th>
+<th>Size</th>
+<th>Weight</th>
+<th>Line Height</th>
+<th>Letter Spacing</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>display-lg</code></td>
+<td>Roboto</td>
+<td>57px</td>
+<td>400</td>
+<td>64px</td>
+<td>−0.25px</td>
+<td>Landmark hero text — one per page maximum</td>
+</tr>
+<tr>
+<td><code>display-md</code></td>
+<td>Roboto</td>
+<td>45px</td>
+<td>400</td>
+<td>52px</td>
+<td>0</td>
+<td>Hero section headers</td>
+</tr>
+<tr>
+<td><code>display-sm</code></td>
+<td>Roboto</td>
+<td>36px</td>
+<td>400</td>
+<td>44px</td>
+<td>0</td>
+<td>Feature highlights, section openers</td>
+</tr>
+<tr>
+<td><code>headline-lg</code></td>
+<td>Roboto</td>
+<td>32px</td>
+<td>400</td>
+<td>40px</td>
+<td>0</td>
+<td>Page-level section titles</td>
+</tr>
+<tr>
+<td><code>headline-md</code></td>
+<td>Roboto</td>
+<td>28px</td>
+<td>400</td>
+<td>36px</td>
+<td>0</td>
+<td>Module headers</td>
+</tr>
+<tr>
+<td><code>headline-sm</code></td>
+<td>Roboto</td>
+<td>24px</td>
+<td>400</td>
+<td>32px</td>
+<td>0</td>
+<td>Card group titles, panel headers</td>
+</tr>
+<tr>
+<td><code>title-lg</code></td>
+<td>Roboto</td>
+<td>22px</td>
+<td>400</td>
+<td>28px</td>
+<td>0</td>
+<td>Card titles, widget headers</td>
+</tr>
+<tr>
+<td><code>title-md</code></td>
+<td>Roboto</td>
+<td>16px</td>
+<td>500</td>
+<td>24px</td>
+<td>0.15px</td>
+<td>Card content headers, list item primary text</td>
+</tr>
+<tr>
+<td><code>title-sm</code></td>
+<td>Roboto</td>
+<td>14px</td>
+<td>500</td>
+<td>20px</td>
+<td>0.10px</td>
+<td>Secondary card headers, drawer section labels</td>
+</tr>
+<tr>
+<td><code>body-lg</code></td>
+<td>Roboto</td>
+<td>16px</td>
+<td>400</td>
+<td>24px</td>
+<td>0.50px</td>
+<td>Comfortable reading copy</td>
+</tr>
+<tr>
+<td><code>body-md</code></td>
+<td>Roboto</td>
+<td>14px</td>
+<td>400</td>
+<td>20px</td>
+<td>0.25px</td>
+<td>Standard body copy, form descriptions</td>
+</tr>
+<tr>
+<td><code>body-sm</code></td>
+<td>Roboto</td>
+<td>12px</td>
+<td>400</td>
+<td>16px</td>
+<td>0.40px</td>
+<td>Helper text, captions, timestamps</td>
+</tr>
+<tr>
+<td><code>label-lg</code></td>
+<td>Roboto</td>
+<td>14px</td>
+<td>500</td>
+<td>20px</td>
+<td>0.10px</td>
+<td><strong>Buttons</strong>, chip labels, tab labels</td>
+</tr>
+<tr>
+<td><code>label-md</code></td>
+<td>Roboto</td>
+<td>12px</td>
+<td>500</td>
+<td>16px</td>
+<td>0.50px</td>
+<td>Navigation labels, badge text</td>
+</tr>
+<tr>
+<td><code>label-sm</code></td>
+<td>Roboto</td>
+<td>11px</td>
+<td>500</td>
+<td>16px</td>
+<td>0.50px</td>
+<td>Annotation text, tooltip content</td>
+</tr>
+</tbody>
+</table>
+<h4 id="typography-rules" tabindex="-1"><a class="header-anchor" href="#typography-rules"><span>Typography Rules</span></a></h4>
+<ul>
+<li><strong>Never mix weights within a single component role.</strong> A card title is always <code>title-md</code>. Don't bold it additionally.</li>
+<li><strong>Line-height ratio for body:</strong> Maintain the 1.5× line-height ratio (e.g. 16px text → 24px line height) for comfortable paragraph reading.</li>
+<li><strong>Tracking direction:</strong> Display sizes use negative tracking (−0.25px) for tight, impactful display. Labels use positive tracking (+0.1–0.5px) for legibility at small sizes.</li>
+<li><strong>Alignment:</strong> Default to left-aligned text. Center-align only for hero text, empty states, and toast messages.</li>
+<li><strong>Truncation:</strong> Apply ellipsis (<code>text-overflow: ellipsis</code>) on single-line truncation. For multi-line, use <code>line-clamp</code> with a maximum of 2–3 lines.</li>
+</ul>
+<hr>
+<h3 id="33-spacing--grid" tabindex="-1"><a class="header-anchor" href="#33-spacing--grid"><span>3.3 Spacing &amp; Grid</span></a></h3>
+<h4 id="baseline-unit" tabindex="-1"><a class="header-anchor" href="#baseline-unit"><span>Baseline Unit</span></a></h4>
+<p>All spacing is derived from an <strong>8px baseline unit</strong>. Half-steps of 4px are available for micro-adjustments only.</p>
+<h4 id="spacing-scale" tabindex="-1"><a class="header-anchor" href="#spacing-scale"><span>Spacing Scale</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>xs</code></td>
+<td>4px</td>
+<td>Icon internal padding, badge offsets</td>
+</tr>
+<tr>
+<td><code>sm</code></td>
+<td>8px</td>
+<td>Internal component gap — icon to label, avatar to text</td>
+</tr>
+<tr>
+<td><code>md</code></td>
+<td>16px</td>
+<td>Internal container padding — card padding, section internal spacing</td>
+</tr>
+<tr>
+<td><code>lg</code></td>
+<td>24px</td>
+<td>Section-to-section vertical rhythm</td>
+</tr>
+<tr>
+<td><code>xl</code></td>
+<td>32px</td>
+<td>Major section separators, hero padding additions</td>
+</tr>
+<tr>
+<td><code>touch-target</code></td>
+<td>48px</td>
+<td>Minimum interactive hit area for all touchable elements</td>
+</tr>
+</tbody>
+</table>
+<h4 id="responsive-grid" tabindex="-1"><a class="header-anchor" href="#responsive-grid"><span>Responsive Grid</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Breakpoint</th>
+<th>Columns</th>
+<th>Margin</th>
+<th>Gutter</th>
+<th>Container Max Width</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phone (<code>&lt; 600px</code>)</td>
+<td>4</td>
+<td>16px</td>
+<td>16px</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Tablet (<code>600–840px</code>)</td>
+<td>8</td>
+<td>24px</td>
+<td>24px</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Desktop (<code>&gt; 840px</code>)</td>
+<td>12</td>
+<td>24px+</td>
+<td>24px</td>
+<td>1280px</td>
+</tr>
+</tbody>
+</table>
+<h4 id="layout-anatomy" tabindex="-1"><a class="header-anchor" href="#layout-anatomy"><span>Layout Anatomy</span></a></h4>
+<ul>
+<li><strong>Navigation Sidebar:</strong> Fixed <code>360px</code> wide on desktop. Collapses to bottom tab bar on mobile.</li>
+<li><strong>Top App Bar:</strong> Fixed <code>64px</code> height. Contains branding, search, and global controls.</li>
+<li><strong>Content Area:</strong> Fills remaining width. Typically receives <code>margin: 16px</code> inset, <code>border-radius: 12–20px</code>, <code>background: surface-container-lowest</code>.</li>
+<li><strong>Right Panel (App Panel):</strong> Fixed <code>56px</code> icon rail for supplementary apps (Calendar, Notes, Tasks). Hidden on mobile.</li>
+</ul>
+<hr>
+<h3 id="34-shape-language" tabindex="-1"><a class="header-anchor" href="#34-shape-language"><span>3.4 Shape Language</span></a></h3>
+<p>Shape radius is a system-level semantic decision, not per-component improvisation.</p>
+<table>
+<thead>
+<tr>
+<th>Shape Scale</th>
+<th>Radius Value</th>
+<th>Applied To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Extra Small</td>
+<td>4px</td>
+<td>Text field top corners, tooltips, snackbar corners</td>
+</tr>
+<tr>
+<td>Small</td>
+<td>8px</td>
+<td>Menu surfaces, chip containers</td>
+</tr>
+<tr>
+<td>Medium</td>
+<td>12px</td>
+<td>Cards (elevated, outlined, filled), small FABs</td>
+</tr>
+<tr>
+<td>Large</td>
+<td>16px</td>
+<td>Navigation drawers (right-side radius), dialogs, side sheets</td>
+</tr>
+<tr>
+<td>Extra Large</td>
+<td>24px</td>
+<td>Full hero sections, large modal surfaces</td>
+</tr>
+<tr>
+<td>Full</td>
+<td>9999px</td>
+<td>Buttons (all variants), standard FABs, active nav pills, search bars, chips</td>
+</tr>
+</tbody>
+</table>
+<h4 id="shape-rules" tabindex="-1"><a class="header-anchor" href="#shape-rules"><span>Shape Rules</span></a></h4>
+<ul>
+<li><strong>Buttons are always pill-shaped</strong> (<code>border-radius: 9999px</code>). No exceptions.</li>
+<li><strong>Navigation active indicators</strong> use a pill shape (<code>64×32px</code> pill on nav bar; full-height pill on nav rail/drawer).</li>
+<li><strong>Cards</strong> use <code>12px</code> radius. Increase to <code>16–24px</code> only for hero containers.</li>
+<li><strong>Never mix shape radii</strong> within a single component. A card cannot have <code>12px</code> on top and <code>0px</code> on the bottom.</li>
+</ul>
+<hr>
+<h3 id="35-elevation--depth" tabindex="-1"><a class="header-anchor" href="#35-elevation--depth"><span>3.5 Elevation &amp; Depth</span></a></h3>
+<p>Elevation is expressed through <strong>tonal surface fills</strong> first, and <strong>shadow</strong> second.</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Surface Token</th>
+<th>Shadow</th>
+<th>Used For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Level 0</td>
+<td><code>surface</code></td>
+<td>None</td>
+<td>Page background</td>
+</tr>
+<tr>
+<td>Level 1</td>
+<td><code>surface-container-low</code></td>
+<td><code>0 1px 2px rgba(0,0,0,0.10)</code></td>
+<td>Cards, compose buttons, dropdowns</td>
+</tr>
+<tr>
+<td>Level 2</td>
+<td><code>surface-container</code></td>
+<td><code>0 1px 3px rgba(0,0,0,0.15)</code></td>
+<td>Navigation bars, sidebars</td>
+</tr>
+<tr>
+<td>Level 3</td>
+<td><code>surface-container-high</code></td>
+<td><code>0 4px 8px rgba(0,0,0,0.15)</code></td>
+<td>Modals, dialogs, drawers</td>
+</tr>
+<tr>
+<td>Level 4</td>
+<td><code>surface-container-highest</code></td>
+<td><code>0 6px 10px rgba(0,0,0,0.15)</code></td>
+<td>Full-screen overlays, critical dialogs</td>
+</tr>
+</tbody>
+</table>
+<h4 id="scrim" tabindex="-1"><a class="header-anchor" href="#scrim"><span>Scrim</span></a></h4>
+<p>When rendering a Level 3+ element (modal, dialog), apply a <strong>scrim</strong> behind the overlay:</p>
+<ul>
+<li>Background: <code>inverse-surface</code> (<code>#322f35</code>)</li>
+<li>Opacity: <code>40%</code></li>
+<li><code>z-index</code> below the overlay but above page content</li>
+</ul>
+<h4 id="shadow-tinting" tabindex="-1"><a class="header-anchor" href="#shadow-tinting"><span>Shadow Tinting</span></a></h4>
+<p>Shadows must not be pure black. Tint shadow color slightly toward the surface's primary tone to maintain a cohesive appearance. Use <code>rgba</code> rather than <code>hex</code> for shadow values to allow opacity control.</p>
+<hr>
+<h3 id="36-motion--animation" tabindex="-1"><a class="header-anchor" href="#36-motion--animation"><span>3.6 Motion &amp; Animation</span></a></h3>
+<p>Motion reinforces spatial context and provides feedback. It should feel physical and purposeful.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Duration — Micro</td>
+<td>100ms</td>
+<td>Ripple initiation, icon swap</td>
+</tr>
+<tr>
+<td>Duration — Standard</td>
+<td>200ms</td>
+<td>Hover transitions, color changes</td>
+</tr>
+<tr>
+<td>Duration — Emphasis</td>
+<td>300ms</td>
+<td>Component entrance, state changes</td>
+</tr>
+<tr>
+<td>Duration — Complex</td>
+<td>400–500ms</td>
+<td>Page transitions, drawer open/close</td>
+</tr>
+<tr>
+<td>Easing — Standard</td>
+<td><code>cubic-bezier(0.2, 0, 0, 1)</code></td>
+<td>Most transitions</td>
+</tr>
+<tr>
+<td>Easing — Decelerate</td>
+<td><code>cubic-bezier(0, 0, 0, 1)</code></td>
+<td>Elements entering the screen</td>
+</tr>
+<tr>
+<td>Easing — Accelerate</td>
+<td><code>cubic-bezier(0.3, 0, 1, 1)</code></td>
+<td>Elements leaving the screen</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ripple-effect" tabindex="-1"><a class="header-anchor" href="#ripple-effect"><span>Ripple Effect</span></a></h4>
+<p>All interactive components (buttons, cards, list items, chips, navigation items) must implement a ripple effect on press.</p>
+<ul>
+<li>Origin: Touch/click point</li>
+<li>Color: <code>on-surface</code> or <code>on-primary</code> at 10% opacity</li>
+<li>Duration: 300ms with fade-out easing</li>
+<li>Must not overflow component bounds (use <code>overflow: hidden</code> + <code>border-radius</code> to clip)</li>
+</ul>
+<h4 id="pulse-animation-live-indicators" tabindex="-1"><a class="header-anchor" href="#pulse-animation-live-indicators"><span>Pulse Animation (LIVE Indicators)</span></a></h4>
+<p>For real-time indicators, use an <code>animate-ping</code> pattern — a scaled, fading concentric pulse — over an <code>error</code> background.</p>
+<hr>
+<h2 id="4-component-reference" tabindex="-1"><a class="header-anchor" href="#4-component-reference"><span>4. Component Reference</span></a></h2>
+<hr>
+<h3 id="41-buttons" tabindex="-1"><a class="header-anchor" href="#41-buttons"><span>4.1 Buttons</span></a></h3>
+<p>Buttons carry <code>label-lg</code> text and are always pill-shaped (<code>border-radius: 9999px</code>). Minimum touch target: <code>48px</code> height.</p>
+<h4 id="variants" tabindex="-1"><a class="header-anchor" href="#variants"><span>Variants</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Background</th>
+<th>Text Color</th>
+<th>Border</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Filled</strong></td>
+<td><code>primary</code></td>
+<td><code>on-primary</code></td>
+<td>None</td>
+<td>Primary CTA — one per view</td>
+</tr>
+<tr>
+<td><strong>Filled Tonal</strong></td>
+<td><code>secondary-container</code></td>
+<td><code>on-secondary-container</code></td>
+<td>None</td>
+<td>Secondary CTA — supporting actions</td>
+</tr>
+<tr>
+<td><strong>Outlined</strong></td>
+<td>Transparent</td>
+<td><code>primary</code></td>
+<td>1px <code>outline</code></td>
+<td>Low-emphasis actions; destructive cancel</td>
+</tr>
+<tr>
+<td><strong>Text</strong></td>
+<td>Transparent</td>
+<td><code>primary</code></td>
+<td>None</td>
+<td>Tertiary actions, inline links, &quot;View All&quot; links</td>
+</tr>
+<tr>
+<td><strong>Elevated</strong></td>
+<td><code>surface-container-low</code></td>
+<td><code>primary</code></td>
+<td>None</td>
+<td>Floating actions needing visual separation</td>
+</tr>
+<tr>
+<td><strong>Icon Button</strong></td>
+<td>Transparent</td>
+<td><code>on-surface-variant</code></td>
+<td>None</td>
+<td>Toolbar and utility icons</td>
+</tr>
+</tbody>
+</table>
+<h4 id="states" tabindex="-1"><a class="header-anchor" href="#states"><span>States</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Visual Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Default</td>
+<td>Base token fill</td>
+</tr>
+<tr>
+<td>Hover</td>
+<td>+8% black overlay</td>
+</tr>
+<tr>
+<td>Focus</td>
+<td>+10% black overlay + 3px <code>secondary</code> focus ring at 2px offset</td>
+</tr>
+<tr>
+<td>Pressed</td>
+<td>+10% black overlay + ripple effect</td>
+</tr>
+<tr>
+<td>Disabled</td>
+<td><code>on-surface</code> 38% opacity text; <code>on-surface</code> 12% opacity container</td>
+</tr>
+<tr>
+<td>Loading</td>
+<td>Replace label with circular progress indicator; maintain button dimensions</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sizing" tabindex="-1"><a class="header-anchor" href="#sizing"><span>Sizing</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Height</th>
+<th>Horizontal Padding</th>
+<th>Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Small</td>
+<td>32px</td>
+<td>12px</td>
+<td><code>label-sm</code></td>
+</tr>
+<tr>
+<td>Default</td>
+<td>40px</td>
+<td>24px</td>
+<td><code>label-lg</code></td>
+</tr>
+<tr>
+<td>Large</td>
+<td>56px</td>
+<td>32px</td>
+<td><code>label-lg</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="accessibility" tabindex="-1"><a class="header-anchor" href="#accessibility"><span>Accessibility</span></a></h4>
+<ul>
+<li><code>role=&quot;button&quot;</code> or native <code>&lt;button&gt;</code> element</li>
+<li><code>aria-disabled=&quot;true&quot;</code> when disabled (not <code>disabled</code> attribute — preserves focusability for screen readers in some contexts)</li>
+<li>Focus ring visible at all times (never <code>outline: none</code> without a custom ring)</li>
+<li>Keyboard: <code>Enter</code> and <code>Space</code> both activate</li>
+</ul>
+<h4 id="dos-and-donts" tabindex="-1"><a class="header-anchor" href="#dos-and-donts"><span>Do's and Don'ts</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>✅ Do</th>
+<th>❌ Don't</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Use Filled for the single most important action per view</td>
+<td>Stack two Filled buttons — creates ambiguity about priority</td>
+</tr>
+<tr>
+<td>Pair Filled with Outlined or Text for secondary actions</td>
+<td>Use an Outlined button as the primary CTA</td>
+</tr>
+<tr>
+<td>Keep button labels concise: 1–3 words</td>
+<td>Use passive phrases like &quot;Click here&quot;</td>
+</tr>
+<tr>
+<td>Include a leading icon when it adds meaning</td>
+<td>Force icons on every button — reserve for semantic reinforcement</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="42-cards" tabindex="-1"><a class="header-anchor" href="#42-cards"><span>4.2 Cards</span></a></h3>
+<p>Cards are containers — they group related information into a scannable, interactive unit.</p>
+<h4 id="variants-1" tabindex="-1"><a class="header-anchor" href="#variants-1"><span>Variants</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Background</th>
+<th>Border</th>
+<th>Shadow</th>
+<th>Radius</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Elevated</strong></td>
+<td><code>surface-container-low</code></td>
+<td>None</td>
+<td>Level 1</td>
+<td>12px</td>
+<td>Default card — general content grouping</td>
+</tr>
+<tr>
+<td><strong>Filled</strong></td>
+<td><code>surface-container-highest</code></td>
+<td>None</td>
+<td>None</td>
+<td>12px</td>
+<td>Denser information — lists embedded in cards</td>
+</tr>
+<tr>
+<td><strong>Outlined</strong></td>
+<td><code>surface</code></td>
+<td>1px <code>outline-variant</code></td>
+<td>None</td>
+<td>12px</td>
+<td>When background contrast is needed; forms</td>
+</tr>
+<tr>
+<td><strong>Hero</strong></td>
+<td><code>primary-container</code></td>
+<td>None</td>
+<td>None</td>
+<td>24px</td>
+<td>Full-width feature banners; landmark moments</td>
+</tr>
+</tbody>
+</table>
+<h4 id="anatomy" tabindex="-1"><a class="header-anchor" href="#anatomy"><span>Anatomy</span></a></h4>
+<pre class="hljs"><code>┌──────────────────────────┐
+│  [Media / Image]         │  Optional
+├──────────────────────────┤
+│  [Header / Title]        │  title-lg or title-md
+│  [Subhead]               │  body-sm, on-surface-variant
+│  [Body Content]          │  body-md
+│  [Supporting Text]       │  body-sm
+├──────────────────────────┤
+│  [Action Buttons / Chips]│  Optional
+└──────────────────────────┘
+</code></pre>
+<h4 id="hover-state" tabindex="-1"><a class="header-anchor" href="#hover-state"><span>Hover State</span></a></h4>
+<p>Filled and Elevated cards: transition to <code>surface-container-high</code> on hover (<code>transition: background-color 200ms standard-easing</code>). Add subtle border <code>outline-variant</code> on outlined cards at hover.</p>
+<h4 id="dos-and-donts-1" tabindex="-1"><a class="header-anchor" href="#dos-and-donts-1"><span>Do's and Don'ts</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>✅ Do</th>
+<th>❌ Don't</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Use cards to create clear content chunks in a list or grid</td>
+<td>Nest cards inside cards — causes visual hierarchy collapse</td>
+</tr>
+<tr>
+<td>Keep internal padding at 16px (md)</td>
+<td>Vary padding between cards in the same grid</td>
+</tr>
+<tr>
+<td>Use <code>line-clamp</code> on body text when space is constrained</td>
+<td>Truncate titles — let them wrap to max 2 lines</td>
+</tr>
+<tr>
+<td>Restrict card actions to 2–3 maximum</td>
+<td>Put more than 3 interactive elements in a single card</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="43-text-fields" tabindex="-1"><a class="header-anchor" href="#43-text-fields"><span>4.3 Text Fields</span></a></h3>
+<p>Text fields allow user input. They use <code>outlined</code> style as the system standard.</p>
+<h4 id="outlined-text-field" tabindex="-1"><a class="header-anchor" href="#outlined-text-field"><span>Outlined Text Field</span></a></h4>
+<ul>
+<li><strong>Height:</strong> 56px</li>
+<li><strong>Border radius:</strong> 4px (extra small — intentionally angular to contrast with pill-shaped buttons)</li>
+<li><strong>Border:</strong> 1px <code>outline</code> in default state</li>
+<li><strong>Focus border:</strong> 2px <code>primary</code>; floating label transitions to top and scales to <code>body-sm</code></li>
+<li><strong>Background:</strong> <code>surface</code></li>
+</ul>
+<h4 id="states-1" tabindex="-1"><a class="header-anchor" href="#states-1"><span>States</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Border</th>
+<th>Label</th>
+<th>Helper Text</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Enabled (empty)</td>
+<td>1px <code>outline</code></td>
+<td>Centered, <code>body-lg</code></td>
+<td><code>body-sm</code>, <code>on-surface-variant</code></td>
+</tr>
+<tr>
+<td>Focus</td>
+<td>2px <code>primary</code></td>
+<td>Top, <code>body-sm</code>, <code>primary</code></td>
+<td><code>body-sm</code>, <code>on-surface-variant</code></td>
+</tr>
+<tr>
+<td>Filled</td>
+<td>1px <code>outline</code></td>
+<td>Top, <code>body-sm</code>, <code>on-surface-variant</code></td>
+<td><code>body-sm</code>, <code>on-surface-variant</code></td>
+</tr>
+<tr>
+<td>Error</td>
+<td>1px <code>error</code></td>
+<td>Top, <code>body-sm</code>, <code>error</code></td>
+<td><code>body-sm</code>, <code>error</code> + error icon</td>
+</tr>
+<tr>
+<td>Disabled</td>
+<td>1px <code>on-surface</code> 12%</td>
+<td>N/A</td>
+<td>N/A — greyed helper</td>
+</tr>
+</tbody>
+</table>
+<h4 id="anatomy-1" tabindex="-1"><a class="header-anchor" href="#anatomy-1"><span>Anatomy</span></a></h4>
+<pre class="hljs"><code>┌─ [Leading Icon] ──────────────── [Trailing Icon] ─┐
+│  [Floating Label]                                  │ ← 1px outline → 2px primary on focus
+│  [Input Text]                                      │
+└────────────────────────────────────────────────────┘
+  [Helper Text]                     [Character Count]
+</code></pre>
+<h4 id="accessibility-1" tabindex="-1"><a class="header-anchor" href="#accessibility-1"><span>Accessibility</span></a></h4>
+<ul>
+<li><code>&lt;label&gt;</code> element must be programmatically associated via <code>for/id</code> or <code>aria-labelledby</code></li>
+<li>Error messages announced via <code>aria-describedby</code> pointing to the error element</li>
+<li>Never rely on placeholder text alone as a label — placeholders disappear on input</li>
+</ul>
+<hr>
+<h3 id="44-navigation" tabindex="-1"><a class="header-anchor" href="#44-navigation"><span>4.4 Navigation</span></a></h3>
+<h4 id="navigation-bar-mobile--bottom" tabindex="-1"><a class="header-anchor" href="#navigation-bar-mobile--bottom"><span>Navigation Bar (Mobile / Bottom)</span></a></h4>
+<ul>
+<li><strong>Height:</strong> 80px</li>
+<li><strong>Background:</strong> <code>surface-container</code></li>
+<li><strong>Items:</strong> 3–5 destinations</li>
+<li><strong>Active indicator:</strong> 64×32px pill in <code>secondary-container</code>; icon in <code>on-secondary-container</code>; label in <code>on-surface</code></li>
+<li><strong>Inactive:</strong> Icon and label in <code>on-surface-variant</code></li>
+<li><strong>Labels:</strong> Always visible (<code>label-md</code>)</li>
+</ul>
+<h4 id="navigation-rail-tablet" tabindex="-1"><a class="header-anchor" href="#navigation-rail-tablet"><span>Navigation Rail (Tablet)</span></a></h4>
+<ul>
+<li><strong>Width:</strong> 80px</li>
+<li><strong>Background:</strong> <code>surface-container</code></li>
+<li><strong>FAB:</strong> Optional at top</li>
+<li><strong>Active indicator:</strong> Full-height pill in <code>secondary-container</code></li>
+<li><strong>Icons only</strong> by default; label appears below active icon</li>
+</ul>
+<h4 id="navigation-drawer-desktop" tabindex="-1"><a class="header-anchor" href="#navigation-drawer-desktop"><span>Navigation Drawer (Desktop)</span></a></h4>
+<ul>
+<li><strong>Width:</strong> 360px (standard) / 256px (modal)</li>
+<li><strong>Background:</strong> <code>surface-container-low</code></li>
+<li><strong>Border radius:</strong> 0px on left edge (flush to viewport); 16px on right edge (large shape)</li>
+<li><strong>Items:</strong> Text label + leading icon</li>
+<li><strong>Active item:</strong> Full-width pill in <code>secondary-container</code>; text <code>on-secondary-container</code>, weight 500</li>
+<li><strong>Section dividers:</strong> <code>outline-variant</code> at 1px; sections labeled with <code>label-sm</code>, <code>on-surface-variant</code></li>
+<li><strong>Utility area (bottom):</strong> Separator line; Settings and Support links always present</li>
+</ul>
+<h4 id="tabs" tabindex="-1"><a class="header-anchor" href="#tabs"><span>Tabs</span></a></h4>
+<ul>
+<li><strong>Height:</strong> 48px (primary) / 48px (secondary)</li>
+<li><strong>Active state:</strong> Bottom border 3px <code>primary</code>; text <code>primary</code>, weight 500</li>
+<li><strong>Inactive state:</strong> Text <code>on-surface-variant</code></li>
+<li><strong>Badges:</strong> Positioned top-right of tab icon; uses <code>error</code> or custom category colors</li>
+<li><strong>Scrollable tabs:</strong> Use when more than 5 items exist</li>
+</ul>
+<h4 id="search-bar" tabindex="-1"><a class="header-anchor" href="#search-bar"><span>Search Bar</span></a></h4>
+<ul>
+<li><strong>Height:</strong> 48px (standard) / 56px (full-width hero search)</li>
+<li><strong>Background:</strong> <code>surface-container</code> (resting); <code>surface-container-lowest</code> (focused)</li>
+<li><strong>Border radius:</strong> Full (<code>9999px</code>)</li>
+<li><strong>Border:</strong> None — background change signals focus</li>
+<li><strong>Shadow on focus:</strong> Level 1 (<code>0 1px 3px rgba(0,0,0,0.15)</code>)</li>
+<li><strong>Leading:</strong> Search icon (<code>on-surface-variant</code>)</li>
+<li><strong>Trailing:</strong> Filter/tune icon</li>
+</ul>
+<hr>
+<h3 id="45-chips" tabindex="-1"><a class="header-anchor" href="#45-chips"><span>4.5 Chips</span></a></h3>
+<p>Chips are compact elements for actions, filters, or input values.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+<th>Default Background</th>
+<th>Selected Background</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Assist</strong></td>
+<td>Contextual actions</td>
+<td><code>surface-container-low</code></td>
+<td><code>surface-container-high</code></td>
+</tr>
+<tr>
+<td><strong>Filter</strong></td>
+<td>Toggle filtering criteria</td>
+<td><code>surface-container-low</code></td>
+<td><code>secondary-container</code></td>
+</tr>
+<tr>
+<td><strong>Input</strong></td>
+<td>Represent values in a field</td>
+<td><code>surface-container-low</code></td>
+<td><code>secondary-container</code></td>
+</tr>
+<tr>
+<td><strong>Suggestion</strong></td>
+<td>AI / contextual suggestions</td>
+<td><code>surface-container-low</code></td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Height:</strong> 32px</li>
+<li><strong>Border radius:</strong> Full (<code>9999px</code>)</li>
+<li><strong>Border:</strong> 1px <code>outline-variant</code> (unselected); none (selected)</li>
+<li><strong>Padding:</strong> 8px horizontal; icon–label gap 8px</li>
+<li><strong>Label:</strong> <code>label-lg</code></li>
+</ul>
+<h4 id="dos-and-donts-2" tabindex="-1"><a class="header-anchor" href="#dos-and-donts-2"><span>Do's and Don'ts</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>✅ Do</th>
+<th>❌ Don't</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Use filter chips for multi-select filtering</td>
+<td>Use chips as primary navigation</td>
+</tr>
+<tr>
+<td>Allow chip deletion (×) for input chips</td>
+<td>Create chips without a clear contextual purpose</td>
+</tr>
+<tr>
+<td>Group chips horizontally in a scrollable row</td>
+<td>Stack chips vertically — use a list instead</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="46-dialogs" tabindex="-1"><a class="header-anchor" href="#46-dialogs"><span>4.6 Dialogs</span></a></h3>
+<p>Dialogs interrupt the user to request a decision or surface critical information.</p>
+<ul>
+<li><strong>Background:</strong> <code>surface-container-highest</code></li>
+<li><strong>Border radius:</strong> 28px (extra large)</li>
+<li><strong>Width:</strong> 280–560px (responsive); full-screen on mobile</li>
+<li><strong>Max height:</strong> 80vh; content scrollable internally</li>
+<li><strong>Scrim:</strong> <code>inverse-surface</code> 40% opacity behind dialog</li>
+<li><strong>Elevation:</strong> Level 3</li>
+</ul>
+<h4 id="anatomy-2" tabindex="-1"><a class="header-anchor" href="#anatomy-2"><span>Anatomy</span></a></h4>
+<pre class="hljs"><code>┌──────────────────────────┐
+│  [Icon] (optional)       │
+│  [Title]  title-lg       │
+│                          │
+│  [Body content]          │
+│  body-md, on-surface     │
+│                          │
+│  [Outlined] [Filled Btn] │ ← Action buttons right-aligned
+└──────────────────────────┘
+</code></pre>
+<h4 id="accessibility-2" tabindex="-1"><a class="header-anchor" href="#accessibility-2"><span>Accessibility</span></a></h4>
+<ul>
+<li><code>role=&quot;dialog&quot;</code> with <code>aria-labelledby</code> pointing to title</li>
+<li>Focus trapped inside dialog while open</li>
+<li><code>Escape</code> key dismisses (unless a critical decision must be made)</li>
+<li>Focus returns to trigger element on close</li>
+</ul>
+<hr>
+<h3 id="47-fab--floating-action-button" tabindex="-1"><a class="header-anchor" href="#47-fab--floating-action-button"><span>4.7 FAB — Floating Action Button</span></a></h3>
+<p>FABs represent the single most important action available on a screen.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Size</th>
+<th>Shape</th>
+<th>Background</th>
+<th>Icon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Small FAB</td>
+<td>40px</td>
+<td>12px radius</td>
+<td><code>surface-container-high</code></td>
+<td>24px icon</td>
+</tr>
+<tr>
+<td>Standard FAB</td>
+<td>56px</td>
+<td>Full</td>
+<td><code>primary-container</code></td>
+<td>24px icon</td>
+</tr>
+<tr>
+<td>Large FAB</td>
+<td>96px</td>
+<td>Full</td>
+<td><code>primary-container</code></td>
+<td>36px icon</td>
+</tr>
+<tr>
+<td>Extended FAB</td>
+<td>56px height</td>
+<td>Full</td>
+<td><code>primary-container</code></td>
+<td>Icon + <code>label-lg</code> label</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>FABs must be positioned bottom-right on mobile (above the navigation bar, 16px inset)</li>
+<li>FABs float above page content at Level 3 elevation</li>
+<li>Maximum <strong>one</strong> standard/large FAB per screen</li>
+</ul>
+<hr>
+<h3 id="48-lists" tabindex="-1"><a class="header-anchor" href="#48-lists"><span>4.8 Lists</span></a></h3>
+<h4 id="list-item-anatomy" tabindex="-1"><a class="header-anchor" href="#list-item-anatomy"><span>List Item Anatomy</span></a></h4>
+<pre class="hljs"><code>[Leading - Icon/Avatar/Checkbox]  [Content Block]  [Trailing - Icon/Meta/Switch]
+                                  Primary text (body-lg)
+                                  Supporting text (body-md, on-surface-variant)
+</code></pre>
+<ul>
+<li><strong>One-line height:</strong> 56px</li>
+<li><strong>Two-line height:</strong> 72px</li>
+<li><strong>Three-line height:</strong> 88px</li>
+<li><strong>Dividers:</strong> <code>outline-variant</code> 1px, optional — prefer generous padding to separate items instead</li>
+<li><strong>Hover state:</strong> <code>surface-container-high</code></li>
+<li><strong>Selected state:</strong> <code>secondary-container</code> with <code>on-secondary-container</code> text</li>
+</ul>
+<h4 id="file--resource-list-specialized" tabindex="-1"><a class="header-anchor" href="#file--resource-list-specialized"><span>File / Resource List (Specialized)</span></a></h4>
+<p>Used in document management contexts (observed in EduFlow Resource Library):</p>
+<ul>
+<li><strong>12-column grid layout</strong> for desktop: Name (4–5 col), Reason/Modified (4 col), Owner (2 col), Location (2 col), Actions (1 col)</li>
+<li>Hover reveals trailing action button (<code>more_vert</code>) — hidden at rest (<code>opacity: 0</code>, <code>group-hover:opacity-100</code>)</li>
+<li>File type icon replaces generic leading icon; color-coded: green (spreadsheet), blue (document), red (PDF)</li>
+<li>Sharing indicator: small <code>group</code> icon beside filename for shared resources</li>
+</ul>
+<hr>
+<h3 id="49-progress-indicators" tabindex="-1"><a class="header-anchor" href="#49-progress-indicators"><span>4.9 Progress Indicators</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Linear (Determinate)</strong></td>
+<td>Known progress duration — file upload, form step</td>
+</tr>
+<tr>
+<td><strong>Linear (Indeterminate)</strong></td>
+<td>Unknown duration — page loading, data fetching</td>
+</tr>
+<tr>
+<td><strong>Circular (Determinate)</strong></td>
+<td>Compact contexts — small status dashboards, card loaders</td>
+</tr>
+<tr>
+<td><strong>Circular (Indeterminate)</strong></td>
+<td>Button loading states, inline async operations</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>All progress indicators use <code>primary</code> fill on <code>surface-variant</code> track</li>
+<li>Storage bars may use <code>primary</code> on <code>surface-variant</code> track — keep to 4px height</li>
+<li>Never show both a skeleton and a progress indicator for the same content</li>
+</ul>
+<hr>
+<h3 id="410-badges--avatars" tabindex="-1"><a class="header-anchor" href="#410-badges--avatars"><span>4.10 Badges &amp; Avatars</span></a></h3>
+<h4 id="badges" tabindex="-1"><a class="header-anchor" href="#badges"><span>Badges</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Shape</th>
+<th>Background</th>
+<th>Text</th>
+<th>Placement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Count badge</td>
+<td>Pill</td>
+<td><code>error</code></td>
+<td><code>on-error</code>, <code>label-sm</code></td>
+<td>Top-right of icon; 2px offset</td>
+</tr>
+<tr>
+<td>New badge (unlabeled)</td>
+<td>6px circle</td>
+<td><code>error</code></td>
+<td>None</td>
+<td>Top-right of icon</td>
+</tr>
+<tr>
+<td>Category badge</td>
+<td>Pill</td>
+<td>Varies by category color</td>
+<td><code>label-sm</code></td>
+<td>Inline within nav tab or card</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Count badge rules:</strong></p>
+<ul>
+<li>1–9: Show number</li>
+<li>10–99: Show number</li>
+<li>100+: Show &quot;99+&quot; or category-appropriate abbreviation</li>
+</ul>
+<h4 id="avatars" tabindex="-1"><a class="header-anchor" href="#avatars"><span>Avatars</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Sizes</th>
+<th>Shape</th>
+<th>Fallback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Photo avatar</td>
+<td>24, 32, 40, 48px</td>
+<td>Full circle</td>
+<td>Initials on <code>surface-variant</code> background</td>
+</tr>
+<tr>
+<td>Icon avatar</td>
+<td>24, 32, 40, 48px</td>
+<td>Full circle</td>
+<td>Platform icon</td>
+</tr>
+<tr>
+<td>Initials avatar</td>
+<td>Any</td>
+<td>Full circle</td>
+<td><code>primary</code> background, <code>on-primary</code> text</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Always provide <code>alt</code> text for photo avatars: <code>&quot;[Name] profile photo&quot;</code> or <code>&quot;User&quot;</code> if name unavailable</li>
+<li>Stacked avatar groups: −8px margin overlap; show &quot;+N&quot; text avatar after 3 visible</li>
+</ul>
+<hr>
+<h3 id="411-snackbars--toasts" tabindex="-1"><a class="header-anchor" href="#411-snackbars--toasts"><span>4.11 Snackbars &amp; Toasts</span></a></h3>
+<p>Snackbars provide brief, auto-dismissing feedback. They appear at the bottom-center of the screen.</p>
+<ul>
+<li><strong>Background:</strong> <code>inverse-surface</code></li>
+<li><strong>Text color:</strong> <code>inverse-on-surface</code>, <code>body-md</code></li>
+<li><strong>Action color:</strong> <code>inverse-primary</code>, <code>label-lg</code></li>
+<li><strong>Border radius:</strong> 4px (small)</li>
+<li><strong>Max width:</strong> 672px; Min width: 288px</li>
+<li><strong>Auto-dismiss:</strong> 4 seconds (informational); 10 seconds (with action)</li>
+<li><strong>Max 1 visible at a time</strong> — queue subsequent snackbars</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Informational</strong></td>
+<td>Confirmation of completed action (&quot;File uploaded&quot;)</td>
+</tr>
+<tr>
+<td><strong>With Action</strong></td>
+<td>Recoverable actions (&quot;Email deleted · Undo&quot;)</td>
+</tr>
+<tr>
+<td><strong>Error</strong></td>
+<td>Non-critical failures (&quot;Couldn't connect to server&quot;)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-pattern-library" tabindex="-1"><a class="header-anchor" href="#5-pattern-library"><span>5. Pattern Library</span></a></h2>
+<hr>
+<h3 id="51-page-layout" tabindex="-1"><a class="header-anchor" href="#51-page-layout"><span>5.1 Page Layout</span></a></h3>
+<h4 id="standard-desktop-layout" tabindex="-1"><a class="header-anchor" href="#standard-desktop-layout"><span>Standard Desktop Layout</span></a></h4>
+<pre class="hljs"><code>┌──────────────────────────────────────────────────────────┐
+│ [Top App Bar — 64px] — Brand | Search | Global Controls  │
+├──────────────┬───────────────────────────────┬───────────┤
+│  [Sidebar    │  [Main Content Area]          │  [App     │
+│   Drawer     │                               │   Rail    │
+│   360px]     │  Inset: 16px margin           │   56px]   │
+│              │  bg: surface-container-lowest │           │
+│  bg:         │  border-radius: 16–20px       │  bg:      │
+│  surface-    │  shadow: Level 1              │  surface  │
+│  container   │                               │           │
+│  -low        │                               │           │
+│              │                               │           │
+│              │                               │           │
+└──────────────┴───────────────────────────────┴───────────┘
+</code></pre>
+<ul>
+<li><strong>Sidebar</strong> is <code>position: fixed</code> or part of flex row, <code>overflow-y: auto</code></li>
+<li><strong>Main content</strong> is <code>overflow-y: auto</code> — only the content area scrolls</li>
+<li><strong>App rail</strong> icons: Calendar, Notes, Tasks, Contacts; always includes an Add (<code>+</code>) icon at bottom</li>
+</ul>
+<h4 id="spacing-insets-for-main-content" tabindex="-1"><a class="header-anchor" href="#spacing-insets-for-main-content"><span>Spacing Insets for Main Content</span></a></h4>
+<ul>
+<li>Top padding: <code>16px</code> (desktop) / <code>16px</code> (tablet/mobile)</li>
+<li>Section gaps: <code>24px</code> (lg)</li>
+<li>Internal card padding: <code>16px</code> (md)</li>
+</ul>
+<hr>
+<h3 id="52-forms" tabindex="-1"><a class="header-anchor" href="#52-forms"><span>5.2 Forms</span></a></h3>
+<h4 id="form-layout-rules" tabindex="-1"><a class="header-anchor" href="#form-layout-rules"><span>Form Layout Rules</span></a></h4>
+<ul>
+<li>Stack fields vertically with <code>16px</code> gap between fields</li>
+<li>Group related fields in <code>surface-container-low</code> card containers</li>
+<li>Use section headers (<code>title-md</code>) when a form spans multiple logical groups</li>
+<li>Submit button is always <strong>Filled</strong>, right-aligned, with <code>label-lg</code></li>
+<li>Destructive reset/cancel uses <strong>Outlined</strong> or <strong>Text</strong> button, left of submit</li>
+</ul>
+<h4 id="validation-timing" tabindex="-1"><a class="header-anchor" href="#validation-timing"><span>Validation Timing</span></a></h4>
+<ul>
+<li><strong>Don't validate on initial focus</strong> — wait for first blur or submission attempt</li>
+<li><strong>Validate on blur</strong> for format-sensitive fields (email, phone)</li>
+<li><strong>Validate in real-time</strong> (debounced 300ms) only for character count and strength indicators</li>
+<li><strong>Error messages</strong> appear below the field in <code>body-sm</code>, <code>error</code> color, accompanied by an error icon in the trailing position of the text field</li>
+</ul>
+<h4 id="form-submission-states" tabindex="-1"><a class="header-anchor" href="#form-submission-states"><span>Form Submission States</span></a></h4>
+<ol>
+<li>Idle → Submit pressed → Button shows loading state (circular progress, disabled)</li>
+<li>Success → Snackbar confirmation + navigate or reset form</li>
+<li>Error → Inline field errors + top-level error banner (if critical)</li>
+</ol>
+<hr>
+<h3 id="53-data-tables--file-lists" tabindex="-1"><a class="header-anchor" href="#53-data-tables--file-lists"><span>5.3 Data Tables &amp; File Lists</span></a></h3>
+<h4 id="column-structure" tabindex="-1"><a class="header-anchor" href="#column-structure"><span>Column Structure</span></a></h4>
+<ul>
+<li><strong>Name column</strong> carries the primary affordance (click to open) — always first, 35–40% of table width</li>
+<li><strong>Metadata columns</strong> (date, owner, location) are hidden progressively on smaller breakpoints</li>
+<li><strong>Action column</strong> (1 column, right-aligned): Icon button (<code>more_vert</code>) revealed only on row hover</li>
+</ul>
+<h4 id="row-anatomy" tabindex="-1"><a class="header-anchor" href="#row-anatomy"><span>Row Anatomy</span></a></h4>
+<ul>
+<li><strong>Height:</strong> 56px (comfortable); 48px (compact mode)</li>
+<li><strong>Hover:</strong> <code>surface-container-low</code> background</li>
+<li><strong>Selected:</strong> <code>secondary-container</code> background; checkbox leading indicator visible</li>
+<li><strong>Active/Unread rows:</strong> <code>surface-container-low</code> background baseline (slightly elevated from read rows which remain on <code>surface</code>)</li>
+</ul>
+<h4 id="table-header" tabindex="-1"><a class="header-anchor" href="#table-header"><span>Table Header</span></a></h4>
+<ul>
+<li><code>label-md</code>, <code>on-surface-variant</code> text</li>
+<li><code>border-bottom: 1px outline-variant</code></li>
+<li>Sticky-positioned (<code>position: sticky; top: 0</code>) inside the scrollable container</li>
+<li>Sort icon (<code>unfold_more</code> / <code>arrow_upward</code> / <code>arrow_downward</code>) trailing the header label</li>
+</ul>
+<hr>
+<h3 id="54-hero-sections" tabindex="-1"><a class="header-anchor" href="#54-hero-sections"><span>5.4 Hero Sections</span></a></h3>
+<p>Hero sections are page-level landmark moments. Used on dashboard homepages, course overview pages, and feature spotlights.</p>
+<h4 id="structure" tabindex="-1"><a class="header-anchor" href="#structure"><span>Structure</span></a></h4>
+<ul>
+<li><strong>Background:</strong> <code>primary-container</code> or a custom branded container with image overlay at 20% opacity</li>
+<li><strong>Border radius:</strong> 24px (extra large)</li>
+<li><strong>Minimum height:</strong> 240px (mobile) / 300px (desktop)</li>
+<li><strong>Content alignment:</strong> Bottom-left (<code>flex-direction: column; justify-content: flex-end</code>)</li>
+<li><strong>Text colors:</strong> <code>on-primary-container</code> hierarchy (<code>display-sm/md</code>, <code>body-lg</code>)</li>
+<li><strong>Actions:</strong> Max 2 buttons — one Filled (inverted: <code>on-primary-container</code> bg, <code>primary-container</code> text), one Outlined</li>
+</ul>
+<h4 id="image-handling" tabindex="-1"><a class="header-anchor" href="#image-handling"><span>Image Handling</span></a></h4>
+<ul>
+<li>Background image at <code>opacity: 20%</code> — content remains readable without overlay scrim</li>
+<li>Image <code>object-fit: cover</code>, <code>object-position: center</code></li>
+<li>Provide <code>data-alt</code> attribute for accessibility tooling even when image is decorative</li>
+</ul>
+<hr>
+<h3 id="55-empty-states" tabindex="-1"><a class="header-anchor" href="#55-empty-states"><span>5.5 Empty States</span></a></h3>
+<p>Empty states appear when a view contains no content yet — first-time use, cleared filters, or search with no results.</p>
+<h4 id="structure-1" tabindex="-1"><a class="header-anchor" href="#structure-1"><span>Structure</span></a></h4>
+<pre class="hljs"><code>                [Illustration / Icon — 120px]
+                [Title — headline-sm]
+         [Supporting description — body-md, on-surface-variant, centered]
+                     [Primary Action — Filled Button]
+</code></pre>
+<ul>
+<li><strong>Icon:</strong> Material Symbols Outlined, 120px, <code>on-surface-variant</code> or a tonal illustration</li>
+<li><strong>Title:</strong> <code>headline-sm</code>, <code>on-surface</code>, centered</li>
+<li><strong>Description:</strong> <code>body-md</code>, <code>on-surface-variant</code>, max-width 280px, centered</li>
+<li><strong>Action:</strong> Filled button, single primary action only</li>
+</ul>
+<h4 id="common-empty-state-messages" tabindex="-1"><a class="header-anchor" href="#common-empty-state-messages"><span>Common Empty State Messages</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Title</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Empty inbox</td>
+<td>&quot;All clear&quot;</td>
+<td>&quot;No new messages here&quot;</td>
+</tr>
+<tr>
+<td>Empty search</td>
+<td>&quot;No results found&quot;</td>
+<td>&quot;Try a different keyword or check your filters&quot;</td>
+</tr>
+<tr>
+<td>Empty folder</td>
+<td>&quot;Nothing here yet&quot;</td>
+<td>&quot;Create your first resource to get started&quot;</td>
+</tr>
+<tr>
+<td>No notifications</td>
+<td>&quot;You're up to date&quot;</td>
+<td>&quot;We'll let you know when something needs your attention&quot;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="56-error--validation-states" tabindex="-1"><a class="header-anchor" href="#56-error--validation-states"><span>5.6 Error &amp; Validation States</span></a></h3>
+<h4 id="field-level-errors" tabindex="-1"><a class="header-anchor" href="#field-level-errors"><span>Field-Level Errors</span></a></h4>
+<ul>
+<li>Text field border → 1px <code>error</code></li>
+<li>Trailing icon → <code>error_outline</code> in <code>error</code> color</li>
+<li>Helper text → <code>body-sm</code>, <code>error</code> color</li>
+<li>Floating label → <code>error</code> color</li>
+</ul>
+<h4 id="page-level-errors" tabindex="-1"><a class="header-anchor" href="#page-level-errors"><span>Page-Level Errors</span></a></h4>
+<ul>
+<li>Use an error banner (<code>error-container</code> background, <code>on-error-container</code> text, <code>border-radius: 12px</code>) pinned below the top app bar</li>
+<li>Include icon (<code>error_outline</code>), message, and a recovery action if possible</li>
+</ul>
+<h4 id="404--500-system-errors" tabindex="-1"><a class="header-anchor" href="#404--500-system-errors"><span>404 / 500 System Errors</span></a></h4>
+<ul>
+<li>Full-page empty state layout</li>
+<li>Icon: Large system icon or spot illustration</li>
+<li>Title: <code>headline-sm</code> — friendly language (&quot;We can't find that page&quot; vs &quot;404 Error&quot;)</li>
+<li>Actions: &quot;Go Home&quot; (Filled) + &quot;Contact Support&quot; (Outlined)</li>
+</ul>
+<hr>
+<h2 id="6-accessibility-standards" tabindex="-1"><a class="header-anchor" href="#6-accessibility-standards"><span>6. Accessibility Standards</span></a></h2>
+<p>All components must meet <strong>WCAG 2.1 Level AA</strong> as a baseline. Target AAA for text contrast where feasible.</p>
+<h3 id="contrast-requirements" tabindex="-1"><a class="header-anchor" href="#contrast-requirements"><span>Contrast Requirements</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Use</th>
+<th>Minimum Ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Body text on surface</td>
+<td>4.5:1 (AA)</td>
+</tr>
+<tr>
+<td>Large text (18px+ / 14px+ bold) on surface</td>
+<td>3:1 (AA)</td>
+</tr>
+<tr>
+<td>Interactive UI components and focus indicators</td>
+<td>3:1 (AA)</td>
+</tr>
+<tr>
+<td>Text on <code>primary</code></td>
+<td>Ensure <code>on-primary</code> (#ffffff) — ratio ≥ 4.5:1</td>
+</tr>
+<tr>
+<td>Text on <code>secondary-container</code></td>
+<td>Ensure <code>on-secondary-container</code> — ratio ≥ 4.5:1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="keyboard-navigation" tabindex="-1"><a class="header-anchor" href="#keyboard-navigation"><span>Keyboard Navigation</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Expected Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Tab</code></td>
+<td>Move focus forward through all interactive elements</td>
+</tr>
+<tr>
+<td><code>Shift + Tab</code></td>
+<td>Move focus backward</td>
+</tr>
+<tr>
+<td><code>Enter</code> / <code>Space</code></td>
+<td>Activate button, toggle checkbox, open dropdown</td>
+</tr>
+<tr>
+<td><code>Arrow keys</code></td>
+<td>Navigate within a component group (tab bar, list, radio group)</td>
+</tr>
+<tr>
+<td><code>Escape</code></td>
+<td>Close dialog, dropdown, drawer; clear search</td>
+</tr>
+<tr>
+<td><code>Home</code> / <code>End</code></td>
+<td>Jump to first/last item in a list or tab bar</td>
+</tr>
+</tbody>
+</table>
+<h3 id="focus-indicators" tabindex="-1"><a class="header-anchor" href="#focus-indicators"><span>Focus Indicators</span></a></h3>
+<ul>
+<li><strong>Focus ring:</strong> 3px thick, <code>secondary</code> color, 2px offset</li>
+<li>Never remove focus outlines (<code>outline: none</code>) without providing a custom visible replacement</li>
+<li>Focus ring must be visible against all surface backgrounds</li>
+</ul>
+<h3 id="screen-reader-guidance" tabindex="-1"><a class="header-anchor" href="#screen-reader-guidance"><span>Screen Reader Guidance</span></a></h3>
+<ul>
+<li>All icons used alone must have <code>aria-label</code> or be accompanied by visually hidden text</li>
+<li>Status badges (LIVE, count) must be included in the accessible label of their parent element</li>
+<li>Decorative images use <code>alt=&quot;&quot;</code> or <code>role=&quot;presentation&quot;</code></li>
+<li>Dynamic content updates use <code>aria-live=&quot;polite&quot;</code> (announcements) or <code>aria-live=&quot;assertive&quot;</code> (critical errors)</li>
+<li>Use semantic HTML elements (<code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;section&gt;</code>) before reaching for ARIA roles</li>
+</ul>
+<h3 id="motion--reduced-motion" tabindex="-1"><a class="header-anchor" href="#motion--reduced-motion"><span>Motion &amp; Reduced Motion</span></a></h3>
+<ul>
+<li>All animations must respect <code>prefers-reduced-motion: reduce</code></li>
+<li>When reduced motion is active: disable transitions, fade instead of slide, remove ripple effect</li>
+</ul>
+<hr>
+<h2 id="7-implementation-guide" tabindex="-1"><a class="header-anchor" href="#7-implementation-guide"><span>7. Implementation Guide</span></a></h2>
+<h3 id="token-setup-css-custom-properties" tabindex="-1"><a class="header-anchor" href="#token-setup-css-custom-properties"><span>Token Setup (CSS Custom Properties)</span></a></h3>
+<pre class="hljs"><code><span class="hljs-selector-pseudo">:root</span> {
+  <span class="hljs-comment">/* Surface */</span>
+  <span class="hljs-attr">--color-surface</span>: <span class="hljs-number">#fef7ff</span>;
+  <span class="hljs-attr">--color-surface-dim</span>: <span class="hljs-number">#ded8df</span>;
+  <span class="hljs-attr">--color-surface-container-lowest</span>: <span class="hljs-number">#ffffff</span>;
+  <span class="hljs-attr">--color-surface-container-low</span>: <span class="hljs-number">#f8f2f9</span>;
+  <span class="hljs-attr">--color-surface-container</span>: <span class="hljs-number">#f2ecf3</span>;
+  <span class="hljs-attr">--color-surface-container-high</span>: <span class="hljs-number">#ece6ed</span>;
+  <span class="hljs-attr">--color-surface-container-highest</span>: <span class="hljs-number">#e6e1e8</span>;
+  <span class="hljs-attr">--color-surface-variant</span>: <span class="hljs-number">#e6e1e8</span>;
+
+  <span class="hljs-comment">/* On Surface */</span>
+  <span class="hljs-attr">--color-on-surface</span>: <span class="hljs-number">#1d1b20</span>;
+  <span class="hljs-attr">--color-on-surface-variant</span>: <span class="hljs-number">#494551</span>;
+  <span class="hljs-attr">--color-inverse-surface</span>: <span class="hljs-number">#322f35</span>;
+  <span class="hljs-attr">--color-inverse-on-surface</span>: <span class="hljs-number">#f5eff6</span>;
+
+  <span class="hljs-comment">/* Outline */</span>
+  <span class="hljs-attr">--color-outline</span>: <span class="hljs-number">#7a7582</span>;
+  <span class="hljs-attr">--color-outline-variant</span>: <span class="hljs-number">#cbc4d2</span>;
+
+  <span class="hljs-comment">/* Primary */</span>
+  <span class="hljs-attr">--color-primary</span>: <span class="hljs-number">#4f378a</span>;
+  <span class="hljs-attr">--color-on-primary</span>: <span class="hljs-number">#ffffff</span>;
+  <span class="hljs-attr">--color-primary-container</span>: <span class="hljs-number">#6750a4</span>;
+  <span class="hljs-attr">--color-on-primary-container</span>: <span class="hljs-number">#e0d2ff</span>;
+  <span class="hljs-attr">--color-inverse-primary</span>: <span class="hljs-number">#cfbcff</span>;
+  <span class="hljs-attr">--color-surface-tint</span>: <span class="hljs-number">#6750a4</span>;
+
+  <span class="hljs-comment">/* Secondary */</span>
+  <span class="hljs-attr">--color-secondary</span>: <span class="hljs-number">#625b71</span>;
+  <span class="hljs-attr">--color-on-secondary</span>: <span class="hljs-number">#ffffff</span>;
+  <span class="hljs-attr">--color-secondary-container</span>: <span class="hljs-number">#e8def9</span>;
+  <span class="hljs-attr">--color-on-secondary-container</span>: <span class="hljs-number">#686177</span>;
+
+  <span class="hljs-comment">/* Tertiary */</span>
+  <span class="hljs-attr">--color-tertiary</span>: <span class="hljs-number">#633b48</span>;
+  <span class="hljs-attr">--color-on-tertiary</span>: <span class="hljs-number">#ffffff</span>;
+  <span class="hljs-attr">--color-tertiary-container</span>: <span class="hljs-number">#7d5260</span>;
+  <span class="hljs-attr">--color-on-tertiary-container</span>: <span class="hljs-number">#ffcbda</span>;
+
+  <span class="hljs-comment">/* Error */</span>
+  <span class="hljs-attr">--color-error</span>: <span class="hljs-number">#ba1a1a</span>;
+  <span class="hljs-attr">--color-on-error</span>: <span class="hljs-number">#ffffff</span>;
+  <span class="hljs-attr">--color-error-container</span>: <span class="hljs-number">#ffdad6</span>;
+  <span class="hljs-attr">--color-on-error-container</span>: <span class="hljs-number">#93000a</span>;
+
+  <span class="hljs-comment">/* Spacing */</span>
+  <span class="hljs-attr">--space-xs</span>: <span class="hljs-number">4px</span>;
+  <span class="hljs-attr">--space-sm</span>: <span class="hljs-number">8px</span>;
+  <span class="hljs-attr">--space-md</span>: <span class="hljs-number">16px</span>;
+  <span class="hljs-attr">--space-lg</span>: <span class="hljs-number">24px</span>;
+  <span class="hljs-attr">--space-xl</span>: <span class="hljs-number">32px</span>;
+  <span class="hljs-attr">--space-touch</span>: <span class="hljs-number">48px</span>;
+
+  <span class="hljs-comment">/* Radius */</span>
+  <span class="hljs-attr">--radius-xs</span>: <span class="hljs-number">4px</span>;
+  <span class="hljs-attr">--radius-sm</span>: <span class="hljs-number">8px</span>;
+  <span class="hljs-attr">--radius-md</span>: <span class="hljs-number">12px</span>;
+  <span class="hljs-attr">--radius-lg</span>: <span class="hljs-number">16px</span>;
+  <span class="hljs-attr">--radius-xl</span>: <span class="hljs-number">24px</span>;
+  <span class="hljs-attr">--radius-full</span>: <span class="hljs-number">9999px</span>;
+
+  <span class="hljs-comment">/* Motion */</span>
+  <span class="hljs-attr">--motion-micro</span>: <span class="hljs-number">100ms</span>;
+  <span class="hljs-attr">--motion-standard</span>: <span class="hljs-number">200ms</span>;
+  <span class="hljs-attr">--motion-emphasis</span>: <span class="hljs-number">300ms</span>;
+  <span class="hljs-attr">--motion-complex</span>: <span class="hljs-number">400ms</span>;
+  <span class="hljs-attr">--easing-standard</span>: <span class="hljs-built_in">cubic-bezier</span>(<span class="hljs-number">0.2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>);
+  <span class="hljs-attr">--easing-decelerate</span>: <span class="hljs-built_in">cubic-bezier</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>);
+  <span class="hljs-attr">--easing-accelerate</span>: <span class="hljs-built_in">cubic-bezier</span>(<span class="hljs-number">0.3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>);
+}
+</code></pre>
+<h3 id="tailwind-config-mapping" tabindex="-1"><a class="header-anchor" href="#tailwind-config-mapping"><span>Tailwind Config Mapping</span></a></h3>
+<pre class="hljs"><code><span class="hljs-comment">// tailwind.config.js</span>
+<span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = {
+  <span class="hljs-attr">theme</span>: {
+    <span class="hljs-attr">extend</span>: {
+      <span class="hljs-attr">colors</span>: {
+        <span class="hljs-string">&#x27;surface&#x27;</span>: <span class="hljs-string">&#x27;var(--color-surface)&#x27;</span>,
+        <span class="hljs-string">&#x27;surface-container-lowest&#x27;</span>: <span class="hljs-string">&#x27;var(--color-surface-container-lowest)&#x27;</span>,
+        <span class="hljs-string">&#x27;surface-container-low&#x27;</span>: <span class="hljs-string">&#x27;var(--color-surface-container-low)&#x27;</span>,
+        <span class="hljs-string">&#x27;surface-container&#x27;</span>: <span class="hljs-string">&#x27;var(--color-surface-container)&#x27;</span>,
+        <span class="hljs-string">&#x27;surface-container-high&#x27;</span>: <span class="hljs-string">&#x27;var(--color-surface-container-high)&#x27;</span>,
+        <span class="hljs-string">&#x27;surface-container-highest&#x27;</span>: <span class="hljs-string">&#x27;var(--color-surface-container-highest)&#x27;</span>,
+        <span class="hljs-string">&#x27;surface-variant&#x27;</span>: <span class="hljs-string">&#x27;var(--color-surface-variant)&#x27;</span>,
+        <span class="hljs-string">&#x27;on-surface&#x27;</span>: <span class="hljs-string">&#x27;var(--color-on-surface)&#x27;</span>,
+        <span class="hljs-string">&#x27;on-surface-variant&#x27;</span>: <span class="hljs-string">&#x27;var(--color-on-surface-variant)&#x27;</span>,
+        <span class="hljs-string">&#x27;outline&#x27;</span>: <span class="hljs-string">&#x27;var(--color-outline)&#x27;</span>,
+        <span class="hljs-string">&#x27;outline-variant&#x27;</span>: <span class="hljs-string">&#x27;var(--color-outline-variant)&#x27;</span>,
+        <span class="hljs-string">&#x27;primary&#x27;</span>: <span class="hljs-string">&#x27;var(--color-primary)&#x27;</span>,
+        <span class="hljs-string">&#x27;on-primary&#x27;</span>: <span class="hljs-string">&#x27;var(--color-on-primary)&#x27;</span>,
+        <span class="hljs-string">&#x27;primary-container&#x27;</span>: <span class="hljs-string">&#x27;var(--color-primary-container)&#x27;</span>,
+        <span class="hljs-string">&#x27;on-primary-container&#x27;</span>: <span class="hljs-string">&#x27;var(--color-on-primary-container)&#x27;</span>,
+        <span class="hljs-string">&#x27;secondary&#x27;</span>: <span class="hljs-string">&#x27;var(--color-secondary)&#x27;</span>,
+        <span class="hljs-string">&#x27;secondary-container&#x27;</span>: <span class="hljs-string">&#x27;var(--color-secondary-container)&#x27;</span>,
+        <span class="hljs-string">&#x27;on-secondary-container&#x27;</span>: <span class="hljs-string">&#x27;var(--color-on-secondary-container)&#x27;</span>,
+        <span class="hljs-string">&#x27;tertiary&#x27;</span>: <span class="hljs-string">&#x27;var(--color-tertiary)&#x27;</span>,
+        <span class="hljs-string">&#x27;tertiary-container&#x27;</span>: <span class="hljs-string">&#x27;var(--color-tertiary-container)&#x27;</span>,
+        <span class="hljs-string">&#x27;on-tertiary-container&#x27;</span>: <span class="hljs-string">&#x27;var(--color-on-tertiary-container)&#x27;</span>,
+        <span class="hljs-string">&#x27;error&#x27;</span>: <span class="hljs-string">&#x27;var(--color-error)&#x27;</span>,
+        <span class="hljs-string">&#x27;on-error&#x27;</span>: <span class="hljs-string">&#x27;var(--color-on-error)&#x27;</span>,
+        <span class="hljs-string">&#x27;error-container&#x27;</span>: <span class="hljs-string">&#x27;var(--color-error-container)&#x27;</span>,
+        <span class="hljs-string">&#x27;on-error-container&#x27;</span>: <span class="hljs-string">&#x27;var(--color-on-error-container)&#x27;</span>,
+      },
+      <span class="hljs-attr">borderRadius</span>: {
+        <span class="hljs-string">&#x27;xs&#x27;</span>: <span class="hljs-string">&#x27;var(--radius-xs)&#x27;</span>,
+        <span class="hljs-string">&#x27;sm&#x27;</span>: <span class="hljs-string">&#x27;var(--radius-sm)&#x27;</span>,
+        <span class="hljs-string">&#x27;md&#x27;</span>: <span class="hljs-string">&#x27;var(--radius-md)&#x27;</span>,
+        <span class="hljs-string">&#x27;lg&#x27;</span>: <span class="hljs-string">&#x27;var(--radius-lg)&#x27;</span>,
+        <span class="hljs-string">&#x27;xl&#x27;</span>: <span class="hljs-string">&#x27;var(--radius-xl)&#x27;</span>,
+        <span class="hljs-string">&#x27;full&#x27;</span>: <span class="hljs-string">&#x27;var(--radius-full)&#x27;</span>,
+      },
+    }
+  }
+}
+</code></pre>
+<h3 id="icon-library" tabindex="-1"><a class="header-anchor" href="#icon-library"><span>Icon Library</span></a></h3>
+<p>This system uses <strong>Material Symbols Outlined</strong> (variable font) as the primary icon set.</p>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!-- Load from Google Fonts CDN --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&quot;</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;stylesheet&quot;</span>&gt;</span>
+</code></pre>
+<p><strong>Icon sizing rules:</strong></p>
+<ul>
+<li>Navigation icons: 24px</li>
+<li>Action icons in toolbars: 20px</li>
+<li>Trailing/leading icons in components: 18–20px</li>
+<li>Hero/decorative icons: 48–120px</li>
+</ul>
+<p><strong>Filled vs Outlined:</strong></p>
+<ul>
+<li>Use <strong>Outlined</strong> as default</li>
+<li>Use <strong>Filled</strong> (FILL=1) only for the active state of navigational icons and selected indicators</li>
+</ul>
+<hr>
+<h2 id="8-governance--contribution" tabindex="-1"><a class="header-anchor" href="#8-governance--contribution"><span>8. Governance &amp; Contribution</span></a></h2>
+<h3 id="version-control" tabindex="-1"><a class="header-anchor" href="#version-control"><span>Version Control</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Version Type</th>
+<th>When Applied</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Patch</strong> <code>x.x.N</code></td>
+<td>Bug fixes, copy corrections, minor token adjustments</td>
+<td><code>1.0.1</code></td>
+</tr>
+<tr>
+<td><strong>Minor</strong> <code>x.N.x</code></td>
+<td>New components, new patterns, additive token additions</td>
+<td><code>1.1.0</code></td>
+</tr>
+<tr>
+<td><strong>Major</strong> <code>N.x.x</code></td>
+<td>Breaking changes — token renames, component API changes, color palette shifts</td>
+<td><code>2.0.0</code></td>
+</tr>
+</tbody>
+</table>
+<p>Breaking changes require a <strong>migration guide</strong> documenting: what changed, why it changed, and how to update existing implementations.</p>
+<h3 id="contribution-process" tabindex="-1"><a class="header-anchor" href="#contribution-process"><span>Contribution Process</span></a></h3>
+<ol>
+<li><strong>Identify the gap</strong> — Is this a new component, a pattern, or a token?</li>
+<li><strong>Check for existing coverage</strong> — Search this doc and the component library before adding</li>
+<li><strong>Draft a proposal</strong> — Use the <code>/design-system extend [component]</code> workflow for new additions</li>
+<li><strong>Cross-functional review</strong> — New components require sign-off from: UI Lead, UX Lead, Engineering Lead, Accessibility reviewer</li>
+<li><strong>Document first</strong> — Documentation is mandatory before a component enters the system, not after</li>
+<li><strong>Release notes</strong> — Every change is changelog-documented at time of merge</li>
+</ol>
+<h3 id="component-maturity-model" tabindex="-1"><a class="header-anchor" href="#component-maturity-model"><span>Component Maturity Model</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Label</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧪 Experimental</td>
+<td><code>experimental</code></td>
+<td>In active exploration; not production-safe</td>
+</tr>
+<tr>
+<td>🔶 Beta</td>
+<td><code>beta</code></td>
+<td>Usable but API may change; use with caution</td>
+</tr>
+<tr>
+<td>✅ Stable</td>
+<td><code>stable</code></td>
+<td>Production-ready; changes are semver-managed</td>
+</tr>
+<tr>
+<td>🚫 Deprecated</td>
+<td><code>deprecated</code></td>
+<td>Migration path documented; do not use in new work</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roles--responsibilities" tabindex="-1"><a class="header-anchor" href="#roles--responsibilities"><span>Roles &amp; Responsibilities</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Design Systems Lead</strong></td>
+<td>Token governance, system architecture, breaking change decisions</td>
+</tr>
+<tr>
+<td><strong>UI Designer</strong></td>
+<td>Component visual spec, variant definition, Figma maintenance</td>
+</tr>
+<tr>
+<td><strong>UX Designer</strong></td>
+<td>Pattern documentation, interaction spec, do/don't guidelines</td>
+</tr>
+<tr>
+<td><strong>UX Researcher</strong></td>
+<td>Usability validation of new patterns; accessibility audits</td>
+</tr>
+<tr>
+<td><strong>Product Designer</strong></td>
+<td>Cross-product consistency review; consumer-use feedback</td>
+</tr>
+<tr>
+<td><strong>Engineering Lead</strong></td>
+<td>Token implementation, component API design, performance review</td>
+</tr>
+<tr>
+<td><strong>Accessibility Reviewer</strong></td>
+<td>WCAG audit; keyboard/screen reader testing before <code>stable</code> status</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><em>Material Tonal Logic Design System · v1.0.0 · Confidential &amp; Internal</em></p>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

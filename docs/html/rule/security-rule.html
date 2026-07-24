@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security Rules — CMAS (ทีม 3 คน)</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">📄 CMAS Docs</a>
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a class="active" href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<h1 id="security-rules--cmas-ทีม-3-คน" tabindex="-1"><a class="header-anchor" href="#security-rules--cmas-ทีม-3-คน"><span>Security Rules — CMAS (ทีม 3 คน)</span></a></h1>
+<p>See also: <a href="./git-rule.html">git-rule</a> · <a href="./code-rule.html">code-rule</a> · <a href="../dev/features-pages.html">features-pages</a> · <a href="../dev/dev.html">dev</a></p>
+<blockquote>
+<p><strong>Scope:</strong> CMAS เก็บข้อมูลจริงของนักศึกษา (ชื่อ, รหัสนักศึกษา, คะแนน) และบัญชีอาจารย์/แอดมิน — ต้องปฏิบัติตามกฎนี้เคร่งครัด เพราะทีมมีแค่ 3 คน ไม่มีทีม security แยก ทุกคนต้องเป็นคนตรวจกันเอง</p>
+</blockquote>
+<hr>
+<h2 id="1-secrets--environment-variables" tabindex="-1"><a class="header-anchor" href="#1-secrets--environment-variables"><span>1. Secrets &amp; Environment Variables</span></a></h2>
+<pre class="hljs"><code>DO    เก็บ secret ทั้งหมดใน .env / .env.local เท่านั้น (DATABASE_URL, JWT_SECRET, SUPABASE_SERVICE_KEY)
+DO    ใช้ .env.example เป็น template ที่ไม่มีค่าจริง (ค่า placeholder เท่านั้น)
+DO    ใช้ random string 256-bit ขึ้นไปสำหรับ JWT_SECRET ใน production (สร้างด้วย openssl rand -base64 32)
+DO    หมุนเวียน (rotate) secret ทันทีถ้ามีความสงสัยว่ารั่วไหล (เช่น commit หลุด, แชร์ผิดที่)
+
+DON'T commit .env, .env.local, .env.production ลง git เด็ดขาด
+DON'T hardcode secret/credential ในโค้ด (const JWT_SECRET = &quot;...&quot;)
+DON'T แชร์ .env ผ่าน chat/email — ใช้ password manager หรือ secret store ของทีมเท่านั้น
+DON'T ใช้ secret เดียวกันระหว่าง dev/staging/production
+</code></pre>
+<p><strong>ก่อน commit ทุกครั้ง</strong> — เช็คว่าไม่มีไฟล์ secret ติดไปกับ <code>git status</code> / <code>git diff --staged</code> (ดู <a href="./git-rule.html">git-rule</a> §6)</p>
+<hr>
+<h2 id="2-authentication--authorization" tabindex="-1"><a class="header-anchor" href="#2-authentication--authorization"><span>2. Authentication &amp; Authorization</span></a></h2>
+<h3 id="21-jwt" tabindex="-1"><a class="header-anchor" href="#21-jwt"><span>2.1 JWT</span></a></h3>
+<ul>
+<li>Token ต้อง sign ด้วย secret จาก <code>process.env.JWT_SECRET</code> เท่านั้น ห้าม hardcode</li>
+<li>กำหนด <code>JWT_EXPIRES_IN</code> เสมอ (ห้าม token ไม่มีวันหมดอายุ)</li>
+<li>เก็บ token ฝั่ง client ใน memory/httpOnly cookie เท่านั้น — <strong>ห้าม</strong> เก็บใน <code>localStorage</code> แบบ raw ถ้าเลี่ยงได้ (ถ้าจำเป็นต้องใช้ localStorage ให้บันทึกเหตุผลใน PR)</li>
+<li>ทุก request ที่ต้อง auth ต้องผ่าน <code>authMiddleware</code> ก่อนเข้าถึง route — ห้าม verify token เองใน controller</li>
+</ul>
+<h3 id="22-authorization-rbac" tabindex="-1"><a class="header-anchor" href="#22-authorization-rbac"><span>2.2 Authorization (RBAC)</span></a></h3>
+<ul>
+<li>Role มี 2 ระดับ: <code>ADMIN</code>, <code>INSTRUCTOR</code> — ทุก endpoint ที่แก้ไขข้อมูลต้องระบุ role ที่อนุญาตชัดเจนผ่าน <code>rbac()</code> middleware</li>
+<li><strong>Authentication ≠ Authorization</strong> — มี token ที่ valid ไม่ได้แปลว่ามีสิทธิ์ทำทุกอย่าง ต้องเช็ค role/ownership ทุกครั้ง (เช่น instructor แก้ได้เฉพาะ course ของตัวเอง)</li>
+<li>ตรวจสอบ ownership ที่ชั้น Service เสมอ (เช่น <code>course.instructorId === userId</code>) ไม่ใช่เชื่อ <code>courseId</code> จาก request อย่างเดียว</li>
+</ul>
+<pre class="hljs"><code><span class="hljs-comment">// ❌ ผิด — เชื่อ courseId จาก client ไม่เช็คว่าเป็นของ instructor คนนี้จริงไหม</span>
+<span class="hljs-keyword">async</span> <span class="hljs-title function_">updateClo</span>(<span class="hljs-params"><span class="hljs-attr">courseId</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">cloId</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">data</span>: <span class="hljs-title class_">UpdateCloInput</span></span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">cloRepo</span>.<span class="hljs-title function_">update</span>(cloId, data)
+}
+
+<span class="hljs-comment">// ✅ ถูก — เช็ค ownership ก่อนแก้ไขเสมอ</span>
+<span class="hljs-keyword">async</span> <span class="hljs-title function_">updateClo</span>(<span class="hljs-params"><span class="hljs-attr">userId</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">courseId</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">cloId</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">data</span>: <span class="hljs-title class_">UpdateCloInput</span></span>) {
+  <span class="hljs-keyword">const</span> course = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">courseRepo</span>.<span class="hljs-title function_">findById</span>(courseId)
+  <span class="hljs-keyword">if</span> (course.<span class="hljs-property">instructorId</span> !== userId) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ForbiddenError</span>()
+  <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">cloRepo</span>.<span class="hljs-title function_">update</span>(cloId, data)
+}
+</code></pre>
+<h3 id="23-password" tabindex="-1"><a class="header-anchor" href="#23-password"><span>2.3 Password</span></a></h3>
+<ul>
+<li>Hash ด้วย <code>argon2</code> (หรือ <code>bcrypt</code> ถ้าเปลี่ยน) เท่านั้น — ห้าม plain text หรือ hash เอง (MD5/SHA เปล่าๆ)</li>
+<li>บังคับความยาวขั้นต่ำ 8 ตัวอักษรตอนสร้างบัญชี (validate ด้วย Zod ที่ validator layer)</li>
+<li>ห้าม log password หรือ password hash ออกมาใน console/log ไม่ว่ากรณีใด</li>
+</ul>
+<hr>
+<h2 id="3-input-validation--injection" tabindex="-1"><a class="header-anchor" href="#3-input-validation--injection"><span>3. Input Validation &amp; Injection</span></a></h2>
+<pre class="hljs"><code>DO    validate ทุก request body/param/query ด้วย Zod ที่ validator layer ก่อนถึง service
+DO    ใช้ Prisma query builder เท่านั้น (parameterized โดย default)
+DO    validate ไฟล์ Excel ที่ upload เข้ามา (นามสกุล, ขนาด, จำนวนแถวสูงสุด) ก่อนประมวลผล
+
+DON'T ใช้ $queryRaw / $executeRaw โดยไม่จำเป็น ถ้าจำเป็นต้องใช้ ต้องใช้ parameterized query เท่านั้น
+       (Prisma.sql`...` ห้าม string concatenation แบบ template literal ตรงๆ)
+DON'T เชื่อ input จาก client โดยไม่ validate (รวมถึงข้อมูลจากไฟล์ Excel/CSV)
+DON'T render ข้อมูลจาก user ใน HTML โดยไม่ผ่าน React's default escaping (ห้าม dangerouslySetInnerHTML กับ user input)
+</code></pre>
+<hr>
+<h2 id="4-data-exposure--logging" tabindex="-1"><a class="header-anchor" href="#4-data-exposure--logging"><span>4. Data Exposure &amp; Logging</span></a></h2>
+<ul>
+<li>Response API ต้อง <strong>ไม่มี</strong> field ที่ sensitive เช่น <code>passwordHash</code> — ใช้ Prisma <code>select</code> เลือกเฉพาะ field ที่จำเป็นเสมอ (ตาม <a href="../dev/dev.html">dev</a> §8.2)</li>
+<li>Error message ที่ส่งกลับ client ต้องไม่เผย stack trace หรือ query จริงใน production (<code>NODE_ENV=production</code> ต้อง return generic message)</li>
+<li>Log ฝั่ง server ห้ามมี: password, JWT token เต็ม, ข้อมูลนักศึกษาแบบละเอียด (เก็บแค่ id พอสำหรับ debug)</li>
+<li>ข้อมูลนักศึกษา (ชื่อ, รหัสนักศึกษา, คะแนน) ถือเป็นข้อมูลส่วนบุคคล — เข้าถึงได้เฉพาะผู้ใช้ที่ login และมีสิทธิ์ตาม course เท่านั้น ห้ามมี endpoint แบบ public ที่ดึงข้อมูลนักศึกษาได้</li>
+</ul>
+<hr>
+<h2 id="5-cors--network" tabindex="-1"><a class="header-anchor" href="#5-cors--network"><span>5. CORS &amp; Network</span></a></h2>
+<ul>
+<li><code>CORS_ORIGIN</code> ต้อง whitelist เฉพาะ domain ของ frontend จริง (dev/preview/prod แยกค่ากัน) — ห้ามตั้ง <code>*</code> ใน production</li>
+<li>ใช้ HTTPS เท่านั้นใน production (Vercel/Railway/Fly.io จัดการให้อัตโนมัติ — ห้าม downgrade เป็น HTTP)</li>
+<li>Rate limit endpoint ที่ sensitive อย่างน้อย <code>POST /auth/login</code> และ <code>POST /scores/batch</code> เพื่อกัน brute-force / abuse</li>
+</ul>
+<hr>
+<h2 id="6-dependency--supply-chain" tabindex="-1"><a class="header-anchor" href="#6-dependency--supply-chain"><span>6. Dependency &amp; Supply Chain</span></a></h2>
+<ul>
+<li>ก่อนเพิ่ม dependency ใหม่ — เช็ค <code>npm audit</code> / จำนวน weekly download / วันที่ update ล่าสุด อย่างน้อยคร่าวๆ ก่อน merge</li>
+<li>รัน <code>pnpm audit</code> เป็นระยะ (อย่างน้อยก่อน release ใหญ่) และแก้ไข vulnerability ระดับ high/critical ก่อน deploy</li>
+<li>ห้าม pin dependency จาก fork ที่ไม่รู้จักหรือ URL แปลกๆ ใน <code>package.json</code></li>
+</ul>
+<hr>
+<h2 id="7-security-checklist-เพิ่มใน-pr-ที่แตะ-authdataupload" tabindex="-1"><a class="header-anchor" href="#7-security-checklist-เพิ่มใน-pr-ที่แตะ-authdataupload"><span>7. Security Checklist (เพิ่มใน PR ที่แตะ auth/data/upload)</span></a></h2>
+<ul>
+<li>[ ] ไม่มี secret หลุดในโค้ดหรือ log</li>
+<li>[ ] Endpoint ใหม่มี auth + rbac middleware ครบ (ถ้าควรมี)</li>
+<li>[ ] มีการเช็ค ownership ไม่ใช่แค่ role</li>
+<li>[ ] Input validate ด้วย Zod ครบทุกจุดเข้า (body/param/query/ไฟล์ upload)</li>
+<li>[ ] Response ไม่มี field sensitive หลุดออกไป</li>
+<li>[ ] ไม่มี raw SQL แบบ string concatenation</li>
+<li>[ ] Error handling ไม่เผย stack trace ใน production</li>
+</ul>
+<hr>
+<h2 id="8-เมื่อพบช่องโหว่หรือเหตุการณ์ผิดปกติ-incident" tabindex="-1"><a class="header-anchor" href="#8-เมื่อพบช่องโหว่หรือเหตุการณ์ผิดปกติ-incident"><span>8. เมื่อพบช่องโหว่หรือเหตุการณ์ผิดปกติ (Incident)</span></a></h2>
+<ol>
+<li><strong>หยุดและแจ้งทันที</strong> ในกลุ่มทีม + เจ้าของโปรเจกต์ — ห้ามเงียบแล้วแก้เอง</li>
+<li>ถ้า secret หลุด (เช่น commit ไป GitHub) — หมุนเวียน secret นั้นทันที (ไม่ใช่แค่ revert commit เพราะ history ยังเห็นได้)</li>
+<li>บันทึกว่าเกิดอะไรขึ้น สาเหตุ และวิธีแก้ไว้ในรายงานประจำสัปดาห์ (ดู <a href="./code-rule.html">code-rule</a> §7)</li>
+<li>ห้าม deploy โค้ดที่แก้ security bug โดยไม่ผ่าน review จากอีก 1 คนในทีม แม้จะเป็นเรื่องด่วนก็ตาม (ใช้ hotfix flow ใน <a href="./git-rule.html">git-rule</a> §2.1)</li>
+</ol>
+<hr>
+<p><em>เอกสารนี้มีผลบังคับใช้ร่วมกับ <a href="./code-rule.html">code-rule</a> และ <a href="./git-rule.html">git-rule</a> — ทุก PR ที่แตะ auth, data access, หรือ file upload ต้องผ่าน checklist ข้อ 7 ก่อน merge</em></p>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">🌓</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>
