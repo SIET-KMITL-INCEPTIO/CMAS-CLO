@@ -38,3 +38,17 @@ npm-debug.log*
 # Generated Excel files (round-trip artifacts, never commit)
 *.xlsm
 uploads/
+
+# Docs — generated output. Rebuild with `npm run docs:build` / `npm run plan:csv`.
+# build.mjs rm -rf's docs/html on every run, so committing it is pure diff noise.
+docs/html/
+docs/generated/
+
+# Docs — external reference PDFs too large to version. The 2567 curriculum PDF
+# is 135 MB and would dominate every clone; it is an unmodified external
+# document, so share it via Drive. docs/pdf/ is otherwise tracked — the
+# project's own deliverables there are small and belong in git.
+docs/pdf/01.*.pdf
+
+# MySQL Workbench autosave backups
+*.mwb.bak

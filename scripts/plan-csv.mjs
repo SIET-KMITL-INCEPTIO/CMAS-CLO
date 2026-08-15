@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * สร้าง docs/markdown/dev/project-plan.csv จากตาราง WBS ใน project-plan.md
+ * สร้าง docs/generated/project-plan.csv จากตาราง WBS ใน project-plan.md
  * รันใหม่ทุกครั้งที่แก้แผนงาน: `npm run plan:csv`
  *
  * ไฟล์ผลลัพธ์เป็น UTF-8 with BOM เพื่อให้ Excel อ่านภาษาไทยได้ถูกต้อง ประกอบด้วย
@@ -11,13 +11,13 @@
  *
  * นิยามสัปดาห์ในเดือน: 1 = วันที่ 1–7, 2 = 8–14, 3 = 15–21, 4 = 22–สิ้นเดือน
  */
-import { readFileSync, writeFileSync } from "node:fs"
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 import { dirname, join } from "node:path"
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..")
 const SOURCE = join(root, "docs/markdown/dev/project-plan.md")
-const TARGET = join(root, "docs/markdown/dev/project-plan.csv")
+const TARGET = join(root, "docs/generated/project-plan.csv")
 
 /**
  * หัวคอลัมน์เขียนคำเต็มของอักษรย่อไว้ในหัวเลย เพื่อให้ไฟล์อ่านเข้าใจได้โดยไม่ต้องเปิด .md ควบ
@@ -377,6 +377,8 @@ const lines = [
   ...legend,
 ].map((row) => row.map(csvCell).join(","))
 
+// TARGET อยู่ใน docs/generated/ ซึ่ง gitignore ไว้ — clone ใหม่จะยังไม่มีโฟลเดอร์นี้
+mkdirSync(dirname(TARGET), { recursive: true })
 writeFileSync(TARGET, `﻿${lines.join("\r\n")}\r\n`, "utf8")
 
 const undefinedTerms = GLOSSARY.filter(([term]) => {

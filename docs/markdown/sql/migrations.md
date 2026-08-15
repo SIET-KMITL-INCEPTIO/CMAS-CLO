@@ -1,14 +1,18 @@
-# docs/markdown/sql/migrations — historical only
+# Historical migrations — reference only
 
-**The live migrations are `database/migrations/`.** Nothing in this folder is
-applied by `prisma migrate deploy`.
+**The live migrations are `database/migrations/`.** Nothing described on this
+page is applied by `prisma migrate deploy`.
 
 ## What is here
 
+The scripts themselves live in
+[`reference/db/migrations/`](../../reference/db/migrations/) — they are
+artifacts, not documentation, so they sit outside the markdown tree.
+
 | File | Status |
 |---|---|
-| `001-instructors-many-to-many.sql` | **Historical.** Written to migrate a live database from `Course.instructorId` to the `CourseInstructor` junction table. No database in that shape exists anywhere any more — the change is baked into `database/migrations/0001_init/migration.sql`. Kept for the reasoning in its comments, not to be run. |
-| `verify-courseinstructor.sql` | Verification queries for the above. Still useful as ad-hoc SQL; not part of any pipeline. |
+| [`001-instructors-many-to-many.sql`](../../reference/db/migrations/001-instructors-many-to-many.sql) | **Historical.** Written to migrate a live database from `Course.instructorId` to the `CourseInstructor` junction table. No database in that shape exists anywhere any more — the change is baked into `database/migrations/0001_init/migration.sql`. Kept for the reasoning in its comments, not to be run. |
+| [`verify-courseinstructor.sql`](../../reference/db/migrations/verify-courseinstructor.sql) | Verification queries for the above. Still useful as ad-hoc SQL; not part of any pipeline. |
 
 ## Do not write a `002-multi-tenancy.sql` here
 

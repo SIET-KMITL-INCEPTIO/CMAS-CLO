@@ -3,16 +3,20 @@
 MySQL-dialect DDL scripts translated from the project's PostgreSQL/Prisma
 sources, so MySQL Workbench can **reverse-engineer** them into EER (ER) diagrams.
 
+The scripts live in [`reference/db/mysql/`](../../reference/db/mysql/) — they
+are artifacts, not documentation, so they sit outside the markdown tree. All
+filenames below are relative to that folder.
+
 | File | Model | Tables | Purpose |
 |---|---|---|---|
-| `cmas_app_mysql_v3.sql` | **v3 — current design.** Course-root, single-tenant | 11 tables · 14 FKs | Diagramming only: tables + FKs, no triggers/views so Workbench imports cleanly |
-| `cmas_app_production_v3.sql` | **v3 — current design.** Same tables, hardened | 11 tables · 28 CHECKs · 6 triggers · 6 views | The executable DDL. Run this one |
-| `cmas_enterprise_mysql.sql` | Full institutional design (curriculum versioning, PLO/CLO mapping, sections, enrollments, PLO attainment, audit) | 36 tables + 4 views | Reference only — **not** what the app implements |
+| [`cmas_app_mysql_v3.sql`](../../reference/db/mysql/cmas_app_mysql_v3.sql) | **v3 — current design.** Course-root, single-tenant | 11 tables · 14 FKs | Diagramming only: tables + FKs, no triggers/views so Workbench imports cleanly |
+| [`cmas_app_production_v3.sql`](../../reference/db/mysql/cmas_app_production_v3.sql) | **v3 — current design.** Same tables, hardened | 11 tables · 28 CHECKs · 6 triggers · 6 views | The executable DDL. Run this one |
+| [`cmas_enterprise_mysql.sql`](../../reference/db/mysql/cmas_enterprise_mysql.sql) | Full institutional design (curriculum versioning, PLO/CLO mapping, sections, enrollments, PLO attainment, audit) | 36 tables + 4 views | Reference only — **not** what the app implements |
 
 ### Version history
 
 v1 and v2 were **deleted** on 2026-08-03. Recover from git history if needed
-(`git log -- docs/markdown/sql/mysql/`); the v2 `.mwb` / `.pdf` files were never
+(`git log -- docs/reference/db/mysql/`); the v2 `.mwb` / `.pdf` files were never
 committed and are gone from the repo entirely.
 
 | Version | Root entity | Tables | Why it was replaced |
@@ -111,5 +115,5 @@ To hand the model to someone else, save the Workbench model itself:
 
 > These files are a **presentation/diagramming artifact**. The authoritative
 > schema for the app remains `database/schema.prisma`; the authoritative
-> full design remains `docs/markdown/sql/schema.sql` (PostgreSQL). Keep those
+> full design remains `docs/reference/db/schema.sql` (PostgreSQL). Keep those
 > as the source of truth and regenerate these if the models change.

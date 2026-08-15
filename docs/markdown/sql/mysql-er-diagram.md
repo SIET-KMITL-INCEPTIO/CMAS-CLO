@@ -2,11 +2,11 @@
 
 Companion doc for the MySQL-dialect DDL used to generate **Entity–Relationship
 (EER) diagrams in MySQL Workbench**. The scripts live in
-[`mysql/`](./mysql/); this page explains what they contain and how the
+[`reference/db/mysql/`](../../reference/db/mysql/); this page explains what they contain and how the
 entities relate.
 
 See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
-[`schema.sql`](./schema.sql) (PostgreSQL full institutional reference model) ·
+[`reference/db/schema.sql`](../../reference/db/schema.sql) (PostgreSQL full institutional reference model) ·
 [`../../../database/schema.prisma`](../../../database/schema.prisma) (app source of truth).
 
 > **Updated 2026-08-04 — the app model is now SINGLE-TENANT.** `Institution`,
@@ -18,10 +18,10 @@ See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
 
 | File | Model | Size | Translated from |
 |---|---|---|---|
-| [`mysql/cmas_enterprise_mysql.sql`](./mysql/cmas_enterprise_mysql.sql) | Full institutional design — **reference only** | 36 tables, 4 views, 59 FKs | `schema.sql` (PostgreSQL 14+) |
-| [`mysql/cmas_app_mysql_v3.sql`](./mysql/cmas_app_mysql_v3.sql) | Live app schema — diagramming mirror | 11 tables, 14 FKs | `database/schema.prisma` (Prisma) |
-| [`mysql/cmas_app_production_v3.sql`](./mysql/cmas_app_production_v3.sql) | Live app schema — executable, hardened | 11 tables, CHECKs, triggers, views | `database/migrations/` |
-| [`mysql/README.md`](./mysql/README.md) | How-to | — | Workbench steps + translation table |
+| [`reference/db/mysql/cmas_enterprise_mysql.sql`](../../reference/db/mysql/cmas_enterprise_mysql.sql) | Full institutional design — **reference only** | 36 tables, 4 views, 59 FKs | `schema.sql` (PostgreSQL 14+) |
+| [`reference/db/mysql/cmas_app_mysql_v3.sql`](../../reference/db/mysql/cmas_app_mysql_v3.sql) | Live app schema — diagramming mirror | 11 tables, 14 FKs | `database/schema.prisma` (Prisma) |
+| [`reference/db/mysql/cmas_app_production_v3.sql`](../../reference/db/mysql/cmas_app_production_v3.sql) | Live app schema — executable, hardened | 11 tables, CHECKs, triggers, views | `database/migrations/` |
+| [`mysql-dumps.md`](./mysql-dumps.md) | How-to | — | Workbench steps + translation table |
 
 **Requires MySQL 8.0.16+** (for `CHECK`, expression defaults, and the stored
 generated column). All tables are `InnoDB` + `utf8mb4` so Thai `_th` columns
@@ -41,7 +41,7 @@ An EER canvas opens with every table and all FK relationship lines. Then
 **Arrange ▸ Autolayout**, and export via **File ▸ Export ▸ Export as SVG/PNG/PDF**.
 
 Full steps (including the live-database route and the `.mwb` model save) are in
-[`mysql/README.md`](./mysql/README.md).
+[`mysql-dumps.md`](./mysql-dumps.md).
 
 ---
 
@@ -111,9 +111,9 @@ Course 1─N ScoreUploadLog N─1 User
 No self-referencing relationship survives in v3: `Curriculum.clonedFrom` was the
 only one, and it went with the table.
 
-> **Two files, two purposes.** [`mysql/cmas_app_mysql_v3.sql`](./mysql/cmas_app_mysql_v3.sql)
+> **Two files, two purposes.** [`reference/db/mysql/cmas_app_mysql_v3.sql`](../../reference/db/mysql/cmas_app_mysql_v3.sql)
 > is the diagramming mirror — tables and FKs only, so Workbench imports cleanly.
-> [`mysql/cmas_app_production_v3.sql`](./mysql/cmas_app_production_v3.sql) is the
+> [`reference/db/mysql/cmas_app_production_v3.sql`](../../reference/db/mysql/cmas_app_production_v3.sql) is the
 > executable one: cascade rules, CHECK constraints, the LEAD generated column,
 > triggers and reporting views. Both are 11 tables and both are single-tenant.
 
@@ -122,7 +122,7 @@ only one, and it went with the table.
 ## Translation & fidelity notes
 
 Postgres/Prisma → MySQL 8 highlights (full table in
-[`mysql/README.md`](./mysql/README.md)):
+[`mysql-dumps.md`](./mysql-dumps.md)):
 
 - `BIGSERIAL` → `BIGINT AUTO_INCREMENT`; Prisma `cuid()` PKs → `VARCHAR(30)`.
 - `TIMESTAMPTZ`/`now()` → `TIMESTAMP`/`DATETIME(3)` + `CURRENT_TIMESTAMP`;

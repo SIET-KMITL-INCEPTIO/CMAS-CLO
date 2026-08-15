@@ -7,7 +7,7 @@ See also: [[dev]] · [[srs]] · [[Summary Project]] · [[concept-clo MOC]]
 > ไฟล์นี้เคยหลุดจากของจริงมาแล้ว (เคยมี `Curriculum.createdBy` ที่ไม่มีอยู่จริง)
 >
 > DDL ที่รันได้: `database/migrations/` (Postgres — ของจริง) ·
-> [`mysql/cmas_app_production_v3.sql`](./mysql/cmas_app_production_v3.sql) (MySQL — สำหรับทำ ER
+> [`reference/db/mysql/cmas_app_production_v3.sql`](../../reference/db/mysql/cmas_app_production_v3.sql) (MySQL — สำหรับทำ ER
 > ใน MySQL Workbench)
 >
 > **v2 (2026-08-04): single-tenant** — ตัด `Institution` · `Membership` · `Curriculum` ·
@@ -299,5 +299,5 @@ erDiagram
 |---|---|
 | `Course.gradingType` | ✅ **OI-11 ปิดแล้ว** — ย้ายมาอยู่บน `Course` เป็นคอลัมน์เดียว NOT NULL default LETTER พร้อมกับการตัด `CurriculumCourse` |
 | แยก `Student` / `Person` | เลื่อน v2 — seam พร้อมแล้ว (ดู `Student` ข้างบน) |
-| `Faculty` / `Department` / `Program` / PLO | เลื่อน — **ไม่ใช่ตารางเพิ่มล้วนอีกแล้ว** เพราะไม่มี `Institution` ให้ห้อย ต้องสร้างตารางแม่แล้ว backfill คีย์ลงทุกแถว `Course` (โครงอ้างอิงอยู่ใน [`schema.sql`](./schema.sql)) |
+| `Faculty` / `Department` / `Program` / PLO | เลื่อน — **ไม่ใช่ตารางเพิ่มล้วนอีกแล้ว** เพราะไม่มี `Institution` ให้ห้อย ต้องสร้างตารางแม่แล้ว backfill คีย์ลงทุกแถว `Course` (โครงอ้างอิงอยู่ใน [`reference/db/schema.sql`](../../reference/db/schema.sql)) |
 | `ObjectiveAssessment` ไม่มีหน้าจอ | **OI-08** |
