@@ -3,6 +3,14 @@ import { env } from "./env.js"
 
 const secret = new TextEncoder().encode(env.JWT_SECRET)
 
+/**
+ * Token payload. Single-tenant: no institution claim, and therefore no
+ * institution-switch endpoint.
+ *
+ * `role` is a HINT for cheap checks. authMiddleware re-reads the live User row
+ * on every request, so a demoted or deactivated account takes effect
+ * immediately instead of waiting out the 15-minute access token (FR-03).
+ */
 export type JwtPayload = {
   sub: string
   role: "ADMIN" | "INSTRUCTOR"

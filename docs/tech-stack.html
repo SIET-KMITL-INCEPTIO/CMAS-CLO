@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMAS — สรุปเทคโนโลยีที่ใช้ (Tech Stack) ข้อดี ข้อเสีย และความเหมาะสม</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font-sans:'IBM Plex Sans Thai','IBM Plex Sans',-apple-system,sans-serif;
+  --text-display:clamp(32px,5vw,44px); --text-h2:clamp(20px,3vw,25px); --text-h3:19px; --text-h4:16px;
+  --text-body:14px; --text-body-sm:13px; --text-label:12px; --text-caption:11px;
+  --leading-relaxed:1.7; --tracking-tight:-.02em; --tracking-wider:.1em;
+
+  --md-page-frame:#e2e2e4; --md-surface:#f9f9fb;
+  --md-surface-container-lowest:#ffffff; --md-surface-container-low:#f3f3f5;
+  --md-surface-container:#eeeef0; --md-surface-container-high:#e8e8ea;
+  --md-surface-container-highest:#e2e2e4;
+  --md-on-surface:#1a1c1d; --md-on-surface-variant:#4a454a;
+  --md-outline:#7b757b; --md-outline-variant:#ccc4ca;
+  --md-primary:#19151b; --md-on-primary:#ffffff;
+  --md-secondary:#5c5c78; --md-secondary-container:#deddfe; --md-on-secondary-container:#3b3b52;
+  --md-tertiary-container:#e9e0e9;
+  --md-error:#ba1a1a;
+
+  --status-info-bg:#EAF1FE; --status-info-border:#93BAF9; --status-info-text:#1A56C4;
+  --status-success-bg:#E6F4EA; --status-success-border:#81C995; --status-success-text:#137333;
+  --status-warning-bg:#FEF7E0; --status-warning-border:#FDD663; --status-warning-text:#B06000;
+  --status-danger-bg:#FCE8E6; --status-danger-border:#F28B82; --status-danger-text:#C5221F;
+
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+  --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px; --space-16:64px;
+  --radius-xs:4px; --radius-sm:8px; --radius-md:16px; --radius-lg:24px; --radius-full:9999px;
+  --shadow-color:46,41,48;
+  --shadow-1:0 12px 32px rgba(var(--shadow-color),.04);
+  --shadow-2:0 20px 48px rgba(var(--shadow-color),.07);
+  --ease-default:cubic-bezier(.4,0,.2,1); --duration-default:180ms;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:var(--space-8)}
+body{font-family:var(--font-sans);font-size:var(--text-body);line-height:var(--leading-relaxed);
+  color:var(--md-on-surface);background:var(--md-page-frame);-webkit-font-smoothing:antialiased}
+.shell{max-width:1180px;margin:0 auto;padding:var(--space-8) var(--space-5) var(--space-16)}
+.layout{display:grid;grid-template-columns:232px minmax(0,1fr);gap:var(--space-8);align-items:start}
+@media (max-width:960px){.layout{grid-template-columns:1fr}.toc{position:static!important;max-height:none!important}}
+
+.hero{background:linear-gradient(135deg,#19151b 0%,#2e2930 55%,#44405a 100%);color:#fff;
+  border-radius:var(--radius-lg);padding:var(--space-12) var(--space-10);margin-bottom:var(--space-8);
+  box-shadow:var(--shadow-2);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:auto -80px -120px auto;width:340px;height:340px;border-radius:50%;
+  background:radial-gradient(circle,rgba(222,221,254,.16),transparent 70%)}
+.hero .eyebrow{font-size:var(--text-caption);letter-spacing:var(--tracking-wider);text-transform:uppercase;
+  font-weight:600;color:#c5c3e4;margin-bottom:var(--space-3)}
+.hero h1{font-size:var(--text-display);font-weight:700;letter-spacing:var(--tracking-tight);line-height:1.15}
+.hero p{margin-top:var(--space-4);max-width:70ch;color:#e2e2e4;font-size:15px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-6);position:relative;z-index:1}
+.hero-meta span{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.18);
+  padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);font-size:var(--text-label);font-weight:500}
+
+.toc{position:sticky;top:var(--space-6);background:#fff;border:1px solid var(--md-outline-variant);
+  border-radius:var(--radius-md);padding:var(--space-5);box-shadow:var(--shadow-1);
+  max-height:calc(100vh - 48px);overflow:auto}
+.toc h4{font-size:var(--text-caption);letter-spacing:var(--tracking-wider);text-transform:uppercase;
+  color:var(--md-on-surface-variant);margin-bottom:var(--space-3);font-weight:600}
+.toc a{display:block;padding:var(--space-2) var(--space-3);border-radius:var(--radius-xs);
+  color:var(--md-on-surface-variant);text-decoration:none;font-size:var(--text-body-sm);
+  border-left:2px solid transparent;transition:all var(--duration-default) var(--ease-default)}
+.toc a:hover{background:var(--md-surface-container);color:var(--md-on-surface);border-left-color:var(--md-secondary)}
+
+.card{background:#fff;border:1px solid var(--md-outline-variant);border-radius:var(--radius-md);
+  padding:var(--space-8);margin-bottom:var(--space-6);box-shadow:var(--shadow-1)}
+.card > h2{font-size:var(--text-h2);font-weight:700;letter-spacing:var(--tracking-tight);
+  padding-bottom:var(--space-3);margin-bottom:var(--space-5);
+  border-bottom:2px solid var(--md-surface-container-highest);display:flex;align-items:center;gap:var(--space-3)}
+.num{display:inline-flex;align-items:center;justify-content:center;flex:none;width:34px;height:34px;
+  border-radius:var(--radius-sm);background:var(--md-secondary-container);color:var(--md-on-secondary-container);
+  font-size:var(--text-body-sm);font-weight:700}
+h3{font-size:var(--text-h3);font-weight:600;margin:var(--space-8) 0 var(--space-3)}
+h3:first-of-type{margin-top:0}
+p{margin-bottom:var(--space-3);color:var(--md-on-surface-variant)}
+p.lead{color:var(--md-on-surface)}
+strong{font-weight:600;color:var(--md-on-surface)}
+ul{margin:0 0 var(--space-3) var(--space-5);color:var(--md-on-surface-variant)}
+li{margin-bottom:var(--space-1)}
+
+.tw{overflow-x:auto;border:1px solid var(--md-outline-variant);border-radius:var(--radius-sm);margin:var(--space-4) 0}
+table{width:100%;border-collapse:collapse;font-size:var(--text-body-sm);background:#fff}
+thead th{background:var(--md-surface-container-high);text-align:left;font-weight:600;
+  padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--md-outline-variant);
+  font-size:var(--text-label);letter-spacing:.03em;text-transform:uppercase;color:var(--md-on-surface-variant);white-space:nowrap}
+tbody td{padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--md-surface-container-highest);
+  vertical-align:top;line-height:1.55}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--md-surface-container-low)}
+td.c,th.c{text-align:center}
+td.dim{color:var(--md-on-surface-variant);font-size:var(--text-label)}
+td.group{background:var(--md-surface-container-low);font-weight:600;color:var(--md-on-surface);white-space:nowrap;
+  border-right:1px solid var(--md-outline-variant)}
+td.pro{background:rgba(230,244,234,.5)} td.con{background:rgba(254,247,224,.5)}
+code{font-family:var(--font-sans);background:var(--md-surface-container);padding:1px 6px;
+  border-radius:var(--radius-xs);font-size:.92em;font-weight:500}
+
+.b{display:inline-block;padding:2px 10px;border-radius:var(--radius-full);font-size:var(--text-label);
+  font-weight:600;white-space:nowrap;border:1px solid}
+.b-pass{background:var(--status-success-bg);border-color:var(--status-success-border);color:var(--status-success-text)}
+.b-info{background:var(--status-info-bg);border-color:var(--status-info-border);color:var(--status-info-text)}
+.b-warn{background:var(--status-warning-bg);border-color:var(--status-warning-border);color:var(--status-warning-text)}
+.b-dang{background:var(--status-danger-bg);border-color:var(--status-danger-border);color:var(--status-danger-text)}
+.b-neut{background:var(--md-surface-container);border-color:var(--md-outline-variant);color:var(--md-on-surface-variant)}
+.ver{font-variant-numeric:tabular-nums;font-size:var(--text-label);color:var(--md-on-surface-variant)}
+
+.note{border-left:3px solid var(--md-secondary);background:var(--md-surface-container-low);
+  padding:var(--space-4) var(--space-5);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:var(--space-4) 0}
+.note.warn{border-left-color:var(--status-warning-border);background:var(--status-warning-bg)}
+.note.pass{border-left-color:var(--status-success-border);background:var(--status-success-bg)}
+.note.dang{border-left-color:var(--status-danger-border);background:var(--status-danger-bg)}
+.note p:last-child{margin-bottom:0}
+.note .t{font-weight:600;color:var(--md-on-surface);margin-bottom:var(--space-1);display:block}
+
+/* architecture diagram */
+.arch{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4);margin:var(--space-5) 0}
+@media (max-width:760px){.arch{grid-template-columns:1fr}}
+.tier{border:1px solid var(--md-outline-variant);border-radius:var(--radius-sm);overflow:hidden;background:#fff}
+.tier header{background:var(--md-primary);color:#fff;padding:var(--space-3) var(--space-4);font-weight:600;font-size:var(--text-body-sm)}
+.tier .body{padding:var(--space-4);font-size:var(--text-body-sm);color:var(--md-on-surface-variant)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:var(--space-3)}
+.chip{background:var(--md-surface-container-low);border:1px solid var(--md-outline-variant);
+  border-radius:var(--radius-full);padding:2px 10px;font-size:var(--text-label);font-weight:500;color:var(--md-on-surface)}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--space-4);margin:var(--space-5) 0}
+.stat{background:var(--md-surface-container-low);border:1px solid var(--md-outline-variant);
+  border-radius:var(--radius-sm);padding:var(--space-4)}
+.stat .k{font-size:var(--text-caption);letter-spacing:var(--tracking-wider);text-transform:uppercase;
+  color:var(--md-on-surface-variant);font-weight:600}
+.stat .v{font-size:24px;font-weight:700;margin-top:var(--space-1);font-variant-numeric:tabular-nums}
+.stat .d{font-size:var(--text-label);color:var(--md-on-surface-variant)}
+
+footer{text-align:center;color:var(--md-on-surface-variant);font-size:var(--text-label);
+  padding-top:var(--space-8);border-top:1px solid var(--md-outline-variant);margin-top:var(--space-8)}
+
+@media print{
+  body{background:#fff}.toc,.hero::after{display:none}.layout{grid-template-columns:1fr}
+  .card{box-shadow:none;border-color:#ccc;break-inside:avoid;page-break-inside:avoid}
+  .hero{background:#19151b!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .shell{padding:0;max-width:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="hero">
+    <div class="eyebrow">CMAS · CLO System · Technology Stack Review</div>
+    <h1>สรุปเทคโนโลยีที่ใช้ในระบบ<br>ข้อดี ข้อเสีย และความเหมาะสม</h1>
+    <p class="lead">สำรวจจากไฟล์จริงในโปรเจกต์ — <code>package.json</code> ทั้ง 3 ระดับ · <code>database/schema.prisma</code> · <code>docker-compose.yml</code> · <code>.github/workflows/ci.yml</code> ไม่ใช่จากเอกสารเก่า</p>
+    <div class="hero-meta">
+      <span>ตรวจสอบ 2026-08-09</span>
+      <span>Monorepo · npm workspaces</span>
+      <span>TypeScript ทั้ง 3 ชั้น</span>
+      <span>Node.js ≥ 20</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc">
+      <h4>สารบัญ</h4>
+      <a href="#s1">1 · ภาพรวมสถาปัตยกรรม</a>
+      <a href="#s2">2 · ตารางสรุปทั้งหมด</a>
+      <a href="#s3">3 · ภาษาและรันไทม์</a>
+      <a href="#s4">4 · ฝั่งผู้ใช้ (Frontend)</a>
+      <a href="#s5">5 · ฝั่งเซิร์ฟเวอร์ (Backend)</a>
+      <a href="#s6">6 · ฐานข้อมูลและ ORM</a>
+      <a href="#s7">7 · ความปลอดภัย</a>
+      <a href="#s8">8 · เครื่องมือพัฒนาและ CI</a>
+      <a href="#s9">9 · ทำไมไม่เลือกทางเลือกอื่น</a>
+      <a href="#s10">10 · ความเสี่ยงและการรับมือ</a>
+      <a href="#s11">11 · สรุปความเหมาะสม</a>
+    </nav>
+
+    <main>
+
+    <!-- 1 -->
+    <section class="card" id="s1">
+      <h2><span class="num">1</span> ภาพรวมสถาปัตยกรรม</h2>
+      <p class="lead">ระบบเป็นสถาปัตยกรรม <strong>3 ชั้น (Three-tier)</strong> แบบ Client–Server แยก Frontend กับ Backend ออกจากกันโดยสมบูรณ์ สื่อสารผ่าน <strong>REST API + JSON</strong> และเก็บข้อมูลใน <strong>PostgreSQL</strong> โดยทั้งสามชั้นเขียนด้วย <strong>TypeScript</strong> ภาษาเดียว อยู่ใน <strong>monorepo</strong> เดียวที่จัดการด้วย npm workspaces (<code>app/client</code>, <code>app/server</code>, <code>database/</code>)</p>
+
+      <div class="arch">
+        <div class="tier">
+          <header>1. Presentation Tier</header>
+          <div class="body">
+            Single Page Application ทำงานบนเบราว์เซอร์ · จัดการ routing, สถานะ, การแสดงกราฟ และการอ่านไฟล์ Excel เบื้องต้น
+            <div class="chips"><span class="chip">React 19</span><span class="chip">Vite 7</span><span class="chip">Tailwind 4</span><span class="chip">TanStack Query</span><span class="chip">Zustand</span><span class="chip">Recharts</span></div>
+          </div>
+        </div>
+        <div class="tier">
+          <header>2. Application Tier</header>
+          <div class="body">
+            REST API บน Node.js · ตรวจสอบข้อมูลด้วย Zod · ยืนยันตัวตนด้วย JWT · บังคับสิทธิ์ตามบทบาทและรายวิชา · คำนวณการบรรลุ CLO
+            <div class="chips"><span class="chip">Fastify 5</span><span class="chip">Zod 4</span><span class="chip">Prisma Client</span><span class="chip">jose (JWT)</span><span class="chip">argon2</span></div>
+          </div>
+        </div>
+        <div class="tier">
+          <header>3. Data Tier</header>
+          <div class="body">
+            PostgreSQL 11 ตาราง (single-tenant, Course เป็นราก) · ความถูกต้องเชิงข้อมูลบังคับที่ฐานข้อมูลด้วย CHECK constraint และ trigger
+            <div class="chips"><span class="chip">PostgreSQL</span><span class="chip">Supabase</span><span class="chip">Prisma Migrate</span><span class="chip">SQL triggers</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="k">Workspaces</div><div class="v">2</div><div class="d">app/client · app/server (+ database/)</div></div>
+        <div class="stat"><div class="k">โมเดลข้อมูล</div><div class="v">11</div><div class="d">User · Course · CLO · Activity · Score …</div></div>
+        <div class="stat"><div class="k">Migration</div><div class="v">2</div><div class="d">init + constraints_and_triggers</div></div>
+        <div class="stat"><div class="k">ภาษาหลัก</div><div class="v">1</div><div class="d">TypeScript ทั้ง client · server · seed</div></div>
+      </div>
+
+      <div class="note">
+        <span class="t">เหตุผลเชิงสถาปัตยกรรมที่สำคัญ</span>
+        <p>ข้อจำกัดที่ Prisma แสดงไม่ได้ (CHECK constraint · trigger ตรวจว่า <code>score ≤ maxScore</code> · “มี LEAD ได้ไม่เกิน 1 คนต่อรายวิชา”) ถูกเขียนเป็น SQL ใน migration <code>0002</code> จึงทำให้ความถูกต้องของข้อมูลถูกบังคับที่ชั้นฐานข้อมูล ไม่ใช่ที่โค้ดเท่านั้น — ผลคือแม้จะมีบั๊กในแอป ข้อมูลเสียก็เข้าฐานไม่ได้ แลกกับข้อห้ามเด็ดขาดว่า <strong>ห้ามใช้ <code>prisma db push</code></strong> ทุกสภาพแวดล้อม เพราะจะลบ trigger ทิ้งเงียบ ๆ</p>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="card" id="s2">
+      <h2><span class="num">2</span> ตารางสรุปเทคโนโลยีทั้งหมด</h2>
+      <div class="tw">
+        <table>
+          <thead><tr><th>ชั้น</th><th>เทคโนโลยี</th><th class="c">รุ่น</th><th>บทบาทในระบบ</th></tr></thead>
+          <tbody>
+            <tr><td class="group" rowspan="3">ภาษา / รันไทม์</td><td><strong>TypeScript</strong></td><td class="c ver">5.7 / 5.9</td><td>ภาษาหลักทั้งระบบ · เปิด strict mode ห้ามใช้ <code>any</code></td></tr>
+            <tr><td><strong>Node.js</strong></td><td class="c ver">≥ 20 (.nvmrc 20)</td><td>รันไทม์ฝั่งเซิร์ฟเวอร์และเครื่องมือทั้งหมด</td></tr>
+            <tr><td><strong>npm workspaces</strong></td><td class="c ver">npm ≥ 10</td><td>จัดการ monorepo · lockfile เดียว · สคริปต์รวมที่ราก</td></tr>
+
+            <tr><td class="group" rowspan="11">Frontend</td><td><strong>React</strong></td><td class="c ver">19</td><td>UI library หลัก · component-based</td></tr>
+            <tr><td><strong>Vite</strong> + <code>@vitejs/plugin-react-swc</code></td><td class="c ver">7 / 4</td><td>Dev server (HMR) และ bundler · ทรานสไพล์ด้วย SWC</td></tr>
+            <tr><td><strong>Tailwind CSS</strong> + <code>@tailwindcss/vite</code></td><td class="c ver">4.3</td><td>Utility-first CSS · ผูกกับ Verdure Design System tokens</td></tr>
+            <tr><td><strong>React Router</strong></td><td class="c ver">7</td><td>Client-side routing · route guard ตามบทบาท</td></tr>
+            <tr><td><strong>TanStack Query</strong></td><td class="c ver">5</td><td>Server-state: fetch · cache · refetch · loading/error state</td></tr>
+            <tr><td><strong>Zustand</strong></td><td class="c ver">5</td><td>Client-state ที่เหลือ (auth store) — เล็กและตรงไปตรงมา</td></tr>
+            <tr><td><strong>Recharts</strong></td><td class="c ver">3.9</td><td>กราฟผลการบรรลุ CLO และแดชบอร์ด</td></tr>
+            <tr><td><strong>SheetJS (xlsx)</strong></td><td class="c ver">0.20.3 (CDN)</td><td>อ่าน/สร้างไฟล์ Excel — ใช้ทั้งฝั่ง client และ server</td></tr>
+            <tr><td><strong>lucide-react</strong></td><td class="c ver">1.24</td><td>ไอคอนชุดเดียวทั้งระบบ (ห้ามใช้ emoji ตาม design system)</td></tr>
+            <tr><td><strong>sonner</strong></td><td class="c ver">2.0</td><td>Toast แจ้งผลการทำงาน</td></tr>
+            <tr><td><code>clsx</code> · <code>tailwind-merge</code> · <code>class-variance-authority</code></td><td class="c ver">2 / 3 / 0.7</td><td>ประกอบ className แบบมี variant ไม่ให้ utility ชนกัน</td></tr>
+
+            <tr><td class="group" rowspan="7">Backend</td><td><strong>Fastify</strong></td><td class="c ver">5.10</td><td>HTTP framework · routing · schema validation · logger ในตัว</td></tr>
+            <tr><td><code>@fastify/helmet</code></td><td class="c ver">13</td><td>ตั้ง security header (CSP, HSTS, X-Frame-Options)</td></tr>
+            <tr><td><code>@fastify/cors</code></td><td class="c ver">11</td><td>อนุญาต origin ของ client เท่านั้น (จาก <code>CORS_ORIGIN</code>)</td></tr>
+            <tr><td><code>@fastify/rate-limit</code></td><td class="c ver">11</td><td>จำกัดจำนวนคำขอ ป้องกัน brute-force (ค่าเริ่มต้น 100/นาที)</td></tr>
+            <tr><td><code>@fastify/multipart</code></td><td class="c ver">10</td><td>รับไฟล์ Excel ที่อัปโหลด</td></tr>
+            <tr><td><strong>Zod</strong></td><td class="c ver">4.4</td><td>Schema validation ทุก input + ตรวจ env ตอนบูต · infer type ให้ TS</td></tr>
+            <tr><td><strong>tsx</strong> · <strong>pino-pretty</strong></td><td class="c ver">4 / 13</td><td>รัน TS ตรง ๆ ตอน dev · จัดรูปแบบ log ให้อ่านง่าย</td></tr>
+
+            <tr><td class="group" rowspan="3">ฐานข้อมูล</td><td><strong>PostgreSQL</strong> (โฮสต์บน Supabase)</td><td class="c ver">—</td><td>ฐานข้อมูลเชิงสัมพันธ์หลัก</td></tr>
+            <tr><td><strong>Prisma ORM</strong> + Prisma Client</td><td class="c ver">6.19</td><td>Schema เป็น source of truth · migrate · type-safe query · Studio</td></tr>
+            <tr><td><strong>Raw SQL migration</strong></td><td class="c ver">0002</td><td>CHECK constraint · trigger · partial unique index ที่ Prisma เขียนไม่ได้</td></tr>
+
+            <tr><td class="group" rowspan="2">ความปลอดภัย</td><td><strong>argon2</strong></td><td class="c ver">0.44</td><td>แฮชรหัสผ่าน (Argon2id — ชนะ Password Hashing Competition)</td></tr>
+            <tr><td><strong>jose</strong></td><td class="c ver">6.2</td><td>ออก/ตรวจสอบ JWT (access 15 นาที · refresh 7 วัน)</td></tr>
+
+            <tr><td class="group" rowspan="8">เครื่องมือพัฒนา</td><td><strong>Vitest</strong> + <code>@vitest/coverage-v8</code></td><td class="c ver">3.2</td><td>Unit test ทั้งสอง workspace · วัด coverage</td></tr>
+            <tr><td><strong>happy-dom</strong></td><td class="c ver">20</td><td>DOM จำลองสำหรับเทสต์ฝั่ง client</td></tr>
+            <tr><td><strong>ESLint 10</strong> + <code>typescript-eslint</code></td><td class="c ver">10 / 8</td><td>ตรวจคุณภาพโค้ดและกฎ React hooks</td></tr>
+            <tr><td><strong>Prettier</strong></td><td class="c ver">3.4</td><td>จัดรูปแบบโค้ดอัตโนมัติ · ตรวจใน CI ด้วย <code>format:check</code></td></tr>
+            <tr><td><strong>GitHub Actions</strong></td><td class="c ver">—</td><td>CI: format → lint → typecheck → test → build ทุก PR เข้า main</td></tr>
+            <tr><td><strong>Docker Compose</strong></td><td class="c ver">—</td><td>รัน client + server แบบ dev เหมือนกันทุกเครื่อง</td></tr>
+            <tr><td><strong>concurrently</strong> · <strong>rimraf</strong></td><td class="c ver">10 / 6</td><td>รัน dev สอง workspace พร้อมกัน · ลบ artifact ข้ามแพลตฟอร์ม</td></tr>
+            <tr><td><strong>docx</strong> (สคริปต์)</td><td class="c ver">9.7</td><td>สร้างเอกสาร Word บทที่ 2 จาก Markdown อัตโนมัติ</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="card" id="s3">
+      <h2><span class="num">3</span> ภาษาและรันไทม์ — ข้อดี ข้อเสีย ความเหมาะสม</h2>
+      <div class="tw">
+        <table>
+          <thead><tr><th>เทคโนโลยี</th><th>ข้อดี</th><th>ข้อเสีย / ข้อจำกัด</th><th>ความเหมาะสมกับโครงงานนี้</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="group">TypeScript</td>
+              <td class="pro">จับข้อผิดพลาดตั้งแต่ตอนคอมไพล์ · autocomplete แม่นยำ · type จาก Prisma และ Zod ไหลถึงกันทั้งระบบ · รีแฟกเตอร์ปลอดภัย</td>
+              <td class="con">เขียนช้ากว่า JS ตอนเริ่ม · ต้องเข้าใจ generics/utility types · เพิ่มขั้นตอน build</td>
+              <td><span class="b b-pass">เหมาะมาก</span> ระบบคำนวณคะแนนต้องแม่นยำ — ความผิดพลาดเรื่องชนิดข้อมูล (เช่น <code>null</code> vs <code>0</code>) คือความเสี่ยงตรงกับ H1 ที่ต้องถูก 100%</td>
+            </tr>
+            <tr>
+              <td class="group">Node.js 20 LTS</td>
+              <td class="pro">ใช้ภาษาเดียวกับฝั่ง client · ecosystem ใหญ่ที่สุด · เหมาะกับงาน I/O-bound เช่น API + ฐานข้อมูล · โฮสต์ได้เกือบทุกที่และมีตัวเลือกฟรี</td>
+              <td class="con">Single-threaded — งาน CPU หนักจะบล็อก event loop · ประสิทธิภาพเชิงคำนวณด้อยกว่า Go/Java</td>
+              <td><span class="b b-pass">เหมาะ</span> ภาระหลักคือ query และรวมคะแนน ไม่ใช่การคำนวณหนัก · การใช้ภาษาเดียวลดภาระผู้พัฒนาคนเดียวได้จริง</td>
+            </tr>
+            <tr>
+              <td class="group">npm workspaces</td>
+              <td class="pro">ไม่ต้องติดตั้งเครื่องมือเพิ่ม (มากับ npm) · lockfile เดียว · แชร์ type และสคริปต์ระหว่าง client/server · clone แล้วรันได้ทันที</td>
+              <td class="con">ไม่มี task cache/graph แบบ Nx หรือ Turborepo · <code>npm ci</code> ติดตั้งทุก workspace แม้แก้ที่เดียว</td>
+              <td><span class="b b-pass">เหมาะ</span> โปรเจกต์มีเพียง 2 แพ็กเกจ ความซับซ้อนไม่ถึงจุดที่ต้องใช้ build system เต็มรูปแบบ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="card" id="s4">
+      <h2><span class="num">4</span> ฝั่งผู้ใช้ (Frontend)</h2>
+      <div class="tw">
+        <table>
+          <thead><tr><th>เทคโนโลยี</th><th>ข้อดี</th><th>ข้อเสีย / ข้อจำกัด</th><th>ความเหมาะสม</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="group">React 19</td>
+              <td class="pro">ชุมชนใหญ่ที่สุด หาเอกสาร/ตัวอย่างง่าย · component นำกลับมาใช้ซ้ำได้ · เหมาะกับ UI ที่มีสถานะซับซ้อนอย่างตารางกรอกคะแนน</td>
+              <td class="con">ต้องประกอบ library เองหลายตัว (router, data fetching, form) · React 19 ยังใหม่ ไลบรารีบางตัวตามไม่ทัน · SPA มี first-load ที่ใหญ่กว่า MPA</td>
+              <td><span class="b b-pass">เหมาะมาก</span> หน้าจอกรอกคะแนน/แผนที่ CLO ต้องโต้ตอบสูงและอัปเดตทันทีโดยไม่รีโหลด — ตรงกับ NFR-01</td>
+            </tr>
+            <tr>
+              <td class="group">Vite 7 + SWC</td>
+              <td class="pro">Dev server เริ่มเร็วระดับวินาที · HMR แทบทันที · build ด้วย Rollup ที่ tree-shake ดี · ตั้งค่าน้อย</td>
+              <td class="con">ตอน dev กับ prod ใช้กลไกต่างกัน (ESM ตรง vs bundle) จึงมีโอกาสเจอบั๊กเฉพาะ prod · ปลั๊กอินบางตัวยังผูกกับ webpack</td>
+              <td><span class="b b-pass">เหมาะมาก</span> รอบการพัฒนาเร็วมีผลโดยตรงกับงานที่มีผู้พัฒนาคนเดียวและกรอบเวลาจำกัด</td>
+            </tr>
+            <tr>
+              <td class="group">Tailwind CSS 4</td>
+              <td class="pro">สไตล์อยู่ติดกับ markup แก้เร็ว · ไม่มีปัญหา CSS ชนกันทั้งโปรเจกต์ · ผูกกับ design token ได้ตรง ๆ · ไฟล์ผลลัพธ์เล็กเพราะตัดคลาสที่ไม่ใช้</td>
+              <td class="con">HTML ยาวและอ่านยากตอนแรก · ต้องเรียนชื่อคลาส · ถ้าไม่แยก component จะเกิดการคัดลอกสไตล์ซ้ำ</td>
+              <td><span class="b b-pass">เหมาะ</span> Verdure Design System กำหนด token ไว้แล้ว การใช้ Tailwind ทำให้เปลี่ยนสี/ระยะทั้งระบบได้จากไฟล์เดียว</td>
+            </tr>
+            <tr>
+              <td class="group">React Router 7</td>
+              <td class="pro">มาตรฐานโดยพฤตินัยของ React SPA · nested route เหมาะกับ layout แดชบอร์ด · ทำ route guard ตามบทบาทได้ตรงไปตรงมา</td>
+              <td class="con">API เปลี่ยนบ่อยระหว่างเวอร์ชันหลัก ทำให้ตัวอย่างเก่าใช้ไม่ได้ · ต้องระวังว่า guard ฝั่ง client เป็นเพียง UX ไม่ใช่ความปลอดภัย</td>
+              <td><span class="b b-pass">เหมาะ</span> โดยมีเงื่อนไขว่าการบังคับสิทธิ์จริงต้องอยู่ฝั่งเซิร์ฟเวอร์ (NFR-07) เสมอ</td>
+            </tr>
+            <tr>
+              <td class="group">TanStack Query 5</td>
+              <td class="pro">จัดการ cache/refetch/stale state ให้อัตโนมัติ · ตัดโค้ด <code>useEffect + useState</code> ซ้ำ ๆ ออกได้มาก · มี loading/error state มาตรฐาน ทำให้ UI สม่ำเสมอ</td>
+              <td class="con">มีแนวคิดที่ต้องเรียน (queryKey, staleTime, invalidation) · ถ้าตั้ง key ผิดจะเห็นข้อมูลเก่าโดยไม่รู้ตัว</td>
+              <td><span class="b b-pass">เหมาะมาก</span> หลังบันทึกคะแนน หน้าสรุป CLO ต้องอัปเดตตาม — invalidation จัดการเรื่องนี้ได้ตรงจุด</td>
+            </tr>
+            <tr>
+              <td class="group">Zustand 5</td>
+              <td class="pro">API เล็กมาก เรียนรู้ครึ่งชั่วโมง · ไม่มี boilerplate แบบ Redux · bundle เล็ก · ใช้คู่กับ TanStack Query ได้ดีเพราะแยกหน้าที่ชัด</td>
+              <td class="con">ไม่มี devtools/time-travel ที่ครบเท่า Redux · โครงสร้างหลวม ถ้าโปรเจกต์โตอาจไร้ระเบียบ</td>
+              <td><span class="b b-pass">เหมาะ</span> client-state ในระบบนี้มีน้อยมาก (auth เป็นหลัก) การใช้ Redux จะเกินความจำเป็น</td>
+            </tr>
+            <tr>
+              <td class="group">Recharts 3</td>
+              <td class="pro">เขียนเป็น React component ตรงไปตรงมา · responsive ในตัว · รองรับ bar/line/radar ที่ต้องใช้กับผล CLO ครบ</td>
+              <td class="con">bundle ค่อนข้างใหญ่ (ควร lazy-load) · ปรับแต่งลึก ๆ สู้ D3 ไม่ได้ · เรนเดอร์ SVG จำนวนมากจะช้าเมื่อจุดข้อมูลเยอะ</td>
+              <td><span class="b b-info">เหมาะ (มีเงื่อนไข)</span> กราฟในระบบมีจุดข้อมูลหลักสิบ ไม่ถึงขีดจำกัด แต่ควรโหลดแบบ lazy เพื่อรักษาเกณฑ์ NFR-01</td>
+            </tr>
+            <tr>
+              <td class="group">SheetJS (xlsx)</td>
+              <td class="pro">มาตรฐานโดยพฤตินัยของการอ่าน/เขียน Excel ใน JS · ใช้โค้ดชุดเดียวกันได้ทั้ง client และ server · รองรับ <code>.xlsx/.xls/.csv</code></td>
+              <td class="con">รุ่นชุมชนติดตั้งจาก CDN ไม่ใช่ npm registry (ต้องมีเน็ตตอนติดตั้งและ pin URL) · ฟีเจอร์จัดรูปแบบขั้นสูงอยู่ในรุ่น Pro · ไฟล์ใหญ่กินหน่วยความจำ</td>
+              <td><span class="b b-info">เหมาะ (มีเงื่อนไข)</span> จำเป็นเพราะ workflow เดิมของอาจารย์คือ Excel — แต่ต้องจำกัดขนาดไฟล์และตรวจสอบด้วย Zod ก่อนบันทึกเสมอ</td>
+            </tr>
+            <tr>
+              <td class="group">lucide-react · sonner · clsx/cva</td>
+              <td class="pro">ไอคอนชุดเดียวสม่ำเสมอและ tree-shake ได้ · toast ตั้งค่าน้อยแต่เข้าถึงได้ (a11y) · cva ทำให้ variant ของปุ่ม/badge เป็นระบบเดียว</td>
+              <td class="con">เพิ่มจำนวน dependency ที่ต้องดูแล · ถ้า import ไอคอนทั้งชุดโดยไม่ระวังจะทำให้ bundle โต</td>
+              <td><span class="b b-pass">เหมาะ</span> เป็นส่วนที่ทำให้ทำตาม design system ได้จริงโดยไม่ต้องเขียน CSS ซ้ำ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="card" id="s5">
+      <h2><span class="num">5</span> ฝั่งเซิร์ฟเวอร์ (Backend)</h2>
+      <div class="tw">
+        <table>
+          <thead><tr><th>เทคโนโลยี</th><th>ข้อดี</th><th>ข้อเสีย / ข้อจำกัด</th><th>ความเหมาะสม</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="group">Fastify 5</td>
+              <td class="pro">เร็วกว่า Express ราว 2 เท่าในงาน JSON · มี schema validation และ logger (pino) ในตัว · TypeScript support เป็นชั้นหนึ่ง · plugin system มีขอบเขตชัด (encapsulation)</td>
+              <td class="con">ชุมชนเล็กกว่า Express มาก ตัวอย่างและ middleware สำเร็จรูปน้อยกว่า · แนวคิด hook/plugin ต้องใช้เวลาเรียน · เอกสารภาษาไทยแทบไม่มี</td>
+              <td><span class="b b-pass">เหมาะ</span> โครงงานต้องรายงานตัวเลขประสิทธิภาพ (NFR-01/02/03) การเลือกเฟรมเวิร์กที่เร็วและมี logger/validation ในตัวช่วยทั้งผลลัพธ์และเวลาเขียนโค้ด</td>
+            </tr>
+            <tr>
+              <td class="group">Zod 4</td>
+              <td class="pro">ประกาศ schema ครั้งเดียวได้ทั้งการตรวจสอบตอนรันและ TypeScript type · ข้อความ error กำหนดเองเป็นภาษาไทยได้ (ตรงกับข้อ 3.3 ของแบบประเมิน) · ใช้ตรวจ <code>.env</code> ตอนบูตได้ด้วย</td>
+              <td class="con">เพิ่มขนาด bundle ถ้านำไปใช้ฝั่ง client ด้วย · schema ที่ซ้อนลึกอ่านยาก · การตรวจตอนรันมีต้นทุนเวลาเล็กน้อย</td>
+              <td><span class="b b-pass">เหมาะมาก</span> เป็นเส้นแบ่ง “ห้ามเชื่อ input จาก client” ที่ระบุไว้ใน NFR-08 และเป็นหลักฐานตรงของข้อประเมิน 4.4</td>
+            </tr>
+            <tr>
+              <td class="group">@fastify/helmet · cors · rate-limit · multipart</td>
+              <td class="pro">ได้ security header, การจำกัด origin และการกันยิงซ้ำโดยเขียนโค้ดไม่กี่บรรทัด · เป็นปลั๊กอินทางการ ดูแลพร้อมกับ core</td>
+              <td class="con">ค่าเริ่มต้นของ helmet (โดยเฉพาะ CSP) อาจบล็อกทรัพยากรของ client จนต้องปรับ · rate-limit แบบเก็บในหน่วยความจำใช้ไม่ได้ถ้าขยายเป็นหลายอินสแตนซ์</td>
+              <td><span class="b b-pass">เหมาะ</span> ระบบเป็น single instance ของคณะเดียว ข้อจำกัดเรื่อง in-memory store จึงยังไม่กระทบ</td>
+            </tr>
+            <tr>
+              <td class="group">tsx (dev) + tsc (build)</td>
+              <td class="pro">แก้ไฟล์แล้วเซิร์ฟเวอร์รีสตาร์ตเองทันที ไม่ต้อง build ระหว่าง dev · ตอน production คอมไพล์เป็น JS ล้วนจึงเริ่มเร็วและไม่ต้องพึ่ง tsx</td>
+              <td class="con">พฤติกรรมตอน dev (esbuild ไม่ตรวจ type) ต่างจากตอน build (tsc ตรวจ) จึงต้องรัน <code>typecheck</code> แยก ไม่งั้นบั๊กจะโผล่ตอน build</td>
+              <td><span class="b b-pass">เหมาะ</span> สคริปต์ <code>verify</code> ที่ราก บังคับ typecheck ก่อน build อยู่แล้ว ช่องว่างนี้จึงถูกปิดด้วยกระบวนการ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="card" id="s6">
+      <h2><span class="num">6</span> ฐานข้อมูลและ ORM</h2>
+      <div class="tw">
+        <table>
+          <thead><tr><th>เทคโนโลยี</th><th>ข้อดี</th><th>ข้อเสีย / ข้อจำกัด</th><th>ความเหมาะสม</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="group">PostgreSQL</td>
+              <td class="pro">รองรับ transaction และ foreign key อย่างเคร่งครัด · มี CHECK constraint, trigger, partial unique index ที่ระบบนี้ใช้จริง · ชนิดข้อมูลครบ (enum, JSON, numeric ที่ไม่เพี้ยน) · โอเพนซอร์สและฟรี</td>
+              <td class="con">ตั้งค่าและปรับจูนยากกว่า MySQL เล็กน้อย · ต้องเข้าใจ connection pooling เมื่อโฮสต์แบบ serverless · เครื่องมือ GUI ไม่แพร่หลายเท่า</td>
+              <td><span class="b b-pass">เหมาะมาก</span> ความถูกต้องของคะแนนคือหัวใจ (H1) — การบังคับ <code>score ≤ maxScore</code> และ “LEAD ไม่เกิน 1 คนต่อวิชา” ที่ระดับฐานข้อมูล คือสิ่งที่ MySQL รุ่นเก่าทำได้ไม่ครบ</td>
+            </tr>
+            <tr>
+              <td class="group">Supabase (โฮสต์ Postgres)</td>
+              <td class="pro">ได้ Postgres จริงพร้อมใช้โดยไม่ต้องดูแลเซิร์ฟเวอร์ · มีแดชบอร์ด สำรองข้อมูล และ connection string สองแบบ (pooled/direct) ที่ Prisma ต้องใช้ · มีระดับใช้งานฟรีที่พอสำหรับโครงงาน</td>
+              <td class="con">ผูกกับผู้ให้บริการภายนอกและต้องมีอินเทอร์เน็ต · โครงการฟรีถูกพักการทำงานเมื่อไม่ใช้งานนาน ทำให้คำขอแรกช้า (กระทบการวัด NFR-01 ถ้าไม่วอร์มก่อน) · ข้อมูลอยู่นอกประเทศ</td>
+              <td><span class="b b-info">เหมาะ (มีเงื่อนไข)</span> เหมาะกับช่วงพัฒนาและนำเสนอ แต่ถ้าคณะนำไปใช้จริงกับข้อมูลนักศึกษา ควรย้ายไปโฮสต์ภายในสถาบัน — ควรระบุไว้เป็นข้อเสนอแนะในบทที่ 5</td>
+            </tr>
+            <tr>
+              <td class="group">Prisma ORM 6</td>
+              <td class="pro">ไฟล์ schema เดียวเป็น source of truth ของโครงสร้างข้อมูล · query แบบ type-safe ทั้งหมด · migration มีประวัติชัดเจน ย้อนดูได้ · <code>prisma studio</code> ช่วยตรวจข้อมูลตอนพัฒนา · แก้ปัญหา N+1 ได้ด้วย <code>include</code>/<code>select</code></td>
+              <td class="con">เขียน CHECK constraint และ trigger ในไฟล์ schema ไม่ได้ ต้องเขียน SQL แยก · query ที่ซับซ้อนมากอาจต้องกลับไปใช้ raw SQL · เพิ่มขั้นตอน <code>prisma generate</code> ในทุกที่ที่ build · เอนจินเป็นไบนารีทำให้ image ใหญ่ขึ้น</td>
+              <td><span class="b b-pass">เหมาะ</span> ข้อจำกัดถูกรับมือแล้วด้วย migration <code>0002</code> และกฎห้ามใช้ <code>db push</code> ซึ่งบันทึกไว้ในหัวไฟล์ schema แล้ว</td>
+            </tr>
+            <tr>
+              <td class="group">Raw SQL migration (0002)</td>
+              <td class="pro">ทำให้กฎทางธุรกิจที่สำคัญที่สุดถูกบังคับที่ชั้นล่างสุด แม้แอปจะมีบั๊กก็ยังกันข้อมูลเสียได้ · เป็นหลักฐานเชิงวิศวกรรมที่ดีเวลานำเสนอ</td>
+              <td class="con">ถูกลบเงียบ ๆ ได้ถ้าใช้ <code>prisma db push</code> · ต้องดูแล SQL ด้วยมือและทดสอบเอง · ผู้ที่มาสานต่อต้องรู้ว่ามีอยู่</td>
+              <td><span class="b b-info">เหมาะ (ต้องระวัง)</span> คุ้มค่ากับความเสี่ยง แต่ต้องเขียน unit test ครอบและระบุข้อห้ามให้ชัดในคู่มือผู้พัฒนา</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="card" id="s7">
+      <h2><span class="num">7</span> ความปลอดภัย</h2>
+      <div class="tw">
+        <table>
+          <thead><tr><th>เทคโนโลยี</th><th>ข้อดี</th><th>ข้อเสีย / ข้อจำกัด</th><th>ความเหมาะสม</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="group">argon2 (Argon2id)</td>
+              <td class="pro">ชนะ Password Hashing Competition ปี 2015 และเป็นคำแนะนำอันดับหนึ่งของ OWASP ปัจจุบัน · ต้านการเดารหัสด้วย GPU ได้ดีกว่า bcrypt เพราะกิน memory · ปรับ cost ได้ตามฮาร์ดแวร์</td>
+              <td class="con">เป็น native module ต้องคอมไพล์ตอนติดตั้ง ทำให้ CI/Docker ช้าลงและอาจพังบนบางแพลตฟอร์ม · ใช้ RAM ต่อการแฮชสูงกว่า bcrypt</td>
+              <td><span class="b b-pass">เหมาะมาก</span> ข้อประเมิน 4.1 และ NFR-05 ต้องการหลักฐานว่ารหัสผ่านไม่ได้เก็บแบบอ่อนแอ — Argon2id คือคำตอบที่อธิบายต่อกรรมการได้ง่ายที่สุด</td>
+            </tr>
+            <tr>
+              <td class="group">jose (JWT)</td>
+              <td class="pro">รองรับมาตรฐาน JOSE ครบและใช้ Web Crypto API · เป็น ESM สมัยใหม่ ทำงานได้ทั้ง Node และ edge runtime · ยังได้รับการดูแลต่อเนื่อง ต่างจาก <code>jsonwebtoken</code> ที่นิ่งไปนาน</td>
+              <td class="con">API ละเอียดกว่าและตัวอย่างน้อยกว่า <code>jsonwebtoken</code> · JWT โดยธรรมชาติเพิกถอนกลางคันไม่ได้จนกว่าจะหมดอายุ · ถ้าเก็บ token ผิดที่ (localStorage) จะเสี่ยง XSS</td>
+              <td><span class="b b-info">เหมาะ (มีเงื่อนไข)</span> อายุ access token 15 นาที + refresh 7 วัน ลดผลของการเพิกถอนไม่ได้ แต่ควรระบุวิธีเก็บ token และการ logout ให้ชัดในเอกสารความปลอดภัย</td>
+            </tr>
+            <tr>
+              <td class="group">RBAC + course-scope guard</td>
+              <td class="pro">ตอบคำถามการเข้าถึงด้วยเพียงสองข้อ (บทบาทอะไร · สอนวิชาไหน) ทำให้ตรวจสอบและทดสอบง่าย · ตอบ 404 แทน 403 จึงไม่รั่วข้อมูลว่ามีรายวิชานั้นอยู่จริง</td>
+              <td class="con">ตรรกะกระจายอยู่ใน middleware และ service ต้องระวังไม่ให้ลืมป้องกันบาง endpoint · ยังไม่มีสิทธิ์ระดับละเอียด (per-field)</td>
+              <td><span class="b b-pass">เหมาะ</span> ตรงกับ NFR-06/07 และข้อประเมิน 4.2/4.3 โดยตรง — และควรมีเทสต์ครอบทุก endpoint เพื่อกันการลืม</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="card" id="s8">
+      <h2><span class="num">8</span> เครื่องมือพัฒนาและ CI/CD</h2>
+      <div class="tw">
+        <table>
+          <thead><tr><th>เทคโนโลยี</th><th>ข้อดี</th><th>ข้อเสีย / ข้อจำกัด</th><th>ความเหมาะสม</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="group">Vitest 3 + coverage-v8</td>
+              <td class="pro">ใช้ค่าคอนฟิกร่วมกับ Vite จึงตั้งค่าน้อย · เร็วมากและ watch mode ลื่น · API เข้ากันได้กับ Jest ทำให้หาตัวอย่างง่าย · รายงาน coverage เป็นหลักฐานประกอบ NFR-14 ได้ทันที</td>
+              <td class="con">ระบบนิเวศเล็กกว่า Jest · ปลั๊กอินบางตัวยังไม่รองรับ · ตัวเลข coverage สูงไม่ได้แปลว่าทดสอบครบเชิงตรรกะ</td>
+              <td><span class="b b-pass">เหมาะมาก</span> H1 ต้องการหลักฐานว่าสูตรคำนวณถูกต้องรวมกรณีขอบ — unit test คือหลักฐานที่ตรวจซ้ำได้ ไม่ใช่คำกล่าวอ้าง</td>
+            </tr>
+            <tr>
+              <td class="group">ESLint 10 + typescript-eslint + Prettier</td>
+              <td class="pro">จับรูปแบบที่เสี่ยงผิดตั้งแต่ก่อนรัน · กฎ react-hooks กัน bug ที่หายาก · Prettier ยุติการถกเรื่องรูปแบบโค้ด · ตรวจอัตโนมัติใน CI</td>
+              <td class="con">ตั้งค่าให้ทั้งสองตัวไม่ทะเลาะกันต้องใช้เวลา · กฎที่เข้มเกินไปทำให้เสียเวลากับเรื่องไม่สำคัญ</td>
+              <td><span class="b b-pass">เหมาะ</span> ผู้พัฒนาคนเดียวไม่มีคนรีวิว — เครื่องมืออัตโนมัติทำหน้าที่ผู้รีวิวคนที่สองแทน</td>
+            </tr>
+            <tr>
+              <td class="group">GitHub Actions (CI)</td>
+              <td class="pro">รัน format → lint → typecheck → test → build ทุก PR โดยไม่ต้องจำ · ยกเลิกงานที่ถูกแทนที่อัตโนมัติเพื่อประหยัดเวลา · ฟรีสำหรับ repo สาธารณะ · เป็นหลักฐานกระบวนการพัฒนาที่ใส่ในเล่มได้</td>
+              <td class="con">โควตานาทีจำกัดสำหรับ repo ส่วนตัว · ผูกกับ GitHub · ต้องใส่ค่า env หลอกเพื่อให้ <code>prisma generate</code> ผ่าน ซึ่งอาจสับสนสำหรับผู้อ่านใหม่</td>
+              <td><span class="b b-pass">เหมาะ</span> ทำให้ไม่มีโค้ดที่คอมไพล์ไม่ผ่านหรือเทสต์ตกหลุดเข้า main ได้เลย</td>
+            </tr>
+            <tr>
+              <td class="group">Docker Compose (dev)</td>
+              <td class="pro">รันเหมือนกันทุกเครื่อง ลดปัญหา “เครื่องผมรันได้” · เตรียมทางสำหรับการส่งมอบให้คณะในอนาคต</td>
+              <td class="con">กินทรัพยากรเครื่องมากและ hot reload ช้ากว่ารันตรง ๆ (โดยเฉพาะบน Windows) · ต้องดูแล Dockerfile เพิ่ม · compose ปัจจุบันไม่ได้รวมบริการฐานข้อมูล จึงยังต้องพึ่ง Supabase</td>
+              <td><span class="b b-info">เหมาะ (เสริม)</span> มีไว้ดีเวลาสาธิตหรือส่งมอบ แต่ระหว่างพัฒนาจริงการรัน <code>npm run dev</code> ตรง ๆ ยังเร็วกว่า</td>
+            </tr>
+            <tr>
+              <td class="group">สคริปต์เอกสาร (docx, plan-csv)</td>
+              <td class="pro">สร้างเอกสารบทที่ 2 และแผนงานจาก Markdown ที่เป็น source of truth อัตโนมัติ · แก้ที่เดียวแล้วเอกสารตรงกันเสมอ ลดงานคัดลอกด้วยมือ</td>
+              <td class="con">รูปแบบเอกสารที่ได้อาจยังต้องจัดหน้าเพิ่มให้ตรงข้อกำหนดรูปเล่ม · เป็นสคริปต์เฉพาะกิจที่ต้องดูแลเอง</td>
+              <td><span class="b b-pass">เหมาะ</span> ตรงกับปัญหาจริงของงานปริญญานิพนธ์ที่เอกสารกับโค้ดมักไม่ตรงกัน</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="card" id="s9">
+      <h2><span class="num">9</span> ทำไมไม่เลือกทางเลือกอื่น</h2>
+      <p>ตารางนี้ใช้ตอบคำถามกรรมการว่า “ทำไมถึงเลือกตัวนี้” ได้โดยตรง</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>ประเด็น</th><th>ที่เลือกใช้</th><th>ทางเลือกอื่น</th><th>เหตุผลที่ตัดสินใจ</th></tr></thead>
+          <tbody>
+            <tr><td class="group">HTTP framework</td><td>Fastify 5</td><td>Express 5 · NestJS · Hono</td><td>Express ช้ากว่าและไม่มี validation/logger ในตัว · NestJS มีโครงสร้างหนักเกินไปสำหรับผู้พัฒนาคนเดียว · Fastify ได้ความเร็วและ TS support โดยไม่ต้องเรียน DI ทั้งระบบ</td></tr>
+            <tr><td class="group">ORM</td><td>Prisma 6</td><td>TypeORM · Drizzle · SQL ล้วน</td><td>Prisma ให้ type safety และประวัติ migration ที่ดีที่สุด · TypeORM มีปัญหาความเสถียรของ migration · Drizzle ใหม่และเอกสารน้อยกว่า · SQL ล้วนเสี่ยงพิมพ์ผิดและไม่มี type</td></tr>
+            <tr><td class="group">ฐานข้อมูล</td><td>PostgreSQL</td><td>MySQL · SQLite · MongoDB</td><td>ข้อมูลเป็นเชิงสัมพันธ์ชัดเจน (วิชา–CLO–กิจกรรม–คะแนน) จึงไม่เหมาะกับ MongoDB · SQLite ไม่เหมาะกับหลายผู้ใช้พร้อมกัน · Postgres รองรับ CHECK/trigger/partial index ที่ระบบนี้ใช้จริง</td></tr>
+            <tr><td class="group">Server state</td><td>TanStack Query</td><td>Redux Toolkit + RTK Query · SWR · fetch เอง</td><td>Redux เพิ่ม boilerplate มากเกินความจำเป็นเพราะ client-state มีน้อย · การ fetch เองทำให้ต้องเขียน cache/refetch เอง ซึ่งเป็นแหล่งบั๊ก</td></tr>
+            <tr><td class="group">Client state</td><td>Zustand</td><td>Redux · Context API</td><td>Context ทำให้ re-render กว้างเมื่อค่าเปลี่ยนบ่อย · Zustand เล็กกว่าและตรงจุดสำหรับ auth store เดียว</td></tr>
+            <tr><td class="group">Build tool</td><td>Vite 7</td><td>Create React App · Next.js · webpack</td><td>CRA เลิกดูแลแล้ว · Next.js ให้ SSR ที่ระบบหลังบ้านภายในองค์กรไม่ต้องใช้ และเพิ่มความซับซ้อนของการ deploy · webpack ตั้งค่ายากกว่ามาก</td></tr>
+            <tr><td class="group">Validation</td><td>Zod 4</td><td>Joi · Yup · class-validator</td><td>Zod เท่านั้นที่ให้ TypeScript type จาก schema เดียวกันได้แนบสนิท ทำให้ไม่ต้องประกาศชนิดข้อมูลซ้ำสองที่</td></tr>
+            <tr><td class="group">Password hashing</td><td>argon2</td><td>bcrypt · scrypt · PBKDF2</td><td>bcrypt จำกัดรหัสผ่านที่ 72 ไบต์และต้าน GPU ได้ด้อยกว่า · Argon2id เป็นคำแนะนำปัจจุบันของ OWASP</td></tr>
+            <tr><td class="group">JWT library</td><td>jose 6</td><td>jsonwebtoken</td><td><code>jsonwebtoken</code> ยังเป็น CommonJS และอัปเดตช้า · jose รองรับ ESM/Web Crypto ตรงกับโปรเจกต์ที่เป็น <code>"type": "module"</code></td></tr>
+            <tr><td class="group">CSS</td><td>Tailwind 4</td><td>CSS Modules · styled-components · MUI</td><td>MUI มาพร้อมภาษาออกแบบของตัวเองซึ่งขัดกับ Verdure Design System ที่ทำไว้ · styled-components มีต้นทุนตอนรัน · Tailwind ผูกกับ design token ได้ตรงที่สุด</td></tr>
+            <tr><td class="group">Testing</td><td>Vitest 3</td><td>Jest · Mocha</td><td>Jest ต้องตั้งค่า ESM/TS เพิ่มอีกชั้น · Vitest ใช้คอนฟิกเดียวกับ Vite และเร็วกว่ามาก</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="card" id="s10">
+      <h2><span class="num">10</span> ความเสี่ยงของ stack และการรับมือ</h2>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="c">#</th><th>ความเสี่ยง</th><th class="c">ระดับ</th><th>แนวทางรับมือที่ทำแล้ว / ควรทำ</th></tr></thead>
+          <tbody>
+            <tr><td class="c">R-1</td><td><code>prisma db push</code> ลบ trigger และ CHECK constraint เงียบ ๆ ทำให้ข้อมูลเสียเข้าฐานได้</td><td class="c"><span class="b b-dang">สูง</span></td><td><span class="b b-pass">ทำแล้ว</span> ประกาศข้อห้ามไว้ในหัวไฟล์ <code>schema.prisma</code> · ควรเพิ่มเทสต์ที่ยืนยันว่า constraint ยังอยู่หลัง migrate</td></tr>
+            <tr><td class="c">R-2</td><td>โครงการ Supabase ฟรีถูกพักการทำงาน ทำให้คำขอแรกช้าและตัวเลข NFR-01 เพี้ยน</td><td class="c"><span class="b b-warn">กลาง</span></td><td>วอร์มระบบก่อนวัดผลและก่อนสาธิต · รายงานว่าวัดในสภาวะใด · เสนอย้ายไปโฮสต์ในสถาบันในบทที่ 5</td></tr>
+            <tr><td class="c">R-3</td><td>SheetJS ติดตั้งจาก URL ของ CDN ไม่ใช่ npm registry — ถ้า URL ล่มจะติดตั้งโปรเจกต์ใหม่ไม่ได้</td><td class="c"><span class="b b-warn">กลาง</span></td><td>pin เวอร์ชันไว้แล้ว (0.20.3) · ควรเก็บสำเนา tarball ไว้ และระบุขั้นตอนสำรองในคู่มือติดตั้ง</td></tr>
+            <tr><td class="c">R-4</td><td>argon2 เป็น native module — อาจคอมไพล์ไม่ผ่านบนเครื่องหรือ image ที่ไม่มี build tools</td><td class="c"><span class="b b-warn">กลาง</span></td><td>CI ใช้ ubuntu-latest ที่คอมไพล์ผ่าน · ระบุเวอร์ชัน Node ใน <code>.nvmrc</code> · Dockerfile ต้องมี build dependencies</td></tr>
+            <tr><td class="c">R-5</td><td>React 19 / Tailwind 4 / ESLint 10 เป็นรุ่นใหม่มาก ไลบรารีรอบข้างอาจยังไม่รองรับเต็มที่</td><td class="c"><span class="b b-info">ต่ำ–กลาง</span></td><td>ล็อกเวอร์ชันด้วย <code>package-lock.json</code> · CI จับปัญหาความเข้ากันได้ทันทีที่อัปเกรด · หลีกเลี่ยงการอัปเกรดใหญ่ช่วงใกล้สอบ</td></tr>
+            <tr><td class="c">R-6</td><td>JWT เพิกถอนกลางคันไม่ได้ — ถ้า token รั่วจะใช้ได้จนหมดอายุ</td><td class="c"><span class="b b-info">ต่ำ</span></td><td>อายุ access token สั้น (15 นาที) · ควรเก็บ refresh token ใน httpOnly cookie และมีรายการเพิกถอนถ้าจะใช้งานจริงระยะยาว</td></tr>
+            <tr><td class="c">R-7</td><td>ตรรกะสิทธิ์กระจายในหลาย middleware อาจลืมป้องกันบาง endpoint</td><td class="c"><span class="b b-warn">กลาง</span></td><td>รวมไว้ที่ <code>authorization.service.ts</code> · ควรมีเทสต์ที่วนยิงทุก route ด้วยผู้ใช้ที่ไม่มีสิทธิ์ เพื่อพิสูจน์ NFR-07 อย่างเป็นระบบ</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="card" id="s11">
+      <h2><span class="num">11</span> สรุปความเหมาะสมโดยรวม</h2>
+      <p class="lead">เมื่อพิจารณาเทียบกับข้อจำกัดจริงของโครงงาน — <strong>ผู้พัฒนาคนเดียว · กรอบเวลาหนึ่งภาคการศึกษา · ต้องรายงานตัวเลขประสิทธิภาพและความถูกต้อง 100%</strong> — stack ชุดนี้มีความเหมาะสมในระดับสูง โดยมีเหตุผลหลัก 4 ข้อ</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>เกณฑ์พิจารณา</th><th>คำอธิบาย</th><th class="c">ผล</th></tr></thead>
+          <tbody>
+            <tr><td class="group">1. ความถูกต้องของข้อมูล</td><td>TypeScript strict + Zod ที่ขอบระบบ + CHECK/trigger ที่ฐานข้อมูล ทำให้มีการป้องกันสามชั้น สอดคล้องโดยตรงกับ H1 ที่ต้องถูก 100%</td><td class="c"><span class="b b-pass">สูงมาก</span></td></tr>
+            <tr><td class="group">2. ความเร็วในการพัฒนา</td><td>ภาษาเดียวทั้งระบบ · Vite HMR · Prisma generate type ให้เอง · monorepo สคริปต์เดียว — ลดเวลาที่เสียไปกับงานประกอบร่าง</td><td class="c"><span class="b b-pass">สูง</span></td></tr>
+            <tr><td class="group">3. ประสิทธิภาพตามเกณฑ์ NFR</td><td>Fastify + Postgres + Prisma ที่ใช้ <code>include</code> อย่างถูกวิธี เพียงพอกับเป้าหมาย &lt; 1–2 วินาที ที่ 200 นักศึกษา อย่างมีระยะเผื่อ</td><td class="c"><span class="b b-pass">สูง</span></td></tr>
+            <tr><td class="group">4. ความยั่งยืน / ส่งต่อได้</td><td>ทุกอย่างเป็นโอเพนซอร์สและเป็นที่นิยม หาคนสานต่อได้ · CI และเอกสารอัตโนมัติทำให้ผู้รับช่วงเข้าใจระบบเร็ว</td><td class="c"><span class="b b-info">ดี</span></td></tr>
+            <tr><td class="group">ข้อจำกัดที่ต้องยอมรับ</td><td>พึ่งบริการภายนอก (Supabase, CDN ของ SheetJS) · ใช้ไลบรารีรุ่นใหม่มากซึ่งมีความเสี่ยงด้านความเข้ากันได้ · Fastify มีตัวอย่างภาษาไทยน้อย</td><td class="c"><span class="b b-warn">รับได้</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note pass">
+        <span class="t">ข้อสรุปสำหรับเขียนลงเล่ม</span>
+        <p>เทคโนโลยีที่เลือกใช้ทั้งหมดเป็นซอฟต์แวร์โอเพนซอร์สที่ไม่มีค่าลิขสิทธิ์ ใช้ภาษา TypeScript ภาษาเดียวตลอดทั้งระบบ และมีกลไกตรวจสอบความถูกต้องของข้อมูลถึงสามชั้น (ชนิดข้อมูลตอนคอมไพล์ · schema ตอนรับข้อมูล · constraint ที่ฐานข้อมูล) จึงเหมาะสมกับระบบที่มีความถูกต้องของคะแนนเป็นข้อกำหนดสำคัญที่สุด และอยู่ในวิสัยที่ผู้พัฒนาคนเดียวดูแลได้จริงภายในกรอบเวลาของโครงงาน</p>
+      </div>
+    </section>
+
+    <footer>
+      สำรวจจากไฟล์จริงในที่เก็บโค้ด ณ 2026-08-09 — เมื่อ <code>package.json</code> เปลี่ยน ให้ปรับเอกสารนี้ตาม<br>
+      CMAS · CLO System · Verdure Design System v1.4.0
+    </footer>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -6,6 +6,42 @@
 --               (ค.อ.บ. เทคโนโลยีคอมพิวเตอร์), หลักสูตรปรับปรุง พ.ศ. 2567
 --               สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง (KMITL)
 --
+-- ============================================================================
+-- THIS FILE IS NOT THE APPLICATION'S DDL. It is a document-modelling artifact:
+-- a full institutional schema derived from the printed curriculum, kept for
+-- reference and for the eventual faculty/department/program hierarchy.
+--
+-- The app's schema is `database/schema.prisma`, applied via
+-- `database/migrations/`. Naming differs ON PURPOSE — do not "fix" the
+-- divergence:
+--
+--     this file          app schema
+--     ---------          ----------
+--     name_th            name        (unqualified = Thai; the UI is Thai-only
+--                                     per SRS OI-07, so the column every query
+--                                     sorts and searches carries no suffix)
+--     name_en            nameEn      (nullable in the app: a course opened
+--                                     mid-term has no approved English name.
+--                                     NOT NULL here is correct only because
+--                                     every row here is transcribed from a
+--                                     bilingual PDF)
+--
+-- SCOPE ALSO DIFFERS, and as of 2026-08-04 it differs a lot more than it used
+-- to. This file models the full institutional hierarchy
+-- (institutions -> faculties -> departments -> programs -> curriculum
+-- versions -> courses). The APP no longer has any of those levels: task 2.7
+-- made it SINGLE-TENANT and deleted Institution, Membership, Curriculum and
+-- CurriculumCourse outright. The app's hierarchy now starts and ends at
+-- `Course` — 11 tables.
+--
+-- That is not drift to be reconciled. This file is the reference model for the
+-- day PLO / มคอ.2 mapping comes into scope; the app schema is what v1 actually
+-- implements. Adding these levels back is NOT purely additive any more: it
+-- means creating the parent tables and BACKFILLING a program key onto every
+-- existing Course row. Recorded as known technical debt in
+-- mysql/cmas_app_production_v3.sql.
+-- ============================================================================
+--
 -- Design notes:
 --  - All primary keys are BIGSERIAL for simplicity; swap for UUID if the
 --    system needs to merge data across multiple institutions/DBs.

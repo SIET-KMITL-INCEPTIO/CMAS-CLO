@@ -1,3 +1,15 @@
+/**
+ * Route registration.
+ *
+ * EVERY authenticated route runs authMiddleware (verifies the token AND
+ * re-reads the live User row), then rbac() where a specific role is required.
+ * Any route that takes a :courseId must additionally call assertCourseAccess()
+ * from services/authorization.service.ts before reading or writing anything —
+ * single-tenant means course scope is the only data boundary left, so skipping
+ * it exposes a colleague's course rather than merely a colleague's view.
+ *
+ * /health is the only legitimately unauthenticated route.
+ */
 import type { FastifyInstance } from "fastify"
 import { healthRoutes } from "./health.route.js"
 // import { authRoutes } from "./auth.route.js"

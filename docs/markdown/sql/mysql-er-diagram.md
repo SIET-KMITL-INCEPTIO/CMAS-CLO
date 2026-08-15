@@ -5,16 +5,22 @@ Companion doc for the MySQL-dialect DDL used to generate **Entity–Relationship
 [`mysql/`](./mysql/); this page explains what they contain and how the
 entities relate.
 
-See also: [`database-schema.md`](./database-schema.md) (PostgreSQL enterprise
-schema narrative) · [`schema.sql`](./schema.sql) (PostgreSQL source) ·
+See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
+[`schema.sql`](./schema.sql) (PostgreSQL full institutional reference model) ·
 [`../../../database/schema.prisma`](../../../database/schema.prisma) (app source of truth).
+
+> **Updated 2026-08-04 — the app model is now SINGLE-TENANT.** `Institution`,
+> `Membership`, `Curriculum` and `CurriculumCourse` were deleted; `Course` is the
+> root and carries the five columns `CurriculumCourse` used to hold. The v3 files
+> below already reflect this.
 
 ## Files
 
 | File | Model | Size | Translated from |
 |---|---|---|---|
-| [`mysql/cmas_enterprise_mysql.sql`](./mysql/cmas_enterprise_mysql.sql) | Full institutional design | 36 tables, 4 views, 59 FKs | `schema.sql` (PostgreSQL 14+) |
-| [`mysql/cmas_app_mysql.sql`](./mysql/cmas_app_mysql.sql) | Live application schema | 11 tables, 10 FKs | `database/schema.prisma` (Prisma) |
+| [`mysql/cmas_enterprise_mysql.sql`](./mysql/cmas_enterprise_mysql.sql) | Full institutional design — **reference only** | 36 tables, 4 views, 59 FKs | `schema.sql` (PostgreSQL 14+) |
+| [`mysql/cmas_app_mysql_v3.sql`](./mysql/cmas_app_mysql_v3.sql) | Live app schema — diagramming mirror | 11 tables, 14 FKs | `database/schema.prisma` (Prisma) |
+| [`mysql/cmas_app_production_v3.sql`](./mysql/cmas_app_production_v3.sql) | Live app schema — executable, hardened | 11 tables, CHECKs, triggers, views | `database/migrations/` |
 | [`mysql/README.md`](./mysql/README.md) | How-to | — | Workbench steps + translation table |
 
 **Requires MySQL 8.0.16+** (for `CHECK`, expression defaults, and the stored
@@ -85,9 +91,8 @@ The 11-table app diagram is the working system today (React + Fastify + Prisma).
 
 | Cluster | Tables | Relationships |
 |---|---|---|
-| **Identity** | `User` (role ADMIN/INSTRUCTOR) | N─N `Course` via `CourseInstructor` (co-teaching) |
-| **Curriculum template** | `Curriculum` 1─N `CurriculumCourse` | cloneable curricula; `Curriculum` self-refs via `clonedFrom` |
-| **Live course** | `Course` 1─N `CLO` 1─N `BehavioralObjective` | per-offering outcomes |
+| **Identity** | `User` (`role` = ADMIN/INSTRUCTOR, a plain column) | N─N `Course` via `CourseInstructor` (co-teaching) |
+| **Live course** | `Course` 1─N `CLO` 1─N `BehavioralObjective` | `Course` is the ROOT — nothing sits above it. It carries `credits`, the three hour columns and `gradingType`, which moved up from the deleted `CurriculumCourse` |
 | **Assessment** | `Course` 1─N `Activity`; `Activity` N─N `CLO` via `AssessmentCriteria` | weighted CLO tagging per activity |
 | **Enrollment & scoring** | `Course` 1─N `Student`; `Student` N─N `Activity` via `Score` | one score per (student, activity) |
 | **Audit** | `ScoreUploadLog` | FKs to `Course` + `User` in the production DDL |
@@ -99,16 +104,18 @@ User N─N Course     (via CourseInstructor, role = LEAD | CO | ASSISTANT)
 Course 1─N CLO 1─N BehavioralObjective
 Course 1─N Activity ;  Activity N─N CLO   (via AssessmentCriteria)
 Course 1─N Student  ;  Student  N─N Activity (via Score, one per student+activity)
-Curriculum 1─N CurriculumCourse ─0..1─> Course
-Curriculum ─0..1─> Curriculum   (clonedFrom, self-referencing)
+AssessmentCriteria N─N BehavioralObjective (via ObjectiveAssessment, traceability only)
+Course 1─N ScoreUploadLog N─1 User
 ```
 
-> **Two files, two purposes.** [`mysql/cmas_app_mysql.sql`](./mysql/cmas_app_mysql.sql)
-> is the 11-table diagramming mirror of Prisma. The hardened 12-table DDL that
-> adds `CourseInstructor`, cascade rules, CHECK constraints, triggers and views
-> is [`mysql/cmas_app_production.sql`](./mysql/cmas_app_production.sql).
-> Existing databases migrate via
-> [`../migrations/001-instructors-many-to-many.sql`](../migrations/001-instructors-many-to-many.sql).
+No self-referencing relationship survives in v3: `Curriculum.clonedFrom` was the
+only one, and it went with the table.
+
+> **Two files, two purposes.** [`mysql/cmas_app_mysql_v3.sql`](./mysql/cmas_app_mysql_v3.sql)
+> is the diagramming mirror — tables and FKs only, so Workbench imports cleanly.
+> [`mysql/cmas_app_production_v3.sql`](./mysql/cmas_app_production_v3.sql) is the
+> executable one: cascade rules, CHECK constraints, the LEAD generated column,
+> triggers and reporting views. Both are 11 tables and both are single-tenant.
 
 ---
 
@@ -127,8 +134,11 @@ Postgres/Prisma → MySQL 8 highlights (full table in
 - `plo_attainment_results.cohort_label` became `NOT NULL DEFAULT ''` so its
   unique key keeps the one-row-per-cohort rule (MySQL treats multiple NULLs as
   distinct).
-- `ScoreUploadLog` has no FKs — `courseId`/`uploadedBy` are plain strings in the
-  Prisma model.
+- `ScoreUploadLog` DOES have FKs in v3 (`courseId` → `Course`, `uploadedBy` →
+  `User` with RESTRICT): an audit trail that loses its actor is not an audit trail.
+- The `AcademicYearEra` ENUM ('BE'/'CE') no longer appears anywhere — it was a
+  column on the deleted `Institution`. `Course.year` is written in whatever era
+  the faculty uses (2568), now an app-level constant rather than per-row data.
 
 > **Not yet loaded against a live MySQL server** in this environment (no local
 > MySQL/Docker daemon). Verified offline: all 36 source tables present, FK

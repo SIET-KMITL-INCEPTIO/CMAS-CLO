@@ -1,0 +1,1305 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>บทที่ 2 — หลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง · CMAS Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">CMAS Docs<span class="brand-sub">v2</span></a>
+<p class="sidebar-tagline">เอกสารโครงงาน CLO System — single source of truth</p>
+<input class="nav-search" type="search" placeholder="ค้นหาเอกสาร…" oninput="filterNav(this.value)">
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">เอกสารพัฒนา (Dev)</div><ul><li><a href="../dev/dev.html"><span class="nav-dot ref"></span>Technical Standard &amp; Workflow</a></li><li><a href="../dev/srs.html"><span class="nav-dot ref"></span>Software Requirements Specification (SRS)</a></li><li><a href="../dev/objectives-hypotheses-evaluation.html"><span class="nav-dot draft"></span>วัตถุประสงค์ · สมมติฐาน · เกณฑ์การประเมิน</a></li><li><a href="../dev/api-design.html"><span class="nav-dot draft"></span>API Design &amp; Endpoint Specification</a></li><li><a href="../dev/dfd.html"><span class="nav-dot ref"></span>แผนภาพกระแสข้อมูล (DFD — Data Flow Diagram) ของระบบ CMAS ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO — Course Learning Outcome)</a></li><li><a href="../dev/features-pages.html"><span class="nav-dot "></span>Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/user-flow.html"><span class="nav-dot draft"></span>User Flow &amp; UX Design — CMAS</a></li><li><a href="../dev/design-system.html"><span class="nav-dot active-status"></span>Verdure Design System</a></li><li><a href="../dev/material.html"><span class="nav-dot active-status"></span>Material Tonal Logic — Design System</a></li><li><a class="active" href="../dev/theory.html"><span class="nav-dot draft"></span>บทที่ 2 — หลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง</a></li><li><a href="../dev/project-plan.html"><span class="nav-dot draft"></span>แผนการดำเนินงานโครงงาน (WBS + Gantt) — CMAS</a></li><li><a href="../dev/thesis-toc.html"><span class="nav-dot draft"></span>สารบัญเล่มโครงงาน (Table of Contents) — CMAS</a></li><li><a href="../dev/progress-report-02.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li><li><a href="../dev/progress-report-02-qa.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li></ul></div><div class="nav-group"><div class="nav-group-title">แผนภาพ (Diagrams)</div><ul><li><a href="../graph/usecase.html"><span class="nav-dot "></span>Use Case Diagram</a></li><li><a href="../graph/tech-stack.html"><span class="nav-dot "></span>Tech Stack</a></li><li><a href="../graph/fishbone-4m.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">ฐานข้อมูล (SQL)</div><ul><li><a href="../sql/schema.html"><span class="nav-dot "></span>โครงสร้างฐานข้อมูล CMAS — 11 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง</a></li><li><a href="../sql/mysql-er-diagram.html"><span class="nav-dot "></span>CMAS — MySQL ER Diagram</a></li><li><a href="../sql/mysql/README.html"><span class="nav-dot "></span>CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/migrations/README.html"><span class="nav-dot "></span>docs/markdown/sql/migrations — historical only</a></li></ul></div><div class="nav-group"><div class="nav-group-title">กติกาทีม (Rules)</div><ul><li><a href="../rule/code-rule.html"><span class="nav-dot "></span>Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html"><span class="nav-dot "></span>Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html"><span class="nav-dot "></span>Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div></nav>
+<p class="nav-empty" id="nav-empty">ไม่พบเอกสารที่ตรงกับคำค้นหา</p>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<div class="doc-meta"><span class="badge badge-draft">Draft</span><span class="badge badge-ref">v2.0 (Draft)</span><div class="desc">คืออะไร — แนวคิดการจัดการศึกษาที่เริ่มต้นจากการกำหนดว่า &quot;ผู้เรียนต้องทำอะไรได้เมื่อจบ&quot;</div></div>
+<h1 id="บทที่-2--หลักการ-ทฤษฎี-และเทคโนโลยีที่เกี่ยวข้อง" tabindex="-1"><a class="header-anchor" href="#บทที่-2--หลักการ-ทฤษฎี-และเทคโนโลยีที่เกี่ยวข้อง"><span>บทที่ 2 — หลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง</span></a></h1>
+<p>See also: <a href="./srs.html">srs</a> · <a href="./objectives-hypotheses-evaluation.html">objectives-hypotheses-evaluation</a> · <a href="./dev.html">dev</a> · <a href="./dfd.html">dfd</a> · <a href="../sql/schema.html">schema</a> · <a href="./project-plan.html">project-plan</a></p>
+<blockquote>
+<p><strong>Version:</strong> 2.0 (Draft) | <strong>จัดทำ:</strong> 2026-08-04 | <strong>ผูกกับงาน:</strong> 2.4 ใน <a href="./project-plan.html">project-plan</a> · บทที่ 2 (งาน 5.8.1)
+<strong>v2.0:</strong> เพิ่ม §2.2 ครบชุดเครื่องมือวิเคราะห์และออกแบบ — SDLC · Use Case (UML) · DFD ·
+ER Diagram · UX/UI Design — และแก้ทั้งบทให้เป็น <strong>single-tenant</strong> ตามการตัดสินใจ 2026-08-04
+<strong>ที่มาของข้อมูลเทคโนโลยี:</strong> เลขเวอร์ชันทุกตัวใน §2.3 อ่านจาก <code>package.json</code> จริงของโปรเจกต์
+ณ 4 ส.ค. 2026 ไม่ได้คัดจากเอกสารเก่า — ถ้าอัปเกรด dependency ต้องกลับมาแก้ตารางนี้</p>
+<p>⚠ <strong>สิ่งที่ยังต้องเติมก่อนส่งเล่ม:</strong> อ้างอิงฝั่งไทย (ประกาศ TQF/มคอ., มคอ.2 ของหลักสูตร ค.อ.บ.
+สาขาวิชาเทคโนโลยีคอมพิวเตอร์ ปรับปรุง พ.ศ. 2567) ต้องใส่เลขที่ประกาศและปีจากตัวเอกสารจริง
+ผู้เขียนยังไม่ได้ตรวจสอบฉบับจริง จึงเว้นไว้เป็น <code>[ต้องเติม]</code> ห้ามเดา</p>
+</blockquote>
+<hr>
+<h2 id="21-ทฤษฎีด้านการวัดและประเมินผลลัพธ์การเรียนรู้" tabindex="-1"><a class="header-anchor" href="#21-ทฤษฎีด้านการวัดและประเมินผลลัพธ์การเรียนรู้"><span>2.1 ทฤษฎีด้านการวัดและประเมินผลลัพธ์การเรียนรู้</span></a></h2>
+<h3 id="211-การจัดการศึกษาที่มุ่งผลลัพธ์-outcome-based-education-obe" tabindex="-1"><a class="header-anchor" href="#211-การจัดการศึกษาที่มุ่งผลลัพธ์-outcome-based-education-obe"><span>2.1.1 การจัดการศึกษาที่มุ่งผลลัพธ์ (Outcome-Based Education: OBE)</span></a></h3>
+<p><strong>คืออะไร</strong> — แนวคิดการจัดการศึกษาที่เริ่มต้นจากการกำหนดว่า &quot;ผู้เรียนต้องทำอะไรได้เมื่อจบ&quot;
+ก่อน แล้วจึงย้อนกลับไปออกแบบเนื้อหา วิธีสอน และวิธีวัดผลให้สอดคล้องกัน (Spady, 1994)
+ต่างจากการจัดการศึกษาแบบเดิมที่เริ่มจากเนื้อหาที่จะสอนแล้วค่อยวัดว่าจำได้เท่าไร</p>
+<p><strong>เกี่ยวข้องกับโครงงานอย่างไร</strong> — โครงงานนี้ตั้งอยู่บนสมมติฐานของ OBE ทั้งหมด กล่าวคือ
+ระบบไม่ได้เก็บ &quot;คะแนนสอบ&quot; เป็นเป้าหมายสุดท้าย แต่เก็บคะแนนกิจกรรมเพื่อ<strong>แปลงกลับ</strong>เป็นคำตอบว่า
+ผู้เรียนบรรลุผลลัพธ์การเรียนรู้ข้อใดบ้าง ซึ่งเป็นเหตุผลที่ฐานข้อมูลไม่มีคอลัมน์ &quot;คะแนน CLO&quot;
+ให้กรอกโดยตรง (ASM-02 ใน <a href="./srs.html">srs</a> §2.3) — คะแนน CLO ต้องเป็นค่า<strong>คำนวณ</strong>เสมอ</p>
+<h3 id="212-ผลลัพธ์การเรียนรู้ระดับหลักสูตรและระดับรายวิชา-plo--clo" tabindex="-1"><a class="header-anchor" href="#212-ผลลัพธ์การเรียนรู้ระดับหลักสูตรและระดับรายวิชา-plo--clo"><span>2.1.2 ผลลัพธ์การเรียนรู้ระดับหลักสูตรและระดับรายวิชา (PLO / CLO)</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ระดับ</th>
+<th>ชื่อ</th>
+<th>ขอบเขต</th>
+<th>สถานะในโครงงานนี้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>หลักสูตร</td>
+<td>PLO (Program Learning Outcomes)</td>
+<td>สิ่งที่บัณฑิตทำได้เมื่อจบหลักสูตร</td>
+<td><strong>อยู่นอกขอบเขต v1</strong></td>
+</tr>
+<tr>
+<td>รายวิชา</td>
+<td>CLO (Course Learning Outcomes)</td>
+<td>สิ่งที่ผู้เรียนทำได้เมื่อจบรายวิชา</td>
+<td><strong>ขอบเขตหลักของระบบ</strong></td>
+</tr>
+<tr>
+<td>หน่วยการเรียน</td>
+<td>จุดประสงค์เชิงพฤติกรรม (Behavioral Objectives)</td>
+<td>พฤติกรรมย่อยที่สังเกต/วัดได้ภายใต้ CLO แต่ละข้อ</td>
+<td>มีในระบบ (<code>BehavioralObjective</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>CLO ต้องเขียนด้วยคำกริยาที่<strong>สังเกตได้และวัดได้</strong> เช่น &quot;ออกแบบ&quot; &quot;วิเคราะห์&quot; &quot;อธิบาย&quot;
+ไม่ใช่คำที่วัดไม่ได้อย่าง &quot;เข้าใจ&quot; หรือ &quot;ตระหนักถึง&quot; ข้อกำหนดนี้เป็นเหตุผลที่ระบบบังคับให้
+CLO ทุกข้อต้องมีเกณฑ์ผ่าน (<code>threshold</code>) เป็นตัวเลขร้อยละ — ถ้า CLO เขียนแบบวัดไม่ได้
+จะกรอก threshold ไม่ได้ตั้งแต่ต้น</p>
+<h3 id="213-การจัดวางแนวให้สอดคล้องเชิงโครงสร้าง-constructive-alignment" tabindex="-1"><a class="header-anchor" href="#213-การจัดวางแนวให้สอดคล้องเชิงโครงสร้าง-constructive-alignment"><span>2.1.3 การจัดวางแนวให้สอดคล้องเชิงโครงสร้าง (Constructive Alignment)</span></a></h3>
+<p><strong>คืออะไร</strong> — หลักการของ Biggs (1996) ที่ระบุว่าผลลัพธ์การเรียนรู้ กิจกรรมการเรียนการสอน
+และวิธีการวัดผล ต้อง <strong>&quot;เรียงตรงแนวเดียวกัน&quot;</strong> ถ้าอย่างใดอย่างหนึ่งหลุดแนว การประเมินจะไม่ได้
+วัดสิ่งที่ตั้งใจจะวัด</p>
+<p><strong>เกี่ยวข้องกับโครงงานอย่างไร</strong> — นี่คือทฤษฎีที่อยู่เบื้องหลังตาราง <code>AssessmentCriteria</code> โดยตรง
+ระบบบังคับให้ทุกกิจกรรมการประเมินต้องถูกผูกกับ CLO อย่างน้อยหนึ่งข้อ พร้อมระบุ<strong>น้ำหนักเป็นตัวเลข</strong>
+ไม่ใช่เพียงเครื่องหมายถูก (FR-44) เพราะการทำเครื่องหมายถูกบอกได้แค่ว่า &quot;เกี่ยวข้อง&quot;
+แต่บอกไม่ได้ว่า &quot;เกี่ยวข้องเท่าไร&quot; ซึ่งไม่พอสำหรับการคำนวณ นอกจากนี้ระบบยังเตือนเมื่อมี CLO
+ที่ไม่มีกิจกรรมใดวัดเลย (FR-48) เพราะนั่นคืออาการของการหลุดแนวที่พบบ่อยที่สุด</p>
+<h3 id="214-การจำแนกจุดมุ่งหมายทางการศึกษา-blooms-taxonomy-ฉบับปรับปรุง" tabindex="-1"><a class="header-anchor" href="#214-การจำแนกจุดมุ่งหมายทางการศึกษา-blooms-taxonomy-ฉบับปรับปรุง"><span>2.1.4 การจำแนกจุดมุ่งหมายทางการศึกษา (Bloom's Taxonomy ฉบับปรับปรุง)</span></a></h3>
+<p><strong>คืออะไร</strong> — การจัดลำดับพฤติกรรมการเรียนรู้ด้านพุทธิพิสัย 6 ระดับ ตามฉบับปรับปรุงของ
+Anderson และ Krathwohl (2001): จำ (Remember) → เข้าใจ (Understand) → ประยุกต์ (Apply) →
+วิเคราะห์ (Analyze) → ประเมินค่า (Evaluate) → สร้างสรรค์ (Create)</p>
+<p><strong>เกี่ยวข้องกับโครงงานอย่างไร</strong> — ใช้เป็นกรอบให้อาจารย์เลือกคำกริยาตอนเขียน CLO และจุดประสงค์
+เชิงพฤติกรรม ระบบไม่ได้บังคับระดับ Bloom ในฐานข้อมูล (ไม่มีคอลัมน์ <code>bloomLevel</code> ใน v1)
+เพราะการบังคับจะทำให้ระบบผูกกับกรอบใดกรอบหนึ่งจนใช้กับหลักสูตรที่ใช้กรอบอื่นไม่ได้ —
+ถือเป็นข้อจำกัดที่ตั้งใจ และเป็นข้อเสนอแนะสำหรับการพัฒนาต่อในบทที่ 5</p>
+<h3 id="215-การทำแผนที่การประเมิน-assessment-mapping-และเมทริกซ์น้ำหนัก" tabindex="-1"><a class="header-anchor" href="#215-การทำแผนที่การประเมิน-assessment-mapping-และเมทริกซ์น้ำหนัก"><span>2.1.5 การทำแผนที่การประเมิน (Assessment Mapping) และเมทริกซ์น้ำหนัก</span></a></h3>
+<p>หัวใจเชิงคณิตศาสตร์ของระบบคือเมทริกซ์สองมิติ ระหว่างกิจกรรมการประเมิน (แถว) กับ CLO (คอลัมน์)
+โดยแต่ละช่องเก็บน้ำหนักเป็นร้อยละ ทฤษฎีที่รองรับคือการที่คะแนนของกิจกรรมหนึ่งสามารถ
+<strong>แตกออกไปวัดผลลัพธ์ได้มากกว่าหนึ่งข้อพร้อมกัน</strong> ในสัดส่วนที่ต่างกัน</p>
+<p>ข้อกำหนดที่ตามมาจากทฤษฎีนี้ (CR-01 ใน <a href="./srs.html">srs</a> §3):</p>
+<table>
+<thead>
+<tr>
+<th>ค่า</th>
+<th>ความหมาย</th>
+<th>เงื่อนไขบังคับ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Activity.weight</code></td>
+<td>สัดส่วนของกิจกรรมต่อคะแนนรวมรายวิชา</td>
+<td>ผลรวมทุกกิจกรรมในวิชา = 100</td>
+</tr>
+<tr>
+<td><code>AssessmentCriteria.weight</code></td>
+<td>สัดส่วนของกิจกรรมนั้นที่ใช้วัด CLO แต่ละข้อ</td>
+<td>ผลรวมต่อ 1 กิจกรรม = 100</td>
+</tr>
+<tr>
+<td>น้ำหนักของ CLO</td>
+<td><strong>ไม่เก็บ</strong> — เป็นค่าอนุพัทธ์</td>
+<td>คำนวณตาม CR-02</td>
+</tr>
+</tbody>
+</table>
+<p>การไม่เก็บน้ำหนักของ CLO เป็นการตัดสินใจเชิงทฤษฎี ไม่ใช่เชิงเทคนิค: ถ้าเก็บทั้งสองที่
+ค่าทั้งสองจะขัดแย้งกันเองได้ทันทีที่มีการแก้ไขด้านใดด้านหนึ่ง ซึ่งเป็นปัญหาความไม่สอดคล้อง
+ของข้อมูล (data inconsistency) แบบเดียวกับที่การทำ Normalization พยายามกำจัด (§2.2.4)</p>
+<h3 id="216-การคำนวณระดับการบรรลุผลลัพธ์การเรียนรู้-clo-attainment" tabindex="-1"><a class="header-anchor" href="#216-การคำนวณระดับการบรรลุผลลัพธ์การเรียนรู้-clo-attainment"><span>2.1.6 การคำนวณระดับการบรรลุผลลัพธ์การเรียนรู้ (CLO Attainment)</span></a></h3>
+<p>ระบบใช้แนวทาง <strong>two-level attainment</strong> ที่แพร่หลายในงานประกันคุณภาพการศึกษา คือแยกการวัด
+เป็นสองระดับที่ตอบคำถามคนละข้อ</p>
+<p><strong>ระดับที่ 1 — รายบุคคล</strong> (CR-03) ตอบว่า &quot;นักศึกษาคนนี้บรรลุ CLO ข้อนี้หรือยัง&quot;</p>
+<pre class="hljs"><code>                Σ over a  [ score(s,a) / maxScore(a) × Criteria.weight(a,c) ]
+cloScore(s,c) = ─────────────────────────────────────────────────────────── × 100
+                          Σ over a  [ Criteria.weight(a,c) ]
+</code></pre>
+<p>จุดสำคัญเชิงทฤษฎีคือ<strong>ตัวหารนับเฉพาะกิจกรรมที่มีคะแนนแล้ว</strong> ผลคือค่าที่ได้เป็น
+&quot;ร้อยละความสำเร็จเท่าที่ประเมินไปแล้ว&quot; ไม่ใช่ &quot;ร้อยละของทั้งเทอม&quot; ซึ่งทำให้ระบบรายงานผล
+ระหว่างภาคการศึกษาได้โดยไม่ต้องรอคะแนนครบ — และนี่คือกลไกที่ตอบสาเหตุรากของปัญหาโดยตรง
+(สมมติฐาน H2)</p>
+<p><strong>ระดับที่ 2 — ระดับรายวิชา</strong> (CR-04) ตอบว่า &quot;การสอนวิชานี้ทำให้ผู้เรียนส่วนใหญ่บรรลุ CLO ข้อนี้หรือไม่&quot;</p>
+<pre class="hljs"><code>attainment(c) = (จำนวนนักศึกษาที่ผ่าน c / จำนวนนักศึกษาที่มีคะแนนพอจะคำนวณ c) × 100
+CLO c &quot;บรรลุ&quot;  ⟺  attainment(c) ≥ Class Target
+</code></pre>
+<p><strong>การแยก &quot;ไม่มีคะแนน&quot; ออกจาก &quot;ได้ 0 คะแนน&quot;</strong> — ข้อกำหนดนี้ (FR-62, FR-84) มาจากทฤษฎีการวัด
+โดยตรง: ค่าที่ไม่มีการวัด (missing) กับค่าที่วัดแล้วได้ศูนย์ เป็นข้อมูลคนละชนิดกัน
+การนำค่าว่างมานับเป็น 0 จะทำให้ค่าเฉลี่ยเอนต่ำอย่างเป็นระบบ (systematic bias) และรายงาน
+นักศึกษาที่อาจารย์ยังไม่ได้ตรวจงานว่าเป็นกลุ่มเสี่ยง ระบบจึงคืนค่า <code>null</code> และแสดง <code>—</code></p>
+<h3 id="217-การประเมินเพื่อพัฒนาและการประเมินเพื่อตัดสิน-formative-vs-summative" tabindex="-1"><a class="header-anchor" href="#217-การประเมินเพื่อพัฒนาและการประเมินเพื่อตัดสิน-formative-vs-summative"><span>2.1.7 การประเมินเพื่อพัฒนาและการประเมินเพื่อตัดสิน (Formative vs Summative)</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ประเภท</th>
+<th>จังหวะเวลา</th>
+<th>คำถามที่ตอบ</th>
+<th>ใช้ทำอะไรได้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Summative</td>
+<td>สิ้นภาคการศึกษา</td>
+<td>ผู้เรียนได้เกรดอะไร</td>
+<td>ตัดสินผล — แก้ไขอะไรไม่ทันแล้ว</td>
+</tr>
+<tr>
+<td><strong>Formative</strong></td>
+<td><strong>ระหว่างภาคการศึกษา</strong></td>
+<td>ตอนนี้ใครยังไม่บรรลุข้อใด</td>
+<td><strong>แทรกแซงช่วยเหลือได้ทัน</strong></td>
+</tr>
+</tbody>
+</table>
+<p>วิธีทำงานด้วย Excel แบบเดิมให้ผลแบบ summative เท่านั้น เพราะต้องรอรวมทุกไฟล์จึงจะคำนวณได้
+โครงงานนี้จึงไม่ได้แค่ทำให้การคำนวณเร็วขึ้น แต่<strong>เปลี่ยนประเภทของการประเมิน</strong> —
+ประเด็นนี้คือแกนของบทที่ 5 และควรเขียนไว้ในเล่มอย่างชัดเจน</p>
+<h3 id="218-กรอบมาตรฐานคุณวุฒิระดับอุดมศึกษาของไทย-tqf--มคอ" tabindex="-1"><a class="header-anchor" href="#218-กรอบมาตรฐานคุณวุฒิระดับอุดมศึกษาของไทย-tqf--มคอ"><span>2.1.8 กรอบมาตรฐานคุณวุฒิระดับอุดมศึกษาของไทย (TQF / มคอ.)</span></a></h3>
+<p><strong>คืออะไร</strong> — กรอบที่กำหนดให้หลักสูตรต้องระบุผลลัพธ์การเรียนรู้และแสดงหลักฐานว่าวัดผลอย่างไร
+โดยเอกสารที่เกี่ยวข้องโดยตรงกับโครงงานนี้คือ มคอ.3 (รายละเอียดรายวิชา) และ มคอ.5
+(รายงานผลการดำเนินการของรายวิชา) <code>[ต้องเติมเลขที่ประกาศและปีจากเอกสารจริง]</code></p>
+<p><strong>เกี่ยวข้องกับโครงงานอย่างไร</strong> — ผลลัพธ์ที่ระบบผลิตได้ (ตารางระดับการบรรลุ CLO ราย CLO
+พร้อม Target และ Actual) คือข้อมูลที่ต้องกรอกลง มคอ.5 พอดี ซึ่งเป็นเหตุผลที่ FR-87
+กำหนดให้ส่งออกรายงานเป็นไฟล์ได้ — เพื่อให้ผลจากระบบไปต่อในกระบวนการประกันคุณภาพจริง
+ไม่ใช่จบอยู่บนหน้าจอ</p>
+<h3 id="219-ทฤษฎีที่ใช้ในการประเมินตัวระบบ" tabindex="-1"><a class="header-anchor" href="#219-ทฤษฎีที่ใช้ในการประเมินตัวระบบ"><span>2.1.9 ทฤษฎีที่ใช้ในการประเมินตัวระบบ</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>หลักการ</th>
+<th>ใช้ตรงไหนในโครงงาน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>มาตรวัดประมาณค่าแบบลิเคิร์ท (Likert Scale)</strong> 5 ระดับ (Likert, 1932)</td>
+<td>แบบประเมินผู้ทรงคุณวุฒิและแบบสอบถามความพึงพอใจ (<a href="./objectives-hypotheses-evaluation.html">objectives-hypotheses-evaluation</a> §3.3)</td>
+</tr>
+<tr>
+<td><strong>ดัชนีความสอดคล้องระหว่างข้อคำถามกับวัตถุประสงค์ (IOC)</strong> (Rovinelli &amp; Hambleton, 1977)</td>
+<td>ตรวจคุณภาพแบบประเมินก่อนใช้จริง เกณฑ์ IOC ≥ 0.50 (งาน 5.3.2)</td>
+</tr>
+<tr>
+<td><strong>การทดสอบแบบกล่องดำ (Black Box Testing)</strong></td>
+<td>การประเมินโดยผู้ทรงคุณวุฒิ 4 ด้าน (งาน 5.4)</td>
+</tr>
+<tr>
+<td><strong>การแปลผลค่าเฉลี่ย</strong> ช่วง 3.51–4.50 = ระดับดี</td>
+<td>เกณฑ์ตัดสินว่าโครงงานผ่าน (H5, H6)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="22-ทฤษฎีด้านวิศวกรรมซอฟต์แวร์และเครื่องมือที่ใช้ออกแบบระบบ" tabindex="-1"><a class="header-anchor" href="#22-ทฤษฎีด้านวิศวกรรมซอฟต์แวร์และเครื่องมือที่ใช้ออกแบบระบบ"><span>2.2 ทฤษฎีด้านวิศวกรรมซอฟต์แวร์และเครื่องมือที่ใช้ออกแบบระบบ</span></a></h2>
+<blockquote>
+<p>หัวข้อนี้เขียนตามลำดับการทำงานจริงของโครงงาน: เลือกกระบวนการพัฒนา → เก็บความต้องการด้วย
+Use Case → อธิบายการไหลของข้อมูลด้วย DFD → ออกแบบที่เก็บข้อมูลด้วย ER → ออกแบบส่วนติดต่อ
+ผู้ใช้ → แล้วจึงลงมือเขียนโค้ดตามสถาปัตยกรรมที่วางไว้</p>
+</blockquote>
+<h3 id="221-วงจรการพัฒนาระบบ-system-development-life-cycle-sdlc" tabindex="-1"><a class="header-anchor" href="#221-วงจรการพัฒนาระบบ-system-development-life-cycle-sdlc"><span>2.2.1 วงจรการพัฒนาระบบ (System Development Life Cycle: SDLC)</span></a></h3>
+<p><strong>คืออะไร</strong> — กรอบขั้นตอนการพัฒนาระบบสารสนเทศตั้งแต่ต้นจนส่งมอบ ประกอบด้วย 6 ระยะหลัก</p>
+<table>
+<thead>
+<tr>
+<th>ระยะ</th>
+<th>ทำอะไร</th>
+<th>ผลลัพธ์ในโครงงานนี้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. วางแผน (Planning)</td>
+<td>กำหนดปัญหา ขอบเขต ทรัพยากร และตารางเวลา</td>
+<td>Root Cause Analysis · <a href="./project-plan.html">project-plan</a></td>
+</tr>
+<tr>
+<td>2. วิเคราะห์ (Analysis)</td>
+<td>เก็บความต้องการและอธิบายระบบปัจจุบัน</td>
+<td><a href="./srs.html">srs</a> · Use Case Diagram · DFD</td>
+</tr>
+<tr>
+<td>3. ออกแบบ (Design)</td>
+<td>ออกแบบข้อมูล สถาปัตยกรรม และส่วนติดต่อผู้ใช้</td>
+<td>ER Diagram · สัญญา API · Design System · UI ทุกหน้า</td>
+</tr>
+<tr>
+<td>4. พัฒนา (Implementation)</td>
+<td>เขียนโปรแกรมตามที่ออกแบบ</td>
+<td>10 sprint ตาม <a href="./project-plan.html">project-plan</a> CLO 4</td>
+</tr>
+<tr>
+<td>5. ทดสอบ (Testing)</td>
+<td>ทดสอบหน่วย · ทดสอบระบบ · ทดสอบการยอมรับ</td>
+<td>unit test สูตร CR-01…CR-07 · Black Box โดยผู้ทรงคุณวุฒิ</td>
+</tr>
+<tr>
+<td>6. บำรุงรักษา (Maintenance)</td>
+<td>แก้ไขและปรับปรุงหลังส่งมอบ</td>
+<td>นอกขอบเขตโครงงาน — เขียนเป็นข้อเสนอแนะในบทที่ 5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>รูปแบบที่โครงงานนี้เลือกใช้: แบบวนซ้ำเป็นรอบ (Iterative / Agile) ไม่ใช่แบบน้ำตก (Waterfall)</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Waterfall</th>
+<th>Iterative (ที่ใช้จริง)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ลำดับงาน</td>
+<td>ทำทีละระยะจนจบ ห้ามย้อนกลับ</td>
+<td>วนครบทุกระยะในทุกรอบ รอบละ 2 สัปดาห์</td>
+</tr>
+<tr>
+<td>เหมาะเมื่อ</td>
+<td>ความต้องการนิ่งตั้งแต่ต้น</td>
+<td>ความต้องการยังไม่นิ่ง</td>
+</tr>
+<tr>
+<td>ความเสี่ยง</td>
+<td>รู้ว่าออกแบบผิดตอนทดสอบ = สายเกินแก้</td>
+<td>รู้เร็วกว่า แต่ต้องมีวินัยเรื่องเอกสาร</td>
+</tr>
+</tbody>
+</table>
+<p>เหตุผลที่ต้องเป็นแบบวนซ้ำในโครงงานนี้: <strong>สูตรคำนวณ CR-03 ยังไม่ถูก sign-off</strong> ตอนเริ่มพัฒนา
+(ประเด็น OI-10 ใน <a href="./srs.html">srs</a> §9) การรอให้ทุกอย่างนิ่งก่อนเขียนโค้ดจะทำให้เวลาที่มีไม่พอ
+ขณะเดียวกันการเขียนโค้ดโดยยังไม่รู้สูตรที่ถูกต้องก็ต้องรื้อ — การซอยเป็นรอบสั้นทำให้
+งานส่วนที่ไม่ขึ้นกับสูตร (auth, รายวิชา, รายชื่อนักศึกษา) เดินหน้าไปได้ก่อน</p>
+<p><strong>โครงสร้างการแบ่งงาน (Work Breakdown Structure: WBS)</strong> คือการแตกงานใหญ่เป็นงานย่อยที่
+ประมาณเวลาและมอบหมายผู้รับผิดชอบได้ ในโครงงานนี้ WBS ทุกงานถูกผูกกลับไปยัง CLO ของรายวิชา
+โครงงาน เพื่อให้ตรวจสอบได้ว่างานที่ทำครอบคลุมผลลัพธ์การเรียนรู้ครบทุกข้อ</p>
+<h3 id="222-แผนภาพยูสเคส-use-case-diagram--uml" tabindex="-1"><a class="header-anchor" href="#222-แผนภาพยูสเคส-use-case-diagram--uml"><span>2.2.2 แผนภาพยูสเคส (Use Case Diagram — UML)</span></a></h3>
+<p><strong>คืออะไร</strong> — แผนภาพในกลุ่ม <strong>Unified Modeling Language (UML)</strong> ประเภท behavioural diagram
+ที่แสดงว่า <strong>ใคร (Actor)</strong> ใช้ระบบ <strong>ทำอะไรได้บ้าง (Use Case)</strong> โดยมองจากมุมผู้ใช้
+ไม่ใช่จากมุมโครงสร้างภายในโปรแกรม</p>
+<p><strong>องค์ประกอบ</strong></p>
+<table>
+<thead>
+<tr>
+<th>สัญลักษณ์</th>
+<th>ชื่อ</th>
+<th>ความหมาย</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>รูปคน</td>
+<td>Actor</td>
+<td>ผู้กระทำที่อยู่นอกระบบ — คนหรือระบบอื่น</td>
+</tr>
+<tr>
+<td>วงรี</td>
+<td>Use Case</td>
+<td>หน้าที่หนึ่งอย่างที่ระบบให้บริการ เขียนด้วยคำกริยา</td>
+</tr>
+<tr>
+<td>กรอบสี่เหลี่ยม</td>
+<td>System Boundary</td>
+<td>ขอบเขตของระบบ — สิ่งที่อยู่นอกกรอบคือสิ่งที่ระบบไม่รับผิดชอบ</td>
+</tr>
+<tr>
+<td>เส้นตรง</td>
+<td>Association</td>
+<td>actor คนนั้นใช้ use case นั้น</td>
+</tr>
+<tr>
+<td><code>&lt;&lt;include&gt;&gt;</code></td>
+<td>ความสัมพันธ์แบบบังคับ</td>
+<td>use case หลักเรียกใช้เสมอ เช่น ทุกงานต้อง include &quot;เข้าสู่ระบบ&quot;</td>
+</tr>
+<tr>
+<td><code>&lt;&lt;extend&gt;&gt;</code></td>
+<td>ความสัมพันธ์แบบมีเงื่อนไข</td>
+<td>ทำเพิ่มเฉพาะบางกรณี เช่น &quot;นำเข้าไฟล์ผิดพลาด&quot; extend &quot;นำเข้าคะแนน&quot;</td>
+</tr>
+<tr>
+<td>ลูกศรหัวสามเหลี่ยมโปร่ง</td>
+<td>Generalization</td>
+<td>actor หนึ่งเป็นชนิดพิเศษของอีก actor</td>
+</tr>
+</tbody>
+</table>
+<p><strong>เกี่ยวข้องกับโครงงานอย่างไร</strong> — ระบบมี <strong>2 actor</strong> (ADMIN, INSTRUCTOR) และ 11 use case
+(UC1–UC11 ใน <a href="./srs.html">srs</a> §8) โดยมีจุดที่ต้องเขียนให้ถูก 3 ข้อ</p>
+<ol>
+<li><strong>นักศึกษาไม่ใช่ actor</strong> — เป็น <em>ข้อมูล</em> ที่อาจารย์บันทึก ไม่ใช่ผู้ใช้ที่ล็อกอินได้ใน v1
+การวาดนักศึกษาเป็น actor คือความผิดพลาดที่กรรมการจับได้ทันที เพราะขัดกับ <a href="./srs.html">srs</a> §2.2</li>
+<li><strong>ไม่มี actor &quot;ผู้ดูแลระบบส่วนกลาง&quot;</strong> — ตัดออกพร้อมกับการตัดสินใจ single-tenant
+(เดิมมี UC0 จัดการสถาบัน ซึ่งถูกยกเลิกทั้ง use case แล้ว)</li>
+<li><strong>use case ต้องเขียนด้วยคำกริยาที่ผู้ใช้พูดเอง</strong> เช่น &quot;นำเข้าคะแนนจากไฟล์ Excel&quot;
+ไม่ใช่ &quot;เรียก API POST /excel/import&quot; ซึ่งเป็นภาษาของนักพัฒนา ไม่ใช่ภาษาของผู้ใช้</li>
+</ol>
+<p><strong>Use Case Description (คำบรรยายยูสเคส)</strong> — แผนภาพบอกได้แค่ว่า &quot;ทำอะไรได้&quot; แต่ไม่บอกว่า
+&quot;ทำอย่างไร&quot; จึงต้องมีตารางบรรยายกำกับทุก use case หลัก ประกอบด้วย ชื่อ · actor ·
+เงื่อนไขก่อนเริ่ม (pre-condition) · ลำดับเหตุการณ์หลัก (main flow) · ลำดับเหตุการณ์ทางเลือก
+(alternative flow) · เงื่อนไขเมื่อจบ (post-condition) — ส่วน alternative flow คือจุดที่มักถูกละเลย
+ทั้งที่เป็นที่มาของข้อกำหนดการจัดการข้อผิดพลาดเกือบทั้งหมด (เช่น FR-67, FR-68, FR-69)</p>
+<h3 id="223-แผนภาพกระแสข้อมูล-data-flow-diagram-dfd" tabindex="-1"><a class="header-anchor" href="#223-แผนภาพกระแสข้อมูล-data-flow-diagram-dfd"><span>2.2.3 แผนภาพกระแสข้อมูล (Data Flow Diagram: DFD)</span></a></h3>
+<p><strong>คืออะไร</strong> — แผนภาพที่แสดงว่าข้อมูล<strong>ไหล</strong>จากที่ใดไปที่ใด ผ่านกระบวนการอะไร และถูกเก็บไว้ที่ไหน
+เป็นเครื่องมือของการวิเคราะห์เชิงโครงสร้าง (Structured Analysis) ที่ DeMarco (1979) เผยแพร่</p>
+<p><strong>องค์ประกอบ 4 อย่าง</strong> (สัญลักษณ์แบบ Yourdon–DeMarco ที่โครงงานนี้ใช้)</p>
+<table>
+<thead>
+<tr>
+<th>สัญลักษณ์</th>
+<th>ชื่อ</th>
+<th>ความหมาย</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>สี่เหลี่ยม</td>
+<td>External Entity</td>
+<td>ผู้ให้หรือรับข้อมูลที่อยู่นอกระบบ</td>
+</tr>
+<tr>
+<td>วงกลม</td>
+<td>Process</td>
+<td>การแปลงข้อมูลจาก input เป็น output</td>
+</tr>
+<tr>
+<td>เส้นสองขีด / สี่เหลี่ยมเปิดข้าง</td>
+<td>Data Store</td>
+<td>ที่พักข้อมูล — ตารางในฐานข้อมูลหรือแฟ้ม</td>
+</tr>
+<tr>
+<td>ลูกศร</td>
+<td>Data Flow</td>
+<td>ข้อมูลที่กำลังเคลื่อนที่ ต้องมี<strong>ชื่อกำกับเสมอ</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>การแบ่งระดับ (Leveling)</strong> — DFD เขียนจากหยาบไปละเอียด และทุกระดับต้อง<strong>สมดุล (balanced)</strong>
+คือ input/output ที่เข้าออกกระบวนการหนึ่งในระดับบน ต้องปรากฏครบในระดับที่แตกย่อยลงมา</p>
+<table>
+<thead>
+<tr>
+<th>ระดับ</th>
+<th>ขอบเขต</th>
+<th>ที่โครงงานทำ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Level 0 (Context Diagram)</td>
+<td>ระบบทั้งหมดเป็น 1 กระบวนการ ตอบว่าใครคุยกับระบบบ้าง</td>
+<td>2 actor + ระบบไฟล์ + ฐานข้อมูล</td>
+</tr>
+<tr>
+<td>Level 1</td>
+<td>แตกเป็นกระบวนการหลัก</td>
+<td>10 กระบวนการ (auth, access control, รายวิชา, CLO, คะแนน, Excel, รายงาน …)</td>
+</tr>
+<tr>
+<td>Level 2</td>
+<td>แตกเฉพาะกระบวนการที่ซับซ้อน</td>
+<td>การนำเข้าไฟล์ Excel (6 กระบวนการย่อย) และการคำนวณ attainment (6 กระบวนการย่อย)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>กฎที่ต้องไม่ละเมิด</strong> (เป็นข้อที่กรรมการตรวจบ่อยที่สุด)</p>
+<ul>
+<li>ข้อมูลต้อง<strong>ไม่ไหลจาก data store ไป data store โดยตรง</strong> ต้องผ่านกระบวนการเสมอ</li>
+<li>ข้อมูลต้อง<strong>ไม่ไหลจาก external entity ไป data store โดยตรง</strong></li>
+<li>ทุกกระบวนการต้องมีทั้ง input และ output — กระบวนการที่มีแต่ input เรียกว่า <em>black hole</em>
+ส่วนที่มีแต่ output เรียกว่า <em>miracle</em> ทั้งสองอย่างคืออาการของการวิเคราะห์ที่ยังไม่จบ</li>
+<li>ห้ามวาดลำดับก่อนหลังหรือเงื่อนไข if/else — นั่นเป็นหน้าที่ของ flowchart ไม่ใช่ DFD</li>
+</ul>
+<p><strong>เกี่ยวข้องกับโครงงานอย่างไร</strong> — นอกจากใช้อธิบายระบบในบทที่ 3 แล้ว DFD ของโครงงานนี้ยังถูกใช้
+เป็น input ของการทำ <strong>threat modeling</strong> ตามแนวทาง STRIDE โดยเพิ่ม <strong>ขอบเขตความเชื่อถือ
+(Trust Boundary)</strong> ทับลงบนแผนภาพ เพื่อระบุว่าข้อมูลข้ามจากเขตที่เชื่อถือไม่ได้เข้าสู่เขตที่เชื่อถือได้
+ตรงจุดใด — ซึ่งเป็นหลักฐานตอบข้อประเมิน &quot;ด้านความปลอดภัย&quot; ได้โดยตรง</p>
+<h3 id="224-แผนภาพความสัมพันธ์ระหว่างข้อมูล-entity-relationship-diagram-erd" tabindex="-1"><a class="header-anchor" href="#224-แผนภาพความสัมพันธ์ระหว่างข้อมูล-entity-relationship-diagram-erd"><span>2.2.4 แผนภาพความสัมพันธ์ระหว่างข้อมูล (Entity-Relationship Diagram: ERD)</span></a></h3>
+<p><strong>คืออะไร</strong> — แผนภาพที่ Chen (1976) เสนอ ใช้แสดงว่าระบบเก็บข้อมูล<strong>อะไร</strong> และข้อมูลเหล่านั้น
+<strong>สัมพันธ์กันอย่างไร</strong> ต่างจาก DFD ที่แสดงการ<em>ไหล</em> — ERD แสดงการ<em>เก็บ</em></p>
+<p><strong>องค์ประกอบ</strong></p>
+<table>
+<thead>
+<tr>
+<th>องค์ประกอบ</th>
+<th>ความหมาย</th>
+<th>ตัวอย่างในระบบ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entity</td>
+<td>สิ่งที่ต้องเก็บข้อมูล</td>
+<td><code>Course</code>, <code>Student</code>, <code>CLO</code>, <code>Activity</code></td>
+</tr>
+<tr>
+<td>Attribute</td>
+<td>คุณสมบัติของ entity</td>
+<td><code>Course.code</code>, <code>CLO.threshold</code></td>
+</tr>
+<tr>
+<td>Primary Key</td>
+<td>ตัวระบุแถวที่ไม่ซ้ำ</td>
+<td><code>id</code> ของทุกตาราง</td>
+</tr>
+<tr>
+<td>Foreign Key</td>
+<td>การอ้างถึง entity อื่น</td>
+<td><code>CLO.courseId</code></td>
+</tr>
+<tr>
+<td>Relationship</td>
+<td>ความสัมพันธ์ระหว่าง entity</td>
+<td>อาจารย์ <em>สอน</em> รายวิชา</td>
+</tr>
+<tr>
+<td>Cardinality</td>
+<td>จำนวนที่สัมพันธ์กันได้</td>
+<td>1:1 · 1:N · M:N</td>
+</tr>
+<tr>
+<td>Associative Entity</td>
+<td>ตารางที่เกิดจากการแตก M:N</td>
+<td><code>AssessmentCriteria</code>, <code>CourseInstructor</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>สัญกรณ์แบบตีนกา (Crow's Foot)</strong> ที่โครงงานใช้ อ่านที่ปลายเส้นแต่ละด้าน</p>
+<table>
+<thead>
+<tr>
+<th>สัญลักษณ์</th>
+<th>อ่านว่า</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>`</td>
+<td></td>
+</tr>
+<tr>
+<td>`</td>
+<td>o`</td>
+</tr>
+<tr>
+<td>`}</td>
+<td>`</td>
+</tr>
+<tr>
+<td><code>}o</code></td>
+<td>ศูนย์หรือมากกว่า (zero or many)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>สามระดับของ ERD</strong> ที่ต้องมีครบในเล่ม เพราะแต่ละระดับตอบคนละคำถาม</p>
+<table>
+<thead>
+<tr>
+<th>ระดับ</th>
+<th>แสดงอะไร</th>
+<th>ผู้อ่าน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Conceptual</td>
+<td>entity หลักและความสัมพันธ์ ไม่มีชนิดข้อมูล</td>
+<td>อาจารย์ที่ปรึกษา / กรรมการ</td>
+</tr>
+<tr>
+<td>Logical</td>
+<td>attribute ครบ + คีย์ + cardinality</td>
+<td>ผู้ออกแบบระบบ</td>
+</tr>
+<tr>
+<td>Physical</td>
+<td>ชื่อตาราง/คอลัมน์จริง ชนิดข้อมูล ดัชนี ข้อบังคับ</td>
+<td>ผู้พัฒนา</td>
+</tr>
+</tbody>
+</table>
+<p><strong>การทำให้เป็นบรรทัดฐาน (Normalization)</strong> — กระบวนการจัดโครงสร้างตารางเพื่อลดความซ้ำซ้อน
+และกำจัดความผิดปกติในการเพิ่ม/แก้/ลบข้อมูล</p>
+<table>
+<thead>
+<tr>
+<th>ระดับ</th>
+<th>เงื่อนไข</th>
+<th>ตัวอย่างผลในระบบ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1NF</td>
+<td>ทุกช่องเก็บค่าเดียว ไม่มีกลุ่มซ้ำ</td>
+<td>คะแนนแต่ละกิจกรรมเป็นคนละแถว ไม่ใช่หลายค่าในช่องเดียว</td>
+</tr>
+<tr>
+<td>2NF</td>
+<td>1NF + ไม่มี attribute ที่ขึ้นกับคีย์เพียงบางส่วน</td>
+<td><code>Score</code> ขึ้นกับ (นักศึกษา, กิจกรรม) ทั้งคู่ ไม่ใช่ข้างใดข้างหนึ่ง</td>
+</tr>
+<tr>
+<td>3NF</td>
+<td>2NF + ไม่มี attribute ที่ขึ้นกับ attribute ที่ไม่ใช่คีย์</td>
+<td>ชื่อกิจกรรมไม่ถูกเก็บซ้ำในตาราง <code>Score</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>ข้อยกเว้นที่จงใจในโครงงานนี้</strong> — <code>Course.passCriteria</code> และ <code>Course.classTarget</code>
+เก็บค่าไว้ราย Course แทนที่จะอ้างถึงค่ากลางของคณะ ทั้งที่ค่ามักเหมือนกันทุกวิชา
+เหตุผลคือ<strong>ความถูกต้องเชิงประวัติศาสตร์</strong>: ถ้าอ้างค่ากลางแล้ว resolve ตอนอ่าน การแก้ค่ากลาง
+ในปีนี้จะเขียนผลการประเมินของเทอมที่แล้วใหม่เงียบ ๆ ซึ่งเป็นสิ่งที่รับไม่ได้สำหรับเอกสาร
+ที่อนุมัติไปแล้ว — ต้องเขียนเหตุผลนี้กำกับในเล่ม ไม่ปล่อยให้ดูเหมือนความผิดพลาดของการออกแบบ</p>
+<p><strong>ข้อบังคับที่ ERD และ ORM แสดงไม่ได้</strong> — เงื่อนไขบางข้อของระบบเป็นกฎข้ามตาราง เช่น
+&quot;คะแนนต้องไม่เกินคะแนนเต็มของกิจกรรมนั้น&quot; หรือ &quot;กิจกรรมกับ CLO ที่ผูกกันต้องอยู่วิชาเดียวกัน&quot;
+ซึ่งต้องบังคับด้วย CHECK constraint และ trigger ที่ระดับฐานข้อมูล เพราะการตรวจที่ชั้น
+แอปพลิเคชันอย่างเดียวป้องกันไม่ได้หากมีการเขียนข้อมูลผ่านช่องทางอื่น</p>
+<h3 id="225-การออกแบบประสบการณ์และส่วนติดต่อผู้ใช้-ux--ui-design" tabindex="-1"><a class="header-anchor" href="#225-การออกแบบประสบการณ์และส่วนติดต่อผู้ใช้-ux--ui-design"><span>2.2.5 การออกแบบประสบการณ์และส่วนติดต่อผู้ใช้ (UX / UI Design)</span></a></h3>
+<p><strong>ความต่างของสองคำ</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>UX (User Experience)</th>
+<th>UI (User Interface)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ตอบคำถาม</td>
+<td>ผู้ใช้ทำงานให้สำเร็จได้ไหม และรู้สึกอย่างไร</td>
+<td>หน้าจอหน้าตาเป็นอย่างไร</td>
+</tr>
+<tr>
+<td>ผลงาน</td>
+<td>เส้นทางผู้ใช้ (user flow), โครงสร้างข้อมูล (IA), wireframe</td>
+<td>สี ตัวอักษร ระยะห่าง คอมโพเนนต์</td>
+</tr>
+<tr>
+<td>วัดผลด้วย</td>
+<td>เวลาที่ใช้ทำงานสำเร็จ · อัตราข้อผิดพลาด</td>
+<td>ความสม่ำเสมอ · ความคมชัดของสี</td>
+</tr>
+</tbody>
+</table>
+<p><strong>กระบวนการออกแบบที่โครงงานใช้</strong></p>
+<pre class="hljs"><code>เส้นทางผู้ใช้ (User Flow) → โครงสร้างข้อมูลและเมนู (Information Architecture)
+   → โครงร่างหน้าจอ (Wireframe) → ระบบออกแบบ (Design System) → ต้นแบบ (Prototype)
+   → ทดสอบการใช้งาน (Usability Test) → ส่งต่อให้พัฒนา
+</code></pre>
+<p><strong>หลักการที่ใช้เป็นเกณฑ์ตรวจงานออกแบบ — Nielsen's 10 Usability Heuristics</strong>
+โครงงานนี้ใช้ 5 ข้อที่เกี่ยวข้องที่สุดเป็นเช็กลิสต์</p>
+<table>
+<thead>
+<tr>
+<th>หลักการ</th>
+<th>นำมาใช้ตรงไหน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Visibility of system status</strong> — ระบบต้องบอกสถานะปัจจุบันเสมอ</td>
+<td>แสดงความคืบหน้าการกรอกคะแนน <code>กรอกแล้ว x/y คน</code> (FR-64)</td>
+</tr>
+<tr>
+<td><strong>Match between system and the real world</strong> — ใช้ภาษาของผู้ใช้</td>
+<td>เมนูและข้อความทั้งหมดเป็นภาษาไทย ใช้คำว่า &quot;กิจกรรม&quot; ไม่ใช่ &quot;Activity record&quot;</td>
+</tr>
+<tr>
+<td><strong>Error prevention</strong> — กันไม่ให้ผิดตั้งแต่แรก ดีกว่าแจ้งทีหลัง</td>
+<td>เตือนเมื่อผลรวมน้ำหนักไม่ครบ 100% (FR-43) · เตือนก่อนออกจากหน้าที่ยังไม่บันทึก (FR-65)</td>
+</tr>
+<tr>
+<td><strong>Help users recognize, diagnose, and recover from errors</strong></td>
+<td>ข้อความผิดพลาดต้องเป็นภาษาไทย บอกสาเหตุ<strong>และวิธีแก้</strong> ห้ามแสดงรหัส error ดิบ (NFR-10)</td>
+</tr>
+<tr>
+<td><strong>Recognition rather than recall</strong> — ให้จำได้ ดีกว่าให้นึกออกเอง</td>
+<td>ไฟล์ต้นแบบ Excel เติมรหัสและชื่อนักศึกษาไว้ให้แล้ว (FR-66)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ระบบออกแบบ (Design System)</strong> — ชุดกฎและคอมโพเนนต์ที่นำกลับมาใช้ซ้ำได้ ประกอบด้วย
+design token (สี ตัวอักษร ระยะห่าง) และคอมโพเนนต์มาตรฐาน (ปุ่ม ตาราง ฟอร์ม กล่องข้อความ)
+เหตุผลที่ต้องมีในโครงงานนี้โดยเฉพาะคือ <strong>สีสื่อความหมายของสถานะ</strong> — บรรลุ / ต้องปรับปรุง /
+ยังไม่ประเมิน — ถ้านักพัฒนาสามคนเลือกสีกันเองคนละหน้า ผู้ใช้จะตีความผลการประเมินผิด
+ซึ่งร้ายแรงกว่าเรื่องความสวยงาม</p>
+<p><strong>การออกแบบที่เข้าถึงได้ (Accessibility)</strong> — ใช้เกณฑ์ WCAG เป็นแนวทาง: อัตราส่วนความคมชัด
+ของสีต่อพื้นหลังอย่างน้อย 4.5:1 · ใช้งานด้วยคีย์บอร์ดได้ทั้งหมด · <strong>ห้ามใช้สีเป็นตัวสื่อ
+ความหมายเพียงอย่างเดียว</strong> ต้องมีข้อความหรือสัญลักษณ์กำกับด้วย เพราะผู้ใช้ที่ตาบอดสี
+จะแยกสถานะ &quot;บรรลุ&quot; กับ &quot;ต้องปรับปรุง&quot; ไม่ออกถ้าต่างกันแค่สีแดง-เขียว</p>
+<h3 id="226-สถาปัตยกรรมแบบไคลเอนต์เซิร์ฟเวอร์-และ-rest-api" tabindex="-1"><a class="header-anchor" href="#226-สถาปัตยกรรมแบบไคลเอนต์เซิร์ฟเวอร์-และ-rest-api"><span>2.2.6 สถาปัตยกรรมแบบไคลเอนต์–เซิร์ฟเวอร์ และ REST API</span></a></h3>
+<p>ระบบแยกเป็นสองส่วนที่ deploy แยกกัน: เว็บแอปพลิเคชันหน้าเดียว (Single-Page Application)
+ฝั่งเบราว์เซอร์ และ API เซิร์ฟเวอร์ที่ไม่เก็บสถานะ (stateless) ติดต่อกันผ่าน HTTP ด้วยรูปแบบ REST
+(Fielding, 2000) โดยส่งข้อมูลเป็น JSON</p>
+<p><strong>ข้อดีในบริบทนี้</strong> — ตรรกะการคำนวณ CLO อยู่ฝั่งเซิร์ฟเวอร์ที่เดียว ทำให้ผลลัพธ์บนหน้าจอ
+กับผลลัพธ์ในไฟล์ที่ส่งออกมาจากแหล่งเดียวกันเสมอ (FR-88) ถ้าคำนวณฝั่งเบราว์เซอร์ด้วย
+จะเกิดตัวเลขสองชุดที่ไม่ตรงกันทันทีที่แก้สูตรเพียงฝั่งเดียว</p>
+<h3 id="227-สถาปัตยกรรมแบบแบ่งชั้น-layered-architecture" tabindex="-1"><a class="header-anchor" href="#227-สถาปัตยกรรมแบบแบ่งชั้น-layered-architecture"><span>2.2.7 สถาปัตยกรรมแบบแบ่งชั้น (Layered Architecture)</span></a></h3>
+<pre class="hljs"><code>Request → Route → Middleware (auth → rbac) → Validator (Zod)
+        → Controller (แปลง HTTP ↔ โดเมน) → Service (กฎทางธุรกิจ)
+        → Prisma (เข้าถึงข้อมูล) → PostgreSQL
+</code></pre>
+<p>กฎที่บังคับในโครงงาน: <strong>ตรรกะการคำนวณต้องอยู่ในชั้น Service เท่านั้น</strong> โดยเฉพาะ
+<code>attainment.service.ts</code> ซึ่งเป็นที่เดียวที่รู้จักสูตร CR-01 ถึง CR-07 — controller ห้ามคำนวณเอง
+เหตุผลเชิงทฤษฎีคือการแยกความรับผิดชอบ (Separation of Concerns) และในทางปฏิบัติคือ
+ทำให้เขียน unit test เทียบกับใบคำนวณมือได้โดยไม่ต้องยิง HTTP (สมมติฐาน H1)</p>
+<h3 id="228-การยืนยันตัวตน-การควบคุมสิทธิ์-และขอบเขตข้อมูล" tabindex="-1"><a class="header-anchor" href="#228-การยืนยันตัวตน-การควบคุมสิทธิ์-และขอบเขตข้อมูล"><span>2.2.8 การยืนยันตัวตน การควบคุมสิทธิ์ และขอบเขตข้อมูล</span></a></h3>
+<p><strong>Authentication กับ Authorization ต่างกัน</strong> — อย่างแรกตอบว่า &quot;คุณเป็นใคร&quot; อย่างหลังตอบว่า
+&quot;คุณทำสิ่งนี้ได้หรือไม่&quot; ระบบใช้ JSON Web Token (JWT) สำหรับข้อแรก และใช้
+<strong>การควบคุมสิทธิ์ตามบทบาท (Role-Based Access Control: RBAC)</strong> สำหรับข้อหลัง</p>
+<p><strong>RBAC</strong> (Sandhu et al., 1996) คือการให้สิทธิ์ผ่าน &quot;บทบาท&quot; แทนการให้สิทธิ์รายบุคคล
+ระบบมี 2 บทบาทคือ ADMIN และ INSTRUCTOR เก็บไว้ที่ <code>User.role</code></p>
+<p><strong>ขอบเขตข้อมูล (Data Scope) — ระบบเป็นแบบสถาบันเดียว (Single-Tenant)</strong></p>
+<p>โครงงานนี้เลือกออกแบบเป็น single-tenant คือใช้ภายในคณะเดียว ฐานข้อมูลชุดเดียวเก็บข้อมูล
+ขององค์กรเดียว ต่างจาก <strong>multi-tenant</strong> ที่หลายองค์กรใช้ฐานข้อมูลร่วมกันแล้วแยกข้อมูลด้วย
+คอลัมน์ระบุเจ้าของ (Chong &amp; Carraro, 2006)</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Single-tenant (ที่ใช้จริง)</th>
+<th>Multi-tenant (ทางเลือกที่ตัดออก)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ขอบเขตข้อมูล</td>
+<td>รายวิชา</td>
+<td>สถาบัน แล้วจึงรายวิชา</td>
+</tr>
+<tr>
+<td>ความซับซ้อนของโค้ด</td>
+<td>ตรวจสิทธิ์ชั้นเดียว</td>
+<td>ต้องมีชั้นกรองข้อมูลตามสถาบันทุกคิวรี</td>
+</tr>
+<tr>
+<td>ความเสี่ยงหลัก</td>
+<td>เข้าถึงวิชาของเพื่อนร่วมงาน</td>
+<td>ข้อมูลรั่วข้ามสถาบัน — ร้ายแรงกว่ามาก</td>
+</tr>
+<tr>
+<td>เหมาะกับ</td>
+<td>ระบบภายในคณะ</td>
+<td>ระบบที่ให้บริการหลายมหาวิทยาลัย</td>
+</tr>
+</tbody>
+</table>
+<p><strong>เหตุผลของการเลือก</strong> — ขอบเขตของโครงงานคือหลักสูตร ค.อ.บ. ของคณะเดียว การทำ multi-tenant
+จะเพิ่มทั้งโค้ดที่ต้องเขียนและกรณีทดสอบที่ต้องพิสูจน์ โดยไม่มีผู้ใช้จริงที่ต้องการ
+ความสามารถนั้นเลย ซึ่งขัดกับข้อจำกัด CON-04 (ทีม 3 คน เวลาจำกัด) โดยตรง</p>
+<p><strong>ผลที่ตามมาและสิ่งที่ต้องระวัง</strong> — เมื่อตัดชั้นกรองระดับสถาบันออก <strong>ขอบเขตข้อมูลที่เหลืออยู่
+เพียงชั้นเดียวคือรายวิชา</strong> จึงไม่มีด่านสำรองอีกต่อไป ทุกเส้นทาง API ที่รับรหัสรายวิชาต้อง
+เรียกฟังก์ชันตรวจสิทธิ์ก่อนเสมอ และต้องมีการทดสอบกำกับทุกเส้นทาง ไม่ใช่พึ่งการตรวจทานของคน
+ข้อนี้ถูกบันทึกไว้เป็นความเสี่ยงในเอกสาร DFD §7 และเป็นสิ่งที่ต้องเขียนอธิบายในบทที่ 3
+เพราะเป็นการแลกความเรียบง่ายกับความเสี่ยงอย่างมีเจตนา ไม่ใช่การมองข้าม</p>
+<p><strong>เหตุผลที่ระบบตอบ 404 ไม่ใช่ 403</strong> เมื่อเข้าถึงรายวิชาที่ไม่มีสิทธิ์: การตอบ 403
+เป็นการยืนยันกลาย ๆ ว่ารายวิชานั้นมีอยู่จริง ซึ่งเปิดช่องให้กวาดหารหัสที่ใช้ได้ (enumeration)
+จึงถือเป็นการเปิดเผยข้อมูลรูปแบบหนึ่ง (NFR-07)</p>
+<hr>
+<h2 id="23-เทคโนโลยีที่ใช้ในการพัฒนา-technology-stack" tabindex="-1"><a class="header-anchor" href="#23-เทคโนโลยีที่ใช้ในการพัฒนา-technology-stack"><span>2.3 เทคโนโลยีที่ใช้ในการพัฒนา (Technology Stack)</span></a></h2>
+<blockquote>
+<p>รูปแบบการเขียนแต่ละหัวข้อ: <strong>คืออะไร → ใช้ทำอะไรในโครงงาน → ข้อดีที่เป็นเหตุผลของการเลือก →
+ข้อจำกัด</strong> โดยข้อจำกัดต้องเขียนจริง ไม่ใช่เขียนให้ครบรูปแบบ เพราะกรรมการมักถามข้อนี้</p>
+</blockquote>
+<h3 id="231-ภาษาและสภาพแวดล้อมพื้นฐาน" tabindex="-1"><a class="header-anchor" href="#231-ภาษาและสภาพแวดล้อมพื้นฐาน"><span>2.3.1 ภาษาและสภาพแวดล้อมพื้นฐาน</span></a></h3>
+<h4 id="typescript-59" tabindex="-1"><a class="header-anchor" href="#typescript-59"><span>TypeScript 5.9</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ภาษาที่ต่อยอดจาก JavaScript โดยเพิ่มระบบชนิดข้อมูลแบบตรวจสอบตอนคอมไพล์
+(static type checking) แล้วแปลงกลับเป็น JavaScript เพื่อรันจริง</li>
+<li><strong>ใช้ทำอะไร</strong> — เป็นภาษาหลักทั้งฝั่งเบราว์เซอร์และเซิร์ฟเวอร์ เปิดโหมด <code>strict</code>
+และห้ามใช้ชนิด <code>any</code> ตามมาตรฐานของโปรเจกต์</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — ระบบนี้มีสูตรคำนวณที่ค่า <code>null</code> (ยังไม่ประเมิน) กับ <code>0</code> (ได้ศูนย์)
+ต้องไม่ปนกันเด็ดขาด TypeScript บังคับให้ผู้เขียนโค้ดจัดการกรณี <code>null</code> อย่างชัดเจน
+ตั้งแต่ตอนคอมไพล์ แทนที่จะไปพังตอนรัน อีกทั้งใช้ภาษาเดียวทั้งสองฝั่ง ทีม 3 คนจึงสลับ
+กันทำงานข้ามฝั่งได้โดยไม่ต้องเรียนภาษาใหม่</li>
+<li><strong>ข้อจำกัด</strong> — การตรวจชนิดมีผลเฉพาะตอนคอมไพล์ ไม่คุ้มครองข้อมูลที่มาจากภายนอกตอนรันจริง
+จึงยังต้องมีการตรวจสอบด้วย Zod ที่ขอบระบบเสมอ (§2.3.7) และเพิ่มเวลาในขั้นตอน build</li>
+</ul>
+<h4 id="nodejs-20-ขึ้นไป" tabindex="-1"><a class="header-anchor" href="#nodejs-20-ขึ้นไป"><span>Node.js 20 ขึ้นไป</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — สภาพแวดล้อมสำหรับรัน JavaScript นอกเบราว์เซอร์ ทำงานแบบ event-driven
+และ non-blocking I/O</li>
+<li><strong>ใช้ทำอะไร</strong> — รัน API เซิร์ฟเวอร์ สคริปต์ migration/seed และเครื่องมือพัฒนาทั้งหมด</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — งานหลักของระบบนี้เป็นงานรอ I/O (คิวรีฐานข้อมูล อ่านไฟล์ Excel)
+ไม่ใช่งานคำนวณหนัก ซึ่งเป็นรูปแบบที่โมเดล non-blocking ของ Node.js รับมือได้ดีด้วย
+ทรัพยากรที่น้อย เหมาะกับการ deploy ในระดับคณะ</li>
+<li><strong>ข้อจำกัด</strong> — ทำงานบนเธรดเดียว งานที่กินซีพียูต่อเนื่อง เช่น การแยกไฟล์ Excel ขนาดใหญ่
+จะบล็อกคำขออื่นได้ จึงต้องจำกัดขนาดไฟล์อัปโหลด และเป็นเหตุผลที่ NFR-03 กำหนดเพดาน
+การนำเข้าไว้ที่ 500 แถว</li>
+</ul>
+<h4 id="npm-workspaces-monorepo" tabindex="-1"><a class="header-anchor" href="#npm-workspaces-monorepo"><span>npm workspaces (Monorepo)</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ความสามารถของ npm ที่ให้เก็บหลายแพ็กเกจ (<code>app/client</code>, <code>app/server</code>)
+ไว้ในที่เก็บโค้ดเดียว โดยติดตั้ง dependency ร่วมกันจากรากเดียว</li>
+<li><strong>ใช้ทำอะไร</strong> — รวมโค้ดฝั่งหน้าเว็บ ฝั่งเซิร์ฟเวอร์ และสคีมาฐานข้อมูลไว้ที่เดียว
+สั่งรันทั้งระบบด้วย <code>npm run dev</code> คำสั่งเดียว</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — การแก้ที่กระทบทั้งสองฝั่ง เช่น เพิ่มฟิลด์ในฐานข้อมูลแล้วต้องแก้
+ทั้ง API และหน้าจอ จบได้ใน pull request เดียว ทีม 3 คนจึงไม่ต้องประสานข้าม repository</li>
+<li><strong>ข้อจำกัด</strong> — เวลาที่ CI ต้องใช้เพิ่มขึ้นเพราะทดสอบทั้งสองฝั่งทุกครั้ง และแยกสิทธิ์
+การเข้าถึงระหว่างส่วนไม่ได้</li>
+</ul>
+<h3 id="232-ส่วนติดต่อผู้ใช้-frontend" tabindex="-1"><a class="header-anchor" href="#232-ส่วนติดต่อผู้ใช้-frontend"><span>2.3.2 ส่วนติดต่อผู้ใช้ (Frontend)</span></a></h3>
+<h4 id="react-19" tabindex="-1"><a class="header-anchor" href="#react-19"><span>React 19</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ไลบรารีสำหรับสร้างส่วนติดต่อผู้ใช้แบบแบ่งเป็นคอมโพเนนต์ ใช้แนวคิด
+declarative คือประกาศว่าหน้าจอควรมีหน้าตาอย่างไรตามสถานะปัจจุบัน แล้วให้ไลบรารี
+จัดการปรับ DOM เอง</li>
+<li><strong>ใช้ทำอะไร</strong> — สร้างหน้าจอทั้ง 15 หน้า โดยเฉพาะส่วนที่มีสถานะซับซ้อน ได้แก่
+ตารางกรอกคะแนน เมทริกซ์ผูกกิจกรรมกับ CLO และหน้าตรวจไฟล์ก่อนนำเข้า</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — หน้าจอที่ยากที่สุดของระบบคือตารางที่หลายร้อยช่องเปลี่ยนค่าพร้อมกัน
+และต้องรู้ว่าช่องไหนแก้ไปแล้วบ้าง แนวคิด declarative ทำให้ไม่ต้องเขียนโค้ดตามแก้ DOM ทีละช่อง
+ซึ่งเป็นแหล่งของข้อผิดพลาดโดยตรง อีกทั้งมีชุมชนผู้ใช้ขนาดใหญ่ หาทางแก้ปัญหาได้เร็ว</li>
+<li><strong>ข้อจำกัด</strong> — เป็นเพียงไลบรารีสำหรับส่วนแสดงผล ไม่มีระบบ routing หรือการดึงข้อมูลมาให้
+ต้องเลือกไลบรารีเสริมเอง (React Router, TanStack Query) และการเรนเดอร์ซ้ำที่ไม่จำเป็น
+ทำให้ตารางขนาดใหญ่ช้าได้ถ้าไม่ระวัง</li>
+</ul>
+<h4 id="vite-7--plugin-react-swc" tabindex="-1"><a class="header-anchor" href="#vite-7--plugin-react-swc"><span>Vite 7 (+ plugin React SWC)</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — เครื่องมือสำหรับพัฒนาและรวมไฟล์ (build tool) ที่ตอนพัฒนาใช้ ES Modules
+ของเบราว์เซอร์โดยตรง และตอน build ใช้ Rollup</li>
+<li><strong>ใช้ทำอะไร</strong> — รันเซิร์ฟเวอร์ตอนพัฒนา แทนที่โค้ดที่แก้แบบทันที (Hot Module Replacement)
+และสร้างไฟล์สำหรับใช้งานจริง</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — เวลารอตอนพัฒนาสั้นมากแม้โปรเจกต์โต ซึ่งสำคัญกับตารางที่ต้องปรับ
+รายละเอียดการแสดงผลซ้ำหลายรอบ และตั้งค่า proxy ให้เรียก API ข้ามพอร์ตได้โดยไม่ติดปัญหา CORS
+ตอนพัฒนา</li>
+<li><strong>ข้อจำกัด</strong> — พฤติกรรมตอนพัฒนากับตอน build ต่างกัน ปัญหาบางอย่างจึงพบเฉพาะตอน build
+ทีมต้องทดสอบกับไฟล์ที่ build จริงก่อนส่งมอบเสมอ</li>
+</ul>
+<h4 id="react-router-7" tabindex="-1"><a class="header-anchor" href="#react-router-7"><span>React Router 7</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ไลบรารีจัดการเส้นทาง (route) ของเว็บแอปหน้าเดียว แปลง URL เป็นหน้าจอ</li>
+<li><strong>ใช้ทำอะไร</strong> — ผูก URL ทั้ง 15 เส้นทางตามแผนผังหน้าจอ รวมถึงเส้นทางที่ซ้อนกัน
+เช่น <code>/courses/:courseId/dashboard/students/:studentId</code> และกันไม่ให้เข้าหน้าที่ไม่มีสิทธิ์</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — โครงสร้างข้อมูลของระบบเป็นลำดับชั้น (วิชา → CLO/กิจกรรม/นักศึกษา → คะแนน)
+ซึ่งจับคู่กับ nested route ได้ตรง ทำให้ส่วนหัวและเมนูของรายวิชาไม่ต้องเขียนซ้ำในทุกหน้า</li>
+<li><strong>ข้อจำกัด</strong> — มีการเปลี่ยนรูปแบบการใช้งานระหว่างเวอร์ชันบ่อย ตัวอย่างที่ค้นเจอบนอินเทอร์เน็ต
+จำนวนมากเป็นของเวอร์ชันเก่าและใช้ไม่ได้ ต้องยึดเอกสารทางการเป็นหลัก</li>
+</ul>
+<h4 id="tanstack-query-5" tabindex="-1"><a class="header-anchor" href="#tanstack-query-5"><span>TanStack Query 5</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ไลบรารีจัดการข้อมูลที่มาจากเซิร์ฟเวอร์ (server state) ดูแลการแคช
+การดึงข้อมูลซ้ำ สถานะกำลังโหลด และสถานะผิดพลาดให้อัตโนมัติ</li>
+<li><strong>ใช้ทำอะไร</strong> — ดึงข้อมูลทุกชนิดจาก API และทำให้หน้า Dashboard แสดงข้อมูลใหม่ทันที
+หลังบันทึกคะแนน โดยสั่งให้ข้อมูลที่เกี่ยวข้องหมดอายุ</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — แก้ปัญหาที่เกิดขึ้นแน่นอนในระบบนี้ คือกรอกคะแนนแล้วเปิดหน้า
+Dashboard เห็นตัวเลขเก่า ถ้าเขียนเองต้องจัดการแคชและการทำให้ข้อมูลหมดอายุด้วยมือทุกจุด
+ซึ่งเป็นงานที่พลาดง่ายและตรวจไม่เจอจนกว่าผู้ใช้จะแจ้ง</li>
+<li><strong>ข้อจำกัด</strong> — มีแนวคิดที่ต้องเรียนรู้พอสมควร (query key, stale time, invalidation)
+และถ้าตั้ง query key ผิด จะได้ข้อมูลของรายวิชาอื่นมาแสดง — อันตรายเป็นพิเศษเพราะรายวิชา
+คือขอบเขตข้อมูลเดียวของระบบ จึงต้องกำหนดมาตรฐานการตั้ง key ให้มี <code>courseId</code> เสมอ</li>
+</ul>
+<h4 id="zustand-5" tabindex="-1"><a class="header-anchor" href="#zustand-5"><span>Zustand 5</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ไลบรารีจัดการสถานะฝั่งเบราว์เซอร์ (client state) ขนาดเล็ก</li>
+<li><strong>ใช้ทำอะไร</strong> — เก็บสถานะที่ไม่ได้มาจากเซิร์ฟเวอร์ เช่น ข้อมูลผู้ใช้ที่ล็อกอินอยู่
+การเปิด/ปิดเมนู และสถานะ &quot;มีการแก้ไขที่ยังไม่บันทึก&quot; ของหน้ากรอกคะแนน</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — เบาและเขียนสั้นกว่าทางเลือกอย่าง Redux มาก เหมาะกับระบบที่
+สถานะส่วนใหญ่เป็นข้อมูลจากเซิร์ฟเวอร์อยู่แล้ว (ซึ่ง TanStack Query ดูแลไป)
+เหลือสถานะฝั่งเบราว์เซอร์จริง ๆ ไม่มาก</li>
+<li><strong>ข้อจำกัด</strong> — ไม่มีเครื่องมือติดตามประวัติการเปลี่ยนสถานะที่ครบเท่า Redux DevTools
+และเพราะเข้าถึงได้ง่ายจากทุกที่ จึงต้องมีวินัยไม่เอาข้อมูลจากเซิร์ฟเวอร์มาเก็บซ้ำไว้ที่นี่</li>
+</ul>
+<h4 id="tailwind-css-4" tabindex="-1"><a class="header-anchor" href="#tailwind-css-4"><span>Tailwind CSS 4</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — เฟรมเวิร์ก CSS แบบ utility-first ที่ให้เขียนคลาสสำเร็จรูปประกอบกัน
+แทนการตั้งชื่อคลาสและเขียนไฟล์ CSS แยก</li>
+<li><strong>ใช้ทำอะไร</strong> — จัดรูปแบบทุกหน้าจอ และผูกกับ design token ที่กำหนดไว้ในระบบออกแบบ
+โดยเฉพาะสีสถานะ (บรรลุ / ต้องปรับปรุง / ยังไม่ประเมิน) ที่ต้องเหมือนกันทั้งระบบ</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — สีที่สื่อความหมายของสถานะถูกกำหนดจากที่เดียว ทำให้นักพัฒนาสามคน
+ไม่เผลอใช้สีต่างกันในหน้าคนละหน้า ซึ่งจะทำให้ผู้ใช้ตีความผิด และตัดโค้ด CSS
+ที่ไม่ได้ใช้ออกตอน build อัตโนมัติ</li>
+<li><strong>ข้อจำกัด</strong> — โค้ดใน JSX ยาวและอ่านยากขึ้น ต้องแยกเป็นคอมโพเนนต์ที่ใช้ซ้ำได้
+(ใช้ <code>class-variance-authority</code> และ <code>tailwind-merge</code> ช่วย) และมีสิ่งที่ต้องเรียนรู้ใหม่
+สำหรับคนที่คุ้นกับ CSS ปกติ</li>
+</ul>
+<h4 id="recharts-3" tabindex="-1"><a class="header-anchor" href="#recharts-3"><span>Recharts 3</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ไลบรารีสร้างกราฟสำหรับ React สร้างเป็น SVG</li>
+<li><strong>ใช้ทำอะไร</strong> — กราฟแท่งเปรียบเทียบ Target กับ Actual รายข้อ CLO บนหน้า Dashboard (FR-81)
+และกราฟความก้าวหน้าในรายงานรายบุคคล</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — เขียนเป็นคอมโพเนนต์แบบเดียวกับ React ทั้งหมด ไม่ต้องสลับไป
+จัดการ DOM เอง และกราฟที่ระบบต้องใช้เป็นรูปแบบมาตรฐาน ไม่จำเป็นต้องใช้เครื่องมือ
+ที่ยืดหยุ่นสูงและซับซ้อนกว่าอย่าง D3</li>
+<li><strong>ข้อจำกัด</strong> — ปรับแต่งรูปแบบที่ผิดไปจากที่ไลบรารีเตรียมไว้ได้จำกัด และการเรนเดอร์ SVG
+จำนวนจุดมาก ๆ จะช้า — ในบริบทนี้ไม่เป็นปัญหาเพราะกราฟมีจำนวนแท่งเท่ากับจำนวน CLO
+ซึ่งปกติไม่เกิน 10 ข้อ</li>
+</ul>
+<h4 id="ไลบรารีเสริมส่วนติดต่อผู้ใช้" tabindex="-1"><a class="header-anchor" href="#ไลบรารีเสริมส่วนติดต่อผู้ใช้"><span>ไลบรารีเสริมส่วนติดต่อผู้ใช้</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>ไลบรารี</th>
+<th>ใช้ทำอะไร</th>
+<th>เหตุผล</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lucide-react</code></td>
+<td>ชุดไอคอน</td>
+<td>ครอบคลุม ขนาดเล็ก นำเข้าเฉพาะไอคอนที่ใช้</td>
+</tr>
+<tr>
+<td><code>sonner</code></td>
+<td>ข้อความแจ้งเตือน (toast)</td>
+<td>ใช้แจ้งผลการบันทึกคะแนนซึ่งเกิดถี่ ไม่รบกวนการทำงาน</td>
+</tr>
+<tr>
+<td><code>class-variance-authority</code>, <code>clsx</code>, <code>tailwind-merge</code></td>
+<td>จัดการคลาส Tailwind ตามเงื่อนไข</td>
+<td>กันคลาสที่ขัดกันเองเมื่อคอมโพเนนต์มีหลายรูปแบบ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="233-ส่วนเซิร์ฟเวอร์-backend" tabindex="-1"><a class="header-anchor" href="#233-ส่วนเซิร์ฟเวอร์-backend"><span>2.3.3 ส่วนเซิร์ฟเวอร์ (Backend)</span></a></h3>
+<h4 id="fastify-5" tabindex="-1"><a class="header-anchor" href="#fastify-5"><span>Fastify 5</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — เว็บเฟรมเวิร์กสำหรับ Node.js ที่เน้นประสิทธิภาพ มีระบบ plugin
+และตรวจสอบ/แปลงข้อมูลด้วย JSON Schema ในตัว</li>
+<li><strong>ใช้ทำอะไร</strong> — เป็นแกนของ API เซิร์ฟเวอร์ จัดการ route ทั้งหมด และเป็นที่แขวน
+middleware สามชั้น (ยืนยันตัวตน → สิทธิ์ตามบทบาท → ขอบเขตรายวิชา)</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — ระบบ hook และ plugin แบบมีขอบเขต (encapsulation) ทำให้บังคับได้ว่า
+ทุก route ใต้ <code>/api/courses/:courseId</code> ต้องผ่านการตรวจสิทธิ์เสมอ โดยไม่ต้องพึ่งให้นักพัฒนา
+จำใส่เองทุกเส้นทาง ซึ่งตรงกับข้อกำหนดความปลอดภัย NFR-07 ที่การลืมเพียงจุดเดียว
+หมายถึงข้อมูลรั่วข้ามรายวิชา อีกทั้งมีระบบ log ในตัว (pino) ที่ใช้ตรวจสอบย้อนหลังได้</li>
+<li><strong>ข้อจำกัด</strong> — ชุมชนและตัวอย่างการใช้งานเล็กกว่า Express มาก ปัญหาที่พบต้องอ่าน
+เอกสารทางการเป็นหลัก และการเขียน plugin ต้องเข้าใจเรื่องขอบเขตการมองเห็นของ plugin
+ซึ่งเป็นแนวคิดที่ผิดพลาดได้ง่ายในช่วงแรก</li>
+</ul>
+<h4 id="prisma-6-orm" tabindex="-1"><a class="header-anchor" href="#prisma-6-orm"><span>Prisma 6 (ORM)</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — เครื่องมือเชื่อมระหว่างโค้ดกับฐานข้อมูล ที่นิยามโครงสร้างข้อมูลไว้ในไฟล์
+<code>schema.prisma</code> แล้วสร้างไคลเอนต์ที่มีชนิดข้อมูลถูกต้องตามสคีมาให้อัตโนมัติ
+พร้อมระบบ migration</li>
+<li><strong>ใช้ทำอะไร</strong> — นิยามทั้ง 18 ตาราง จัดการ migration ทุกครั้งที่โครงสร้างเปลี่ยน
+และเป็นชั้นเข้าถึงข้อมูลของทุก service</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — ชนิดข้อมูลของผลลัพธ์ที่คิวรีได้มาถูกสร้างจากสคีมาโดยตรง
+ถ้าเปลี่ยนชื่อคอลัมน์แล้วลืมแก้โค้ดที่ใช้ TypeScript จะฟ้องทันทีตอนคอมไพล์
+ไม่ต้องรอพังตอนรัน ซึ่งมีค่ามากกับระบบที่มีตารางจำนวนมากและมีความสัมพันธ์ซับซ้อน
+นอกจากนี้ไฟล์ migration ที่เก็บไว้ในที่เก็บโค้ดยังเป็นหลักฐานประกอบบทที่ 3</li>
+<li><strong>ข้อจำกัด</strong> — <strong>สำคัญและต้องเขียนลงเล่ม:</strong> Prisma แสดง CHECK constraint, trigger
+และ partial unique index ไม่ได้ ทั้งสามอย่างจึงต้องเขียนเป็น SQL ในไฟล์ migration แยก
+และคำสั่ง <code>prisma db push</code> จะลบสิ่งเหล่านี้ทิ้งเงียบ ๆ โครงงานจึงห้ามใช้คำสั่งนี้
+ในทุกสภาพแวดล้อม อีกทั้งคิวรีที่ซับซ้อนมากอาจต้องเขียน SQL ตรงผ่าน <code>$queryRaw</code>
+และหากเขียนความสัมพันธ์ซ้อนกันไม่ระวังจะเกิดปัญหา N+1 query ซึ่ง NFR-02 ห้ามไว้</li>
+</ul>
+<h4 id="postgresql" tabindex="-1"><a class="header-anchor" href="#postgresql"><span>PostgreSQL</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ระบบจัดการฐานข้อมูลเชิงสัมพันธ์แบบโอเพนซอร์ส รองรับ ACID</li>
+<li><strong>ใช้ทำอะไร</strong> — เก็บข้อมูลทั้งหมดของระบบ และเป็นด่านสุดท้ายที่บังคับความถูกต้องของข้อมูล
+ด้วย constraint และ trigger</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — รองรับ <strong>partial unique index</strong> ซึ่งจำเป็นโดยตรงกับข้อกำหนด
+&quot;หนึ่งรายวิชามีอาจารย์ LEAD ได้ไม่เกิน 1 คน&quot; (FR-23) — ฐานข้อมูลที่ไม่รองรับความสามารถนี้
+ต้องไปบังคับที่ชั้นแอปพลิเคชันซึ่งมีช่องโหว่เมื่อมีคำขอพร้อมกัน นอกจากนี้ยังรองรับ
+transaction ที่จำเป็นกับการบันทึกคะแนนทั้งชุดแบบสำเร็จทั้งหมดหรือไม่สำเร็จเลย (FR-63)</li>
+<li><strong>ข้อจำกัด</strong> — ต้องดูแลเซิร์ฟเวอร์ฐานข้อมูลเอง (โครงงานใช้บริการที่มีผู้ให้บริการจัดการให้)
+และ trigger ที่เขียนไว้เป็นตรรกะที่อยู่นอกโค้ดหลัก ผู้ที่มาพัฒนาต่ออาจไม่ทราบว่ามีอยู่
+จึงต้องบันทึกไว้ในเอกสารอย่างชัดเจน</li>
+</ul>
+<h4 id="zod-4" tabindex="-1"><a class="header-anchor" href="#zod-4"><span>Zod 4</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ไลบรารีสำหรับประกาศรูปแบบข้อมูลที่คาดหวังและตรวจสอบข้อมูลจริงตอนรัน
+พร้อมสรุปชนิดข้อมูลให้ TypeScript ใช้ต่อได้</li>
+<li><strong>ใช้ทำอะไร</strong> — ตรวจสอบข้อมูลทุกชิ้นที่เข้าสู่ API ทั้ง body, params และ query
+รวมถึงตรวจข้อมูลแต่ละแถวของไฟล์ Excel ที่นำเข้า</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — เป็นจุดที่แปลงข้อมูลจากภายนอกซึ่ง &quot;เชื่อไม่ได้&quot; ให้กลายเป็นข้อมูล
+ที่มีชนิดแน่นอน ทำให้ชั้น service ไม่ต้องตรวจซ้ำ และข้อความผิดพลาดที่ได้สามารถแปลง
+เป็นข้อความภาษาไทยรายฟิลด์ ซึ่งตรงกับเกณฑ์ด้านการใช้งานที่กำหนดว่าข้อความผิดพลาด
+ต้องบอกวิธีแก้ไข</li>
+<li><strong>ข้อจำกัด</strong> — การตรวจสอบเกิดตอนรัน จึงมีต้นทุนเวลาเมื่อข้อมูลมีจำนวนแถวมาก
+และถ้าประกาศ schema ไม่ตรงกับความจริงของฐานข้อมูล ก็ยังผ่านไปพังที่ชั้นล่างอยู่ดี
+จึงต้องถือ <code>schema.prisma</code> เป็นแหล่งอ้างอิงหลักเสมอ</li>
+</ul>
+<h4 id="argon2-และ-jose-ความปลอดภัย" tabindex="-1"><a class="header-anchor" href="#argon2-และ-jose-ความปลอดภัย"><span>argon2 และ jose (ความปลอดภัย)</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — <code>argon2</code> คืออัลกอริทึมแฮชรหัสผ่านที่ชนะการแข่งขัน Password Hashing
+Competition ปี 2015 ออกแบบให้กินหน่วยความจำมากเพื่อต้านการเดาด้วยฮาร์ดแวร์เฉพาะทาง
+ส่วน <code>jose</code> คือไลบรารีสำหรับสร้างและตรวจสอบ JSON Web Token (JWT) ตาม RFC 7519</li>
+<li><strong>ใช้ทำอะไร</strong> — เก็บรหัสผ่านผู้ใช้ (FR-02) และออก access token อายุ 15 นาที
+กับ refresh token อายุ 7 วัน (FR-01)</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — argon2 ต้านการโจมตีด้วย GPU ได้ดีกว่าอัลกอริทึมรุ่นเก่า
+ส่วน JWT ทำให้เซิร์ฟเวอร์ไม่ต้องเก็บสถานะ session ซึ่งเข้ากับสถาปัตยกรรม stateless
+และ <code>jose</code> เป็นไลบรารีที่ใช้ Web Crypto API มาตรฐาน ไม่พึ่งการตั้งค่าที่ผิดพลาดง่าย</li>
+<li><strong>ข้อจำกัด</strong> — argon2 กินหน่วยความจำและเวลาโดยตั้งใจ จึงทำให้การล็อกอินช้ากว่าปกติ
+เล็กน้อยและต้องตั้งค่าพารามิเตอร์ให้เหมาะกับเครื่องที่ใช้ ส่วน JWT ที่ออกไปแล้ว
+<strong>ยกเลิกกลางคันไม่ได้</strong> จนกว่าจะหมดอายุ ระบบจึงต้องตั้งอายุ access token ให้สั้น
+และการปิดบัญชีผู้ใช้จะมีผลเต็มที่ภายใน 15 นาที ซึ่งเป็นข้อจำกัดที่ต้องระบุในเล่ม</li>
+</ul>
+<h4 id="plugin-ด้านความปลอดภัยและการรับไฟล์ของ-fastify" tabindex="-1"><a class="header-anchor" href="#plugin-ด้านความปลอดภัยและการรับไฟล์ของ-fastify"><span>plugin ด้านความปลอดภัยและการรับไฟล์ของ Fastify</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>plugin</th>
+<th>ใช้ทำอะไร</th>
+<th>ผูกกับข้อกำหนด</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@fastify/helmet</code></td>
+<td>ตั้งค่า HTTP security header</td>
+<td>NFR ด้านความปลอดภัย</td>
+</tr>
+<tr>
+<td><code>@fastify/cors</code></td>
+<td>จำกัดว่าเว็บจากต้นทางใดเรียก API ได้</td>
+<td>NFR ด้านความปลอดภัย</td>
+</tr>
+<tr>
+<td><code>@fastify/rate-limit</code></td>
+<td>จำกัดจำนวนครั้งการล็อกอินที่ล้มเหลว</td>
+<td>FR-04</td>
+</tr>
+<tr>
+<td><code>@fastify/multipart</code></td>
+<td>รับไฟล์ Excel ที่อัปโหลด</td>
+<td>FR-67</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sheetjs-xlsx-0203" tabindex="-1"><a class="header-anchor" href="#sheetjs-xlsx-0203"><span>SheetJS (xlsx 0.20.3)</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ไลบรารีอ่านและเขียนไฟล์สเปรดชีต รองรับ <code>.xlsx</code> และ <code>.xls</code></li>
+<li><strong>ใช้ทำอะไร</strong> — สร้างไฟล์ต้นแบบที่เติมรหัสและชื่อนักศึกษาไว้แล้ว (FR-66)
+อ่านไฟล์ที่อาจารย์อัปโหลดเพื่อตรวจสอบก่อนบันทึก (FR-67) และส่งออกคะแนนกับรายงาน (FR-70)</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — เป็นสะพานเชื่อมกับวิธีทำงานเดิมของผู้ใช้ซึ่งใช้ Excel ทั้งหมด
+ถ้าระบบรับเฉพาะการกรอกทีละช่อง อาจารย์ที่มีคะแนนอยู่แล้วในไฟล์เดิมจะไม่ย้ายมาใช้
+และใช้ไลบรารีตัวเดียวกันได้ทั้งฝั่งเซิร์ฟเวอร์และเบราว์เซอร์</li>
+<li><strong>ข้อจำกัด</strong> — เวอร์ชันที่แจกฟรีติดตั้งจาก CDN ของผู้พัฒนาโดยตรง ไม่ได้ผ่าน registry
+ของ npm ตามปกติ ซึ่งเป็นเรื่องที่ต้องบันทึกไว้เพื่อให้ผู้พัฒนาต่อทราบ
+อีกทั้งการอ่านไฟล์ทำในหน่วยความจำทั้งไฟล์ จึงต้องจำกัดขนาดไฟล์ที่รับ
+และไฟล์ที่ผู้ใช้แก้โครงสร้างเอง เช่น แทรกคอลัมน์หรือรวมเซลล์ จะทำให้การอ่านผิดพลาด
+ระบบจึงต้องมีขั้นตรวจสอบก่อนบันทึกเสมอ</li>
+</ul>
+<h3 id="234-เครื่องมือด้านคุณภาพและกระบวนการพัฒนา" tabindex="-1"><a class="header-anchor" href="#234-เครื่องมือด้านคุณภาพและกระบวนการพัฒนา"><span>2.3.4 เครื่องมือด้านคุณภาพและกระบวนการพัฒนา</span></a></h3>
+<h4 id="vitest-3" tabindex="-1"><a class="header-anchor" href="#vitest-3"><span>Vitest 3</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — เครื่องมือทดสอบที่ทำงานร่วมกับ Vite ใช้รูปแบบการเขียนแบบเดียวกับ Jest</li>
+<li><strong>ใช้ทำอะไร</strong> — ทดสอบหน่วยของสูตรคำนวณทั้งหมดใน <code>attainment.service.ts</code>
+รวมถึงกรณีขอบ 5 แบบ และทดสอบว่าทุกเส้นทางที่รับ <code>:courseId</code> เรียกตรวจสิทธิ์รายวิชาจริง</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — <strong>เป็นเครื่องมือที่ใช้พิสูจน์สมมติฐาน H1 โดยตรง</strong> เพราะข้อกำหนด
+ระบุว่าผลคำนวณต้องตรงกับใบคำนวณด้วยมือ 100% ซึ่งพิสูจน์ได้ก็ต่อเมื่อมีชุดทดสอบที่รัน
+ซ้ำได้ทุกครั้งที่แก้โค้ด ไม่ใช่การกดทดสอบด้วยมือครั้งเดียว</li>
+<li><strong>ข้อจำกัด</strong> — วัดได้เฉพาะสิ่งที่เขียนทดสอบไว้ ค่าความครอบคลุมของโค้ด (coverage) สูง
+ไม่ได้แปลว่าสูตรถูก จึงต้องใช้คู่กับใบคำนวณมือที่อาจารย์ที่ปรึกษาตรวจรับแล้วเสมอ</li>
+</ul>
+<h4 id="eslint-10--typescript-eslint--prettier" tabindex="-1"><a class="header-anchor" href="#eslint-10--typescript-eslint--prettier"><span>ESLint 10 + typescript-eslint + Prettier</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — ESLint ตรวจรูปแบบการเขียนโค้ดที่เสี่ยงต่อข้อผิดพลาด ส่วน Prettier
+จัดรูปแบบการวางโค้ดให้เป็นแบบเดียวกันอัตโนมัติ</li>
+<li><strong>ใช้ทำอะไร</strong> — บังคับกฎของโปรเจกต์ เช่น ห้ามใช้ <code>any</code> และจัดรูปแบบโค้ดของทั้ง 3 คน
+ให้เหมือนกัน</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — ตัดข้อขัดแย้งเรื่องรูปแบบการเขียนออกจากการรีวิว pull request
+ทำให้การรีวิวเหลือเฉพาะเนื้อหาที่สำคัญจริง และลด conflict ตอนรวมโค้ดที่เกิดจาก
+การจัดรูปแบบต่างกัน</li>
+<li><strong>ข้อจำกัด</strong> — ตรวจได้เฉพาะรูปแบบ ไม่เข้าใจความหมายของโปรแกรม โค้ดที่ผ่าน lint
+ทั้งหมดยังคำนวณผิดได้</li>
+</ul>
+<h4 id="git-github-และ-github-actions-ci" tabindex="-1"><a class="header-anchor" href="#git-github-และ-github-actions-ci"><span>Git, GitHub และ GitHub Actions (CI)</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — Git คือระบบควบคุมเวอร์ชันแบบกระจาย GitHub คือบริการฝากที่เก็บโค้ด
+และ GitHub Actions คือระบบรันงานอัตโนมัติเมื่อมีการส่งโค้ด</li>
+<li><strong>ใช้ทำอะไร</strong> — ทีมทำงานแบบ GitHub Flow คือแยก branch ต่อหนึ่งงาน แล้วรวมผ่าน
+pull request ที่ต้องมีผู้รีวิว โดย CI รัน lint, typecheck, test และตรวจสคีมาทุกครั้ง</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — บังคับให้โค้ดที่รวมเข้า main ผ่านเกณฑ์เดียวกันเสมอ โดยไม่ต้อง
+อาศัยความจำของสมาชิก และประวัติการเปลี่ยนแปลงเป็นหลักฐานการทำงานที่ใช้ประกอบ
+การประเมินความก้าวหน้าตามแผนได้</li>
+<li><strong>ข้อจำกัด</strong> — ทีมต้องมีวินัยเรื่องขนาดของ pull request หากรวมงานใหญ่มาในครั้งเดียว
+การรีวิวจะไร้ความหมาย และเวลาที่ CI ใช้จะเพิ่มขึ้นตามจำนวนการทดสอบ</li>
+</ul>
+<h4 id="docker-และ-docker-compose" tabindex="-1"><a class="header-anchor" href="#docker-และ-docker-compose"><span>Docker และ Docker Compose</span></a></h4>
+<ul>
+<li><strong>คืออะไร</strong> — เทคโนโลยีที่บรรจุแอปพลิเคชันพร้อมสภาพแวดล้อมทั้งหมดไว้ใน container
+โดย Docker Compose ใช้สั่งรันหลาย container พร้อมกันจากไฟล์ตั้งค่าเดียว</li>
+<li><strong>ใช้ทำอะไร</strong> — ให้สมาชิกทีมและผู้ที่นำระบบไปติดตั้งรันได้ด้วยคำสั่งเดียวโดยไม่ต้อง
+ติดตั้ง Node.js และฐานข้อมูลเองทีละอย่าง</li>
+<li><strong>ข้อดีที่เลือกใช้</strong> — ตัดปัญหา &quot;เครื่องผมรันได้&quot; ซึ่งกินเวลาทีมที่ใช้เครื่องต่างกัน
+และทำให้ขั้นตอนติดตั้งในภาคผนวกของเล่มสั้นและทำตามได้จริง</li>
+<li><strong>ข้อจำกัด</strong> — มีสิ่งที่ต้องเรียนรู้เพิ่มสำหรับสมาชิกที่ไม่เคยใช้ และกินทรัพยากรเครื่อง
+มากกว่าการรันตรง โดยเฉพาะบนเครื่องที่หน่วยความจำจำกัด</li>
+</ul>
+<h3 id="235-ตารางสรุปเทคโนโลยีที่ใช้" tabindex="-1"><a class="header-anchor" href="#235-ตารางสรุปเทคโนโลยีที่ใช้"><span>2.3.5 ตารางสรุปเทคโนโลยีที่ใช้</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ส่วน</th>
+<th>เทคโนโลยี</th>
+<th>เวอร์ชัน</th>
+<th>หน้าที่หลักในระบบ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ภาษา</td>
+<td>TypeScript</td>
+<td>5.9</td>
+<td>ภาษาหลักทั้งสองฝั่ง เปิดโหมด strict</td>
+</tr>
+<tr>
+<td>Runtime</td>
+<td>Node.js</td>
+<td>≥ 20</td>
+<td>รัน API และเครื่องมือทั้งหมด</td>
+</tr>
+<tr>
+<td>โครงสร้างโค้ด</td>
+<td>npm workspaces</td>
+<td>—</td>
+<td>monorepo: client + server + database</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>React</td>
+<td>19</td>
+<td>สร้างส่วนติดต่อผู้ใช้ 15 หน้า</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>Vite (+ SWC)</td>
+<td>7</td>
+<td>เครื่องมือพัฒนาและ build</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>React Router</td>
+<td>7</td>
+<td>จัดการเส้นทางแบบซ้อนชั้น</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>TanStack Query</td>
+<td>5</td>
+<td>จัดการข้อมูลจากเซิร์ฟเวอร์และแคช</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>Zustand</td>
+<td>5</td>
+<td>สถานะฝั่งเบราว์เซอร์</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>Tailwind CSS</td>
+<td>4</td>
+<td>จัดรูปแบบตาม design token</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>Recharts</td>
+<td>3</td>
+<td>กราฟ Target vs Actual</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>Fastify</td>
+<td>5</td>
+<td>เว็บเฟรมเวิร์กและ middleware 3 ชั้น</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>Prisma</td>
+<td>6</td>
+<td>ORM และ migration ของ 18 ตาราง</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>PostgreSQL</td>
+<td>—</td>
+<td>ฐานข้อมูลหลัก + constraint/trigger</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>Zod</td>
+<td>4</td>
+<td>ตรวจข้อมูลขาเข้าทุกจุด</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>argon2</td>
+<td>0.44</td>
+<td>แฮชรหัสผ่าน</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>jose (JWT)</td>
+<td>6</td>
+<td>access/refresh token</td>
+</tr>
+<tr>
+<td>Excel</td>
+<td>SheetJS (xlsx)</td>
+<td>0.20.3</td>
+<td>นำเข้า/ส่งออกไฟล์คะแนน</td>
+</tr>
+<tr>
+<td>Test</td>
+<td>Vitest</td>
+<td>3</td>
+<td>ทดสอบสูตรคำนวณ (พิสูจน์ H1)</td>
+</tr>
+<tr>
+<td>Quality</td>
+<td>ESLint / Prettier</td>
+<td>10 / 3</td>
+<td>มาตรฐานการเขียนโค้ด</td>
+</tr>
+<tr>
+<td>DevOps</td>
+<td>Docker Compose</td>
+<td>—</td>
+<td>สภาพแวดล้อมที่เหมือนกันทุกเครื่อง</td>
+</tr>
+<tr>
+<td>DevOps</td>
+<td>GitHub Actions</td>
+<td>—</td>
+<td>CI: lint, typecheck, test</td>
+</tr>
+</tbody>
+</table>
+<h3 id="236-สรุปเหตุผลเชิงภาพรวมของการเลือกเทคโนโลยี" tabindex="-1"><a class="header-anchor" href="#236-สรุปเหตุผลเชิงภาพรวมของการเลือกเทคโนโลยี"><span>2.3.6 สรุปเหตุผลเชิงภาพรวมของการเลือกเทคโนโลยี</span></a></h3>
+<p>การเลือกทั้งหมดตั้งอยู่บนข้อจำกัดจริง 3 ข้อของโครงงาน ไม่ใช่ความนิยมของเทคโนโลยี</p>
+<ol>
+<li><strong>ทีมมี 3 คน เวลาจำกัด</strong> → ใช้ TypeScript ภาษาเดียวทั้งระบบใน monorepo เดียว
+เพื่อให้สลับกันทำงานข้ามส่วนได้โดยไม่ต้องเรียนภาษาใหม่</li>
+<li><strong>ความถูกต้องของตัวเลขคือเกณฑ์ผ่านของโครงงาน (ต้องตรง 100%)</strong> → เลือกเครื่องมือที่
+ดันข้อผิดพลาดให้โผล่เร็วที่สุด ได้แก่ TypeScript strict, Zod ที่ขอบระบบ,
+constraint/trigger ที่ฐานข้อมูล และ Vitest ที่รันซ้ำได้</li>
+<li><strong>ผู้ใช้ทำงานด้วย Excel อยู่เดิม</strong> → ต้องมีเส้นทางนำเข้า/ส่งออก Excel ที่ใช้ได้จริง
+ตั้งแต่รุ่นแรก มิฉะนั้นผู้ใช้จะไม่เปลี่ยนมาใช้ระบบ และสมมติฐาน H6, H7 จะพิสูจน์ไม่ได้</li>
+</ol>
+<hr>
+<h2 id="24-งานวิจัยและระบบที่เกี่ยวข้อง" tabindex="-1"><a class="header-anchor" href="#24-งานวิจัยและระบบที่เกี่ยวข้อง"><span>2.4 งานวิจัยและระบบที่เกี่ยวข้อง</span></a></h2>
+<p>หัวข้อนี้เขียนต่อจากผลงาน 1.2 ใน <a href="./project-plan.html">project-plan</a> (การทบทวนวรรณกรรม) ซึ่งดำเนินการเสร็จแล้ว
+โดยต้องครอบคลุมอย่างน้อย:</p>
+<ul>
+<li>งานวิจัยที่พัฒนาระบบวัดผลลัพธ์การเรียนรู้ในสถาบันอุดมศึกษา (≥ 10 เรื่อง) พร้อมระบุว่า
+แต่ละเรื่องต่างจากโครงงานนี้อย่างไร โดยเฉพาะประเด็น<strong>การรายงานผลรายบุคคลระหว่างภาคการศึกษา</strong>
+ซึ่งเป็นจุดต่างหลักของโครงงาน</li>
+<li>ระบบที่มีอยู่แล้วและผู้ใช้เข้าถึงได้จริง เช่น การใช้ Excel, ระบบบริหารการเรียนการสอน
+ที่มีความสามารถด้าน outcome</li>
+<li>ตารางเปรียบเทียบระบบเดิมกับสิ่งที่โครงงานเพิ่มเข้ามา (ผลงาน 1.2.3)</li>
+</ul>
+<blockquote>
+<p>รายการอ้างอิงงานวิจัยฝั่งไทยต้องนำมาจากที่ค้นไว้จริงในงาน 1.2 — ห้ามเติมจากความจำ</p>
+</blockquote>
+<hr>
+<h2 id="เอกสารอ้างอิงของบทนี้-ร่าง" tabindex="-1"><a class="header-anchor" href="#เอกสารอ้างอิงของบทนี้-ร่าง"><span>เอกสารอ้างอิงของบทนี้ (ร่าง)</span></a></h2>
+<blockquote>
+<p>รูปแบบการอ้างอิงให้ปรับตามคู่มือปริญญานิพนธ์ของคณะ (งาน 2.3.2)
+รายการที่มีเครื่องหมาย <code>[ต้องเติม]</code> ยังไม่ได้ตรวจสอบจากเอกสารฉบับจริง</p>
+</blockquote>
+<p><strong>ด้านการศึกษาและการวัดผล</strong></p>
+<ul>
+<li>Spady, W. G. (1994). <em>Outcome-Based Education: Critical Issues and Answers</em>. American Association of School Administrators.</li>
+<li>Biggs, J. (1996). Enhancing teaching through constructive alignment. <em>Higher Education, 32</em>(3), 347–364.</li>
+<li>Anderson, L. W., &amp; Krathwohl, D. R. (Eds.). (2001). <em>A Taxonomy for Learning, Teaching, and Assessing: A Revision of Bloom's Taxonomy of Educational Objectives</em>. Longman.</li>
+<li>Likert, R. (1932). A technique for the measurement of attitudes. <em>Archives of Psychology, 140</em>, 1–55.</li>
+<li>Rovinelli, R. J., &amp; Hambleton, R. K. (1977). On the use of content specialists in the assessment of criterion-referenced test item validity. <em>Dutch Journal of Educational Research, 2</em>, 49–60.</li>
+<li>ประกาศกระทรวงฯ ว่าด้วยกรอบมาตรฐานคุณวุฒิระดับอุดมศึกษาแห่งชาติ และแนวปฏิบัติการจัดทำ มคอ.3 / มคอ.5 <code>[ต้องเติม]</code></li>
+<li>มคอ.2 หลักสูตรครุศาสตร์อุตสาหกรรมบัณฑิต สาขาวิชาเทคโนโลยีคอมพิวเตอร์ (หลักสูตรปรับปรุง พ.ศ. 2567) <code>[ต้องเติม]</code></li>
+</ul>
+<p><strong>ด้านคอมพิวเตอร์และวิศวกรรมซอฟต์แวร์</strong></p>
+<ul>
+<li>Codd, E. F. (1970). A relational model of data for large shared data banks. <em>Communications of the ACM, 13</em>(6), 377–387.</li>
+<li>Chen, P. P. (1976). The entity-relationship model — Toward a unified view of data. <em>ACM Transactions on Database Systems, 1</em>(1), 9–36.</li>
+<li>DeMarco, T. (1979). <em>Structured Analysis and System Specification</em>. Prentice Hall.</li>
+<li>Fielding, R. T. (2000). <em>Architectural Styles and the Design of Network-based Software Architectures</em> (Doctoral dissertation, University of California, Irvine).</li>
+<li>Sandhu, R. S., Coyne, E. J., Feinstein, H. L., &amp; Youman, C. E. (1996). Role-based access control models. <em>IEEE Computer, 29</em>(2), 38–47.</li>
+<li>Chong, F., &amp; Carraro, G. (2006). <em>Architecture Strategies for Catching the Long Tail</em>. Microsoft Corporation.</li>
+<li>Biryukov, A., Dinu, D., &amp; Khovratovich, D. (2016). Argon2: New generation of memory-hard functions for password hashing and other applications. <em>IEEE European Symposium on Security and Privacy</em>.</li>
+<li>Jones, M., Bradley, J., &amp; Sakimura, N. (2015). <em>JSON Web Token (JWT)</em> (RFC 7519). Internet Engineering Task Force.</li>
+</ul>
+<p><strong>เอกสารทางการของเทคโนโลยีที่ใช้</strong> (อ้างอิงเว็บ — ต้องระบุวันที่สืบค้น)</p>
+<ul>
+<li>React — <a href="https://react.dev" target="_blank" rel="noopener">https://react.dev</a></li>
+<li>Vite — <a href="https://vite.dev" target="_blank" rel="noopener">https://vite.dev</a></li>
+<li>React Router — <a href="https://reactrouter.com" target="_blank" rel="noopener">https://reactrouter.com</a></li>
+<li>TanStack Query — <a href="https://tanstack.com/query" target="_blank" rel="noopener">https://tanstack.com/query</a></li>
+<li>Tailwind CSS — <a href="https://tailwindcss.com" target="_blank" rel="noopener">https://tailwindcss.com</a></li>
+<li>Recharts — <a href="https://recharts.org" target="_blank" rel="noopener">https://recharts.org</a></li>
+<li>Fastify — <a href="https://fastify.dev" target="_blank" rel="noopener">https://fastify.dev</a></li>
+<li>Prisma — <a href="https://www.prisma.io/docs" target="_blank" rel="noopener">https://www.prisma.io/docs</a></li>
+<li>PostgreSQL — <a href="https://www.postgresql.org/docs" target="_blank" rel="noopener">https://www.postgresql.org/docs</a></li>
+<li>Zod — <a href="https://zod.dev" target="_blank" rel="noopener">https://zod.dev</a></li>
+<li>Vitest — <a href="https://vitest.dev" target="_blank" rel="noopener">https://vitest.dev</a></li>
+<li>SheetJS — <a href="https://docs.sheetjs.com" target="_blank" rel="noopener">https://docs.sheetjs.com</a></li>
+</ul>
+<hr>
+<p><em>เอกสารนี้เป็นร่างเนื้อหาบทที่ 2 — เมื่อเทคโนโลยีหรือเวอร์ชันเปลี่ยน ต้องแก้ §2.3 ให้ตรงกับ
+<code>package.json</code> เสมอ · §2.2.8 สะท้อนการตัดสินใจ single-tenant ที่ปิดไปแล้วเมื่อ 2026-08-04 (งาน 2.7)</em></p>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">◐</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+function filterNav(q) {
+  q = q.trim().toLowerCase();
+  var anyVisible = false;
+  document.querySelectorAll('.nav-group').forEach(function (group) {
+    var groupHasMatch = false;
+    group.querySelectorAll('li').forEach(function (li) {
+      var text = li.textContent.toLowerCase();
+      var match = !q || text.indexOf(q) !== -1;
+      li.style.display = match ? '' : 'none';
+      if (match) groupHasMatch = true;
+    });
+    group.style.display = groupHasMatch ? '' : 'none';
+    if (groupHasMatch) anyVisible = true;
+  });
+  document.getElementById('nav-empty').style.display = anyVisible ? 'none' : 'block';
+}
+</script>
+</body>
+</html>

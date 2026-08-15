@@ -1,0 +1,2126 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แผนภาพกระแสข้อมูล (DFD — Data Flow Diagram) ของระบบ CMAS ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO — Course Learning Outcome) · CMAS Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">CMAS Docs<span class="brand-sub">v2</span></a>
+<p class="sidebar-tagline">เอกสารโครงงาน CLO System — single source of truth</p>
+<input class="nav-search" type="search" placeholder="ค้นหาเอกสาร…" oninput="filterNav(this.value)">
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">เอกสารพัฒนา (Dev)</div><ul><li><a href="../dev/dev.html"><span class="nav-dot ref"></span>Technical Standard &amp; Workflow</a></li><li><a href="../dev/srs.html"><span class="nav-dot ref"></span>Software Requirements Specification (SRS)</a></li><li><a href="../dev/objectives-hypotheses-evaluation.html"><span class="nav-dot draft"></span>วัตถุประสงค์ · สมมติฐาน · เกณฑ์การประเมิน</a></li><li><a href="../dev/api-design.html"><span class="nav-dot draft"></span>API Design &amp; Endpoint Specification</a></li><li><a class="active" href="../dev/dfd.html"><span class="nav-dot ref"></span>แผนภาพกระแสข้อมูล (DFD — Data Flow Diagram) ของระบบ CMAS ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO — Course Learning Outcome)</a></li><li><a href="../dev/features-pages.html"><span class="nav-dot "></span>Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/user-flow.html"><span class="nav-dot draft"></span>User Flow &amp; UX Design — CMAS</a></li><li><a href="../dev/design-system.html"><span class="nav-dot active-status"></span>Verdure Design System</a></li><li><a href="../dev/material.html"><span class="nav-dot active-status"></span>Material Tonal Logic — Design System</a></li><li><a href="../dev/theory.html"><span class="nav-dot draft"></span>บทที่ 2 — หลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง</a></li><li><a href="../dev/project-plan.html"><span class="nav-dot draft"></span>แผนการดำเนินงานโครงงาน (WBS + Gantt) — CMAS</a></li><li><a href="../dev/thesis-toc.html"><span class="nav-dot draft"></span>สารบัญเล่มโครงงาน (Table of Contents) — CMAS</a></li><li><a href="../dev/progress-report-02.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li><li><a href="../dev/progress-report-02-qa.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li></ul></div><div class="nav-group"><div class="nav-group-title">แผนภาพ (Diagrams)</div><ul><li><a href="../graph/usecase.html"><span class="nav-dot "></span>Use Case Diagram</a></li><li><a href="../graph/tech-stack.html"><span class="nav-dot "></span>Tech Stack</a></li><li><a href="../graph/fishbone-4m.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">ฐานข้อมูล (SQL)</div><ul><li><a href="../sql/schema.html"><span class="nav-dot "></span>โครงสร้างฐานข้อมูล CMAS — 11 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง</a></li><li><a href="../sql/mysql-er-diagram.html"><span class="nav-dot "></span>CMAS — MySQL ER Diagram</a></li><li><a href="../sql/mysql/README.html"><span class="nav-dot "></span>CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/migrations/README.html"><span class="nav-dot "></span>docs/markdown/sql/migrations — historical only</a></li></ul></div><div class="nav-group"><div class="nav-group-title">กติกาทีม (Rules)</div><ul><li><a href="../rule/code-rule.html"><span class="nav-dot "></span>Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html"><span class="nav-dot "></span>Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html"><span class="nav-dot "></span>Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div></nav>
+<p class="nav-empty" id="nav-empty">ไม่พบเอกสารที่ตรงกับคำค้นหา</p>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<div class="doc-meta"><span class="badge badge-ref">Reference</span><span class="badge badge-ref">v2.5.0</span><div class="desc">เอกสารนี้เป็นทั้ง แผนภาพกระแสข้อมูลสำหรับบทที่ 3 และ input ของ threat modeling</div></div>
+<h1 id="แผนภาพกระแสข้อมูล-dfd--data-flow-diagram-ของระบบ-cmasระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา-clo--course-learning-outcome" tabindex="-1"><a class="header-anchor" href="#แผนภาพกระแสข้อมูล-dfd--data-flow-diagram-ของระบบ-cmasระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา-clo--course-learning-outcome"><span>แผนภาพกระแสข้อมูล (DFD — Data Flow Diagram) ของระบบ CMAS<br/>ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO — Course Learning Outcome)</span></a></h1>
+<p>See also: <a href="./srs.html">srs</a> · <a href="../sql/schema.html">schema</a> · <a href="../graph/usecase.html">usecase</a> · <a href="./theory.html">theory</a> · <a href="./project-plan.html">project-plan</a></p>
+<blockquote>
+<p><strong>Version:</strong> 2.5.0 | <strong>Updated:</strong> 2026-08-05
+<strong>Baseline:</strong> <a href="./srs.html">srs</a> v2.0.0 · <code>database/schema.prisma</code> (<strong>11 models — single-tenant</strong>) ·
+<code>app/server/src/middlewares/{auth,rbac}.middleware.ts</code> · <code>services/authorization.service.ts</code>
+<strong>Purpose:</strong> เอกสารนี้เป็นทั้ง <strong>แผนภาพกระแสข้อมูลสำหรับบทที่ 3</strong> และ <strong>input ของ threat modeling</strong>
+(TMT — Microsoft Threat Modeling Tool 2016) — โครงสร้างข้อมูลยึด <a href="../sql/schema.html">schema</a> เสมอ</p>
+<p><strong>v2.0.0:</strong> ตัด SUPER_ADMIN · Institution · Curriculum และ tenant boundary ออกทั้งหมด
+ตามการตัดสินใจ single-tenant (2026-08-04) — ขอบเขตข้อมูลที่เหลือคือ <strong>รายวิชา</strong> ไม่ใช่สถาบัน</p>
+<p><strong>v2.1.0 (audit):</strong> เพิ่ม §0 อักษรย่อ · แก้จำนวน process ใน §3 (8 → 10 พร้อมตารางเทียบ SRS/route) ·
+เติม Data Flow Register ให้ครบทั้ง 43 เส้น (เดิมขาด f1–f6 · f9 · f10 · f14 · f33 · f36 · f37) ·
+เพิ่มตาราง balancing ระหว่าง Level 0 ↔ Level 1 · แก้ชื่อ TB-3 ในไดอะแกรมให้ตรงกับนิยาม §7 ·
+ทำเครื่องหมายสถานะ implement ในไดอะแกรมตามกฎข้อ 1 ของ §1</p>
+<p><strong>v2.2.0 (ตรวจ Level 1 ตามกฎ DFD/threat modeling — ดู §3.4):</strong> ผิดกฎ 7 ข้อจาก 12 แก้แล้วทั้งหมด
+เพิ่มเส้นที่ขาด <strong>f44–f49</strong> (ขาออกของ TB-4 · การตอบของ <code>/health</code> · การอ่านคะแนนเดิม) ·
+แยกเส้นสองทางเป็น a/b (<strong>f25 · f26 · f27 · f28 · f29</strong>) · ตั้งชื่อเส้น f21–f24 ที่เดิมเขียนว่า <code>idem</code> ·
+แก้คอลัมน์ boundary ของ f32 · f37 · f41 · f43 ที่ตัด TB-4 จริงแต่ไม่ได้บันทึก — รวมเป็น <strong>54 เส้น</strong></p>
+<p><strong>v2.3.0:</strong> แยกไดอะแกรม §3 จาก 1 รูปเป็น <strong>4 มุมมองย่อย (a)–(d)</strong> — รูปเดียวเดิมมี P1/P3 เป็น hub
+ที่มีเส้นวิ่งเข้าออกพร้อมกัน 15+ เส้นจนอ่านไม่ออกเมื่อ render จริง เนื้อหา/ทิศทางไม่เปลี่ยน มีแต่การจัดวาง</p>
+<p><strong>v2.4.0:</strong> เพิ่ม <strong>§3.0 ภาพรวม</strong> ก่อนมุมมองย่อย (a)–(d) — รูปเดียวเห็นทั้ง 10 process/9 store/4 boundary
+พร้อมป้ายเส้นแบบกลุ่ม (ไม่ใช่ 1:1 กับ f-id) ใช้เพื่อเห็นรูปทรงของระบบก่อนลงรายละเอียด ไม่ใช้ import เข้า TMT</p>
+<p><strong>v2.5.0 (ตรวจกับ <code>schema.prisma</code> ทีละตาราง — ดู §5.4):</strong> เดิม data store ถูกตั้งชื่อด้วย <em>หมวดหมู่</em>
+(<code>D3 · CLO/Activity/Criteria</code>) ซึ่งอ่านไม่ออกว่าเส้นหนึ่ง ๆ แตะ <strong>ตารางไหน</strong> — threat model ที่บอกไม่ได้ว่า
+ข้อมูลอะไรถูกส่ง คือ threat model ที่ประเมิน Tampering ไม่ได้ แก้ทั้งหมด 5 จุด:</p>
+<ol>
+<li><strong>D3 ขาด <code>ObjectiveAssessment</code></strong> — schema มี 11 model แต่ store mapping เดิมครอบได้ 10 (เพิ่ม §5.4 ตารางกระทบยอด)</li>
+<li><strong>ตั้งชื่อ store ด้วยชื่อตารางจริง</strong> ทุกที่ (ไดอะแกรม §3.0 · (c) · (d) · §5.3) — เลิกใช้คำรวมอย่าง &quot;Criteria&quot;
+ที่ชี้ได้ทั้ง <code>AssessmentCriteria</code> · <code>CLO.threshold</code> · <code>Course.passCriteria</code> ซึ่งอยู่คนละตาราง</li>
+<li><strong>เพิ่ม f50 (D2 → P10)</strong> — เดิม P10 คำนวณ CR-04/05/06 โดยไม่มีเส้นส่ง <code>classTarget</code> · <code>passCriteria</code> ·
+<code>gradingType</code> เข้ามาเลย ทั้งสามอยู่บน <code>Course</code> (= D2) ไม่ใช่ D3 → เป็น <strong>miracle</strong> ตามกฎข้อ 2 ของ §3.4</li>
+<li><strong>เพิ่ม f51 (D3 → P8)</strong> — P8 ต้อง map หัวคอลัมน์ในไฟล์เป็น <code>activityId</code> และตรวจ <code>score ≤ maxScore</code>
+แต่เดิมไม่มีเส้นอ่าน <code>Activity</code> เลย → <strong>miracle</strong> ข้อที่สอง</li>
+<li><strong>ย้าย P4 ออกจาก TB-4</strong> — จัดการผู้ใช้เป็นขอบเขตคณะ ไม่มี <code>courseId</code> ในเส้นทางเลย
+ด่านจริงคือ <code>rbac(&quot;ADMIN&quot;)</code> ไม่ใช่ <code>assertCourseAccess()</code> — วาดไว้ใน TB-4 ทำให้ TMT ออก threat ผิดตัว</li>
+</ol>
+<p>รวมเป็น <strong>56 เส้น</strong> · ป้ายเส้นทุกเส้นระบุ <strong>ตาราง.คอลัมน์</strong> ที่แตะจริงแล้ว</p>
+</blockquote>
+<hr>
+<h2 id="สารบัญ" tabindex="-1"><a class="header-anchor" href="#สารบัญ"><span>สารบัญ</span></a></h2>
+<ol start="0">
+<li><a href="#0-%E0%B8%AD%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B8%A3%E0%B8%A2%E0%B9%88%E0%B8%AD%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%AA%E0%B8%B1%E0%B8%8D%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B8%93%E0%B9%8C">อักษรย่อและสัญลักษณ์</a></li>
+<li><a href="#1-%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%82%E0%B8%B5%E0%B8%A2%E0%B8%99-dfd-%E0%B8%8A%E0%B8%B8%E0%B8%94%E0%B8%99%E0%B8%B5%E0%B9%89">หลักการเขียน DFD ชุดนี้</a></li>
+<li><a href="#2-level-0--context-diagram">Level 0 — Context Diagram</a></li>
+<li><a href="#3-level-1--system-decomposition">Level 1 — System Decomposition</a></li>
+<li><a href="#4-level-2--%E0%B8%AA%E0%B8%AD%E0%B8%87%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%9A%E0%B8%A7%E0%B8%99%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%8B%E0%B8%B1%E0%B8%9A%E0%B8%8B%E0%B9%89%E0%B8%AD%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%AA%E0%B8%B8%E0%B8%94">Level 2 — สองกระบวนการที่ซับซ้อนที่สุด</a></li>
+<li><a href="#5-element-register-tmt-2016-stencil-mapping">Element Register (TMT 2016 stencil mapping)</a></li>
+<li><a href="#6-data-flow-register">Data Flow Register</a></li>
+<li><a href="#7-trust-boundaries">Trust Boundaries</a></li>
+<li><a href="#8-%E0%B8%A7%E0%B8%B4%E0%B8%98%E0%B8%B5%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%99-threat-modeling-tool-2016">วิธีสร้างใน Threat Modeling Tool 2016</a></li>
+<li><a href="#9-stride-hot-spots-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%95%E0%B9%89%E0%B8%AD%E0%B8%87%E0%B8%95%E0%B8%AD%E0%B8%9A%E0%B9%83%E0%B8%AB%E0%B9%89%E0%B9%84%E0%B8%94%E0%B9%89">STRIDE hot spots ที่ต้องตอบให้ได้</a></li>
+</ol>
+<hr>
+<h2 id="0-อักษรย่อและสัญลักษณ์" tabindex="-1"><a class="header-anchor" href="#0-อักษรย่อและสัญลักษณ์"><span>0. อักษรย่อและสัญลักษณ์</span></a></h2>
+<p>อ่านตารางนี้ก่อนดูไดอะแกรม — ทุกตัวย่อในเอกสารนี้ถูกนิยามไว้ที่นี่ที่เดียว</p>
+<h3 id="01-รหัสประจำ-element-ใช้อ้างอิงข้าม-29" tabindex="-1"><a class="header-anchor" href="#01-รหัสประจำ-element-ใช้อ้างอิงข้าม-29"><span>0.1 รหัสประจำ element (ใช้อ้างอิงข้าม §2–§9)</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>รูปแบบ</th>
+<th>ความหมาย</th>
+<th>ตัวอย่าง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EEn</code></td>
+<td><strong>E</strong>xternal <strong>E</strong>ntity — ผู้กระทำนอกระบบ (คน/ระบบอื่น)</td>
+<td>EE1 = ADMIN</td>
+</tr>
+<tr>
+<td><code>Pn.n</code></td>
+<td><strong>P</strong>rocess — กระบวนการที่แปลงข้อมูล</td>
+<td>P8 = Excel Import/Export · 8.1 = process ย่อยของ P8</td>
+</tr>
+<tr>
+<td><code>Dn</code></td>
+<td><strong>D</strong>ata Store — ที่เก็บข้อมูล (ตาราง/ไฟล์/หน่วยความจำ)</td>
+<td>D5 = Score</td>
+</tr>
+<tr>
+<td><code>TB-n</code></td>
+<td><strong>T</strong>rust <strong>B</strong>oundary — เส้นแบ่งความเชื่อถือ</td>
+<td>TB-4 = ขอบเขตรายวิชา</td>
+</tr>
+<tr>
+<td><code>Fnn</code> (ตัวใหญ่)</td>
+<td>Data flow ระดับ <strong>Level 0</strong></td>
+<td>F05 = ไฟล์ .xlsx เข้าระบบ</td>
+</tr>
+<tr>
+<td><code>fnn</code> (ตัวเล็ก)</td>
+<td>Data flow ระดับ <strong>Level 1/2</strong> — เป็นการแตกย่อยของ <code>Fnn</code></td>
+<td>f13 = multipart upload</td>
+</tr>
+<tr>
+<td><code>fnna</code> / <code>fnnb</code></td>
+<td>เส้นเดียวกันที่ <strong>แยกทิศ</strong> — <code>a</code> = ขาเขียน/ขาถาม · <code>b</code> = ขาอ่าน/ขาตอบ (TMT ไม่รับเส้นสองทาง)</td>
+<td>f26a เขียน User · f26b อ่าน User</td>
+</tr>
+</tbody>
+</table>
+<h3 id="02-อักษรย่อทั่วไป" tabindex="-1"><a class="header-anchor" href="#02-อักษรย่อทั่วไป"><span>0.2 อักษรย่อทั่วไป</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ตัวย่อ</th>
+<th>คำเต็ม</th>
+<th>ความหมายในบริบทนี้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CMAS</strong></td>
+<td>Course Learning Outcome Management &amp; Assessment System</td>
+<td>ชื่อระบบที่พัฒนา</td>
+</tr>
+<tr>
+<td><strong>CLO</strong></td>
+<td>Course Learning Outcome</td>
+<td>ผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา</td>
+</tr>
+<tr>
+<td><strong>DFD</strong></td>
+<td>Data Flow Diagram</td>
+<td>แผนภาพแสดงการไหลของข้อมูล ไม่ใช่ลำดับเวลา</td>
+</tr>
+<tr>
+<td><strong>TMT</strong></td>
+<td>(Microsoft) Threat Modeling Tool 2016</td>
+<td>เครื่องมือสร้าง threat list จากไดอะแกรม</td>
+</tr>
+<tr>
+<td><strong>SDL</strong></td>
+<td>Security Development Lifecycle</td>
+<td>ชุดแนวปฏิบัติของ Microsoft ที่ TMT ใช้เป็น knowledge base</td>
+</tr>
+<tr>
+<td><strong>STRIDE</strong></td>
+<td>Spoofing · Tampering · Repudiation · Information disclosure · Denial of service · Elevation of privilege</td>
+<td>6 หมวดภัยคุกคามที่ TMT ใช้จำแนก</td>
+</tr>
+<tr>
+<td><strong>EoP</strong></td>
+<td>Elevation of Privilege</td>
+<td>การยกระดับสิทธิ์ — ตัวย่อของ STRIDE ตัวสุดท้าย</td>
+</tr>
+<tr>
+<td><strong>DoS</strong></td>
+<td>Denial of Service</td>
+<td>การทำให้ระบบใช้งานไม่ได้</td>
+</tr>
+<tr>
+<td><strong>PDPA</strong></td>
+<td>Personal Data Protection Act (พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล)</td>
+<td>เหตุผลที่ D4/D5 ถูกทำเครื่องหมาย Sensitive</td>
+</tr>
+<tr>
+<td><strong>PII</strong></td>
+<td>Personally Identifiable Information</td>
+<td>ข้อมูลที่ระบุตัวบุคคลได้ — ห้ามลง D9 (CON-02)</td>
+</tr>
+<tr>
+<td><strong>FR / NFR</strong></td>
+<td>Functional / Non-Functional Requirement</td>
+<td>ข้อกำหนดใน <a href="./srs.html">srs</a> §4 / §6</td>
+</tr>
+<tr>
+<td><strong>CR</strong></td>
+<td>Calculation Rule</td>
+<td>กฎการคำนวณใน <a href="./srs.html">srs</a> §3 (CR-01…CR-07)</td>
+</tr>
+<tr>
+<td><strong>CON / ASM</strong></td>
+<td>Constraint / Assumption</td>
+<td>ข้อจำกัด / ข้อสมมติใน <a href="./srs.html">srs</a> §2.3</td>
+</tr>
+<tr>
+<td><strong>UC</strong></td>
+<td>Use Case</td>
+<td>กรณีใช้งานใน <a href="../graph/usecase.html">usecase</a></td>
+</tr>
+<tr>
+<td><strong>SPA</strong></td>
+<td>Single Page Application</td>
+<td>ไคลเอนต์ React ที่เปลี่ยนหน้าโดยไม่โหลดใหม่ (P1)</td>
+</tr>
+<tr>
+<td><strong>JWT</strong></td>
+<td>JSON Web Token</td>
+<td>รูปแบบ token ที่ P2 ออกให้</td>
+</tr>
+<tr>
+<td><strong>RBAC</strong></td>
+<td>Role-Based Access Control</td>
+<td>การตรวจสิทธิ์ตาม role ใน <code>rbac.middleware.ts</code></td>
+</tr>
+<tr>
+<td><strong>CRUD</strong></td>
+<td>Create · Read · Update · Delete</td>
+<td>ชุดปฏิบัติการพื้นฐานกับข้อมูล</td>
+</tr>
+<tr>
+<td><strong>XSS / CSRF</strong></td>
+<td>Cross-Site Scripting / Cross-Site Request Forgery</td>
+<td>ช่องโหว่ฝั่งเบราว์เซอร์ที่กระทบวิธีเก็บ token (D8)</td>
+</tr>
+<tr>
+<td><strong>TLS / HTTPS</strong></td>
+<td>Transport Layer Security / HTTP over TLS</td>
+<td>การเข้ารหัสระหว่างทาง</td>
+</tr>
+<tr>
+<td><strong>SQL</strong></td>
+<td>Structured Query Language</td>
+<td>ภาษาคิวรีที่ Prisma สร้างให้</td>
+</tr>
+<tr>
+<td><strong>argon2</strong></td>
+<td>Argon2id password hashing</td>
+<td>อัลกอริทึม hash รหัสผ่านใน D1</td>
+</tr>
+<tr>
+<td><strong>SheetJS</strong></td>
+<td>ไลบรารี <code>xlsx</code> (SheetJS CE)</td>
+<td>ตัว parse/สร้างไฟล์ <code>.xlsx</code> ใน P8</td>
+</tr>
+<tr>
+<td><strong>at-risk</strong></td>
+<td>นักศึกษากลุ่มเสี่ยง</td>
+<td>ผู้ที่ไม่ผ่าน CLO อย่างน้อย 1 ข้อ (FR-83)</td>
+</tr>
+<tr>
+<td><strong>attainment</strong></td>
+<td>ระดับการบรรลุ CLO</td>
+<td>สัดส่วนผู้ผ่านเกณฑ์ (CR-04)</td>
+</tr>
+<tr>
+<td><strong>roster</strong></td>
+<td>รายชื่อนักศึกษาในวิชา</td>
+<td>ข้อมูลใน D4</td>
+</tr>
+<tr>
+<td><strong>upsert</strong></td>
+<td>update-or-insert</td>
+<td>เขียนคะแนนโดยไม่ต้องรู้ว่ามีแถวเดิมอยู่หรือไม่</td>
+</tr>
+<tr>
+<td><strong>envelope</strong></td>
+<td>รูปแบบ response มาตรฐาน</td>
+<td>ซอง JSON <code>{success, data, error}</code> ตาม <a href="./srs.html">srs</a> §5.2</td>
+</tr>
+<tr>
+<td><strong>single-tenant</strong></td>
+<td>ใช้งานองค์กรเดียว</td>
+<td>ไม่มีชั้นสถาบัน — ขอบเขตข้อมูลคือรายวิชา (ASM-04)</td>
+</tr>
+<tr>
+<td><strong>target-state</strong></td>
+<td>สภาพที่ตั้งใจให้เป็น</td>
+<td>ไดอะแกรมนี้อธิบายระบบเมื่อพัฒนาเสร็จ ไม่ใช่ ณ วันนี้</td>
+</tr>
+</tbody>
+</table>
+<h3 id="03-สัญลักษณ์ในไดอะแกรม" tabindex="-1"><a class="header-anchor" href="#03-สัญลักษณ์ในไดอะแกรม"><span>0.3 สัญลักษณ์ในไดอะแกรม</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>สัญลักษณ์</th>
+<th>ความหมาย</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>✅</td>
+<td>implement แล้วและใช้งานได้จริง ณ 2026-08-05</td>
+</tr>
+<tr>
+<td>🕐</td>
+<td>ยังไม่ implement — route ยัง comment ไว้ใน <code>routes/index.ts</code> (กฎข้อ 1 ของ §1)</td>
+</tr>
+<tr>
+<td>🔒</td>
+<td>Trust boundary</td>
+</tr>
+<tr>
+<td>👤</td>
+<td>External entity ที่เป็นคน</td>
+</tr>
+<tr>
+<td>🗂️</td>
+<td>External entity ที่เป็นระบบไฟล์</td>
+</tr>
+<tr>
+<td><code>(( ))</code></td>
+<td>Process · <code>[( )]</code> Data store · <code>[ ]</code> External entity</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="1-หลักการเขียน-dfd-ชุดนี้" tabindex="-1"><a class="header-anchor" href="#1-หลักการเขียน-dfd-ชุดนี้"><span>1. หลักการเขียน DFD ชุดนี้</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>กฎ</th>
+<th>เหตุผล</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>สิ่งที่ไม่มีในโค้ด ห้ามอยู่ในไดอะแกรม</strong></td>
+<td>DFD ที่วาดจากความตั้งใจ ไม่ใช่จากระบบจริง จะให้ threat list ที่ผิด — route ที่ยัง comment ไว้ใน <code>routes/index.ts</code> ถูกทำเครื่องหมาย <code>(planned)</code></td>
+</tr>
+<tr>
+<td><strong>นักศึกษาไม่ใช่ external entity</strong></td>
+<td>ตาม <a href="./srs.html">srs</a> §2.2 นักศึกษาเป็น <strong>ข้อมูล</strong> ไม่ใช่ผู้ใช้ระบบใน v1 — แต่เป็น <strong>data subject</strong> ตาม PDPA จึงมีผลกับ Information Disclosure</td>
+</tr>
+<tr>
+<td><strong>Middleware chain เป็น process แยก (3.0)</strong></td>
+<td><code>authMiddleware → rbac → assertCourseAccess</code> คือจุดบังคับ trust boundary ทั้งหมด ถ้ายุบรวมกับ process อื่น จะมองไม่เห็น threat ที่เกิดจาก &quot;route ที่ลืมต่อ middleware&quot;</td>
+</tr>
+<tr>
+<td><strong>ขอบเขตข้อมูลคือรายวิชา ไม่ใช่สถาบัน</strong></td>
+<td>single-tenant ทำให้เหลือ boundary เดียว (TB-4) และ<strong>บังคับที่ชั้นแอปพลิเคชัน</strong> (<code>assertCourseAccess</code>) ไม่ใช่ที่ network layer — ต้องเขียนกำกับไว้ในโมเดล</td>
+</tr>
+<tr>
+<td><strong>Excel file = ช่องทางรับ input ที่ไม่น่าเชื่อถือ</strong></td>
+<td>ไฟล์ผู้ใช้อัปโหลดคือ untrusted input ที่ข้าม trust boundary — ต้องเป็น data flow ของตัวเอง ไม่ใช่รายละเอียดใน process</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-level-0--context-diagram" tabindex="-1"><a class="header-anchor" href="#2-level-0--context-diagram"><span>2. Level 0 — Context Diagram</span></a></h2>
+<p>ระบบทั้งหมดเป็น <strong>1 process</strong> มองจากภายนอก — ตอบคำถามเดียว: ใครคุยกับระบบ และคุยเรื่องอะไร</p>
+<pre class="mermaid">flowchart LR
+    EE1[&quot;👤 ADMIN&lt;br/&gt;(ผู้ดูแลระบบของคณะ)&quot;]
+    EE2[&quot;👤 INSTRUCTOR&lt;br/&gt;(อาจารย์ผู้สอน)&quot;]
+    EE3[&quot;🗂️ Local File System&lt;br/&gt;(ไฟล์ Excel .xlsx บนเครื่องผู้ใช้)&quot;]
+
+    P0((&quot;0.0&lt;br/&gt;CMAS&lt;br/&gt;CLO Tracking &amp;&lt;br/&gt;Assessment System&quot;))
+
+    DS0[(&quot;PostgreSQL&lt;br/&gt;cmas_app&quot;)]
+
+    EE1 -- &quot;F01 ข้อมูลรับรองตัวตน · ข้อมูลผู้ใช้ · รายวิชา · การมอบหมายอาจารย์&quot; --&gt; P0
+    P0  -- &quot;F02 token · รายการผู้ใช้และรายวิชาทั้งหมด · ผลการทำงาน&quot; --&gt; EE1
+
+    EE2 -- &quot;F03 ข้อมูลรับรองตัวตน · CLO · กิจกรรม · รายชื่อ นศ. · คะแนน&quot; --&gt; P0
+    P0  -- &quot;F04 token · Dashboard · รายงานรายบุคคล · ไฟล์ส่งออก&quot; --&gt; EE2
+
+    EE3 -- &quot;F05 ไฟล์คะแนน/รายชื่อ (.xlsx ≤ 10 MB)&quot; --&gt; P0
+    P0  -- &quot;F06 Template .xlsx · ไฟล์ export · รายการแถวที่ไม่ผ่าน&quot; --&gt; EE3
+
+    P0  -- &quot;F07 SQL (ผ่าน Prisma 6)&quot; --&gt; DS0
+    DS0 -- &quot;F08 result set&quot; --&gt; P0
+
+    subgraph TB1 [&quot;🔒 TB-1 · Internet / Browser Boundary (HTTPS)&quot;]
+        EE1
+        EE2
+        EE3
+    end
+
+    subgraph TB2 [&quot;🔒 TB-2 · Machine Boundary (Database Server)&quot;]
+        DS0
+    end
+</pre>
+<blockquote>
+<p><strong>หมายเหตุ Level 0:</strong> ไม่มี SUPER_ADMIN แล้ว — single-tenant ทำให้ไม่มีชั้นที่อยู่เหนือ ADMIN
+ความต่างของสิทธิ์ที่เหลือคือ <strong>ADMIN เห็นทุกรายวิชา ส่วน INSTRUCTOR เห็นเฉพาะวิชาที่ถูกมอบหมาย</strong>
+ซึ่งเป็นเรื่องของขอบเขตข้อมูล (TB-4) ไม่ใช่ระดับ privilege ที่ต่างกันคนละชั้น</p>
+</blockquote>
+<hr>
+<h2 id="3-level-1--system-decomposition" tabindex="-1"><a class="header-anchor" href="#3-level-1--system-decomposition"><span>3. Level 1 — System Decomposition</span></a></h2>
+<p>แตก process 0.0 ออกเป็น <strong>10 process</strong> — 1 ฝั่งไคลเอนต์ (P1) · 1 ด่านตรวจสิทธิ์ (P3) ·
+8 กระบวนการฝั่งเซิร์ฟเวอร์ที่ล้อกับ §4 ของ <a href="./srs.html">srs</a></p>
+<blockquote>
+<p><strong>หมายเหตุการอ่าน:</strong> Level 1 เต็มมี 56 เส้น — วาดรวมรูปเดียวแล้วอ่านไม่ออก (P1/P3 กลายเป็น hub)
+จึงแยกเป็น <strong>4 มุมมองย่อย (a)–(d)</strong> ตามโซนความไว้ใจ node ที่ปรากฏซ้ำในหลายรูป (เช่น P3, P7, P8)
+คือ <strong>process เดียวกัน</strong> ไม่ใช่คนละตัว — มุมมองที่รวมทุกเส้นเข้าด้วยกันคือ §6 Data Flow Register</p>
+<p>การตรวจกฎ black hole/miracle (ข้อ 1–2 ของ §3.4) ต้องดูที่ <strong>ผลรวมของทั้ง 4 มุมมอง</strong> ไม่ใช่ทีละรูป —
+node บางตัว (เช่น P3edge ในมุมมอง (a)) จงใจตัดขาให้เหลือเฉพาะเส้นที่เกี่ยวกับโซนนั้น ไม่ใช่ node จริงที่ไม่ครบ
+<strong>สำหรับ TMT 2016 ให้วาดรวมเป็นผืนเดียวตาม §8</strong> — การแยก 4 รูปนี้มีไว้เพื่ออ่านในเอกสารเท่านั้น</p>
+</blockquote>
+<h3 id="30-ภาพรวม-overview--ก่อนดูรายละเอียด-4-มุมมอง" tabindex="-1"><a class="header-anchor" href="#30-ภาพรวม-overview--ก่อนดูรายละเอียด-4-มุมมอง"><span>3.0 ภาพรวม (Overview) — ก่อนดูรายละเอียด 4 มุมมอง</span></a></h3>
+<p>รูปนี้แสดง <strong>รูปทรง (shape)</strong> ของระบบ: 10 process · 9 data store · 4 trust boundary
+โดยยุบเส้นแต่ละ f-id ให้เหลือเป็น<strong>กลุ่มความสัมพันธ์</strong>ต่อคู่ node — ไม่ใช่ข้อมูลสำหรับ import เข้า TMT
+(ให้ใช้มุมมอง (a)–(d) หรือ §6 Data Flow Register แทนเมื่อทำ threat modeling จริง)</p>
+<pre class="mermaid">flowchart TB
+    EE1[&quot;👤 ADMIN&quot;]
+    EE2[&quot;👤 INSTRUCTOR&quot;]
+    EE3[&quot;🗂️ Local File System (.xlsx)&quot;]
+
+    subgraph TB1 [&quot;🔒 TB-1 · Browser / Internet&quot;]
+        P1((&quot;🕐 1.0&lt;br/&gt;SPA Client&quot;))
+        DS8[(&quot;D8 · Token Store&quot;)]
+    end
+
+    subgraph APP [&quot;API Server — Fastify 5&quot;]
+        subgraph TB3 [&quot;🔒 TB-3 · Unauthenticated&quot;]
+            P2((&quot;🕐 2.0&lt;br/&gt;Auth &amp; Session&quot;))
+            P9((&quot;✅ 9.0&lt;br/&gt;Health&quot;))
+        end
+
+        P3((&quot;🕐 3.0&lt;br/&gt;Access Control Gate&quot;))
+
+        P4((&quot;🕐 4.0&lt;br/&gt;User Admin&lt;br/&gt;ระดับคณะ — นอก TB-4&quot;))
+
+        subgraph TB4 [&quot;🔒 TB-4 · Course Scope&quot;]
+            P5((&quot;🕐 5.0&lt;br/&gt;Course &amp; Instructor&quot;))
+            P6((&quot;🕐 6.0&lt;br/&gt;CLO · Activity · Criteria&quot;))
+            P7((&quot;🕐 7.0&lt;br/&gt;Roster &amp; Score Entry&quot;))
+            P8((&quot;🕐 8.0&lt;br/&gt;Excel Import/Export&quot;))
+            P10((&quot;🕐 10.0&lt;br/&gt;Attainment &amp; Reporting&quot;))
+        end
+
+        DS7[(&quot;D7 · Upload Buffer&quot;)]
+        DS9[(&quot;D9 · App Log&quot;)]
+    end
+
+    subgraph TB2 [&quot;🔒 TB-2 · PostgreSQL — cmas_app&quot;]
+        DS1[(&quot;D1 · User&quot;)]
+        DS2[(&quot;D2 · Course&lt;br/&gt;CourseInstructor&quot;)]
+        DS3[(&quot;D3 · CLO · BehavioralObjective&lt;br/&gt;Activity · AssessmentCriteria&lt;br/&gt;ObjectiveAssessment&quot;)]
+        DS4[(&quot;D4 · Student&quot;)]
+        DS5[(&quot;D5 · Score&quot;)]
+        DS6[(&quot;D6 · ScoreUploadLog&quot;)]
+    end
+
+    EE1 == &quot;จัดการผู้ใช้/รายวิชา (f1,f4)&quot; ==&gt; P1
+    EE2 == &quot;CLO/คะแนน/รายงาน (f2,f3)&quot; ==&gt; P1
+    EE3 == &quot;ไฟล์ .xlsx (f5,f6)&quot; ==&gt; P1
+
+    P1 == &quot;login/token (f7-f10)&quot; ==&gt; P2
+    P1 == &quot;API + upload (f11-f13)&quot; ==&gt; P3
+    P1 == &quot;health (f14,f48)&quot; ==&gt; P9
+    P2 == &quot;User.passwordHash · role · isActive ตาม email (f15,f16)&quot; ==&gt; DS1
+    P3 == &quot;User.role · isActive สดทุก request (f17,f18)&quot; ==&gt; DS1
+
+    P3 == &quot;คำสั่ง/ผลลัพธ์บัญชีผู้ใช้ — ไม่มี courseId (f19,f44)&quot; ==&gt; P4
+    P3 == &quot;คำสั่ง/ผลลัพธ์รายวิชา + courseId (f20,f45)&quot; ==&gt; P5
+    P3 == &quot;คำสั่ง/ผลลัพธ์ CLO·Activity·Criteria + courseId (f21,f46)&quot; ==&gt; P6
+    P3 == &quot;คำสั่ง/ผลลัพธ์รายชื่อ·คะแนน + courseId (f22,f47)&quot; ==&gt; P7
+    P3 == &quot;คำสั่ง/ผลลัพธ์ import·export + courseId (f23,f37)&quot; ==&gt; P8
+    P3 == &quot;คำขอ/ผลรายงาน + courseId (f24,f41)&quot; ==&gt; P10
+    P3 == &quot;Course.id WHERE instructors.userId (f25a,f25b)&quot; ==&gt; DS2
+
+    P4 == &quot;User: email·name·role·isActive·passwordHash (f26a,f26b)&quot; ==&gt; DS1
+    P5 == &quot;Course: code·credits·gradingType·passCriteria·classTarget&lt;br/&gt;+ CourseInstructor.role (f27a,f27b)&quot; ==&gt; DS2
+    P6 == &quot;CLO.threshold · Activity.maxScore·weight&lt;br/&gt;AssessmentCriteria.weight · ObjectiveAssessment (f28a,f28b)&quot; ==&gt; DS3
+    P7 == &quot;Student.studentCode · name (PDPA) (f29a,f29b)&quot; ==&gt; DS4
+    P7 == &quot;Score.score ต่อคู่ studentId+activityId (f30,f49)&quot; ==&gt; DS5
+
+    P3 == &quot;ไฟล์ .xlsx ดิบ ยังไม่ validate (f31)&quot; ==&gt; DS7
+    DS7 == &quot;byte ของไฟล์ → ตาราง (SheetJS) (f32)&quot; ==&gt; P8
+    DS3 == &quot;Activity.id·name·maxScore เพื่อ map คอลัมน์ (f51)&quot; ==&gt; P8
+    P8 == &quot;Student.studentCode ในวิชานั้น (f33)&quot; ==&gt; DS4
+    P8 == &quot;Score.score เฉพาะแถวที่ผ่าน (f34)&quot; ==&gt; DS5
+    P8 == &quot;ScoreUploadLog: fileName·recordsOk·recordsFail (f35,f36)&quot; ==&gt; DS6
+    P8 == &quot;ไฟล์ template / export .xlsx (f37)&quot; ==&gt; P3
+
+    DS3 == &quot;CLO.threshold · Activity.weight·maxScore&lt;br/&gt;AssessmentCriteria.weight (f38)&quot; ==&gt; P10
+    DS4 == &quot;Student.studentCode · name (f39)&quot; ==&gt; P10
+    DS5 == &quot;Score.score รายกิจกรรม (f40)&quot; ==&gt; P10
+    DS2 == &quot;Course.passCriteria·classTarget·gradingType (f50)&quot; ==&gt; P10
+    P10 == &quot;attainment% · at-risk · รายงานรายบุคคล (f41)&quot; ==&gt; P3
+
+    P3 == &quot;requestId · status · userId — ไม่มี PII (f42)&quot; ==&gt; DS9
+    P8 == &quot;จำนวนแถว ok/fail — ไม่มีคะแนน/ชื่อ (f43)&quot; ==&gt; DS9
+</pre>
+<blockquote>
+<p><strong>ป้ายเส้นในรูปนี้เป็นกลุ่ม f-id</strong> ไม่ใช่ 1 เส้น = 1 ป้าย — เช่น <code>(f26a,f26b)</code> คือมีเส้นเขียนและเส้นอ่าน
+จริง 2 เส้นแยกกัน (ดูมุมมอง (c)) รูปนี้บอกว่า <em>มีความสัมพันธ์อะไร และส่งฟิลด์อะไร</em> ระหว่าง node สองตัว
+แต่ไม่ได้บอกทิศและจำนวนเส้นที่แท้จริง — ต้องดูมุมมอง (a)–(d) หรือ §6 สำหรับรายละเอียด</p>
+<p><strong>ทำไมป้ายเส้นถึงต้องระบุ <code>ตาราง.คอลัมน์</code>:</strong> TMT ออก Tampering threat ต่อ <em>เส้น</em> ไม่ใช่ต่อ <em>ตาราง</em>
+ป้ายว่า &quot;CRUD&quot; บอกไม่ได้ว่าการแก้เส้นนั้นกระทบอะไร แต่ป้ายว่า <code>Activity.weight</code> บอกทันทีว่า
+การแก้ค่าระหว่างทางจะ <strong>เขียนผลคำนวณ attainment ของทั้งวิชาใหม่</strong> โดยไม่มีใครเห็น (CR-01)
+— ป้ายที่ระบุฟิลด์คือสิ่งที่ทำให้ §9 STRIDE hot spot เขียนได้จริง</p>
+</blockquote>
+<h3 id="a-ผู้ใช้--ไคลเอนต์--authhealth-f1f14--f48" tabindex="-1"><a class="header-anchor" href="#a-ผู้ใช้--ไคลเอนต์--authhealth-f1f14--f48"><span>(a) ผู้ใช้ ↔ ไคลเอนต์ ↔ Auth/Health (f1–f14 · f48)</span></a></h3>
+<pre class="mermaid">flowchart TB
+    EE1[&quot;👤 ADMIN&quot;]
+    EE2[&quot;👤 INSTRUCTOR&quot;]
+    EE3[&quot;🗂️ Local File System (.xlsx)&quot;]
+
+    subgraph TB1 [&quot;🔒 TB-1 · Browser / Internet Boundary&quot;]
+        P1((&quot;🕐 1.0&lt;br/&gt;SPA Client&lt;br/&gt;React 19 + Router 7&quot;))
+        DS8[(&quot;D8 · Browser Token Store&lt;br/&gt;access + refresh token&quot;)]
+    end
+
+    subgraph TB3 [&quot;🔒 TB-3 · Unauthenticated Zone (ก่อนผ่าน authMiddleware)&quot;]
+        P2((&quot;🕐 2.0&lt;br/&gt;Authentication &amp;&lt;br/&gt;Session Issuing&quot;))
+        P9((&quot;✅ 9.0&lt;br/&gt;Health Check&lt;br/&gt;/health&quot;))
+    end
+
+    P3edge((&quot;🕐 3.0&lt;br/&gt;Access Control Gate&lt;br/&gt;(รายละเอียดดูมุมมอง b)&quot;))
+
+    EE1 -- &quot;f1 credentials · คำสั่งจัดการผู้ใช้/รายวิชา&quot; --&gt; P1
+    EE2 -- &quot;f2 credentials · CLO · คะแนน · คำขอรายงาน&quot; --&gt; P1
+    P1  -- &quot;f3 หน้าจอ · Dashboard · รายงาน&quot; --&gt; EE2
+    P1  -- &quot;f4 ผลการทำงาน · ข้อความ error ภาษาไทย&quot; --&gt; EE1
+    EE3 -- &quot;f5 เลือกไฟล์ .xlsx&quot; --&gt; P1
+    P1  -- &quot;f6 template / ไฟล์ export / error rows&quot; --&gt; EE3
+
+    P1  -- &quot;f7 POST /auth/login {email,password}&quot; --&gt; P2
+    P2  -- &quot;f8 access token 15 นาที + refresh 7 วัน&quot; --&gt; P1
+    P1  -- &quot;f9 เก็บ token&quot; --&gt; DS8
+    DS8 -- &quot;f10 อ่าน token&quot; --&gt; P1
+    P1  -- &quot;f11 HTTPS + Authorization: Bearer JWT&quot; --&gt; P3edge
+    P3edge -- &quot;f12 JSON envelope / 401 / 403 / 404&quot; --&gt; P1
+    P1  -- &quot;f13 multipart/form-data (.xlsx)&quot; --&gt; P3edge
+    P1  -- &quot;f14 GET /health&quot; --&gt; P9
+    P9  -- &quot;f48 {status, uptime} — ไม่มีข้อมูลระบบภายใน&quot; --&gt; P1
+</pre>
+<h3 id="b-ด่านตรวจสิทธิ์--กระบวนการหลัก--tb-4-f15f25b--f44f47" tabindex="-1"><a class="header-anchor" href="#b-ด่านตรวจสิทธิ์--กระบวนการหลัก--tb-4-f15f25b--f44f47"><span>(b) ด่านตรวจสิทธิ์ ↔ กระบวนการหลัก — TB-4 (f15–f25b · f44–f47)</span></a></h3>
+<pre class="mermaid">flowchart TB
+    P1b((&quot;🕐 1.0&lt;br/&gt;SPA Client&quot;))
+
+    subgraph TB3b [&quot;🔒 TB-3&quot;]
+        P2b((&quot;🕐 2.0&lt;br/&gt;Authentication&quot;))
+    end
+
+    P3((&quot;🕐 3.0&lt;br/&gt;Access Control Gate&lt;br/&gt;auth → rbac → course scope&quot;))
+
+    P4((&quot;🕐 4.0&lt;br/&gt;User Admin&lt;br/&gt;ขอบเขตคณะ · ด่านคือ rbac(ADMIN)&quot;))
+
+    subgraph TB4 [&quot;🔒 TB-4 · Course Scope — บังคับด้วย assertCourseAccess()&quot;]
+        P5((&quot;🕐 5.0&lt;br/&gt;Course &amp; Instructor Mgmt&quot;))
+        P6((&quot;🕐 6.0&lt;br/&gt;CLO · Activity · Criteria&quot;))
+        P7((&quot;🕐 7.0&lt;br/&gt;Roster &amp; Score Entry&quot;))
+        P8((&quot;🕐 8.0&lt;br/&gt;Excel Import/Export&quot;))
+        P10((&quot;🕐 10.0&lt;br/&gt;Attainment &amp; Reporting&quot;))
+    end
+
+    DS1[(&quot;D1 · User&quot;)]
+    DS2[(&quot;D2 · Course · CourseInstructor&quot;)]
+
+    P1b -- &quot;f11&quot; --&gt; P3
+    P3  -- &quot;f12&quot; --&gt; P1b
+
+    P2b -- &quot;f15 อ่าน User ตาม email&quot; --&gt; DS1
+    DS1 -- &quot;f16 argon2 hash · isActive · role&quot; --&gt; P2b
+    P3  -- &quot;f17 อ่านแถว User สดทุก request (NFR-19)&quot; --&gt; DS1
+    DS1 -- &quot;f18 role · isActive&quot; --&gt; P3
+
+    P3 -- &quot;f19 คำสั่งจัดการผู้ใช้ + {userId, role} — ไม่มี courseId&quot; --&gt; P4
+    P3 -- &quot;f20 คำสั่งจัดการรายวิชา + courseId ที่ตรวจแล้ว&quot; --&gt; P5
+    P3 -- &quot;f21 คำสั่งจัดการ CLO/กิจกรรม/เกณฑ์ + courseId ที่ตรวจแล้ว&quot; --&gt; P6
+    P3 -- &quot;f22 คำสั่งจัดการรายชื่อ/คะแนน + courseId ที่ตรวจแล้ว&quot; --&gt; P7
+    P3 -- &quot;f23 คำสั่งนำเข้า/ส่งออก + courseId ที่ตรวจแล้ว&quot; --&gt; P8
+    P3 -- &quot;f24 คำขอรายงาน + courseId ที่ตรวจแล้ว&quot; --&gt; P10
+    P3 -- &quot;f25a คิวรี Course ตาม courseId + userId (assertCourseAccess)&quot; --&gt; DS2
+    DS2 -- &quot;f25b พบ/ไม่พบแถว → ผ่าน หรือ 404&quot; --&gt; P3
+
+    P4  -- &quot;f44 ผลลัพธ์ผู้ใช้/บัญชี&quot; --&gt; P3
+    P5  -- &quot;f45 ผลลัพธ์รายวิชา · รายชื่ออาจารย์ผู้สอน&quot; --&gt; P3
+    P6  -- &quot;f46 ผลลัพธ์ CLO · จุดประสงค์ · กิจกรรม · เกณฑ์&quot; --&gt; P3
+    P7  -- &quot;f47 ผลลัพธ์รายชื่อ + ตารางคะแนน (PDPA)&quot; --&gt; P3
+</pre>
+<blockquote>
+<p><strong>ทิศเข้า (f20–f25a) = ภัยหลัก EoP/Tampering</strong> — เดินตรวจว่า <code>courseId</code> ถูกยึดถูกก่อนวิ่งเข้า
+<strong>ทิศออก (f45–f47) = ภัยหลัก Information Disclosure</strong> — เดินตรวจว่าผลลัพธ์ที่ตอบกลับ scope ตาม <code>courseId</code> เดียวกันจริง</p>
+<p><strong>f19/f44 ไม่ตัด TB-4 (แก้ใน v2.5.0):</strong> เส้นทางจัดการผู้ใช้ไม่มี <code>courseId</code> อยู่ในนั้นเลย —
+<code>usersRoutes</code> ถูกกันด้วย <code>rbac(&quot;ADMIN&quot;)</code> (<a href="../../../app/server/src/middlewares/rbac.middleware.ts">rbac.middleware.ts</a>)
+ไม่ใช่ <code>assertCourseAccess()</code> การวาด P4 ไว้ใน TB-4 ทำให้ TMT ออก threat &quot;cross-course&quot; กับเส้นที่
+ไม่มีวันมี course อยู่ในนั้น ขณะที่ threat จริงของ P4 คือ <strong>EoP ระดับ role</strong> (INSTRUCTOR ตั้ง role ตัวเองเป็น ADMIN)
+ซึ่งเป็นคนละตัว — ดู §9 ข้อ 9</p>
+</blockquote>
+<h3 id="c-กระบวนการหลัก--ฐานข้อมูล--tb-2-f26af30--f33--f49--f51" tabindex="-1"><a class="header-anchor" href="#c-กระบวนการหลัก--ฐานข้อมูล--tb-2-f26af30--f33--f49--f51"><span>(c) กระบวนการหลัก ↔ ฐานข้อมูล — TB-2 (f26a–f30 · f33 · f49 · f51)</span></a></h3>
+<p>ทุกป้ายเส้นในรูปนี้ระบุ <strong>ตาราง.คอลัมน์</strong> ตาม <code>database/schema.prisma</code> — ไม่ใช้คำรวมอย่าง &quot;CRUD&quot;</p>
+<pre class="mermaid">flowchart TB
+    P4c((&quot;🕐 4.0&lt;br/&gt;User Admin&quot;))
+    P5c((&quot;🕐 5.0&lt;br/&gt;Course &amp; Instructor Mgmt&quot;))
+    P6c((&quot;🕐 6.0&lt;br/&gt;CLO · Activity · Criteria&quot;))
+    P7c((&quot;🕐 7.0&lt;br/&gt;Roster &amp; Score Entry&quot;))
+    P8c((&quot;🕐 8.0&lt;br/&gt;Excel Import/Export&quot;))
+
+    subgraph TB2 [&quot;🔒 TB-2 · Machine Boundary — PostgreSQL `cmas_app`&quot;]
+        DS1c[(&quot;D1 · User&quot;)]
+        DS2c[(&quot;D2 · Course · CourseInstructor&quot;)]
+        DS3c[(&quot;D3 · CLO · BehavioralObjective · Activity&lt;br/&gt;AssessmentCriteria · ObjectiveAssessment&quot;)]
+        DS4c[(&quot;D4 · Student (roster / PDPA)&quot;)]
+        DS5c[(&quot;D5 · Score&quot;)]
+    end
+
+    P4c -- &quot;f26a เขียน User: email·name·passwordHash(argon2)·role·isActive&quot; --&gt; DS1c
+    DS1c -- &quot;f26b อ่าน User: id·email·name·role·isActive (ห้ามคืน passwordHash)&quot; --&gt; P4c
+    P5c -- &quot;f27a เขียน Course: code·name·semester·year·section·credits&lt;br/&gt;gradingType·passCriteria·classTarget + CourseInstructor: userId·role&quot; --&gt; DS2c
+    DS2c -- &quot;f27b อ่าน Course + CourseInstructor join User (ชื่อผู้สอน)&quot; --&gt; P5c
+    P6c -- &quot;f28a เขียน CLO: number·description·threshold&lt;br/&gt;Activity: name·method·maxScore·weight·order&lt;br/&gt;AssessmentCriteria: weight · BehavioralObjective · ObjectiveAssessment&quot; --&gt; DS3c
+    DS3c -- &quot;f28b อ่านโครงสร้าง CLO ทั้งต้นไม้ของวิชานั้น&quot; --&gt; P6c
+    P7c -- &quot;f29a เขียน Student: studentCode·name·courseId (PDPA)&quot; --&gt; DS4c
+    DS4c -- &quot;f29b อ่าน Student ในวิชา (PDPA)&quot; --&gt; P7c
+    P7c -- &quot;f30 upsert Score.score ต่อ (studentId,activityId) ใน transaction เดียว&quot; --&gt; DS5c
+    DS5c -- &quot;f49 อ่าน Score.score เดิมมาเติมในตารางกรอก&quot; --&gt; P7c
+    P8c -- &quot;f33 อ่าน Student.studentCode ของวิชานั้นเพื่อตรวจแถวในไฟล์&quot; --&gt; DS4c
+    DS3c -- &quot;f51 อ่าน Activity.id·name·maxScore เพื่อ map หัวคอลัมน์ + ตรวจเพดานคะแนน&quot; --&gt; P8c
+</pre>
+<blockquote>
+<p><strong>f51 คือเส้นที่ v2.4.0 ขาดไป</strong> — ถ้าไม่มีเส้นนี้ P8 จะไม่มีทางรู้ว่าหัวคอลัมน์ <code>&quot;สอบกลางภาค&quot;</code> ในไฟล์
+หมายถึง <code>Activity.id</code> ตัวไหน และไม่มีทางตรวจ <code>score ≤ maxScore</code> ได้ก่อนเขียน
+(<code>maxScore</code> ถูกบังคับซ้ำด้วย trigger ที่ชั้น DB ตาม comment หัวไฟล์ <code>schema.prisma</code> — แต่ FR-69
+ต้องรายงานความผิดให้ผู้ใช้เห็นเป็นรายแถว <strong>ก่อน</strong> commit ไม่ใช่ปล่อยให้ transaction ระเบิด)</p>
+</blockquote>
+<h3 id="d-สายไฟล์-excel--รายงาน--log-f31f43--f50--f51" tabindex="-1"><a class="header-anchor" href="#d-สายไฟล์-excel--รายงาน--log-f31f43--f50--f51"><span>(d) สายไฟล์ Excel ↔ รายงาน ↔ Log (f31–f43 · f50 · f51)</span></a></h3>
+<pre class="mermaid">flowchart TB
+    P3d((&quot;🕐 3.0&lt;br/&gt;Access Control Gate&quot;))
+    P8d((&quot;🕐 8.0&lt;br/&gt;Excel Import/Export&quot;))
+    P10d((&quot;🕐 10.0&lt;br/&gt;Attainment &amp; Reporting&quot;))
+
+    DS2d[(&quot;D2 · Course · CourseInstructor&quot;)]
+    DS3d[(&quot;D3 · CLO · BehavioralObjective · Activity&lt;br/&gt;AssessmentCriteria · ObjectiveAssessment&quot;)]
+    DS4d[(&quot;D4 · Student&quot;)]
+    DS5d[(&quot;D5 · Score&quot;)]
+    DS6d[(&quot;D6 · ScoreUploadLog&quot;)]
+    DS7d[(&quot;D7 · Upload Buffer&lt;br/&gt;multipart temp ≤10 MB&quot;)]
+    DS9d[(&quot;D9 · Application Log&lt;br/&gt;ห้ามมีคะแนน/ชื่อ นศ. — CON-02&quot;)]
+
+    P3d -- &quot;f31 byte ของไฟล์ .xlsx ที่ยังไม่ validate&quot; --&gt; DS7d
+    DS7d -- &quot;f32 อ่าน buffer เพื่อ parse เป็นตาราง (SheetJS)&quot; --&gt; P8d
+    DS3d -- &quot;f51 Activity.id · name · maxScore (map คอลัมน์ + เพดานคะแนน)&quot; --&gt; P8d
+    P8d -- &quot;f34 เขียน Score.score เฉพาะแถวที่ผ่าน (FR-68)&quot; --&gt; DS5d
+    P8d -- &quot;f35 ScoreUploadLog: courseId·uploadedBy·fileName&lt;br/&gt;recordsOk·recordsFail — เขียนทุกครั้งแม้ล้มทั้งไฟล์ (FR-71)&quot; --&gt; DS6d
+    DS6d -- &quot;f36 อ่านประวัติอัปโหลด: fileName·recordsOk/Fail·createdAt&quot; --&gt; P8d
+    P8d -- &quot;f37 ไฟล์ template / export .xlsx&quot; --&gt; P3d
+
+    DS3d -- &quot;f38 CLO.threshold · Activity.weight·maxScore&lt;br/&gt;AssessmentCriteria.weight (CR-01·CR-03)&quot; --&gt; P10d
+    DS4d -- &quot;f39 Student.id · studentCode · name&quot; --&gt; P10d
+    DS5d -- &quot;f40 Score.score ต่อ (studentId, activityId)&quot; --&gt; P10d
+    DS2d -- &quot;f50 Course.passCriteria (CR-05) · classTarget (CR-04)&lt;br/&gt;gradingType (CR-06)&quot; --&gt; P10d
+    P10d -- &quot;f41 attainment% ราย CLO · at-risk list · รายงานรายบุคคล&quot; --&gt; P3d
+
+    P3d -- &quot;f42 requestId · statusCode · userId — ไม่มี PII (CON-02)&quot; --&gt; DS9d
+    P8d -- &quot;f43 จำนวนแถว ok/fail + fileName — ไม่มีคะแนน/ชื่อ นศ.&quot; --&gt; DS9d
+</pre>
+<blockquote>
+<p><strong>f50 คือเส้นที่ v2.4.0 ขาดไป</strong> — เกณฑ์ตัดสินทั้งสามตัวอยู่บนตาราง <code>Course</code> (= <strong>D2</strong>) ไม่ใช่ D3:
+<code>passCriteria</code> (ผ่านรายวิชากี่ %) · <code>classTarget</code> (ผู้ผ่านกี่ % จึงถือว่าบรรลุ CLO) · <code>gradingType</code>
+(LETTER หรือ PASS_FAIL) เดิม P10 จึงเป็น <strong>miracle</strong> — ผลิตคำว่า &quot;บรรลุ/ไม่บรรลุ&quot; ออกมาโดยไม่มีเส้นใด
+ส่งเกณฑ์เข้ามาเลย</p>
+<p><strong>ผลด้าน threat ที่เพิ่งมองเห็นได้เพราะมี f50:</strong> <code>passCriteria</code>/<code>classTarget</code> เป็น <strong>course-level</strong>
+(comment OI-03 ใน <code>schema.prisma</code>) — ใครแก้ค่านี้ผ่าน f27a คือการ<strong>เปลี่ยนผลประเมินย้อนหลังทั้งวิชา</strong>
+โดยไม่แตะคะแนนสักตัวเดียวและไม่มี log ใด ๆ จับได้ (D6 บันทึกเฉพาะการนำเข้าไฟล์) — ดู §9 ข้อ 10</p>
+</blockquote>
+<blockquote>
+<p><strong>สิ่งที่ยังไม่ถูก implement (ณ 2026-08-05):</strong> ทุก process ที่ทำเครื่องหมาย 🕐 — คือ 1.0–8.0 และ 10.0
+route ยังถูก comment ไว้ใน <code>app/server/src/routes/index.ts</code> มีเพียง ✅ 9.0 <code>/health</code> ที่ทำงานจริง
+DFD นี้จึงเป็น <strong>target-state model</strong> ใช้ทำ threat modeling <strong>ก่อน</strong> implement ไม่ใช่หลัง
+(ข้อยกเว้น: <code>services/authorization.service.ts</code> เขียนเสร็จแล้ว แต่ยังไม่มี route เรียกใช้)</p>
+</blockquote>
+<h3 id="31-ตารางเทียบ-process--ข้อกำหนด--โค้ด" tabindex="-1"><a class="header-anchor" href="#31-ตารางเทียบ-process--ข้อกำหนด--โค้ด"><span>3.1 ตารางเทียบ process ↔ ข้อกำหนด ↔ โค้ด</span></a></h3>
+<p>ตารางนี้คือหลักฐานว่าไดอะแกรมมาจากระบบจริง ไม่ใช่จากความตั้งใจ (กฎข้อ 1 ของ §1)</p>
+<table>
+<thead>
+<tr>
+<th>Process</th>
+<th>ที่มาใน <a href="./srs.html">srs</a></th>
+<th>โมดูล route</th>
+<th>สถานะ ณ 2026-08-05</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1 SPA Client</td>
+<td>§5.1 User Interface</td>
+<td>— (ฝั่ง client)</td>
+<td>🕐</td>
+</tr>
+<tr>
+<td>P2 Authentication &amp; Session</td>
+<td>§4.1 (FR-01…FR-08)</td>
+<td><code>auth.route.ts</code></td>
+<td>🕐 comment ไว้</td>
+</tr>
+<tr>
+<td>P3 Access Control Gate</td>
+<td>NFR-07 · NFR-19 · FR-25</td>
+<td>middleware + <code>authorization.service.ts</code></td>
+<td>🕐 มีโค้ด service แล้ว ยังไม่มี route ให้ป้องกัน</td>
+</tr>
+<tr>
+<td>P4 User Administration</td>
+<td>§4.1 (FR-05…FR-08)</td>
+<td><code>users.route.ts</code></td>
+<td>🕐 comment ไว้ · <strong>นอก TB-4</strong> (ไม่มี <code>:courseId</code>)</td>
+</tr>
+<tr>
+<td>P5 Course &amp; Instructor Mgmt</td>
+<td>§4.3 (FR-20…FR-29)</td>
+<td><code>courses.route.ts</code></td>
+<td>🕐 comment ไว้</td>
+</tr>
+<tr>
+<td>P6 CLO · Activity · Criteria</td>
+<td>§4.4 + §4.5 (FR-30…FR-48)</td>
+<td><code>clos.route.ts</code></td>
+<td>🕐 comment ไว้</td>
+</tr>
+<tr>
+<td>P7 Roster &amp; Score Entry</td>
+<td>§4.6 + §4.7 ส่วนกรอกมือ (FR-50…FR-65)</td>
+<td><strong>ยังไม่มีโมดูลใน <code>routes/index.ts</code></strong></td>
+<td>🕐 <strong>ช่องว่าง — ดู §3.2</strong></td>
+</tr>
+<tr>
+<td>P8 Excel Import/Export</td>
+<td>§4.7 ส่วนไฟล์ (FR-66…FR-71)</td>
+<td><code>excel.route.ts</code></td>
+<td>🕐 comment ไว้</td>
+</tr>
+<tr>
+<td>P9 Health Check</td>
+<td>— (infrastructure)</td>
+<td><code>health.route.ts</code></td>
+<td>✅ <strong>ทำงานจริง</strong></td>
+</tr>
+<tr>
+<td>P10 Attainment Calc &amp; Reporting</td>
+<td>§4.8 (FR-80…FR-88)</td>
+<td><code>dashboard.route.ts</code></td>
+<td>🕐 comment ไว้</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-ช่องว่างที่พบตอน-audit" tabindex="-1"><a class="header-anchor" href="#32-ช่องว่างที่พบตอน-audit"><span>3.2 ช่องว่างที่พบตอน audit</span></a></h3>
+<p><code>routes/index.ts</code> วางแผนไว้ <strong>6 โมดูล</strong> แต่ DFD มี <strong>8 process ฝั่งเซิร์ฟเวอร์</strong> ส่วนที่ไม่มีเจ้าภาพคือ
+<strong>P7 (roster + กรอกคะแนนทีละช่อง)</strong> — ต้องตัดสินใจว่าจะยุบเข้า <code>courses.route.ts</code> หรือเปิด
+<code>scores.route.ts</code> แยก <strong>ก่อนเริ่ม Sprint 5</strong> มิฉะนั้นงาน FR-50…FR-65 จะไม่มีที่ลง</p>
+<h3 id="33-balancing--level-0--level-1" tabindex="-1"><a class="header-anchor" href="#33-balancing--level-0--level-1"><span>3.3 Balancing — Level 0 ↔ Level 1</span></a></h3>
+<p>กฎของ DFD: เส้นทุกเส้นที่เข้า/ออก process ระดับบน ต้องปรากฏครบในระดับที่แตกลงไป
+ตารางนี้ทำให้ตรวจได้ว่าไม่มีข้อมูลหายหรืองอกระหว่างระดับ</p>
+<table>
+<thead>
+<tr>
+<th>Level 0</th>
+<th>ทิศทาง</th>
+<th>แตกเป็น Level 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>F01</strong> ADMIN → ระบบ</td>
+<td>เข้า</td>
+<td>f1 → f7 · f11</td>
+</tr>
+<tr>
+<td><strong>F02</strong> ระบบ → ADMIN</td>
+<td>ออก</td>
+<td>f8 · f44 · f45 → f12 → f4</td>
+</tr>
+<tr>
+<td><strong>F03</strong> INSTRUCTOR → ระบบ</td>
+<td>เข้า</td>
+<td>f2 → f7 · f11 · f13</td>
+</tr>
+<tr>
+<td><strong>F04</strong> ระบบ → INSTRUCTOR</td>
+<td>ออก</td>
+<td>f8 · f41 · f45–f47 → f12 → f3</td>
+</tr>
+<tr>
+<td><strong>F05</strong> ไฟล์ .xlsx → ระบบ</td>
+<td>เข้า</td>
+<td>f5 → f13 → f31 → f32</td>
+</tr>
+<tr>
+<td><strong>F06</strong> ระบบ → ไฟล์</td>
+<td>ออก</td>
+<td>f37 → f12 → f6</td>
+</tr>
+<tr>
+<td><strong>F07</strong> ระบบ → ฐานข้อมูล</td>
+<td>เข้า DB</td>
+<td>f15 · f17 · f25a · f26a–f29a · f30 · f33 · f34 · f35</td>
+</tr>
+<tr>
+<td><strong>F08</strong> ฐานข้อมูล → ระบบ</td>
+<td>ออก DB</td>
+<td>f16 · f18 · f25b · f26b–f29b · f36 · f38–f40 · f49 · <strong>f50</strong> · <strong>f51</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>เส้นที่ <strong>ไม่มี</strong> คู่ใน Level 0 มีสองกลุ่มและถูกต้องทั้งคู่ เพราะเป็นการไหล<strong>ภายใน</strong>ขอบเขตเดียว:
+f9/f10 (client ↔ D8 อยู่ในเบราว์เซอร์) และ f42/f43 (log ภายในเซิร์ฟเวอร์)
+ส่วน f14/f48 (<code>/health</code>) ไม่ปรากฏใน Level 0 เพราะไม่ใช่ข้อมูลของผู้ใช้ — เป็น flow ของ infrastructure</p>
+</blockquote>
+<h3 id="34-ผลตรวจ-level-1-ตามกฎ-dfd-และกฎของ-threat-modeling" tabindex="-1"><a class="header-anchor" href="#34-ผลตรวจ-level-1-ตามกฎ-dfd-และกฎของ-threat-modeling"><span>3.4 ผลตรวจ Level 1 ตามกฎ DFD และกฎของ threat modeling</span></a></h3>
+<p>ตรวจเมื่อ 2026-08-05 · เกณฑ์: กฎโครงสร้าง DFD แบบ Yourdon/DeMarco (ข้อ 1–8) +
+กฎเฉพาะของ TMT 2016 ที่มีผลกับการ generate threat (ข้อ 9–12)</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>กฎ</th>
+<th>ผลตรวจ</th>
+<th>สิ่งที่ทำ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>ห้ามมี black hole</strong> — process ที่มีขาเข้าแต่ไม่มีขาออก</td>
+<td>❌ <strong>P9</strong> รับ f14 แล้วไม่ตอบอะไรเลย</td>
+<td>เพิ่ม <strong>f48</strong> P9 → P1</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>ห้ามมี miracle</strong> — ข้อมูลขาออกที่ไม่มีที่มา</td>
+<td>❌ <strong>f12</strong> (response ถึงผู้ใช้) ไม่มีเส้นป้อนเข้า P3 จาก P4–P7 เลย ทั้งที่ทั้งสี่ process อ่านฐานข้อมูลจริง</td>
+<td>เพิ่ม <strong>f44–f47</strong> P4/P5/P6/P7 → P3</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>ทุก data store ต้องมีทั้งคนอ่านและคนเขียน</strong></td>
+<td>⚠️ <strong>D5</strong> ถูกเขียนโดย P7/P8 และอ่านโดย P10 แต่ <strong>P7 ไม่เคยอ่าน</strong> — หน้าจอกรอกคะแนนจะแสดงคะแนนเดิมไม่ได้ · <strong>D9</strong> เขียนอย่างเดียว</td>
+<td>เพิ่ม <strong>f49</strong> D5 → P7 · D9 รับเป็นข้อยกเว้น (ดูหมายเหตุใต้ตาราง)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>ห้ามต่อ store → store โดยตรง</strong></td>
+<td>✅ ไม่มี</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>ห้ามต่อ external entity → external entity</strong></td>
+<td>✅ ไม่มี</td>
+<td>—</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>ห้ามต่อ external entity → data store โดยตรง</strong></td>
+<td>✅ EE3 ผ่าน P1 เสมอ</td>
+<td>—</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>ทุกเส้นต้องมีชื่อที่บอก &quot;ข้อมูลอะไร&quot;</strong></td>
+<td>❌ f21–f24 เขียนว่า <code>idem</code> ซึ่งไม่ใช่ชื่อข้อมูล — import เข้า TMT แล้วจะกลายเป็นเส้นไม่มีชื่อ 4 เส้น</td>
+<td>ตั้งชื่อจริงทั้งสี่เส้น</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Balancing กับระดับบน</strong></td>
+<td>✅ ครบทั้ง 8 เส้นของ Level 0</td>
+<td>ดู §3.3</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>TMT ไม่มีเส้นสองทาง</strong> — flow มีทิศเดียวเสมอ และ threat ต่างกันตามทิศ</td>
+<td>❌ f26–f29 วาดเป็น <code>&lt;--&gt;</code> และ f25 วาดทางเดียวแต่ register เขียน <code>↔</code></td>
+<td>แยกเป็น <strong>f25a/b · f26a/b · f27a/b · f28a/b · f29a/b</strong></td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>เส้นที่ตัดขอบเขตต้องถูกบันทึกว่าตัดขอบเขต</strong></td>
+<td>❌ f32 · f37 · f41 · f43 ตัด <strong>TB-4</strong> จริง (D7/D9/P3 อยู่นอกกรอบ TB-4 แต่ P8/P10 อยู่ใน) แต่ register เดิมเขียนว่า <code>—</code></td>
+<td>แก้คอลัมน์ boundary ใน §6</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>ขอบเขตต้องมีเส้นตัดทั้งสองทิศ</strong> ไม่ใช่ขาเข้าอย่างเดียว</td>
+<td>❌ เดิม TB-4 มีแต่ขาเข้า (f19–f24) — <strong>ทิศที่ข้อมูลรั่วคือขาออก</strong> แต่ไม่มีเส้นให้ TMT เห็น</td>
+<td>f44–f47 ปิดช่องนี้พอดี</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>ชนิด stencil ต้องตรงกับสิ่งที่ element เป็นจริง</strong></td>
+<td>✅ ตรงกับ §5 ทั้ง 22 element</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>สรุป: ผิดกฎ 7 ข้อจาก 12</strong> — แก้ในไดอะแกรมและ register แล้วทั้งหมด จำนวนเส้นเพิ่มจาก 43 เป็น <strong>54</strong>
+(ใช้วิธีเติมเลขใหม่ f44–f49 และแยกด้วยตัวอักษร a/b แทนการเรียงเลขใหม่ทั้งชุด
+เพราะ <a href="./project-plan.html">project-plan</a> และ <a href="./srs.html">srs</a> อ้างเลขเส้นเดิมอยู่ — การ renumber จะทำให้เอกสารอื่นผิดตามทันที)</p>
+<h3 id="35-ผลตรวจรอบสอง--เทียบกับ-schemaprisma-ทีละตาราง-v250" tabindex="-1"><a class="header-anchor" href="#35-ผลตรวจรอบสอง--เทียบกับ-schemaprisma-ทีละตาราง-v250"><span>3.5 ผลตรวจรอบสอง — เทียบกับ <code>schema.prisma</code> ทีละตาราง (v2.5.0)</span></a></h3>
+<p>รอบ v2.2.0 ตรวจ <strong>โครงสร้างไดอะแกรม</strong> (black hole / miracle / ทิศ) แต่ตรวจจาก<em>ไดอะแกรมเอง</em>
+รอบนี้ตรวจอีกแกนหนึ่ง: <strong>ไดอะแกรมตรงกับฐานข้อมูลจริงหรือไม่</strong> — เปิด <code>database/schema.prisma</code>
+ไล่ทีละ model แล้วถามว่า &quot;ตารางนี้อยู่ใน store ไหน และมีเส้นอ่าน/เขียนครบไหม&quot;
+กฎที่ใช้คือ <strong>miracle รุ่นละเอียด</strong>: process ที่ผลิตค่าจากคอลัมน์ที่ไม่มีเส้นส่งเข้ามา = miracle เหมือนกัน</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>สิ่งที่พบ</th>
+<th>ประเภท</th>
+<th>สิ่งที่ทำ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>13</td>
+<td><code>ObjectiveAssessment</code> ไม่ปรากฏใน store ใดเลย — D3 ครอบ 4 ตาราง แต่ schema มี 5 ตารางในคลัสเตอร์นี้ ทำให้ 11 model แมปได้จริงแค่ 10</td>
+<td>element หาย</td>
+<td>เติมชื่อตารางใน D3 ทุกที่ + เพิ่ม <strong>§5.4 ตารางกระทบยอด 11 model</strong></td>
+</tr>
+<tr>
+<td>14</td>
+<td>ชื่อ store เป็น<strong>หมวดหมู่</strong> ไม่ใช่ชื่อตาราง (<code>D3 · CLO/Activity/Criteria</code>) — คำว่า &quot;Criteria&quot; ชี้ได้ทั้ง <code>AssessmentCriteria</code> · <code>CLO.threshold</code> · <code>Course.passCriteria</code> ซึ่งอยู่คนละตารางและคนละ store</td>
+<td>ป้ายกำกวม</td>
+<td>ตั้งชื่อ store ด้วยชื่อ model จริง · ป้ายเส้นทุกเส้นระบุ <code>ตาราง.คอลัมน์</code></td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>P10 ไม่มีเส้นรับเกณฑ์ตัดสิน</strong> — CR-04 อ่าน <code>Course.classTarget</code> · CR-05 อ่าน <code>Course.passCriteria</code> · CR-06 อ่าน <code>Course.gradingType</code> ทั้งหมดอยู่บน <strong>D2</strong> แต่ P10 ต่อกับ D3/D4/D5 เท่านั้น</td>
+<td><strong>miracle</strong></td>
+<td>เพิ่ม <strong>f50</strong> D2 → P10</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>P8 ไม่มีเส้นรับ Activity</strong> — import ต้องแปลงหัวคอลัมน์เป็น <code>activityId</code> และตรวจ <code>score ≤ Activity.maxScore</code> ก่อน commit (FR-69) แต่ไม่มีเส้นอ่าน D3</td>
+<td><strong>miracle</strong></td>
+<td>เพิ่ม <strong>f51</strong> D3 → P8</td>
+</tr>
+<tr>
+<td>17</td>
+<td><strong>P4 ถูกวาดไว้ใน TB-4</strong> ทั้งที่เส้นทางจัดการผู้ใช้ไม่มี <code>courseId</code> — ด่านคือ <code>rbac(&quot;ADMIN&quot;)</code> ไม่ใช่ <code>assertCourseAccess()</code></td>
+<td>boundary ผิดตัว</td>
+<td>ย้าย P4 ออกนอก TB-4 · แก้คอลัมน์ boundary ของ f19/f44 เป็น <code>—</code> · เพิ่ม STRIDE ข้อ 9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>สรุปรอบสอง: พบ 5 ข้อ แก้ครบ</strong> — จำนวนเส้นเพิ่มจาก 54 เป็น <strong>56</strong> (f50 · f51)
+ทั้งสองเส้นที่เพิ่มเป็น <strong>miracle ชนิดที่ไดอะแกรมมองไม่เห็น</strong>: ผังเดิม &quot;ถูก&quot; ในแง่ว่าทุก process มีขาเข้าและขาออก
+แต่ผิดในแง่ที่ว่า <em>ขาเข้าที่มีอยู่ไม่พอจะผลิตขาออกนั้นได้จริง</em> — ตรวจเจอได้ก็ต่อเมื่อเทียบกับ schema เท่านั้น</p>
+<blockquote>
+<p><strong>ข้อยกเว้นที่รับไว้อย่างตั้งใจ — D9 เขียนอย่างเดียว:</strong> ตามกฎข้อ 3 store ที่ไม่มีใครอ่านคือ store ที่ตายแล้ว
+แต่ D9 ถูกอ่านผ่าน<strong>เครื่องมือ ops นอกระบบ</strong> (<code>docker logs</code> / ไฟล์บนเครื่อง) ไม่ใช่ผ่าน process ใดใน DFD นี้
+การลากเส้นอ่านออกไปหา &quot;ผู้ดูแลเซิร์ฟเวอร์&quot; จะเพิ่ม external entity ที่ไม่มีในขอบเขต <a href="./srs.html">srs</a> v1
+<strong>ผลด้าน threat:</strong> ต้องบันทึกใน TMT ว่า D9 ไม่มี access control ในระดับแอป — ใครเข้าเครื่องได้ก็อ่านได้
+จึงเป็นเหตุผลที่ CON-02 (ห้ามมี PII ใน log) ไม่ใช่แค่เรื่องความสะอาด แต่เป็น control ตัวเดียวที่ป้องกัน D9</p>
+</blockquote>
+<blockquote>
+<p><strong>ข้อสังเกตที่เจอระหว่างตรวจแต่ยังไม่แก้ (อยู่ที่ Level 2):</strong> ใน §4.1 เส้น <code>8.4 → 8.5</code> ติดป้ายว่า
+&quot;ผู้ใช้ยืนยัน&quot; ซึ่งเป็น <strong>control flow ไม่ใช่ data flow</strong> — DFD ไม่รับเส้นควบคุม
+ที่ถูกต้องคือให้ผู้ใช้ส่ง &quot;คำสั่ง commit + id ของชุด preview&quot; กลับเข้ามาเป็นข้อมูล
+ต้องแก้ตอนทำงาน 3.2.3 พร้อมกับตัดสินใจว่า preview ถูกเก็บที่ไหนระหว่างรอผู้ใช้ยืนยัน</p>
+</blockquote>
+<hr>
+<h2 id="4-level-2--สองกระบวนการที่ซับซ้อนที่สุด" tabindex="-1"><a class="header-anchor" href="#4-level-2--สองกระบวนการที่ซับซ้อนที่สุด"><span>4. Level 2 — สองกระบวนการที่ซับซ้อนที่สุด</span></a></h2>
+<p>แตกเฉพาะสองกระบวนการที่มีตรรกะภายในมากพอจะซ่อนข้อผิดพลาดได้ (งาน 3.2.3)</p>
+<h3 id="41-p8--excel-import-pipeline" tabindex="-1"><a class="header-anchor" href="#41-p8--excel-import-pipeline"><span>4.1 P8 — Excel Import Pipeline</span></a></h3>
+<pre class="mermaid">flowchart TB
+    IN[&quot;ไฟล์ .xlsx จาก P3&quot;]
+    DS7[(&quot;D7 · Upload Buffer&quot;)]
+    DS3[(&quot;D3 · Activity&quot;)]
+    DS4[(&quot;D4 · Student&quot;)]
+    DS5[(&quot;D5 · Score&quot;)]
+    DS6[(&quot;D6 · ScoreUploadLog&quot;)]
+    OUT[&quot;ผลตรวจสอบกลับไป P3&quot;]
+
+    P81((&quot;8.1&lt;br/&gt;ตรวจขนาด/ชนิดไฟล์&lt;br/&gt;ก่อน parse&quot;))
+    P82((&quot;8.2&lt;br/&gt;Parse เป็นตาราง&lt;br/&gt;(SheetJS)&quot;))
+    P83((&quot;8.3&lt;br/&gt;ตรวจ 6 ประเภท&lt;br/&gt;ข้อผิดพลาด · FR-69&quot;))
+    P84((&quot;8.4&lt;br/&gt;สร้าง Preview&lt;br/&gt;ผ่าน/ไม่ผ่านรายแถว · FR-67&quot;))
+    P85((&quot;8.5&lt;br/&gt;Commit เฉพาะแถวที่ผ่าน&lt;br/&gt;ใน transaction · FR-68&quot;))
+    P86((&quot;8.6&lt;br/&gt;บันทึก Upload Log&lt;br/&gt;ทุกกรณี · FR-71&quot;))
+
+    IN --&gt; P81 --&gt; DS7
+    DS7 --&gt; P82 --&gt; P83
+    DS4 -- &quot;Student.studentCode ที่มีอยู่จริงในวิชา (f33)&quot; --&gt; P83
+    DS3 -- &quot;Activity.id · name · maxScore (f51)&quot; --&gt; P83
+    P83 --&gt; P84 --&gt; OUT
+    P84 -- &quot;ผู้ใช้ยืนยัน&quot; --&gt; P85 --&gt; DS5
+    P83 -- &quot;ผลรวม ok/fail&quot; --&gt; P86 --&gt; DS6
+    P86 --&gt; OUT
+</pre>
+<p><strong>6 ประเภทข้อผิดพลาดที่ 8.3 ต้องจับ (FR-69) แมปกับข้อบังคับใน <code>schema.prisma</code> ตรง ๆ:</strong></p>
+<table>
+<thead>
+<tr>
+<th>ข้อผิดพลาด</th>
+<th>ตรวจกับ</th>
+<th>ข้อบังคับที่รองรับซ้ำในชั้น DB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>รหัสนักศึกษาไม่มีในวิชา</td>
+<td><code>Student.studentCode</code> (f33)</td>
+<td><code>@@unique([studentCode, courseId])</code></td>
+</tr>
+<tr>
+<td>หัวคอลัมน์ไม่ตรงกับกิจกรรมใด</td>
+<td><code>Activity.name</code> (f51)</td>
+<td>— (ต้องตรวจที่แอปเท่านั้น)</td>
+</tr>
+<tr>
+<td>คะแนนเกินเพดาน</td>
+<td><code>Activity.maxScore</code> (f51)</td>
+<td>trigger <code>score &lt;= Activity.maxScore</code></td>
+</tr>
+<tr>
+<td>คะแนนติดลบ</td>
+<td>—</td>
+<td>CHECK <code>score &gt;= 0</code></td>
+</tr>
+<tr>
+<td>คะแนนไม่ใช่ตัวเลข</td>
+<td>—</td>
+<td>ชนิดคอลัมน์ <code>Float</code></td>
+</tr>
+<tr>
+<td>รหัสนักศึกษาซ้ำในไฟล์เดียวกัน</td>
+<td>ภายในไฟล์</td>
+<td><code>@@unique([studentId, activityId])</code> บน <code>Score</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>ทุกแถวในตารางนี้มี <strong>สองด่าน</strong> — แอปตรวจเพื่อ<em>บอกผู้ใช้เป็นรายแถว</em> (FR-67/FR-69) ส่วน DB ตรวจเพื่อ
+<em>กันข้อมูลเสีย</em> ถ้าตัดด่านแอปออกโดยคิดว่า DB รับไว้อยู่แล้ว ผู้ใช้จะได้ 500 พร้อมข้อความ Prisma ดิบ
+ซึ่งละเมิด CON-02 ด้วย (Prisma error พ่วงค่าในฟิลด์ออกมา — STRIDE #5)</p>
+</blockquote>
+<p><strong>จุดที่ต้องระวัง:</strong> 8.1 ต้องเกิด<strong>ก่อน</strong> 8.2 เสมอ — ถ้า parse ก่อนตรวจขนาด ไฟล์ที่ตั้งใจให้ระเบิด
+(zip bomb / แถวเป็นล้าน) จะกินหน่วยความจำจนล้มทั้งเซิร์ฟเวอร์ ซึ่ง Node.js เธรดเดียวรับไม่ไหว</p>
+<h3 id="42-p10--attainment-calculation" tabindex="-1"><a class="header-anchor" href="#42-p10--attainment-calculation"><span>4.2 P10 — Attainment Calculation</span></a></h3>
+<pre class="mermaid">flowchart TB
+    DS2[(&quot;D2 · Course&quot;)]
+    DS3[(&quot;D3 · CLO · Activity&lt;br/&gt;AssessmentCriteria&quot;)]
+    DS4[(&quot;D4 · Student&quot;)]
+    DS5[(&quot;D5 · Score&quot;)]
+
+    P101((&quot;10.1&lt;br/&gt;ตรวจความพร้อมข้อมูล&lt;br/&gt;น้ำหนักครบ 100? · FR-45&quot;))
+    P102((&quot;10.2&lt;br/&gt;คำนวณ cloScore รายคน&lt;br/&gt;CR-03 · null เมื่อไม่มีคะแนน&quot;))
+    P103((&quot;10.3&lt;br/&gt;เทียบ threshold&lt;br/&gt;ผ่าน/ไม่ผ่าน ราย CLO&quot;))
+    P104((&quot;10.4&lt;br/&gt;attainment ระดับวิชา&lt;br/&gt;CR-04&quot;))
+    P105((&quot;10.5&lt;br/&gt;คะแนนรวม + สถานะ&lt;br/&gt;CR-05 · CR-06&quot;))
+    P106((&quot;10.6&lt;br/&gt;สรุป at-risk&lt;br/&gt;FR-83&quot;))
+
+    OUT1[&quot;Dashboard ราย CLO&quot;]
+    OUT2[&quot;รายงานรายบุคคล&quot;]
+    OUTX[&quot;ข้อความบอกสาเหตุ&lt;br/&gt;ที่คำนวณไม่ได้ · FR-84&quot;]
+
+    DS3 -- &quot;Activity.weight รวมครบ 100? · AssessmentCriteria.weight (f38)&quot; --&gt; P101
+    P101 -- &quot;ไม่พร้อม&quot; --&gt; OUTX
+    P101 -- &quot;พร้อม&quot; --&gt; P102
+    DS4 -- &quot;Student (f39)&quot; --&gt; P102
+    DS5 -- &quot;Score.score (f40)&quot; --&gt; P102
+    P102 --&gt; P103
+    DS3 -- &quot;CLO.threshold (f38)&quot; --&gt; P103
+    DS2 -- &quot;Course.classTarget (f50)&quot; --&gt; P104
+    DS2 -- &quot;Course.passCriteria · gradingType (f50)&quot; --&gt; P105
+    P103 --&gt; P104 --&gt; OUT1
+    P103 --&gt; P106 --&gt; OUT1
+    P102 --&gt; P105 --&gt; OUT2
+    P106 --&gt; OUT2
+</pre>
+<p><strong>จุดที่ต้องระวัง:</strong> 10.1 ต้องแยก &quot;คำนวณไม่ได้&quot; ออกจาก &quot;คำนวณได้และผลเป็น 0&quot; ให้ชัด
+FR-84 ห้ามแสดง 0% เมื่อข้อมูลไม่พอ — ทั้งสองอย่างหน้าตาเหมือนกันบนหน้าจอ แต่ความหมายตรงข้ามกัน
+ที่มาของ &quot;ไม่พอ&quot; มีสองแบบและต้องแยกข้อความกัน: <strong>น้ำหนักไม่ครบ 100</strong> (<code>Activity.weight</code> — FR-45) กับ
+<strong>ไม่มีแถว <code>Score</code></strong> (ยังไม่ประเมิน — FR-62) อย่างหลังทำให้ <code>cloScore</code> เป็น <code>null</code> ไม่ใช่ 0 ตาม CR-03</p>
+<p><strong>จุดที่ต้องระวังข้อสอง (เห็นได้เพราะมี f50):</strong> เกณฑ์ทั้งสามเข้ามาคนละจุดของ pipeline —
+<code>CLO.threshold</code> ใช้ที่ 10.3 (ผ่าน CLO รายคน) · <code>Course.classTarget</code> ใช้ที่ 10.4 (บรรลุระดับวิชา) ·
+<code>Course.passCriteria</code> ใช้ที่ 10.5 (ผ่านรายวิชา) <strong>สามค่านี้ตอบคนละคำถาม</strong> การสลับที่กันคือบั๊กที่
+หน้าจอยังแสดงตัวเลขสวยงามตามปกติ ไม่มี error ให้จับ — จึงต้องมี unit test ต่อ CR-03/04/05 แยกกัน</p>
+<hr>
+<h2 id="5-element-register-tmt-2016-stencil-mapping" tabindex="-1"><a class="header-anchor" href="#5-element-register-tmt-2016-stencil-mapping"><span>5. Element Register (TMT 2016 stencil mapping)</span></a></h2>
+<p>TMT 2016 สร้าง threat จาก <strong>ชนิดของ element</strong> ไม่ใช่จากชื่อ — เลือก stencil ผิด threat list จะผิดทั้งชุด
+ใช้ template <strong>SDL TM Knowledge Base (Core)</strong></p>
+<h3 id="51-external-interactors" tabindex="-1"><a class="header-anchor" href="#51-external-interactors"><span>5.1 External Interactors</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>ชื่อใน TMT</th>
+<th>Stencil</th>
+<th>Property ที่ต้องตั้ง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EE1</td>
+<td>ADMIN</td>
+<td>Generic External Interactor</td>
+<td>Authenticate = Yes · Provides = Credentials</td>
+</tr>
+<tr>
+<td>EE2</td>
+<td>INSTRUCTOR</td>
+<td>Generic External Interactor</td>
+<td>Authenticate = Yes</td>
+</tr>
+<tr>
+<td>EE3</td>
+<td>Local File System (.xlsx)</td>
+<td>Generic External Interactor</td>
+<td>Authenticate = No — <strong>แหล่ง untrusted input</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-processes" tabindex="-1"><a class="header-anchor" href="#52-processes"><span>5.2 Processes</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>ชื่อใน TMT</th>
+<th>Stencil</th>
+<th>Running As</th>
+<th>หมายเหตุ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>SPA Client (React)</td>
+<td>Browser Client</td>
+<td>User</td>
+<td>โค้ดรันบนเครื่องผู้ใช้ = <strong>ไม่เชื่อถือ</strong></td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Authentication &amp; Session</td>
+<td>Web Application</td>
+<td>Service Account</td>
+<td>ทางเข้าเดียวที่ไม่ต้องมี token</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Access Control Gate</td>
+<td>Web Application</td>
+<td>Service Account</td>
+<td><code>auth → rbac → assertCourseAccess</code> — จุดบังคับ TB-4</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>User Administration</td>
+<td>Web Application</td>
+<td>Service Account</td>
+<td>ADMIN เท่านั้น</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>Course &amp; Instructor Mgmt</td>
+<td>Web Application</td>
+<td>Service Account</td>
+<td></td>
+</tr>
+<tr>
+<td>P6</td>
+<td>CLO · Activity · Criteria</td>
+<td>Web Application</td>
+<td>Service Account</td>
+<td></td>
+</tr>
+<tr>
+<td>P7</td>
+<td>Roster &amp; Score Entry</td>
+<td>Web Application</td>
+<td>Service Account</td>
+<td>แตะข้อมูล PDPA</td>
+</tr>
+<tr>
+<td>P8</td>
+<td>Excel Import/Export</td>
+<td>Web Application</td>
+<td>Service Account</td>
+<td>parse ไฟล์ผู้ใช้ = พื้นที่เสี่ยงสูงสุด</td>
+</tr>
+<tr>
+<td>P9</td>
+<td>Health Check</td>
+<td>Web Application</td>
+<td>Service Account</td>
+<td>unauthenticated โดยเจตนา</td>
+</tr>
+<tr>
+<td>P10</td>
+<td>Attainment Calc &amp; Reporting</td>
+<td>Web Application</td>
+<td>Service Account</td>
+<td>อ่านอย่างเดียว</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-data-stores" tabindex="-1"><a class="header-anchor" href="#53-data-stores"><span>5.3 Data Stores</span></a></h3>
+<p>คอลัมน์ &quot;ตารางที่ครอบ&quot; คือชื่อ model ใน <code>database/schema.prisma</code> แบบตรงตัว — ไม่ใช่คำอธิบายหมวดหมู่
+เพราะป้ายที่เป็นหมวดหมู่ทำให้อ่านไม่ออกว่าเส้นหนึ่ง ๆ แตะตารางไหน (ข้อ 14 ของ §3.5)</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>ชื่อใน TMT</th>
+<th>ตารางที่ครอบ (<code>schema.prisma</code>)</th>
+<th>Stencil</th>
+<th>Sensitive</th>
+<th>หมายเหตุ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D1</td>
+<td>User</td>
+<td><code>User</code></td>
+<td>SQL Database</td>
+<td><strong>Yes</strong></td>
+<td><code>passwordHash</code> (argon2) + <code>role</code> — เป้าหมายอันดับ 1</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Course · CourseInstructor</td>
+<td><code>Course</code> · <code>CourseInstructor</code></td>
+<td>SQL Database</td>
+<td>No</td>
+<td><strong>เป็นตารางที่นิยาม TB-4</strong> (<code>instructors.some.userId</code>) และ<strong>ถือเกณฑ์ตัดสิน</strong> <code>passCriteria</code>/<code>classTarget</code>/<code>gradingType</code></td>
+</tr>
+<tr>
+<td>D3</td>
+<td>CLO Structure</td>
+<td><code>CLO</code> · <code>BehavioralObjective</code> · <code>Activity</code> · <code>AssessmentCriteria</code> · <code>ObjectiveAssessment</code></td>
+<td>SQL Database</td>
+<td>No</td>
+<td>ไม่ใช่ PII แต่เป็น <strong>แหล่งของน้ำหนักคำนวณทั้งหมด</strong> — Tampering ที่นี่เงียบกว่าการแก้คะแนน</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Student (roster)</td>
+<td><code>Student</code></td>
+<td>SQL Database</td>
+<td><strong>Yes</strong></td>
+<td><code>studentCode</code> + <code>name</code> — PDPA · หนึ่งแถว = หนึ่ง <strong>enrolment</strong> ไม่ใช่หนึ่งคน (ASM-01)</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Score</td>
+<td><code>Score</code></td>
+<td>SQL Database</td>
+<td><strong>Yes</strong></td>
+<td>ผลการเรียน — PDPA · <strong>ไม่มีแถว = ยังไม่ประเมิน</strong> ไม่ใช่ 0 (FR-62)</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>ScoreUploadLog</td>
+<td><code>ScoreUploadLog</code></td>
+<td>SQL Database</td>
+<td>No</td>
+<td>หลักฐาน audit (FR-71) — ครอบเฉพาะการนำเข้าไฟล์</td>
+</tr>
+<tr>
+<td>D7</td>
+<td>Upload Buffer</td>
+<td>— (ไฟล์ชั่วคราว multipart)</td>
+<td>File System</td>
+<td><strong>Yes</strong></td>
+<td>ไฟล์ผู้ใช้ก่อน validate</td>
+</tr>
+<tr>
+<td>D8</td>
+<td>Browser Token Store</td>
+<td>— (<code>localStorage</code> / cookie)</td>
+<td>Generic Data Store</td>
+<td><strong>Yes</strong></td>
+<td>อยู่ฝั่ง client — นอกการควบคุมของ server</td>
+</tr>
+<tr>
+<td>D9</td>
+<td>Application Log</td>
+<td>— (stdout / ไฟล์บนเครื่อง)</td>
+<td>Generic Data Store</td>
+<td>No</td>
+<td><strong>ต้องไม่มี</strong> คะแนน/ชื่อ นศ. (CON-02)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="54-กระทบยอด--11-model-ต้องอยู่ครบใน-store-ใด-store-หนึ่ง" tabindex="-1"><a class="header-anchor" href="#54-กระทบยอด--11-model-ต้องอยู่ครบใน-store-ใด-store-หนึ่ง"><span>5.4 กระทบยอด — 11 model ต้องอยู่ครบใน store ใด store หนึ่ง</span></a></h3>
+<p>ตารางนี้คือหลักฐานว่า DFD ครอบฐานข้อมูลจริงครบ ไม่มีตารางไหนหลุด (ข้อ 13 ของ §3.5)
+ถ้าเพิ่ม model ใหม่ใน <code>schema.prisma</code> <strong>ต้องกลับมาเติมแถวที่นี่</strong> มิฉะนั้น threat model จะครอบไม่ถึง</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Model</th>
+<th>Store</th>
+<th>เส้นที่เขียน</th>
+<th>เส้นที่อ่าน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>User</code></td>
+<td>D1</td>
+<td>f26a</td>
+<td>f16 · f18 · f26b · f27b (ชื่อผู้สอน)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>Course</code></td>
+<td>D2</td>
+<td>f27a</td>
+<td>f25b · f27b · <strong>f50</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>CourseInstructor</code></td>
+<td>D2</td>
+<td>f27a</td>
+<td>f25b · f27b</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>CLO</code></td>
+<td>D3</td>
+<td>f28a</td>
+<td>f28b · f38</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>BehavioralObjective</code></td>
+<td>D3</td>
+<td>f28a</td>
+<td>f28b</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>Activity</code></td>
+<td>D3</td>
+<td>f28a</td>
+<td>f28b · f38 · <strong>f51</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>AssessmentCriteria</code></td>
+<td>D3</td>
+<td>f28a</td>
+<td>f28b · f38</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>ObjectiveAssessment</code></td>
+<td>D3</td>
+<td>f28a</td>
+<td>f28b</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>Student</code></td>
+<td>D4</td>
+<td>f29a</td>
+<td>f29b · f33 · f39</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>Score</code></td>
+<td>D5</td>
+<td>f30 · f34</td>
+<td>f40 · f49</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>ScoreUploadLog</code></td>
+<td>D6</td>
+<td>f35</td>
+<td>f36</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>ObjectiveAssessment</code> อ่าน/เขียนผ่าน f28 เท่านั้น — และนั่นถูกต้อง</strong> ตาม comment ใน <code>schema.prisma</code>
+ตารางนี้เป็น <strong>traceability อย่างเดียว</strong> (&quot;เกณฑ์ข้อนี้เป็นหลักฐานของจุดประสงค์ข้อไหน&quot;) และ FR-35
+ระบุว่า<strong>ต้องไม่กระทบค่า cloScore ที่คำนวณได้</strong> จึงต้องไม่มีเส้นวิ่งเข้า P10 — ถ้าวันหนึ่งมีเส้น
+<code>D3 → P10</code> ที่ดึงตารางนี้ไปใช้ในสูตร แปลว่า FR-35 ถูกละเมิดโดยไม่มีใครสังเกต</p>
+</blockquote>
+<hr>
+<h2 id="6-data-flow-register" tabindex="-1"><a class="header-anchor" href="#6-data-flow-register"><span>6. Data Flow Register</span></a></h2>
+<p>ครบทั้ง <strong>56 เส้น</strong> ตามไดอะแกรม §3 — เส้นที่ไม่อยู่ในตารางนี้ถือว่าไม่มีอยู่ในระบบ
+คอลัมน์ &quot;ข้าม boundary&quot; คือสิ่งที่ TMT ใช้ตัดสินว่าจะออก threat หรือไม่ ช่องที่เป็น <code>—</code> แปลว่าอยู่ในขอบเขตเดียวกัน</p>
+<blockquote>
+<p><strong>กฎการเขียนคอลัมน์ &quot;ข้อมูล&quot; (v2.5.0):</strong> เส้นที่ปลายทางเป็น data store ต้องระบุ <strong><code>ตาราง.คอลัมน์</code></strong>
+ที่แตะจริงตาม <code>schema.prisma</code> ไม่ใช่คำรวมอย่าง &quot;CRUD&quot; หรือ &quot;อ่านข้อมูลวิชา&quot; — เพราะ TMT ออก threat
+ต่อ <strong>เส้น</strong> ไม่ใช่ต่อ <strong>ตาราง</strong> ป้ายที่ไม่บอกฟิลด์ทำให้ประเมิน Tampering ไม่ได้ว่ากระทบอะไร</p>
+</blockquote>
+<h3 id="61-ผู้ใช้--ไคลเอนต์-f1f6" tabindex="-1"><a class="header-anchor" href="#61-ผู้ใช้--ไคลเอนต์-f1f6"><span>6.1 ผู้ใช้ ↔ ไคลเอนต์ (f1–f6)</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>จาก → ถึง</th>
+<th>ข้อมูล</th>
+<th>Protocol</th>
+<th>ข้าม boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f1</td>
+<td>EE1 → P1</td>
+<td>credentials · คำสั่งจัดการผู้ใช้/รายวิชา</td>
+<td>UI event</td>
+<td>— (ในเบราว์เซอร์)</td>
+</tr>
+<tr>
+<td>f2</td>
+<td>EE2 → P1</td>
+<td>credentials · CLO · คะแนน · คำขอรายงาน</td>
+<td>UI event</td>
+<td>—</td>
+</tr>
+<tr>
+<td>f3</td>
+<td>P1 → EE2</td>
+<td>หน้าจอ · Dashboard · รายงาน</td>
+<td>render</td>
+<td>—</td>
+</tr>
+<tr>
+<td>f4</td>
+<td>P1 → EE1</td>
+<td>ผลการทำงาน · ข้อความ error ภาษาไทย</td>
+<td>render</td>
+<td>—</td>
+</tr>
+<tr>
+<td>f5</td>
+<td>EE3 → P1</td>
+<td>ผู้ใช้เลือกไฟล์ <code>.xlsx</code></td>
+<td>File API</td>
+<td>—</td>
+</tr>
+<tr>
+<td>f6</td>
+<td>P1 → EE3</td>
+<td>template / ไฟล์ export / รายการแถวที่ไม่ผ่าน</td>
+<td>download</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-ไคลเอนต์--เซิร์ฟเวอร์-f7f14" tabindex="-1"><a class="header-anchor" href="#62-ไคลเอนต์--เซิร์ฟเวอร์-f7f14"><span>6.2 ไคลเอนต์ ↔ เซิร์ฟเวอร์ (f7–f14)</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>จาก → ถึง</th>
+<th>ข้อมูล</th>
+<th>Protocol</th>
+<th>ข้าม boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f7</td>
+<td>P1 → P2</td>
+<td>email + password (plaintext ใน body)</td>
+<td>HTTPS/TLS 1.2+</td>
+<td>TB-1 · TB-3</td>
+</tr>
+<tr>
+<td>f8</td>
+<td>P2 → P1</td>
+<td>access token 15 นาที · refresh token 7 วัน</td>
+<td>HTTPS</td>
+<td>TB-1 · TB-3</td>
+</tr>
+<tr>
+<td>f9</td>
+<td>P1 → D8</td>
+<td>เก็บ token ไว้ที่เบราว์เซอร์</td>
+<td>in-browser</td>
+<td>— (<strong>ดู STRIDE #2</strong>)</td>
+</tr>
+<tr>
+<td>f10</td>
+<td>D8 → P1</td>
+<td>อ่าน token มาแนบ header</td>
+<td>in-browser</td>
+<td>—</td>
+</tr>
+<tr>
+<td>f11</td>
+<td>P1 → P3</td>
+<td>JSON + <code>Authorization: Bearer</code></td>
+<td>HTTPS</td>
+<td>TB-1</td>
+</tr>
+<tr>
+<td>f12</td>
+<td>P3 → P1</td>
+<td>response envelope / 401 / 403 / <strong>404 เมื่อไม่มีสิทธิ์ในวิชา</strong></td>
+<td>HTTPS</td>
+<td>TB-1</td>
+</tr>
+<tr>
+<td>f13</td>
+<td>P1 → P3</td>
+<td>ไฟล์ <code>.xlsx</code> ≤10 MB (CON-03)</td>
+<td>HTTPS multipart</td>
+<td>TB-1</td>
+</tr>
+<tr>
+<td>f14</td>
+<td>P1 → P9</td>
+<td><code>GET /health</code> — ไม่มี credential</td>
+<td>HTTPS</td>
+<td>TB-1 · TB-3</td>
+</tr>
+<tr>
+<td>f48</td>
+<td>P9 → P1</td>
+<td><code>{status, uptime}</code> — <strong>ห้ามมีเวอร์ชัน/ชื่อ host/สถานะ DB</strong></td>
+<td>HTTPS</td>
+<td>TB-1 · TB-3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-การพิสูจน์ตัวตนและตรวจสิทธิ์-f15f25" tabindex="-1"><a class="header-anchor" href="#63-การพิสูจน์ตัวตนและตรวจสิทธิ์-f15f25"><span>6.3 การพิสูจน์ตัวตนและตรวจสิทธิ์ (f15–f25)</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>จาก → ถึง</th>
+<th>ข้อมูล</th>
+<th>Protocol</th>
+<th>ข้าม boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f15</td>
+<td>P2 → D1</td>
+<td><code>User</code> WHERE <code>email</code> — select <code>id·passwordHash·role·isActive</code></td>
+<td>TCP + TLS (Prisma)</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f16</td>
+<td>D1 → P2</td>
+<td><code>User.passwordHash</code> (argon2) · <code>isActive</code> · <code>role</code></td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f17</td>
+<td>P3 → D1</td>
+<td><code>User</code> WHERE <code>id</code> = <code>jwt.sub</code> — <strong>สดทุก request</strong> (NFR-19)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f18</td>
+<td>D1 → P3</td>
+<td><code>User.role</code> · <code>User.isActive</code> ปัจจุบัน</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f19</td>
+<td>P3 → P4</td>
+<td>คำสั่งจัดการผู้ใช้ + <code>{userId, role}</code> — <strong>ไม่มี <code>courseId</code></strong></td>
+<td>in-process</td>
+<td>— (ดูหมายเหตุ)</td>
+</tr>
+<tr>
+<td>f20</td>
+<td>P3 → P5</td>
+<td>คำสั่งจัดการรายวิชา + <code>courseId</code> ที่ตรวจแล้ว</td>
+<td>in-process</td>
+<td><strong>TB-4 →</strong></td>
+</tr>
+<tr>
+<td>f21</td>
+<td>P3 → P6</td>
+<td>คำสั่งจัดการ CLO/กิจกรรม/เกณฑ์ + <code>courseId</code> ที่ตรวจแล้ว</td>
+<td>in-process</td>
+<td><strong>TB-4 →</strong></td>
+</tr>
+<tr>
+<td>f22</td>
+<td>P3 → P7</td>
+<td>คำสั่งจัดการรายชื่อ/คะแนน + <code>courseId</code> ที่ตรวจแล้ว</td>
+<td>in-process</td>
+<td><strong>TB-4 →</strong></td>
+</tr>
+<tr>
+<td>f23</td>
+<td>P3 → P8</td>
+<td>คำสั่งนำเข้า/ส่งออก + <code>courseId</code> ที่ตรวจแล้ว</td>
+<td>in-process</td>
+<td><strong>TB-4 →</strong></td>
+</tr>
+<tr>
+<td>f24</td>
+<td>P3 → P10</td>
+<td>คำขอรายงาน + <code>courseId</code> ที่ตรวจแล้ว</td>
+<td>in-process</td>
+<td><strong>TB-4 →</strong></td>
+</tr>
+<tr>
+<td>f25a</td>
+<td>P3 → D2</td>
+<td><code>Course</code> WHERE <code>id</code> = courseId AND <code>instructors.some.userId</code> = caller (<code>assertCourseAccess</code>)</td>
+<td>TCP + TLS</td>
+<td><strong>TB-4 · TB-2</strong></td>
+</tr>
+<tr>
+<td>f25b</td>
+<td>D2 → P3</td>
+<td><code>Course.id</code> พบ/ไม่พบ → ผ่าน หรือ <strong>404</strong> (ไม่ใช่ 403 — เลี่ยง enumeration oracle)</td>
+<td>TCP + TLS</td>
+<td><strong>TB-4 · TB-2</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>f19/f44 ไม่ตัด TB-4 (แก้ใน v2.5.0 — ข้อ 17 ของ §3.5):</strong> ADMIN-only route ของ P4 ไม่มี <code>courseId</code>
+ในเส้นทางเลย ด่านคือ <code>rbac(&quot;ADMIN&quot;)</code> เท่านั้น การบันทึกว่าตัด TB-4 ทำให้ TMT ออก threat
+&quot;cross-course access&quot; กับเส้นที่ไม่มีวันมี course อยู่ในนั้น — threat จริงของ P4 คือ <strong>EoP ระดับ role</strong>
+(บัญชี INSTRUCTOR แก้ <code>User.role</code> ของตัวเองเป็น ADMIN ผ่าน f26a) ซึ่งอยู่คนละหมวด · ดู §9 ข้อ 9</p>
+</blockquote>
+<h3 id="64-กระบวนการหลัก--ด่านตรวจ-f44f47--ขาออกของ-tb-4" tabindex="-1"><a class="header-anchor" href="#64-กระบวนการหลัก--ด่านตรวจ-f44f47--ขาออกของ-tb-4"><span>6.4 กระบวนการหลัก → ด่านตรวจ (f44–f47 · ขาออกของ TB-4)</span></a></h3>
+<p>ทิศนี้คือทิศที่ข้อมูลข้ามวิชา <strong>รั่วออก</strong> ได้ — TMT จะออก Information Disclosure ก็ต่อเมื่อมีเส้นเหล่านี้</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>จาก → ถึง</th>
+<th>ข้อมูล</th>
+<th>Protocol</th>
+<th>ข้าม boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f44</td>
+<td>P4 → P3</td>
+<td>ผลลัพธ์บัญชีผู้ใช้ — <strong>ต้องไม่มี <code>passwordHash</code></strong></td>
+<td>in-process</td>
+<td>— (P4 อยู่นอก TB-4)</td>
+</tr>
+<tr>
+<td>f45</td>
+<td>P5 → P3</td>
+<td>ผลลัพธ์รายวิชา · รายชื่ออาจารย์ผู้สอน</td>
+<td>in-process</td>
+<td><strong>← TB-4</strong></td>
+</tr>
+<tr>
+<td>f46</td>
+<td>P6 → P3</td>
+<td>ผลลัพธ์ CLO · จุดประสงค์ · กิจกรรม · เกณฑ์</td>
+<td>in-process</td>
+<td><strong>← TB-4</strong></td>
+</tr>
+<tr>
+<td>f47</td>
+<td>P7 → P3</td>
+<td>ผลลัพธ์รายชื่อ + ตารางคะแนน (<strong>PDPA</strong>)</td>
+<td>in-process</td>
+<td><strong>← TB-4</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="65-กระบวนการหลัก--ฐานข้อมูล-f26f30--f49" tabindex="-1"><a class="header-anchor" href="#65-กระบวนการหลัก--ฐานข้อมูล-f26f30--f49"><span>6.5 กระบวนการหลัก ↔ ฐานข้อมูล (f26–f30 · f49)</span></a></h3>
+<p>แยกทิศอ่าน/เขียนตามกฎข้อ 9 ของ §3.4 — เขียน = Tampering · อ่าน = Information Disclosure</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>จาก → ถึง</th>
+<th>ข้อมูล</th>
+<th>Protocol</th>
+<th>ข้าม boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f26a</td>
+<td>P4 → D1</td>
+<td><code>User</code>: <code>email·name·passwordHash(argon2)·role·isActive</code> — <strong><code>role</code> คือฟิลด์ EoP</strong></td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f26b</td>
+<td>D1 → P4</td>
+<td><code>User</code>: <code>id·email·name·role·isActive</code> — <strong>ห้าม select <code>passwordHash</code></strong></td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f27a</td>
+<td>P5 → D2</td>
+<td><code>Course</code>: <code>code·name·nameEn·semester·year·section·credits·lectureHours·practiceHours·selfStudyHours·gradingType·passCriteria·classTarget</code> + <code>CourseInstructor</code>: <code>userId·role</code></td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f27b</td>
+<td>D2 → P5</td>
+<td><code>Course</code> ทั้งแถว + <code>CourseInstructor</code> join <code>User.name</code> (รายชื่อผู้สอน)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f28a</td>
+<td>P6 → D3</td>
+<td><code>CLO</code>: <code>number·description·threshold</code> · <code>BehavioralObjective</code>: <code>number·description</code> · <code>Activity</code>: <code>name·method·maxScore·order·weight</code> · <code>AssessmentCriteria</code>: <code>weight</code> · <code>ObjectiveAssessment</code>: <code>criteriaId·objectiveId</code></td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f28b</td>
+<td>D3 → P6</td>
+<td>โครงสร้าง CLO ทั้งต้นไม้ของวิชา (5 ตารางข้างต้น)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f29a</td>
+<td>P7 → D4</td>
+<td><code>Student</code>: <code>studentCode·name·courseId</code> (<strong>PDPA</strong>)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f29b</td>
+<td>D4 → P7</td>
+<td><code>Student</code>: <code>id·studentCode·name</code> ในวิชานั้น (<strong>PDPA</strong>)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f30</td>
+<td>P7 → D5</td>
+<td>upsert <code>Score.score</code> ต่อ <code>(studentId, activityId)</code> เป็นชุดใน transaction เดียว — <strong>ไม่มี audit log (STRIDE #8)</strong></td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f49</td>
+<td>D5 → P7</td>
+<td><code>Score.score</code> เดิมมาเติมในตารางกรอก — <strong>ไม่มีแถว = ยังไม่ประเมิน ไม่ใช่ 0</strong> (FR-62)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td><strong>f51</strong></td>
+<td>D3 → P8</td>
+<td><code>Activity</code>: <code>id·name·maxScore</code> — map หัวคอลัมน์ในไฟล์เป็น <code>activityId</code> + ตรวจเพดานคะแนนก่อน commit (FR-69)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="66-สายไฟล์-excel-f31f37" tabindex="-1"><a class="header-anchor" href="#66-สายไฟล์-excel-f31f37"><span>6.6 สายไฟล์ Excel (f31–f37)</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>จาก → ถึง</th>
+<th>ข้อมูล</th>
+<th>Protocol</th>
+<th>ข้าม boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f31</td>
+<td>P3 → D7</td>
+<td>byte ของไฟล์ <code>.xlsx</code> ที่ยัง <strong>ไม่</strong> validate</td>
+<td>in-process</td>
+<td>—</td>
+</tr>
+<tr>
+<td>f32</td>
+<td>D7 → P8</td>
+<td>อ่าน buffer เพื่อ parse เป็นตาราง (SheetJS)</td>
+<td>in-process</td>
+<td><strong>TB-4 →</strong> (D7 อยู่นอกกรอบ P8 อยู่ใน)</td>
+</tr>
+<tr>
+<td>f33</td>
+<td>P8 → D4</td>
+<td><code>Student.studentCode</code> WHERE <code>courseId</code> — ตรวจว่าแถวในไฟล์มีอยู่จริงในวิชา</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f34</td>
+<td>P8 → D5</td>
+<td><code>Score.score</code> เฉพาะแถวที่ผ่าน (FR-68)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f35</td>
+<td>P8 → D6</td>
+<td><code>ScoreUploadLog</code>: <code>courseId·uploadedBy·fileName·recordsOk·recordsFail</code> — เขียนทุกครั้งแม้ล้มทั้งไฟล์ (FR-71)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f36</td>
+<td>D6 → P8</td>
+<td><code>ScoreUploadLog</code>: <code>fileName·recordsOk·recordsFail·createdAt</code> (ประวัติอัปโหลด)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f37</td>
+<td>P8 → P3</td>
+<td>ไฟล์ template / export <code>.xlsx</code></td>
+<td>in-process</td>
+<td><strong>← TB-4</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>f51 (D3 → P8) อยู่ที่ §6.5</strong> เพราะจัดกลุ่มตามคู่ process↔store ไม่ใช่ตามฟีเจอร์ —
+แต่ในเชิงการทำงานมันเป็นส่วนหนึ่งของสายไฟล์นี้ และต้องเกิด<strong>ก่อน</strong> f34 เสมอ (ดู §4.1)</p>
+</blockquote>
+<h3 id="67-รายงานและ-log-f38f43" tabindex="-1"><a class="header-anchor" href="#67-รายงานและ-log-f38f43"><span>6.7 รายงานและ log (f38–f43)</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>จาก → ถึง</th>
+<th>ข้อมูล</th>
+<th>Protocol</th>
+<th>ข้าม boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f38</td>
+<td>D3 → P10</td>
+<td><code>CLO.threshold</code> · <code>Activity.weight·maxScore</code> · <code>AssessmentCriteria.weight</code> (ตัวตั้งของ CR-01 · CR-03)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f39</td>
+<td>D4 → P10</td>
+<td><code>Student</code>: <code>id·studentCode·name</code> (<strong>PDPA</strong>)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f40</td>
+<td>D5 → P10</td>
+<td><code>Score.score</code> ต่อ <code>(studentId, activityId)</code> (<strong>PDPA</strong>)</td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td><strong>f50</strong></td>
+<td>D2 → P10</td>
+<td><code>Course.passCriteria</code> (CR-05) · <code>Course.classTarget</code> (CR-04) · <code>Course.gradingType</code> (CR-06) — <strong>เกณฑ์ตัดสินทั้งหมดอยู่บน <code>Course</code> ไม่ใช่ D3</strong></td>
+<td>TCP + TLS</td>
+<td>TB-2</td>
+</tr>
+<tr>
+<td>f41</td>
+<td>P10 → P3</td>
+<td>attainment% ราย CLO · at-risk list · รายงานรายบุคคล</td>
+<td>in-process</td>
+<td><strong>← TB-4</strong></td>
+</tr>
+<tr>
+<td>f42</td>
+<td>P3 → D9</td>
+<td><code>requestId</code> · <code>statusCode</code> · <code>userId</code> — <strong>ไม่มี PII</strong> (CON-02)</td>
+<td>in-process</td>
+<td>—</td>
+</tr>
+<tr>
+<td>f43</td>
+<td>P8 → D9</td>
+<td><code>fileName</code> + จำนวนแถว ok/fail — <strong>ไม่มีคะแนน/ชื่อ นศ.</strong></td>
+<td>in-process</td>
+<td><strong>← TB-4</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>ทำไม f50 ถึงสำคัญกว่าที่ดู:</strong> ถ้าไม่มีเส้นนี้ ไดอะแกรมกำลังบอกว่า P10 ตัดสิน &quot;บรรลุ/ไม่บรรลุ&quot;
+ได้เองโดยไม่ต้องรู้เกณฑ์ ซึ่งเป็นไปไม่ได้ และทำให้มองไม่เห็น threat ที่ตามมา: ค่าทั้งสามเป็น
+<strong>คอลัมน์ที่แก้ไขได้ผ่าน f27a</strong> (หน้าจอตั้งค่ารายวิชา) การเลื่อน <code>classTarget</code> จาก 70 → 50
+เปลี่ยนผลประเมินย้อนหลังทั้งวิชาโดยไม่แตะคะแนนสักตัวและ D6 จับไม่ได้ — ดู §9 ข้อ 10</p>
+</blockquote>
+<blockquote>
+<p><strong>อ่านคอลัมน์ boundary อย่างไร:</strong> <code>TB-4 →</code> คือขาเข้าขอบเขตรายวิชา (ภัยหลักคือ EoP — เข้าไปในวิชาที่ไม่ควรเข้า)
+<code>← TB-4</code> คือขาออก (ภัยหลักคือ Information Disclosure — ข้อมูลของวิชาอื่นไหลกลับไปหาผู้ใช้)
+เดิม register บันทึกแต่ขาเข้า ทำให้ threat ครึ่งหนึ่งที่ควรถูก generate หายไปทั้งชุด</p>
+</blockquote>
+<hr>
+<h2 id="7-trust-boundaries" tabindex="-1"><a class="header-anchor" href="#7-trust-boundaries"><span>7. Trust Boundaries</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>ชนิดใน TMT 2016</th>
+<th>คั่นระหว่าง</th>
+<th>สิ่งที่ <strong>ไม่ควรเชื่อ</strong> เมื่อข้ามมา</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TB-1</strong></td>
+<td>Internet Boundary</td>
+<td>ผู้ใช้ + เบราว์เซอร์ ↔ API</td>
+<td>ทุกอย่าง — body, header, ไฟล์, แม้แต่ค่าที่ UI validate มาแล้ว (<a href="./srs.html">srs</a> §5.2: ทุก body ผ่าน Zod)</td>
+</tr>
+<tr>
+<td><strong>TB-2</strong></td>
+<td>Machine Boundary</td>
+<td>API server ↔ PostgreSQL</td>
+<td>connection string, network path — ต้อง TLS + least-privilege DB user</td>
+</tr>
+<tr>
+<td><strong>TB-3</strong></td>
+<td>Process Boundary</td>
+<td>Unauthenticated zone ↔ authenticated zone</td>
+<td>ทุก request ก่อนผ่าน <code>authMiddleware</code> — รวมถึง <code>role</code> ใน JWT ซึ่งเป็นค่าเก่าได้ถึง 15 นาที</td>
+</tr>
+<tr>
+<td><strong>TB-4</strong></td>
+<td>Trust Boundary (custom)</td>
+<td>รายวิชา A ↔ รายวิชา B</td>
+<td><strong><code>courseId</code> ที่ผู้ใช้ส่งมา</strong> — ต้องผ่าน <code>assertCourseAccess()</code> ก่อนเสมอ</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>กล่อง &quot;API Server — Fastify 5&quot; ใน §3 ไม่ใช่ trust boundary</strong> เป็นเพียงกรอบบอกว่าโค้ดรันที่ไหน
+ถ้าวาดเป็นเส้นขอบเขตใน TMT จะได้ threat ซ้ำกับ TB-1 ทั้งชุด — TB-3 คือเส้นที่คั่นระหว่าง
+P2/P9 (ยังไม่พิสูจน์ตัวตน) กับ P3 และทุกอย่างที่อยู่หลังจากนั้น</p>
+</blockquote>
+<h3 id="tb-4--ข้อจำกัดที่ต้องบันทึกไว้" tabindex="-1"><a class="header-anchor" href="#tb-4--ข้อจำกัดที่ต้องบันทึกไว้"><span>TB-4 — ข้อจำกัดที่ต้องบันทึกไว้</span></a></h3>
+<p>TMT 2016 วาดขอบเขตได้เฉพาะระดับ <strong>element</strong> ไม่ใช่ระดับ <strong>row</strong> แต่ขอบเขตข้อมูลของ CMAS
+อยู่ที่ระดับ row (แถว <code>Course</code> ที่ผู้ใช้ถูกมอบหมาย) ผลคือ:</p>
+<ul>
+<li>ใน TMT ให้วาด TB-4 ล้อมรอบ process <strong>5.0–8.0 และ 10.0</strong> (ไม่รวม 4.0 — ดูย่อหน้าถัดไป)
+<strong>แล้วเขียน note กำกับว่า enforcement อยู่ที่ <code>services/authorization.service.ts</code> ไม่ใช่ที่ network layer</strong></li>
+<li><strong>4.0 User Admin อยู่นอก TB-4</strong> เส้นทางจัดการผู้ใช้ไม่รับ <code>courseId</code> เลยสักเส้น
+(<a href="../../../app/server/src/routes/index.ts">routes/index.ts</a> — <code>usersRoutes</code> ไม่มี <code>:courseId</code>)
+ด่านของมันคือ <code>rbac(&quot;ADMIN&quot;)</code> (<a href="../../../app/server/src/middlewares/rbac.middleware.ts">rbac.middleware.ts</a>)
+ซึ่งถาม &quot;role อะไร&quot; ไม่ใช่ &quot;ข้อมูลของใคร&quot; — สองคำถามนี้แยกกันตาม comment ในไฟล์นั้นเอง</li>
+<li>Threat &quot;cross-course read&quot; จะ <strong>ไม่ถูก generate อัตโนมัติ</strong> ต้องเพิ่มเองแบบ manual</li>
+<li><strong>ความเสี่ยงเพิ่มขึ้นจาก v1.0.0:</strong> เดิมมีสองด่าน (tenant guard ที่ชั้น Prisma + course check)
+ตอนนี้เหลือด่านเดียว — route ที่ลืมเรียก <code>assertCourseAccess()</code> จะไม่มีอะไรมารับไว้อีก
+จึงต้องมี <strong>integration test ต่อทุก route ที่รับ <code>:courseId</code></strong> ไม่ใช่พึ่งการรีวิว</li>
+</ul>
+<hr>
+<h2 id="8-วิธีสร้างใน-threat-modeling-tool-2016" tabindex="-1"><a class="header-anchor" href="#8-วิธีสร้างใน-threat-modeling-tool-2016"><span>8. วิธีสร้างใน Threat Modeling Tool 2016</span></a></h2>
+<p>Mermaid ด้านบน <strong>import เข้า TMT ไม่ได้</strong> (TMT อ่านเฉพาะ <code>.tm7</code> ซึ่งเป็น XML ของตัวเอง)
+ให้ใช้ไดอะแกรมเป็นแบบ แล้ววาดตามลำดับนี้:</p>
+<ol>
+<li><strong>Create A Model</strong> → template <code>SDL TM Knowledge Base (Core)</code></li>
+<li>เปลี่ยนชื่อ <code>Diagram 1</code> เป็น <code>DFD-0 Context</code> แล้ววาดตาม §2
+— ใช้ตาราง §5 เลือก stencil ให้ตรง <strong>ก่อน</strong> ลากเส้น</li>
+<li><strong>Add Diagram</strong> ตั้งชื่อ <code>DFD-1 System</code> แล้ววาดตาม §3 · เพิ่ม <code>DFD-2 Import</code> และ
+<code>DFD-2 Attainment</code> ตาม §4</li>
+<li>ตั้ง property ของทุก element ตามคอลัมน์ใน §5 (โดยเฉพาะ <code>Sensitive = Yes</code> บน D1/D4/D5/D7/D8)
+— property เหล่านี้คือสิ่งที่กำหนดว่า TMT จะออก threat ตัวไหน</li>
+<li>ลาก <strong>Trust Line Boundary</strong> ตาม §7 · ต้องให้เส้น <strong>ตัดผ่าน data flow จริง ๆ</strong>
+ไม่ใช่แค่วางใกล้ ๆ มิฉะนั้น TMT จะไม่นับว่ามีการข้ามขอบเขต</li>
+<li>เปิด <strong>Analysis View</strong> → TMT จะออก threat list ตาม STRIDE</li>
+<li>ทุก threat ต้องตั้ง State เป็น <code>Mitigated</code> / <code>Needs Investigation</code> พร้อม justification
+ห้ามปล่อย <code>Not Started</code> ค้างไว้ตอนส่งงาน</li>
+<li>Export: <strong>Reports → Create Full Report</strong> (HTML) แนบเป็นภาคผนวกของปริญญานิพนธ์</li>
+</ol>
+<blockquote>
+<p><strong>กับดักที่พบบ่อย:</strong> ผู้ใช้ที่ authenticate แล้วยังต้องตั้ง <code>Authenticate = Yes</code> บน
+external interactor เสมอ ไม่งั้น TMT จะออก spoofing threat ท่วมจนกลบ threat ที่สำคัญจริง</p>
+<p><strong>กับดักที่ทำให้ threat หายไปครึ่งหนึ่ง:</strong> อย่าวาดเส้นเดียวแทนการคุยไป-กลับ TMT ออก threat ตาม<strong>ทิศ</strong>
+ขาเข้าได้ Tampering/EoP ขาออกได้ Information Disclosure — ต้องลากสองเส้นตาม a/b ใน §6 เสมอ
+และเส้นขาออกจาก TB-4 (f37 · f41 · f44–f47) ต้องให้ <strong>ตัดเส้นขอบเขต</strong> ด้วย ไม่ใช่แค่ขาเข้า</p>
+</blockquote>
+<hr>
+<h2 id="9-stride-hot-spots-ที่ต้องตอบให้ได้" tabindex="-1"><a class="header-anchor" href="#9-stride-hot-spots-ที่ต้องตอบให้ได้"><span>9. STRIDE hot spots ที่ต้องตอบให้ได้</span></a></h2>
+<p>ก่อนถือว่า threat model ผ่าน ต้องมีคำตอบเป็นลายลักษณ์อักษรของ 10 ข้อนี้ —
+ทั้งหมดคือจุดที่ <strong>โครงสร้างของระบบนี้เองสร้างความเสี่ยง</strong> ไม่ใช่ threat ทั่วไปที่ tool generate มา</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Element</th>
+<th>STRIDE</th>
+<th>คำถามที่ต้องตอบ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>f11 · P3</td>
+<td><strong>E</strong>oP</td>
+<td>ถ้า route ใหม่ที่รับ <code>:courseId</code> ถูกเขียนโดยลืมเรียก <code>assertCourseAccess()</code> จะเกิดอะไรขึ้น? <strong>single-tenant ทำให้ไม่มีด่านสำรองแล้ว</strong> — ต้องมี integration test ต่อ route ไม่ใช่แค่ความจำของผู้เขียน</td>
+</tr>
+<tr>
+<td>2</td>
+<td>D8 · f8</td>
+<td><strong>T</strong>ampering / <strong>I</strong>nfo</td>
+<td>refresh token 7 วันเก็บที่ไหนบนเบราว์เซอร์? <code>localStorage</code> = อ่านได้ด้วย XSS · httpOnly cookie = ต้องมี CSRF defence</td>
+</tr>
+<tr>
+<td>3</td>
+<td>P8 · D7</td>
+<td><strong>D</strong>oS / <strong>T</strong>ampering</td>
+<td>ไฟล์ .xlsx 10 MB ที่มี formula bomb / zip bomb / cell 1 ล้านแถว — 8.1 ตรวจขนาดก่อน 8.2 parse จริงหรือไม่?</td>
+</tr>
+<tr>
+<td>4</td>
+<td>P8 → f6</td>
+<td><strong>T</strong>ampering</td>
+<td>CSV/Excel injection: ค่าที่ขึ้นต้นด้วย <code>=</code>, <code>+</code>, <code>-</code>, <code>@</code> ใน export จะถูก Excel ของผู้รับ execute</td>
+</tr>
+<tr>
+<td>5</td>
+<td>D4 · D5 · D9</td>
+<td><strong>I</strong>nfo Disclosure</td>
+<td>CON-02 ห้าม log คะแนน/ชื่อ — error handler โยน Prisma error ดิบออกมาหรือเปล่า? Prisma error มี field value ติดมาด้วย</td>
+</tr>
+<tr>
+<td>6</td>
+<td>TB-4 · f25</td>
+<td><strong>I</strong>nfo Disclosure</td>
+<td><code>courseId</code> มาจากผู้ใช้เสมอ — คิวรีที่หยิบ leaf row (Score, CLO) ด้วย id ตรง ๆ โดยไม่ผ่าน course ใครตรวจ?</td>
+</tr>
+<tr>
+<td>7</td>
+<td>P2</td>
+<td><strong>S</strong>poofing</td>
+<td>FR-03 ต้องตอบข้อความเดียวกันทั้งกรณีรหัสผิดและบัญชีถูกปิด — แล้ว <strong>เวลาตอบ</strong> ต่างกันไหม? (timing oracle)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>D6</td>
+<td><strong>R</strong>epudiation</td>
+<td><code>ScoreUploadLog</code> เป็นหลักฐานเดียวว่าใครแก้คะแนน — แต่การ <strong>แก้คะแนนผ่านหน้าจอ (f30)</strong> ไม่มี log เลย ยอมรับได้หรือไม่?</td>
+</tr>
+<tr>
+<td>9</td>
+<td>f26a · P4</td>
+<td><strong>E</strong>oP</td>
+<td><code>User.role</code> เป็นคอลัมน์ธรรมดาที่แก้ผ่าน f26a ได้ — ADMIN ลดสิทธิ์ตัวเองหรือยกสิทธิ์ให้คนอื่นได้โดยไม่มีด่านที่สอง และ <strong><code>isActive</code> คือ kill switch</strong> ที่ปิดบัญชีใครก็ได้ · P4 อยู่นอก TB-4 จึงไม่มี <code>assertCourseAccess</code> มารับ — ด่านเดียวคือ <code>rbac(&quot;ADMIN&quot;)</code> · ต้องตอบ: ADMIN คนสุดท้ายปิดบัญชีตัวเองได้หรือไม่?</td>
+</tr>
+<tr>
+<td>10</td>
+<td>f27a · f50 · D2</td>
+<td><strong>T</strong>ampering / <strong>R</strong>epudiation</td>
+<td><code>Course.passCriteria</code> · <code>classTarget</code> · <code>gradingType</code> คือเกณฑ์ตัดสินทั้งหมดของ P10 (f50) และ <strong>แก้ได้ผ่านหน้าจอตั้งค่ารายวิชา (f27a)</strong> — เลื่อน <code>classTarget</code> 70 → 50 คือการเปลี่ยนผลประเมินย้อนหลังทั้งวิชาโดยไม่แตะคะแนนสักตัว ไม่มี log ใดจับได้ (D6 ครอบเฉพาะ import) · ต้องตอบ: แก้ได้ตลอดเวลาแม้หลังตัดเกรดแล้วหรือไม่?</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>ข้อ 8 · 9 · 10 เป็นช่องว่างชนิดเดียวกัน</strong> — ระบบมี audit trail เฉพาะการนำเข้าไฟล์ (D6) แต่ไม่มีเลย
+สำหรับสามการกระทำที่มีผลกระทบเท่ากันหรือมากกว่า: แก้คะแนนทีละช่อง (f30) · เปลี่ยน role/isActive (f26a) ·
+เปลี่ยนเกณฑ์ตัดสิน (f27a) ควรยกขึ้นพร้อมกันในการ sign-off <a href="./srs.html">srs</a> §9 แล้วตัดสินใจครั้งเดียวว่า
+<strong>จะทำ audit log ตารางเดียวครอบทุกการเขียนที่กระทบผลประเมิน หรือยอมรับความเสี่ยงเป็นลายลักษณ์อักษร</strong></p>
+<p>ข้อ 10 มองไม่เห็นเลยใน v2.4.0 เพราะไม่มีเส้น f50 — ไม่มีอะไรในไดอะแกรมบอกว่า P10 พึ่งคอลัมน์บน <code>Course</code>
+<strong>นี่คือเหตุผลที่ป้ายเส้นต้องระบุ <code>ตาราง.คอลัมน์</code></strong>: threat ที่หาไม่เจอ ไม่ใช่เพราะไม่มี แต่เพราะไดอะแกรมเขียนหยาบเกินกว่าจะเห็น</p>
+</blockquote>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">◐</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+function filterNav(q) {
+  q = q.trim().toLowerCase();
+  var anyVisible = false;
+  document.querySelectorAll('.nav-group').forEach(function (group) {
+    var groupHasMatch = false;
+    group.querySelectorAll('li').forEach(function (li) {
+      var text = li.textContent.toLowerCase();
+      var match = !q || text.indexOf(q) !== -1;
+      li.style.display = match ? '' : 'none';
+      if (match) groupHasMatch = true;
+    });
+    group.style.display = groupHasMatch ? '' : 'none';
+    if (groupHasMatch) anyVisible = true;
+  });
+  document.getElementById('nav-empty').style.display = anyVisible ? 'none' : 'block';
+}
+</script>
+</body>
+</html>

@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Technical Standard &amp; Workflow</title>
+<title>Technical Standard &amp; Workflow · CMAS Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
 <link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
@@ -12,12 +15,16 @@
 <div class="layout">
 <aside class="sidebar">
 <div class="sidebar-inner">
-<a class="brand" href="../index.html">📄 CMAS Docs</a>
-<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a class="active" href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+<a class="brand" href="../index.html">CMAS Docs<span class="brand-sub">v2</span></a>
+<p class="sidebar-tagline">เอกสารโครงงาน CLO System — single source of truth</p>
+<input class="nav-search" type="search" placeholder="ค้นหาเอกสาร…" oninput="filterNav(this.value)">
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">เอกสารพัฒนา (Dev)</div><ul><li><a class="active" href="../dev/dev.html"><span class="nav-dot ref"></span>Technical Standard &amp; Workflow</a></li><li><a href="../dev/srs.html"><span class="nav-dot ref"></span>Software Requirements Specification (SRS)</a></li><li><a href="../dev/objectives-hypotheses-evaluation.html"><span class="nav-dot draft"></span>วัตถุประสงค์ · สมมติฐาน · เกณฑ์การประเมิน</a></li><li><a href="../dev/api-design.html"><span class="nav-dot draft"></span>API Design &amp; Endpoint Specification</a></li><li><a href="../dev/dfd.html"><span class="nav-dot ref"></span>แผนภาพกระแสข้อมูล (DFD — Data Flow Diagram) ของระบบ CMAS ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO — Course Learning Outcome)</a></li><li><a href="../dev/features-pages.html"><span class="nav-dot "></span>Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/user-flow.html"><span class="nav-dot draft"></span>User Flow &amp; UX Design — CMAS</a></li><li><a href="../dev/design-system.html"><span class="nav-dot active-status"></span>Verdure Design System</a></li><li><a href="../dev/material.html"><span class="nav-dot active-status"></span>Material Tonal Logic — Design System</a></li><li><a href="../dev/theory.html"><span class="nav-dot draft"></span>บทที่ 2 — หลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง</a></li><li><a href="../dev/project-plan.html"><span class="nav-dot draft"></span>แผนการดำเนินงานโครงงาน (WBS + Gantt) — CMAS</a></li><li><a href="../dev/thesis-toc.html"><span class="nav-dot draft"></span>สารบัญเล่มโครงงาน (Table of Contents) — CMAS</a></li><li><a href="../dev/progress-report-02.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li><li><a href="../dev/progress-report-02-qa.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li></ul></div><div class="nav-group"><div class="nav-group-title">แผนภาพ (Diagrams)</div><ul><li><a href="../graph/usecase.html"><span class="nav-dot "></span>Use Case Diagram</a></li><li><a href="../graph/tech-stack.html"><span class="nav-dot "></span>Tech Stack</a></li><li><a href="../graph/fishbone-4m.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">ฐานข้อมูล (SQL)</div><ul><li><a href="../sql/schema.html"><span class="nav-dot "></span>โครงสร้างฐานข้อมูล CMAS — 11 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง</a></li><li><a href="../sql/mysql-er-diagram.html"><span class="nav-dot "></span>CMAS — MySQL ER Diagram</a></li><li><a href="../sql/mysql/README.html"><span class="nav-dot "></span>CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/migrations/README.html"><span class="nav-dot "></span>docs/markdown/sql/migrations — historical only</a></li></ul></div><div class="nav-group"><div class="nav-group-title">กติกาทีม (Rules)</div><ul><li><a href="../rule/code-rule.html"><span class="nav-dot "></span>Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html"><span class="nav-dot "></span>Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html"><span class="nav-dot "></span>Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div></nav>
+<p class="nav-empty" id="nav-empty">ไม่พบเอกสารที่ตรงกับคำค้นหา</p>
 </div>
 </aside>
 <main class="content">
 <article class="markdown-body">
+<div class="doc-meta"><span class="badge badge-ref">Reference</span><span class="badge badge-ref">v2.0.0</span><div class="desc">ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO System)</div></div>
 <h1 id="technical-standard--workflow" tabindex="-1"><a class="header-anchor" href="#technical-standard--workflow"><span>Technical Standard &amp; Workflow</span></a></h1>
 <p>See also: <a href="../sql/schema.html">Schema</a> · <span class="wikilink-missing" title="unresolved: Summary Project">Summary Project</span> · <span class="wikilink-missing" title="unresolved: website final">website final</span> · <span class="wikilink-missing" title="unresolved: concept-clo MOC">concept-clo MOC</span></p>
 <h2 id="ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา-clo-system" tabindex="-1"><a class="header-anchor" href="#ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา-clo-system"><span>ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO System)</span></a></h2>
@@ -182,6 +189,48 @@
 <td>10MB cap</td>
 </tr>
 <tr>
+<td><strong>Local Dev Container</strong></td>
+<td>Docker + Docker Compose</td>
+<td>latest</td>
+<td><code>docker-compose up</code> runs client + server (w/ Supabase DB) w/ hot reload</td>
+</tr>
+<tr>
+<td><strong>Server Image (dev)</strong></td>
+<td><code>node:20-alpine</code></td>
+<td>20-alpine</td>
+<td>Fastify dev server, bind-mounted source, connects to Supabase</td>
+</tr>
+<tr>
+<td><strong>Server Image (prod)</strong></td>
+<td><code>node:20-alpine</code> (multi-stage)</td>
+<td>latest</td>
+<td>Optimized build → Railway / <a href="http://Fly.io" target="_blank" rel="noopener">Fly.io</a>, non-root user, connects to Supabase</td>
+</tr>
+<tr>
+<td><strong>Client Image (dev)</strong></td>
+<td><code>node:20-alpine</code></td>
+<td>20-alpine</td>
+<td>Vite dev server, <code>--host 0.0.0.0</code> for container access</td>
+</tr>
+<tr>
+<td><strong>Client Image (prod)</strong></td>
+<td><code>nginx:1.27-alpine</code> (multi-stage)</td>
+<td>latest</td>
+<td>Static SPA via nginx w/ SPA fallback (try_files)</td>
+</tr>
+<tr>
+<td><strong>Database</strong></td>
+<td>Supabase PostgreSQL 15</td>
+<td>managed</td>
+<td>Single source: dev + prod both use Supabase (no local postgres container)</td>
+</tr>
+<tr>
+<td><strong>Container Orchestration</strong></td>
+<td>docker-compose.yml + docker-compose.prod.yml</td>
+<td>—</td>
+<td>Lightweight, both use Supabase connection string from .env</td>
+</tr>
+<tr>
 <td>Monorepo</td>
 <td>npm workspaces</td>
 <td>—</td>
@@ -265,6 +314,42 @@ npm run dev                <span class="hljs-comment"># รัน client (:5173)
 npm run dev:client         <span class="hljs-comment"># client อย่างเดียว</span>
 npm run dev:server         <span class="hljs-comment"># server อย่างเดียว</span>
 </code></pre>
+<h3 id="22b-การใช้-docker-alternative--แนะนำ" tabindex="-1"><a class="header-anchor" href="#22b-การใช้-docker-alternative--แนะนำ"><span>2.2b การใช้ Docker (alternative — แนะนำ)</span></a></h3>
+<p>ถ้าต้องการ <strong>consistency</strong> ขอแนะนำใช้ Docker Compose — ทุกคน dev ด้วย Node 20 Alpine เดียวกัน และ database ชี้ไปที่ Supabase เดียวกัน (dev + prod)</p>
+<p><strong>Prerequisites:</strong> Docker + Docker Compose ให้เป็น latest stable</p>
+<pre class="hljs"><code><span class="hljs-comment"># 1. Clone (เหมือนเดิม)</span>
+git <span class="hljs-built_in">clone</span> https://github.com/&lt;org&gt;/clo-system.git
+<span class="hljs-built_in">cd</span> CMAS
+
+<span class="hljs-comment"># 2. Copy + ตั้งค่า environment files</span>
+<span class="hljs-built_in">cp</span> app/server/.env.example app/server/.env
+<span class="hljs-built_in">cp</span> app/client/.env.example app/client/.env
+
+<span class="hljs-comment"># 3. แก้ app/server/.env ให้ชี้ไปที่ Supabase (เหมือนทีมจริง)</span>
+<span class="hljs-comment"># DATABASE_URL=&quot;postgresql://postgres:[password]@db.[ref].supabase.co:5432/postgres&quot;</span>
+<span class="hljs-comment"># DIRECT_URL=&quot;postgresql://postgres:[password]@db.[ref].supabase.co:5432/postgres&quot;</span>
+<span class="hljs-comment"># JWT_SECRET=&quot;[32+ character random string]&quot;</span>
+
+<span class="hljs-comment"># 4. สร้าง + รัน containers (client :5173 + server :3001)</span>
+docker compose up
+
+<span class="hljs-comment"># หรือถ้าต้องการ rebuild image (เช่นเพิ่ม package ใหม่)</span>
+docker compose up --build
+
+<span class="hljs-comment"># 5. ตรวจสอบ migrations (ถ้ายังไม่รัน)</span>
+docker compose <span class="hljs-built_in">exec</span> server npm run db:migrate:dev
+</code></pre>
+<p><strong>ออกจาก Docker:</strong></p>
+<pre class="hljs"><code>docker compose down        <span class="hljs-comment"># สตอป containers</span>
+</code></pre>
+<p><strong>ประโยชน์:</strong></p>
+<ul>
+<li>✅ ไม่ต้องติดตั้ง Node local — ทั้งหมดใน container</li>
+<li>✅ ทุกคน run Node 20 Alpine เดียวกัน</li>
+<li>✅ Hot reload ยังทำงาน (bind-mount source)</li>
+<li>✅ Database ชี้ Supabase (dev ↔ prod เดียวกัน) — ไม่มี &quot;works locally but not in prod&quot;</li>
+<li>✅ Production Dockerfile (<code>Dockerfile.prod</code>) ใช้ image เดียวกัน → guaranteed consistency ตั้ง local ถึง production</li>
+</ul>
 <h3 id="23-environment-variables" tabindex="-1"><a class="header-anchor" href="#23-environment-variables"><span>2.3 Environment Variables</span></a></h3>
 <p><strong><code>database/.env</code></strong></p>
 <pre class="hljs"><code>DATABASE_URL=&quot;postgresql://postgres:[password]@db.[ref].supabase.co:5432/postgres&quot;
@@ -1370,7 +1455,7 @@ uploads/
 </article>
 </main>
 </div>
-<button class="theme-toggle" title="Toggle theme">🌓</button>
+<button class="theme-toggle" title="Toggle theme">◐</button>
 <script src="../assets/mermaid.min.js"></script>
 <script>
 (function () {
@@ -1393,6 +1478,22 @@ uploads/
     location.reload();
   });
 })();
+function filterNav(q) {
+  q = q.trim().toLowerCase();
+  var anyVisible = false;
+  document.querySelectorAll('.nav-group').forEach(function (group) {
+    var groupHasMatch = false;
+    group.querySelectorAll('li').forEach(function (li) {
+      var text = li.textContent.toLowerCase();
+      var match = !q || text.indexOf(q) !== -1;
+      li.style.display = match ? '' : 'none';
+      if (match) groupHasMatch = true;
+    });
+    group.style.display = groupHasMatch ? '' : 'none';
+    if (groupHasMatch) anyVisible = true;
+  });
+  document.getElementById('nav-empty').style.display = anyVisible ? 'none' : 'block';
+}
 </script>
 </body>
 </html>

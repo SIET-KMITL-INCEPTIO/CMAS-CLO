@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>วัตถุประสงค์ · สมมติฐาน · เกณฑ์การประเมิน · CMAS Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">CMAS Docs<span class="brand-sub">v2</span></a>
+<p class="sidebar-tagline">เอกสารโครงงาน CLO System — single source of truth</p>
+<input class="nav-search" type="search" placeholder="ค้นหาเอกสาร…" oninput="filterNav(this.value)">
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">เอกสารพัฒนา (Dev)</div><ul><li><a href="../dev/dev.html"><span class="nav-dot ref"></span>Technical Standard &amp; Workflow</a></li><li><a href="../dev/srs.html"><span class="nav-dot ref"></span>Software Requirements Specification (SRS)</a></li><li><a class="active" href="../dev/objectives-hypotheses-evaluation.html"><span class="nav-dot draft"></span>วัตถุประสงค์ · สมมติฐาน · เกณฑ์การประเมิน</a></li><li><a href="../dev/api-design.html"><span class="nav-dot draft"></span>API Design &amp; Endpoint Specification</a></li><li><a href="../dev/dfd.html"><span class="nav-dot ref"></span>แผนภาพกระแสข้อมูล (DFD — Data Flow Diagram) ของระบบ CMAS ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO — Course Learning Outcome)</a></li><li><a href="../dev/features-pages.html"><span class="nav-dot "></span>Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/user-flow.html"><span class="nav-dot draft"></span>User Flow &amp; UX Design — CMAS</a></li><li><a href="../dev/design-system.html"><span class="nav-dot active-status"></span>Verdure Design System</a></li><li><a href="../dev/material.html"><span class="nav-dot active-status"></span>Material Tonal Logic — Design System</a></li><li><a href="../dev/theory.html"><span class="nav-dot draft"></span>บทที่ 2 — หลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง</a></li><li><a href="../dev/project-plan.html"><span class="nav-dot draft"></span>แผนการดำเนินงานโครงงาน (WBS + Gantt) — CMAS</a></li><li><a href="../dev/thesis-toc.html"><span class="nav-dot draft"></span>สารบัญเล่มโครงงาน (Table of Contents) — CMAS</a></li><li><a href="../dev/progress-report-02.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li><li><a href="../dev/progress-report-02-qa.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li></ul></div><div class="nav-group"><div class="nav-group-title">แผนภาพ (Diagrams)</div><ul><li><a href="../graph/usecase.html"><span class="nav-dot "></span>Use Case Diagram</a></li><li><a href="../graph/tech-stack.html"><span class="nav-dot "></span>Tech Stack</a></li><li><a href="../graph/fishbone-4m.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">ฐานข้อมูล (SQL)</div><ul><li><a href="../sql/schema.html"><span class="nav-dot "></span>โครงสร้างฐานข้อมูล CMAS — 11 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง</a></li><li><a href="../sql/mysql-er-diagram.html"><span class="nav-dot "></span>CMAS — MySQL ER Diagram</a></li><li><a href="../sql/mysql/README.html"><span class="nav-dot "></span>CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/migrations/README.html"><span class="nav-dot "></span>docs/markdown/sql/migrations — historical only</a></li></ul></div><div class="nav-group"><div class="nav-group-title">กติกาทีม (Rules)</div><ul><li><a href="../rule/code-rule.html"><span class="nav-dot "></span>Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html"><span class="nav-dot "></span>Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html"><span class="nav-dot "></span>Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div></nav>
+<p class="nav-empty" id="nav-empty">ไม่พบเอกสารที่ตรงกับคำค้นหา</p>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<div class="doc-meta"><span class="badge badge-draft">Draft</span><span class="badge badge-ref">v0.2.0 (Draft)</span><div class="desc">ยังไม่ sign-off — §1 เป็นวัตถุประสงค์ที่ สกัดย้อนกลับ จาก srs §1.2, usecase</div></div>
+<h1 id="วัตถุประสงค์--สมมติฐาน--เกณฑ์การประเมิน" tabindex="-1"><a class="header-anchor" href="#วัตถุประสงค์--สมมติฐาน--เกณฑ์การประเมิน"><span>วัตถุประสงค์ · สมมติฐาน · เกณฑ์การประเมิน</span></a></h1>
+<p>See also: <a href="./srs.html">srs</a> · <a href="../graph/usecase.html">usecase</a> · <a href="./dev.html">dev</a> · <a href="../sql/schema.html">schema</a></p>
+<blockquote>
+<p><strong>Version:</strong> 0.2.0 (Draft) | <strong>Created:</strong> 2026-08-03 | <strong>Updated:</strong> 2026-08-09 (ขยาย §3.3
+เป็นเครื่องมือประเมินประสิทธิภาพและความพึงพอใจฉบับเต็ม มาตรา 5 ระดับ)
+<strong>สถานะ:</strong> ยังไม่ sign-off — §1 เป็นวัตถุประสงค์ที่ <strong>สกัดย้อนกลับ</strong> จาก <a href="./srs.html">srs</a> §1.2, <a href="../graph/usecase.html">usecase</a>
+และกฎการคำนวณ §3 เพราะโครงงานยังไม่เคยเขียนวัตถุประสงค์ไว้เป็นลายลักษณ์อักษร
+ต้องให้อาจารย์ที่ปรึกษายืนยันก่อนใช้อ้างอิงในเล่ม</p>
+<p><strong>สอดคล้องกับ schema v4</strong> (Course-root, single-tenant, 11 model) — วัตถุประสงค์ที่เกี่ยวกับ
+multi-institution และการจัดการหลักสูตรถูกตัดออกแล้ว และตั้งแต่ <strong>2026-08-04 (งาน 2.7)</strong>
+โค้ดกับฐานข้อมูลถูกแก้ให้ตรงกับเอกสารนี้จริงแล้ว — E-06 ปิด</p>
+</blockquote>
+<hr>
+<h2 id="1-วัตถุประสงค์ของโครงงาน-objectives" tabindex="-1"><a class="header-anchor" href="#1-วัตถุประสงค์ของโครงงาน-objectives"><span>1. วัตถุประสงค์ของโครงงาน (Objectives)</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>รหัส</th>
+<th>วัตถุประสงค์</th>
+<th>ที่มา</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OBJ-1</strong></td>
+<td>เพื่อพัฒนาระบบสารสนเทศสำหรับบันทึกและติดตามผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO) ตามหลักสูตร ค.อ.บ. สาขาวิชาเทคโนโลยีคอมพิวเตอร์ (ปรับปรุง พ.ศ. 2567)</td>
+<td><a href="./srs.html">srs</a> §1.2 · UC2, UC3</td>
+</tr>
+<tr>
+<td><strong>OBJ-2</strong></td>
+<td>เพื่อออกแบบกลไกเชื่อมโยงกิจกรรมการประเมิน (Activity) เข้ากับ CLO พร้อมน้ำหนักรายคู่ และคำนวณระดับการบรรลุ CLO โดยอัตโนมัติ</td>
+<td><a href="./srs.html">srs</a> §3 (CR-01…CR-05) · UC5, UC6</td>
+</tr>
+<tr>
+<td><strong>OBJ-3</strong></td>
+<td>เพื่อลดภาระงานและข้อผิดพลาดจากการรวบรวม/คำนวณคะแนนด้วยมือผ่าน Excel ของอาจารย์ผู้สอน</td>
+<td><a href="./srs.html">srs</a> §1.2 · UC7</td>
+</tr>
+<tr>
+<td><strong>OBJ-4</strong></td>
+<td>เพื่อพัฒนาเครื่องมือรายงานผลระดับรายวิชาและรายบุคคล ที่ระบุนักศึกษากลุ่มเสี่ยง (at-risk) ได้<strong>ภายในภาคการศึกษา</strong> ไม่ใช่หลังจบเทอม</td>
+<td><a href="./srs.html">srs</a> FR-83, FR-85 · UC9, UC10</td>
+</tr>
+<tr>
+<td><strong>OBJ-5</strong></td>
+<td>เพื่อประเมินประสิทธิภาพและความพึงพอใจของระบบจากผู้เชี่ยวชาญและผู้ใช้จริง</td>
+<td>มาตรฐานการประเมินโครงงาน</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ขอบเขตที่ตัดออกแล้ว-ห้ามเขียนเป็นวัตถุประสงค์" tabindex="-1"><a class="header-anchor" href="#ขอบเขตที่ตัดออกแล้ว-ห้ามเขียนเป็นวัตถุประสงค์"><span>ขอบเขตที่ตัดออกแล้ว (ห้ามเขียนเป็นวัตถุประสงค์)</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>รายการ</th>
+<th>เหตุผล</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PLO / มคอ.2 mapping ระดับหลักสูตร</td>
+<td>นอกขอบเขต v1 และ ER v3 ไม่มีตาราง Program ให้ PLO เกาะ</td>
+</tr>
+<tr>
+<td>การจัดการหลักสูตร (Curriculum)</td>
+<td>ตัดออกจาก ER v3 — สูงสุดของลำดับชั้นคือ Course</td>
+</tr>
+<tr>
+<td>รองรับหลายสถาบัน (multi-tenant)</td>
+<td>ตัดออกจาก ER v3 — ระบบเป็น single-tenant (คณะเดียว)</td>
+</tr>
+<tr>
+<td>ระบบลงทะเบียนเรียน / ตัดเกรดทางการ / เชื่อม REG</td>
+<td>นอกขอบเขต <a href="./srs.html">srs</a> §1.2</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-สมมติฐานของการจัดทำโครงงาน" tabindex="-1"><a class="header-anchor" href="#2-สมมติฐานของการจัดทำโครงงาน"><span>2. สมมติฐานของการจัดทำโครงงาน</span></a></h2>
+<blockquote>
+<p><strong>สภาพปัญหา (root cause):</strong> ปัจจุบัน<strong>ไม่มีระบบติดตามและประเมินผลลัพธ์การเรียนรู้
+เป็นรายบุคคล</strong> อาจารย์ผู้สอนรวบรวมคะแนนด้วย Excel แยกไฟล์ตามกิจกรรม
+จึงทราบว่านักศึกษาคนใดไม่บรรลุ CLO ข้อใด ก็ต่อเมื่อสิ้นภาคการศึกษาไปแล้ว
+ซึ่งสายเกินกว่าจะแทรกแซงช่วยเหลือนักศึกษาคนนั้นได้ทัน</p>
+</blockquote>
+<h3 id="ฉบับใช้ในเล่ม-รูปแบบย่อหน้า" tabindex="-1"><a class="header-anchor" href="#ฉบับใช้ในเล่ม-รูปแบบย่อหน้า"><span>ฉบับใช้ในเล่ม (รูปแบบย่อหน้า)</span></a></h3>
+<blockquote>
+<p>เมื่อพัฒนาระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชานี้แล้ว
+อาจารย์ผู้สอนสามารถบันทึกคะแนนรายกิจกรรม เชื่อมโยงกิจกรรมเข้ากับผลลัพธ์การเรียนรู้
+ที่คาดหวัง (CLO) พร้อมน้ำหนัก และติดตามผลการบรรลุ CLO ของนักศึกษาได้
+<strong>เป็นรายบุคคลตั้งแต่ระหว่างภาคการศึกษา</strong> ทราบได้ว่านักศึกษาคนใดยังไม่บรรลุ CLO ข้อใด
+จนสามารถนำผลไปใช้ปรับปรุงการจัดการเรียนการสอนและช่วยเหลือนักศึกษากลุ่มเสี่ยง
+ได้จริง โดยระบบนี้จะผ่านการประเมินจากผู้ทรงคุณวุฒิในระดับผลการประเมิน <strong>ดี ขึ้นไป</strong></p>
+</blockquote>
+<h3 id="ตัวชี้วัดที่ใช้พิสูจน์สมมติฐานข้างต้น" tabindex="-1"><a class="header-anchor" href="#ตัวชี้วัดที่ใช้พิสูจน์สมมติฐานข้างต้น"><span>ตัวชี้วัดที่ใช้พิสูจน์สมมติฐานข้างต้น</span></a></h3>
+<blockquote>
+<p>ย่อหน้าข้างบนคือสิ่งที่เขียนลงเล่ม ส่วนตารางนี้คือ<strong>สิ่งที่ต้องวัดจริง</strong>เพื่อยืนยันว่า
+ย่อหน้านั้นเป็นจริง — แต่ละข้อผูกกับเกณฑ์การประเมินใน §3</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>รหัส</th>
+<th>ตัวชี้วัด</th>
+<th>ผูกกับ</th>
+<th>วิธีพิสูจน์</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>H1</strong></td>
+<td>ระบบคำนวณระดับการบรรลุ CLO (CR-03, CR-04) และคะแนนรวมรายวิชา (CR-05) ได้ผลลัพธ์<strong>ตรงกับการคำนวณด้วยมือ 100%</strong> รวมกรณีขอบ (ไม่มีคะแนน · คะแนนบางส่วน · น้ำหนักไม่ครบ 100 · <code>maxScore</code> ต่างกัน · CLO ที่ไม่มีกิจกรรมวัด)</td>
+<td>OBJ-2</td>
+<td>Unit test ตาม NFR-14 + เทียบใบคำนวณมือที่อาจารย์ตรวจรับ</td>
+</tr>
+<tr>
+<td><strong>H2</strong></td>
+<td>ระบบแสดงผลการบรรลุ CLO <strong>รายบุคคล</strong> ได้ตั้งแต่มีคะแนนกิจกรรมแรก โดยไม่ต้องรอให้กรอกคะแนนครบทุกกิจกรรม — คือหัวใจที่ตอบ root cause โดยตรง</td>
+<td>OBJ-4</td>
+<td>ทดสอบด้วยชุดข้อมูลที่กรอกคะแนนเพียงบางกิจกรรม แล้วตรวจว่าระบบระบุ at-risk ได้ถูกต้อง</td>
+</tr>
+<tr>
+<td><strong>H3</strong></td>
+<td>กลไกตรวจสอบไฟล์นำเข้า (FR-67, FR-69) ตรวจจับข้อผิดพลาดที่พบบ่อยได้ <strong>ไม่น้อยกว่า 95%</strong></td>
+<td>OBJ-3</td>
+<td>ชุดทดสอบไฟล์ Excel ที่จงใจใส่ข้อผิดพลาด 6 ประเภทตาม FR-69</td>
+</tr>
+<tr>
+<td><strong>H4</strong></td>
+<td>ระบบมีประสิทธิภาพผ่านเกณฑ์ <a href="./srs.html">srs</a> §6 ทุกข้อ ที่ขนาดข้อมูล 1 วิชา / 200 นักศึกษา / 20 กิจกรรม</td>
+<td>OBJ-1, OBJ-4</td>
+<td>NFR-01, NFR-02, NFR-03</td>
+</tr>
+<tr>
+<td><strong>H5</strong></td>
+<td><strong>ผู้ทรงคุณวุฒิประเมินคุณภาพระบบโดยรวมอยู่ในระดับ ดี ขึ้นไป (ค่าเฉลี่ย ≥ 3.51)</strong> — ข้อนี้คือประโยคสุดท้ายของสมมติฐานโดยตรง</td>
+<td>OBJ-5</td>
+<td>แบบประเมินผู้ทรงคุณวุฒิ (Black Box)</td>
+</tr>
+<tr>
+<td><strong>H6</strong></td>
+<td>ผู้ใช้ (อาจารย์ผู้สอน) มีความพึงพอใจอยู่ในระดับ <strong>ดี ขึ้นไป</strong> (ค่าเฉลี่ย ≥ 3.51)</td>
+<td>OBJ-5</td>
+<td>แบบสอบถามความพึงพอใจ</td>
+</tr>
+<tr>
+<td><strong>H7</strong></td>
+<td>อาจารย์ที่ไม่เคยใช้ระบบมาก่อน นำเข้าคะแนนจนสำเร็จได้ภายใน <strong>10 นาที โดยไม่ต้องใช้คู่มือ</strong></td>
+<td>OBJ-3, OBJ-5</td>
+<td>ทดสอบ usability ตาม NFR-09</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="3-เกณฑ์การประเมิน-evaluation-criteria" tabindex="-1"><a class="header-anchor" href="#3-เกณฑ์การประเมิน-evaluation-criteria"><span>3. เกณฑ์การประเมิน (Evaluation Criteria)</span></a></h2>
+<p>การประเมินแบ่งเป็น <strong>3 ด้าน</strong> ตามลักษณะของสิ่งที่วัด — ด้านที่ 1-2 วัดด้วยตัวเลข
+ที่ระบบให้ได้เอง ด้านที่ 3 วัดด้วยแบบสอบถาม</p>
+<h3 id="31-ด้านความถูกต้องเชิงฟังก์ชัน-functional-correctness" tabindex="-1"><a class="header-anchor" href="#31-ด้านความถูกต้องเชิงฟังก์ชัน-functional-correctness"><span>3.1 ด้านความถูกต้องเชิงฟังก์ชัน (Functional Correctness)</span></a></h3>
+<p>ประเมินโดย <strong>ผู้พัฒนา + ผู้เชี่ยวชาญ 3–5 คน</strong> ด้วยวิธี Black Box Testing</p>
+<table>
+<thead>
+<tr>
+<th>รายการประเมิน</th>
+<th>เกณฑ์ผ่าน</th>
+<th>อ้างอิง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ความถูกต้องของสูตรคำนวณ CLO (CR-02, CR-03)</td>
+<td>ตรงกับการคำนวณด้วยมือ <strong>100%</strong></td>
+<td>H1 · NFR-14</td>
+</tr>
+<tr>
+<td>ความถูกต้องของ attainment ระดับวิชา (CR-04)</td>
+<td>ตรงกับการคำนวณด้วยมือ <strong>100%</strong></td>
+<td>H1</td>
+</tr>
+<tr>
+<td>ความถูกต้องของคะแนนรวมและสถานะนักศึกษา (CR-05)</td>
+<td>ตรงกับการคำนวณด้วยมือ <strong>100%</strong></td>
+<td>H1</td>
+</tr>
+<tr>
+<td>การจัดการกรณีขอบ: ไม่มีคะแนน → แสดง <code>—</code> ไม่ใช่ 0</td>
+<td>ผ่านทุกกรณี</td>
+<td>FR-84 · OI-12</td>
+</tr>
+<tr>
+<td><strong>การติดตามรายบุคคลระหว่างเทอม</strong> — ระบุได้ว่านักศึกษาคนใดไม่บรรลุ CLO ข้อใด เมื่อกรอกคะแนนเพียงบางกิจกรรม</td>
+<td>ระบุ at-risk ได้ถูกต้อง <strong>100%</strong> เทียบใบคำนวณมือ</td>
+<td><strong>H2</strong> · FR-83, FR-85</td>
+</tr>
+<tr>
+<td>การตรวจสอบไฟล์นำเข้า (6 ประเภทข้อผิดพลาด)</td>
+<td>ตรวจจับได้ <strong>≥ 95%</strong></td>
+<td>H3 · FR-69</td>
+</tr>
+<tr>
+<td>การบังคับสิทธิ์: INSTRUCTOR เข้าถึงเฉพาะวิชาที่ถูกมอบหมาย</td>
+<td>ยิง API ตรงด้วย id วิชาอื่น ต้องได้ <strong>404</strong></td>
+<td>NFR-07</td>
+</tr>
+<tr>
+<td>ความครบถ้วนของฟังก์ชันตาม FR ระดับ MUST</td>
+<td>ทำงานได้ครบ <strong>100%</strong></td>
+<td><a href="./srs.html">srs</a> §4</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-ด้านประสิทธิภาพ-performance" tabindex="-1"><a class="header-anchor" href="#32-ด้านประสิทธิภาพ-performance"><span>3.2 ด้านประสิทธิภาพ (Performance)</span></a></h3>
+<p>วัดที่ขนาดข้อมูล <strong>1 รายวิชา / 200 นักศึกษา / 20 กิจกรรม</strong></p>
+<table>
+<thead>
+<tr>
+<th>รายการประเมิน</th>
+<th>เกณฑ์ผ่าน</th>
+<th>อ้างอิง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>เวลาแสดงผลหน้าที่มีตาราง</td>
+<td><strong>&lt; 2 วินาที</strong></td>
+<td>NFR-01</td>
+</tr>
+<tr>
+<td>เวลาคำนวณ attainment ของ 1 รายวิชา</td>
+<td><strong>&lt; 1 วินาที</strong> และไม่เกิด N+1 query</td>
+<td>NFR-02</td>
+</tr>
+<tr>
+<td>เวลานำเข้าไฟล์ 500 แถว</td>
+<td><strong>&lt; 10 วินาที</strong></td>
+<td>NFR-03</td>
+</tr>
+<tr>
+<td>เวลาที่ผู้ใช้ใหม่นำเข้าคะแนนสำเร็จ (ไม่ใช้คู่มือ)</td>
+<td><strong>≤ 10 นาที</strong></td>
+<td>NFR-09 · H7</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-ด้านประสิทธิภาพของระบบและความพึงพอใจของผู้ใช้-system-efficiency--user-satisfaction" tabindex="-1"><a class="header-anchor" href="#33-ด้านประสิทธิภาพของระบบและความพึงพอใจของผู้ใช้-system-efficiency--user-satisfaction"><span>3.3 ด้านประสิทธิภาพของระบบและความพึงพอใจของผู้ใช้ (System Efficiency &amp; User Satisfaction)</span></a></h3>
+<p>ใช้เครื่องมือ <strong>แบบมาตราส่วนประมาณค่า 5 ระดับ (Rating Scale / Likert Scale)</strong> จำนวน <strong>2 ฉบับ</strong>
+คือ (ก) แบบประเมินประสิทธิภาพของระบบสำหรับผู้เชี่ยวชาญ และ (ข) แบบสอบถามความพึงพอใจ
+สำหรับผู้ใช้จริง — ทั้งสองฉบับใช้มาตรวัดและเกณฑ์แปลผลชุดเดียวกัน (§3.3.4–3.3.5)</p>
+<h4 id="331-กลุ่มผู้ประเมินและวิธีเลือก" tabindex="-1"><a class="header-anchor" href="#331-กลุ่มผู้ประเมินและวิธีเลือก"><span>3.3.1 กลุ่มผู้ประเมินและวิธีเลือก</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>กลุ่ม</th>
+<th>จำนวน</th>
+<th>วิธีเลือก</th>
+<th>ประเมินอะไร</th>
+<th>เครื่องมือ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ผู้เชี่ยวชาญด้านระบบสารสนเทศ / อาจารย์ที่ปรึกษา</td>
+<td>3–5 คน</td>
+<td>เลือกแบบเจาะจง (purposive) — มีประสบการณ์ด้านการพัฒนาระบบหรือการวัดผลการเรียนรู้ ≥ 3 ปี</td>
+<td>ประสิทธิภาพของระบบ 4 ด้าน ด้วยวิธี Black Box Testing</td>
+<td>แบบประเมิน ก.</td>
+</tr>
+<tr>
+<td>อาจารย์ผู้สอน (ผู้ใช้จริง)</td>
+<td>15–30 คน</td>
+<td>เลือกแบบเจาะจงจากอาจารย์ผู้สอนในหลักสูตร ที่ได้ทดลองใช้ระบบจริงอย่างน้อย 1 รายวิชา</td>
+<td>ความพึงพอใจในการใช้งานจริง 5 ด้าน</td>
+<td>แบบสอบถาม ข.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>ถ้าผู้ใช้จริงไม่ถึง 15 คน ให้ทำตามข้อเสนอใน E-05 (§5) คือเสริมด้วยการสัมภาษณ์เชิงคุณภาพ
+และรายงานขนาดกลุ่มตัวอย่างจริงตามตรงในเล่ม</p>
+</blockquote>
+<h4 id="332-แบบประเมิน-ก--ประสิทธิภาพของระบบ-ผู้เชี่ยวชาญ-20-ข้อ" tabindex="-1"><a class="header-anchor" href="#332-แบบประเมิน-ก--ประสิทธิภาพของระบบ-ผู้เชี่ยวชาญ-20-ข้อ"><span>3.3.2 แบบประเมิน ก. — ประสิทธิภาพของระบบ (ผู้เชี่ยวชาญ, 20 ข้อ)</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>ด้าน</th>
+<th>ข้อ</th>
+<th>ข้อคำถาม</th>
+<th>อ้างอิง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. ด้านตรงตามความต้องการของผู้ใช้ (Functional Requirement Test)</strong> — 5 ข้อ</td>
+<td>1.1</td>
+<td>ระบบจัดการข้อมูลรายวิชา · CLO · กิจกรรมการประเมิน ได้ครบตามที่ออกแบบ</td>
+<td>FR MUST · <a href="./srs.html">srs</a> §4</td>
+</tr>
+<tr>
+<td></td>
+<td>1.2</td>
+<td>ระบบเชื่อมโยงกิจกรรมการประเมินเข้ากับ CLO พร้อมกำหนดน้ำหนักรายคู่ได้</td>
+<td>OBJ-2 · CR-01</td>
+</tr>
+<tr>
+<td></td>
+<td>1.3</td>
+<td>ระบบนำเข้าคะแนนจากไฟล์ Excel และแจ้งข้อผิดพลาดของไฟล์ได้</td>
+<td>FR-67, FR-69</td>
+</tr>
+<tr>
+<td></td>
+<td>1.4</td>
+<td>ระบบรายงานผลการบรรลุ CLO ทั้งระดับรายวิชาและรายบุคคลได้</td>
+<td>FR-83, FR-85</td>
+</tr>
+<tr>
+<td></td>
+<td>1.5</td>
+<td>ระบบระบุนักศึกษากลุ่มเสี่ยง (at-risk) ได้ตั้งแต่ระหว่างภาคการศึกษา</td>
+<td>OBJ-4 · H2</td>
+</tr>
+<tr>
+<td><strong>2. ด้านการทำงานตามหน้าที่ของระบบ (Functional Test)</strong> — 5 ข้อ</td>
+<td>2.1</td>
+<td>ผลการคำนวณระดับการบรรลุ CLO ถูกต้องตรงตามสูตรที่กำหนด</td>
+<td>CR-02, CR-03 · H1</td>
+</tr>
+<tr>
+<td></td>
+<td>2.2</td>
+<td>ผลการคำนวณคะแนนรวมและสถานะของนักศึกษาถูกต้อง</td>
+<td>CR-05 · H1</td>
+</tr>
+<tr>
+<td></td>
+<td>2.3</td>
+<td>ระบบจัดการกรณีข้อมูลไม่ครบได้เหมาะสม (ไม่มีคะแนน → แสดง <code>—</code> ไม่ใช่ 0)</td>
+<td>FR-84 · OI-12</td>
+</tr>
+<tr>
+<td></td>
+<td>2.4</td>
+<td>การเพิ่ม / แก้ไข / ลบข้อมูล ให้ผลลัพธ์ถูกต้องและข้อมูลคงความสอดคล้อง</td>
+<td>§3.1</td>
+</tr>
+<tr>
+<td></td>
+<td>2.5</td>
+<td>ระบบทำงานได้ต่อเนื่องไม่หยุดชะงักหรือแสดงข้อผิดพลาดที่ไม่คาดคิด</td>
+<td>§3.1</td>
+</tr>
+<tr>
+<td><strong>3. ด้านการใช้งานของระบบ (Usability Test)</strong> — 5 ข้อ</td>
+<td>3.1</td>
+<td>การจัดวางเมนูและลำดับขั้นตอนการใช้งานเข้าใจง่าย</td>
+<td>NFR-09</td>
+</tr>
+<tr>
+<td></td>
+<td>3.2</td>
+<td>รูปแบบตัวอักษร สี และขนาดที่ใช้ อ่านง่ายและเหมาะสม</td>
+<td>NFR-09</td>
+</tr>
+<tr>
+<td></td>
+<td>3.3</td>
+<td>ข้อความแจ้งเตือน / ข้อผิดพลาดเป็นภาษาไทยที่เข้าใจได้และบอกวิธีแก้ไข</td>
+<td>NFR-09</td>
+</tr>
+<tr>
+<td></td>
+<td>3.4</td>
+<td>รายงานและกราฟสรุปผลอ่านเข้าใจได้โดยไม่ต้องตีความเพิ่ม</td>
+<td>FR-83</td>
+</tr>
+<tr>
+<td></td>
+<td>3.5</td>
+<td>ผู้ใช้ใหม่สามารถเรียนรู้การใช้งานได้เองโดยไม่ต้องใช้คู่มือ</td>
+<td>NFR-09 · H7</td>
+</tr>
+<tr>
+<td><strong>4. ด้านความปลอดภัยของระบบ (Security Test)</strong> — 5 ข้อ</td>
+<td>4.1</td>
+<td>ระบบตรวจสอบสิทธิ์การเข้าใช้งาน (authentication) ได้ถูกต้อง</td>
+<td>NFR-05</td>
+</tr>
+<tr>
+<td></td>
+<td>4.2</td>
+<td>การกำหนดสิทธิ์ตามบทบาท (ADMIN / INSTRUCTOR) เหมาะสมกับหน้าที่</td>
+<td>NFR-06</td>
+</tr>
+<tr>
+<td></td>
+<td>4.3</td>
+<td>ผู้ใช้ไม่สามารถเข้าถึงข้อมูลรายวิชาที่ไม่ได้รับมอบหมายได้</td>
+<td>NFR-07</td>
+</tr>
+<tr>
+<td></td>
+<td>4.4</td>
+<td>ระบบป้องกันข้อมูลที่ไม่ถูกต้องจากฝั่งผู้ใช้ก่อนบันทึกลงฐานข้อมูล</td>
+<td>NFR-08 · Zod</td>
+</tr>
+<tr>
+<td></td>
+<td>4.5</td>
+<td>ระบบบันทึกร่องรอยการแก้ไขข้อมูลสำคัญเพื่อการตรวจสอบย้อนหลัง</td>
+<td><a href="./srs.html">srs</a> §5</td>
+</tr>
+</tbody>
+</table>
+<h4 id="333-แบบสอบถาม-ข--ความพึงพอใจของผู้ใช้-อาจารย์ผู้สอน-20-ข้อ" tabindex="-1"><a class="header-anchor" href="#333-แบบสอบถาม-ข--ความพึงพอใจของผู้ใช้-อาจารย์ผู้สอน-20-ข้อ"><span>3.3.3 แบบสอบถาม ข. — ความพึงพอใจของผู้ใช้ (อาจารย์ผู้สอน, 20 ข้อ)</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>ด้าน</th>
+<th>ข้อ</th>
+<th>ข้อคำถาม</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. ด้านความสามารถทำงานตามความต้องการ</strong> — 4 ข้อ</td>
+<td>1.1</td>
+<td>ระบบช่วยให้บันทึกและจัดการคะแนนรายกิจกรรมได้สะดวก</td>
+</tr>
+<tr>
+<td></td>
+<td>1.2</td>
+<td>ระบบช่วยให้เชื่อมโยงกิจกรรมกับ CLO ได้ตรงกับที่ออกแบบรายวิชาไว้</td>
+</tr>
+<tr>
+<td></td>
+<td>1.3</td>
+<td>ระบบมีฟังก์ชันครบตามที่ต้องใช้ในการติดตามผลลัพธ์การเรียนรู้</td>
+</tr>
+<tr>
+<td></td>
+<td>1.4</td>
+<td>ระบบตอบโจทย์การใช้งานได้ดีกว่าการทำด้วย Excel แบบเดิม</td>
+</tr>
+<tr>
+<td><strong>2. ด้านความถูกต้องของผลลัพธ์</strong> — 4 ข้อ</td>
+<td>2.1</td>
+<td>ผลการคำนวณการบรรลุ CLO ตรงกับที่คาดหวัง</td>
+</tr>
+<tr>
+<td></td>
+<td>2.2</td>
+<td>คะแนนรวมและสถานะของนักศึกษาถูกต้องน่าเชื่อถือ</td>
+</tr>
+<tr>
+<td></td>
+<td>2.3</td>
+<td>รายงานผลรายบุคคลสะท้อนสถานะจริงของนักศึกษา</td>
+</tr>
+<tr>
+<td></td>
+<td>2.4</td>
+<td>ข้อมูลที่บันทึกไว้ไม่สูญหายหรือคลาดเคลื่อน</td>
+</tr>
+<tr>
+<td><strong>3. ด้านความง่ายในการใช้งาน</strong> — 4 ข้อ</td>
+<td>3.1</td>
+<td>ขั้นตอนการใช้งานไม่ซับซ้อน เรียนรู้ได้เร็ว</td>
+</tr>
+<tr>
+<td></td>
+<td>3.2</td>
+<td>หน้าจอและเมนูออกแบบเข้าใจง่าย หาสิ่งที่ต้องการเจอ</td>
+</tr>
+<tr>
+<td></td>
+<td>3.3</td>
+<td>การนำเข้าคะแนนจากไฟล์ Excel ทำได้ง่าย</td>
+</tr>
+<tr>
+<td></td>
+<td>3.4</td>
+<td>ข้อความแจ้งข้อผิดพลาดช่วยให้แก้ไขได้ด้วยตนเอง</td>
+</tr>
+<tr>
+<td><strong>4. ด้านประสิทธิภาพและความรวดเร็ว</strong> — 4 ข้อ</td>
+<td>4.1</td>
+<td>ระบบตอบสนองรวดเร็ว ไม่ต้องรอนาน</td>
+</tr>
+<tr>
+<td></td>
+<td>4.2</td>
+<td>การแสดงรายงานและกราฟทำได้รวดเร็ว</td>
+</tr>
+<tr>
+<td></td>
+<td>4.3</td>
+<td>ระบบช่วยลดเวลาในการรวบรวมและคำนวณคะแนนเมื่อเทียบกับวิธีเดิม</td>
+</tr>
+<tr>
+<td></td>
+<td>4.4</td>
+<td>ระบบช่วยลดข้อผิดพลาดจากการคำนวณด้วยมือ</td>
+</tr>
+<tr>
+<td><strong>5. ด้านประโยชน์ที่ได้รับ</strong> — 4 ข้อ</td>
+<td>5.1</td>
+<td>ทราบได้เร็วขึ้นว่านักศึกษาคนใดยังไม่บรรลุ CLO ข้อใด</td>
+</tr>
+<tr>
+<td></td>
+<td>5.2</td>
+<td>นำผลจากระบบไปใช้ช่วยเหลือนักศึกษากลุ่มเสี่ยงได้ทันภายในภาคการศึกษา</td>
+</tr>
+<tr>
+<td></td>
+<td>5.3</td>
+<td>นำผลจากระบบไปใช้ปรับปรุงการจัดการเรียนการสอนได้</td>
+</tr>
+<tr>
+<td></td>
+<td>5.4</td>
+<td>มีความพึงพอใจต่อระบบในภาพรวมและต้องการใช้งานต่อไป</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>ท้ายแบบสอบถามมีข้อเสนอแนะปลายเปิด 1 ข้อ (ไม่นำมาคิดค่าเฉลี่ย ใช้รายงานเชิงคุณภาพ)</p>
+</blockquote>
+<h4 id="334-เกณฑ์การให้คะแนน-5-ระดับ" tabindex="-1"><a class="header-anchor" href="#334-เกณฑ์การให้คะแนน-5-ระดับ"><span>3.3.4 เกณฑ์การให้คะแนน 5 ระดับ</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>ระดับคะแนน</th>
+<th>ความหมาย (แบบประเมินประสิทธิภาพ)</th>
+<th>ความหมาย (แบบสอบถามความพึงพอใจ)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>5</strong></td>
+<td>ระบบมีประสิทธิภาพในระดับ <strong>ดีมาก</strong></td>
+<td>พึงพอใจ <strong>มากที่สุด</strong></td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td>ระบบมีประสิทธิภาพในระดับ <strong>ดี</strong></td>
+<td>พึงพอใจ <strong>มาก</strong></td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>ระบบมีประสิทธิภาพในระดับ <strong>ปานกลาง</strong></td>
+<td>พึงพอใจ <strong>ปานกลาง</strong></td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>ระบบมีประสิทธิภาพในระดับ <strong>น้อย</strong> (ควรปรับปรุง)</td>
+<td>พึงพอใจ <strong>น้อย</strong></td>
+</tr>
+<tr>
+<td><strong>1</strong></td>
+<td>ระบบมีประสิทธิภาพในระดับ <strong>น้อยที่สุด</strong> (ต้องแก้ไข)</td>
+<td>พึงพอใจ <strong>น้อยที่สุด</strong></td>
+</tr>
+</tbody>
+</table>
+<h4 id="335-เกณฑ์การแปลความหมายค่าเฉลี่ย-อันตรภาคชั้น--515--080" tabindex="-1"><a class="header-anchor" href="#335-เกณฑ์การแปลความหมายค่าเฉลี่ย-อันตรภาคชั้น--515--080"><span>3.3.5 เกณฑ์การแปลความหมายค่าเฉลี่ย (อันตรภาคชั้น = (5−1)/5 = 0.80)</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>ช่วงค่าเฉลี่ย</th>
+<th>แปลผลประสิทธิภาพ</th>
+<th>แปลผลความพึงพอใจ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.51 – 5.00</td>
+<td>ดีมาก</td>
+<td>พึงพอใจมากที่สุด</td>
+</tr>
+<tr>
+<td>3.51 – 4.50</td>
+<td>ดี</td>
+<td>พึงพอใจมาก</td>
+</tr>
+<tr>
+<td>2.51 – 3.50</td>
+<td>ปานกลาง</td>
+<td>พึงพอใจปานกลาง</td>
+</tr>
+<tr>
+<td>1.51 – 2.50</td>
+<td>น้อย</td>
+<td>พึงพอใจน้อย</td>
+</tr>
+<tr>
+<td>1.00 – 1.50</td>
+<td>น้อยที่สุด</td>
+<td>พึงพอใจน้อยที่สุด</td>
+</tr>
+</tbody>
+</table>
+<h4 id="336-สถิติที่ใช้" tabindex="-1"><a class="header-anchor" href="#336-สถิติที่ใช้"><span>3.3.6 สถิติที่ใช้</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>สถิติ</th>
+<th>ใช้กับ</th>
+<th>สูตร / หมายเหตุ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ค่าเฉลี่ย (x̄)</td>
+<td>คะแนนรายข้อ · รายด้าน · ภาพรวม</td>
+<td>x̄ = Σx / n</td>
+</tr>
+<tr>
+<td>ส่วนเบี่ยงเบนมาตรฐาน (S.D.)</td>
+<td>คะแนนรายข้อ · รายด้าน · ภาพรวม</td>
+<td>รายงานคู่กับค่าเฉลี่ยทุกตาราง</td>
+</tr>
+<tr>
+<td>ค่า IOC</td>
+<td>ตรวจความตรงเชิงเนื้อหาของข้อคำถาม</td>
+<td>IOC = ΣR / n โดยผู้เชี่ยวชาญให้คะแนน +1 / 0 / −1</td>
+</tr>
+<tr>
+<td>ค่าสัมประสิทธิ์แอลฟาของครอนบาค (α)</td>
+<td>ความเชื่อมั่นของแบบสอบถาม ข.</td>
+<td>ทดลองใช้ (try-out) กับผู้ที่ไม่ใช่กลุ่มตัวอย่าง 10 คน</td>
+</tr>
+</tbody>
+</table>
+<h4 id="337-เกณฑ์การตัดสิน" tabindex="-1"><a class="header-anchor" href="#337-เกณฑ์การตัดสิน"><span>3.3.7 เกณฑ์การตัดสิน</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>เกณฑ์</th>
+<th>ค่าที่ต้องได้</th>
+<th>ผูกกับ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ค่าเฉลี่ยประสิทธิภาพของระบบโดยรวม (ผู้เชี่ยวชาญ)</td>
+<td><strong>≥ 3.51</strong> (ระดับดีขึ้นไป)</td>
+<td>H5</td>
+</tr>
+<tr>
+<td>ค่าเฉลี่ยความพึงพอใจโดยรวม (ผู้ใช้จริง)</td>
+<td><strong>≥ 3.51</strong> (ระดับมากขึ้นไป)</td>
+<td>H6</td>
+</tr>
+<tr>
+<td>ค่าเฉลี่ยรายด้าน — ทุกด้านของทั้งสองฉบับ</td>
+<td><strong>≥ 3.51</strong> (ไม่มีด้านใดต่ำกว่า)</td>
+<td>H5, H6</td>
+</tr>
+<tr>
+<td>ส่วนเบี่ยงเบนมาตรฐานรายด้าน</td>
+<td><strong>&lt; 1.00</strong> (ความเห็นสอดคล้องกัน)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ค่า IOC รายข้อ</td>
+<td><strong>≥ 0.50</strong> จากผู้เชี่ยวชาญ 3 คน ข้อที่ต่ำกว่าต้องปรับหรือตัดทิ้ง</td>
+<td>คุณภาพเครื่องมือ</td>
+</tr>
+<tr>
+<td>ค่าความเชื่อมั่น α ของแบบสอบถาม ข.</td>
+<td><strong>≥ 0.70</strong></td>
+<td>คุณภาพเครื่องมือ</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>สรุปเกณฑ์ผ่านของโครงงาน:</strong> ค่าเฉลี่ยรวมของทั้งผู้เชี่ยวชาญและผู้ใช้ <strong>≥ 3.51 (ระดับดี)</strong>
+และไม่มีด้านใดด้านหนึ่งต่ำกว่า 3.51 — ตรงกับประโยคสุดท้ายของสมมติฐาน §2</p>
+</blockquote>
+<hr>
+<h2 id="4-ตารางสรุปความเชื่อมโยง-วัตถุประสงค์--สมมติฐาน--เกณฑ์" tabindex="-1"><a class="header-anchor" href="#4-ตารางสรุปความเชื่อมโยง-วัตถุประสงค์--สมมติฐาน--เกณฑ์"><span>4. ตารางสรุปความเชื่อมโยง วัตถุประสงค์ → สมมติฐาน → เกณฑ์</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>วัตถุประสงค์</th>
+<th>สมมติฐาน</th>
+<th>เกณฑ์การประเมิน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OBJ-1 พัฒนาระบบติดตาม CLO</td>
+<td>H4</td>
+<td>§3.1 (ความครบถ้วน FR MUST) · §3.2 (NFR-01)</td>
+</tr>
+<tr>
+<td>OBJ-2 กลไกเชื่อม Activity ↔ CLO และคำนวณอัตโนมัติ</td>
+<td>H1</td>
+<td>§3.1 (ความถูกต้องสูตร 100%) · §3.2 (NFR-02)</td>
+</tr>
+<tr>
+<td>OBJ-3 ลดภาระและข้อผิดพลาดจากการทำมือ</td>
+<td>H3, H7</td>
+<td>§3.1 (ตรวจจับ error ≥ 95%) · §3.2 (NFR-03, NFR-09)</td>
+</tr>
+<tr>
+<td>OBJ-4 รายงานผลและระบุ at-risk รายบุคคลภายในเทอม</td>
+<td><strong>H2</strong>, H4</td>
+<td>§3.1 (แสดงผลรายบุคคลเมื่อคะแนนยังไม่ครบ · กรณีขอบ) · §3.2 (NFR-01)</td>
+</tr>
+<tr>
+<td>OBJ-5 ประเมินประสิทธิภาพและความพึงพอใจ</td>
+<td><strong>H5</strong>, H6</td>
+<td>§3.3 (ค่าเฉลี่ย ≥ 3.51 ทั้งสองกลุ่ม)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5--ประเด็นที่ต้องตัดสินใจก่อนเริ่มเก็บข้อมูล" tabindex="-1"><a class="header-anchor" href="#5--ประเด็นที่ต้องตัดสินใจก่อนเริ่มเก็บข้อมูล"><span>5. ⚠ ประเด็นที่ต้องตัดสินใจก่อนเริ่มเก็บข้อมูล</span></a></h2>
+<blockquote>
+<p>ข้อเหล่านี้ไม่ใช่รายละเอียดปลีกย่อย — ถ้าไม่จัดการก่อน จะพิสูจน์สมมติฐานไม่ได้เลย
+และเป็นสิ่งที่กรรมการถามแน่นอน</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>ประเด็น</th>
+<th>ผลถ้าไม่จัดการ</th>
+<th>ข้อเสนอ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>E-01</strong></td>
+<td><strong>H2 ไม่มี baseline</strong> — จะบอกว่า &quot;เร็วกว่าเดิม&quot; ต้องรู้ว่า &quot;เดิม&quot; ใช้เวลาเท่าไร แต่ยังไม่เคยจับเวลาวิธีทำมือด้วย Excel เลย</td>
+<td>พิสูจน์ H2 ไม่ได้ ต้องตัดสมมติฐานทิ้งกลางคัน หรือเขียนแบบไม่มีตัวเลขรองรับ</td>
+<td><strong>เก็บ baseline ก่อนเริ่มพัฒนา</strong> — ให้อาจารย์ 3–5 ท่านทำงานเดิม (รวมคะแนน + คำนวณ CLO 1 วิชา) แล้วจับเวลาไว้ ทำครั้งเดียวใช้ได้ทั้งเล่ม</td>
+</tr>
+<tr>
+<td><strong>E-02</strong></td>
+<td><strong>H1 ต้องมี &quot;ใบคำนวณมือ&quot; ที่เชื่อถือได้</strong> ไว้เทียบ ถ้าคำนวณมือผิดเอง การเทียบไม่มีความหมาย</td>
+<td>H1 กลายเป็นการเทียบระบบกับตัวเอง</td>
+<td>ให้อาจารย์ที่ปรึกษาตรวจรับใบคำนวณมืออย่างน้อย 3 ชุด (กรณีปกติ / กรณีคะแนนไม่ครบ / กรณี PASS_FAIL) ก่อนใช้เป็นเกณฑ์</td>
+</tr>
+<tr>
+<td><strong>E-03</strong></td>
+<td><strong>OI-10 ยังไม่ปิด</strong> — CR-03 กับ CR-02 ตีความน้ำหนักไม่ตรงกัน ทดสอบแล้วต่างกันถึง <strong>20 จุด</strong> บนข้อมูลชุดเดียวกัน</td>
+<td>H1 พิสูจน์ไม่ได้ เพราะยังไม่รู้ว่า &quot;คำตอบที่ถูก&quot; คือสูตรไหน</td>
+<td>ต้อง sign-off <a href="./srs.html">srs</a> OI-10 ก่อนเขียน unit test</td>
+</tr>
+<tr>
+<td><strong>E-04</strong></td>
+<td><strong>OI-12 ยังไม่ปิด</strong> — ไม่ได้นิยามว่านักศึกษาที่ยังไม่มีคะแนนเลย นับเป็น at-risk หรือไม่</td>
+<td>OBJ-4 วัดไม่ได้ เพราะ &quot;at-risk&quot; ยังไม่มีนิยามที่ชัด</td>
+<td>ต้อง sign-off <a href="./srs.html">srs</a> OI-12 ก่อนทำ Dashboard</td>
+</tr>
+<tr>
+<td><strong>E-05</strong></td>
+<td><strong>จำนวนผู้ใช้จริงอาจไม่ถึง 15 คน</strong> — <a href="./srs.html">srs</a> §2.2 คาดว่ามีอาจารย์ 10–50 คน แต่ในทางปฏิบัติอาจหาผู้ทดลองใช้ได้น้อยกว่านั้น</td>
+<td>สถิติความพึงพอใจอ่อน กรรมการตั้งคำถามเรื่องขนาดกลุ่มตัวอย่าง</td>
+<td>ตกลงจำนวนขั้นต่ำกับอาจารย์ที่ปรึกษาไว้ล่วงหน้า และถ้าน้อยกว่า 15 ให้เสริมด้วยการสัมภาษณ์เชิงคุณภาพ</td>
+</tr>
+<tr>
+<td><s><strong>E-06</strong></s></td>
+<td>✅ <strong>ปิดแล้ว 2026-08-04 (งาน 2.7)</strong> — เดิม <a href="./srs.html">srs</a> เป็น multi-tenant + Curriculum ขณะที่วัตถุประสงค์เขียนว่า single-tenant</td>
+<td>—</td>
+<td>ตัด <code>Institution</code> · <code>Membership</code> · <code>Curriculum</code> · <code>CurriculumCourse</code> ออกจริงทั้ง <code>schema.prisma</code> (เหลือ 11 model) · migration · โค้ดฝั่งเซิร์ฟเวอร์ · และเอกสาร <a href="./srs.html">srs</a> v2.0.0 / <a href="./dfd.html">dfd</a> v2.0.0 / <a href="./features-pages.html">features-pages</a> / <a href="./theory.html">theory</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><em>เอกสารนี้เป็น source of truth ของ <strong>วัตถุประสงค์และการประเมิน</strong> — <a href="./srs.html">srs</a> เป็น source of truth ของ
+<strong>requirement</strong> และ <code>database/schema.prisma</code> เป็น source of truth ของ <strong>data</strong></em></p>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">◐</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+function filterNav(q) {
+  q = q.trim().toLowerCase();
+  var anyVisible = false;
+  document.querySelectorAll('.nav-group').forEach(function (group) {
+    var groupHasMatch = false;
+    group.querySelectorAll('li').forEach(function (li) {
+      var text = li.textContent.toLowerCase();
+      var match = !q || text.indexOf(q) !== -1;
+      li.style.display = match ? '' : 'none';
+      if (match) groupHasMatch = true;
+    });
+    group.style.display = groupHasMatch ? '' : 'none';
+    if (groupHasMatch) anyVisible = true;
+  });
+  document.getElementById('nav-empty').style.display = anyVisible ? 'none' : 'block';
+}
+</script>
+</body>
+</html>

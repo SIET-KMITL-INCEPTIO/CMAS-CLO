@@ -57,6 +57,70 @@ jobs:
       - name: Build
         run: npm run build
 
+  isolation:
+    name: Migration replay + course-scope isolation
+    runs-on: ubuntu-latest
+
+    # The `verify` job runs the isolation suite too, but with no reachable
+    # database it SKIPS every case — and a skipped isolation test proves
+    # nothing. This job is the one that actually enforces SRS NFR-07.
+    #
+    # Single-tenant since 2026-08-04: the boundary is the COURSE, not the
+    # institution. The seed creates two courses with different instructors so
+    # "instructor of course A must get 404 on course B" has real data to run
+    # against.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cmas_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/cmas_test
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/cmas_test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      # Replays 0001_init and the HAND-WRITTEN 0002_constraints_and_triggers
+      # from empty. This is what proves the hand-written migration survives the
+      # command developers run most often — and it is the only thing that
+      # catches someone running `prisma db push` and silently dropping the
+      # CHECK/trigger layer.
+      - name: Apply migrations
+        run: npm run db:migrate:deploy
+
+      - name: Seed
+        run: npm run db:seed
+
+      # Idempotency: the seed's own docstring promises re-running is safe.
+      - name: Seed again — must be idempotent
+        run: npm run db:seed
+
+      - name: Course-scope isolation tests
+        run: npm run test -w app/server
+
   docker:
     name: Docker images build
     runs-on: ubuntu-latest

@@ -1,0 +1,2606 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แผนการดำเนินงานโครงงาน (WBS + Gantt) — CMAS · CMAS Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-inner">
+<a class="brand" href="../index.html">CMAS Docs<span class="brand-sub">v2</span></a>
+<p class="sidebar-tagline">เอกสารโครงงาน CLO System — single source of truth</p>
+<input class="nav-search" type="search" placeholder="ค้นหาเอกสาร…" oninput="filterNav(this.value)">
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">เอกสารพัฒนา (Dev)</div><ul><li><a href="../dev/dev.html"><span class="nav-dot ref"></span>Technical Standard &amp; Workflow</a></li><li><a href="../dev/srs.html"><span class="nav-dot ref"></span>Software Requirements Specification (SRS)</a></li><li><a href="../dev/objectives-hypotheses-evaluation.html"><span class="nav-dot draft"></span>วัตถุประสงค์ · สมมติฐาน · เกณฑ์การประเมิน</a></li><li><a href="../dev/api-design.html"><span class="nav-dot draft"></span>API Design &amp; Endpoint Specification</a></li><li><a href="../dev/dfd.html"><span class="nav-dot ref"></span>แผนภาพกระแสข้อมูล (DFD — Data Flow Diagram) ของระบบ CMAS ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO — Course Learning Outcome)</a></li><li><a href="../dev/features-pages.html"><span class="nav-dot "></span>Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/user-flow.html"><span class="nav-dot draft"></span>User Flow &amp; UX Design — CMAS</a></li><li><a href="../dev/design-system.html"><span class="nav-dot active-status"></span>Verdure Design System</a></li><li><a href="../dev/material.html"><span class="nav-dot active-status"></span>Material Tonal Logic — Design System</a></li><li><a href="../dev/theory.html"><span class="nav-dot draft"></span>บทที่ 2 — หลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง</a></li><li><a class="active" href="../dev/project-plan.html"><span class="nav-dot draft"></span>แผนการดำเนินงานโครงงาน (WBS + Gantt) — CMAS</a></li><li><a href="../dev/thesis-toc.html"><span class="nav-dot draft"></span>สารบัญเล่มโครงงาน (Table of Contents) — CMAS</a></li><li><a href="../dev/progress-report-02.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li><li><a href="../dev/progress-report-02-qa.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li></ul></div><div class="nav-group"><div class="nav-group-title">แผนภาพ (Diagrams)</div><ul><li><a href="../graph/usecase.html"><span class="nav-dot "></span>Use Case Diagram</a></li><li><a href="../graph/tech-stack.html"><span class="nav-dot "></span>Tech Stack</a></li><li><a href="../graph/fishbone-4m.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">ฐานข้อมูล (SQL)</div><ul><li><a href="../sql/schema.html"><span class="nav-dot "></span>โครงสร้างฐานข้อมูล CMAS — 11 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง</a></li><li><a href="../sql/mysql-er-diagram.html"><span class="nav-dot "></span>CMAS — MySQL ER Diagram</a></li><li><a href="../sql/mysql/README.html"><span class="nav-dot "></span>CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/migrations/README.html"><span class="nav-dot "></span>docs/markdown/sql/migrations — historical only</a></li></ul></div><div class="nav-group"><div class="nav-group-title">กติกาทีม (Rules)</div><ul><li><a href="../rule/code-rule.html"><span class="nav-dot "></span>Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html"><span class="nav-dot "></span>Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html"><span class="nav-dot "></span>Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div></nav>
+<p class="nav-empty" id="nav-empty">ไม่พบเอกสารที่ตรงกับคำค้นหา</p>
+</div>
+</aside>
+<main class="content">
+<article class="markdown-body">
+<div class="doc-meta"><span class="badge badge-draft">Draft</span><span class="badge badge-ref">v2.1</span><div class="desc">แผนเดิมของ Gantt ที่ทำไว้มี 4 ปัญหาที่ทำให้ พิสูจน์สมมติฐานไม่ได้ ถ้าไม่แก้ตอนนี้:</div></div>
+<h1 id="แผนการดำเนินงานโครงงาน-wbs--gantt--cmas" tabindex="-1"><a class="header-anchor" href="#แผนการดำเนินงานโครงงาน-wbs--gantt--cmas"><span>แผนการดำเนินงานโครงงาน (WBS + Gantt) — CMAS</span></a></h1>
+<p>See also: <a href="./srs.html">srs</a> · <a href="./objectives-hypotheses-evaluation.html">objectives-hypotheses-evaluation</a> · <a href="./dfd.html">dfd</a> · <a href="./dev.html">dev</a> · <a href="./features-pages.html">features-pages</a> · <a href="../sql/schema.html">schema</a></p>
+<blockquote>
+<p><strong>Version:</strong> 2.1 | <strong>จัดทำ:</strong> 2026-08-05 | <strong>ช่วงแผน:</strong> 13 ก.ค. 2026 – 27 มี.ค. 2027
+<strong>v2.1:</strong> re-baseline ให้ CLO 2–4 ตรงกับ <strong>กำหนดส่งรายงานความก้าวหน้าของรายวิชา</strong> (ดู §1.1)
+<strong>v2.0:</strong> ปิดงาน 2.7 — ระบบเป็น <strong>single-tenant</strong> ตัด Institution/Curriculum ออก →
+ตัด Sprint หลักสูตรทิ้ง 1 sprint และเลื่อน Sprint 2–9 ขึ้นมา 2 สัปดาห์ · Sprint 10 กลายเป็น <strong>buffer จริง</strong>
+<strong>ทีม:</strong> ธีรณัฎฐ์ (Dev A / Lead) · นัจญมา (Dev B) · นูรีน (Dev C)
+<strong>สถานะ ณ วันจัดทำ:</strong> CLO 1 เสร็จ 100% · CLO 2 ค้าง · CLO 3 กำลังเริ่ม (ER + DFD มีร่างแล้ว) · CLO 4–5 ยังไม่เริ่ม</p>
+</blockquote>
+<hr>
+<h2 id="0-สรุปการเปลี่ยนแปลงจากแผนเดิม-ต้องอ่านก่อน" tabindex="-1"><a class="header-anchor" href="#0-สรุปการเปลี่ยนแปลงจากแผนเดิม-ต้องอ่านก่อน"><span>0. สรุปการเปลี่ยนแปลงจากแผนเดิม (ต้องอ่านก่อน)</span></a></h2>
+<p>แผนเดิมของ Gantt ที่ทำไว้มี 4 ปัญหาที่ทำให้ <strong>พิสูจน์สมมติฐานไม่ได้</strong> ถ้าไม่แก้ตอนนี้:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>ปัญหาในแผนเดิม</th>
+<th>ผลที่ตามมา</th>
+<th>สิ่งที่แผนนี้แก้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P-1</td>
+<td>จบแผนที่ 20 ธ.ค. 2026 โดยไม่มีช่วง <strong>ทดสอบ / ประเมินผล / เขียนเล่ม / สอบป้องกัน</strong></td>
+<td>ไม่มี CLO 5 → ส่งโครงงานไม่ได้</td>
+<td>เพิ่ม <strong>CLO 5</strong> (25 ม.ค. – 27 มี.ค. 2027) และขยับ CLO 4 ให้จบ 24 ม.ค. 2027</td>
+</tr>
+<tr>
+<td>P-2</td>
+<td>CLO 2 (สมมติฐาน/เกณฑ์) กำหนดเสร็จ 16 ก.ค. แต่ยัง 0% ขณะที่ CLO 3–4 เดินหน้าแล้ว</td>
+<td>เขียน unit test ไม่ได้เพราะยังไม่รู้ว่า &quot;คำตอบที่ถูก&quot; คือสูตรไหน (OI-10)</td>
+<td>re-baseline CLO 2 เป็น 4–16 ส.ค. และทำ <strong>ขนานกับ</strong> CLO 3 พร้อมเพิ่มงาน 2.5–2.7 ที่เป็น blocker จริง</td>
+</tr>
+<tr>
+<td>P-3</td>
+<td>ไม่มีงาน <strong>เก็บ baseline การทำงานด้วย Excel</strong> (E-01)</td>
+<td>H2/H3 ไม่มีตัวเลขเปรียบเทียบ → พูดว่า &quot;ลดภาระ&quot; ไม่ได้</td>
+<td>เพิ่ม <strong>2.5</strong> และต้องทำให้เสร็จ <strong>ก่อน</strong> เริ่มพัฒนา (CLO 4)</td>
+</tr>
+<tr>
+<td>P-4</td>
+<td>4.3 (คะแนน + Excel) ตั้ง 44 วัน และ 4.4 (Dashboard) 49 วัน ทับซ้อนกัน 1.5 เดือน ทั้งที่ Dashboard ต้องใช้คะแนนจริงเป็น input</td>
+<td>Dashboard พัฒนาโดยไม่มีข้อมูลทดสอบ → งานย้อนกลับ</td>
+<td>ซอย CLO 4 เป็น <strong>sprint ละ 2 สัปดาห์</strong> เรียงตาม dependency จริง (auth → course → CLO/activity → score → attainment → dashboard)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>✅ ข้อขัดแย้งเชิงขอบเขตปิดแล้ว (งาน 2.7 · 2026-08-04):</strong> เลือก <strong>single-tenant</strong>
+ตัด <code>Institution</code> · <code>Membership</code> · <code>Curriculum</code> · <code>CurriculumCourse</code> และ tenant guard ออกทั้งหมด
+schema เหลือ <strong>11 model</strong> · <code>Course</code> เป็นรากของลำดับชั้น · role อยู่บน <code>User</code></p>
+<p>ผลต่อแผนงาน:</p>
+<table>
+<thead>
+<tr>
+<th>ผลกระทบ</th>
+<th>รายละเอียด</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>งานพัฒนาลดลง 1 sprint</td>
+<td>Sprint หลักสูตรเดิม (7 งานย่อย) ถูกตัด → Sprint 2–9 เลื่อนขึ้น 2 สัปดาห์</td>
+</tr>
+<tr>
+<td>ได้ buffer จริง 2 สัปดาห์</td>
+<td>Sprint 10 (11–24 ม.ค. 2027) ไม่มี feature ใหม่ — ใช้เก็บงานค้างและเตรียมข้อมูลให้ CLO 5</td>
+</tr>
+<tr>
+<td>หน้าจอลดจาก 15 → <strong>13 หน้า</strong></td>
+<td>ตัดหน้า Curriculum List และ Curriculum Detail</td>
+</tr>
+<tr>
+<td>ความเสี่ยงใหม่ที่ต้องระวัง</td>
+<td>เหลือด่านตรวจสิทธิ์ <strong>ชั้นเดียว</strong> (รายวิชา) — ทุก route ที่รับ <code>:courseId</code> ต้องมี test กำกับ</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="1-ภาพรวมไทม์ไลน์" tabindex="-1"><a class="header-anchor" href="#1-ภาพรวมไทม์ไลน์"><span>1. ภาพรวมไทม์ไลน์</span></a></h2>
+<h3 id="11-หมุดหมายจากกำหนดส่งรายงานความก้าวหน้า-ตัวตั้งของแผนนี้" tabindex="-1"><a class="header-anchor" href="#11-หมุดหมายจากกำหนดส่งรายงานความก้าวหน้า-ตัวตั้งของแผนนี้"><span>1.1 หมุดหมายจากกำหนดส่งรายงานความก้าวหน้า (ตัวตั้งของแผนนี้)</span></a></h3>
+<p>รายวิชากำหนดส่งรายงานความก้าวหน้า <strong>4 ครั้ง</strong> และแต่ละครั้งผูกกับ CLO หนึ่งข้อแบบหนึ่งต่อหนึ่ง
+วันที่เหล่านี้เป็น <strong>ข้อมูลจากภายนอก เลื่อนไม่ได้</strong> — ทุกงานในแผนถูกจัดให้ชนวันเหล่านี้พอดี</p>
+<table>
+<thead>
+<tr>
+<th>ครั้งที่</th>
+<th>วันส่ง</th>
+<th>CLO ที่ถูกประเมิน</th>
+<th>สิ่งที่ต้องมีให้ดูวันนั้น</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>ก.ค. 2026 ✅</td>
+<td>CLO 1 — ระบุปัญหา</td>
+<td>Root Cause Analysis + Literature Review</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>เสาร์ 15 ส.ค. 2026</strong></td>
+<td>CLO 2 — ตั้งสมมติฐาน</td>
+<td>H1–H7 ที่ sign-off แล้ว, เกณฑ์ประเมิน §3.1–3.3, แบบประเมิน, <strong>baseline Excel</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>เสาร์ 26 ก.ย. 2026</strong></td>
+<td>CLO 3 — ออกแบบสถาปัตยกรรม</td>
+<td>ER-Diagram, DFD L0–L2, API contract, Design System + UI ครบ 13 หน้า, Route map</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>เสาร์ 24 ต.ค. 2026</strong></td>
+<td>CLO 4 — พัฒนาได้ <strong>ตามแผน</strong></td>
+<td>ระบบที่รันได้จริงจบ Sprint 1–3 (Auth/RBAC · Course · CLO &amp; Objectives) + หลักฐานว่าเดินตาม Gantt</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>ครั้งที่ 4 ไม่ใช่วันจบ CLO 4</strong> — ถ้อยคำของ CLO 4 คือ &quot;พัฒนาโครงงานตามสถาปัตยกรรมที่ออกแบบ
+<strong>ได้ตามแผน</strong>&quot; สิ่งที่ถูกประเมินจึงเป็น <em>ความสอดคล้องกับแผน</em> ไม่ใช่ความครบของฟีเจอร์
+การพัฒนาเดินต่อถึง 24 ม.ค. 2027 ตามเดิม และ <strong>ไม่มีรายงานความก้าวหน้าหลังครั้งที่ 4</strong>
+CLO 5 จึงกำหนดวันเอง โดยจบที่วันสอบป้องกัน</p>
+</blockquote>
+<h3 id="12-ช่วงเวลาของแต่ละ-clo" tabindex="-1"><a class="header-anchor" href="#12-ช่วงเวลาของแต่ละ-clo"><span>1.2 ช่วงเวลาของแต่ละ CLO</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>CLO</th>
+<th>ชื่อ</th>
+<th>ช่วงเวลา</th>
+<th>สัปดาห์</th>
+<th>ส่งมอบหลัก</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CLO 1</td>
+<td>ระบุปัญหาที่ต้องการแก้ไข</td>
+<td>13–18 ก.ค. 2026</td>
+<td>1</td>
+<td>Root Cause Analysis, Literature Review ✅</td>
+</tr>
+<tr>
+<td>CLO 2</td>
+<td>ตั้งสมมติฐาน + เกณฑ์ประเมิน</td>
+<td>4–<strong>15 ส.ค. 2026</strong></td>
+<td>2</td>
+<td>H1–H7, เกณฑ์ §3.1–3.3, แบบประเมิน, <strong>baseline Excel</strong></td>
+</tr>
+<tr>
+<td>CLO 3</td>
+<td>ออกแบบสถาปัตยกรรม</td>
+<td>4 ส.ค. – <strong>26 ก.ย. 2026</strong></td>
+<td>8</td>
+<td><strong>ER-Diagram</strong>, <strong>DFD L0–L2</strong>, API contract, <strong>Design System + UI ทุกหน้า</strong>, Route map</td>
+</tr>
+<tr>
+<td>CLO 4</td>
+<td>พัฒนาระบบ</td>
+<td>7 ก.ย. 2026 – 24 ม.ค. 2027</td>
+<td>20 (9 sprint + 1 buffer)</td>
+<td>จุดตรวจ 24 ต.ค. → Sprint 1–3 รันได้ · ปลายทาง → FR ระดับ MUST ครบ <strong>13 หน้า</strong></td>
+</tr>
+<tr>
+<td>CLO 5</td>
+<td>ทดสอบ ประเมินผล และจัดทำปริญญานิพนธ์</td>
+<td>25 ม.ค. – 27 มี.ค. 2027</td>
+<td>9</td>
+<td>ผลทดสอบ H1–H7, ผลประเมินผู้ทรงคุณวุฒิ/ผู้ใช้, เล่ม, สอบป้องกัน</td>
+</tr>
+</tbody>
+</table>
+<p>CLO 3 กับ CLO 4 คาบเกี่ยวกัน 20 วัน (7–26 ก.ย.) <strong>โดยตั้งใจ</strong> — Sprint 1 เป็นงานฐาน
+(auth, RBAC, layout, component library) ที่ไม่ต้องรอ UI ของหน้า Dashboard ซึ่งเป็นงานท้ายสุดของ CLO 3</p>
+<pre class="hljs"><code>        ส.ค.69      ก.ย.        ต.ค.        พ.ย.        ธ.ค.        ม.ค.70      ก.พ.        มี.ค.
+CLO 2   ███
+CLO 3   ███████████████
+CLO 4            ███████████████████████████████████████████
+CLO 5                                                     ██████████████████████
+รายงาน     ▲2       ▲3    ▲4
+</code></pre>
+<hr>
+<h2 id="2-wbs-แบบละเอียด" tabindex="-1"><a class="header-anchor" href="#2-wbs-แบบละเอียด"><span>2. WBS แบบละเอียด</span></a></h2>
+<blockquote>
+<p>คอลัมน์ <strong>%</strong> = ร้อยละที่เสร็จ ณ 4 ส.ค. 2026 · <strong>ผู้รับผิดชอบ:</strong> ธ = ธีรณัฎฐ์ · น = นัจญมา · นู = นูรีน
+คอลัมน์ <strong>อ้างอิง</strong> ผูกงานกลับไปหา requirement / สมมติฐาน เพื่อให้ตอบกรรมการได้ว่างานนี้ทำไปทำไม</p>
+</blockquote>
+<h3 id="clo-1--ระบุปัญหาที่ต้องการแก้ไขด้วยโครงงานได้อย่างเหมาะสม" tabindex="-1"><a class="header-anchor" href="#clo-1--ระบุปัญหาที่ต้องการแก้ไขด้วยโครงงานได้อย่างเหมาะสม"><span>CLO 1 — ระบุปัญหาที่ต้องการแก้ไขด้วยโครงงานได้อย่างเหมาะสม</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>งาน/กิจกรรม</th>
+<th>ผู้รับผิดชอบ</th>
+<th>เริ่ม</th>
+<th>เสร็จ</th>
+<th>วัน</th>
+<th>%</th>
+<th>อ้างอิง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.1</td>
+<td>การทำ Root Cause Analysis</td>
+<td>ธ น นู</td>
+<td>7/13/26</td>
+<td>7/18/26</td>
+<td>5</td>
+<td>100%</td>
+<td><a href="./objectives-hypotheses-evaluation.html">objectives-hypotheses-evaluation</a> §2</td>
+</tr>
+<tr>
+<td>1.1.1</td>
+<td>สัมภาษณ์อาจารย์ผู้สอนเรื่องวิธีรวมคะแนนปัจจุบัน</td>
+<td>ธ น นู</td>
+<td>7/13/26</td>
+<td>7/15/26</td>
+<td>2</td>
+<td>100%</td>
+<td>root cause</td>
+</tr>
+<tr>
+<td>1.1.2</td>
+<td>เขียนแผนภาพก้างปลา + สรุปสาเหตุราก</td>
+<td>ธ น นู</td>
+<td>7/15/26</td>
+<td>7/17/26</td>
+<td>2</td>
+<td>100%</td>
+<td>root cause</td>
+</tr>
+<tr>
+<td>1.1.3</td>
+<td>สรุปประเด็นปัญหาเป็นข้อความเดียวลงเล่มบทที่ 1</td>
+<td>ธ</td>
+<td>7/17/26</td>
+<td>7/18/26</td>
+<td>1</td>
+<td>100%</td>
+<td>บทที่ 1</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>การทบทวนงานวิจัยที่เกี่ยวข้อง</td>
+<td>ธ น นู</td>
+<td>7/13/26</td>
+<td>7/18/26</td>
+<td>5</td>
+<td>100%</td>
+<td>บทที่ 2</td>
+</tr>
+<tr>
+<td>1.2.1</td>
+<td>รวบรวมงานวิจัย OBE / CLO assessment (≥ 10 เรื่อง)</td>
+<td>น นู</td>
+<td>7/13/26</td>
+<td>7/16/26</td>
+<td>3</td>
+<td>100%</td>
+<td>บทที่ 2</td>
+</tr>
+<tr>
+<td>1.2.2</td>
+<td>ทบทวนระบบที่มีอยู่แล้ว (TQF, Moodle Outcomes, Excel)</td>
+<td>ธ</td>
+<td>7/14/26</td>
+<td>7/17/26</td>
+<td>3</td>
+<td>100%</td>
+<td>บทที่ 2</td>
+</tr>
+<tr>
+<td>1.2.3</td>
+<td>ตารางเปรียบเทียบระบบเดิม vs สิ่งที่โครงงานจะเพิ่ม</td>
+<td>ธ น นู</td>
+<td>7/17/26</td>
+<td>7/18/26</td>
+<td>1</td>
+<td>100%</td>
+<td>บทที่ 2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clo-2--ตั้งสมมติฐานเพื่อประเมินโครงงานได้สอดคล้องกับบริบทของโครงงาน" tabindex="-1"><a class="header-anchor" href="#clo-2--ตั้งสมมติฐานเพื่อประเมินโครงงานได้สอดคล้องกับบริบทของโครงงาน"><span>CLO 2 — ตั้งสมมติฐานเพื่อประเมินโครงงานได้สอดคล้องกับบริบทของโครงงาน</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>งาน/กิจกรรม</th>
+<th>ผู้รับผิดชอบ</th>
+<th>เริ่ม</th>
+<th>เสร็จ</th>
+<th>วัน</th>
+<th>%</th>
+<th>อ้างอิง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2.1</strong></td>
+<td><strong>การตั้งสมมติฐาน</strong></td>
+<td>ธ น นู</td>
+<td>8/4/26</td>
+<td>8/7/26</td>
+<td>3</td>
+<td>40%</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>2.1.1</td>
+<td>ยืนยันสมมติฐาน H1–H7 กับอาจารย์ที่ปรึกษา</td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/6/26</td>
+<td>2</td>
+<td>40%</td>
+<td>H1–H7</td>
+</tr>
+<tr>
+<td>2.1.2</td>
+<td>เขียนย่อหน้าสมมติฐานฉบับลงเล่ม + sign-off</td>
+<td>ธ</td>
+<td>8/6/26</td>
+<td>8/7/26</td>
+<td>1</td>
+<td>0%</td>
+<td>§2</td>
+</tr>
+<tr>
+<td><strong>2.2</strong></td>
+<td><strong>การกำหนดเกณฑ์ประเมิน</strong></td>
+<td>ธ น นู</td>
+<td>8/4/26</td>
+<td>8/11/26</td>
+<td>7</td>
+<td>30%</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>2.2.1</td>
+<td>เกณฑ์ด้านความถูกต้องเชิงฟังก์ชัน (8 รายการ)</td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/6/26</td>
+<td>2</td>
+<td>50%</td>
+<td>§3.1</td>
+</tr>
+<tr>
+<td>2.2.2</td>
+<td>เกณฑ์ด้านประสิทธิภาพ (NFR-01, 02, 03, 09)</td>
+<td>ธ</td>
+<td>8/6/26</td>
+<td>8/8/26</td>
+<td>2</td>
+<td>50%</td>
+<td>§3.2</td>
+</tr>
+<tr>
+<td>2.2.3</td>
+<td>ร่างแบบประเมินผู้ทรงคุณวุฒิ 4 ด้าน (Likert 5 ระดับ)</td>
+<td>น</td>
+<td>8/8/26</td>
+<td>8/11/26</td>
+<td>3</td>
+<td>0%</td>
+<td>§3.3 · H5</td>
+</tr>
+<tr>
+<td>2.2.4</td>
+<td>ร่างแบบสอบถามความพึงพอใจผู้ใช้ (อาจารย์ผู้สอน)</td>
+<td>นู</td>
+<td>8/8/26</td>
+<td>8/11/26</td>
+<td>3</td>
+<td>0%</td>
+<td>§3.3 · H6</td>
+</tr>
+<tr>
+<td>2.2.5</td>
+<td>ตกลงจำนวนผู้ประเมินขั้นต่ำกับอาจารย์ที่ปรึกษา (E-05)</td>
+<td>ธ</td>
+<td>8/10/26</td>
+<td>8/11/26</td>
+<td>1</td>
+<td>0%</td>
+<td>E-05</td>
+</tr>
+<tr>
+<td><strong>2.3</strong></td>
+<td><strong>การจัดทำหัวข้อรายการสารบัญของปริญญานิพนธ์</strong></td>
+<td>ธ น นู</td>
+<td>8/11/26</td>
+<td>8/14/26</td>
+<td>3</td>
+<td>0%</td>
+<td>บทที่ 1–5</td>
+</tr>
+<tr>
+<td>2.3.1</td>
+<td>โครงบท 1–5 + รายการภาคผนวก</td>
+<td>ธ</td>
+<td>8/11/26</td>
+<td>8/13/26</td>
+<td>2</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2.3.2</td>
+<td>ตรวจรูปแบบตามคู่มือปริญญานิพนธ์ของคณะ</td>
+<td>น นู</td>
+<td>8/13/26</td>
+<td>8/14/26</td>
+<td>1</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>2.4</strong></td>
+<td><strong>การศึกษาหลักการ/ทฤษฎีพื้นฐานที่เกี่ยวข้อง</strong></td>
+<td>ธ น นู</td>
+<td>8/4/26</td>
+<td>8/14/26</td>
+<td>10</td>
+<td>50%</td>
+<td>บทที่ 2</td>
+</tr>
+<tr>
+<td>2.4.1</td>
+<td>Outcome-Based Education และ CLO/PLO ตาม มคอ.</td>
+<td>น</td>
+<td>8/4/26</td>
+<td>8/9/26</td>
+<td>5</td>
+<td>60%</td>
+<td>บทที่ 2</td>
+</tr>
+<tr>
+<td>2.4.2</td>
+<td>วิธีคำนวณ attainment ที่สถาบันอื่นใช้ (เทียบกับ CR-03/CR-04)</td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/11/26</td>
+<td>7</td>
+<td>50%</td>
+<td>CR-02…CR-05</td>
+</tr>
+<tr>
+<td>2.4.3</td>
+<td>ทฤษฎีด้านเทคนิค: SDLC · Use Case (UML) · DFD · ER · UX/UI · Prisma · JWT/RBAC</td>
+<td>ธ</td>
+<td>8/9/26</td>
+<td>8/14/26</td>
+<td>5</td>
+<td>80%</td>
+<td>บทที่ 2 · <a href="./theory.html">theory</a></td>
+</tr>
+<tr>
+<td>2.4.4</td>
+<td>ทฤษฎีการประเมินระบบ (Black Box, IOC, Likert)</td>
+<td>นู</td>
+<td>8/9/26</td>
+<td>8/14/26</td>
+<td>5</td>
+<td>30%</td>
+<td>§3.3</td>
+</tr>
+<tr>
+<td><strong>2.5</strong></td>
+<td><strong>⚠ เก็บ baseline การทำงานด้วย Excel (บังคับก่อนเริ่ม CLO 4)</strong></td>
+<td>น นู</td>
+<td>8/4/26</td>
+<td>8/14/26</td>
+<td>10</td>
+<td>0%</td>
+<td><strong>E-01</strong> · H2, H3</td>
+</tr>
+<tr>
+<td>2.5.1</td>
+<td>ออกแบบวิธีจับเวลา + ใบบันทึกผล</td>
+<td>นู</td>
+<td>8/4/26</td>
+<td>8/6/26</td>
+<td>2</td>
+<td>0%</td>
+<td>E-01</td>
+</tr>
+<tr>
+<td>2.5.2</td>
+<td>ให้อาจารย์ 3–5 ท่านรวมคะแนน + คำนวณ CLO 1 วิชา แล้วจับเวลา</td>
+<td>น นู</td>
+<td>8/6/26</td>
+<td>8/12/26</td>
+<td>6</td>
+<td>0%</td>
+<td>E-01</td>
+</tr>
+<tr>
+<td>2.5.3</td>
+<td>สรุปเวลาเฉลี่ย + อัตราข้อผิดพลาดที่พบ เป็นตัวเลข baseline</td>
+<td>นู</td>
+<td>8/12/26</td>
+<td>8/14/26</td>
+<td>2</td>
+<td>0%</td>
+<td>H3</td>
+</tr>
+<tr>
+<td><strong>2.6</strong></td>
+<td><strong>⚠ ปิด Open Issues ที่บล็อกการทดสอบ</strong></td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/9/26</td>
+<td>5</td>
+<td>0%</td>
+<td><strong>E-03, E-04</strong></td>
+</tr>
+<tr>
+<td>2.6.1</td>
+<td>sign-off OI-10 — เลือกสูตรน้ำหนักระหว่าง CR-02 กับ CR-03 (ต่างกัน 20 จุด)</td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/7/26</td>
+<td>3</td>
+<td>0%</td>
+<td>E-03 · H1</td>
+</tr>
+<tr>
+<td>2.6.2</td>
+<td>sign-off OI-12 — นิยาม at-risk เมื่อยังไม่มีคะแนนเลย</td>
+<td>ธ</td>
+<td>8/6/26</td>
+<td>8/9/26</td>
+<td>3</td>
+<td>0%</td>
+<td>E-04 · H2</td>
+</tr>
+<tr>
+<td>2.6.3</td>
+<td>จัดทำ &quot;ใบคำนวณมือ&quot; 3 ชุด (ปกติ / คะแนนไม่ครบ / PASS_FAIL) ให้อาจารย์ตรวจรับ</td>
+<td>ธ น</td>
+<td>8/7/26</td>
+<td>8/9/26</td>
+<td>2</td>
+<td>0%</td>
+<td><strong>E-02</strong> · H1</td>
+</tr>
+<tr>
+<td><strong>2.7</strong></td>
+<td><strong>✅ ตัดสินใจขอบเขต — เลือก single-tenant</strong></td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/7/26</td>
+<td>3</td>
+<td>100%</td>
+<td><strong>E-06</strong></td>
+</tr>
+<tr>
+<td>2.7.1</td>
+<td>เทียบ <code>schema.prisma</code> กับ objectives §1 พบว่าขัดกัน</td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/5/26</td>
+<td>1</td>
+<td>100%</td>
+<td>E-06</td>
+</tr>
+<tr>
+<td>2.7.2</td>
+<td>ตัด Institution/Membership/Curriculum ออกจาก schema + โค้ด + migration</td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/5/26</td>
+<td>1</td>
+<td>100%</td>
+<td>E-06</td>
+</tr>
+<tr>
+<td>2.7.3</td>
+<td>แก้เอกสารให้ตรงกัน: SRS v2.0.0 · DFD v2.0.0 · features-pages · theory</td>
+<td>ธ</td>
+<td>8/5/26</td>
+<td>8/7/26</td>
+<td>2</td>
+<td>100%</td>
+<td>E-06</td>
+</tr>
+<tr>
+<td><strong>2.8</strong></td>
+<td><strong>🚩 หมุดหมาย — รายงานความก้าวหน้าครั้งที่ 2 (15 ส.ค. 2026)</strong></td>
+<td>ธ น นู</td>
+<td>8/14/26</td>
+<td>8/15/26</td>
+<td>1</td>
+<td>0%</td>
+<td>§1.1</td>
+</tr>
+<tr>
+<td>2.8.1</td>
+<td>รวมเอกสาร CLO 2 เป็นชุดเดียว: H1–H7 · เกณฑ์ §3.1–3.3 · แบบประเมิน · baseline Excel</td>
+<td>ธ</td>
+<td>8/14/26</td>
+<td>8/15/26</td>
+<td>1</td>
+<td>0%</td>
+<td>§1.1</td>
+</tr>
+<tr>
+<td>2.8.2</td>
+<td><strong>ส่งรายงานความก้าวหน้าครั้งที่ 2</strong></td>
+<td>ธ น นู</td>
+<td>8/15/26</td>
+<td>8/15/26</td>
+<td>0</td>
+<td>0%</td>
+<td>§1.1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clo-3--ออกแบบสถาปัตยกรรมของโครงงานที่พร้อมสำหรับการพัฒนา" tabindex="-1"><a class="header-anchor" href="#clo-3--ออกแบบสถาปัตยกรรมของโครงงานที่พร้อมสำหรับการพัฒนา"><span>CLO 3 — ออกแบบสถาปัตยกรรมของโครงงานที่พร้อมสำหรับการพัฒนา</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>งาน/กิจกรรม</th>
+<th>ผู้รับผิดชอบ</th>
+<th>เริ่ม</th>
+<th>เสร็จ</th>
+<th>วัน</th>
+<th>%</th>
+<th>อ้างอิง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>3.1</strong></td>
+<td><strong>ออกแบบฐานข้อมูล + ER-Diagram</strong></td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/16/26</td>
+<td>12</td>
+<td>60%</td>
+<td>SRS §7</td>
+</tr>
+<tr>
+<td>3.1.1</td>
+<td>ตรวจ <code>schema.prisma</code> ทั้ง 11 model กับ SRS §7 ทีละ constraint</td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/7/26</td>
+<td>3</td>
+<td>80%</td>
+<td>§7</td>
+</tr>
+<tr>
+<td>3.1.2</td>
+<td>✅ ตัด Institution/Curriculum ออกจาก schema + เขียน migration ใหม่ (ผลจาก 2.7)</td>
+<td>ธ</td>
+<td>8/4/26</td>
+<td>8/5/26</td>
+<td>1</td>
+<td>100%</td>
+<td>ASM-04</td>
+</tr>
+<tr>
+<td>3.1.3</td>
+<td><strong>เขียน ER-Diagram (Crow's Foot) 3 ระดับ: Conceptual / Logical / Physical</strong></td>
+<td>ธ</td>
+<td>8/9/26</td>
+<td>8/14/26</td>
+<td>5</td>
+<td>40%</td>
+<td>บทที่ 3</td>
+</tr>
+<tr>
+<td>3.1.4</td>
+<td>Data Dictionary ครบทุกตาราง/คอลัมน์ (ชนิด, null, default, unique)</td>
+<td>น</td>
+<td>8/12/26</td>
+<td>8/16/26</td>
+<td>4</td>
+<td>20%</td>
+<td>บทที่ 3</td>
+</tr>
+<tr>
+<td>3.1.5</td>
+<td>migration + seed รันจาก clean clone ได้จริง (ตรวจซ้ำ)</td>
+<td>ธ</td>
+<td>8/14/26</td>
+<td>8/16/26</td>
+<td>2</td>
+<td>60%</td>
+<td>dev §2.2</td>
+</tr>
+<tr>
+<td><strong>3.2</strong></td>
+<td><strong>ออกแบบสถาปัตยกรรมระบบ + DFD</strong></td>
+<td>ธ</td>
+<td>8/9/26</td>
+<td>8/23/26</td>
+<td>14</td>
+<td>45%</td>
+<td><a href="./dfd.html">dfd</a></td>
+</tr>
+<tr>
+<td>3.2.1</td>
+<td><strong>DFD Level 0 (Context Diagram)</strong> — 3 external interactor</td>
+<td>ธ</td>
+<td>8/9/26</td>
+<td>8/11/26</td>
+<td>2</td>
+<td>80%</td>
+<td>dfd §2</td>
+</tr>
+<tr>
+<td>3.2.2</td>
+<td><strong>DFD Level 1</strong> — decomposition 10 process + 9 data store</td>
+<td>ธ</td>
+<td>8/11/26</td>
+<td>8/15/26</td>
+<td>4</td>
+<td>70%</td>
+<td>dfd §3</td>
+</tr>
+<tr>
+<td>3.2.3</td>
+<td><strong>DFD Level 2</strong> เฉพาะ P8 (นำเข้าคะแนน) และ P10 (คำนวณ attainment)</td>
+<td>ธ</td>
+<td>8/15/26</td>
+<td>8/19/26</td>
+<td>4</td>
+<td>0%</td>
+<td>FR-67…FR-69 · CR-03</td>
+</tr>
+<tr>
+<td>3.2.4</td>
+<td>Data Flow Register + Trust Boundary (STRIDE hot spots)</td>
+<td>ธ</td>
+<td>8/19/26</td>
+<td>8/21/26</td>
+<td>2</td>
+<td>50%</td>
+<td>dfd §5–§8</td>
+</tr>
+<tr>
+<td>3.2.5</td>
+<td>แผนภาพ Deployment (client / server / DB / Docker)</td>
+<td>ธ</td>
+<td>8/21/26</td>
+<td>8/23/26</td>
+<td>2</td>
+<td>0%</td>
+<td>บทที่ 3</td>
+</tr>
+<tr>
+<td><strong>3.3</strong></td>
+<td><strong>ออกแบบสัญญา API และการแบ่งชั้นโค้ด</strong></td>
+<td>ธ</td>
+<td>8/17/26</td>
+<td>8/26/26</td>
+<td>9</td>
+<td>10%</td>
+<td>SRS §5.2</td>
+</tr>
+<tr>
+<td>3.3.1</td>
+<td>ตาราง endpoint ครบทุก module (path / method / role / response)</td>
+<td>ธ</td>
+<td>8/17/26</td>
+<td>8/21/26</td>
+<td>4</td>
+<td>10%</td>
+<td>dev §4.5</td>
+</tr>
+<tr>
+<td>3.3.2</td>
+<td>รูปแบบ response มาตรฐาน + ชุด error code ข้อความไทย</td>
+<td>ธ</td>
+<td>8/21/26</td>
+<td>8/23/26</td>
+<td>2</td>
+<td>20%</td>
+<td>dev §7.3 · NFR usability</td>
+</tr>
+<tr>
+<td>3.3.3</td>
+<td>นิยาม Zod schema ของ request ทุก endpoint (validator layer)</td>
+<td>น</td>
+<td>8/22/26</td>
+<td>8/26/26</td>
+<td>4</td>
+<td>0%</td>
+<td>NFR-06</td>
+</tr>
+<tr>
+<td>3.3.4</td>
+<td>นิยาม <code>attainment.service.ts</code> — สูตร CR-01…CR-07 ที่เดียวในระบบ</td>
+<td>ธ</td>
+<td>8/23/26</td>
+<td>8/26/26</td>
+<td>3</td>
+<td>0%</td>
+<td><strong>FR-88</strong> · H1</td>
+</tr>
+<tr>
+<td><strong>3.4</strong></td>
+<td><strong>ออกแบบ Design System และ UI (ทุกหน้า)</strong></td>
+<td>ธ น นู</td>
+<td>8/17/26</td>
+<td>9/20/26</td>
+<td>34</td>
+<td>5%</td>
+<td>SRS §5.1</td>
+</tr>
+<tr>
+<td>3.4.1</td>
+<td>Design token: สี / typography / spacing / สถานะ (บรรลุ, at-risk, ยังไม่ประเมิน)</td>
+<td>น</td>
+<td>8/17/26</td>
+<td>8/20/26</td>
+<td>3</td>
+<td>10%</td>
+<td>FR-84</td>
+</tr>
+<tr>
+<td>3.4.2</td>
+<td>Component library: Table, Form, Modal, Toast, EmptyState, Chart</td>
+<td>น นู</td>
+<td>8/20/26</td>
+<td>8/26/26</td>
+<td>6</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>3.4.3</td>
+<td><strong>UI: Login / User Management</strong></td>
+<td>นู</td>
+<td>8/26/26</td>
+<td>8/30/26</td>
+<td>4</td>
+<td>30%</td>
+<td>FR-01…FR-08</td>
+</tr>
+<tr>
+<td>3.4.4</td>
+<td><strong>UI: Course List / Create / Overview</strong> (รวมหน่วยกิต · gradingType · มอบหมายอาจารย์)</td>
+<td>น</td>
+<td>8/29/26</td>
+<td>9/3/26</td>
+<td>5</td>
+<td>10%</td>
+<td>FR-20…FR-28</td>
+</tr>
+<tr>
+<td>3.4.5</td>
+<td><strong>UI: CLO Mgmt + Behavioral Objective + Activity + Assessment Matrix</strong></td>
+<td>ธ น</td>
+<td>9/2/26</td>
+<td>9/9/26</td>
+<td>7</td>
+<td>0%</td>
+<td>FR-30…FR-48</td>
+</tr>
+<tr>
+<td>3.4.6</td>
+<td><strong>UI: Student Roster + Score Entry + Import Preview + Upload Log</strong></td>
+<td>นู</td>
+<td>9/7/26</td>
+<td>9/14/26</td>
+<td>7</td>
+<td>0%</td>
+<td>FR-50…FR-72</td>
+</tr>
+<tr>
+<td>3.4.7</td>
+<td><strong>UI: CLO Attainment Dashboard + Individual Report</strong> (แก้ F7, F8)</td>
+<td>ธ</td>
+<td>9/12/26</td>
+<td>9/18/26</td>
+<td>6</td>
+<td>0%</td>
+<td>FR-80…FR-87</td>
+</tr>
+<tr>
+<td>3.4.8</td>
+<td>ตรวจ UI ทุกหน้ากับ FR ที่ทำเครื่องหมาย &quot;(ใหม่)&quot; / &quot;(ต้องแก้)&quot;</td>
+<td>ธ น นู</td>
+<td>9/17/26</td>
+<td>9/20/26</td>
+<td>3</td>
+<td>0%</td>
+<td>SRS §4</td>
+</tr>
+<tr>
+<td><strong>3.5</strong></td>
+<td><strong>ทำแผนผังหน้าจอและเส้นทาง (Page &amp; Route Map)</strong></td>
+<td>ธ น นู</td>
+<td>9/14/26</td>
+<td>9/22/26</td>
+<td>8</td>
+<td>20%</td>
+<td><a href="./features-pages.html">features-pages</a> §2</td>
+</tr>
+<tr>
+<td>3.5.1</td>
+<td>ตาราง route ทั้ง 13 หน้า + role ที่เข้าถึงได้</td>
+<td>ธ</td>
+<td>9/14/26</td>
+<td>9/16/26</td>
+<td>2</td>
+<td>40%</td>
+<td>features-pages</td>
+</tr>
+<tr>
+<td>3.5.2</td>
+<td>Navigation flow / breadcrumb / หน้าที่เป็น tab แทน route แยก</td>
+<td>น</td>
+<td>9/16/26</td>
+<td>9/19/26</td>
+<td>3</td>
+<td>0%</td>
+<td>features-pages หมายเหตุ</td>
+</tr>
+<tr>
+<td>3.5.3</td>
+<td>Wireflow เส้นทางหลัก 3 เส้น (สร้างวิชา → ผูก CLO → เห็น Dashboard)</td>
+<td>นู</td>
+<td>9/18/26</td>
+<td>9/22/26</td>
+<td>4</td>
+<td>0%</td>
+<td>UC2, UC5, UC9</td>
+</tr>
+<tr>
+<td><strong>3.6</strong></td>
+<td><strong>กำหนด Tech stack และตั้งค่าโครงสร้างโปรเจกต์</strong></td>
+<td>ธ</td>
+<td>8/24/26</td>
+<td>9/8/26</td>
+<td>15</td>
+<td>55%</td>
+<td>dev §1–§3</td>
+</tr>
+<tr>
+<td>3.6.1</td>
+<td>ยืนยัน stack จริงในโค้ด (React 19 + Vite 7 + TanStack Query · Fastify 5 + Prisma 6 · Vitest) และแก้เอกสารที่ขัดกัน</td>
+<td>ธ</td>
+<td>8/24/26</td>
+<td>8/26/26</td>
+<td>2</td>
+<td>70%</td>
+<td>dev §1</td>
+</tr>
+<tr>
+<td>3.6.2</td>
+<td>โครงสร้างโฟลเดอร์ + naming convention (controller/service/validator)</td>
+<td>ธ</td>
+<td>8/26/26</td>
+<td>8/29/26</td>
+<td>3</td>
+<td>80%</td>
+<td>dev §3–§4</td>
+</tr>
+<tr>
+<td>3.6.3</td>
+<td>ESLint / Prettier / tsconfig strict / vitest workspace</td>
+<td>ธ</td>
+<td>8/29/26</td>
+<td>9/1/26</td>
+<td>3</td>
+<td>70%</td>
+<td>dev</td>
+</tr>
+<tr>
+<td>3.6.4</td>
+<td>CI (GitHub Actions): lint + typecheck + test + prisma validate</td>
+<td>ธ</td>
+<td>9/1/26</td>
+<td>9/5/26</td>
+<td>4</td>
+<td>50%</td>
+<td><code>.github/workflows/ci.yml</code></td>
+</tr>
+<tr>
+<td>3.6.5</td>
+<td>Git workflow + branch/PR rule ให้ทั้ง 3 คนใช้เหมือนกัน</td>
+<td>ธ</td>
+<td>9/5/26</td>
+<td>9/8/26</td>
+<td>3</td>
+<td>40%</td>
+<td>dev §5</td>
+</tr>
+<tr>
+<td><strong>3.7</strong></td>
+<td><strong>🚩 หมุดหมาย — รายงานความก้าวหน้าครั้งที่ 3 (26 ก.ย. 2026)</strong></td>
+<td>ธ น นู</td>
+<td>9/21/26</td>
+<td>9/26/26</td>
+<td>5</td>
+<td>0%</td>
+<td>§1.1</td>
+</tr>
+<tr>
+<td>3.7.1</td>
+<td>รวมเอกสารออกแบบเป็นร่างบทที่ 3: ER · DFD L0–L2 · API contract · UI 13 หน้า · Route map</td>
+<td>ธ</td>
+<td>9/21/26</td>
+<td>9/24/26</td>
+<td>3</td>
+<td>0%</td>
+<td>บทที่ 3</td>
+</tr>
+<tr>
+<td>3.7.2</td>
+<td>ตรวจว่าเอกสารออกแบบตรงกับโค้ดที่ Sprint 1 ทำไปแล้ว (กัน as-designed ≠ as-built ตั้งแต่ต้น)</td>
+<td>ธ</td>
+<td>9/23/26</td>
+<td>9/25/26</td>
+<td>2</td>
+<td>0%</td>
+<td>5.7</td>
+</tr>
+<tr>
+<td>3.7.3</td>
+<td><strong>ส่งรายงานความก้าวหน้าครั้งที่ 3</strong></td>
+<td>ธ น นู</td>
+<td>9/26/26</td>
+<td>9/26/26</td>
+<td>0</td>
+<td>0%</td>
+<td>§1.1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clo-4--พัฒนาโครงงานตามสถาปัตยกรรมที่ออกแบบได้ตามแผน" tabindex="-1"><a class="header-anchor" href="#clo-4--พัฒนาโครงงานตามสถาปัตยกรรมที่ออกแบบได้ตามแผน"><span>CLO 4 — พัฒนาโครงงานตามสถาปัตยกรรมที่ออกแบบได้ตามแผน</span></a></h3>
+<blockquote>
+<p><strong>9 sprint × 2 สัปดาห์ + 1 sprint buffer</strong> — ทุก sprint จบด้วย: โค้ด merge เข้า main + unit test ผ่าน + หน้าจอใช้งานได้จริง
+<strong>Definition of Done (ทุกงานย่อย):</strong> ผ่าน lint/typecheck · unit test ของ service ผ่าน · PR ถูก review อย่างน้อย 1 คน · อัปเดตเอกสารที่เกี่ยวข้อง</p>
+<p><strong>จุดตรวจ 24 ต.ค. 2026 (รายงานครั้งที่ 4):</strong> ต้องจบ <strong>Sprint 1–3</strong> พอดี (4.1 Auth/RBAC · 4.2 Course · 4.3 CLO &amp; Objectives)
+งาน <strong>4.4.0</strong> ทำ <strong>ขนานกับ Sprint 4</strong> โดยตั้งใจ — Sprint 4 ยังเดินตามรอบ 2 สัปดาห์ ไม่หยุดรอรายงาน
+เพราะสิ่งที่ถูกประเมินคือ &quot;เดินตามแผนหรือไม่&quot; การหยุด sprint เพื่อทำเอกสารจะทำให้คำตอบแย่ลงเอง</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>งาน/กิจกรรม</th>
+<th>ผู้รับผิดชอบ</th>
+<th>เริ่ม</th>
+<th>เสร็จ</th>
+<th>วัน</th>
+<th>%</th>
+<th>อ้างอิง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>4.1</strong></td>
+<td><strong>Sprint 1 — Foundation: Auth, RBAC, Course Scope, Layout</strong></td>
+<td>ธ</td>
+<td>9/7/26</td>
+<td>9/20/26</td>
+<td>13</td>
+<td>20%</td>
+<td>FR-01…FR-08</td>
+</tr>
+<tr>
+<td>4.1.1</td>
+<td>Login/logout + access token 15 นาที + refresh 7 วัน</td>
+<td>ธ</td>
+<td>9/7/26</td>
+<td>9/10/26</td>
+<td>3</td>
+<td>40%</td>
+<td>FR-01</td>
+</tr>
+<tr>
+<td>4.1.2</td>
+<td>argon2 hashing + บัญชี <code>isActive=false</code> เข้าไม่ได้ (ข้อความเดียวกัน)</td>
+<td>ธ</td>
+<td>9/9/26</td>
+<td>9/11/26</td>
+<td>2</td>
+<td>40%</td>
+<td>FR-02, FR-03</td>
+</tr>
+<tr>
+<td>4.1.3</td>
+<td>rate-limit 5 ครั้ง/15 นาที ต่อ IP</td>
+<td>ธ</td>
+<td>9/11/26</td>
+<td>9/12/26</td>
+<td>1</td>
+<td>0%</td>
+<td>FR-04</td>
+</tr>
+<tr>
+<td>4.1.4</td>
+<td>RBAC middleware (ADMIN / INSTRUCTOR) + อ่าน role จากแถว <code>User</code> สดทุก request</td>
+<td>ธ</td>
+<td>9/12/26</td>
+<td>9/16/26</td>
+<td>4</td>
+<td>60%</td>
+<td>NFR-06, <strong>NFR-19</strong></td>
+</tr>
+<tr>
+<td>4.1.5</td>
+<td>User CRUD + reset password + เปลี่ยนรหัสตนเอง</td>
+<td>น</td>
+<td>9/12/26</td>
+<td>9/17/26</td>
+<td>5</td>
+<td>20%</td>
+<td>FR-05…FR-08</td>
+</tr>
+<tr>
+<td>4.1.6</td>
+<td>AppShell / Sidebar / Breadcrumb / ErrorBoundary / Toast</td>
+<td>นู</td>
+<td>9/7/26</td>
+<td>9/14/26</td>
+<td>7</td>
+<td>0%</td>
+<td>3.4.2</td>
+</tr>
+<tr>
+<td>4.1.7</td>
+<td>Component library ตาม design token (Table, Form, Modal, EmptyState)</td>
+<td>นู</td>
+<td>9/14/26</td>
+<td>9/20/26</td>
+<td>6</td>
+<td>0%</td>
+<td>3.4.1–3.4.2</td>
+</tr>
+<tr>
+<td>4.1.8</td>
+<td><code>assertCourseAccess()</code> + ทดสอบยิง API ด้วย courseId ของเพื่อนร่วมงาน ต้องได้ 404 — <strong>ด่านเดียวที่เหลือหลังตัด multi-tenant</strong></td>
+<td>ธ</td>
+<td>9/18/26</td>
+<td>9/20/26</td>
+<td>2</td>
+<td>50%</td>
+<td><strong>NFR-07</strong> · §3.1</td>
+</tr>
+<tr>
+<td><strong>4.2</strong></td>
+<td><strong>Sprint 2 — Course &amp; Course Instructor (รวมงานที่เคยอยู่ใน Curriculum)</strong></td>
+<td>ธ น</td>
+<td>9/21/26</td>
+<td>10/4/26</td>
+<td>13</td>
+<td>10%</td>
+<td>FR-20…FR-28</td>
+</tr>
+<tr>
+<td>4.2.1</td>
+<td>API: Course CRUD + ฟิลด์ section</td>
+<td>ธ</td>
+<td>9/21/26</td>
+<td>9/24/26</td>
+<td>3</td>
+<td>20%</td>
+<td>FR-20</td>
+</tr>
+<tr>
+<td>4.2.2</td>
+<td>unique <code>(code, semester, year, section)</code> + error ไทย</td>
+<td>ธ</td>
+<td>9/24/26</td>
+<td>9/26/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-21</td>
+</tr>
+<tr>
+<td>4.2.2b</td>
+<td>หน่วยกิต <code>3 (2-2-5)</code> เป็นทศนิยม <strong>รับค่า 0 ได้</strong> + <code>gradingType</code> LETTER/PASS_FAIL</td>
+<td>น</td>
+<td>9/24/26</td>
+<td>9/28/26</td>
+<td>4</td>
+<td>0%</td>
+<td><strong>FR-27, FR-28</strong> · CR-06</td>
+</tr>
+<tr>
+<td>4.2.3</td>
+<td>API: มอบหมายอาจารย์ + role LEAD/CO/ASSISTANT</td>
+<td>ธ</td>
+<td>9/26/26</td>
+<td>9/29/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-22</td>
+</tr>
+<tr>
+<td>4.2.4</td>
+<td>บังคับ LEAD ≤ 1 (partial unique index) และ ≥ 1 (application layer)</td>
+<td>ธ</td>
+<td>9/28/26</td>
+<td>9/30/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-23</td>
+</tr>
+<tr>
+<td>4.2.5</td>
+<td>UI: <code>/courses</code> filter ปี/ภาคเรียน + ค้นหารหัส/ชื่อ</td>
+<td>ธ</td>
+<td>9/29/26</td>
+<td>10/2/26</td>
+<td>3</td>
+<td>30%</td>
+<td>FR-24</td>
+</tr>
+<tr>
+<td>4.2.6</td>
+<td>Scope: INSTRUCTOR เห็นเฉพาะวิชาที่ถูกมอบหมาย</td>
+<td>ธ</td>
+<td>9/30/26</td>
+<td>10/2/26</td>
+<td>2</td>
+<td>0%</td>
+<td><strong>FR-25</strong> · NFR-07</td>
+</tr>
+<tr>
+<td>4.2.7</td>
+<td>UI: <code>/courses/new</code>, <code>/courses/:id</code> + confirm dialog แสดงจำนวนที่จะถูกลบ</td>
+<td>ธ</td>
+<td>10/1/26</td>
+<td>10/4/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-26 · Page 7, 8</td>
+</tr>
+<tr>
+<td><strong>4.3</strong></td>
+<td><strong>Sprint 3 — CLO &amp; Behavioral Objectives</strong></td>
+<td>น</td>
+<td>10/5/26</td>
+<td>10/18/26</td>
+<td>13</td>
+<td>0%</td>
+<td>FR-30…FR-36</td>
+</tr>
+<tr>
+<td>4.3.1</td>
+<td>API: CLO CRUD + <code>number</code> unique ต่อวิชา + threshold</td>
+<td>น</td>
+<td>10/5/26</td>
+<td>10/8/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-30, FR-31</td>
+</tr>
+<tr>
+<td>4.3.2</td>
+<td>reorder ด้วย transaction (drag)</td>
+<td>น</td>
+<td>10/8/26</td>
+<td>10/11/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-31</td>
+</tr>
+<tr>
+<td>4.3.3</td>
+<td>API: BehavioralObjective CRUD (<code>number</code> unique ต่อ CLO)</td>
+<td>น</td>
+<td>10/10/26</td>
+<td>10/13/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-33</td>
+</tr>
+<tr>
+<td>4.3.4</td>
+<td>API: <code>ObjectiveAssessment</code> ผูกจุดประสงค์ ↔ criteria</td>
+<td>น</td>
+<td>10/12/26</td>
+<td>10/15/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-34</td>
+</tr>
+<tr>
+<td>4.3.5</td>
+<td>Test: การผูก FR-34 ต้องไม่เปลี่ยนคะแนน CLO ที่คำนวณได้</td>
+<td>น</td>
+<td>10/14/26</td>
+<td>10/16/26</td>
+<td>2</td>
+<td>0%</td>
+<td><strong>FR-35</strong></td>
+</tr>
+<tr>
+<td>4.3.6</td>
+<td>UI: <code>/courses/:id/clos</code> — น้ำหนักเป็น read-only เท่านั้น</td>
+<td>น</td>
+<td>10/11/26</td>
+<td>10/16/26</td>
+<td>5</td>
+<td>0%</td>
+<td><strong>FR-32</strong> · Page 9</td>
+</tr>
+<tr>
+<td>4.3.7</td>
+<td>UI: เตือนเมื่อลบ CLO ที่มีคะแนนอ้างอิงอยู่</td>
+<td>น</td>
+<td>10/16/26</td>
+<td>10/18/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-36</td>
+</tr>
+<tr>
+<td><strong>4.4</strong></td>
+<td><strong>Sprint 4 — Activity &amp; Assessment Criteria (หัวใจของระบบ)</strong></td>
+<td>ธ น นู</td>
+<td>10/19/26</td>
+<td>11/1/26</td>
+<td>13</td>
+<td>0%</td>
+<td>FR-40…FR-48</td>
+</tr>
+<tr>
+<td>4.4.0</td>
+<td><strong>🚩 หมุดหมาย — ส่งรายงานความก้าวหน้าครั้งที่ 4 (24 ต.ค. 2026)</strong> — ทำขนานกับ sprint ไม่หยุดงานพัฒนา</td>
+<td>ธ น นู</td>
+<td>10/19/26</td>
+<td>10/24/26</td>
+<td>5</td>
+<td>0%</td>
+<td>§1.1</td>
+</tr>
+<tr>
+<td>4.4.0a</td>
+<td>เตรียม demo ที่รันได้จริง: login → สร้างวิชา → ผูก CLO/จุดประสงค์ (ผลลัพธ์ Sprint 1–3)</td>
+<td>ธ</td>
+<td>10/19/26</td>
+<td>10/22/26</td>
+<td>3</td>
+<td>0%</td>
+<td>§1.1</td>
+</tr>
+<tr>
+<td>4.4.0b</td>
+<td>ตารางเทียบ <strong>แผน vs ผลจริง</strong> ราย sprint + เหตุผลของงานที่ช้ากว่าแผน</td>
+<td>น</td>
+<td>10/21/26</td>
+<td>10/23/26</td>
+<td>2</td>
+<td>0%</td>
+<td>§1.1 · CLO 4</td>
+</tr>
+<tr>
+<td>4.4.0c</td>
+<td><strong>ส่งรายงานความก้าวหน้าครั้งที่ 4</strong></td>
+<td>ธ น นู</td>
+<td>10/24/26</td>
+<td>10/24/26</td>
+<td>0</td>
+<td>0%</td>
+<td>§1.1</td>
+</tr>
+<tr>
+<td>4.4.1</td>
+<td>API: Activity CRUD + method / maxScore &gt; 0 / weight / order</td>
+<td>ธ</td>
+<td>10/19/26</td>
+<td>10/22/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-40, FR-41</td>
+</tr>
+<tr>
+<td>4.4.2</td>
+<td>reorder กิจกรรม + แสดงผลรวมน้ำหนัก <strong>เตือน ไม่บล็อก</strong> เมื่อ ≠ 100</td>
+<td>ธ</td>
+<td>10/22/26</td>
+<td>10/25/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-42, FR-43</td>
+</tr>
+<tr>
+<td>4.4.3</td>
+<td>API: AssessmentCriteria แบบเมทริกซ์ + น้ำหนักต่อคู่เป็นตัวเลข</td>
+<td>ธ</td>
+<td>10/24/26</td>
+<td>10/28/26</td>
+<td>4</td>
+<td>0%</td>
+<td><strong>FR-44</strong></td>
+</tr>
+<tr>
+<td>4.4.4</td>
+<td>บังคับผลรวมต่อ 1 กิจกรรม = 100 และบล็อกการคำนวณ Dashboard เมื่อไม่ครบ</td>
+<td>ธ</td>
+<td>10/27/26</td>
+<td>10/29/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-45</td>
+</tr>
+<tr>
+<td>4.4.5</td>
+<td>ตรวจ Activity/CLO ต้องอยู่วิชาเดียวกัน (API + DB trigger)</td>
+<td>ธ</td>
+<td>10/28/26</td>
+<td>10/30/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-46</td>
+</tr>
+<tr>
+<td>4.4.6</td>
+<td>UI: matrix + แยกที่เก็บ CLO Target (ราย CLO) กับ Pass Criteria/Class Target (รายวิชา)</td>
+<td>ธ</td>
+<td>10/25/26</td>
+<td>10/31/26</td>
+<td>6</td>
+<td>0%</td>
+<td><strong>FR-47</strong> · Page 10</td>
+</tr>
+<tr>
+<td>4.4.7</td>
+<td>เตือนเมื่อมี CLO ที่ไม่ถูกกิจกรรมใดวัดเลย</td>
+<td>ธ</td>
+<td>10/30/26</td>
+<td>11/1/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-48 · FR-84</td>
+</tr>
+<tr>
+<td><strong>4.5</strong></td>
+<td><strong>Sprint 5 — Student Roster &amp; Score Entry</strong></td>
+<td>นู</td>
+<td>11/2/26</td>
+<td>11/15/26</td>
+<td>13</td>
+<td>0%</td>
+<td>FR-50…FR-65</td>
+</tr>
+<tr>
+<td>4.5.1</td>
+<td>API: Student CRUD + <code>studentCode</code> unique ต่อวิชา</td>
+<td>นู</td>
+<td>11/2/26</td>
+<td>11/5/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-50, FR-51</td>
+</tr>
+<tr>
+<td>4.5.2</td>
+<td>นำเข้ารายชื่อจาก Excel + ดาวน์โหลด template</td>
+<td>นู</td>
+<td>11/5/26</td>
+<td>11/8/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-52</td>
+</tr>
+<tr>
+<td>4.5.3</td>
+<td>UI: <code>/courses/:id/students</code> + เตือน cascade ตอนลบ</td>
+<td>นู</td>
+<td>11/7/26</td>
+<td>11/10/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-53, FR-54 · Page 11</td>
+</tr>
+<tr>
+<td>4.5.4</td>
+<td>API: บันทึกคะแนน upsert เป็นชุดใน transaction เดียว</td>
+<td>นู</td>
+<td>11/8/26</td>
+<td>11/11/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-63</td>
+</tr>
+<tr>
+<td>4.5.5</td>
+<td>validate <code>0 ≤ score ≤ maxScore</code> ทั้ง client / Zod / DB trigger</td>
+<td>นู</td>
+<td>11/10/26</td>
+<td>11/12/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-61</td>
+</tr>
+<tr>
+<td>4.5.6</td>
+<td>แยก <strong>ว่าง = ยังไม่ประเมิน</strong> ออกจาก <strong>0 = ได้ 0</strong> ในทุกชั้น</td>
+<td>นู</td>
+<td>11/11/26</td>
+<td>11/13/26</td>
+<td>2</td>
+<td>0%</td>
+<td><strong>FR-62</strong> · H2</td>
+</tr>
+<tr>
+<td>4.5.7</td>
+<td>UI: ตารางกรอกคะแนน คอลัมน์เป็น Activity + progress <code>x/y</code> + เตือนก่อนออกจากหน้า</td>
+<td>นู</td>
+<td>11/10/26</td>
+<td>11/15/26</td>
+<td>5</td>
+<td>0%</td>
+<td>FR-60, FR-64, FR-65 · Page 12</td>
+</tr>
+<tr>
+<td><strong>4.6</strong></td>
+<td><strong>Sprint 6 — Excel Import/Export &amp; Upload Log</strong></td>
+<td>นู</td>
+<td>11/16/26</td>
+<td>11/29/26</td>
+<td>13</td>
+<td>0%</td>
+<td>FR-66…FR-72</td>
+</tr>
+<tr>
+<td>4.6.1</td>
+<td>ดาวน์โหลด template ที่เติมรหัส/ชื่อนักศึกษาไว้แล้ว 1 คอลัมน์/กิจกรรม</td>
+<td>นู</td>
+<td>11/16/26</td>
+<td>11/18/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-66</td>
+</tr>
+<tr>
+<td>4.6.2</td>
+<td>Parser + validator 6 ประเภทข้อผิดพลาด</td>
+<td>นู</td>
+<td>11/18/26</td>
+<td>11/22/26</td>
+<td>4</td>
+<td>0%</td>
+<td><strong>FR-69</strong> · H3</td>
+</tr>
+<tr>
+<td>4.6.3</td>
+<td>ขั้น preview + validate ก่อน commit (แสดงผ่าน/ไม่ผ่านรายแถว)</td>
+<td>นู</td>
+<td>11/21/26</td>
+<td>11/25/26</td>
+<td>4</td>
+<td>0%</td>
+<td><strong>FR-67</strong></td>
+</tr>
+<tr>
+<td>4.6.4</td>
+<td>commit เฉพาะแถวที่ผ่าน + ดาวน์โหลดแถวที่ไม่ผ่าน</td>
+<td>นู</td>
+<td>11/24/26</td>
+<td>11/26/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-68</td>
+</tr>
+<tr>
+<td>4.6.5</td>
+<td>บันทึก <code>ScoreUploadLog</code> ทุกครั้งแม้ล้มเหลวทั้งไฟล์</td>
+<td>นู</td>
+<td>11/25/26</td>
+<td>11/27/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-71</td>
+</tr>
+<tr>
+<td>4.6.6</td>
+<td>UI: Upload Log แยกคอลัมน์ recordsOk / recordsFail + ดูรายละเอียด</td>
+<td>นู</td>
+<td>11/26/26</td>
+<td>11/28/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-72 · Page 13</td>
+</tr>
+<tr>
+<td>4.6.7</td>
+<td>ส่งออกคะแนนดิบ + สรุป CLO เป็น Excel</td>
+<td>นู</td>
+<td>11/27/26</td>
+<td>11/29/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-70</td>
+</tr>
+<tr>
+<td><strong>4.7</strong></td>
+<td><strong>Sprint 7 — Attainment Service &amp; CLO Dashboard</strong></td>
+<td>ธ</td>
+<td>11/30/26</td>
+<td>12/13/26</td>
+<td>13</td>
+<td>0%</td>
+<td>CR-01…CR-07 · FR-80…FR-84</td>
+</tr>
+<tr>
+<td>4.7.1</td>
+<td><code>attainment.service.ts</code>: CR-02 น้ำหนัก CLO (read-only)</td>
+<td>ธ</td>
+<td>11/30/26</td>
+<td>12/2/26</td>
+<td>2</td>
+<td>0%</td>
+<td>CR-02</td>
+</tr>
+<tr>
+<td>4.7.2</td>
+<td>CR-03 คะแนน CLO รายบุคคล + คืน <code>null</code> เมื่อไม่มีคะแนน</td>
+<td>ธ</td>
+<td>12/2/26</td>
+<td>12/5/26</td>
+<td>3</td>
+<td>0%</td>
+<td><strong>CR-03</strong> · H1, H2</td>
+</tr>
+<tr>
+<td>4.7.3</td>
+<td>CR-04 attainment ระดับวิชา + CR-05 คะแนนรวม/สถานะ/at-risk</td>
+<td>ธ</td>
+<td>12/4/26</td>
+<td>12/7/26</td>
+<td>3</td>
+<td>0%</td>
+<td>CR-04, CR-05</td>
+</tr>
+<tr>
+<td>4.7.4</td>
+<td>CR-06 PASS_FAIL + CR-07 ปัดเศษเฉพาะตอนแสดงผล</td>
+<td>ธ</td>
+<td>12/6/26</td>
+<td>12/8/26</td>
+<td>2</td>
+<td>0%</td>
+<td>CR-06, CR-07</td>
+</tr>
+<tr>
+<td>4.7.5</td>
+<td>Unit test เทียบ &quot;ใบคำนวณมือ&quot; 3 ชุด (จาก 2.6.3)</td>
+<td>ธ</td>
+<td>12/7/26</td>
+<td>12/10/26</td>
+<td>3</td>
+<td>0%</td>
+<td><strong>H1</strong> · NFR-14</td>
+</tr>
+<tr>
+<td>4.7.6</td>
+<td>UI: Dashboard Overview (จำนวนวิชา/นักศึกษา/ความคืบหน้า)</td>
+<td>น</td>
+<td>12/2/26</td>
+<td>12/6/26</td>
+<td>4</td>
+<td>0%</td>
+<td>FR-80</td>
+</tr>
+<tr>
+<td>4.7.7</td>
+<td>UI: กราฟแท่ง Target vs Actual + ตารางสรุปสถานะ</td>
+<td>น</td>
+<td>12/6/26</td>
+<td>12/11/26</td>
+<td>5</td>
+<td>0%</td>
+<td>FR-81, FR-82 · Page 14</td>
+</tr>
+<tr>
+<td>4.7.8</td>
+<td>แสดง <strong>สาเหตุ</strong> เมื่อข้อมูลไม่พอคำนวณ — ห้ามแสดง 0%</td>
+<td>ธ</td>
+<td>12/10/26</td>
+<td>12/13/26</td>
+<td>3</td>
+<td>0%</td>
+<td><strong>FR-84</strong> · §3.1</td>
+</tr>
+<tr>
+<td><strong>4.8</strong></td>
+<td><strong>Sprint 8 — At-risk &amp; Individual Report</strong></td>
+<td>นู</td>
+<td>12/14/26</td>
+<td>12/27/26</td>
+<td>13</td>
+<td>0%</td>
+<td>FR-83, FR-85…FR-88</td>
+</tr>
+<tr>
+<td>4.8.1</td>
+<td>API: รายชื่อ at-risk พร้อมระบุ CLO ที่ไม่ผ่าน</td>
+<td>นู</td>
+<td>12/14/26</td>
+<td>12/17/26</td>
+<td>3</td>
+<td>0%</td>
+<td><strong>FR-83</strong> · H2</td>
+</tr>
+<tr>
+<td>4.8.2</td>
+<td>UI: บล็อก at-risk บน Dashboard + คลิกไปหน้ารายบุคคล</td>
+<td>นู</td>
+<td>12/17/26</td>
+<td>12/20/26</td>
+<td>3</td>
+<td>0%</td>
+<td>FR-83</td>
+</tr>
+<tr>
+<td>4.8.3</td>
+<td>UI: <code>/dashboard/students/:id</code> — CLO/Target/สถานะ/คะแนนรวม</td>
+<td>นู</td>
+<td>12/19/26</td>
+<td>12/23/26</td>
+<td>4</td>
+<td>0%</td>
+<td>FR-85 · Page 15</td>
+</tr>
+<tr>
+<td>4.8.4</td>
+<td>วิชา PASS_FAIL แสดง ผ่าน(S)/ไม่ผ่าน(U) ไม่ใช่เกรดตัวอักษร</td>
+<td>นู</td>
+<td>12/22/26</td>
+<td>12/24/26</td>
+<td>2</td>
+<td>0%</td>
+<td>FR-86 · CR-06</td>
+</tr>
+<tr>
+<td>4.8.5</td>
+<td>ส่งออกรายงานระดับวิชา + รายบุคคล (Excel/PDF)</td>
+<td>น</td>
+<td>12/22/26</td>
+<td>12/26/26</td>
+<td>4</td>
+<td>0%</td>
+<td>FR-87</td>
+</tr>
+<tr>
+<td>4.8.6</td>
+<td>ตรวจว่า Dashboard และ export ใช้ service เดียวกัน 100%</td>
+<td>ธ</td>
+<td>12/25/26</td>
+<td>12/27/26</td>
+<td>2</td>
+<td>0%</td>
+<td><strong>FR-88</strong></td>
+</tr>
+<tr>
+<td><strong>4.9</strong></td>
+<td><strong>Sprint 9 — Hardening, Performance, Integration</strong></td>
+<td>ธ น นู</td>
+<td>12/28/26</td>
+<td>1/10/27</td>
+<td>13</td>
+<td>0%</td>
+<td>NFR ทั้งหมด</td>
+</tr>
+<tr>
+<td>4.9.1</td>
+<td>สร้างชุดข้อมูลทดสอบ 1 วิชา / 200 นักศึกษา / 20 กิจกรรม</td>
+<td>นู</td>
+<td>12/28/26</td>
+<td>12/30/26</td>
+<td>2</td>
+<td>0%</td>
+<td>§3.2 · H4</td>
+</tr>
+<tr>
+<td>4.9.2</td>
+<td>จูน query กัน N+1 — attainment 1 วิชา &lt; 1 วินาที</td>
+<td>ธ</td>
+<td>12/30/26</td>
+<td>1/3/27</td>
+<td>4</td>
+<td>0%</td>
+<td>NFR-02</td>
+</tr>
+<tr>
+<td>4.9.3</td>
+<td>หน้าที่มีตารางแสดงผล &lt; 2 วินาที</td>
+<td>ธ</td>
+<td>1/2/27</td>
+<td>1/5/27</td>
+<td>3</td>
+<td>0%</td>
+<td>NFR-01</td>
+</tr>
+<tr>
+<td>4.9.4</td>
+<td>นำเข้าไฟล์ 500 แถว &lt; 10 วินาที</td>
+<td>นู</td>
+<td>1/3/27</td>
+<td>1/6/27</td>
+<td>3</td>
+<td>0%</td>
+<td>NFR-03</td>
+</tr>
+<tr>
+<td>4.9.5</td>
+<td>ตรวจข้อความ error ทุกจุดเป็นภาษาไทยและบอกวิธีแก้</td>
+<td>น</td>
+<td>1/1/27</td>
+<td>1/6/27</td>
+<td>5</td>
+<td>0%</td>
+<td>§3.3 ด้าน Usability</td>
+</tr>
+<tr>
+<td>4.9.6</td>
+<td>Integration test เส้นทางหลัก 3 เส้น end-to-end</td>
+<td>ธ</td>
+<td>1/5/27</td>
+<td>1/8/27</td>
+<td>3</td>
+<td>0%</td>
+<td>UC2, UC5, UC9</td>
+</tr>
+<tr>
+<td>4.9.7</td>
+<td>Bug bash ทั้งทีม + ปิด bug ระดับ blocker ให้หมด</td>
+<td>ธ น นู</td>
+<td>1/7/27</td>
+<td>1/10/27</td>
+<td>3</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4.9.8</td>
+<td>Deploy ระบบขึ้นเครื่องที่ใช้ทดสอบจริง (staging)</td>
+<td>ธ</td>
+<td>1/8/27</td>
+<td>1/10/27</td>
+<td>2</td>
+<td>0%</td>
+<td>CLO 5 ต้องใช้</td>
+</tr>
+<tr>
+<td><strong>4.10</strong></td>
+<td><strong>Sprint 10 — Buffer สำรอง (ห้ามใส่ feature ใหม่)</strong></td>
+<td>ธ น นู</td>
+<td>1/11/27</td>
+<td>1/24/27</td>
+<td>13</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4.10.1</td>
+<td>เก็บงานที่ตกค้างจาก sprint ก่อนหน้า</td>
+<td>ธ น นู</td>
+<td>1/11/27</td>
+<td>1/17/27</td>
+<td>6</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4.10.2</td>
+<td>ทดสอบซ้ำทุก FR ระดับ MUST ด้วย checklist ก่อนส่งมอบให้ CLO 5</td>
+<td>ธ น นู</td>
+<td>1/15/27</td>
+<td>1/20/27</td>
+<td>5</td>
+<td>0%</td>
+<td>§3.1</td>
+</tr>
+<tr>
+<td>4.10.3</td>
+<td>เตรียมข้อมูลตัวอย่างและบัญชีผู้ใช้สำหรับผู้ทรงคุณวุฒิและผู้ใช้จริง</td>
+<td>นู</td>
+<td>1/18/27</td>
+<td>1/22/27</td>
+<td>4</td>
+<td>0%</td>
+<td>5.4, 5.5</td>
+</tr>
+<tr>
+<td>4.10.4</td>
+<td>เขียนคู่มือใช้งานย่อ 2 หน้า (ใช้ในการทดสอบ usability)</td>
+<td>น</td>
+<td>1/19/27</td>
+<td>1/24/27</td>
+<td>5</td>
+<td>0%</td>
+<td>H7 · NFR-09</td>
+</tr>
+<tr>
+<td>4.10.5</td>
+<td>Freeze โค้ด — หลังจุดนี้แก้ได้เฉพาะ bug ที่พบระหว่างประเมิน</td>
+<td>ธ</td>
+<td>1/24/27</td>
+<td>1/24/27</td>
+<td>0</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clo-5--ทดสอบ-ประเมินผล-และนำเสนอผลการดำเนินงาน" tabindex="-1"><a class="header-anchor" href="#clo-5--ทดสอบ-ประเมินผล-และนำเสนอผลการดำเนินงาน"><span>CLO 5 — ทดสอบ ประเมินผล และนำเสนอผลการดำเนินงาน</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>งาน/กิจกรรม</th>
+<th>ผู้รับผิดชอบ</th>
+<th>เริ่ม</th>
+<th>เสร็จ</th>
+<th>วัน</th>
+<th>%</th>
+<th>อ้างอิง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>5.1</strong></td>
+<td><strong>ทดสอบความถูกต้องเชิงฟังก์ชัน (พิสูจน์ H1, H2, H3)</strong></td>
+<td>ธ</td>
+<td>1/25/27</td>
+<td>2/7/27</td>
+<td>13</td>
+<td>0%</td>
+<td>§3.1</td>
+</tr>
+<tr>
+<td>5.1.1</td>
+<td>เทียบผลคำนวณ CLO/attainment/คะแนนรวม กับใบคำนวณมือ ต้องตรง 100%</td>
+<td>ธ</td>
+<td>1/25/27</td>
+<td>1/29/27</td>
+<td>4</td>
+<td>0%</td>
+<td><strong>H1</strong></td>
+</tr>
+<tr>
+<td>5.1.2</td>
+<td>ทดสอบกรณีขอบ 5 แบบ (ไม่มีคะแนน / บางส่วน / น้ำหนักไม่ครบ / maxScore ต่างกัน / CLO ไม่มีกิจกรรมวัด)</td>
+<td>ธ</td>
+<td>1/28/27</td>
+<td>2/1/27</td>
+<td>4</td>
+<td>0%</td>
+<td>H1 · FR-84</td>
+</tr>
+<tr>
+<td>5.1.3</td>
+<td>ทดสอบ at-risk เมื่อกรอกคะแนนเพียงบางกิจกรรม (หัวใจของ root cause)</td>
+<td>น</td>
+<td>1/30/27</td>
+<td>2/3/27</td>
+<td>4</td>
+<td>0%</td>
+<td><strong>H2</strong> · FR-83</td>
+</tr>
+<tr>
+<td>5.1.4</td>
+<td>ทดสอบไฟล์นำเข้าที่จงใจใส่ข้อผิดพลาด 6 ประเภท ต้องจับได้ ≥ 95%</td>
+<td>นู</td>
+<td>2/1/27</td>
+<td>2/5/27</td>
+<td>4</td>
+<td>0%</td>
+<td><strong>H3</strong> · FR-69</td>
+</tr>
+<tr>
+<td>5.1.5</td>
+<td>ทดสอบสิทธิ์: ยิง API ด้วย id วิชาอื่น ต้องได้ 404 ทุกกรณี</td>
+<td>ธ</td>
+<td>2/4/27</td>
+<td>2/6/27</td>
+<td>2</td>
+<td>0%</td>
+<td>NFR-07</td>
+</tr>
+<tr>
+<td>5.1.6</td>
+<td>ตรวจความครบถ้วน FR ระดับ MUST ทั้งหมด (checklist)</td>
+<td>ธ น นู</td>
+<td>2/5/27</td>
+<td>2/7/27</td>
+<td>2</td>
+<td>0%</td>
+<td>§3.1</td>
+</tr>
+<tr>
+<td><strong>5.2</strong></td>
+<td><strong>ทดสอบประสิทธิภาพ (พิสูจน์ H4, H7)</strong></td>
+<td>ธ</td>
+<td>2/1/27</td>
+<td>2/10/27</td>
+<td>9</td>
+<td>0%</td>
+<td>§3.2</td>
+</tr>
+<tr>
+<td>5.2.1</td>
+<td>วัดเวลาแสดงผล / คำนวณ / นำเข้า ตาม NFR-01, 02, 03 บันทึกเป็นตาราง</td>
+<td>ธ</td>
+<td>2/1/27</td>
+<td>2/5/27</td>
+<td>4</td>
+<td>0%</td>
+<td>H4</td>
+</tr>
+<tr>
+<td>5.2.2</td>
+<td>ทดสอบ usability: ผู้ใช้ใหม่นำเข้าคะแนนสำเร็จ ≤ 10 นาที ไม่ใช้คู่มือ</td>
+<td>นู</td>
+<td>2/5/27</td>
+<td>2/10/27</td>
+<td>5</td>
+<td>0%</td>
+<td><strong>H7</strong> · NFR-09</td>
+</tr>
+<tr>
+<td>5.2.3</td>
+<td>เทียบเวลากับ baseline Excel จาก 2.5.3</td>
+<td>น</td>
+<td>2/8/27</td>
+<td>2/10/27</td>
+<td>2</td>
+<td>0%</td>
+<td>E-01 · OBJ-3</td>
+</tr>
+<tr>
+<td><strong>5.3</strong></td>
+<td><strong>จัดเตรียมและตรวจคุณภาพเครื่องมือประเมิน</strong></td>
+<td>น นู</td>
+<td>1/25/27</td>
+<td>2/7/27</td>
+<td>13</td>
+<td>0%</td>
+<td>§3.3</td>
+</tr>
+<tr>
+<td>5.3.1</td>
+<td>สรุปแบบประเมินผู้ทรงคุณวุฒิ (4 ด้าน) ฉบับสมบูรณ์</td>
+<td>น</td>
+<td>1/25/27</td>
+<td>1/29/27</td>
+<td>4</td>
+<td>0%</td>
+<td>§3.3</td>
+</tr>
+<tr>
+<td>5.3.2</td>
+<td>หาค่า <strong>IOC</strong> จากผู้เชี่ยวชาญ 3 คน — ตัดข้อที่ IOC &lt; 0.50</td>
+<td>น</td>
+<td>1/29/27</td>
+<td>2/5/27</td>
+<td>7</td>
+<td>0%</td>
+<td>§3.3</td>
+</tr>
+<tr>
+<td>5.3.3</td>
+<td>สรุปแบบสอบถามความพึงพอใจผู้ใช้ + คู่มือใช้งานย่อ</td>
+<td>นู</td>
+<td>1/30/27</td>
+<td>2/7/27</td>
+<td>8</td>
+<td>0%</td>
+<td>§3.3 · H6</td>
+</tr>
+<tr>
+<td><strong>5.4</strong></td>
+<td><strong>ประเมินโดยผู้ทรงคุณวุฒิ (พิสูจน์ H5)</strong></td>
+<td>ธ</td>
+<td>2/8/27</td>
+<td>2/21/27</td>
+<td>13</td>
+<td>0%</td>
+<td>§3.3</td>
+</tr>
+<tr>
+<td>5.4.1</td>
+<td>ติดต่อและนัดผู้ทรงคุณวุฒิ 3–5 ท่าน</td>
+<td>ธ</td>
+<td>2/8/27</td>
+<td>2/11/27</td>
+<td>3</td>
+<td>0%</td>
+<td>§3.3</td>
+</tr>
+<tr>
+<td>5.4.2</td>
+<td>สาธิตระบบ + ให้ทดลอง Black Box ตาม scenario</td>
+<td>ธ น นู</td>
+<td>2/11/27</td>
+<td>2/18/27</td>
+<td>7</td>
+<td>0%</td>
+<td>§3.3</td>
+</tr>
+<tr>
+<td>5.4.3</td>
+<td>เก็บแบบประเมินกลับครบ + บันทึกข้อเสนอแนะ</td>
+<td>ธ</td>
+<td>2/17/27</td>
+<td>2/21/27</td>
+<td>4</td>
+<td>0%</td>
+<td>H5</td>
+</tr>
+<tr>
+<td><strong>5.5</strong></td>
+<td><strong>ประเมินความพึงพอใจผู้ใช้จริง (พิสูจน์ H6)</strong></td>
+<td>นู</td>
+<td>2/15/27</td>
+<td>2/28/27</td>
+<td>13</td>
+<td>0%</td>
+<td>§3.3 · H6</td>
+</tr>
+<tr>
+<td>5.5.1</td>
+<td>อบรม/แนะนำระบบให้อาจารย์ผู้สอน 15–30 ท่าน</td>
+<td>น นู</td>
+<td>2/15/27</td>
+<td>2/21/27</td>
+<td>6</td>
+<td>0%</td>
+<td>E-05</td>
+</tr>
+<tr>
+<td>5.5.2</td>
+<td>ให้ใช้งานจริงกับข้อมูลรายวิชาของตนเอง</td>
+<td>น นู</td>
+<td>2/19/27</td>
+<td>2/26/27</td>
+<td>7</td>
+<td>0%</td>
+<td>H6</td>
+</tr>
+<tr>
+<td>5.5.3</td>
+<td>เก็บแบบสอบถาม + สัมภาษณ์เชิงคุณภาพเสริม (ถ้าผู้ใช้ &lt; 15 คน)</td>
+<td>นู</td>
+<td>2/24/27</td>
+<td>2/28/27</td>
+<td>4</td>
+<td>0%</td>
+<td>E-05</td>
+</tr>
+<tr>
+<td><strong>5.6</strong></td>
+<td><strong>วิเคราะห์ผลและสรุปการพิสูจน์สมมติฐาน</strong></td>
+<td>ธ</td>
+<td>3/1/27</td>
+<td>3/7/27</td>
+<td>6</td>
+<td>0%</td>
+<td>§4</td>
+</tr>
+<tr>
+<td>5.6.1</td>
+<td>คำนวณค่าเฉลี่ย/S.D. แต่ละด้าน แปลผลตามเกณฑ์ (≥ 3.51 = ดี)</td>
+<td>น</td>
+<td>3/1/27</td>
+<td>3/4/27</td>
+<td>3</td>
+<td>0%</td>
+<td>§3.3</td>
+</tr>
+<tr>
+<td>5.6.2</td>
+<td>ตารางสรุป OBJ → H → เกณฑ์ → ผลจริง (ผ่าน/ไม่ผ่าน รายข้อ)</td>
+<td>ธ</td>
+<td>3/3/27</td>
+<td>3/6/27</td>
+<td>3</td>
+<td>0%</td>
+<td>§4</td>
+</tr>
+<tr>
+<td>5.6.3</td>
+<td>อภิปรายผลและข้อจำกัดของโครงงาน</td>
+<td>ธ</td>
+<td>3/5/27</td>
+<td>3/7/27</td>
+<td>2</td>
+<td>0%</td>
+<td>บทที่ 5</td>
+</tr>
+<tr>
+<td><strong>5.7</strong></td>
+<td><strong>ปรับเอกสารออกแบบให้ตรงกับระบบจริง (as-built)</strong></td>
+<td>ธ</td>
+<td>3/1/27</td>
+<td>3/7/27</td>
+<td>6</td>
+<td>0%</td>
+<td>บทที่ 3</td>
+</tr>
+<tr>
+<td>5.7.1</td>
+<td><strong>ปรับ ER-Diagram</strong> ให้ตรง schema สุดท้ายหลังพัฒนาเสร็จ</td>
+<td>ธ</td>
+<td>3/1/27</td>
+<td>3/3/27</td>
+<td>2</td>
+<td>0%</td>
+<td>3.1.3</td>
+</tr>
+<tr>
+<td>5.7.2</td>
+<td><strong>ปรับ DFD L0–L2</strong> ให้ตรง process จริงที่ implement</td>
+<td>ธ</td>
+<td>3/2/27</td>
+<td>3/5/27</td>
+<td>3</td>
+<td>0%</td>
+<td>3.2.1–3.2.3</td>
+</tr>
+<tr>
+<td>5.7.3</td>
+<td><strong>เก็บภาพหน้าจอ UI จริงทุกหน้า (13 หน้า)</strong> ลงภาคผนวก</td>
+<td>น นู</td>
+<td>3/3/27</td>
+<td>3/7/27</td>
+<td>4</td>
+<td>0%</td>
+<td>3.4 · features-pages</td>
+</tr>
+<tr>
+<td><strong>5.8</strong></td>
+<td><strong>จัดทำปริญญานิพนธ์ฉบับสมบูรณ์</strong></td>
+<td>ธ น นู</td>
+<td>2/1/27</td>
+<td>3/14/27</td>
+<td>41</td>
+<td>0%</td>
+<td>บทที่ 1–5</td>
+</tr>
+<tr>
+<td>5.8.1</td>
+<td>บทที่ 1 บทนำ + บทที่ 2 ทฤษฎีและงานวิจัยที่เกี่ยวข้อง</td>
+<td>น</td>
+<td>2/1/27</td>
+<td>2/14/27</td>
+<td>13</td>
+<td>0%</td>
+<td>CLO 1, 2.4</td>
+</tr>
+<tr>
+<td>5.8.2</td>
+<td>บทที่ 3 วิธีดำเนินโครงงาน (ER, DFD, สถาปัตยกรรม, UI)</td>
+<td>ธ</td>
+<td>2/8/27</td>
+<td>2/28/27</td>
+<td>20</td>
+<td>0%</td>
+<td>CLO 3 · 5.7</td>
+</tr>
+<tr>
+<td>5.8.3</td>
+<td>บทที่ 4 ผลการดำเนินงานและผลการประเมิน</td>
+<td>ธ นู</td>
+<td>3/1/27</td>
+<td>3/10/27</td>
+<td>9</td>
+<td>0%</td>
+<td>5.1–5.6</td>
+</tr>
+<tr>
+<td>5.8.4</td>
+<td>บทที่ 5 สรุป อภิปรายผล และข้อเสนอแนะ</td>
+<td>ธ</td>
+<td>3/7/27</td>
+<td>3/12/27</td>
+<td>5</td>
+<td>0%</td>
+<td>5.6</td>
+</tr>
+<tr>
+<td>5.8.5</td>
+<td>ภาคผนวก: แบบประเมิน, IOC, คู่มือใช้งาน, screenshot, ตาราง FR</td>
+<td>น นู</td>
+<td>3/5/27</td>
+<td>3/13/27</td>
+<td>8</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5.8.6</td>
+<td>ตรวจรูปแบบ/บรรณานุกรม + ส่งอาจารย์ที่ปรึกษาตรวจรอบสุดท้าย</td>
+<td>ธ</td>
+<td>3/12/27</td>
+<td>3/14/27</td>
+<td>2</td>
+<td>0%</td>
+<td>2.3.2</td>
+</tr>
+<tr>
+<td><strong>5.9</strong></td>
+<td><strong>นำเสนอและสอบป้องกันโครงงาน</strong></td>
+<td>ธ น นู</td>
+<td>3/15/27</td>
+<td>3/27/27</td>
+<td>12</td>
+<td>0%</td>
+<td>CLO 5</td>
+</tr>
+<tr>
+<td>5.9.1</td>
+<td>ทำสไลด์นำเสนอ + สคริปต์แบ่งบทพูด 3 คน</td>
+<td>ธ น นู</td>
+<td>3/15/27</td>
+<td>3/19/27</td>
+<td>4</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5.9.2</td>
+<td>เตรียม demo scenario ที่รันได้จริงหน้าห้องสอบ (มีข้อมูลตัวอย่างพร้อม)</td>
+<td>ธ</td>
+<td>3/17/27</td>
+<td>3/20/27</td>
+<td>3</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5.9.3</td>
+<td>ซ้อมนำเสนอ + เตรียมคำตอบคำถามที่กรรมการถามแน่ (สูตร CR-03, at-risk, ความปลอดภัยข้อมูล)</td>
+<td>ธ น นู</td>
+<td>3/19/27</td>
+<td>3/23/27</td>
+<td>4</td>
+<td>0%</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>5.9.4</td>
+<td><strong>สอบป้องกันโครงงาน</strong></td>
+<td>ธ น นู</td>
+<td>3/24/27</td>
+<td>3/25/27</td>
+<td>1</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5.9.5</td>
+<td>แก้ไขตามข้อเสนอแนะกรรมการ + ส่งเล่มฉบับสมบูรณ์</td>
+<td>ธ น นู</td>
+<td>3/25/27</td>
+<td>3/27/27</td>
+<td>2</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="3-เส้นทางวิกฤต-critical-path" tabindex="-1"><a class="header-anchor" href="#3-เส้นทางวิกฤต-critical-path"><span>3. เส้นทางวิกฤต (Critical Path)</span></a></h2>
+<pre class="hljs"><code>2.6 ปิด OI-10/OI-12  →  3.3.4 นิยาม attainment service  →  4.4 Assessment Criteria
+   →  4.5 Score Entry  →  4.7 Attainment + Dashboard  →  5.1 ทดสอบ H1/H2  →  5.8.3 บทที่ 4
+</code></pre>
+<p>งานที่ <strong>ช้าไม่ได้แม้แต่วันเดียว</strong>: 2.6 · 2.5 · 3.3.4 · 4.4.3 · 4.5.7 · 4.7.7 · 5.1.1 · 5.4.2</p>
+<table>
+<thead>
+<tr>
+<th>ความเสี่ยง</th>
+<th>ผลกระทบ</th>
+<th>การรับมือ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sprint 1–3 ไม่จบภายใน 18 ต.ค.</strong></td>
+<td>รายงานครั้งที่ 4 ไม่มีระบบให้สาธิต → CLO 4 (&quot;ได้ตามแผน&quot;) ถูกประเมินตก ทั้งที่โค้ดยังเดินอยู่</td>
+<td>เช็ก burn-down ท้ายทุก sprint ตั้งแต่ S1 · ถ้า S1 ช้า ให้ตัดงานปลาย S3 (4.3.5, 4.3.7) ไปไว้ Sprint 10 แทนที่จะเลื่อนทั้งแถว</td>
+</tr>
+<tr>
+<td>OI-10 ไม่ถูกปิดภายใน 9 ส.ค.</td>
+<td>เขียน 4.7 ไม่ได้ → เลื่อนทั้งสาย 2 เดือน</td>
+<td>ตั้งเป็นวาระแรกในการพบอาจารย์ที่ปรึกษาสัปดาห์นี้</td>
+</tr>
+<tr>
+<td>หาผู้ใช้จริงไม่ถึง 15 คน (E-05)</td>
+<td>H6 อ่อน กรรมการตั้งคำถามขนาดกลุ่มตัวอย่าง</td>
+<td>เริ่มติดต่ออาจารย์ตั้งแต่ ธ.ค. 2026 ไม่ใช่ ก.พ. 2027 + เสริมสัมภาษณ์เชิงคุณภาพ</td>
+</tr>
+<tr>
+<td>Sprint 4 และ 6 (matrix + Excel import) ประเมินต่ำเกินจริง</td>
+<td>ดันงานไป Sprint 10 จนไม่มีเวลา hardening</td>
+<td>Sprint 10 คือ buffer — ห้ามใส่ feature ใหม่ลงไป</td>
+</tr>
+<tr>
+<td>ช่วงปีใหม่ (28 ธ.ค. – 3 ม.ค.) กำลังคนลดลง</td>
+<td>Sprint 9 ล่าช้า</td>
+<td>Sprint 9 วางงานเบาสุดในสาย dashboard ไว้แล้ว</td>
+</tr>
+<tr>
+<td>ไม่ได้เก็บ baseline (2.5) ก่อนเริ่มพัฒนา</td>
+<td>พิสูจน์ OBJ-3 ไม่ได้เลยตลอดเล่ม</td>
+<td>ทำให้เสร็จภายใน 14 ส.ค. ก่อนแตะโค้ด production</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="4-สรุปภาระงานรายคน" tabindex="-1"><a class="header-anchor" href="#4-สรุปภาระงานรายคน"><span>4. สรุปภาระงานรายคน</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>คน</th>
+<th>บทบาทหลัก</th>
+<th>Sprint ที่เป็นเจ้าของ</th>
+<th>งานเอกสารหลัก</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ธีรณัฎฐ์</strong></td>
+<td>Lead / Architect / Backend</td>
+<td>S1, S3, S5, S8, S10</td>
+<td>ER, DFD, API contract, บทที่ 3, 4, 5</td>
+</tr>
+<tr>
+<td><strong>นัจญมา</strong></td>
+<td>Frontend + CLO/Activity module</td>
+<td>S3, S4 (+ Dashboard UI)</td>
+<td>Data dictionary, แบบประเมินผู้ทรงคุณวุฒิ, บทที่ 1–2</td>
+</tr>
+<tr>
+<td><strong>นูรีน</strong></td>
+<td>Frontend + Student/Score/Report module</td>
+<td>S6, S7, S9</td>
+<td>UI design, แบบสอบถามผู้ใช้, คู่มือ, ภาคผนวก</td>
+</tr>
+</tbody>
+</table>
+<p><strong>หลักการวางกำลัง:</strong> งานที่เป็นสูตรคำนวณ (CR-01…CR-07) และการตรวจสิทธิ์รายวิชาอยู่ที่คนเดียวเสมอ
+เพื่อไม่ให้เกิดการคำนวณซ้ำคนละที่ ซึ่ง FR-88 ห้ามไว้ชัดเจน</p>
+<hr>
+<h2 id="5-ไฟล์สำหรับนำเข้า-excel" tabindex="-1"><a class="header-anchor" href="#5-ไฟล์สำหรับนำเข้า-excel"><span>5. ไฟล์สำหรับนำเข้า Excel</span></a></h2>
+<p><code>docs/markdown/dev/project-plan.csv</code> — คอลัมน์ตรงกับชีต Gantt เดิม
+(ลำดับที่ / งาน-กิจกรรม / ผู้รับผิดชอบ / วันที่เริ่ม / วันที่ต้องเสร็จ / ระยะเวลา / ร้อยละที่เสร็จ)
+ตามด้วยช่องสัปดาห์ 36 ช่อง (9 เดือน × 4 สัปดาห์) ที่เติม <code>█</code> ให้อัตโนมัติ</p>
+<h3 id="51-โครงสร้างไฟล์" tabindex="-1"><a class="header-anchor" href="#51-โครงสร้างไฟล์"><span>5.1 โครงสร้างไฟล์</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>แถว</th>
+<th>เนื้อหา</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>timestamp ว่าไฟล์นี้สร้างจาก <code>project-plan.md</code> เมื่อไร — <strong>ตอน import ให้ข้าม 1 แถว</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>หัวคอลัมน์ + ชื่อเดือน (หัวคอลัมน์เขียนคำเต็มของอักษรย่อไว้ในตัวแล้ว)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>เลขสัปดาห์ 1–4 ของแต่ละเดือน</td>
+</tr>
+<tr>
+<td>4–217</td>
+<td>ข้อมูลงาน · แถว <code>CLO 1</code>–<code>CLO 5</code> เป็นหัวข้อกลุ่ม</td>
+</tr>
+<tr>
+<td>ท้ายไฟล์</td>
+<td><strong>คำอธิบายสัญลักษณ์และอักษรย่อ</strong> 38 รายการ + สูตรที่ใช้คำนวณ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-ค่าที่คำนวณอัตโนมัติ-ไม่ต้องกรอกมือ" tabindex="-1"><a class="header-anchor" href="#52-ค่าที่คำนวณอัตโนมัติ-ไม่ต้องกรอกมือ"><span>5.2 ค่าที่คำนวณอัตโนมัติ (ไม่ต้องกรอกมือ)</span></a></h3>
+<ul>
+<li><strong>แถว CLO 1–5</strong> — ช่วงเวลา ระยะเวลา ผู้รับผิดชอบ และร้อยละ คำนวณจากงานลูกทั้งหมด
+ร้อยละ = ค่าเฉลี่ย<strong>ถ่วงน้ำหนักด้วยจำนวนวัน</strong>ของ <em>งานหลัก (เลข 2 ระดับ)</em> เท่านั้น
+ไม่นับงานย่อยซ้ำ มิฉะนั้นงานที่ซอยละเอียดจะมีน้ำหนักเกินจริง</li>
+<li><strong>ระยะเวลา</strong> = วันที่ต้องเสร็จ − วันที่เริ่ม (วันตามปฏิทิน) งานหมุดหมายวันเดียวจึงเป็น <code>0</code></li>
+<li><strong>แถบ <code>█</code></strong> — เติมในสัปดาห์ที่ช่วงวันของงานคาบเกี่ยว (สัปดาห์ 1 = วันที่ 1–7 · สัปดาห์ 4 = วันที่ 22–สิ้นเดือน)</li>
+</ul>
+<h3 id="53-การตรวจความถูกต้อง" tabindex="-1"><a class="header-anchor" href="#53-การตรวจความถูกต้อง"><span>5.3 การตรวจความถูกต้อง</span></a></h3>
+<p>สคริปต์จะ <strong>ไม่เขียนไฟล์</strong> ถ้าตรวจพบข้อใดข้อหนึ่งต่อไปนี้ และจะพิมพ์เลขงานที่ผิดออกมา:</p>
+<table>
+<thead>
+<tr>
+<th>ตรวจ</th>
+<th>เงื่อนไขที่ต้องผ่าน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>รูปแบบวันที่</td>
+<td><code>ด/ว/ป</code> ค.ศ. สองหลัก และวันเสร็จต้องไม่มาก่อนวันเริ่ม</td>
+</tr>
+<tr>
+<td>ระยะเวลา</td>
+<td>ต้องเท่ากับผลต่างของวันที่จริง</td>
+</tr>
+<tr>
+<td>ผู้รับผิดชอบ</td>
+<td>ต้องเป็น ธ / น / นู เท่านั้น</td>
+</tr>
+<tr>
+<td>ลำดับชั้น</td>
+<td>งานย่อยต้องอยู่ในกรอบเวลาของงานหลัก <strong>และ</strong> งานหลักต้องกว้างเท่ากรอบของงานย่อยพอดี</td>
+</tr>
+</tbody>
+</table>
+<p>ข้อสุดท้ายคือข้อที่จับ error ได้จริงบ่อยที่สุด — ถ้าเพิ่มงานย่อยแล้วลืมขยายงานหลัก จะไม่ผ่าน</p>
+<p>เปิดด้วย Excel → <strong>Data → From Text/CSV → File Origin: UTF-8</strong> เพื่อไม่ให้ภาษาไทยเพี้ยน</p>
+<p>สร้างไฟล์ใหม่ทุกครั้งที่แก้แผนในเอกสารนี้ (ห้ามแก้ CSV ตรง ๆ — จะถูกเขียนทับ):</p>
+<pre class="hljs"><code>npm run plan:csv
+</code></pre>
+<hr>
+<p><em>เอกสารนี้เป็น source of truth ของ <strong>แผนงานและกำหนดการ</strong> — อัปเดตร้อยละที่เสร็จทุกสัปดาห์
+เมื่อ scope เปลี่ยนต้องแก้ <a href="./features-pages.html">features-pages</a> ด้วยเสมอ</em></p>
+
+</article>
+</main>
+</div>
+<button class="theme-toggle" title="Toggle theme">◐</button>
+<script src="../assets/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = localStorage.getItem('cmas-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, theme: currentDark() ? 'dark' : 'default', securityLevel: 'loose' });
+  }
+  var btn = document.querySelector('.theme-toggle');
+  btn && btn.addEventListener('click', function () {
+    var dark = !currentDark();
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('cmas-theme', dark ? 'dark' : 'light');
+    location.reload();
+  });
+})();
+function filterNav(q) {
+  q = q.trim().toLowerCase();
+  var anyVisible = false;
+  document.querySelectorAll('.nav-group').forEach(function (group) {
+    var groupHasMatch = false;
+    group.querySelectorAll('li').forEach(function (li) {
+      var text = li.textContent.toLowerCase();
+      var match = !q || text.indexOf(q) !== -1;
+      li.style.display = match ? '' : 'none';
+      if (match) groupHasMatch = true;
+    });
+    group.style.display = groupHasMatch ? '' : 'none';
+    if (groupHasMatch) anyVisible = true;
+  });
+  document.getElementById('nav-empty').style.display = anyVisible ? 'none' : 'block';
+}
+</script>
+</body>
+</html>

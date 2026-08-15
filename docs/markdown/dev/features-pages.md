@@ -2,7 +2,11 @@
 
 See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
 
-> อ้างอิงจาก `database/schema.prisma` ปัจจุบัน (11 models: User, Curriculum, CurriculumCourse, Course, CLO, BehavioralObjective, Activity, AssessmentCriteria, Student, Score, ScoreUploadLog) และโครงสร้าง route ที่มีอยู่ใน `app/client/src/pages/`
+> อ้างอิงจาก `database/schema.prisma` ปัจจุบัน — **single-tenant, 11 models:** User, Course,
+> CourseInstructor, CLO, BehavioralObjective, Activity, AssessmentCriteria, ObjectiveAssessment,
+> Student, Score, ScoreUploadLog — และโครงสร้าง route ที่มีอยู่ใน `app/client/src/pages/`
+>
+> **อัปเดต 2026-08-04:** ตัด Curriculum / Institution ออกตามงาน 2.7 → เหลือ **13 feature / 13 หน้า**
 
 ---
 
@@ -12,9 +16,9 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
 |---|---|---|---|---|
 | 1 | **Authentication** — login, logout, JWT session | ทุกคน | `User` | มีหน้า `Login.tsx` แล้ว |
 | 2 | **User Management** — CRUD ผู้ใช้, เปิด/ปิดบัญชี (`isActive`), กำหนด role | ADMIN | `User` | มีหน้า `Users.tsx` แล้ว |
-| 3 | **Curriculum Management** — CRUD หลักสูตร, clone หลักสูตรเดิม (`clonedFrom`) | ADMIN | `Curriculum` | ยังไม่มีหน้า |
-| 4 | **Curriculum Course** — จัดการรายวิชาในหลักสูตร (รหัสวิชา / ชื่อ / หน่วยกิต) | ADMIN | `CurriculumCourse` | ยังไม่มีหน้า |
-| 5 | **Course Management** — CRUD รายวิชาที่เปิดสอนจริงต่อเทอม, มอบหมายอาจารย์ | ADMIN / INSTRUCTOR | `Course` | มีหน้า `CourseList.tsx` แล้ว |
+| ~~3~~ | ~~Curriculum Management~~ | ❌ **ตัดออก 2026-08-04** | — | — |
+| ~~4~~ | ~~Curriculum Course~~ | ❌ **ตัดออก 2026-08-04** — หน่วยกิต/ชั่วโมง/gradingType ย้ายไปอยู่บน `Course` (FR-27, FR-28) | — | — |
+| 5 | **Course Management** — CRUD รายวิชาที่เปิดสอนจริงต่อเทอม, หน่วยกิต `3 (2-2-5)`, gradingType, มอบหมายอาจารย์ | ADMIN / INSTRUCTOR | `Course`, `CourseInstructor` | มีหน้า `CourseList.tsx` แล้ว |
 | 6 | **CLO Management** — CRUD CLO ต่อวิชา, drag-reorder (`number`), ตั้ง threshold | INSTRUCTOR | `CLO` | ยังไม่มีหน้า |
 | 7 | **Behavioral Objectives** — CRUD จุดประสงค์เชิงพฤติกรรมต่อ CLO | INSTRUCTOR | `BehavioralObjective` | ยังไม่มีหน้า |
 | 8 | **Activity Management** — CRUD กิจกรรมประเมิน (สอบ/งาน), drag-reorder (`order`), กำหนด `weight`/`maxScore` | INSTRUCTOR | `Activity` | ยังไม่มีหน้า |
@@ -26,7 +30,7 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
 | 14 | **CLO Attainment Dashboard** — กราฟสรุปผล CLO ต่อวิชา, at-risk detection | INSTRUCTOR | คำนวณจาก `Score` + `AssessmentCriteria` | ยังไม่มีหน้า |
 | 15 | **Student Individual Report** — ดูความก้าวหน้ารายบุคคลต่อ CLO | INSTRUCTOR | คำนวณจาก `Score` ของ `Student` | ยังไม่มีหน้า |
 
-**สรุป:** 15 feature หลัก — เสร็จแล้ว 3 (Auth, User Mgmt, Course List) เหลือ 12 ที่ต้องพัฒนา
+**สรุป:** 13 feature หลัก — เสร็จแล้ว 3 (Auth, User Mgmt, Course List) เหลือ 10 ที่ต้องพัฒนา
 
 ---
 
@@ -39,8 +43,8 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
 | 1 | `/` | Home / redirect | — | ✅ มีแล้ว |
 | 2 | `/auth/login` | Login | 1 | ✅ มีแล้ว |
 | 3 | `/admin/users` | User Management | 2 | ✅ มีแล้ว |
-| 4 | `/curricula` | Curriculum List | 3 | ⬜ ต้องทำ |
-| 5 | `/curricula/:curriculumId` | Curriculum Detail (รายวิชาในหลักสูตร) | 3, 4 | ⬜ ต้องทำ |
+| ~~4~~ | ~~`/curricula`~~ | ❌ ตัดออก 2026-08-04 | — | — |
+| ~~5~~ | ~~`/curricula/:curriculumId`~~ | ❌ ตัดออก 2026-08-04 | — | — |
 | 6 | `/courses` | Course List | 5 | ✅ มีแล้ว |
 | 7 | `/courses/new` | Create Course | 5 | ⬜ ต้องทำ |
 | 8 | `/courses/:courseId` | Course Overview | 5 | ⬜ ต้องทำ |
@@ -52,7 +56,7 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
 | 14 | `/courses/:courseId/dashboard` | CLO Attainment Dashboard | 14 | ⬜ ต้องทำ |
 | 15 | `/courses/:courseId/dashboard/students/:studentId` | Student Individual Report | 15 | ⬜ ต้องทำ |
 
-**รวมทั้งหมด: 15 หน้า** (เสร็จแล้ว 3 หน้า / เหลือ 12 หน้า)
+**รวมทั้งหมด: 13 หน้า** (เสร็จแล้ว 3 หน้า / เหลือ 10 หน้า)
 
 > หมายเหตุ: บาง route (เช่น `/courses/:courseId/scores/uploads`) อาจรวมเป็น tab เดียวกับหน้าอื่นแทนการแยกหน้าจริง หากทีมตัดสินใจตอน implement — ให้ปรับตารางนี้และแจ้งในรายงานประจำสัปดาห์ (ดู [[code-rule]] §7)
 
@@ -64,7 +68,7 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
 
 | คน | รับผิดชอบ | Feature # |
 |---|---|---|
-| Dev A | Curriculum + Course module | 3, 4, 5 |
+| Dev A | Course module (รวมหน่วยกิต/gradingType/มอบหมายอาจารย์) + Auth/User | 1, 2, 5 |
 | Dev B | CLO + Activity + Assessment Criteria (core CLO system) | 6, 7, 8, 9 |
 | Dev C | Student + Score (entry/import/export/log) + Dashboard | 10, 11, 12, 13, 14, 15 |
 

@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>schema</title>
+<title>โครงสร้างฐานข้อมูล CMAS — 11 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง · CMAS Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
 <link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
@@ -12,128 +15,455 @@
 <div class="layout">
 <aside class="sidebar">
 <div class="sidebar-inner">
-<a class="brand" href="../index.html">📄 CMAS Docs</a>
-<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a class="active" href="../sql/schema.html">schema</a></li></ul></div></nav>
+<a class="brand" href="../index.html">CMAS Docs<span class="brand-sub">v2</span></a>
+<p class="sidebar-tagline">เอกสารโครงงาน CLO System — single source of truth</p>
+<input class="nav-search" type="search" placeholder="ค้นหาเอกสาร…" oninput="filterNav(this.value)">
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">เอกสารพัฒนา (Dev)</div><ul><li><a href="../dev/dev.html"><span class="nav-dot ref"></span>Technical Standard &amp; Workflow</a></li><li><a href="../dev/srs.html"><span class="nav-dot ref"></span>Software Requirements Specification (SRS)</a></li><li><a href="../dev/objectives-hypotheses-evaluation.html"><span class="nav-dot draft"></span>วัตถุประสงค์ · สมมติฐาน · เกณฑ์การประเมิน</a></li><li><a href="../dev/api-design.html"><span class="nav-dot draft"></span>API Design &amp; Endpoint Specification</a></li><li><a href="../dev/dfd.html"><span class="nav-dot ref"></span>แผนภาพกระแสข้อมูล (DFD — Data Flow Diagram) ของระบบ CMAS ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO — Course Learning Outcome)</a></li><li><a href="../dev/features-pages.html"><span class="nav-dot "></span>Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/user-flow.html"><span class="nav-dot draft"></span>User Flow &amp; UX Design — CMAS</a></li><li><a href="../dev/design-system.html"><span class="nav-dot active-status"></span>Verdure Design System</a></li><li><a href="../dev/material.html"><span class="nav-dot active-status"></span>Material Tonal Logic — Design System</a></li><li><a href="../dev/theory.html"><span class="nav-dot draft"></span>บทที่ 2 — หลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง</a></li><li><a href="../dev/project-plan.html"><span class="nav-dot draft"></span>แผนการดำเนินงานโครงงาน (WBS + Gantt) — CMAS</a></li><li><a href="../dev/thesis-toc.html"><span class="nav-dot draft"></span>สารบัญเล่มโครงงาน (Table of Contents) — CMAS</a></li><li><a href="../dev/progress-report-02.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li><li><a href="../dev/progress-report-02-qa.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li></ul></div><div class="nav-group"><div class="nav-group-title">แผนภาพ (Diagrams)</div><ul><li><a href="../graph/usecase.html"><span class="nav-dot "></span>Use Case Diagram</a></li><li><a href="../graph/tech-stack.html"><span class="nav-dot "></span>Tech Stack</a></li><li><a href="../graph/fishbone-4m.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">ฐานข้อมูล (SQL)</div><ul><li><a class="active" href="../sql/schema.html"><span class="nav-dot "></span>โครงสร้างฐานข้อมูล CMAS — 11 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง</a></li><li><a href="../sql/mysql-er-diagram.html"><span class="nav-dot "></span>CMAS — MySQL ER Diagram</a></li><li><a href="../sql/mysql/README.html"><span class="nav-dot "></span>CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/migrations/README.html"><span class="nav-dot "></span>docs/markdown/sql/migrations — historical only</a></li></ul></div><div class="nav-group"><div class="nav-group-title">กติกาทีม (Rules)</div><ul><li><a href="../rule/code-rule.html"><span class="nav-dot "></span>Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html"><span class="nav-dot "></span>Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html"><span class="nav-dot "></span>Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div></nav>
+<p class="nav-empty" id="nav-empty">ไม่พบเอกสารที่ตรงกับคำค้นหา</p>
 </div>
 </aside>
 <main class="content">
 <article class="markdown-body">
-<p>See also: <a href="../dev/dev.html">dev</a> · <span class="wikilink-missing" title="unresolved: Summary Project">Summary Project</span> · <span class="wikilink-missing" title="unresolved: concept-clo MOC">concept-clo MOC</span></p>
-<pre class="hljs"><code>enum Role { ADMIN  INSTRUCTOR }
-
-model <span class="hljs-keyword">User</span> {
-  id           String   <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
-  email        String   <span class="hljs-variable">@unique</span>
-  name         String
-  passwordHash String
-  role         Role     <span class="hljs-variable">@default</span>(INSTRUCTOR)
-  isActive     <span class="hljs-type">Boolean</span>  <span class="hljs-variable">@default</span>(<span class="hljs-literal">true</span>)
-  courses      Course[]
-  createdAt    DateTime <span class="hljs-variable">@default</span>(now())
-}
-
-model Curriculum {
-  id          String             <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
-  name        String
-  <span class="hljs-keyword">year</span>        <span class="hljs-type">Int</span>
-  institution String
-  courses     CurriculumCourse[]
-  clonedFrom  String?
-  createdBy   <span class="hljs-keyword">User</span>               <span class="hljs-variable">@relation</span>(...)
-}
-
-model CurriculumCourse {
-  id           String       <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
-  curriculum   Curriculum   <span class="hljs-variable">@relation</span>(...)
-  courseCode   String
-  courseName   String
-  credits      <span class="hljs-type">Int</span>
-}
-
-model Course {
-  id           String     <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
-  code         String
-  name         String
-  semester     <span class="hljs-type">Int</span>
-  <span class="hljs-keyword">year</span>         <span class="hljs-type">Int</span>
-  instructorId String
-  instructor   <span class="hljs-keyword">User</span>       <span class="hljs-variable">@relation</span>(...)
-  clos         CLO[]
-  students     Student[]
-  activities   Activity[]
-  @<span class="hljs-variable">@unique</span>([code, semester, <span class="hljs-keyword">year</span>, instructorId])
-}
-
-model CLO {
-  id          String               <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
-  courseId    String
-  course      Course               <span class="hljs-variable">@relation</span>(...)
-  number      <span class="hljs-type">Int</span>                  <span class="hljs-operator">/</span><span class="hljs-operator">/</span> ลำดับที่ (drag<span class="hljs-operator">-</span>reorder อัปเดตค่านี้)
-  description String
-  threshold   <span class="hljs-type">Float</span> <span class="hljs-variable">@default</span>(<span class="hljs-number">60</span>)
-  objectives  BehavioralObjective[]
-  criteria    AssessmentCriteria[]
-}
-
-model Activity {
-  id        String               <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
-  courseId  String
-  course    Course               <span class="hljs-variable">@relation</span>(...)
-  name      String
-  <span class="hljs-keyword">method</span>    String
-  maxScore  <span class="hljs-type">Float</span>
-  <span class="hljs-keyword">order</span>     <span class="hljs-type">Int</span>                  <span class="hljs-operator">/</span><span class="hljs-operator">/</span> drag<span class="hljs-operator">-</span>reorder อัปเดตค่านี้
-  weight    <span class="hljs-type">Float</span>
-  criteria  AssessmentCriteria[]
-  scores    Score[]
-}
-
-model AssessmentCriteria {
-  id         String   <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
-  activityId String
-  activity   Activity <span class="hljs-variable">@relation</span>(...)
-  cloId      String
-  clo        CLO      <span class="hljs-variable">@relation</span>(...)
-  weight     <span class="hljs-type">Float</span>
-  @<span class="hljs-variable">@unique</span>([activityId, cloId])
-}
-
-model Student {
-  id          String  <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
-  studentCode String
-  name        String
-  courseId    String
-  course      Course  <span class="hljs-variable">@relation</span>(...)
-  scores      Score[]
-  @<span class="hljs-variable">@unique</span>([studentCode, courseId])
-}
-
-model Score {
-  id         String   <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
-  studentId  String
-  student    Student  <span class="hljs-variable">@relation</span>(...)
-  activityId String
-  activity   Activity <span class="hljs-variable">@relation</span>(...)
-  score      <span class="hljs-type">Float</span>
-  uploadedAt DateTime <span class="hljs-variable">@default</span>(now())
-  @<span class="hljs-variable">@unique</span>([studentId, activityId])
-}
-
-model ScoreUploadLog {
-  id         String   <span class="hljs-variable">@id</span> <span class="hljs-variable">@default</span>(cuid())
-  courseId   String
-  uploadedBy String
-  fileName   String
-  recordsOk  <span class="hljs-type">Int</span>
-  recordsFail <span class="hljs-type">Int</span>
-  createdAt  DateTime <span class="hljs-variable">@default</span>(now())
-}
-</code></pre>
+<div class="doc-meta"><div class="desc">⚠️ database/schema.prisma เป็น source of truth ของโครงสร้าง ไฟล์นี้อธิบาย &quot;ทำไม&quot; ไม่ใช่ &quot;อะไร&quot; — ถ้าสองไฟล์ขัดกันให้ยึด schema.prisma แล้วมาแก้ไฟล์นี้ ไฟล์นี้เคยหลุดจากของจริงมา…</div></div>
+<p>See also: <a href="../dev/dev.html">dev</a> · <a href="../dev/srs.html">srs</a> · <span class="wikilink-missing" title="unresolved: Summary Project">Summary Project</span> · <span class="wikilink-missing" title="unresolved: concept-clo MOC">concept-clo MOC</span></p>
+<h1 id="โครงสร้างฐานข้อมูล-cmas--11-ตาราง-และเหตุผลที่ต้องมีแต่ละตาราง" tabindex="-1"><a class="header-anchor" href="#โครงสร้างฐานข้อมูล-cmas--11-ตาราง-และเหตุผลที่ต้องมีแต่ละตาราง"><span>โครงสร้างฐานข้อมูล CMAS — 11 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง</span></a></h1>
+<blockquote>
+<p>⚠️ <strong><code>database/schema.prisma</code> เป็น source of truth ของโครงสร้าง</strong> ไฟล์นี้อธิบาย <strong>&quot;ทำไม&quot;</strong>
+ไม่ใช่ <strong>&quot;อะไร&quot;</strong> — ถ้าสองไฟล์ขัดกันให้ยึด <code>schema.prisma</code> แล้วมาแก้ไฟล์นี้
+ไฟล์นี้เคยหลุดจากของจริงมาแล้ว (เคยมี <code>Curriculum.createdBy</code> ที่ไม่มีอยู่จริง)</p>
+<p>DDL ที่รันได้: <code>database/migrations/</code> (Postgres — ของจริง) ·
+<a href="./mysql/cmas_app_production_v3.sql"><code>mysql/cmas_app_production_v3.sql</code></a> (MySQL — สำหรับทำ ER
+ใน MySQL Workbench)</p>
+<p><strong>v2 (2026-08-04): single-tenant</strong> — ตัด <code>Institution</code> · <code>Membership</code> · <code>Curriculum</code> ·
+<code>CurriculumCourse</code> ออก จาก 15 ตาราง เหลือ <strong>11 ตาราง</strong> <code>Course</code> เป็นรากของลำดับชั้น</p>
+<p>⚠️ <strong>ต้อง re-verify กับ Postgres จริงอีกครั้ง</strong> — ผลเดิม (2026-07-30: 37 CHECK · 22 FK ·
+7 trigger) เป็นของ schema 15 ตารางที่ถูกแทนที่ไปแล้ว โครงสร้างใหม่คือ 11 ตาราง · 3 trigger ·
+partial index 1 ตัว (งาน 3.1.5)</p>
+</blockquote>
+<hr>
+<h2 id="1-หลักการที่ใช้ตัดสินว่า-อะไรควรเป็นตาราง" tabindex="-1"><a class="header-anchor" href="#1-หลักการที่ใช้ตัดสินว่า-อะไรควรเป็นตาราง"><span>1. หลักการที่ใช้ตัดสินว่า &quot;อะไรควรเป็นตาราง&quot;</span></a></h2>
+<p>ทุกตารางในระบบนี้มีอยู่ด้วยเหตุผล <strong>ข้อใดข้อหนึ่ง</strong> จาก 4 ข้อนี้ ถ้าตารางใหม่ตอบไม่ได้ว่าเป็นข้อไหน แปลว่ายังไม่ควรสร้าง:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>เหตุผล</th>
+<th>ตัวอย่างในระบบนี้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>R1</strong></td>
+<td><strong>เป็นสิ่งของจริงในโลก</strong> ที่มีตัวตนของตัวเอง</td>
+<td><code>User</code>, <code>Course</code>, <code>Student</code>, <code>CLO</code></td>
+</tr>
+<tr>
+<td><strong>R2</strong></td>
+<td><strong>ความสัมพันธ์ M:N ที่มีคุณสมบัติของตัวเอง</strong> — คุณสมบัตินั้นไม่ได้เป็นของฝั่งใดฝั่งหนึ่ง จึงเก็บที่ FK 2 ตัวไม่ได้</td>
+<td><code>CourseInstructor</code> (มี <code>role</code>), <code>AssessmentCriteria</code> (มี <code>weight</code>)</td>
+</tr>
+<tr>
+<td><strong>R3</strong></td>
+<td><strong>จำนวนไม่จำกัด (1:N)</strong> — ถ้าใช้คอลัมน์จะต้องมี <code>clo1</code>, <code>clo2</code>, <code>clo3</code>, … ซึ่งผิด 1NF</td>
+<td><code>CLO</code> ต่อ <code>Course</code>, <code>Activity</code> ต่อ <code>Course</code>, <code>Score</code> ต่อ <code>Student</code></td>
+</tr>
+<tr>
+<td><strong>R4</strong></td>
+<td><strong>บันทึกเหตุการณ์ (audit)</strong> ที่ต้องเก็บไว้แม้ของที่อ้างถึงจะเปลี่ยนไปแล้ว</td>
+<td><code>ScoreUploadLog</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>กฎที่สำคัญที่สุดคือ R2</strong> และเป็นคำตอบของคำถาม &quot;ทำไมต้องมีตารางนี้&quot; บ่อยที่สุด:</p>
+<blockquote>
+<p><code>CourseInstructor.role = LEAD</code> — คำว่า &quot;ผู้ประสานงานรายวิชา&quot; <strong>ไม่ใช่</strong>คุณสมบัติของอาจารย์
+(เขาเป็น LEAD ของวิชานี้ แต่เป็น CO ของวิชาอื่น) และ<strong>ไม่ใช่</strong>คุณสมบัติของวิชา
+(วิชาเดียวมีทั้ง LEAD และ CO) มันเป็นคุณสมบัติของ <strong>&quot;คู่ (อาจารย์ × วิชา)&quot;</strong>
+→ คู่ต้องมีที่อยู่ → คู่ต้องเป็นตาราง</p>
+</blockquote>
+<hr>
+<h2 id="2-ระบบแบ่งเป็น-5-ชั้น" tabindex="-1"><a class="header-anchor" href="#2-ระบบแบ่งเป็น-5-ชั้น"><span>2. ระบบแบ่งเป็น 5 ชั้น</span></a></h2>
+<pre class="mermaid">erDiagram
+    User        ||--o{ CourseInstructor : &quot;&quot;
+    User        ||--o{ ScoreUploadLog : &quot;&quot;
+    Course      ||--o{ CourseInstructor : &quot;&quot;
+    Course      ||--o{ CLO : &quot;&quot;
+    Course      ||--o{ Activity : &quot;&quot;
+    Course      ||--o{ Student : &quot;&quot;
+    Course      ||--o{ ScoreUploadLog : &quot;&quot;
+    CLO         ||--o{ BehavioralObjective : &quot;&quot;
+    CLO         ||--o{ AssessmentCriteria : &quot;&quot;
+    Activity    ||--o{ AssessmentCriteria : &quot;&quot;
+    Activity    ||--o{ Score : &quot;&quot;
+    Student     ||--o{ Score : &quot;&quot;
+    AssessmentCriteria  ||--o{ ObjectiveAssessment : &quot;&quot;
+    BehavioralObjective ||--o{ ObjectiveAssessment : &quot;&quot;
+</pre>
+<table>
+<thead>
+<tr>
+<th>ชั้น</th>
+<th>ตาราง</th>
+<th>ตอบคำถามว่า</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1 · IDENTITY</strong></td>
+<td><code>User</code></td>
+<td>ใครเข้าระบบได้ และมีสิทธิ์ระดับใด</td>
+</tr>
+<tr>
+<td><strong>2 · THE COURSE</strong></td>
+<td><code>Course</code>, <code>CourseInstructor</code></td>
+<td>เทอมนี้เปิดสอนอะไร ใครสอน</td>
+</tr>
+<tr>
+<td><strong>3 · THE CRITERIA</strong></td>
+<td><code>CLO</code>, <code>BehavioralObjective</code>, <code>Activity</code>, <code>AssessmentCriteria</code>, <code>ObjectiveAssessment</code></td>
+<td>วัด<strong>อะไร</strong> ด้วย<strong>อะไร</strong> น้ำหนัก<strong>เท่าไร</strong></td>
+</tr>
+<tr>
+<td><strong>4 · THE FACTS</strong></td>
+<td><code>Student</code>, <code>Score</code></td>
+<td>ใครได้<strong>คะแนนเท่าไร</strong></td>
+</tr>
+<tr>
+<td><strong>5 · AUDIT</strong></td>
+<td><code>ScoreUploadLog</code></td>
+<td>ใครนำเข้าคะแนน เมื่อไร ด้วยไฟล์อะไร</td>
+</tr>
+</tbody>
+</table>
+<p><strong>เดิมมี 7 ชั้น (0 · TENANCY และ 2 · THE PLAN) — ถูกตัดทิ้งเมื่อ 2026-08-04</strong></p>
+<table>
+<thead>
+<tr>
+<th>ชั้นที่หายไป</th>
+<th>ตารางเดิม</th>
+<th>ทำไมถึงตัด</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 · TENANCY</td>
+<td><code>Institution</code></td>
+<td>ระบบใช้ในคณะเดียว (single-tenant) ไม่มีขอบเขตข้ามสถาบันให้โมเดล</td>
+</tr>
+<tr>
+<td>1 (บางส่วน)</td>
+<td><code>Membership</code></td>
+<td>เมื่อมีสถาบันเดียว ตาราง role ราย (คน × สถาบัน) เหลือค่าเดียวเสมอ → <code>role</code> ย้ายกลับไปเป็นคอลัมน์บน <code>User</code></td>
+</tr>
+<tr>
+<td>2 · THE PLAN</td>
+<td><code>Curriculum</code>, <code>CurriculumCourse</code></td>
+<td>นอกขอบเขต v1 — แต่ <strong>5 คอลัมน์ที่ระบบใช้จริง</strong> (<code>credits</code>, ชั่วโมง 3 ตัว, <code>gradingType</code>) ถูกย้ายขึ้นมาไว้บน <code>Course</code> ไม่ได้หายไปด้วย</td>
+</tr>
+</tbody>
+</table>
+<p><strong>สิ่งที่แลกไป (ต้องเขียนในเล่ม ไม่ใช่ซ่อน):</strong> ชั้น 2 เคยแยก &quot;แผน&quot; ออกจาก &quot;ของจริง&quot; ทำให้แก้ชื่อวิชา
+ปีนี้ไม่กระทบเอกสารหลักสูตรที่สภาอนุมัติไปแล้ว เมื่อตัดชั้นนั้นออก ระบบ<strong>ไม่มีสำเนาที่แช่แข็ง</strong>
+ของเอกสารหลักสูตรอีกต่อไป — ยอมรับได้ใน v1 เพราะขอบเขตคือการติดตาม CLO รายวิชา
+ไม่ใช่การบริหารหลักสูตร แต่ถ้า PLO / มคอ.2 เข้ามาในภายหลัง ต้องสร้างตารางแม่แล้ว <strong>backfill</strong>
+ซึ่งไม่ใช่ migration แบบเพิ่มอย่างเดียว (ดู §5)</p>
+<hr>
+<h2 id="3-รายละเอียดทีละตาราง" tabindex="-1"><a class="header-anchor" href="#3-รายละเอียดทีละตาราง"><span>3. รายละเอียดทีละตาราง</span></a></h2>
+<h3 id="ชั้น-1--identity" tabindex="-1"><a class="header-anchor" href="#ชั้น-1--identity"><span>ชั้น 1 — IDENTITY</span></a></h3>
+<h4 id="user--คนที่ล็อกอินได้" tabindex="-1"><a class="header-anchor" href="#user--คนที่ล็อกอินได้"><span><code>User</code> — คนที่ล็อกอินได้</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>ฟิลด์</th>
+<th>หมายเหตุ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>email</code></td>
+<td><strong>unique</strong> — 1 คน 1 credential</td>
+</tr>
+<tr>
+<td><code>passwordHash</code></td>
+<td>argon2 เท่านั้น (CHECK: ความยาว ≥ 20 กันรหัส plaintext หลุดลงคอลัมน์)</td>
+</tr>
+<tr>
+<td><code>role</code></td>
+<td>ADMIN | INSTRUCTOR — <strong>คอลัมน์ธรรมดาบน <code>User</code></strong></td>
+</tr>
+<tr>
+<td><code>isActive</code></td>
+<td>สวิตช์ปิดบัญชี (FR-03)</td>
+</tr>
+<tr>
+<td><code>createdAt</code> / <code>updatedAt</code></td>
+<td><code>updatedAt</code> มีไว้เพราะการเปลี่ยน role / ปิดบัญชี เป็นเหตุการณ์ที่ต้องตามรอยได้ (NFR-19)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ทำไม <code>role</code> กลับมาอยู่บน <code>User</code>:</strong> เดิมอยู่บน <code>Membership</code> เพราะ ADMIN ที่ ม.A ต้องไม่เป็น ADMIN
+ที่ ม.B — เมื่อมีสถาบันเดียว เงื่อนไขนั้นไม่มีอยู่จริง ตาราง <code>Membership</code> จึงเหลือค่าเดียวต่อคน
+คือ FK ตัวเดียวที่แต่งตัวเป็นตาราง</p>
+<p><strong>ทำไมไม่มี <code>isSuperAdmin</code> แล้ว:</strong> มันมีไว้สำหรับคนที่<strong>สร้างสถาบัน</strong>และตั้ง ADMIN คนแรกของสถาบัน
+ซึ่งต้องมีอยู่ก่อน membership ใด ๆ เมื่อไม่มีสถาบันให้สร้าง ก็ไม่มีชั้นที่อยู่เหนือ ADMIN</p>
+<p><strong>ทำไม <code>@@index([role, isActive])</code> เป็น composite ไม่ใช่ 2 index:</strong> ทุกหน้าจอที่ list ผู้ใช้กรอง
+ด้วย <strong>ทั้งสองค่าพร้อมกัน</strong> (&quot;อาจารย์ที่ยังใช้งานอยู่&quot;) ไม่เคยกรองด้วย role อย่างเดียว</p>
+<p><strong>ทำไม <code>role</code> ใน JWT เชื่อไม่ได้:</strong> token อายุ 15 นาที ค่าที่อยู่ในนั้นจึงเก่าได้ถึง 15 นาที
+<code>authMiddleware</code> จึงอ่านแถวนี้ใหม่ทุก request — การปิดบัญชีหรือลดสิทธิ์มีผลทันที (NFR-19)</p>
+<hr>
+<h3 id="ชั้น-2--the-course" tabindex="-1"><a class="header-anchor" href="#ชั้น-2--the-course"><span>ชั้น 2 — THE COURSE</span></a></h3>
+<h4 id="course--วิชาที่เปิดสอนจริงเทอมนี้" tabindex="-1"><a class="header-anchor" href="#course--วิชาที่เปิดสอนจริงเทอมนี้"><span><code>Course</code> — วิชาที่เปิดสอนจริงเทอมนี้</span></a></h4>
+<p><code>@@unique([code, semester, year, section])</code> — <strong>รากของลำดับชั้นข้อมูลทั้งระบบ</strong></p>
+<table>
+<thead>
+<tr>
+<th>ฟิลด์</th>
+<th>หมายเหตุ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>section</code></td>
+<td>หมู่เรียน default <code>&quot;01&quot;</code></td>
+</tr>
+<tr>
+<td><code>passCriteria</code> / <code>classTarget</code></td>
+<td>เกณฑ์ระดับวิชา (OI-03) — เก็บรายวิชา ไม่ใช่ค่ากลางของคณะ</td>
+</tr>
+<tr>
+<td><code>nameEn</code></td>
+<td>ชื่ออังกฤษ (nullable)</td>
+</tr>
+<tr>
+<td><code>credits</code></td>
+<td><code>Decimal(3,1)</code> — <strong>ย้ายขึ้นมาจาก <code>CurriculumCourse</code></strong> (FR-27)</td>
+</tr>
+<tr>
+<td><code>lectureHours</code> / <code>practiceHours</code> / <code>selfStudyHours</code></td>
+<td><code>Decimal(4,1)</code> — ย้ายขึ้นมาเช่นกัน</td>
+</tr>
+<tr>
+<td><code>gradingType</code></td>
+<td>LETTER | PASS_FAIL — ย้ายขึ้นมา ทำให้ CR-06 ตัดสินได้แน่นอน (FR-28)</td>
+</tr>
+<tr>
+<td><code>createdAt</code> / <code>updatedAt</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>ทำไม unique key ไม่มี <code>institutionId</code> แล้ว:</strong> ระบบเป็น single-tenant — รหัส <code>90641001</code> unique
+ภายในคณะเดียวอยู่แล้ว error message ของ FR-21 จึงเป็น &quot;รหัสวิชานี้มีอยู่แล้วในภาคเรียนนี้&quot;
+นี่คือจุดเดียวที่การตัด tenancy <strong>เปลี่ยน</strong> constraint เดิม ไม่ใช่แค่ลบทิ้ง</p>
+<p><strong>ทำไม <code>credits</code> เป็น <code>Decimal(3,1)</code> ไม่ใช่ <code>Int</code> และพื้นต้องเป็น 0:</strong> หลักสูตรเขียนว่า <code>3 (2-2-5)</code>
+= หน่วยกิต (บรรยาย-ปฏิบัติ-ศึกษาเอง) <code>Int</code> ทิ้งข้อมูล 3 ตัวหลัง และ CHECK เดิม
+<code>credits BETWEEN 1 AND 30</code> <strong>ปฏิเสธวิชาที่มีจริง</strong>: <code>90641008</code> = <code>0 (0-0-45)</code></p>
+<p><strong>ทำไม <code>passCriteria</code> / <code>classTarget</code> เก็บรายวิชา ไม่ใช่ค่ากลางแล้ว resolve ตอนอ่าน:</strong>
+ถ้าอ่านจากค่ากลาง แล้วแอดมินแก้ค่านั้นวันนี้ → <strong>รายงาน attainment ของเทอมที่แล้วเปลี่ยนย้อนหลัง
+เงียบ ๆ</strong> เพราะ CR-04/CR-05 กินค่านี้ทั้งคู่ ทุกคำตัดสิน &quot;CLO บรรลุ&quot; และ &quot;ผ่านรายวิชา&quot; จะพลิก</p>
+<p><strong>ทำไมต้องมี <code>section</code> (ประวัติสำคัญ):</strong> เดิม unique key คือ <code>(code, semester, year, instructorId)</code> — <code>instructorId</code> ทำหน้าที่<strong>แอบ</strong>เป็นตัวแยกหมู่เรียน เมื่อการสอนเปลี่ยนเป็น M:N (<code>CourseInstructor</code>) <code>instructorId</code> หายไป ถ้าไม่เพิ่ม <code>section</code> มาแทน key จะเหลือ <code>(code, semester, year)</code> = <strong>เปิดวิชาเดียวได้หมู่เดียวต่อเทอม</strong> ซึ่งผิดความจริง</p>
+<p><strong>ทำไม <code>nameEn</code> เป็น paired column ไม่ใช่ JSON หรือตารางแปลภาษา:</strong> มี 2 ภาษาคงที่ ไม่มีแผน i18n · JSON เสีย <code>NOT NULL</code> บนชื่อไทย เสีย index สำหรับ search และบังคับ <code>as any</code> (ผิด NFR-13) · ตารางแปลภาษาเหมาะกับ ≥3 ภาษา ที่นี่จะได้ JOIN เพิ่มทุก query แลกกับความยืดหยุ่นที่ไม่มีใครขอ</p>
+<h4 id="courseinstructor--ทีมผู้สอน" tabindex="-1"><a class="header-anchor" href="#courseinstructor--ทีมผู้สอน"><span><code>CourseInstructor</code> — ทีมผู้สอน</span></a></h4>
+<p><code>@@unique([courseId, userId])</code> + partial index <code>uq_courseinstructor_lead</code></p>
+<p><strong>ทำไมต้องมีตารางนี้ (R2):</strong> ดู §1 — <code>role</code> เป็นคุณสมบัติของคู่
+เดิม <code>Course.instructorId</code> บังคับ 1 วิชา = 1 อาจารย์ ซึ่ง<strong>ใช้กับวิชาปฏิบัติการที่สอนร่วมกันไม่ได้เลย</strong></p>
+<p><strong>ทำไม &quot;LEAD ไม่เกิน 1 คน&quot; อยู่ที่ DB แต่ &quot;ต้องมี LEAD อย่างน้อย 1 คน&quot; อยู่ที่แอป:</strong></p>
+<ul>
+<li>ไม่เกิน 1 → partial unique index ทำได้ตรง ๆ (<code>WHERE role = 'LEAD'</code>)</li>
+<li>อย่างน้อย 1 → <strong>บังคับที่ DB ไม่ได้</strong> เพราะแถว <code>Course</code> ต้องมีอยู่ก่อนจะมอบหมายใครได้ → INSERT แรกจะเป็นไปไม่ได้ตลอดกาล</li>
+</ul>
+<hr>
+<h3 id="ชั้น-3--the-criteria-หัวใจของโครงงาน" tabindex="-1"><a class="header-anchor" href="#ชั้น-3--the-criteria-หัวใจของโครงงาน"><span>ชั้น 3 — THE CRITERIA (หัวใจของโครงงาน)</span></a></h3>
+<h4 id="clo--ผลลัพธ์การเรียนรู้ระดับรายวิชา" tabindex="-1"><a class="header-anchor" href="#clo--ผลลัพธ์การเรียนรู้ระดับรายวิชา"><span><code>CLO</code> — ผลลัพธ์การเรียนรู้ระดับรายวิชา</span></a></h4>
+<p><code>@@unique([courseId, number])</code> · <code>threshold Float @default(60)</code></p>
+<p><strong>ทำไมต้องมีตารางนี้ (R1 + R3):</strong> CLO คือหน่วยวิเคราะห์ของโครงงานทั้งหมด และ 1 วิชามีหลาย CLO</p>
+<p><strong>ทำไม <code>number</code> ต้อง unique ต่อวิชา:</strong> มี &quot;CLO 1&quot; สองตัวในวิชาเดียว = <strong>ทุกรายงาน attainment เพี้ยนเงียบ ๆ</strong> เพราะไม่รู้ว่าเลขที่รายงานหมายถึงตัวไหน</p>
+<p><strong>ทำไม <code>CLO</code> ไม่มีคอลัมน์ <code>weight</code>:</strong> น้ำหนักของ CLO เป็น<strong>ค่าคำนวณ</strong> (CR-02) จาก <code>Activity.weight × AssessmentCriteria.weight</code> ถ้าเก็บซ้ำจะมีวันที่ค่าที่เก็บขัดกับค่าที่คำนวณ แล้วต้องนิยามว่าเชื่ออันไหน (ดู OI-02) → หน้า CLO แสดงน้ำหนักเป็น <strong>read-only</strong></p>
+<h4 id="behavioralobjective--จุดประสงค์เชิงพฤติกรรม" tabindex="-1"><a class="header-anchor" href="#behavioralobjective--จุดประสงค์เชิงพฤติกรรม"><span><code>BehavioralObjective</code> — จุดประสงค์เชิงพฤติกรรม</span></a></h4>
+<p><code>@@unique([cloId, number])</code></p>
+<p><strong>ทำไมต้องมีตารางนี้ (R3):</strong> 1 CLO แตกเป็นข้อย่อยได้หลายข้อ และต้องอ้างได้ว่า &quot;ข้อ 2 ของ CLO 1&quot;</p>
+<h4 id="activity--กิจกรรมประเมิน" tabindex="-1"><a class="header-anchor" href="#activity--กิจกรรมประเมิน"><span><code>Activity</code> — กิจกรรมประเมิน</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>ฟิลด์</th>
+<th>หมายเหตุ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>maxScore</code></td>
+<td><strong>ต้อง &gt; 0</strong> (CHECK)</td>
+</tr>
+<tr>
+<td><code>weight</code></td>
+<td>สัดส่วนต่อคะแนนรวมวิชา — ผลรวมทุก Activity = 100</td>
+</tr>
+<tr>
+<td><code>order</code></td>
+<td>ลำดับแสดงผล (drag-reorder เขียนค่านี้)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ทำไม <code>maxScore &gt; 0</code> เป็น CHECK ที่ห้ามหาย:</strong> <strong>ทุกสูตรใน SRS §3 หารด้วยค่านี้</strong> <code>maxScore = 0</code> ทำให้ทุกรายงานพังด้วย division-by-zero (ทดสอบแล้ว DB ปฏิเสธจริง)</p>
+<p><strong>ทำไม <code>weight</code> รวม = 100 ไม่เป็น constraint:</strong> เพราะมันจริงเฉพาะตอน<strong>กรอกเสร็จแล้ว</strong> ระหว่างกรอกยังไม่ครบเป็นเรื่องปกติ ถ้าบังคับต่อแถวจะ insert แถวแรกไม่ได้ → ทำเป็น <strong>view สำหรับ audit</strong> (<code>v_activity_weight_audit</code>) ให้ UI เตือนแทน (FR-43)</p>
+<p><strong>ทำไมไม่มี <code>@@unique([courseId, order])</code>:</strong> drag-reorder เขียนสถานะกลางทางที่ order ชนกันชั่วคราว ถ้า unique จะล้มกลางทาง (Postgres/MySQL ไม่มี deferred check ที่ใช้ได้ตรงนี้)</p>
+<h4 id="assessmentcriteria--ผูก-activity--clo-พร้อมน้ำหนัก" tabindex="-1"><a class="header-anchor" href="#assessmentcriteria--ผูก-activity--clo-พร้อมน้ำหนัก"><span><code>AssessmentCriteria</code> — ผูก Activity ↔ CLO พร้อมน้ำหนัก</span></a></h4>
+<p><code>@@unique([activityId, cloId])</code> · <code>weight Float</code></p>
+<p><strong>ทำไมต้องมีตารางนี้ (R2 — ตัวอย่างที่ชัดที่สุด):</strong> Activity ↔ CLO เป็น M:N (สอบปลายภาควัดได้หลาย CLO / 1 CLO วัดได้หลายกิจกรรม) และ <strong><code>weight</code> เป็นของ &quot;คู่&quot;</strong> — ไม่ใช่ของกิจกรรม (กิจกรรมเดียวแบ่งน้ำหนักให้ CLO ต่างกันได้) ไม่ใช่ของ CLO (CLO เดียวถูกวัดหลายกิจกรรมด้วยน้ำหนักต่างกัน)</p>
+<p><strong>ตารางนี้คือจุดขายของโครงงาน</strong> — ถ้าตัดออก ระบบจะเหลือแค่ตารางคะแนนธรรมดา (ดู OI-01)</p>
+<p><strong>มี trigger บังคับว่า Activity และ CLO ต้องอยู่วิชาเดียวกัน:</strong> การผูกข้ามวิชาให้ตัวเลข attainment ที่<strong>ดูสมเหตุสมผลแต่ไม่มีความหมาย</strong> ซึ่งอันตรายกว่า error</p>
+<h4 id="objectiveassessment--traceability-ของจุดประสงค์" tabindex="-1"><a class="header-anchor" href="#objectiveassessment--traceability-ของจุดประสงค์"><span><code>ObjectiveAssessment</code> — traceability ของจุดประสงค์</span></a></h4>
+<p><code>@@unique([criteriaId, objectiveId])</code></p>
+<p><strong>ทำไมต้องมีตารางนี้ (R2):</strong> ผูก &quot;เกณฑ์นี้เป็นหลักฐานของจุดประสงค์ข้อไหน&quot; แบบ M:N</p>
+<p><strong>ทำไมผูกกับ <code>AssessmentCriteria</code> ไม่ใช่ <code>Activity</code>:</strong> เพื่อให้การ map จุดประสงค์เป็น <strong>ข้อมูลเสริมที่ไม่กระทบคะแนน</strong> (FR-35) น้ำหนักอยู่ชั้นบน ดังนั้นไม่ว่าจะ map หรือไม่ map คะแนน CLO เท่าเดิมเป๊ะ</p>
+<blockquote>
+<p>⚠️ ตารางนี้ยังไม่มีหน้าจอ (OI-08) ถ้าตัดถาวรควร<strong>ลบ model ออก</strong> ไม่ปล่อยตารางร้าง</p>
+</blockquote>
+<hr>
+<h3 id="ชั้น-4--the-facts" tabindex="-1"><a class="header-anchor" href="#ชั้น-4--the-facts"><span>ชั้น 4 — THE FACTS</span></a></h3>
+<h4 id="student--การลงทะเบียน-ไม่ใช่คน" tabindex="-1"><a class="header-anchor" href="#student--การลงทะเบียน-ไม่ใช่คน"><span><code>Student</code> — <strong>การลงทะเบียน ไม่ใช่คน</strong></span></a></h4>
+<p><code>@@unique([studentCode, courseId])</code> · <code>@@index([studentCode])</code></p>
+<p><strong>ทำไมต้องมีตารางนี้ (R3):</strong> 1 วิชามีนักศึกษาหลายคน</p>
+<p><strong>⚠️ ทำไม 1 คนลง 5 วิชา = 5 แถว (ชื่อซ้ำ 5 ครั้ง):</strong> เพราะตารางนี้โมเดล <strong>enrolment</strong> (ASM-01) การแยก <code>Student</code>(คน) ออกจาก <code>Enrolment</code>(คน × วิชา) <strong>เลื่อนไป v2</strong> เพราะ OI-05 ตัด field ระดับบุคคล (อีเมล/ชั้นปี/สาขา/คณะ) ออกจาก v1 แล้ว → ตาราง <code>Person</code> วันนี้จะมี 2 คอลัมน์ และซื้ออะไรไม่ได้นอกจาก JOIN เพิ่มทุก query
+<strong>เลื่อนได้อย่างปลอดภัยเพราะ</strong> natural key ของ <code>Person</code> ในอนาคตคือ <code>studentCode</code> = index ที่มีอยู่แล้วพอดี → v2 เป็นการเพิ่มตาราง + backfill ด้วย index-only scan ไม่แตะ unique key ไม่มี downtime</p>
+<p><strong>ทำไม <code>@@index([studentCode])</code> เปล่า ๆ ปลอดภัยแล้ว:</strong> ตอนเป็น multi-tenant index นี้เป็น<strong>กับดัก</strong> — รหัสนักศึกษาไทย 8 หลักชนกันข้ามสถาบันเกือบแน่นอน <code>where: { studentCode }</code> เดี่ยว ๆ จะคืนนักศึกษาของอีกมหาวิทยาลัย = ข้อมูลส่วนบุคคลรั่วตาม PDPA (CON-02) จึงต้อง denormalise <code>institutionId</code> ลงมาเพื่อให้ index เป็น <code>(institutionId, studentCode)</code>
+เมื่อเป็น single-tenant รหัสนักศึกษาหนึ่งค่าหมายถึงคนเดียวในฐานข้อมูลทั้งใบ → คอลัมน์ denormalise และ trigger ที่คอยเฝ้ามันถูกลบทิ้งทั้งคู่</p>
+<h4 id="score--คะแนนราย-activity" tabindex="-1"><a class="header-anchor" href="#score--คะแนนราย-activity"><span><code>Score</code> — คะแนนราย Activity</span></a></h4>
+<p><code>@@unique([studentId, activityId])</code></p>
+<p><strong>ทำไมต้องมีตารางนี้ (R3):</strong> 1 นักศึกษามีหลายคะแนน</p>
+<p><strong>ทำไมเก็บราย Activity ไม่ใช่ราย CLO:</strong> คะแนน CLO เป็น<strong>ค่าคำนวณ</strong> (ASM-02, CR-03) ถ้ากรอกราย CLO ตรง ๆ <code>Activity</code> และ <code>AssessmentCriteria</code> จะไม่มีความหมาย และเสียจุดขายของโครงงาน (OI-01)</p>
+<p><strong>ทำไม &quot;ยังไม่ประเมิน&quot; = ไม่มีแถว ไม่ใช่ <code>score = 0</code> (FR-62):</strong> เว้นว่าง ≠ ได้ 0 คะแนน ต้องแยกกันในทุกการคำนวณ — ถ้าใช้ 0 แทนจะดึงคะแนน CLO ลงทั้งที่ยังไม่ได้สอบ
+<strong>ทดสอบแล้ว:</strong> ลบแถว Score → <code>cloScore</code> ออกมาเป็น <code>NULL</code> (แสดง <code>—</code>) ไม่ใช่ <code>0</code> ✅</p>
+<p><strong>มี trigger บังคับ 2 ข้อ:</strong> <code>score ≤ Activity.maxScore</code> และ Student/Activity ต้องอยู่วิชาเดียวกัน (การ import ที่จับ ID ผิดจะโยนคะแนนไปผิดห้องเงียบ ๆ)</p>
+<hr>
+<h3 id="ชั้น-5--audit" tabindex="-1"><a class="header-anchor" href="#ชั้น-5--audit"><span>ชั้น 5 — AUDIT</span></a></h3>
+<h4 id="scoreuploadlog" tabindex="-1"><a class="header-anchor" href="#scoreuploadlog"><span><code>ScoreUploadLog</code></span></a></h4>
+<p><strong>ทำไมต้องมีตารางนี้ (R4):</strong> NFR-16 บังคับว่าการนำเข้าคะแนนทุกครั้งต้องตามรอยได้ว่า<strong>ใคร เมื่อไร ไฟล์อะไร</strong> และ FR-71 บังคับให้บันทึกแม้ไฟล์ล้มทั้งไฟล์</p>
+<p><strong>ทำไม <code>uploadedBy</code> เป็น <code>Restrict</code> ไม่ใช่ <code>Cascade</code>:</strong> audit trail ที่เสียตัวผู้กระทำไปแล้วไม่ใช่ audit trail — ห้ามลบ User ที่เคยอัปโหลด ให้ปิด <code>isActive</code> แทน</p>
+<p><strong>ตารางนี้อยู่นอกเส้นทางคำนวณ</strong> — ไม่มีอะไรอ้างอิงแถวเหล่านี้ ลบทิ้งได้ไม่กระทบตัวเลขใด ๆ</p>
+<hr>
+<h2 id="4-คำถามที่ถูกถามซ้ำ" tabindex="-1"><a class="header-anchor" href="#4-คำถามที่ถูกถามซ้ำ"><span>4. คำถามที่ถูกถามซ้ำ</span></a></h2>
+<h3 id="ทำไมทุกตารางมีทั้ง-id-และ-codenumber" tabindex="-1"><a class="header-anchor" href="#ทำไมทุกตารางมีทั้ง-id-และ-codenumber"><span>ทำไมทุกตารางมีทั้ง <code>id</code> และ <code>code</code>/<code>number</code>?</span></a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>id</code></th>
+<th><code>code</code> / <code>number</code> / <code>studentCode</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ใครใช้</td>
+<td><strong>ระบบ</strong> (FK, JOIN)</td>
+<td><strong>คน</strong> (อาจารย์, เอกสาร, มคอ.)</td>
+</tr>
+<tr>
+<td>ค่า</td>
+<td>cuid สุ่ม <code>cms7afb050001…</code></td>
+<td>มีความหมาย <code>90641001</code>, <code>67030098</code>, <code>CLO 1</code></td>
+</tr>
+<tr>
+<td>เปลี่ยนได้ไหม</td>
+<td><strong>ห้าม</strong> — FK ทั้งระบบชี้อยู่</td>
+<td>เปลี่ยนได้ (มหาวิทยาลัยเปลี่ยนรหัสวิชาจริง)</td>
+</tr>
+<tr>
+<td>unique แบบไหน</td>
+<td>ทั้งระบบ</td>
+<td><strong>ในขอบเขต</strong> (<code>(code, semester, year, section)</code>, <code>(studentCode, courseId)</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>ถ้ามีแต่ <code>code</code> → เมื่อมหาวิทยาลัยเปลี่ยนรหัสวิชา ต้องอัปเดต FK ทุกแถวในทุกตาราง
+ถ้ามีแต่ <code>id</code> → อาจารย์เห็น &quot;วิชา cms7afb050001&quot; บนรายงาน มคอ.5</p>
+<h3 id="ตัด-multi-tenant-ออกแล้ว-อะไรมาแทนการกันข้อมูลรั่ว" tabindex="-1"><a class="header-anchor" href="#ตัด-multi-tenant-ออกแล้ว-อะไรมาแทนการกันข้อมูลรั่ว"><span>ตัด multi-tenant ออกแล้ว อะไรมาแทนการกันข้อมูลรั่ว?</span></a></h3>
+<p><strong><code>courseId</code> เพียงอย่างเดียว</strong> — และนั่นคือประเด็นที่ต้องระวังที่สุดหลังการเปลี่ยน</p>
+<p>เดิมมี 2 ด่านซ้อนกัน: ชั้น Prisma extension กรองทุก query ด้วย <code>institutionId</code> แล้วจึงตรวจสิทธิ์
+รายวิชาอีกชั้น ตอนนี้เหลือด่านเดียวคือ <code>assertCourseAccess()</code> ใน
+<a href="../../../app/server/src/services/authorization.service.ts"><code>authorization.service.ts</code></a>
+ซึ่งเป็น<strong>โค้ดที่คนต้องจำเรียก</strong> ไม่ใช่กลไกที่บังคับอัตโนมัติ</p>
+<p>ผลที่ตามมา: route ใหม่ที่รับ <code>:courseId</code> แล้วลืมเรียก จะไม่มีอะไรมารับไว้เลย —
+จึงต้องมี integration test ต่อทุก route ไม่ใช่พึ่งการรีวิว (บันทึกไว้ใน <a href="../dev/dfd.html">dfd</a> §7 TB-4)</p>
+<h3 id="ทำไมบางกฎอยู่ที่-db-บางกฎอยู่ที่แอป" tabindex="-1"><a class="header-anchor" href="#ทำไมบางกฎอยู่ที่-db-บางกฎอยู่ที่แอป"><span>ทำไมบางกฎอยู่ที่ DB บางกฎอยู่ที่แอป?</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>กฎ</th>
+<th>อยู่ที่</th>
+<th>เพราะ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>score ≥ 0</code>, <code>maxScore &gt; 0</code>, <code>threshold 0-100</code></td>
+<td><strong>CHECK</strong></td>
+<td>เป็นความจริงของคอลัมน์เดียว ตรวจได้ทันที</td>
+</tr>
+<tr>
+<td>Activity/CLO วิชาเดียวกัน, Student/Activity วิชาเดียวกัน</td>
+<td><strong>trigger</strong></td>
+<td>ข้ามตาราง — SQL ห้าม subquery ใน CHECK</td>
+</tr>
+<tr>
+<td>LEAD ไม่เกิน 1 คน</td>
+<td><strong>partial index</strong></td>
+<td>Postgres ทำได้ตรง ๆ</td>
+</tr>
+<tr>
+<td>LEAD <strong>อย่างน้อย</strong> 1 คน</td>
+<td><strong>แอป</strong></td>
+<td>แถว Course ต้องมีก่อน → INSERT แรกเป็นไปไม่ได้</td>
+</tr>
+<tr>
+<td>น้ำหนักรวม = 100</td>
+<td><strong>แอป + view</strong></td>
+<td>จริงเฉพาะตอนกรอกเสร็จ</td>
+</tr>
+<tr>
+<td>เฉพาะวิชาที่ถูกมอบหมาย</td>
+<td><strong>แอป (<code>assertCourseAccess</code>)</strong></td>
+<td>ขึ้นกับผู้ใช้ที่เรียก DB ไม่รู้จักผู้ใช้ — ต้องมี test ต่อ route กำกับ</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>prisma db push</code> <strong>ลบ CHECK/trigger/partial index ทิ้งเงียบ ๆ</strong> → ห้ามใช้ในทุก environment รวมถึงเครื่องตัวเอง ใช้ <code>prisma migrate dev</code> เท่านั้น</p>
+</blockquote>
+<hr>
+<h2 id="5-สิ่งที่ยังค้าง" tabindex="-1"><a class="header-anchor" href="#5-สิ่งที่ยังค้าง"><span>5. สิ่งที่ยังค้าง</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>เรื่อง</th>
+<th>สถานะ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Course.gradingType</code></td>
+<td>✅ <strong>OI-11 ปิดแล้ว</strong> — ย้ายมาอยู่บน <code>Course</code> เป็นคอลัมน์เดียว NOT NULL default LETTER พร้อมกับการตัด <code>CurriculumCourse</code></td>
+</tr>
+<tr>
+<td>แยก <code>Student</code> / <code>Person</code></td>
+<td>เลื่อน v2 — seam พร้อมแล้ว (ดู <code>Student</code> ข้างบน)</td>
+</tr>
+<tr>
+<td><code>Faculty</code> / <code>Department</code> / <code>Program</code> / PLO</td>
+<td>เลื่อน — <strong>ไม่ใช่ตารางเพิ่มล้วนอีกแล้ว</strong> เพราะไม่มี <code>Institution</code> ให้ห้อย ต้องสร้างตารางแม่แล้ว backfill คีย์ลงทุกแถว <code>Course</code> (โครงอ้างอิงอยู่ใน <a href="./schema.sql"><code>schema.sql</code></a>)</td>
+</tr>
+<tr>
+<td><code>ObjectiveAssessment</code> ไม่มีหน้าจอ</td>
+<td><strong>OI-08</strong></td>
+</tr>
+</tbody>
+</table>
 
 </article>
 </main>
 </div>
-<button class="theme-toggle" title="Toggle theme">🌓</button>
+<button class="theme-toggle" title="Toggle theme">◐</button>
 <script src="../assets/mermaid.min.js"></script>
 <script>
 (function () {
@@ -156,6 +486,22 @@ model ScoreUploadLog {
     location.reload();
   });
 })();
+function filterNav(q) {
+  q = q.trim().toLowerCase();
+  var anyVisible = false;
+  document.querySelectorAll('.nav-group').forEach(function (group) {
+    var groupHasMatch = false;
+    group.querySelectorAll('li').forEach(function (li) {
+      var text = li.textContent.toLowerCase();
+      var match = !q || text.indexOf(q) !== -1;
+      li.style.display = match ? '' : 'none';
+      if (match) groupHasMatch = true;
+    });
+    group.style.display = groupHasMatch ? '' : 'none';
+    if (groupHasMatch) anyVisible = true;
+  });
+  document.getElementById('nav-empty').style.display = anyVisible ? 'none' : 'block';
+}
 </script>
 </body>
 </html>

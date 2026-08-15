@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Feature List &amp; Page Count — CMAS</title>
+<title>Feature List &amp; Page Count — CMAS · CMAS Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
 <link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
@@ -12,16 +15,23 @@
 <div class="layout">
 <aside class="sidebar">
 <div class="sidebar-inner">
-<a class="brand" href="../index.html">📄 CMAS Docs</a>
-<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a class="active" href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+<a class="brand" href="../index.html">CMAS Docs<span class="brand-sub">v2</span></a>
+<p class="sidebar-tagline">เอกสารโครงงาน CLO System — single source of truth</p>
+<input class="nav-search" type="search" placeholder="ค้นหาเอกสาร…" oninput="filterNav(this.value)">
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">เอกสารพัฒนา (Dev)</div><ul><li><a href="../dev/dev.html"><span class="nav-dot ref"></span>Technical Standard &amp; Workflow</a></li><li><a href="../dev/srs.html"><span class="nav-dot ref"></span>Software Requirements Specification (SRS)</a></li><li><a href="../dev/objectives-hypotheses-evaluation.html"><span class="nav-dot draft"></span>วัตถุประสงค์ · สมมติฐาน · เกณฑ์การประเมิน</a></li><li><a href="../dev/api-design.html"><span class="nav-dot draft"></span>API Design &amp; Endpoint Specification</a></li><li><a href="../dev/dfd.html"><span class="nav-dot ref"></span>แผนภาพกระแสข้อมูล (DFD — Data Flow Diagram) ของระบบ CMAS ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO — Course Learning Outcome)</a></li><li><a class="active" href="../dev/features-pages.html"><span class="nav-dot "></span>Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/user-flow.html"><span class="nav-dot draft"></span>User Flow &amp; UX Design — CMAS</a></li><li><a href="../dev/design-system.html"><span class="nav-dot active-status"></span>Verdure Design System</a></li><li><a href="../dev/material.html"><span class="nav-dot active-status"></span>Material Tonal Logic — Design System</a></li><li><a href="../dev/theory.html"><span class="nav-dot draft"></span>บทที่ 2 — หลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง</a></li><li><a href="../dev/project-plan.html"><span class="nav-dot draft"></span>แผนการดำเนินงานโครงงาน (WBS + Gantt) — CMAS</a></li><li><a href="../dev/thesis-toc.html"><span class="nav-dot draft"></span>สารบัญเล่มโครงงาน (Table of Contents) — CMAS</a></li><li><a href="../dev/progress-report-02.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li><li><a href="../dev/progress-report-02-qa.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li></ul></div><div class="nav-group"><div class="nav-group-title">แผนภาพ (Diagrams)</div><ul><li><a href="../graph/usecase.html"><span class="nav-dot "></span>Use Case Diagram</a></li><li><a href="../graph/tech-stack.html"><span class="nav-dot "></span>Tech Stack</a></li><li><a href="../graph/fishbone-4m.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">ฐานข้อมูล (SQL)</div><ul><li><a href="../sql/schema.html"><span class="nav-dot "></span>โครงสร้างฐานข้อมูล CMAS — 11 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง</a></li><li><a href="../sql/mysql-er-diagram.html"><span class="nav-dot "></span>CMAS — MySQL ER Diagram</a></li><li><a href="../sql/mysql/README.html"><span class="nav-dot "></span>CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/migrations/README.html"><span class="nav-dot "></span>docs/markdown/sql/migrations — historical only</a></li></ul></div><div class="nav-group"><div class="nav-group-title">กติกาทีม (Rules)</div><ul><li><a href="../rule/code-rule.html"><span class="nav-dot "></span>Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html"><span class="nav-dot "></span>Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html"><span class="nav-dot "></span>Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div></nav>
+<p class="nav-empty" id="nav-empty">ไม่พบเอกสารที่ตรงกับคำค้นหา</p>
 </div>
 </aside>
 <main class="content">
 <article class="markdown-body">
+<div class="doc-meta"><div class="desc">อ้างอิงจาก database/schema.prisma ปัจจุบัน — single-tenant, 11 models: User, Course, CourseInstructor, CLO, BehavioralObjective, Activity, AssessmentCriteria, ObjectiveAssessmen…</div></div>
 <h1 id="feature-list--page-count--cmas" tabindex="-1"><a class="header-anchor" href="#feature-list--page-count--cmas"><span>Feature List &amp; Page Count — CMAS</span></a></h1>
 <p>See also: <a href="./dev.html">dev</a> · <a href="../rule/code-rule.html">code-rule</a> · <span class="wikilink-missing" title="unresolved: database-schema">database-schema</span> · <a href="../sql/schema.html">schema</a></p>
 <blockquote>
-<p>อ้างอิงจาก <code>database/schema.prisma</code> ปัจจุบัน (11 models: User, Curriculum, CurriculumCourse, Course, CLO, BehavioralObjective, Activity, AssessmentCriteria, Student, Score, ScoreUploadLog) และโครงสร้าง route ที่มีอยู่ใน <code>app/client/src/pages/</code></p>
+<p>อ้างอิงจาก <code>database/schema.prisma</code> ปัจจุบัน — <strong>single-tenant, 11 models:</strong> User, Course,
+CourseInstructor, CLO, BehavioralObjective, Activity, AssessmentCriteria, ObjectiveAssessment,
+Student, Score, ScoreUploadLog — และโครงสร้าง route ที่มีอยู่ใน <code>app/client/src/pages/</code></p>
+<p><strong>อัปเดต 2026-08-04:</strong> ตัด Curriculum / Institution ออกตามงาน 2.7 → เหลือ <strong>13 feature / 13 หน้า</strong></p>
 </blockquote>
 <hr>
 <h2 id="1-feature-list" tabindex="-1"><a class="header-anchor" href="#1-feature-list"><span>1. Feature List</span></a></h2>
@@ -51,24 +61,24 @@
 <td>มีหน้า <code>Users.tsx</code> แล้ว</td>
 </tr>
 <tr>
-<td>3</td>
-<td><strong>Curriculum Management</strong> — CRUD หลักสูตร, clone หลักสูตรเดิม (<code>clonedFrom</code>)</td>
-<td>ADMIN</td>
-<td><code>Curriculum</code></td>
-<td>ยังไม่มีหน้า</td>
+<td><s>3</s></td>
+<td><s>Curriculum Management</s></td>
+<td>❌ <strong>ตัดออก 2026-08-04</strong></td>
+<td>—</td>
+<td>—</td>
 </tr>
 <tr>
-<td>4</td>
-<td><strong>Curriculum Course</strong> — จัดการรายวิชาในหลักสูตร (รหัสวิชา / ชื่อ / หน่วยกิต)</td>
-<td>ADMIN</td>
-<td><code>CurriculumCourse</code></td>
-<td>ยังไม่มีหน้า</td>
+<td><s>4</s></td>
+<td><s>Curriculum Course</s></td>
+<td>❌ <strong>ตัดออก 2026-08-04</strong> — หน่วยกิต/ชั่วโมง/gradingType ย้ายไปอยู่บน <code>Course</code> (FR-27, FR-28)</td>
+<td>—</td>
+<td>—</td>
 </tr>
 <tr>
 <td>5</td>
-<td><strong>Course Management</strong> — CRUD รายวิชาที่เปิดสอนจริงต่อเทอม, มอบหมายอาจารย์</td>
+<td><strong>Course Management</strong> — CRUD รายวิชาที่เปิดสอนจริงต่อเทอม, หน่วยกิต <code>3 (2-2-5)</code>, gradingType, มอบหมายอาจารย์</td>
 <td>ADMIN / INSTRUCTOR</td>
-<td><code>Course</code></td>
+<td><code>Course</code>, <code>CourseInstructor</code></td>
 <td>มีหน้า <code>CourseList.tsx</code> แล้ว</td>
 </tr>
 <tr>
@@ -143,7 +153,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>สรุป:</strong> 15 feature หลัก — เสร็จแล้ว 3 (Auth, User Mgmt, Course List) เหลือ 12 ที่ต้องพัฒนา</p>
+<p><strong>สรุป:</strong> 13 feature หลัก — เสร็จแล้ว 3 (Auth, User Mgmt, Course List) เหลือ 10 ที่ต้องพัฒนา</p>
 <hr>
 <h2 id="2-page-count" tabindex="-1"><a class="header-anchor" href="#2-page-count"><span>2. Page Count</span></a></h2>
 <p>แผนที่หน้า (routes) ที่ต้องมีตามโครงสร้าง <code>app/client/src/pages/</code> (อิงรูปแบบจาก <a href="./dev.html">dev</a> §3.2):</p>
@@ -180,18 +190,18 @@
 <td>✅ มีแล้ว</td>
 </tr>
 <tr>
-<td>4</td>
-<td><code>/curricula</code></td>
-<td>Curriculum List</td>
-<td>3</td>
-<td>⬜ ต้องทำ</td>
+<td><s>4</s></td>
+<td><s><code>/curricula</code></s></td>
+<td>❌ ตัดออก 2026-08-04</td>
+<td>—</td>
+<td>—</td>
 </tr>
 <tr>
-<td>5</td>
-<td><code>/curricula/:curriculumId</code></td>
-<td>Curriculum Detail (รายวิชาในหลักสูตร)</td>
-<td>3, 4</td>
-<td>⬜ ต้องทำ</td>
+<td><s>5</s></td>
+<td><s><code>/curricula/:curriculumId</code></s></td>
+<td>❌ ตัดออก 2026-08-04</td>
+<td>—</td>
+<td>—</td>
 </tr>
 <tr>
 <td>6</td>
@@ -265,7 +275,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>รวมทั้งหมด: 15 หน้า</strong> (เสร็จแล้ว 3 หน้า / เหลือ 12 หน้า)</p>
+<p><strong>รวมทั้งหมด: 13 หน้า</strong> (เสร็จแล้ว 3 หน้า / เหลือ 10 หน้า)</p>
 <blockquote>
 <p>หมายเหตุ: บาง route (เช่น <code>/courses/:courseId/scores/uploads</code>) อาจรวมเป็น tab เดียวกับหน้าอื่นแทนการแยกหน้าจริง หากทีมตัดสินใจตอน implement — ให้ปรับตารางนี้และแจ้งในรายงานประจำสัปดาห์ (ดู <a href="../rule/code-rule.html">code-rule</a> §7)</p>
 </blockquote>
@@ -283,8 +293,8 @@
 <tbody>
 <tr>
 <td>Dev A</td>
-<td>Curriculum + Course module</td>
-<td>3, 4, 5</td>
+<td>Course module (รวมหน่วยกิต/gradingType/มอบหมายอาจารย์) + Auth/User</td>
+<td>1, 2, 5</td>
 </tr>
 <tr>
 <td>Dev B</td>
@@ -307,7 +317,7 @@
 </article>
 </main>
 </div>
-<button class="theme-toggle" title="Toggle theme">🌓</button>
+<button class="theme-toggle" title="Toggle theme">◐</button>
 <script src="../assets/mermaid.min.js"></script>
 <script>
 (function () {
@@ -330,6 +340,22 @@
     location.reload();
   });
 })();
+function filterNav(q) {
+  q = q.trim().toLowerCase();
+  var anyVisible = false;
+  document.querySelectorAll('.nav-group').forEach(function (group) {
+    var groupHasMatch = false;
+    group.querySelectorAll('li').forEach(function (li) {
+      var text = li.textContent.toLowerCase();
+      var match = !q || text.indexOf(q) !== -1;
+      li.style.display = match ? '' : 'none';
+      if (match) groupHasMatch = true;
+    });
+    group.style.display = groupHasMatch ? '' : 'none';
+    if (groupHasMatch) anyVisible = true;
+  });
+  document.getElementById('nav-empty').style.display = anyVisible ? 'none' : 'block';
+}
 </script>
 </body>
 </html>

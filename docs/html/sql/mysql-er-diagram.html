@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CMAS — MySQL ER Diagram</title>
+<title>CMAS — MySQL ER Diagram · CMAS Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="../assets/hljs-light.css" media="(prefers-color-scheme: light)">
 <link rel="stylesheet" href="../assets/hljs-dark.css" media="(prefers-color-scheme: dark)">
@@ -12,20 +15,30 @@
 <div class="layout">
 <aside class="sidebar">
 <div class="sidebar-inner">
-<a class="brand" href="../index.html">📄 CMAS Docs</a>
-<nav class="nav"><div class="nav-group"><div class="nav-group-title">dev</div><ul><li><a href="../dev/features-pages.html">Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/material.html">Material Tonal Logic — Design System</a></li><li><a href="../dev/dev.html">Technical Standard &amp; Workflow</a></li><li><a href="../dev/design-system.html">Verdure Design System</a></li></ul></div><div class="nav-group"><div class="nav-group-title">graph</div><ul><li><a href="../graph/tech-stack.html">Tech Stack</a></li><li><a href="../graph/usecase.html">Use Case Diagram</a></li><li><a href="../graph/fishbone-4m.html">แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html">แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">rule</div><ul><li><a href="../rule/code-rule.html">Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html">Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html">Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div><div class="nav-group"><div class="nav-group-title">sql</div><ul><li><a href="../sql/mysql/README.html">CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a class="active" href="../sql/mysql-er-diagram.html">CMAS — MySQL ER Diagram</a></li><li><a href="../sql/schema.html">schema</a></li></ul></div></nav>
+<a class="brand" href="../index.html">CMAS Docs<span class="brand-sub">v2</span></a>
+<p class="sidebar-tagline">เอกสารโครงงาน CLO System — single source of truth</p>
+<input class="nav-search" type="search" placeholder="ค้นหาเอกสาร…" oninput="filterNav(this.value)">
+<nav class="nav"><div class="nav-group"><div class="nav-group-title">เอกสารพัฒนา (Dev)</div><ul><li><a href="../dev/dev.html"><span class="nav-dot ref"></span>Technical Standard &amp; Workflow</a></li><li><a href="../dev/srs.html"><span class="nav-dot ref"></span>Software Requirements Specification (SRS)</a></li><li><a href="../dev/objectives-hypotheses-evaluation.html"><span class="nav-dot draft"></span>วัตถุประสงค์ · สมมติฐาน · เกณฑ์การประเมิน</a></li><li><a href="../dev/api-design.html"><span class="nav-dot draft"></span>API Design &amp; Endpoint Specification</a></li><li><a href="../dev/dfd.html"><span class="nav-dot ref"></span>แผนภาพกระแสข้อมูล (DFD — Data Flow Diagram) ของระบบ CMAS ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO — Course Learning Outcome)</a></li><li><a href="../dev/features-pages.html"><span class="nav-dot "></span>Feature List &amp; Page Count — CMAS</a></li><li><a href="../dev/user-flow.html"><span class="nav-dot draft"></span>User Flow &amp; UX Design — CMAS</a></li><li><a href="../dev/design-system.html"><span class="nav-dot active-status"></span>Verdure Design System</a></li><li><a href="../dev/material.html"><span class="nav-dot active-status"></span>Material Tonal Logic — Design System</a></li><li><a href="../dev/theory.html"><span class="nav-dot draft"></span>บทที่ 2 — หลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง</a></li><li><a href="../dev/project-plan.html"><span class="nav-dot draft"></span>แผนการดำเนินงานโครงงาน (WBS + Gantt) — CMAS</a></li><li><a href="../dev/thesis-toc.html"><span class="nav-dot draft"></span>สารบัญเล่มโครงงาน (Table of Contents) — CMAS</a></li><li><a href="../dev/progress-report-02.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li><li><a href="../dev/progress-report-02-qa.html"><span class="nav-dot report"></span>รายงานความก้าวหน้าโครงงาน ครั้งที่ 2</a></li></ul></div><div class="nav-group"><div class="nav-group-title">แผนภาพ (Diagrams)</div><ul><li><a href="../graph/usecase.html"><span class="nav-dot "></span>Use Case Diagram</a></li><li><a href="../graph/tech-stack.html"><span class="nav-dot "></span>Tech Stack</a></li><li><a href="../graph/fishbone-4m.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone / 4M) — CMAS</a></li><li><a href="../graph/fishbone1.html"><span class="nav-dot "></span>แผนภาพก้างปลา (Fishbone) + วิเคราะห์ 5 Why — CMAS</a></li></ul></div><div class="nav-group"><div class="nav-group-title">ฐานข้อมูล (SQL)</div><ul><li><a href="../sql/schema.html"><span class="nav-dot "></span>โครงสร้างฐานข้อมูล CMAS — 11 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง</a></li><li><a class="active" href="../sql/mysql-er-diagram.html"><span class="nav-dot "></span>CMAS — MySQL ER Diagram</a></li><li><a href="../sql/mysql/README.html"><span class="nav-dot "></span>CMAS — MySQL DDL for MySQL Workbench ER Diagrams</a></li><li><a href="../sql/migrations/README.html"><span class="nav-dot "></span>docs/markdown/sql/migrations — historical only</a></li></ul></div><div class="nav-group"><div class="nav-group-title">กติกาทีม (Rules)</div><ul><li><a href="../rule/code-rule.html"><span class="nav-dot "></span>Code Rules — CMAS (ทีม 3 คน)</a></li><li><a href="../rule/git-rule.html"><span class="nav-dot "></span>Git Rules — กติกาการใช้ Git สำหรับทีม (3 คน)</a></li><li><a href="../rule/security-rule.html"><span class="nav-dot "></span>Security Rules — CMAS (ทีม 3 คน)</a></li></ul></div></nav>
+<p class="nav-empty" id="nav-empty">ไม่พบเอกสารที่ตรงกับคำค้นหา</p>
 </div>
 </aside>
 <main class="content">
 <article class="markdown-body">
+<div class="doc-meta"><div class="desc">Companion doc for the MySQL-dialect DDL used to generate Entity–Relationship</div></div>
 <h1 id="cmas--mysql-er-diagram" tabindex="-1"><a class="header-anchor" href="#cmas--mysql-er-diagram"><span>CMAS — MySQL ER Diagram</span></a></h1>
 <p>Companion doc for the MySQL-dialect DDL used to generate <strong>Entity–Relationship
 (EER) diagrams in MySQL Workbench</strong>. The scripts live in
 <a href="./mysql/"><code>mysql/</code></a>; this page explains what they contain and how the
 entities relate.</p>
-<p>See also: <a href="./database-schema.html"><code>database-schema.md</code></a> (PostgreSQL enterprise
-schema narrative) · <a href="./schema.sql"><code>schema.sql</code></a> (PostgreSQL source) ·
+<p>See also: <a href="./schema.html"><code>schema.md</code></a> (app schema narrative, Thai) ·
+<a href="./schema.sql"><code>schema.sql</code></a> (PostgreSQL full institutional reference model) ·
 <a href="../../../database/schema.prisma"><code>../../../database/schema.prisma</code></a> (app source of truth).</p>
+<blockquote>
+<p><strong>Updated 2026-08-04 — the app model is now SINGLE-TENANT.</strong> <code>Institution</code>,
+<code>Membership</code>, <code>Curriculum</code> and <code>CurriculumCourse</code> were deleted; <code>Course</code> is the
+root and carries the five columns <code>CurriculumCourse</code> used to hold. The v3 files
+below already reflect this.</p>
+</blockquote>
 <h2 id="files" tabindex="-1"><a class="header-anchor" href="#files"><span>Files</span></a></h2>
 <table>
 <thead>
@@ -39,15 +52,21 @@ schema narrative) · <a href="./schema.sql"><code>schema.sql</code></a> (Postgre
 <tbody>
 <tr>
 <td><a href="./mysql/cmas_enterprise_mysql.sql"><code>mysql/cmas_enterprise_mysql.sql</code></a></td>
-<td>Full institutional design</td>
+<td>Full institutional design — <strong>reference only</strong></td>
 <td>36 tables, 4 views, 59 FKs</td>
 <td><code>schema.sql</code> (PostgreSQL 14+)</td>
 </tr>
 <tr>
-<td><a href="./mysql/cmas_app_mysql.sql"><code>mysql/cmas_app_mysql.sql</code></a></td>
-<td>Live application schema</td>
-<td>11 tables, 10 FKs</td>
+<td><a href="./mysql/cmas_app_mysql_v3.sql"><code>mysql/cmas_app_mysql_v3.sql</code></a></td>
+<td>Live app schema — diagramming mirror</td>
+<td>11 tables, 14 FKs</td>
 <td><code>database/schema.prisma</code> (Prisma)</td>
+</tr>
+<tr>
+<td><a href="./mysql/cmas_app_production_v3.sql"><code>mysql/cmas_app_production_v3.sql</code></a></td>
+<td>Live app schema — executable, hardened</td>
+<td>11 tables, CHECKs, triggers, views</td>
+<td><code>database/migrations/</code></td>
 </tr>
 <tr>
 <td><a href="./mysql/README.html"><code>mysql/README.md</code></a></td>
@@ -174,18 +193,13 @@ instrument, CLO). <code>percent_score</code> is a <strong>stored generated colum
 <tbody>
 <tr>
 <td><strong>Identity</strong></td>
-<td><code>User</code> (role ADMIN/INSTRUCTOR)</td>
-<td>1─N <code>Course</code> (as instructor)</td>
-</tr>
-<tr>
-<td><strong>Curriculum template</strong></td>
-<td><code>Curriculum</code> 1─N <code>CurriculumCourse</code></td>
-<td>structure + course list only, cloneable curricula (CLOs live on the real course)</td>
+<td><code>User</code> (<code>role</code> = ADMIN/INSTRUCTOR, a plain column)</td>
+<td>N─N <code>Course</code> via <code>CourseInstructor</code> (co-teaching)</td>
 </tr>
 <tr>
 <td><strong>Live course</strong></td>
 <td><code>Course</code> 1─N <code>CLO</code> 1─N <code>BehavioralObjective</code></td>
-<td>per-offering outcomes</td>
+<td><code>Course</code> is the ROOT — nothing sits above it. It carries <code>credits</code>, the three hour columns and <code>gradingType</code>, which moved up from the deleted <code>CurriculumCourse</code></td>
 </tr>
 <tr>
 <td><strong>Assessment</strong></td>
@@ -200,17 +214,27 @@ instrument, CLO). <code>percent_score</code> is a <strong>stored generated colum
 <tr>
 <td><strong>Audit</strong></td>
 <td><code>ScoreUploadLog</code></td>
-<td>standalone — no FKs (matches Prisma model)</td>
+<td>FKs to <code>Course</code> + <code>User</code> in the production DDL</td>
 </tr>
 </tbody>
 </table>
 <h3 id="key-cardinalities-app" tabindex="-1"><a class="header-anchor" href="#key-cardinalities-app"><span>Key cardinalities (app)</span></a></h3>
-<pre class="hljs"><code>User 1─N Course 1─N CLO 1─N BehavioralObjective
+<pre class="hljs"><code>User N─N Course     (via CourseInstructor, role = LEAD | CO | ASSISTANT)
+Course 1─N CLO 1─N BehavioralObjective
 Course 1─N Activity ;  Activity N─N CLO   (via AssessmentCriteria)
 Course 1─N Student  ;  Student  N─N Activity (via Score, one per student+activity)
-Curriculum 1─N CurriculumCourse
-ScoreUploadLog — no relations
+AssessmentCriteria N─N BehavioralObjective (via ObjectiveAssessment, traceability only)
+Course 1─N ScoreUploadLog N─1 User
 </code></pre>
+<p>No self-referencing relationship survives in v3: <code>Curriculum.clonedFrom</code> was the
+only one, and it went with the table.</p>
+<blockquote>
+<p><strong>Two files, two purposes.</strong> <a href="./mysql/cmas_app_mysql_v3.sql"><code>mysql/cmas_app_mysql_v3.sql</code></a>
+is the diagramming mirror — tables and FKs only, so Workbench imports cleanly.
+<a href="./mysql/cmas_app_production_v3.sql"><code>mysql/cmas_app_production_v3.sql</code></a> is the
+executable one: cascade rules, CHECK constraints, the LEAD generated column,
+triggers and reporting views. Both are 11 tables and both are single-tenant.</p>
+</blockquote>
 <hr>
 <h2 id="translation--fidelity-notes" tabindex="-1"><a class="header-anchor" href="#translation--fidelity-notes"><span>Translation &amp; fidelity notes</span></a></h2>
 <p>Postgres/Prisma → MySQL 8 highlights (full table in
@@ -226,8 +250,11 @@ is what makes Workbench draw the relationship lines.</li>
 <li><code>plo_attainment_results.cohort_label</code> became <code>NOT NULL DEFAULT ''</code> so its
 unique key keeps the one-row-per-cohort rule (MySQL treats multiple NULLs as
 distinct).</li>
-<li><code>ScoreUploadLog</code> has no FKs — <code>courseId</code>/<code>uploadedBy</code> are plain strings in the
-Prisma model.</li>
+<li><code>ScoreUploadLog</code> DOES have FKs in v3 (<code>courseId</code> → <code>Course</code>, <code>uploadedBy</code> →
+<code>User</code> with RESTRICT): an audit trail that loses its actor is not an audit trail.</li>
+<li>The <code>AcademicYearEra</code> ENUM ('BE'/'CE') no longer appears anywhere — it was a
+column on the deleted <code>Institution</code>. <code>Course.year</code> is written in whatever era
+the faculty uses (2568), now an app-level constant rather than per-row data.</li>
 </ul>
 <blockquote>
 <p><strong>Not yet loaded against a live MySQL server</strong> in this environment (no local
@@ -239,7 +266,7 @@ constraint names globally unique, reserved words back-ticked. Run one
 </article>
 </main>
 </div>
-<button class="theme-toggle" title="Toggle theme">🌓</button>
+<button class="theme-toggle" title="Toggle theme">◐</button>
 <script src="../assets/mermaid.min.js"></script>
 <script>
 (function () {
@@ -262,6 +289,22 @@ constraint names globally unique, reserved words back-ticked. Run one
     location.reload();
   });
 })();
+function filterNav(q) {
+  q = q.trim().toLowerCase();
+  var anyVisible = false;
+  document.querySelectorAll('.nav-group').forEach(function (group) {
+    var groupHasMatch = false;
+    group.querySelectorAll('li').forEach(function (li) {
+      var text = li.textContent.toLowerCase();
+      var match = !q || text.indexOf(q) !== -1;
+      li.style.display = match ? '' : 'none';
+      if (match) groupHasMatch = true;
+    });
+    group.style.display = groupHasMatch ? '' : 'none';
+    if (groupHasMatch) anyVisible = true;
+  });
+  document.getElementById('nav-empty').style.display = anyVisible ? 'none' : 'block';
+}
 </script>
 </body>
 </html>

@@ -21,6 +21,8 @@
     "test": "npm run test -w app/client && npm run test -w app/server",
     "test:watch": "npm run test:watch -w app/server",
     "test:coverage": "npm run test:coverage -w app/client && npm run test:coverage -w app/server",
+    "plan:csv": "node scripts/plan-csv.mjs",
+    "thesis:ch2": "node scripts/thesis-ch2-docx.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build",
@@ -40,6 +42,7 @@
   },
   "devDependencies": {
     "concurrently": "^10.0.3",
+    "docx": "^9.7.1",
     "prettier": "^3.4.2",
     "prisma": "^6.19.3",
     "rimraf": "^6.0.1",

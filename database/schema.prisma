@@ -1,15 +1,35 @@
 // ============================================================================
-// CMAS / CLO SYSTEM — Prisma schema
+// CMAS / CLO SYSTEM — Prisma schema (SINGLE-TENANT, v4)
 //
-// Kept in sync with docs/markdown/sql/mysql/cmas_app_production.sql.
+// SCOPE DECISION 2026-08-04 (task 2.7, closes E-06): the system serves ONE
+// faculty. Institution, Membership, Curriculum and CurriculumCourse are gone,
+// and with them the whole tenant-guard layer. What that decision bought:
+//   - `Role` moves onto User, because a role is no longer held per institution
+//   - `Course` absorbs the credit/hour/gradingType columns CurriculumCourse
+//     used to carry, since nothing above Course exists any more
+//   - `Student.institutionId` disappears; courseId alone scopes a student
+//   - course uniqueness is (code, semester, year, section) — no institution
+//     prefix, because course codes are unique inside one faculty
+// Access control is now exactly two questions: which role (ADMIN/INSTRUCTOR)
+// and which courses am I assigned to (CourseInstructor). NFR-07 is unchanged:
+// an INSTRUCTOR touching another course's id still gets 404, not 403.
 //
-// Prisma CANNOT express three things that schema relies on, so they live in a
-// manual migration and must never be dropped by `prisma migrate`:
-//   1. CHECK constraints  (score >= 0, threshold 0-100, maxScore > 0, ...)
-//   2. Triggers           (score <= maxScore; Activity/CLO same-course; ...)
+// Prisma CANNOT express three things this schema relies on, so they live in
+// migration 0002_constraints_and_triggers and must never be dropped by
+// `prisma migrate` — and `prisma db push` deletes them silently, so db push is
+// banned in EVERY environment including local:
+//   1. CHECK constraints  (score >= 0, threshold 0-100, maxScore > 0,
+//                          passCriteria/classTarget 0-100, ...)
+//   2. Triggers           (score <= maxScore; Activity/CLO same-course;
+//                          Student/Activity same-course; objective/criterion
+//                          same-CLO)
 //   3. "at most one LEAD per course" — on Postgres this is a partial index:
 //        CREATE UNIQUE INDEX uq_courseinstructor_lead
 //            ON "CourseInstructor" ("courseId") WHERE role = 'LEAD';
+//
+// ACADEMIC YEAR: `year` is stored exactly as the faculty enters it (2568, not
+// 2025). One faculty means one convention, so there is no era column to
+// reconcile — write พ.ศ. everywhere and never mix.
 // ============================================================================
 
 generator client {
@@ -22,6 +42,8 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// System-wide role. Single-tenant, so it lives on User: one person has exactly
+// one standing in the faculty.
 enum Role {
   ADMIN
   INSTRUCTOR
@@ -36,106 +58,85 @@ enum CourseRole {
 }
 
 // Seven courses (90641004-90641010) are graded ผ่าน (S) / ไม่ผ่าน (U)
-// instead of on a percentage scale.
+// instead of on a percentage scale. CR-06 reads this.
 enum GradingType {
   LETTER
   PASS_FAIL
 }
 
+// ---------------------------------------------------------------------------
+// PEOPLE
+// ---------------------------------------------------------------------------
+
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String  @id @default(cuid())
+  email        String  @unique
   name         String
-  passwordHash String
-  role         Role     @default(INSTRUCTOR)
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
+  passwordHash String // argon2 only (FR-02)
+  role         Role    @default(INSTRUCTOR)
+  isActive     Boolean @default(true) // account kill switch (FR-03)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Never hard-delete a User who still teaches or has uploaded scores —
-  // set isActive = false instead. Both relations are Restrict on purpose.
+  // set isActive = false instead (FR-06). Both relations are Restrict.
   courseAssignments CourseInstructor[]
   uploadLogs        ScoreUploadLog[]
+
+  @@index([role, isActive])
 }
 
 // ---------------------------------------------------------------------------
-// THE PLAN — what a programme requires. Written a year before anything runs.
+// THE COURSE — the root of everything. Nothing sits above it.
 // ---------------------------------------------------------------------------
 
-model Curriculum {
-  id          String   @id @default(cuid())
-  name        String
-  year        Int
-  institution String
-  createdAt   DateTime @default(now())
+model Course {
+  id     String  @id @default(cuid())
+  code   String
+  name   String // ชื่อไทย
+  nameEn String?
 
-  // Self-relation: which curriculum this one was cloned from.
-  // SetNull, not Cascade — deleting the ancestor must not delete its clones,
-  // it only breaks the lineage pointer.
-  clonedFrom    String?
-  clonedFromRef Curriculum?  @relation("CurriculumClone", fields: [clonedFrom], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  clones        Curriculum[] @relation("CurriculumClone")
+  semester Int // 1..3 — bounded at the Zod layer, coarse CHECK 1-6 at the DB
+  year     Int // พ.ศ. as entered by the faculty
 
-  courses CurriculumCourse[]
+  // Section discriminator. Teaching is M:N, so "same course, different teacher"
+  // can no longer mean "different section" — section needs its own column or
+  // the unique key allows only one section per term.
+  section String @default("01")
 
-  @@unique([institution, name, year])
-}
-
-model CurriculumCourse {
-  id           String     @id @default(cuid())
-  curriculumId String
-  curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
-
-  // Optional link to the real offering. NULL until the course is actually
-  // opened, so a curriculum can still be drafted and cloned ahead of time.
-  courseId String?
-  course   Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
-
-  // Denormalised ON PURPOSE. A published curriculum is an approved document:
-  // it must not silently change when someone edits Course years later.
-  courseCode   String
-  courseName   String
-  courseNameEn String?
-
-  // The curriculum prints credits as "3 (2-2-5)" —
-  // credits (lecture-practice-selfStudy). An Int kept only the first number.
-  // Decimal, and the floor is 0: 90641008 is a real 0 (0-0-45) prerequisite.
-  credits        Decimal @db.Decimal(3, 1)
+  // Absorbed from CurriculumCourse when Curriculum was cut. The faculty prints
+  // credits as "3 (2-2-5)" — credits (lecture-practice-selfStudy). Decimal, and
+  // the floor is 0: 90641008 is a real 0 (0-0-45) prerequisite (FR-14).
+  credits        Decimal @default(3) @db.Decimal(3, 1)
   lectureHours   Decimal @default(0) @db.Decimal(4, 1)
   practiceHours  Decimal @default(0) @db.Decimal(4, 1)
   selfStudyHours Decimal @default(0) @db.Decimal(4, 1)
 
-  // Courses 90641004-90641010 are graded ผ่าน (S) / ไม่ผ่าน (U).
+  // Courses 90641004-90641010 are graded ผ่าน (S) / ไม่ผ่าน (U) — CR-06 forbids
+  // rendering a letter grade for these.
   gradingType GradingType @default(LETTER)
 
-  @@unique([curriculumId, courseCode])
-}
+  // OI-03. Course-level, not global: changing a faculty-wide default must not
+  // retroactively flip last term's "CLO บรรลุ" and "ผ่านรายวิชา" verdicts.
+  // CR-05 reads passCriteria, CR-04 reads classTarget.
+  passCriteria Float @default(60) // เกณฑ์คะแนนรวมที่ถือว่านักศึกษาผ่านวิชา (%)
+  classTarget  Float @default(70) // สัดส่วนนักศึกษาที่ต้องผ่าน CLO จึงถือว่าบรรลุ (%)
 
-// ---------------------------------------------------------------------------
-// THE REALITY — what is actually taught this term.
-// ---------------------------------------------------------------------------
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-model Course {
-  id       String @id @default(cuid())
-  code     String
-  name     String
-  semester Int
-  year     Int
+  instructors CourseInstructor[]
+  clos        CLO[]
+  activities  Activity[]
+  students    Student[]
+  uploadLogs  ScoreUploadLog[]
 
-  // Section discriminator. This used to be instructorId's hidden second job:
-  // it sat in the unique key, so "same course, different teacher" meant
-  // "different section". Teaching is M:N now, so that meaning needed a column
-  // of its own — without it the key would allow only one section per term.
-  section String @default("01")
-
-  instructors       CourseInstructor[]
-  clos              CLO[]
-  students          Student[]
-  activities        Activity[]
-  curriculumCourses CurriculumCourse[]
-  uploadLogs        ScoreUploadLog[]
-
+  // FR-21. One faculty, so the code alone is meaningful — the error message is
+  // "รหัสวิชานี้มีอยู่แล้ว" with no institution qualifier.
   @@unique([code, semester, year, section])
-  @@index([year, semester])
+  @@index([year, semester]) // FR-24 filter
+  @@index([code]) // FR-24 search
 }
 
 // Many instructors teach many courses. The junction carries `role`, which is
@@ -151,9 +152,9 @@ model CourseInstructor {
 
   // "At least one LEAD per course" is NOT enforced here: the course row must
   // exist before anyone can be assigned, so the first insert would be
-  // impossible. Enforce in the application layer.
+  // impossible. Enforce in the application layer (FR-23).
   @@unique([courseId, userId])
-  @@index([userId])
+  @@index([userId]) // "which courses may this instructor see" — every request
 }
 
 // ---------------------------------------------------------------------------
@@ -195,9 +196,9 @@ model Activity {
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   name     String
   method   String
-  maxScore Float // must be > 0 — every attainment view divides by it
+  maxScore Float // must be > 0 — every attainment formula divides by it
   order    Int
-  weight   Float
+  weight   Float // % of the course total; all activities in a course sum to 100
 
   criteria AssessmentCriteria[]
   scores   Score[]
@@ -206,25 +207,26 @@ model Activity {
 }
 
 // Associative entity: Activity <-> CLO is M:N, and `weight` belongs to the
-// pairing rather than to either side.
+// pairing rather than to either side (CR-01).
 model AssessmentCriteria {
   id         String   @id @default(cuid())
   activityId String
   activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
   cloId      String
   clo        CLO      @relation(fields: [cloId], references: [id], onDelete: Cascade)
-  weight     Float
+  weight     Float // % of THIS activity that measures THIS CLO; sums to 100 per activity
 
   objectives ObjectiveAssessment[]
 
   // A trigger additionally enforces that Activity and CLO belong to the SAME
   // course. Prisma cannot express that; do not drop it.
   @@unique([activityId, cloId])
+  @@index([cloId])
 }
 
 // Records WHICH behavioural objectives a criterion provides evidence for.
 // Attaches to AssessmentCriteria rather than Activity, so mapping objectives
-// is optional traceability and never changes a computed CLO score.
+// is optional traceability and never changes a computed CLO score (FR-35).
 // A trigger enforces that the objective belongs to the criterion's own CLO.
 model ObjectiveAssessment {
   id          String              @id @default(cuid())
@@ -242,8 +244,14 @@ model ObjectiveAssessment {
 // ---------------------------------------------------------------------------
 
 // NOTE: this models an ENROLMENT, not a person. One human taking five courses
-// produces five rows with a duplicated name. Splitting Student (person) from
-// Enrolment (person x course) is the next refactor worth doing.
+// produces five rows with a duplicated name (ASM-01).
+//
+// The Student(person) / Enrolment(person x course) split is DEFERRED to v2.
+// OI-05 cut every person-level field (email / ชั้นปี / สาขา / คณะ) from v1, so
+// a Person table today would have two columns and buy nothing but an extra join
+// on every roster read and every score import. The v2 migration is additive:
+// CREATE TABLE Person, backfill from SELECT DISTINCT "studentCode", name FROM
+// "Student", then add Student.personId. No unique key changes, no downtime.
 model Student {
   id          String @id @default(cuid())
   studentCode String
@@ -253,7 +261,12 @@ model Student {
 
   scores Score[]
 
+  // FR-51: unique inside a course. The same code in two courses is two
+  // enrolments of one person, which is correct and must stay legal.
   @@unique([studentCode, courseId])
+  // Safe as a bare index now that there is one faculty: a student code
+  // identifies one human, so `where: { studentCode }` cannot cross a tenant
+  // boundary the way it could under the multi-institution schema.
   @@index([studentCode])
 }
 
@@ -263,12 +276,17 @@ model Score {
   student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   activityId String
   activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  // NOT NULLABLE, and no row means "ยังไม่ประเมิน" (FR-62). A 0 here is a real
+  // zero the student earned; the absence of the row is the missing value.
+  // Never insert 0 to mean "not yet graded".
   score      Float
   uploadedAt DateTime @default(now())
 
   // Triggers also enforce: score <= Activity.maxScore, and that the Student
   // and the Activity belong to the same Course.
   @@unique([studentId, activityId])
+  @@index([activityId])
 }
 
 // ---------------------------------------------------------------------------
