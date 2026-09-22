@@ -29,7 +29,7 @@ export class CourseNotFoundError extends Error {
  * Throws unless `caller` may act on `courseId`.
  *
  * ADMIN: any course in the faculty — existence is the whole check.
- * INSTRUCTOR: must hold a CourseInstructor row, regardless of CourseRole
+ * INSTRUCTOR: must hold a CourseInstructor row (there is one course role since 2026-09-14 — every instructor on a course has equal rights)
  * (ASM-03: co-instructors have equal edit rights in v1).
  */
 export async function assertCourseAccess(courseId: string, caller: Caller): Promise<void> {

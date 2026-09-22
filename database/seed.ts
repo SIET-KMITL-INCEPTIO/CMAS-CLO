@@ -15,7 +15,7 @@
  * instructors — that is what the FR-25 / NFR-07 access tests need: an
  * instructor assigned to course A must get 404 on course B.
  */
-import { PrismaClient, Role, CourseRole, GradingType } from "@prisma/client"
+import { PrismaClient, Role, GradeScale, ActivityType, AssessmentMethod } from "@prisma/client"
 import argon2 from "argon2"
 
 const prisma = new PrismaClient()
@@ -28,7 +28,7 @@ type CourseSpec = {
   nameEn: string
   semester?: number
   year?: number
-  gradingType?: GradingType
+  gradeScale?: GradeScale
   credits?: number
   lectureHours?: number
   practiceHours?: number
@@ -42,16 +42,10 @@ async function main() {
 
   // --- Users -------------------------------------------------------------
   const admin = await upsertUser("admin@cmas.local", "ผู้ดูแลระบบ", Role.ADMIN)
-  const lead = await upsertUser(
-    "instructor1@cmas.local",
-    "อาจารย์ผู้ประสานงานรายวิชา",
-    Role.INSTRUCTOR,
-  )
-  const coInstructor = await upsertUser(
-    "instructor2@cmas.local",
-    "อาจารย์ผู้สอนร่วม",
-    Role.INSTRUCTOR,
-  )
+  // Two instructors on one course, with equal rights — course roles were
+  // removed 2026-09-14 (D1), so the pair exists to prove shared editing works.
+  const lead = await upsertUser("instructor1@cmas.local", "อาจารย์ผู้สอน 1", Role.INSTRUCTOR)
+  const coInstructor = await upsertUser("instructor2@cmas.local", "อาจารย์ผู้สอน 2", Role.INSTRUCTOR)
   // Teaches the OTHER course only. Every course-scope test needs someone who
   // is a legitimate instructor yet must still be refused course A.
   const outsider = await upsertUser("instructor3@cmas.local", "อาจารย์วิชาอื่น", Role.INSTRUCTOR)
@@ -67,14 +61,11 @@ async function main() {
     selfStudyHours: 5,
   })
 
-  for (const [user, role] of [
-    [lead, CourseRole.LEAD],
-    [coInstructor, CourseRole.CO],
-  ] as const) {
+  for (const user of [lead, coInstructor]) {
     await prisma.courseInstructor.upsert({
       where: { courseId_userId: { courseId: course.id, userId: user.id } },
-      update: { role },
-      create: { courseId: course.id, userId: user.id, role },
+      update: {},
+      create: { courseId: course.id, userId: user.id },
     })
   }
 
@@ -85,7 +76,7 @@ async function main() {
     code: "90641008",
     name: "การเตรียมความพร้อมสหกิจศึกษา",
     nameEn: "Cooperative Education Preparation",
-    gradingType: GradingType.PASS_FAIL,
+    gradeScale: GradeScale.PASS_FAIL,
     credits: 0,
     lectureHours: 0,
     practiceHours: 0,
@@ -94,8 +85,8 @@ async function main() {
 
   await prisma.courseInstructor.upsert({
     where: { courseId_userId: { courseId: otherCourse.id, userId: outsider.id } },
-    update: { role: CourseRole.LEAD },
-    create: { courseId: otherCourse.id, userId: outsider.id, role: CourseRole.LEAD },
+    update: {},
+    create: { courseId: otherCourse.id, userId: outsider.id },
   })
 
   console.log("Seed complete:")
@@ -113,7 +104,15 @@ async function upsertUser(email: string, name: string, role: Role) {
   return prisma.user.upsert({
     where: { email },
     update: { role },
-    create: { email, name, role, passwordHash: await argon2.hash(SEED_PASSWORD) },
+    // Seeded accounts are pre-verified: an unverified account cannot sign in
+    // (FR-07), and nobody is going to click a link for a dev seed.
+    create: {
+      email,
+      name,
+      role,
+      passwordHash: await argon2.hash(SEED_PASSWORD),
+      emailVerifiedAt: new Date(),
+    },
   })
 }
 
@@ -121,7 +120,7 @@ async function upsertUser(email: string, name: string, role: Role) {
  * One course's full vertical slice: course -> CLOs -> behavioural objectives
  * -> activities -> criteria -> students -> scores.
  *
- * The third student is deliberately below threshold so the at-risk path
+ * The third student is deliberately below the CLO pass mark so the at-risk path
  * (FR-83 / H2) has data the moment the dashboard exists.
  */
 async function seedCourse(spec: CourseSpec) {
@@ -144,44 +143,52 @@ async function seedCourse(spec: CourseSpec) {
       lectureHours: spec.lectureHours ?? 0,
       practiceHours: spec.practiceHours ?? 0,
       selfStudyHours: spec.selfStudyHours ?? 0,
-      gradingType: spec.gradingType ?? GradingType.LETTER,
+      gradeScale: spec.gradeScale ?? GradeScale.LETTER,
       passCriteria: 60,
+      cloPassMark: 60, // E1 — one CLO pass mark for the whole course
       classTarget: 70,
     },
   })
 
   // --- CLOs + behavioural objectives ------------------------------------
+  // CLO weights are entered (T1) and match what the activity mapping below
+  // implies (30/30/40), so the two-way weight check starts out green.
   const cloSpecs = [
-    { number: 1, description: "อธิบายหลักการวิเคราะห์และออกแบบระบบได้", threshold: 60 },
-    { number: 2, description: "ออกแบบฐานข้อมูลเชิงสัมพันธ์ให้อยู่ในรูปนอร์มัลได้", threshold: 60 },
-    { number: 3, description: "พัฒนาเว็บแอปพลิเคชันตามข้อกำหนดที่ได้รับได้", threshold: 70 },
+    { number: 1, description: "อธิบายหลักการวิเคราะห์และออกแบบระบบได้", weight: 30 },
+    { number: 2, description: "ออกแบบฐานข้อมูลเชิงสัมพันธ์ให้อยู่ในรูปนอร์มัลได้", weight: 30 },
+    { number: 3, description: "พัฒนาเว็บแอปพลิเคชันตามข้อกำหนดที่ได้รับได้", weight: 40 },
   ]
 
-  const clos = []
+  const objectives = []
   for (const cloSpec of cloSpecs) {
     const clo = await prisma.cLO.upsert({
       where: { courseId_number: { courseId: course.id, number: cloSpec.number } },
-      update: { description: cloSpec.description, threshold: cloSpec.threshold },
+      update: { description: cloSpec.description, weight: cloSpec.weight },
       create: { courseId: course.id, ...cloSpec },
     })
-    clos.push(clo)
 
-    await prisma.behavioralObjective.upsert({
+    // One objective per CLO, so it carries the whole CLO (weight 100, T6).
+    const objective = await prisma.behavioralObjective.upsert({
       where: { cloId_number: { cloId: clo.id, number: 1 } },
-      update: {},
+      update: { weight: 100 },
       create: {
         cloId: clo.id,
         number: 1,
+        weight: 100,
         description: `จุดประสงค์เชิงพฤติกรรมข้อที่ 1 ของ CLO ${cloSpec.number}`,
       },
     })
+    objectives.push(objective)
   }
 
   // --- Activities + criteria (weights sum to 100) -----------------------
   const activitySpecs = [
-    { name: "สอบกลางภาค", method: "ข้อสอบอัตนัย", maxScore: 30, order: 1, weight: 30 },
-    { name: "งานปฏิบัติการ", method: "ประเมินชิ้นงาน", maxScore: 30, order: 2, weight: 30 },
-    { name: "สอบปลายภาค", method: "ข้อสอบอัตนัย", maxScore: 40, order: 3, weight: 40 },
+    { name: "สอบกลางภาค", type: ActivityType.TEST, assessmentMethod: AssessmentMethod.EXAM,
+      criteriaNote: "ข้อสอบอัตนัย", passMark: 50, maxScore: 30, order: 1, weight: 30 },
+    { name: "งานปฏิบัติการ", type: ActivityType.LAB, assessmentMethod: AssessmentMethod.RUBRIC,
+      criteriaNote: "ประเมินชิ้นงานด้วยรูบริก", passMark: 60, maxScore: 30, order: 2, weight: 30 },
+    { name: "สอบปลายภาค", type: ActivityType.TEST, assessmentMethod: AssessmentMethod.EXAM,
+      criteriaNote: "ข้อสอบอัตนัย", passMark: 50, maxScore: 40, order: 3, weight: 40 },
   ]
 
   const activities = []
@@ -196,15 +203,16 @@ async function seedCourse(spec: CourseSpec) {
     activities.push(activity)
   }
 
-  // Map each activity to one CLO at full weight — the simplest mapping that
-  // still exercises the attainment computation.
+  // Map each activity to one objective at full weight — the simplest mapping
+  // that still exercises the attainment computation (T4: activities link to
+  // objectives, and reach the CLO through them).
   for (const [index, activity] of activities.entries()) {
-    const clo = clos[index]
-    if (!clo) continue
+    const objective = objectives[index]
+    if (!objective) continue
     await prisma.assessmentCriteria.upsert({
-      where: { activityId_cloId: { activityId: activity.id, cloId: clo.id } },
+      where: { activityId_objectiveId: { activityId: activity.id, objectiveId: objective.id } },
       update: { weight: 100 },
-      create: { activityId: activity.id, cloId: clo.id, weight: 100 },
+      create: { activityId: activity.id, objectiveId: objective.id, weight: 100 },
     })
   }
 

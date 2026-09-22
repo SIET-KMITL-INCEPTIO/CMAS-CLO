@@ -9,7 +9,9 @@ filenames below are relative to that folder.
 
 | File | Model | Tables | Purpose |
 |---|---|---|---|
-| [`cmas_app_mysql_v3.sql`](../../reference/db/mysql/cmas_app_mysql_v3.sql) | **v3 — current design.** Course-root, single-tenant | 11 tables · 14 FKs | Diagramming only: tables + FKs, no triggers/views so Workbench imports cleanly |
+| [`cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql) | **v4 — current design.** Course-root + grading | 13 tables · 16 FKs | Diagramming only: tables + FKs, no triggers/views so Workbench imports cleanly. **Import this one** |
+| [`index-q.sql`](../../reference/db/mysql/index-q.sql) | **v4 + what the UI prototype `docs/pages/index-q.html` adds** | 15 tables · 19 FKs | Same 13 tables copied verbatim from v4, plus the proposed `AuthEvent` (UC 1.6) and `UploadReject` (FR-65), three password-flow columns on `User`, and `ScoreUploadLog.kind` (`SCORE` / `ROSTER` — the prototype logs roster imports in the same table, added 2026-09-13). Every addition is tagged `[index-q]` in its COMMENT, so the EER diagram shows what is proposed. Import this to see the prototype's data model |
+| [`cmas_app_mysql_v3.sql`](../../reference/db/mysql/cmas_app_mysql_v3.sql) | ~~v3~~ — **superseded**, no grading tables | 11 tables · 14 FKs | Kept for history only |
 | [`cmas_app_production_v3.sql`](../../reference/db/mysql/cmas_app_production_v3.sql) | **v3 — current design.** Same tables, hardened | 11 tables · 28 CHECKs · 6 triggers · 6 views | The executable DDL. Run this one |
 | [`cmas_enterprise_mysql.sql`](../../reference/db/mysql/cmas_enterprise_mysql.sql) | Full institutional design (curriculum versioning, PLO/CLO mapping, sections, enrollments, PLO attainment, audit) | 36 tables + 4 views | Reference only — **not** what the app implements |
 
@@ -37,9 +39,35 @@ defaults (`DEFAULT (CURRENT_DATE)`), and a `STORED` generated column
 (`student_clo_scores.percent_score`). All tables are `InnoDB` + `utf8mb4` so the
 Thai `_th` columns store correctly.
 
-> Status: written to the MySQL 8 dialect but **not yet loaded against a live
-> MySQL server** in this environment (no local MySQL / Docker daemon available).
-> Run once against MySQL 8.0.16+ to confirm before relying on it in production.
+> **Loaded against a live MySQL 8.0.43 on 2026-09-11** — `cmas_app_mysql_v4.sql`
+> and `index-q.sql` only, each into a throwaway schema:
+>
+> | File | Tables | FKs | Also checked |
+> |---|---:|---:|---|
+> | `cmas_app_mysql_v4.sql` | 13 | 16 | — |
+> | `index-q.sql` | 15 | 19 | runs top-to-bottom with `FOREIGN_KEY_CHECKS = 1` · 11 of its tables are byte-identical to v4 by `SHOW CREATE TABLE`; `CourseInstructor` differs only in its COMMENT and `User` only by the 3 added columns · moving `AuthEvent` above `User` makes it fail with ERROR 1824, so the ordering claim is real |
+>
+> **Re-verified 2026-09-13** — `index-q.sql` loaded into a throwaway MySQL 8.0.43
+> (`mysqld --no-defaults --initialize-insecure`, scratch datadir, port 33999 —
+> never the installed server): **15 tables · 19 FKs** by `information_schema`,
+> both `AuthEvent → User` FKs present, Thai `COMMENT` stored as correct UTF-8
+> (checked by `HEX()`; the `????` a Windows console prints is display only).
+> Table names come back lower-case there because Windows defaults to
+> `lower_case_table_names=1` — a server setting, not a defect in the file;
+> Workbench's *Reverse Engineer MySQL Create Script* reads the file and keeps
+> the original case. Field-by-field against the `db` object in
+> `docs/pages/index-q.html` (including runtime writes): every column the
+> prototype stores exists in the SQL. Rendered diagram — no Workbench needed:
+> `docs/uml/index-q/ER-INDEX-Q.pdf` to present, `ER-INDEX-Q.html` to open in a
+> browser, `ER-INDEX-Q.drawio` to edit. All three come from
+> `scripts/build-er-index-q-drawio.py` reading this file.
+>
+> The earlier row for v4 said "15 tables · 21 FKs" — that count predates the
+> 2026-09-06 removal of `GradeScheme` and `GradeRun`. `cmas_app_production_v3.sql`
+> has **not** been run against a server; confirm on MySQL 8.0.16+ before relying on it.
+>
+> Loading into a server verifies the DDL, not Workbench's own parser. Workbench
+> reverse-engineers the script itself, so open it there once before handing it in.
 
 ---
 
@@ -48,7 +76,7 @@ Thai `_th` columns store correctly.
 Best for just getting the diagram.
 
 1. MySQL Workbench → **File ▸ Import ▸ Reverse Engineer MySQL Create Script…**
-2. **Browse** to `cmas_app_mysql_v3.sql` — use the `_mysql_v3` file, never
+2. **Browse** to `cmas_app_mysql_v4.sql` — use the `_mysql_v4` file, never
    `cmas_app_production_v3.sql`: Workbench warns on that file's `DELIMITER`
    lines and skips its triggers and views.
 3. Tick **"Place imported objects on a diagram"** → **Execute** → **Finish**.

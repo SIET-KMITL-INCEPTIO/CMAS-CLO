@@ -440,6 +440,47 @@ section.block { margin-bottom: var(--space-16); scroll-margin-top: var(--space-6
 </style>
 </head>
 <body>
+<!-- ── แถบเลิกใช้ ──────────────────────────────────────────────────────
+     หน้านี้บันทึกระบบออกแบบ Verdure ซึ่ง index-q.html เลิกใช้แล้ว
+     จงใจ *ไม่* จัดสไตล์หน้านี้ใหม่เป็น Nocturnal Atelier — เอกสารที่อธิบาย
+     ระบบหนึ่งด้วยหน้าตาของอีกระบบหนึ่งขัดกันในตัวเอง และทำลายคุณค่าเดียว
+     ที่หน้านี้ยังมี คือการเป็นบันทึกว่าเคยตัดสินใจอะไรไว้
+     สไตล์ของแถบนี้เขียนแยกในตัวเอง ไม่อ้าง cmas-pages.css ด้วยเหตุผลเดียวกัน
+     ───────────────────────────────────────────────────────────────── -->
+<style id="deprecated-banner-style">
+  #deprecated-banner{
+    position:sticky; top:0; z-index:9999;
+    display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap;
+    padding:11px 20px; background:#F6EFE0; border-bottom:1px solid #DCCBA4;
+    color:#7A6430; font-size:13px; line-height:1.55;
+    font-family:'Inter','IBM Plex Sans Thai',-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  #deprecated-banner .tag{
+    flex:none; font-size:10.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+    border:1px solid #DCCBA4; border-radius:6px; padding:2px 8px; background:#FBF6EC;
+  }
+  #deprecated-banner a{ color:#7A6430; text-underline-offset:2px; }
+  #deprecated-banner b{ font-weight:500; }
+  @media print{ #deprecated-banner{ position:static; } }
+
+  /* ── แก้การล้นแนวนอน ไม่ใช่การจัดสไตล์ใหม่ ─────────────────────────
+     .main ตั้ง max-width:1080px ไว้แต่ไม่มี min-width:0 หน้าจึงล้นแนวนอน
+     ที่ทุกความกว้างต่ำกว่า 1080 · เป็นข้อบกพร่องเดิม ไม่ใช่ผลจากแถบนี้
+     แก้เพราะเป็นกฎเดียว และการทิ้งบั๊กไว้ในหน้าที่เพิ่งแตะถือว่าแย่กว่า
+     — ไม่ได้แตะภาษาออกแบบ Verdure แม้แต่ค่าเดียว */
+  .main{ max-width:min(1080px, 100%); min-width:0; }
+  html, body{ overflow-x:hidden; }
+</style>
+<div id="deprecated-banner" role="note">
+  <span class="tag">เลิกใช้แล้ว</span>
+  <span>เอกสารนี้บันทึก <b>ระบบออกแบบ Verdure</b> ซึ่งโปรเจกต์เลิกใช้เมื่อ 2026-09 ·
+    ระบบที่ใช้จริงตอนนี้คือ <b>Nocturnal Atelier</b> — ดูของจริงได้ที่
+    <a href="index-q.html">index-q.html</a> และดูโทเคนที่ใช้ร่วมกันได้ที่
+    <a href="cmas-pages.css">cmas-pages.css</a><br>
+    เก็บหน้านี้ไว้เป็นบันทึกว่าเคยตัดสินใจอะไร <b>จึงจงใจไม่จัดสไตล์ใหม่</b> —
+    เอกสารที่อธิบายระบบหนึ่งด้วยหน้าตาของอีกระบบหนึ่งขัดกันในตัวเอง</span>
+</div>
+
 <div class="layout">
   <!-- ── SIDEBAR ── -->
   <aside class="side">

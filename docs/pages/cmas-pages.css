@@ -1,0 +1,287 @@
+/* ══════════════════════════════════════════════════════════════════════
+   CMAS · ชั้นออกแบบร่วมของหน้าเอกสารใน docs/pages/
+   Nocturnal Atelier — ภาษาเดียวกับ index-q.html
+
+   ใช้กับ: database-preview · evaluation-criteria · tech-stack-review ·
+           design-system-preview
+   ไม่ใช้กับ: index-q.html — เป็นต้นแบบไฟล์เดียวที่ต้องส่งทางอีเมลและเปิดจาก
+   file:// ได้ จึงถือสำเนาโทเคนของตัวเอง · ความตรงกันของสองที่ถูกบังคับด้วย
+   scripts/check-design-tokens.py ไม่ใช่ด้วยความจำ
+
+   สุนทรียะ: วิศวกรรมแบบญี่ปุ่น — ความยับยั้งชั่งใจ เส้นบางเส้นเดียว ระยะที่
+   แม่นยำ ตัวเลขเรียงหลัก และสีที่ใช้เฉพาะตอนบอกคำตัดสิน ไม่ใช่ตอนตกแต่ง
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · โทเคน ─────────────────────────────────────────────────────── */
+:root{
+  /* หลัก */
+  --peri:#C8CDEB; --cool:#878CB4; --haze:#465078; --mid:#1E233C; --char:#0A0F19;
+
+  /* ข้อความ */
+  --ink:#1E233C; --ink2:#4A5070; --dim:#878CB4; --faint:#9AA0BE;
+
+  /* พื้นผิว */
+  --card:#FFFFFF; --content:#FAFAFC; --list:#F7F7FB; --wash:#F4F5FA; --tint:#EEEFF8;
+
+  /* เส้น — หนา 1px เสมอ ความลึกมาจากพื้นผิวกับเงาอ่อน ไม่ใช่จากเส้นหนา */
+  --edge2:#EDEEF6; --edge:#E4E5F0;
+
+  /* สถานะ — ลดความอิ่มตัวแล้ว · ใช้บอกคำตัดสินเท่านั้น ห้ามใช้ตกแต่ง */
+  --ok:#4F7C68;   --ok-bg:#E7EFEA;   --ok-line:#BFD3C8;
+  --warn:#96793D; --warn-bg:#F6EFE0; --warn-line:#DCCBA4;
+  --bad:#A2504F;  --bad-bg:#F4E8E8;  --bad-line:#DCBABA;
+  --nil:#878CB4;  --nil-bg:#F4F5FA;  --nil-line:#E4E5F0;
+
+  --shadow-soft: 0 1px 2px rgba(30,35,60,.03), 0 6px 20px -10px rgba(30,35,60,.10);
+  --shadow-card: 0 1px 2px rgba(30,35,60,.04), 0 14px 44px -14px rgba(30,35,60,.13);
+  --shadow-pop:  0 2px 6px rgba(30,35,60,.06), 0 24px 60px -18px rgba(30,35,60,.28);
+
+  /* ระยะ ฐาน 4px */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s8:32px; --s10:40px;
+
+  /* รูปทรง */
+  --r-card:12px; --r-btn:9px; --r-chip:6px;
+
+  --tocw:246px;
+}
+
+/* ── 2 · ฐาน ───────────────────────────────────────────────────────── */
+*{ box-sizing:border-box; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+html{ scroll-behavior:smooth; scroll-padding-top:72px; }
+body{
+  margin:0; color:var(--ink);
+  font-family:'Inter','IBM Plex Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-weight:400; font-size:14px; line-height:1.62;
+  background:
+    radial-gradient(1100px 620px at 10% -12%, #FFFFFF 0%, rgba(255,255,255,0) 62%),
+    radial-gradient(900px 700px at 100% 8%, #F2F1F8 0%, rgba(242,241,248,0) 58%),
+    var(--content);
+  background-attachment:fixed;
+}
+/* น้ำหนักห้ามเกิน 600 ทุกที่ · ลำดับชั้นมาจากขนาด */
+h1,h2,h3,h4,th,strong,b{ font-weight:500; }
+h1{ font-size:26px; font-weight:300; letter-spacing:-.01em; line-height:1.25; margin:0; }
+h2{ font-size:19px; font-weight:400; margin:0 0 var(--s3); letter-spacing:-.005em; }
+h3{ font-size:15px; margin:var(--s5) 0 var(--s2); }
+p{ margin:0 0 var(--s3); }
+a{ color:var(--haze); text-underline-offset:2px; }
+a:hover{ color:var(--mid); }
+code,kbd,.tnum,.num{ font-variant-numeric:tabular-nums; }
+code{ font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; font-size:.9em;
+      background:var(--tint); padding:1px 5px; border-radius:4px; color:var(--haze); }
+hr{ border:0; border-top:1px solid var(--edge2); margin:var(--s8) 0; }
+:focus-visible{ outline:2px solid var(--haze); outline-offset:2px; border-radius:4px; }
+
+/* ── 3 · โครงหน้า ──────────────────────────────────────────────────── */
+.page{ max-width:1180px; margin:0 auto; padding:0 var(--s6) var(--s10);
+       display:grid; grid-template-columns:var(--tocw) minmax(0,1fr); gap:var(--s8); align-items:start; }
+.page.solo{ grid-template-columns:minmax(0,1fr); max-width:940px; }
+.main{ min-width:0; }
+
+/* แถบบน — บาง นิ่ง และบอกได้ว่ากำลังอ่านเอกสารอะไรของระบบไหน */
+.topbar{
+  position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:var(--s3);
+  padding:0 var(--s6); height:48px; background:rgba(30,35,60,.96); color:#fff;
+  backdrop-filter:saturate(140%) blur(8px);
+}
+.topbar .brand{ font-size:13px; letter-spacing:.02em; color:#fff; }
+.topbar .brand b{ font-weight:500; }
+.topbar .sep{ width:1px; height:16px; background:rgba(255,255,255,.22); }
+.topbar .doc{ font-size:12.5px; color:rgba(255,255,255,.72); min-width:0;
+              overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.topbar .right{ margin-left:auto; display:flex; align-items:center; gap:var(--s2); }
+.topbar .tag{ font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+              color:rgba(255,255,255,.66); border:1px solid rgba(255,255,255,.20);
+              padding:2px 8px; border-radius:var(--r-chip); white-space:nowrap; }
+
+/* หัวเอกสาร */
+.head{ padding:var(--s8) 0 var(--s5); }
+.head .over{ margin-bottom:var(--s2); }
+.head .sub{ color:var(--ink2); font-size:14px; margin-top:var(--s2); max-width:74ch; }
+.head .meta{ margin-top:var(--s3); font-size:11.5px; color:var(--faint);
+             display:flex; gap:var(--s3); flex-wrap:wrap; }
+
+/* ── 4 · แถบคำตอบ — ต้องอยู่ก่อนเนื้อหาเสมอ ────────────────────────── */
+/* คำถามหลักของหน้าต้องถูกตอบตรงนี้ ภายในหน้าจอแรก โดยไม่ต้องเลื่อน */
+.answerbar{
+  display:flex; flex-wrap:wrap; background:var(--card); border:1px solid var(--edge);
+  border-radius:var(--r-card); box-shadow:var(--shadow-soft); overflow:hidden;
+  margin:0 0 var(--s6);
+}
+.ans{ flex:1 1 168px; min-width:150px; padding:var(--s4) var(--s5);
+      border-right:1px solid var(--edge2); }
+.ans:last-child{ border-right:0; }
+.ans .k{ font-size:10.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+         color:var(--dim); display:block; margin-bottom:6px; }
+.ans .v{ font-size:27px; font-weight:300; line-height:1.05; letter-spacing:-.02em;
+         font-variant-numeric:tabular-nums; display:block; }
+.ans .v small{ font-size:14px; color:var(--dim); font-weight:400; margin-left:2px; }
+.ans .d{ font-size:11.5px; color:var(--dim); margin-top:6px; display:block; line-height:1.45; }
+.ans.ok  .v{ color:var(--ok); }
+.ans.warn .v{ color:var(--warn); }
+.ans.bad .v{ color:var(--bad); }
+
+/* บรรทัดข้อสรุปหนึ่งประโยค ใต้แถบคำตอบ */
+.verdictline{
+  display:flex; align-items:flex-start; gap:var(--s3); padding:var(--s3) var(--s5);
+  border-radius:var(--r-card); font-size:13px; color:var(--ink2);
+  background:var(--tint); border:1px solid var(--edge2); margin:0 0 var(--s6);
+}
+
+/* ── 5 · ส่วนเนื้อหา ───────────────────────────────────────────────── */
+.sec{ margin:0 0 var(--s10); scroll-margin-top:64px; }
+.sec > .over{ display:block; margin-bottom:6px; }
+/* บรรทัดแรกของทุกหัวข้อคือคำตอบ ไม่ใช่คำเกริ่น */
+.lede{ font-size:14.5px; color:var(--ink); margin:0 0 var(--s4); max-width:76ch; }
+.lede b{ font-weight:500; }
+
+.card{ background:var(--card); border:1px solid var(--edge); border-radius:var(--r-card);
+       box-shadow:var(--shadow-soft); overflow:hidden; }
+.card + .card{ margin-top:var(--s4); }
+.band{ display:flex; align-items:baseline; gap:var(--s3); padding:11px var(--s5);
+       border-bottom:1px solid var(--edge2); background:var(--wash); }
+.band .t{ font-size:13px; }
+.band .r{ margin-left:auto; font-size:11.5px; color:var(--dim); }
+.pad{ padding:var(--s5); }
+
+.grid2{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:var(--s3); }
+.grid3{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:var(--s3); }
+
+/* ── 6 · ตาราง — การเปรียบเทียบต้องเป็นตาราง ไม่ใช่ย่อหน้า ─────────── */
+.scroll-x{ overflow-x:auto; }
+table.dt{ border-collapse:separate; border-spacing:0; width:100%; font-size:13px; }
+table.dt th, table.dt td{ border-bottom:1px solid var(--edge2); padding:9px 12px;
+                          text-align:left; vertical-align:top; }
+table.dt thead th{
+  font-size:10px; font-weight:500; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--dim); background:var(--wash); white-space:nowrap;
+  padding-top:8px; padding-bottom:8px; position:sticky; top:0; z-index:1;
+}
+table.dt tbody tr:last-child td{ border-bottom:0; }
+table.dt tbody tr:hover{ background:#FCFCFE; }
+table.dt td.num, table.dt th.num{ text-align:right; font-variant-numeric:tabular-nums; }
+table.dt td.mono{ font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; font-size:12px; }
+.dt caption{ caption-side:bottom; text-align:left; font-size:11.5px; color:var(--faint);
+             padding:var(--s2) 12px 0; }
+
+/* ── 7 · ป้าย — คำตัดสินเป็นป้าย ไม่ใช่ประโยคที่ต้องอ่านหา ─────────── */
+.chip{
+  display:inline-flex; align-items:center; gap:5px; padding:2px 8px; border-radius:var(--r-chip);
+  font-size:11.5px; line-height:1.55; white-space:nowrap; border:1px solid transparent;
+}
+.chip.ok  { color:var(--ok);   background:var(--ok-bg);   border-color:var(--ok-line); }
+.chip.warn{ color:var(--warn); background:var(--warn-bg); border-color:var(--warn-line); }
+.chip.bad { color:var(--bad);  background:var(--bad-bg);  border-color:var(--bad-line); }
+.chip.nil { color:var(--nil);  background:var(--nil-bg);  border-color:var(--nil-line); }
+.chip.key { color:var(--haze); background:var(--tint);    border-color:var(--edge); }
+
+.over{ font-size:10.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); }
+.dim{ color:var(--dim); } .ink2{ color:var(--ink2); } .faint{ color:var(--faint); }
+.t-ok{ color:var(--ok); } .t-warn{ color:var(--warn); } .t-bad{ color:var(--bad); }
+.small{ font-size:12px; }
+
+/* แถบตัดสินแบบเต็มความกว้าง สำหรับข้อความที่ต้องหยุดสายตา */
+.note{ padding:var(--s3) var(--s4); border-radius:var(--r-card); font-size:12.5px;
+       border:1px solid var(--edge2); background:var(--tint); color:var(--ink2); }
+.note.ok  { background:var(--ok-bg);   border-color:var(--ok-line);   color:var(--ok); }
+.note.warn{ background:var(--warn-bg); border-color:var(--warn-line); color:var(--warn); }
+.note.bad { background:var(--bad-bg);  border-color:var(--bad-line);  color:var(--bad); }
+
+/* บรรทัด "ทำอะไรต่อ" — ทุกหัวข้อที่ต้องตัดสินใจต้องมี */
+.next{ display:flex; align-items:flex-start; gap:var(--s2); margin-top:var(--s3);
+       padding:var(--s2) var(--s3); border-left:2px solid var(--haze);
+       background:var(--wash); font-size:12.5px; color:var(--ink2); }
+.next .over{ flex:none; padding-top:1px; }
+
+/* ── 8 · รายละเอียดที่พับเก็บได้ — แนวเดียวกับปุ่ม ? ใน index-q ────── */
+details.more{ border:1px solid var(--edge2); border-radius:var(--r-btn);
+              background:var(--card); margin-top:var(--s3); }
+details.more > summary{
+  cursor:pointer; list-style:none; padding:8px var(--s4); font-size:12.5px; color:var(--ink2);
+  display:flex; align-items:center; gap:var(--s2);
+}
+details.more > summary::-webkit-details-marker{ display:none; }
+details.more > summary::before{ content:'+'; color:var(--dim); font-size:13px; width:11px; }
+details.more[open] > summary::before{ content:'−'; }
+details.more[open] > summary{ border-bottom:1px solid var(--edge2); }
+details.more .body{ padding:var(--s4); font-size:13px; color:var(--ink2); }
+
+/* ── 9 · สารบัญ + scroll-spy ───────────────────────────────────────── */
+.toc{ position:sticky; top:64px; align-self:start; max-height:calc(100vh - 84px);
+      overflow-y:auto; padding:var(--s5) 0; }
+.toc .over{ display:block; padding:0 var(--s3) var(--s2); }
+.toc a{
+  display:flex; gap:var(--s2); padding:5px var(--s3); border-radius:var(--r-btn);
+  font-size:12.5px; color:#5B6180; text-decoration:none; line-height:1.45;
+  border-left:2px solid transparent; transition:background .14s,color .14s;
+}
+.toc a:hover{ background:var(--tint); color:var(--ink); }
+.toc a.on{ background:var(--tint); color:var(--ink); border-left-color:var(--mid); }
+.toc a .n{ color:var(--faint); font-variant-numeric:tabular-nums; flex:none; width:16px; }
+.toc a.on .n{ color:var(--haze); }
+.tocToggle{ display:none; }
+
+/* ── 10 · ปุ่ม ─────────────────────────────────────────────────────── */
+.btn{ display:inline-flex; align-items:center; gap:6px; padding:6px 13px; font-size:13px;
+      border-radius:var(--r-btn); white-space:nowrap; cursor:pointer; text-decoration:none;
+      background:var(--card); color:var(--ink2); border:1px solid var(--edge); transition:.14s; }
+.btn:hover{ color:var(--ink); border-color:#CFD3E4; }
+.btn-primary{ background:var(--mid); color:#fff; border-color:var(--mid); }
+.btn-primary:hover{ background:#171B30; color:#fff; }
+
+/* ── 11 · Responsive — ช่วงเดียวกับ index-q.html ───────────────────── */
+@media (max-width:1023px){
+  .page{ grid-template-columns:minmax(0,1fr); gap:0; padding:0 var(--s5) var(--s10); }
+  .toc{
+    position:fixed; top:48px; left:0; bottom:0; width:min(300px,86vw); z-index:45;
+    background:var(--list); border-right:1px solid var(--edge); padding:var(--s4) var(--s2);
+    transition:transform .22s ease; box-shadow:var(--shadow-pop); max-height:none;
+  }
+  .tocScrim{ display:block; position:fixed; inset:48px 0 0; background:rgba(30,35,60,.30);
+             z-index:44; pointer-events:none; transition:opacity .2s; }
+  .tocToggle{ display:inline-flex; }
+
+  /* สถานะเปิด/ปิดของสารบัญ
+     เขียนเป็นคลาสบนตัว nav เอง ไม่ใช่ attribute บน body แล้วให้ลูกหลานสืบทอด —
+     เวอร์ชันแรกใช้ `body[data-toc="open"] .toc` ซึ่ง specificity สูงกว่าและ
+     selector ก็ตรง (พิสูจน์แล้วด้วยการยิง outline ทดสอบ) แต่ declaration
+     transform กลับไม่ชนะจริงในเบราว์เซอร์ · แก้ที่โครงสร้างแทนการไล่หาสาเหตุต่อ
+     เพราะสถานะที่อยู่บนตัวเองอ่านง่ายกว่าและไม่พึ่งการสืบทอดอยู่แล้ว */
+  .toc{ transform:translateX(-101%); }
+  .toc.open{ transform:translateX(0); }
+  .tocScrim{ opacity:0; }
+  .tocScrim.open{ opacity:1; pointer-events:auto; }
+}
+@media (max-width:639px){
+  body{ font-size:13.5px; }
+  h1{ font-size:21px; } h2{ font-size:17px; }
+  .page{ padding:0 var(--s4) var(--s8); }
+  .topbar{ padding:0 var(--s4); gap:var(--s2); }
+  .topbar .doc{ display:none; }
+  .ans{ flex:1 1 132px; min-width:124px; padding:var(--s3) var(--s4); }
+  .ans .v{ font-size:22px; }
+  .pad{ padding:var(--s4); }
+  .head{ padding:var(--s6) 0 var(--s4); }
+}
+@media (prefers-reduced-motion:reduce){ *{ transition:none !important; animation:none !important; }
+  html{ scroll-behavior:auto; } }
+
+/* ── 12 · พิมพ์ — เอกสารพวกนี้ต้องปรินต์แนบวิทยานิพนธ์ ─────────────── */
+@media print{
+  @page{ margin:14mm; }
+  body{ background:#fff; font-size:11pt; }
+  .topbar, .toc, .tocScrim, .tocToggle, .no-print{ display:none !important; }
+  .page{ display:block; max-width:none; padding:0; }
+  .card, .answerbar{ box-shadow:none; border:1px solid #CFD3E4; break-inside:avoid; }
+  .sec{ break-inside:auto; margin-bottom:16pt; }
+  h1,h2,h3{ break-after:avoid; }
+  table.dt{ break-inside:auto; font-size:9.5pt; }
+  table.dt thead th{ position:static; }
+  tr,img,svg{ break-inside:avoid; }
+  /* รายละเอียดที่พับไว้ต้องกางหมดตอนพิมพ์ ไม่งั้นฉบับพิมพ์ขาดเนื้อหา */
+  details.more{ border-color:#CFD3E4; }
+  details.more > summary{ font-weight:500; }
+  details.more .body{ display:block !important; }
+  a{ color:inherit; text-decoration:none; }
+  .scroll-x{ overflow:visible; }
+}

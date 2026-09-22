@@ -10,8 +10,11 @@ Features:
 - `[[wikilinks]]` resolved to sibling pages when a matching `.md` exists
   (unresolved ones — Obsidian vault notes — render as dashed grey text)
 - Relative `.md` links rewritten to `.html`
-- Left sidebar nav grouped by folder + an `index.html` landing page
-- Light/dark theme (follows OS, toggle button bottom-right)
+- Left sidebar nav grouped by folder (a drawer below 1024px), an "ในหน้านี้"
+  outline with scroll-spy, and an `index.html` landing page
+- Styled in Nocturnal Atelier — the same tokens as `docs/pages/index-q.html`,
+  kept in sync by `python scripts/check-design-tokens.py`. Light only, like the
+  prototype; syntax and mermaid colours use the system palette
 
 ## Build
 
@@ -36,4 +39,7 @@ python -m http.server 8899 --directory docs/html
 ```
 
 Re-run `npm run build` whenever the markdown changes. `docs/html/` is generated
-output and can be safely deleted/regenerated (consider adding it to `.gitignore`).
+output and is gitignored — **except** hand-made pages with no `.md` source
+(`cmas-er-diagram.html`). The build keeps everything listed in `KEEP` in
+`build.mjs`; add a file there before dropping another hand-made page into
+`docs/html/`, or the next build deletes it with no git copy to recover from.

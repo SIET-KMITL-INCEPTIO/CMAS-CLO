@@ -1,0 +1,465 @@
+<mxfile host="65bd71144e">
+    <diagram id="indexQUml" name="index-q · use case">
+        <mxGraphModel dx="2749" dy="1131" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="c1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFCC;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="240" width="1960" height="9310" as="geometry"/>
+                </mxCell>
+                <mxCell id="c2" value="System" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1860" y="270" width="400" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="c3" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="370" width="1060" height="1090" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4" value="1.1 เพิ่มบัญชีผู้ใช้" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="450" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c5" value="1.4 กำหนดบทบาทและสิทธิ์" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="450" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c6" value="1.2 แก้ไขบัญชีผู้ใช้" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="630" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c7" value="1.3 ระงับการใช้งานบัญชี" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="810" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c8" value="1.5 รีเซ็ตรหัสผ่าน" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="990" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c9" value="1.6 ตรวจสอบประวัติการใช้งาน" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="1170" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c10" value="1 · จัดการผู้ใช้งาน" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="1365" width="1020" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="c11" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="1510" width="1060" height="1450" as="geometry"/>
+                </mxCell>
+                <mxCell id="c12" value="2.1 สร้างรายวิชา" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="1590" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c13" value="2.4 มอบหมายผู้สอนประจำรายวิชา" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="1590" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c14" value="2.3 ลบรายวิชา" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="1770" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c15" value="2.2 แก้ไขข้อมูลรายวิชา" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="1950" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c16" value="2.5 กำหนดหมู่เรียน / ภาคการศึกษา" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="2130" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c17" value="2.6 เชิญผู้ช่วยสอน" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="2310" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c18" value="2.8 ถอดผู้ช่วยสอน" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="2490" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c19" value="2.7 สร้างรายวิชาของตนเอง" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="2670" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c20" value="2 · จัดการรายวิชา" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="2865" width="1020" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="c21" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="3010" width="1060" height="730" as="geometry"/>
+                </mxCell>
+                <mxCell id="c22" value="3.1 เพิ่ม CLO" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="3090" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c23" value="3.3 กำหนดเกณฑ์ผ่านของ CLO" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="3090" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c24" value="3.2 แก้ไข CLO" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="3270" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c25" value="3.5 ลบ CLO" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="3450" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c26" value="3 · กำหนด CLO" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="3645" width="1020" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="c27" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="3790" width="1640" height="910" as="geometry"/>
+                </mxCell>
+                <mxCell id="c28" value="4.1 เพิ่มวัตถุประสงค์เชิงพฤติกรรม" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="3870" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c29" value="4.2 เพิ่มวิธีการประเมิน" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="3870" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c30" value="4.3 เพิ่มเกณฑ์การประเมิน" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="2490" y="3870" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c31" value="4.4 จับคู่วัตถุประสงค์กับ CLO" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="4050" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c32" value="4.5 แก้ไขวัตถุประสงค์" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="4230" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c33" value="4.6 ลบวัตถุประสงค์" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="4410" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c34" value="4 · วัตถุประสงค์เชิงพฤติกรรม" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="4605" width="1600" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="c35" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="4750" width="1060" height="550" as="geometry"/>
+                </mxCell>
+                <mxCell id="c36" value="8.1 กำหนดขอบเขตเกรด" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="4830" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c37" value="8.2 ประมวลผลและตรึงเกรด" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="5010" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c38" value="8.3 ปรับเกรดรายบุคคล" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="5010" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c39" value="8 · ตัดเกรด" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="5205" width="1020" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="c40" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="5350" width="1060" height="1090" as="geometry"/>
+                </mxCell>
+                <mxCell id="c41" value="7.1 นำเข้ารายชื่อนักศึกษา" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="5430" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c42" value="7.3 ตรวจสอบรูปแบบและรายการซ้ำ" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="5430" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c43" value="7.5 แสดงรายงานข้อผิดพลาดการนำเข้า" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="5610" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c44" value="7.2 ดาวน์โหลดเทมเพลตรายชื่อ" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="5790" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c45" value="7.4 ส่งออกรายชื่อนักศึกษา" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="5970" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c46" value="7.6 ลบนักศึกษาออกจากรายวิชา" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="6150" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c47" value="7 · นำเข้า-ส่งออกรายชื่อ" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="6345" width="1020" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="c48" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="6490" width="1640" height="910" as="geometry"/>
+                </mxCell>
+                <mxCell id="c49" value="5.1 วิเคราะห์และสรุปข้อมูล CLO" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="6570" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c50" value="5.2 คำนวณคะแนนตาม CLO" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="6570" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c51" value="5.3 แสดงผลสรุประดับรายวิชา" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="6750" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c52" value="5.6 ระบุนักศึกษาที่ต้องติดตาม" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="2490" y="6750" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c53" value="5.4 ติดตามผู้เรียนรายบุคคล" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="6930" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c54" value="5.5 ส่งออกรายงาน" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="7110" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c55" value="5 · วิเคราะห์และสรุป CLO" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="7305" width="1600" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="c56" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="7450" width="1060" height="1090" as="geometry"/>
+                </mxCell>
+                <mxCell id="c57" value="6.1 นำเข้าคะแนนกิจกรรม" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="7530" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c58" value="6.3 ตรวจสอบความถูกต้องของข้อมูล" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="7530" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c59" value="6.5 แสดงรายงานข้อผิดพลาดการนำเข้า" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1910" y="7710" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c60" value="6.2 ดาวน์โหลดเทมเพลตคะแนน" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="7890" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c61" value="6.4 ส่งออกคะแนนกิจกรรม" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="8070" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c62" value="6.6 แก้ไขคะแนนบนหน้าเว็บ" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="8250" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c63" value="6 · นำเข้า-ส่งออกคะแนน" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="8445" width="1020" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="c64" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="8590" width="480" height="820" as="geometry"/>
+                </mxCell>
+                <mxCell id="c65" value="9.1 แก้ไขชื่อและอีเมลของตนเอง" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="8850" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c66" value="9.2 เปลี่ยนรหัสผ่านของตนเอง" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="9060" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c67" value="9 · บัญชีของฉัน" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=25;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="1270" y="9280" width="440" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="c68" value="ผู้ดูแลระบบ" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="1063.57" width="60" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="c69" value="ผู้ประสานงานรายวิชา" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="4920" width="60" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="c74" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c68" target="c4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c75" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c68" target="c6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c76" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c68" target="c7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c77" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c68" target="c8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c78" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c68" target="c9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c79" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c68" target="c12" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c80" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c68" target="c14" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c81" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c14" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c82" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c16" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c83" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c17" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c84" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c18" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c85" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c19" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c86" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c22" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c87" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c24" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c88" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c25" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c89" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c28" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c90" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c32" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c91" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c33" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c92" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c36" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c93" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c37" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c94" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="c69" target="c41" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="280" y="3420" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c95" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c44" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c96" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c45" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c97" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c46" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c98" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c49" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c99" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c57" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c100" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c60" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c101" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c61" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c102" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="c69" target="c62" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="280" y="6997" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c103" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c68" target="c65" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c104" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c69" target="c65" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c105" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="c68" target="c66" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c106" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="c69" target="c66" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="280" y="6990" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c107" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c4" target="c5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c108" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c107" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c109" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c12" target="c13" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c110" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c109" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c111" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c22" target="c23" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c112" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c111" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c113" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c28" target="c29" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c114" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c113" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c115" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c29" target="c30" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c116" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c115" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c117" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c28" target="c31" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c118" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c117" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c119" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c38" target="c37" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c120" value="«extend»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c119" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c121" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c41" target="c42" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c122" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c121" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c123" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c43" target="c41" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c124" value="«extend»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c123" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c125" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c49" target="c50" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c126" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c125" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c127" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c49" target="c51" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c128" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c127" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c129" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c51" target="c52" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c130" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c129" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c131" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c53" target="c49" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c132" value="«extend»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c131" vertex="1" connectable="0">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c133" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c54" target="c49" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c134" value="«extend»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c133" connectable="0" vertex="1">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c135" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c57" target="c58" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c136" value="«include»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c135" connectable="0" vertex="1">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c137" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" parent="1" source="c59" target="c57" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c138" value="«extend»" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="c137" connectable="0" vertex="1">
+                    <mxGeometry x="-0.05" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c69" target="c12">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="320" y="4985" as="sourcePoint"/>
+                        <mxPoint x="1340" y="2020" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="3" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.013;entryY=0.591;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="c69" target="c15">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="330" y="4995" as="sourcePoint"/>
+                        <mxPoint x="1350" y="2030" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="4" value="9.1 สร้างบัญชีผู้ใช้" style="ellipse;whiteSpace=wrap;html=1;fontSize=20;" vertex="1" parent="1">
+                    <mxGeometry x="1330" y="8680" width="300" height="120" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

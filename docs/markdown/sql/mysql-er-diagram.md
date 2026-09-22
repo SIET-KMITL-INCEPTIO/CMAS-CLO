@@ -9,6 +9,18 @@ See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
 [`reference/db/schema.sql`](../../reference/db/schema.sql) (PostgreSQL full institutional reference model) ·
 [`../../../database/schema.prisma`](../../../database/schema.prisma) (app source of truth).
 
+> **Updated 2026-09-06 — ตารางตัดเกรดเหลือ 2 ตาราง.** ตัด `GradeScheme` และ `GradeRun` ออก
+> · `GradeScheme` ยุบเป็นคอลัมน์ `Course.gradeMethod` (อิงเกณฑ์ / อิงกลุ่ม) เพราะหน่วยของ
+> เส้นแบ่งเกรดตามมาจากวิธีอยู่แล้ว · `GradeRun` ตัดทิ้งพร้อม `n / mean / sd` ซึ่งแลกกับการที่
+> เกรดอิงกลุ่มย้อนพิสูจน์ที่มาไม่ได้ (ตัวเกรดยังคงที่ เพราะเก็บเป็นค่าจริง) · ทั้งระบบเหลือ
+> **13 ตาราง 80 คอลัมน์ 16 FK** · เหตุผลเต็มอยู่ในหัวไฟล์ `cmas_app_mysql_v4.sql` และ SRS v2.2.0
+> · **ต้อง re-import ไฟล์ v4 ใหม่** ถ้าเคยวาดไดอะแกรมไว้ก่อนวันนี้
+
+> **Updated 2026-08-23 — v4 adds การตัดเกรด (grading).** Four new tables
+> (`GradeScheme`, `GradeBand`, `GradeRun`, `StudentGrade`), `CLO.bloomLevel`,
+> `CLO.classTarget`, and `Course.gradingType` renamed to `Course.gradeScale`.
+> **Import `cmas_app_mysql_v4.sql`** — v3 no longer matches `schema.prisma`.
+>
 > **Updated 2026-08-04 — the app model is now SINGLE-TENANT.** `Institution`,
 > `Membership`, `Curriculum` and `CurriculumCourse` were deleted; `Course` is the
 > root and carries the five columns `CurriculumCourse` used to hold. The v3 files
@@ -19,7 +31,8 @@ See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
 | File | Model | Size | Translated from |
 |---|---|---|---|
 | [`reference/db/mysql/cmas_enterprise_mysql.sql`](../../reference/db/mysql/cmas_enterprise_mysql.sql) | Full institutional design — **reference only** | 36 tables, 4 views, 59 FKs | `schema.sql` (PostgreSQL 14+) |
-| [`reference/db/mysql/cmas_app_mysql_v3.sql`](../../reference/db/mysql/cmas_app_mysql_v3.sql) | Live app schema — diagramming mirror | 11 tables, 14 FKs | `database/schema.prisma` (Prisma) |
+| [`reference/db/mysql/cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql) | **Live app schema — diagramming mirror. USE THIS ONE.** | 13 tables, 16 FKs | `database/schema.prisma` (Prisma) |
+| [`reference/db/mysql/cmas_app_mysql_v3.sql`](../../reference/db/mysql/cmas_app_mysql_v3.sql) | ~~Diagramming mirror~~ — **superseded by v4**, kept for history | 11 tables, 14 FKs | — |
 | [`reference/db/mysql/cmas_app_production_v3.sql`](../../reference/db/mysql/cmas_app_production_v3.sql) | Live app schema — executable, hardened | 11 tables, CHECKs, triggers, views | `database/migrations/` |
 | [`mysql-dumps.md`](./mysql-dumps.md) | How-to | — | Workbench steps + translation table |
 
@@ -42,6 +55,138 @@ An EER canvas opens with every table and all FK relationship lines. Then
 
 Full steps (including the live-database route and the `.mwb` model save) are in
 [`mysql-dumps.md`](./mysql-dumps.md).
+
+---
+
+## แผนภาพ ER ของระบบจริง (13 ตาราง)
+
+เรนเดอร์ได้ทันทีใน Obsidian / GitHub — ใช้ตรวจรูปทรงก่อนเปิด Workbench
+โครงสร้างตรงกับ [`cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql)
+ซึ่งเป็นไฟล์ที่ใช้ reverse-engineer จริง (13 ตาราง · 80 คอลัมน์ · 16 FK)
+
+```mermaid
+erDiagram
+    User ||--o{ CourseInstructor : "ถูกมอบหมาย"
+    User ||--o{ ScoreUploadLog : "อัปโหลด"
+    Course ||--o{ CourseInstructor : "มีผู้สอน"
+    Course ||--o{ CLO : "กำหนด"
+    Course ||--o{ Activity : "มีกิจกรรม"
+    Course ||--o{ Student : "มีผู้ลงทะเบียน"
+    Course ||--o{ GradeBand : "มีช่วงเกรด"
+    Course ||--o{ ScoreUploadLog : "มีบันทึกนำเข้า"
+    CLO ||--o{ BehavioralObjective : "แตกย่อยเป็น"
+    CLO ||--o{ AssessmentCriteria : "ถูกวัดโดย"
+    Activity ||--o{ AssessmentCriteria : "วัด CLO ผ่าน"
+    Activity ||--o{ Score : "ถูกให้คะแนน"
+    AssessmentCriteria ||--o{ ObjectiveAssessment : "ตามรอย"
+    BehavioralObjective ||--o{ ObjectiveAssessment : "ถูกตามรอย"
+    Student ||--o{ Score : "ได้คะแนน"
+    Student ||--o| StudentGrade : "ได้เกรด"
+
+    User {
+        varchar id PK
+        varchar email UK
+        varchar name
+        varchar passwordHash
+        enum role "ADMIN | INSTRUCTOR"
+        tinyint isActive
+    }
+    Course {
+        varchar id PK
+        varchar code UK "UK รวม 4 คอลัมน์"
+        int semester UK
+        int year UK
+        varchar section UK
+        decimal credits
+        enum gradeScale "LETTER | PASS_FAIL"
+        enum gradeMethod "อิงเกณฑ์ | อิงกลุ่ม"
+        double passCriteria
+        double classTarget
+    }
+    CourseInstructor {
+        varchar id PK
+        varchar courseId FK "UK คู่กับ userId"
+        varchar userId FK
+        enum role "LEAD | CO | ASSISTANT"
+    }
+    CLO {
+        varchar id PK
+        varchar courseId FK "UK คู่กับ number"
+        int number
+        varchar description
+        double threshold
+        enum bloomLevel
+        double classTarget "NULL = ใช้ค่าของ Course"
+    }
+    BehavioralObjective {
+        varchar id PK
+        varchar cloId FK "UK คู่กับ number"
+        int number
+        varchar description
+    }
+    Activity {
+        varchar id PK
+        varchar courseId FK
+        varchar name
+        double maxScore
+        int order
+        double weight "รวมทุกกิจกรรม = 100"
+    }
+    AssessmentCriteria {
+        varchar id PK
+        varchar activityId FK "UK คู่กับ cloId"
+        varchar cloId FK
+        double weight "รวมต่อกิจกรรม = 100"
+    }
+    ObjectiveAssessment {
+        varchar id PK
+        varchar criteriaId FK "UK คู่กับ objectiveId"
+        varchar objectiveId FK
+    }
+    Student {
+        varchar id PK
+        varchar studentCode UK "UK คู่กับ courseId"
+        varchar name
+        varchar courseId FK
+    }
+    Score {
+        varchar id PK
+        varchar studentId FK "UK คู่กับ activityId"
+        varchar activityId FK
+        double score "ไม่มีแถว = ยังไม่ประเมิน"
+        datetime uploadedAt
+    }
+    GradeBand {
+        varchar id PK
+        varchar courseId FK "UK คู่กับ grade และคู่กับ minValue"
+        varchar grade
+        double minValue
+    }
+    StudentGrade {
+        varchar id PK
+        varchar studentId FK "UK — 1 คน 1 เกรด"
+        double totalPercent "สำเนาแช่แข็งของค่าที่คำนวณได้"
+        varchar grade "สำเนาแช่แข็ง"
+        varchar overrideReason "NULL = ไม่ได้ปรับมือ"
+    }
+    ScoreUploadLog {
+        varchar id PK
+        varchar courseId FK
+        varchar uploadedBy FK
+        varchar fileName
+        int recordsOk
+        int recordsFail
+        datetime createdAt
+    }
+```
+
+**รูปทรงที่ควรเห็น** — `Course` อยู่กลาง มี 6 ตารางแตกออก (CourseInstructor, CLO,
+Activity, Student, GradeBand, ScoreUploadLog) ถ้า `Course` ไม่ใช่จุดที่มีเส้นเยอะที่สุด
+แปลว่า import ผิดหรือ FK หาย
+
+**ตารางเชื่อม (associative) 3 ตัว** — `CourseInstructor` (อาจารย์ × รายวิชา),
+`AssessmentCriteria` (กิจกรรม × CLO พร้อมน้ำหนัก), `ObjectiveAssessment`
+(เกณฑ์ × จุดประสงค์) ทั้งสามมี UNIQUE บนคู่ FK เสมอ เพื่อกันแถวซ้ำ
 
 ---
 
@@ -86,15 +231,16 @@ instrument, CLO). `percent_score` is a **stored generated column**
 
 ## Application model — entity groups
 
-The 11-table app diagram is the working system today (React + Fastify + Prisma).
+The 13-table app diagram is the working system today (React + Fastify + Prisma).
 `cuid()` string PKs; simpler than the enterprise design.
 
 | Cluster | Tables | Relationships |
 |---|---|---|
 | **Identity** | `User` (`role` = ADMIN/INSTRUCTOR, a plain column) | N─N `Course` via `CourseInstructor` (co-teaching) |
-| **Live course** | `Course` 1─N `CLO` 1─N `BehavioralObjective` | `Course` is the ROOT — nothing sits above it. It carries `credits`, the three hour columns and `gradingType`, which moved up from the deleted `CurriculumCourse` |
+| **Live course** | `Course` 1─N `CLO` 1─N `BehavioralObjective` | `Course` is the ROOT — nothing sits above it. It carries `credits`, the three hour columns and `gradeScale`, which moved up from the deleted `CurriculumCourse`, plus `gradeMethod` |
 | **Assessment** | `Course` 1─N `Activity`; `Activity` N─N `CLO` via `AssessmentCriteria` | weighted CLO tagging per activity |
 | **Enrollment & scoring** | `Course` 1─N `Student`; `Student` N─N `Activity` via `Score` | one score per (student, activity) |
+| **Grading** | `Course` 1─N `GradeBand`; `Student` 1─1 `StudentGrade` | the ladder and the result. The method is `Course.gradeMethod`, not a table |
 | **Audit** | `ScoreUploadLog` | FKs to `Course` + `User` in the production DDL |
 
 ### Key cardinalities (app)
@@ -105,6 +251,7 @@ Course 1─N CLO 1─N BehavioralObjective
 Course 1─N Activity ;  Activity N─N CLO   (via AssessmentCriteria)
 Course 1─N Student  ;  Student  N─N Activity (via Score, one per student+activity)
 AssessmentCriteria N─N BehavioralObjective (via ObjectiveAssessment, traceability only)
+Course 1─N GradeBand ;  Student 1─1 StudentGrade
 Course 1─N ScoreUploadLog N─1 User
 ```
 

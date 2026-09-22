@@ -68,6 +68,16 @@ python -m http.server 8899 --directory docs/html
 | `python scripts/build-er-excel.py` | `docs/excel/CMAS-ER-Diagram.xlsx` |
 | `python scripts/build-score-import-template.py` | `docs/excel/CMAS-Score-Import-Template.xlsx` |
 | `python scripts/build-tqf-presentation-workbook.py` | `docs/excel/CMAS-TQF-Data-Entry.xlsx` |
+| `python scripts/build-usecase-drawio.py` | `docs/uml/index-q/index-q-usecase.drawio` — use case diagram ของ `index-q.html` 6 หน้า สัญกรณ์ UML 2.5 เต็มรูป อ่านสิทธิ์จาก `PERM` ในหน้านั้น |
+| `python scripts/build-index-q-uml-drawio.py` | `docs/uml/index-q/UML-INDEX-Q.drawio` — ข้อมูลชุดเดียวกัน หน้าเดียว วาดด้วยสัญกรณ์เดียวกับ `docs/uml/CMAS/UML-Layer2.drawio` · ใช้โมเดลจากสคริปต์บรรทัดบนโดยตรง ไม่ได้คัดลอกมา |
+| `python scripts/build-structure-pages.py` | `docs/uml/CMAS/Struture.drawio` — **เพิ่มหน้า 2 และ 3** ต่อจากหน้าที่วาดด้วยมือ · หน้า 2 โครงสร้างสิทธิ์ปัจจุบัน หน้า 3 ภาพสมมุติถ้ายุบเหลือผู้สอนคนเดียว · หน้า 1 ไม่ถูกแตะ และรันซ้ำได้ไม่บวมขึ้น |
+| `python scripts/build-er-index-q-drawio.py` | `docs/uml/index-q/ER-INDEX-Q.drawio` (แก้ไขได้) **และ** `ER-INDEX-Q.html` (สำหรับนำเสนอ) — **ER diagram ของ `index-q.html`** 15 ตาราง 19 ความสัมพันธ์ แบบ crow's foot · อ่านจาก `docs/reference/db/mysql/index-q.sql` ทุกคอลัมน์ ทุก FK · ทุกเส้นมีเลนของตัวเอง ไม่ทับกัน · ของที่ต้นแบบเสนอเพิ่ม `[index-q]` พื้นเหลือง · สองไฟล์ใช้พิกัดชุดเดียวกัน · ภาพเดียวที่แสดง `AuthEvent` และ `UploadReject` |
+| `msedge --headless=new --no-pdf-header-footer --print-to-pdf=docs\uml\index-q\ER-INDEX-Q.pdf docs\uml\index-q\ER-INDEX-Q.html` | `docs/uml/index-q/ER-INDEX-Q.pdf` — PDF หน้าเดียวขนาดพอดีภาพ สำหรับฉายหรือแนบรายงาน · **รันใหม่ทุกครั้งหลังรันบรรทัดบน** เพราะ `check-diagrams.py` ตรวจความสดของ `.drawio` เท่านั้น ไม่ได้ตรวจ PDF |
+| `python scripts/check-diagrams.py` | **ตรวจ** ว่า UML และ ER พร้อมนำเสนอ — เลข use case ตรงกันข้ามไฟล์ · `schema.prisma` ↔ `cmas_app_mysql_v4.sql` ทั้งตารางและคอลัมน์ · ไฟล์ที่สร้างด้วยสคริปต์ยังไม่เก่า · ไฟล์ที่กำกวมบนโต๊ะนำเสนอ · `exit 1` = ยังไม่พร้อม |
+| `node scripts/check-perm-matrix.js` | **ตรวจ** เมทริกซ์ `PERM` ใน `index-q.html` เทียบกับ `can()` จริง — 4 บทบาท × 18 capability ทุกช่อง |
+| `node scripts/check-action-caps.js` | **ตรวจ** ว่าทุก `data-act` map ไปหา capability ที่ถูกต้องผ่าน `capOf()` — SEC-1/SEC-2 |
+| `node scripts/check-auth-events.js` | **ตรวจ** ว่า `FORMS.user.save()` เขียน `AuthEvent` ครบทุกทาง — สร้างบัญชี/เปลี่ยนบทบาท/ระงับผ่านฟอร์มแก้ไข/แก้ชื่อ-อีเมล (UC 1.1/1.2/1.4) · ก่อนแก้ 2569-09-13 ฟังก์ชันนี้ไม่เขียน AuthEvent เลยสักบรรทัด |
+| `python scripts/build-import-test-workbooks.py` | `docs/excel/import-test/*.xlsx` — ไฟล์ทดสอบตัวนำเข้า Excel |
 
 script ทั้งหมดรันจาก **root ของ repo** ไม่ใช่จาก `scripts/`
 

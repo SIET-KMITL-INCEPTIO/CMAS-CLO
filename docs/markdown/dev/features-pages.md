@@ -17,8 +17,8 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
 | 1 | **Authentication** — login, logout, JWT session | ทุกคน | `User` | มีหน้า `Login.tsx` แล้ว |
 | 2 | **User Management** — CRUD ผู้ใช้, เปิด/ปิดบัญชี (`isActive`), กำหนด role | ADMIN | `User` | มีหน้า `Users.tsx` แล้ว |
 | ~~3~~ | ~~Curriculum Management~~ | ❌ **ตัดออก 2026-08-04** | — | — |
-| ~~4~~ | ~~Curriculum Course~~ | ❌ **ตัดออก 2026-08-04** — หน่วยกิต/ชั่วโมง/gradingType ย้ายไปอยู่บน `Course` (FR-27, FR-28) | — | — |
-| 5 | **Course Management** — CRUD รายวิชาที่เปิดสอนจริงต่อเทอม, หน่วยกิต `3 (2-2-5)`, gradingType, มอบหมายอาจารย์ | ADMIN / INSTRUCTOR | `Course`, `CourseInstructor` | มีหน้า `CourseList.tsx` แล้ว |
+| ~~4~~ | ~~Curriculum Course~~ | ❌ **ตัดออก 2026-08-04** — หน่วยกิต/ชั่วโมง/gradeScale ย้ายไปอยู่บน `Course` (FR-27, FR-28) | — | — |
+| 5 | **Course Management** — CRUD รายวิชาที่เปิดสอนจริงต่อเทอม, หน่วยกิต `3 (2-2-5)`, gradeScale, มอบหมายอาจารย์ | ADMIN / INSTRUCTOR | `Course`, `CourseInstructor` | มีหน้า `CourseList.tsx` แล้ว |
 | 6 | **CLO Management** — CRUD CLO ต่อวิชา, drag-reorder (`number`), ตั้ง threshold | INSTRUCTOR | `CLO` | ยังไม่มีหน้า |
 | 7 | **Behavioral Objectives** — CRUD จุดประสงค์เชิงพฤติกรรมต่อ CLO | INSTRUCTOR | `BehavioralObjective` | ยังไม่มีหน้า |
 | 8 | **Activity Management** — CRUD กิจกรรมประเมิน (สอบ/งาน), drag-reorder (`order`), กำหนด `weight`/`maxScore` | INSTRUCTOR | `Activity` | ยังไม่มีหน้า |
@@ -62,17 +62,33 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
 
 ---
 
-## 3. Suggested Split งาน 3 คน
+## 3. แบ่งงาน 3 คน — เจ้าของราย feature
 
-แบ่งตาม module เพื่อลด conflict (แต่ละคนคุม end-to-end: route + component + service + controller ของ module ตัวเอง ตาม [[code-rule]]):
+> **แก้ 2026-09-13:** เลิกแบ่งแบบ Dev A/B/C ตามตาราง feature 13 ข้อด้านบน · ใช้ **9 package ใน Use Case Diagram**
+> (`docs/uml/index-q/index-q-usecase.drawio`) แทน คนละ 3 feature · 1 feature มีเจ้าของคนเดียว ทำครบตั้งแต่ API ถึงหน้าจอ
+> ลำดับงานราย sprint และจุดที่ต้องรอกันอยู่ใน [[sprint-plan-2026]]
 
-| คน | รับผิดชอบ | Feature # |
+| คน | Feature 1 | Feature 2 | Feature 3 | งานฐาน (ไม่อยู่ใน UML) |
+|---|---|---|---|---|
+| **ธีรณัฎฐ์** | 2 · จัดการรายวิชา | 5 · วิเคราะห์และสรุป CLO | 8 · ตัดเกรด | login · สิทธิ์ `can()` ที่ API · merge migration |
+| **นัจญมา** | 1 · จัดการผู้ใช้งาน | 3 · กำหนด CLO | 4 · วัตถุประสงค์เชิงพฤติกรรม (วิธีและเกณฑ์การประเมิน) | — |
+| **นูรีน** | 7 · นำเข้า-ส่งออกรายชื่อ | 6 · นำเข้า-ส่งออกคะแนน | 9 · บัญชีของฉัน | AppShell + components · `ExcelWorkbookWriter` · seed data |
+
+**เทียบกับ feature ในตาราง §1**
+
+| Feature ใน §1 | อยู่ใน UML package | เจ้าของ |
 |---|---|---|
-| Dev A | Course module (รวมหน่วยกิต/gradingType/มอบหมายอาจารย์) + Auth/User | 1, 2, 5 |
-| Dev B | CLO + Activity + Assessment Criteria (core CLO system) | 6, 7, 8, 9 |
-| Dev C | Student + Score (entry/import/export/log) + Dashboard | 10, 11, 12, 13, 14, 15 |
+| 1 Authentication | งานฐาน · 9 บัญชีของฉัน | ธีรณัฎฐ์ (login) · นูรีน (บัญชีตนเอง) |
+| 2 User Management | 1 จัดการผู้ใช้งาน | นัจญมา |
+| 5 Course Management | 2 จัดการรายวิชา | ธีรณัฎฐ์ |
+| 6 CLO Management | 3 กำหนด CLO | นัจญมา |
+| 7 Behavioral Objectives · 8 Activity · 9 Assessment Criteria | 4 วัตถุประสงค์เชิงพฤติกรรม | นัจญมา |
+| 10 Student Roster | 7 นำเข้า-ส่งออกรายชื่อ | นูรีน |
+| 11 Score Entry · 12 Import/Export · 13 Upload Log | 6 นำเข้า-ส่งออกคะแนน | นูรีน |
+| 14 Dashboard · 15 Individual Report | 5 วิเคราะห์และสรุป CLO | ธีรณัฎฐ์ |
+| — (ใหม่ใน SRS §4.10) | 8 ตัดเกรด | ธีรณัฎฐ์ |
 
-> การแบ่งนี้เป็นข้อเสนอเบื้องต้น — ให้ทีมคุยและ confirm scope ก่อนเริ่ม แล้วรายงานแผนสุดท้ายกลับให้เจ้าของโปรเจกต์ตาม [[code-rule]] §7
+> สูตรคำนวณทั้งหมด (CR-01…CR-11) อยู่ใน feature ของธีรณัฎฐ์ เพื่อไม่ให้คำนวณซ้ำคนละที่ (FR-88) · รายงานแผนสุดท้ายกลับให้เจ้าของโปรเจกต์ตาม [[code-rule]] §7
 
 ---
 

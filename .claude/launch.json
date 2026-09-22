@@ -1,0 +1,57 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "client-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "client",
+        "run",
+        "dev"
+      ],
+      "port": 10005,
+      "autoPort": false
+    },
+    {
+      "name": "client-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "client",
+        "run",
+        "preview",
+        "--",
+        "--port",
+        "10006",
+        "--strictPort"
+      ],
+      "port": 10006,
+      "autoPort": false
+    },
+    {
+      "name": "server-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "server",
+        "run",
+        "dev"
+      ],
+      "port": 3000,
+      "autoPort": false
+    },
+    {
+      "name": "docs-pages",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "scripts/dev-static-sink.py",
+        "10011",
+        "docs",
+        "C:\\Users\\phuti\\AppData\\Local\\Temp\\claude\\E--ApexCore-ApexDev-CMAS\\97b4e97f-ab5a-4357-9ad0-b04f962a876d\\scratchpad\\sink"
+      ],
+      "port": 10011,
+      "autoPort": false
+    }
+  ]
+}

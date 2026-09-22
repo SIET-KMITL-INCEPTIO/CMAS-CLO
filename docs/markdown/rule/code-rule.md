@@ -68,7 +68,7 @@ export class CourseService {
 
 ---
 
-## 3. OOP Layer Pattern (Backend — Hono)
+## 3. OOP Layer Pattern (Backend — Fastify)
 
 ทุก endpoint ไหลผ่าน 4 ชั้น class เสมอ ห้ามข้ามชั้น:
 
@@ -108,10 +108,12 @@ export class CourseService {
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
-  getOverview = async (c: Context) => {
-    const courseId = c.req.param("courseId")
-    const data = await this.courseService.getCourseOverview(courseId)
-    return ok(c, data)
+  getOverview = async (
+    request: FastifyRequest<{ Params: { courseId: string } }>,
+    reply: FastifyReply,
+  ) => {
+    const data = await this.courseService.getCourseOverview(request.params.courseId)
+    return ok(reply, data)   // lib/response.ts
   }
 }
 ```

@@ -5,7 +5,7 @@
 // faculty. Institution, Membership, Curriculum and CurriculumCourse are gone,
 // and with them the whole tenant-guard layer. What that decision bought:
 //   - `Role` moves onto User, because a role is no longer held per institution
-//   - `Course` absorbs the credit/hour/gradingType columns CurriculumCourse
+//   - `Course` absorbs the credit/hour/gradeScale columns CurriculumCourse
 //     used to carry, since nothing above Course exists any more
 //   - `Student.institutionId` disappears; courseId alone scopes a student
 //   - course uniqueness is (code, semester, year, section) — no institution
@@ -18,14 +18,12 @@
 // migration 0002_constraints_and_triggers and must never be dropped by
 // `prisma migrate` — and `prisma db push` deletes them silently, so db push is
 // banned in EVERY environment including local:
-//   1. CHECK constraints  (score >= 0, threshold 0-100, maxScore > 0,
+//   1. CHECK constraints  (score >= 0, weights 0-100, maxScore > 0,
 //                          passCriteria/classTarget 0-100, ...)
-//   2. Triggers           (score <= maxScore; Activity/CLO same-course;
-//                          Student/Activity same-course; objective/criterion
-//                          same-CLO)
-//   3. "at most one LEAD per course" — on Postgres this is a partial index:
-//        CREATE UNIQUE INDEX uq_courseinstructor_lead
-//            ON "CourseInstructor" ("courseId") WHERE role = 'LEAD';
+//   2. Triggers           (score <= maxScore; Activity/objective same-course;
+//                          Student/Activity same-course)
+//   3. (retired 2026-09-14, migration 0005) "at most one LEAD per course" —
+//      course roles were removed (decision D1), so the partial index went too.
 //
 // ACADEMIC YEAR: `year` is stored exactly as the faculty enters it (2568, not
 // 2025). One faculty means one convention, so there is no era column to
@@ -49,19 +47,88 @@ enum Role {
   INSTRUCTOR
 }
 
-// Role a person plays on ONE course. Belongs to the pairing, not to the
-// person and not to the course — which is why CourseInstructor is a table.
-enum CourseRole {
-  LEAD // ผู้ประสานงานรายวิชา — at most one per course
-  CO // ผู้สอนร่วม
-  ASSISTANT // ผู้ช่วยสอน / TA
-}
+// CourseRole (LEAD / CO / ASSISTANT) was REMOVED 2026-09-14 — decision D1 from
+// the mockup review: a course has instructors and nothing else. Every
+// instructor assigned to a course holds the same rights, including editing
+// CLOs and grading, so there is no per-pairing role left to store.
 
-// Seven courses (90641004-90641010) are graded ผ่าน (S) / ไม่ผ่าน (U)
-// instead of on a percentage scale. CR-06 reads this.
-enum GradingType {
+// The SCALE a course reports on. Seven courses (90641004-90641010) are graded
+// ผ่าน (S) / ไม่ผ่าน (U) instead of on a letter scale. CR-06 reads this.
+//
+// RENAMED from `GradingType` (2026-08-23): with GradingMethod below, "grading
+// type" and "grading method" were one letter apart and meant different things.
+// This one is the OUTPUT SCALE; GradingMethod is HOW the cutoff is computed.
+enum GradeScale {
   LETTER
   PASS_FAIL
+}
+
+// HOW a grade boundary is decided. Orthogonal to GradeScale.
+//   อิงเกณฑ์  — fixed cutoffs, known before the term starts
+//   อิงกลุ่ม  — cutoffs derived from the cohort's own distribution
+//
+// Lives on Course — one course, one method.
+// The unit the bands are read in follows from it: PERCENT for อิงเกณฑ์,
+// T_SCORE for อิงกลุ่ม. There is no BoundaryUnit enum any more; SD_MULTIPLE and
+// PERCENTILE were configuration nobody asked for.
+enum GradingMethod {
+  CRITERION_REFERENCED // อิงเกณฑ์ — bands are percentages
+  NORM_REFERENCED // อิงกลุ่ม — bands are T-scores
+}
+
+// ระดับพฤติกรรมตาม Bloom's revised taxonomy. Drives constructive alignment:
+// a CLO at ANALYZE measured only by a multiple-choice quiz is a design smell
+// the system can now actually detect.
+enum BloomLevel {
+  REMEMBER // จำ
+  UNDERSTAND // เข้าใจ
+  APPLY // ประยุกต์ใช้
+  ANALYZE // วิเคราะห์
+  EVALUATE // ประเมินค่า
+  CREATE // สร้างสรรค์
+}
+
+// SOLO taxonomy, recorded BESIDE Bloom, never instead of it (decision D4).
+// Three levels per the faculty's คอบ. document p.33.
+// !! The value NAMES below are provisional — not yet checked against that page.
+//    Rename before the first production migrate, when renaming is still free.
+enum SoloLevel {
+  SURFACE // พื้นผิว — one or several aspects, not yet related
+  DEEP // เชิงลึก — aspects integrated into a whole
+  TRANSFER // ต่อยอด — generalised to a new context
+}
+
+// Where a CLO's Bloom / SOLO level came from (decision E3, 2026-09-17).
+// AUTO   — suggested from the leading action verb of the CLO text; recomputed
+//          whenever the text changes.
+// MANUAL — set by an instructor; the suggestion never overwrites it.
+enum LevelSource {
+  AUTO
+  MANUAL
+}
+
+// What kind of teaching event an activity belongs to (T3/T11).
+enum ActivityType {
+  LECTURE // บรรยาย
+  LAB // ปฏิบัติการ
+  TEST // สอบ
+  PROJECT // โครงงาน / ชิ้นงาน
+}
+
+// How an activity is assessed (T3/T11). Replaces the free-text Activity.method.
+enum AssessmentMethod {
+  QUIZ // แบบทดสอบ
+  EXAM // ข้อสอบ
+  RUBRIC // รูบริก
+  WORK // ตรวจชิ้นงาน / รายงาน
+  OBSERVATION // สังเกตพฤติกรรม
+}
+
+// How an account was first created (D6). Informational: an EMAIL account can
+// later link Google (googleSub set) and keep its password.
+enum AuthProvider {
+  EMAIL
+  GOOGLE
 }
 
 // ---------------------------------------------------------------------------
@@ -72,19 +139,46 @@ model User {
   id           String  @id @default(cuid())
   email        String  @unique
   name         String
-  passwordHash String // argon2 only (FR-02)
+  // argon2id only (FR-02). NULL for an account that signs in only with Google;
+  // migration 0005 CHECKs that at least one of passwordHash / googleSub exists.
+  passwordHash String?
   role         Role    @default(INSTRUCTOR)
   isActive     Boolean @default(true) // account kill switch (FR-03)
+
+  // Self-registration (D6). An EMAIL account cannot sign in until verified;
+  // a Google account is verified by Google, so this is set on creation.
+  authProvider    AuthProvider @default(EMAIL)
+  // Google's stable subject id from the VERIFIED ID token. Accounts are matched
+  // on this, never on the email string, which a Workspace admin can reassign.
+  googleSub       String?      @unique
+  emailVerifiedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Never hard-delete a User who still teaches or has uploaded scores —
   // set isActive = false instead (FR-06). Both relations are Restrict.
-  courseAssignments CourseInstructor[]
-  uploadLogs        ScoreUploadLog[]
+  courseAssignments  CourseInstructor[]
+  uploadLogs         ScoreUploadLog[]
+  verificationTokens EmailVerificationToken[]
 
   @@index([role, isActive])
+}
+
+// One-time email verification link (D6). Only the SHA-256 of the token is
+// stored, so a database read cannot be replayed as a link. Single use
+// (usedAt) and short-lived (expiresAt, 24 h); issuing a new link for a user
+// invalidates the older ones in the application layer.
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
 }
 
 // ---------------------------------------------------------------------------
@@ -115,13 +209,22 @@ model Course {
 
   // Courses 90641004-90641010 are graded ผ่าน (S) / ไม่ผ่าน (U) — CR-06 forbids
   // rendering a letter grade for these.
-  gradingType GradingType @default(LETTER)
+  gradeScale GradeScale @default(LETTER)
+
+  // อิงเกณฑ์ / อิงกลุ่ม. The entire grading configuration of a course, after
+  // GradeScheme was removed on 2026-09-06 — the unit GradeBand.minValue is read
+  // in follows from this value and needs no column of its own.
+  gradeMethod GradingMethod @default(CRITERION_REFERENCED)
 
   // OI-03. Course-level, not global: changing a faculty-wide default must not
   // retroactively flip last term's "CLO บรรลุ" and "ผ่านรายวิชา" verdicts.
   // CR-05 reads passCriteria, CR-04 reads classTarget.
   passCriteria Float @default(60) // เกณฑ์คะแนนรวมที่ถือว่านักศึกษาผ่านวิชา (%)
-  classTarget  Float @default(70) // สัดส่วนนักศึกษาที่ต้องผ่าน CLO จึงถือว่าบรรลุ (%)
+  // E1 (2026-09-17): ONE pass mark for every CLO of the course, replacing the
+  // per-CLO threshold. A student passes a CLO when the CLO score — objective
+  // scores combined by BehavioralObjective.weight — is at least this value.
+  cloPassMark  Float @default(60)
+  classTarget  Float @default(100) // สัดส่วนนักศึกษาที่ต้องผ่าน CLO จึงถือว่าบรรลุ (%) · D2: เป้าคือทุกคนผ่าน
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -131,6 +234,7 @@ model Course {
   activities  Activity[]
   students    Student[]
   uploadLogs  ScoreUploadLog[]
+  gradeBands  GradeBand[]
 
   // FR-21. One faculty, so the code alone is meaningful — the error message is
   // "รหัสวิชานี้มีอยู่แล้ว" with no institution qualifier.
@@ -142,16 +246,15 @@ model Course {
 // Many instructors teach many courses. The junction carries `role`, which is
 // the signal that this had to be a table and not two foreign keys.
 model CourseInstructor {
-  id         String     @id @default(cuid())
+  id         String   @id @default(cuid())
   courseId   String
-  course     Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   userId     String
-  user       User       @relation(fields: [userId], references: [id], onDelete: Restrict)
-  role       CourseRole @default(CO)
-  assignedAt DateTime   @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  assignedAt DateTime @default(now())
 
-  // "At least one LEAD per course" is NOT enforced here: the course row must
-  // exist before anyone can be assigned, so the first insert would be
+  // "At least one instructor per course" is NOT enforced here: the course row
+  // must exist before anyone can be assigned, so the first insert would be
   // impossible. Enforce in the application layer (FR-23).
   @@unique([courseId, userId])
   @@index([userId]) // "which courses may this instructor see" — every request
@@ -167,10 +270,31 @@ model CLO {
   course      Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   number      Int
   description String
-  threshold   Float  @default(60) // pass mark as a PERCENTAGE, per CLO
+
+  // T1 / E2 (2026-09-17): the CLO's share of the course, entered by the
+  // instructor; all CLOs of a course should sum to 100. The share implied by
+  // Activity.weight x AssessmentCriteria.weight is computed and compared in
+  // the application — a mismatch warns, it does not block. NULL until entered.
+  // (threshold was removed by T7 — see Course.cloPassMark.)
+  weight Float?
+
+  // AUTO = bloomLevel/soloLevel were suggested from the text (E3).
+  levelSource LevelSource @default(AUTO)
+
+  // Cognitive level this outcome is written at. Nullable because existing rows
+  // predate the column and a wrong level is worse than a missing one — the UI
+  // prompts rather than defaulting to REMEMBER.
+  bloomLevel BloomLevel?
+  // SOLO level beside Bloom (D4). Nullable for the same reason as bloomLevel.
+  soloLevel  SoloLevel?
+
+  // Per-CLO override of Course.classTarget: the share of students who must
+  // pass THIS CLO before it counts as บรรลุ. NULL = inherit the course value.
+  // A CLO at CREATE reasonably carries a lower target than one at REMEMBER;
+  // one course-wide number cannot express that (CR-04).
+  classTarget Float?
 
   objectives BehavioralObjective[]
-  criteria   AssessmentCriteria[]
 
   // CLO numbering must be unique inside a course — two "CLO 1" in one course
   // silently corrupts every attainment report.
@@ -178,27 +302,36 @@ model CLO {
 }
 
 // จุดประสงค์เชิงพฤติกรรม — the observable statements a CLO breaks down into.
+// Since 2026-09-17 (T11) this is the level activities attach to: CLO →
+// objectives → activities. A CLO score is the weight-combined objective scores.
 model BehavioralObjective {
   id          String @id @default(cuid())
   cloId       String
   clo         CLO    @relation(fields: [cloId], references: [id], onDelete: Cascade)
   number      Int
   description String
+  // T6: share of THIS CLO; objectives under one CLO sum to 100. NULL until entered.
+  weight      Float?
 
-  assessments ObjectiveAssessment[]
+  criteria AssessmentCriteria[]
 
   @@unique([cloId, number])
 }
 
 model Activity {
-  id       String @id @default(cuid())
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  name     String
-  method   String
-  maxScore Float // must be > 0 — every attainment formula divides by it
-  order    Int
-  weight   Float // % of the course total; all activities in a course sum to 100
+  id               String           @id @default(cuid())
+  courseId         String
+  course           Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  name             String
+  // T3 (2026-09-17): type + assessment method replace the free-text `method`;
+  // the old text survives as the start of `criteriaNote`.
+  type             ActivityType     @default(TEST)
+  assessmentMethod AssessmentMethod @default(EXAM)
+  criteriaNote     String           @default("") // เกณฑ์การประเมิน / รูบริก, free text
+  passMark         Float            @default(50) // % of maxScore that passes THIS activity — reported, never decides a CLO
+  maxScore         Float // must be > 0 — every attainment formula divides by it
+  order            Int
+  weight           Float // % of the course total; all activities in a course sum to 100
 
   criteria AssessmentCriteria[]
   scores   Score[]
@@ -206,36 +339,24 @@ model Activity {
   @@index([courseId, order])
 }
 
-// Associative entity: Activity <-> CLO is M:N, and `weight` belongs to the
-// pairing rather than to either side (CR-01).
+// Associative entity: Activity <-> BehavioralObjective is M:N, and `weight`
+// belongs to the pairing (CR-01). Before 2026-09-17 this paired Activity with
+// CLO and objectives hung off it through ObjectiveAssessment as optional
+// traceability; T4/T11 made the objective the thing an activity measures, so
+// the two tables merged (migration 0006). The CLO is reached through the
+// objective — an activity can no longer measure a CLO without naming which
+// objective of it.
 model AssessmentCriteria {
-  id         String   @id @default(cuid())
-  activityId String
-  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
-  cloId      String
-  clo        CLO      @relation(fields: [cloId], references: [id], onDelete: Cascade)
-  weight     Float // % of THIS activity that measures THIS CLO; sums to 100 per activity
-
-  objectives ObjectiveAssessment[]
-
-  // A trigger additionally enforces that Activity and CLO belong to the SAME
-  // course. Prisma cannot express that; do not drop it.
-  @@unique([activityId, cloId])
-  @@index([cloId])
-}
-
-// Records WHICH behavioural objectives a criterion provides evidence for.
-// Attaches to AssessmentCriteria rather than Activity, so mapping objectives
-// is optional traceability and never changes a computed CLO score (FR-35).
-// A trigger enforces that the objective belongs to the criterion's own CLO.
-model ObjectiveAssessment {
   id          String              @id @default(cuid())
-  criteriaId  String
-  criteria    AssessmentCriteria  @relation(fields: [criteriaId], references: [id], onDelete: Cascade)
+  activityId  String
+  activity    Activity            @relation(fields: [activityId], references: [id], onDelete: Cascade)
   objectiveId String
   objective   BehavioralObjective @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
+  weight      Float // % of THIS activity that measures THIS objective; sums to 100 per activity
 
-  @@unique([criteriaId, objectiveId])
+  // A trigger additionally enforces that the Activity and the objective's CLO
+  // belong to the SAME course. Prisma cannot express that; do not drop it.
+  @@unique([activityId, objectiveId])
   @@index([objectiveId])
 }
 
@@ -260,6 +381,7 @@ model Student {
   course      Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   scores Score[]
+  grade  StudentGrade?
 
   // FR-51: unique inside a course. The same code in two courses is two
   // enrolments of one person, which is correct and must stay legal.
@@ -306,4 +428,98 @@ model ScoreUploadLog {
 
   @@index([courseId])
   @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// GRADING — การตัดเกรด (อิงเกณฑ์ / อิงกลุ่ม)
+//
+// SCOPE: the norm-referenced population is ONE Course row, which is ONE
+// หมู่เรียน. Pooling several sections of the same course code into a single
+// curve is NOT supported and cannot be bolted on: CLO and Activity both hang
+// off `courseId`, so section 01's "สอบกลางภาค" and section 02's are unrelated
+// rows with no way to match them. Supporting it needs a CourseOffering level
+// ABOVE Course, which reverses decision 2.7. Do not half-implement it.
+//
+// The three axes stay separate and must not be collapsed:
+//   CLO attainment  — ALWAYS criterion-referenced, even here (CR-03/CR-04)
+//   ผ่าน/ไม่ผ่านวิชา — Course.passCriteria (CR-05)
+//   เกรด            — this section
+// Group statistics must never reach the first two. A CLO is met against its
+// threshold or it is not; that verdict cannot depend on how the cohort did, or
+// the attainment report stops being defensible to the curriculum committee.
+// ---------------------------------------------------------------------------
+
+// SIMPLIFIED 2026-09-06 — four tables became two, 23 columns became nine.
+//
+// The system exists to report CLO attainment. Grading is a secondary output, so
+// it now stores the smallest thing that still answers "what grade, on what
+// ladder, decided which way": a method on Course, a ladder in GradeBand, one row
+// per student in StudentGrade.
+//
+// GradeScheme is gone. It held two facts — the method and the unit its bands are
+// read in — and the second follows from the first (อิงเกณฑ์ is always percent,
+// อิงกลุ่ม is always a T-score here), so one enum on Course carries both.
+//
+// GradeRun is gone, and this is the deliberate trade. It froze n / mean / sd at
+// compute time, which is what let a NORM_REFERENCED letter be re-derived years
+// later. Without it the awarded letter is still permanent — StudentGrade.grade is
+// stored, not computed on read, so no withdrawal can silently change it — but the
+// arithmetic behind a curved letter can no longer be reproduced from the database
+// alone. For a course graded อิงเกณฑ์ nothing is lost at all: the ladder in
+// GradeBand plus totalPercent reproduces the letter exactly.
+//
+// To restore full auditability for อิงกลุ่ม, add back ONE table holding courseId +
+// n + mean + sd + computedAt and point StudentGrade at it. Do not reintroduce
+// GradeScheme with it.
+//
+// SCOPE, unchanged: the norm-referenced population is ONE Course row, which is
+// ONE หมู่เรียน. Pooling sections needs a CourseOffering level above Course and
+// reverses decision 2.7.
+//
+// The three axes stay separate and must not be collapsed:
+//   CLO attainment  — ALWAYS criterion-referenced, even here (CR-03/CR-04)
+//   ผ่าน/ไม่ผ่านวิชา — Course.passCriteria (CR-05)
+//   เกรด            — this section
+// Group statistics must never reach the first two.
+// ---------------------------------------------------------------------------
+
+// One row per grade on the course's ladder. `minValue` is read in the unit the
+// course's gradeMethod implies: percent for อิงเกณฑ์ (A >= 80), T-score for
+// อิงกลุ่ม (A >= T65). No boundaryUnit column, because there is no third option.
+model GradeBand {
+  id       String @id @default(cuid())
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  grade    String // 'A','B+',... or 'S','U'
+  minValue Float
+
+  // Rank is `ORDER BY minValue DESC`. That ordering is total because no two
+  // bands in one course may share a cutoff, which is what the second unique key
+  // enforces — the old monotonicity trigger collapsed into it.
+  //
+  // The PASS_FAIL band restriction is still a trigger in 0004. The mandatory
+  // floor band (minValue = 0) is an app-level rule under CR-09.
+  @@unique([courseId, grade])
+  @@unique([courseId, minValue])
+}
+
+// One student's final grade in their course. Student already carries courseId,
+// so this table needs no course column of its own — and one enrolment has one
+// grade, which is what @unique on studentId says.
+model StudentGrade {
+  id        String  @id @default(cuid())
+  studentId String  @unique
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  // Frozen at grading time, not read through to Score. CR-05 computes it once;
+  // editing a score afterwards does not silently move an awarded grade.
+  totalPercent Float
+  grade        String
+
+  // ปรับเกรด. NULL = the grade the ladder produced. Non-null = an instructor
+  // changed it and said why — the reason IS the record that it was changed.
+  // Without a legal way to do this, instructors edit raw scores instead, which
+  // corrupts every CLO number downstream: the expensive failure mode.
+  overrideReason String?
 }

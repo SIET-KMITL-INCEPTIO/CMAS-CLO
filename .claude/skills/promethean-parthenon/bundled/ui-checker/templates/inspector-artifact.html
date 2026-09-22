@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<!-- ui-checker / templates / inspector-artifact.html
+     DO NOT edit __TARGET_HTML_B64__ or __ANALYSIS_JSON_B64__ manually.
+     Use: python3 scripts/build-artifact.py ... to inject content safely via base64. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UI Inspector</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--panel:#161b22;--panel2:#21262d;--border:#30363d;
+  --text:#e6edf3;--muted:#7d8590;--green:#3fb950;--yellow:#d29922;
+  --red:#f85149;--blue:#58a6ff;
+}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);
+     height:100vh;display:flex;flex-direction:column;overflow:hidden}
+/* ── Header ── */
+#hdr{height:44px;background:var(--panel);border-bottom:1px solid var(--border);
+     display:flex;align-items:center;gap:7px;padding:0 10px;flex-shrink:0;flex-wrap:wrap}
+#hdr h1{font-size:.82rem;font-weight:600;letter-spacing:.02em}
+.sep{width:1px;height:20px;background:var(--border)}
+.vbtn{padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:var(--panel2);
+      color:var(--muted);font-size:.7rem;cursor:pointer}
+.vbtn:hover,.vbtn.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+#thm-btn{padding:3px 9px;border-radius:4px;border:1px solid var(--border);
+         background:var(--panel2);color:var(--text);font-size:.72rem;cursor:pointer}
+#pnl-btn{margin-left:auto;padding:3px 9px;border-radius:4px;border:1px solid var(--border);
+         background:var(--panel2);color:var(--muted);font-size:.7rem;cursor:pointer}
+/* ── Banner ── */
+#banner{display:none;background:rgba(210,153,34,.1);border-bottom:1px solid var(--border);
+        color:var(--yellow);font-size:.73rem;padding:6px 12px;flex-shrink:0}
+/* ── Body ── */
+#body{display:flex;flex:1;overflow:hidden}
+/* ── Preview ── */
+#prev-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+#iframe-c{flex:1;overflow:auto;background:#fff}
+#preview{width:100%;height:100%;border:none;display:block}
+#ruler{height:22px;background:var(--panel2);border-top:1px solid var(--border);
+       padding:0 10px;font-size:.7rem;color:var(--muted);display:flex;align-items:center}
+/* ── Panel ── */
+#panel{width:330px;background:var(--panel);border-left:1px solid var(--border);
+       display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;transition:width .15s}
+#panel.gone{width:0;overflow:hidden}
+#tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.tab{flex:1;padding:7px 3px;text-align:center;font-size:.68rem;color:var(--muted);
+     cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:var(--text);border-bottom-color:var(--blue)}
+#tc{flex:1;overflow-y:auto;padding:10px}
+/* ── Tab sections ── */
+.stitle{font-size:.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:10px 0 5px}
+.stitle:first-child{margin-top:0}
+code{background:var(--panel2);padding:.1em .3em;border-radius:3px;font-size:.78em;font-family:monospace}
+/* Color grid */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:5px}
+.ccard{border:1px solid var(--border);border-radius:5px;overflow:hidden;cursor:pointer}
+.ccard:hover,.ccard.sel{border-color:var(--blue)}
+.csw{height:32px}
+.ci{padding:4px 6px;background:var(--panel2)}
+.chex{font-size:.68rem;font-family:monospace}
+.cbadge{font-size:.62rem;padding:.1em .35em;border-radius:3px;display:inline-block;margin-top:2px}
+.bv{background:rgba(63,185,80,.15);color:var(--green)}
+.bhc{background:rgba(248,81,73,.15);color:var(--red)}
+/* Dim display */
+#dimd{background:var(--panel2);border-radius:5px;padding:8px;margin-bottom:7px}
+.dr{display:flex;justify-content:space-between;font-size:.76rem;padding:2px 0;border-bottom:1px solid var(--border)}
+.dr:last-child{border:none}
+.dl{color:var(--muted)}.dv{font-family:monospace;color:var(--text)}
+#click-hint{font-size:.72rem;color:var(--muted);text-align:center;padding:8px;
+            border:1px dashed var(--border);border-radius:5px;margin-bottom:7px}
+/* WCAG */
+.pick{display:flex;gap:7px;margin-bottom:7px;align-items:center}
+.pcb{width:34px;height:34px;border-radius:5px;border:2px solid var(--border);cursor:pointer;flex-shrink:0}
+.pcb.sel{border-color:var(--blue)}
+#wres{background:var(--panel2);border-radius:5px;padding:9px;text-align:center}
+#wratio{font-size:2rem;font-weight:700;margin-bottom:3px;color:var(--muted)}
+#wlvls{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.lb{padding:2px 8px;border-radius:100px;font-size:.7rem;font-weight:600}
+.lp{background:rgba(63,185,80,.15);color:var(--green)}
+.lf{background:rgba(248,81,73,.15);color:var(--red)}
+/* Issues */
+.iss{border:1px solid var(--border);border-radius:5px;padding:7px 9px;margin-bottom:5px;font-size:.76rem}
+.iss.err{border-left:3px solid var(--red)}.iss.wrn{border-left:3px solid var(--yellow)}.iss.inf{border-left:3px solid var(--blue)}
+.ititle{font-weight:600;margin-bottom:2px;display:flex;justify-content:space-between;align-items:flex-start;gap:4px}
+.ifix{color:var(--muted);font-size:.7rem;margin-top:3px}
+pre.icode{background:var(--bg);padding:5px 7px;border-radius:3px;font-size:.66rem;margin-top:3px;
+          overflow-x:auto;white-space:pre-wrap;border:1px solid var(--border)}
+.cpybtn{padding:2px 6px;border-radius:3px;border:1px solid var(--border);background:var(--panel2);
+        color:var(--muted);font-size:.66rem;cursor:pointer;flex-shrink:0}
+.cpybtn:hover{color:var(--text)}
+.noiss{color:var(--green);font-size:.78rem;text-align:center;padding:10px}
+/* Var list */
+.vrow{display:flex;align-items:center;gap:5px;padding:3px 0;border-bottom:1px solid var(--border);font-size:.72rem}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <h1>🔍 UI Inspector</h1>
+  <div class="sep"></div>
+  <span style="font-size:.68rem;color:var(--muted)">Viewport:</span>
+  <button class="vbtn" onclick="setVP(320,this)">320</button>
+  <button class="vbtn" onclick="setVP(375,this)">375</button>
+  <button class="vbtn" onclick="setVP(768,this)">768</button>
+  <button class="vbtn" onclick="setVP(1024,this)">1024</button>
+  <button class="vbtn on" onclick="setVP('100%',this)">Full</button>
+  <div class="sep"></div>
+  <button id="thm-btn" onclick="cycleTheme()">☀️ Light</button>
+  <button id="pnl-btn" onclick="togglePanel()">◀ Panel</button>
+</div>
+
+<div id="banner"></div>
+
+<div id="body">
+  <div id="prev-wrap">
+    <div id="iframe-c">
+      <iframe id="preview" sandbox="allow-same-origin allow-scripts"></iframe>
+    </div>
+    <div id="ruler">Hover an element to see dimensions · Click to lock</div>
+  </div>
+
+  <div id="panel">
+    <div id="tabs">
+      <div class="tab on"  onclick="showTab('col',this)">🎨 Colors</div>
+      <div class="tab"     onclick="showTab('dim',this)">📐 Layout</div>
+      <div class="tab"     onclick="showTab('wc',this)">♿ WCAG</div>
+      <div class="tab"     onclick="showTab('iss',this)">⚠️ Issues</div>
+    </div>
+    <div id="tc">
+
+      <!-- Colors tab -->
+      <div id="t-col">
+        <div class="stitle">Color Palette</div>
+        <div id="cgrid" class="cgrid"></div>
+        <div class="stitle" style="margin-top:12px">CSS Variables</div>
+        <div id="varlist"></div>
+      </div>
+
+      <!-- Layout tab -->
+      <div id="t-dim" style="display:none">
+        <div id="click-hint">👆 Click any element in the preview to inspect</div>
+        <div id="dimd"></div>
+        <div class="stitle">Computed Styles</div>
+        <div id="cslist"></div>
+      </div>
+
+      <!-- WCAG tab -->
+      <div id="t-wc" style="display:none">
+        <div class="stitle">Pick two colors to compare</div>
+        <div class="pick">
+          <div id="pfg" class="pcb" style="background:#000" title="Foreground"></div>
+          <span style="font-size:.76rem;color:var(--muted)">on</span>
+          <div id="pbg" class="pcb" style="background:#fff" title="Background"></div>
+          <span style="font-size:.7rem;color:var(--muted)">← click from palette</span>
+        </div>
+        <div id="wres">
+          <div id="wratio">—</div>
+          <div id="wlvls"></div>
+        </div>
+        <div style="font-size:.68rem;color:var(--muted);margin-top:7px">
+          AA normal: 4.5:1 · AA large/UI: 3:1 · AAA: 7:1
+        </div>
+      </div>
+
+      <!-- Issues tab -->
+      <div id="t-iss" style="display:none">
+        <div id="isslist"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Injected data (base64) ────────────────────────────────────────────────────
+const TARGET_HTML_B64  = "__TARGET_HTML_B64__";
+const ANALYSIS_JSON_B64 = "__ANALYSIS_JSON_B64__";
+
+function b64ToUtf8(b64) {
+  const bin   = atob(b64);
+  const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+  return new TextDecoder('utf-8').decode(bytes);
+}
+const TARGET_HTML = b64ToUtf8(TARGET_HTML_B64);
+const ANALYSIS    = ANALYSIS_JSON_B64 ? JSON.parse(b64ToUtf8(ANALYSIS_JSON_B64)) : null;
+
+// ── State ─────────────────────────────────────────────────────────────────────
+const THEMES = ['light','dark','auto'];
+const THEME_LABELS = { light:'☀️ Light', dark:'🌙 Dark', auto:'🔄 System' };
+let theme = 'light', wcagFg = '#000000', wcagBg = '#ffffff', wcagTarget = 'fg', locked = null;
+const iframe = document.getElementById('preview');
+
+// ── Load preview ──────────────────────────────────────────────────────────────
+function loadPreview() {
+  const blob = new Blob([TARGET_HTML], { type: 'text/html' });
+  iframe.src = URL.createObjectURL(blob);
+  iframe.onload = () => {
+    try { injectHooks(); } catch(e) {}
+    extractColors();
+    buildIssues();
+  };
+}
+
+// ── Theme cycling ─────────────────────────────────────────────────────────────
+function cycleTheme() {
+  theme = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+  document.getElementById('thm-btn').textContent = THEME_LABELS[theme];
+  applyTheme();
+}
+function applyTheme() {
+  try {
+    const doc = iframe.contentDocument;
+    if (!doc) return;
+    if (theme === 'dark') {
+      doc.documentElement.setAttribute('data-theme','dark');
+      doc.documentElement.setAttribute('data-color-scheme','dark');
+      doc.documentElement.classList.add('dark');
+      doc.documentElement.style.colorScheme = 'dark';
+    } else {
+      doc.documentElement.removeAttribute('data-theme');
+      doc.documentElement.removeAttribute('data-color-scheme');
+      doc.documentElement.classList.remove('dark');
+      doc.documentElement.style.colorScheme = theme === 'auto' ? 'light dark' : 'light';
+    }
+  } catch(e) {}
+}
+
+// ── Viewport ──────────────────────────────────────────────────────────────────
+function setVP(w, btn) {
+  document.querySelectorAll('.vbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  iframe.style.width = w === '100%' ? '100%' : w + 'px';
+  document.getElementById('iframe-c').style.overflowX = w === '100%' ? 'hidden' : 'auto';
+}
+
+// ── Panel toggle ──────────────────────────────────────────────────────────────
+function togglePanel() {
+  const p = document.getElementById('panel');
+  const b = document.getElementById('pnl-btn');
+  p.classList.toggle('gone');
+  b.textContent = p.classList.contains('gone') ? '▶ Panel' : '◀ Panel';
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function showTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  ['col','dim','wc','iss'].forEach(n => {
+    document.getElementById('t-'+n).style.display = n === id ? '' : 'none';
+  });
+}
+
+// ── Compat banner ─────────────────────────────────────────────────────────────
+function showBanner() {
+  if (!ANALYSIS || !ANALYSIS.css_variables) return;
+  const m = ANALYSIS.css_variables.dark_mode_method;
+  const b = document.getElementById('banner');
+  const msgs = {
+    'media-query':   '⚠️ Dark mode only responds to OS appearance setting (@media prefers-color-scheme). The toggle above cannot force a preview. Add a .dark class hook for manual testing.',
+    'tailwind-media':'⚠️ Tailwind dark: classes found but darkMode is not "class" mode — only OS setting controls it. Add darkMode:"class" to tailwind.config.js to enable the toggle here.',
+    'none':          '⚠️ No dark mode mechanism detected. The theme toggle will have no visible effect.',
+  };
+  if (msgs[m]) { b.style.display = 'block'; b.textContent = msgs[m]; }
+}
+
+// ── Color extraction ──────────────────────────────────────────────────────────
+function rgbToHex(rgb) {
+  if (!rgb || rgb === 'transparent' || rgb === 'rgba(0, 0, 0, 0)') return null;
+  const m = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  if (!m) return null;
+  return '#' + [m[1],m[2],m[3]].map(n => (+n).toString(16).padStart(2,'0')).join('');
+}
+
+function extractColors() {
+  const doc    = iframe.contentDocument;
+  if (!doc) return;
+  const colors = new Map();
+  const cssVars = {};
+
+  // Extract CSS variable definitions from :root
+  for (const sheet of doc.styleSheets) {
+    try {
+      for (const rule of sheet.cssRules) {
+        if (/^(:root|html)$/.test(rule.selectorText)) {
+          for (const prop of rule.style) {
+            if (prop.startsWith('--')) {
+              cssVars[prop] = rule.style.getPropertyValue(prop).trim();
+            }
+          }
+        }
+      }
+    } catch(e) {}
+  }
+
+  // Walk all elements for computed color values
+  for (const el of doc.querySelectorAll('*')) {
+    const cs = doc.defaultView.getComputedStyle(el);
+    for (const prop of ['color','backgroundColor','borderColor']) {
+      const hex = rgbToHex(cs[prop]);
+      if (hex && !colors.has(hex)) {
+        const isVar = Object.values(cssVars).some(v => rgbToHex(v) === hex);
+        colors.set(hex, { isVar, prop });
+      }
+    }
+  }
+
+  // Add hardcoded colors from analysis if not already seen
+  if (ANALYSIS && ANALYSIS.hardcoded_colors) {
+    for (const c of ANALYSIS.hardcoded_colors) {
+      if (c.value && c.value.startsWith('#') && !colors.has(c.value)) {
+        colors.set(c.value, { isVar: false, prop: c.context });
+      }
+    }
+  }
+
+  buildColorGrid(colors, cssVars);
+}
+
+function buildColorGrid(colors, cssVars) {
+  const grid = document.getElementById('cgrid');
+  grid.innerHTML = '';
+  for (const [hex, info] of colors) {
+    const d = document.createElement('div');
+    d.className = 'ccard';
+    d.innerHTML = `<div class="csw" style="background:${hex}"></div>
+      <div class="ci">
+        <div class="chex">${hex}</div>
+        <span class="cbadge ${info.isVar?'bv':'bhc'}">${info.isVar?'✅ token':'❌ hardcoded'}</span>
+      </div>`;
+    d.onclick = () => selectColor(hex, d);
+    grid.appendChild(d);
+  }
+
+  const vl = document.getElementById('varlist');
+  vl.innerHTML = '';
+  for (const [name, val] of Object.entries(cssVars)) {
+    const hex = rgbToHex(val) || (val.startsWith('#') ? val : null);
+    const r = document.createElement('div');
+    r.className = 'vrow';
+    r.innerHTML = `${hex ? `<span style="width:10px;height:10px;background:${hex};border-radius:2px;border:1px solid var(--border);flex-shrink:0"></span>` : ''}
+      <code style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</code>
+      <span style="color:var(--muted);font-size:.66rem">${val.length>22?val.slice(0,22)+'…':val}</span>`;
+    vl.appendChild(r);
+  }
+}
+
+// ── Element inspector ─────────────────────────────────────────────────────────
+function injectHooks() {
+  const doc = iframe.contentDocument;
+  doc.addEventListener('mouseover', e => { if (!locked) { showDim(e.target); updateRuler(e.target, false); } });
+  doc.addEventListener('click', e => {
+    e.preventDefault();
+    locked = locked === e.target ? null : e.target;
+    if (locked) { showDim(locked); showCS(locked); switchToLayout(); }
+  }, true);
+}
+
+function switchToLayout() {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('on', i===1));
+  ['col','dim','wc','iss'].forEach(n => {
+    document.getElementById('t-'+n).style.display = n === 'dim' ? '' : 'none';
+  });
+}
+
+function showDim(el) {
+  const rect = el && el.getBoundingClientRect ? el.getBoundingClientRect() : null;
+  const d = document.getElementById('dimd');
+  if (!rect) { d.innerHTML = ''; return; }
+  const tag = el.tagName.toLowerCase() + (el.id?'#'+el.id:'') +
+    (typeof el.className==='string' && el.className ? '.'+el.className.trim().split(/\s+/).slice(0,3).join('.') : '');
+  d.innerHTML = [['Element', tag], ['Width', Math.round(rect.width)+'px'],
+    ['Height', Math.round(rect.height)+'px'], ['Top', Math.round(rect.top)+'px'], ['Left', Math.round(rect.left)+'px']]
+    .map(([l,v]) => `<div class="dr"><span class="dl">${l}</span><span class="dv">${v}</span></div>`).join('');
+  updateRuler(el, true);
+}
+
+function updateRuler(el, isLocked) {
+  const rect = el && el.getBoundingClientRect ? el.getBoundingClientRect() : null;
+  if (!rect) return;
+  document.getElementById('ruler').textContent =
+    `${el.tagName.toLowerCase()}  W:${Math.round(rect.width)}px  H:${Math.round(rect.height)}px  x:${Math.round(rect.left)}  y:${Math.round(rect.top)}${isLocked?' 🔒':''}`;
+}
+
+function showCS(el) {
+  const doc = iframe.contentDocument;
+  const cs = doc.defaultView.getComputedStyle(el);
+  const list = document.getElementById('cslist');
+  const props = ['display','position','color','background-color','font-size','font-weight',
+                 'line-height','padding','margin','border','overflow','z-index','opacity'];
+  list.innerHTML = props.map(p => {
+    const v = cs.getPropertyValue(p);
+    if (!v || v === 'none' || v === 'normal' || v === 'auto' || v === '0px') return '';
+    return `<div class="vrow"><span class="dl">${p}</span><code style="color:var(--text)">${v.length>28?v.slice(0,28)+'…':v}</code></div>`;
+  }).join('');
+}
+
+// ── WCAG checker ──────────────────────────────────────────────────────────────
+function selectColor(hex, card) {
+  document.querySelectorAll('.ccard').forEach(c => c.classList.remove('sel'));
+  card.classList.add('sel');
+  if (wcagTarget === 'fg') { wcagFg = hex; document.getElementById('pfg').style.background = hex; wcagTarget = 'bg'; }
+  else                     { wcagBg = hex; document.getElementById('pbg').style.background = hex; wcagTarget = 'fg'; }
+  calcWcag();
+}
+function lin(c) { const s=c/255; return s<=0.04045?s/12.92:Math.pow((s+0.055)/1.055,2.4); }
+function lum(hex) {
+  hex = hex.replace('#','');
+  if (hex.length===3) hex=hex.split('').map(c=>c+c).join('');
+  return 0.2126*lin(parseInt(hex.slice(0,2),16))+0.7152*lin(parseInt(hex.slice(2,4),16))+0.0722*lin(parseInt(hex.slice(4,6),16));
+}
+function calcWcag() {
+  const l1=lum(wcagFg), l2=lum(wcagBg);
+  const ratio = ((Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05));
+  const r = document.getElementById('wratio');
+  r.textContent = ratio.toFixed(2)+':1';
+  r.style.color = ratio>=4.5?'var(--green)':ratio>=3?'var(--yellow)':'var(--red)';
+  document.getElementById('wlvls').innerHTML = [
+    {label:'AA Normal',pass:ratio>=4.5},{label:'AA Large/UI',pass:ratio>=3},
+    {label:'AAA Normal',pass:ratio>=7},{label:'AAA Large',pass:ratio>=4.5},
+  ].map(({label,pass}) =>
+    `<span class="lb ${pass?'lp':'lf'}">${pass?'✅':'❌'} ${label}</span>`
+  ).join('');
+}
+
+// ── Issues list ───────────────────────────────────────────────────────────────
+function buildIssues() {
+  const el = document.getElementById('isslist');
+  if (!ANALYSIS) { el.innerHTML='<div class="noiss">No analysis data available</div>'; return; }
+
+  const dm = (ANALYSIS.css_variables||{}).dark_mode_method || 'none';
+  const darkFix = {
+    'class':           n => `.dark {\n  ${n}: <dark-value>;\n}`,
+    'tailwind-class':   n => `.dark {\n  ${n}: <dark-value>;\n}`,
+    'data-attribute':  n => `[data-theme="dark"] {\n  ${n}: <dark-value>;\n}`,
+    'media-query':     n => `@media (prefers-color-scheme: dark) {\n  :root { ${n}: <dark-value>; }\n}`,
+    'tailwind-media':  n => `@media (prefers-color-scheme: dark) {\n  :root { ${n}: <dark-value>; }\n}`,
+  }[dm] || (n => `.dark {\n  ${n}: <dark-value>;\n}`);
+
+  const issues = [
+    ...(ANALYSIS.hardcoded_colors||[]).map(c => ({
+      sev:'error', title:`Hardcoded color ${c.value}`,
+      detail:`${c.context} property · line ${c.line}`,
+      fix:`${c.context}: ${c.value};\n/* → */\n${c.context}: var(--${(c.context||'x').replace(/-/g,'_')});`,
+    })),
+    ...(ANALYSIS.inline_style_issues||[]).map(i => ({
+      sev:'error', title:'Inline style color bypasses theme',
+      detail: i.value.slice(0,80), fix:`Remove style="" and use a CSS class with var(--token).`,
+    })),
+    ...Object.entries((ANALYSIS.css_variables||{}).missing_dark_overrides||{}).map(([name,val]) => ({
+      sev:'warning', title:`Missing dark override: ${name}`,
+      detail:`Light: ${val}`, fix: darkFix(name),
+    })),
+    ...((ANALYSIS.tailwind||{}).unpaired_dark_variants||[]).map(t => ({
+      sev:'warning', title:`Tailwind class without dark: pair`,
+      detail: t.value, fix: t.suggestion,
+    })),
+    ...(ANALYSIS.layout_issues||[]).map(l => ({
+      sev: l.severity||'warning', title:`${l.type.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())} — ${l.value}`,
+      detail:`Line ${l.line}`, fix: l.suggestion,
+    })),
+    ...(ANALYSIS.typography_issues||[]).map(t => ({
+      sev:'info', title:`Fixed font-size ${t.value}`, detail:`Line ${t.line}`, fix: t.suggestion,
+    })),
+    ...(ANALYSIS.motion&&ANALYSIS.motion.issue ? [{
+      sev:'info', title:'No prefers-reduced-motion support', detail: ANALYSIS.motion.issue,
+      fix:`@media (prefers-reduced-motion: reduce) {\n  *, *::before, *::after {\n    animation-duration: 0.01ms !important;\n    transition-duration: 0.01ms !important;\n  }\n}`,
+    }] : []),
+    ...((ANALYSIS.accessibility||{}).images_missing_alt > 0 ? [{
+      sev:'error', title:`${ANALYSIS.accessibility.images_missing_alt} image(s) missing alt text`,
+      detail: (ANALYSIS.accessibility.missing_alt_examples||[]).join(' · ').slice(0,100),
+      fix:`<img src="..." alt="Describe the image here">`,
+    }] : []),
+    ...((ANALYSIS.accessibility||{}).focus_style_issue ? [{
+      sev:'warning', title:'No :focus-visible styles found', detail: ANALYSIS.accessibility.focus_style_issue,
+      fix:`a:focus-visible, button:focus-visible {\n  outline: 2px solid var(--ring, #3b82f6);\n  outline-offset: 2px;\n}`,
+    }] : []),
+  ];
+
+  if (!issues.length) {
+    el.innerHTML = '<div class="noiss">✅ No issues found.<br><span style="color:var(--muted);font-size:.72rem">Click elements in the preview to inspect them.</span></div>';
+    return;
+  }
+
+  const clsMap = { error:'err', warning:'wrn', info:'inf' };
+  el.innerHTML = issues.map((iss, i) => `
+    <div class="iss ${clsMap[iss.sev]||'inf'}">
+      <div class="ititle">
+        <span>${iss.title}</span>
+        <button class="cpybtn" onclick="copyFix(${i})">Copy</button>
+      </div>
+      <div class="ifix">${iss.detail}</div>
+      ${iss.fix ? `<pre class="icode">${iss.fix}</pre>` : ''}
+    </div>`).join('');
+
+  // Store fixes for copy
+  window._fixes = issues.map(i => i.fix || '');
+}
+function copyFix(i) {
+  navigator.clipboard.writeText(window._fixes[i] || '').then(() => {
+    const btns = document.querySelectorAll('.cpybtn');
+    if (btns[i]) { btns[i].textContent = '✅'; setTimeout(() => btns[i].textContent = 'Copy', 1400); }
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadPreview();
+  showBanner();
+  document.getElementById('pfg').onclick = () => { wcagTarget='fg'; document.getElementById('pfg').classList.add('sel'); document.getElementById('pbg').classList.remove('sel'); };
+  document.getElementById('pbg').onclick = () => { wcagTarget='bg'; document.getElementById('pbg').classList.add('sel'); document.getElementById('pfg').classList.remove('sel'); };
+  calcWcag();
+});
+</script>
+</body>
+</html>

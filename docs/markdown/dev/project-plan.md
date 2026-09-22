@@ -160,7 +160,7 @@ CLO 5                                                     ███████�
 | 3.4.1 | Design token: สี / typography / spacing / สถานะ (บรรลุ, at-risk, ยังไม่ประเมิน) | น | 8/17/26 | 8/20/26 | 3 | 10% | FR-84 |
 | 3.4.2 | Component library: Table, Form, Modal, Toast, EmptyState, Chart | น นู | 8/20/26 | 8/26/26 | 6 | 0% | — |
 | 3.4.3 | **UI: Login / User Management** | นู | 8/26/26 | 8/30/26 | 4 | 30% | FR-01…FR-08 |
-| 3.4.4 | **UI: Course List / Create / Overview** (รวมหน่วยกิต · gradingType · มอบหมายอาจารย์) | น | 8/29/26 | 9/3/26 | 5 | 10% | FR-20…FR-28 |
+| 3.4.4 | **UI: Course List / Create / Overview** (รวมหน่วยกิต · gradeScale · มอบหมายอาจารย์) | น | 8/29/26 | 9/3/26 | 5 | 10% | FR-20…FR-28 |
 | 3.4.5 | **UI: CLO Mgmt + Behavioral Objective + Activity + Assessment Matrix** | ธ น | 9/2/26 | 9/9/26 | 7 | 0% | FR-30…FR-48 |
 | 3.4.6 | **UI: Student Roster + Score Entry + Import Preview + Upload Log** | นู | 9/7/26 | 9/14/26 | 7 | 0% | FR-50…FR-72 |
 | 3.4.7 | **UI: CLO Attainment Dashboard + Individual Report** (แก้ F7, F8) | ธ | 9/12/26 | 9/18/26 | 6 | 0% | FR-80…FR-87 |
@@ -203,7 +203,7 @@ CLO 5                                                     ███████�
 | **4.2** | **Sprint 2 — Course & Course Instructor (รวมงานที่เคยอยู่ใน Curriculum)** | ธ น | 9/21/26 | 10/4/26 | 13 | 10% | FR-20…FR-28 |
 | 4.2.1 | API: Course CRUD + ฟิลด์ section | ธ | 9/21/26 | 9/24/26 | 3 | 20% | FR-20 |
 | 4.2.2 | unique `(code, semester, year, section)` + error ไทย | ธ | 9/24/26 | 9/26/26 | 2 | 0% | FR-21 |
-| 4.2.2b | หน่วยกิต `3 (2-2-5)` เป็นทศนิยม **รับค่า 0 ได้** + `gradingType` LETTER/PASS_FAIL | น | 9/24/26 | 9/28/26 | 4 | 0% | **FR-27, FR-28** · CR-06 |
+| 4.2.2b | หน่วยกิต `3 (2-2-5)` เป็นทศนิยม **รับค่า 0 ได้** + `gradeScale` LETTER/PASS_FAIL | น | 9/24/26 | 9/28/26 | 4 | 0% | **FR-27, FR-28** · CR-06 |
 | 4.2.3 | API: มอบหมายอาจารย์ + role LEAD/CO/ASSISTANT | ธ | 9/26/26 | 9/29/26 | 3 | 0% | FR-22 |
 | 4.2.4 | บังคับ LEAD ≤ 1 (partial unique index) และ ≥ 1 (application layer) | ธ | 9/28/26 | 9/30/26 | 2 | 0% | FR-23 |
 | 4.2.5 | UI: `/courses` filter ปี/ภาคเรียน + ค้นหารหัส/ชื่อ | ธ | 9/29/26 | 10/2/26 | 3 | 30% | FR-24 |
@@ -350,14 +350,18 @@ CLO 5                                                     ███████�
 
 ## 4. สรุปภาระงานรายคน
 
-| คน | บทบาทหลัก | Sprint ที่เป็นเจ้าของ | งานเอกสารหลัก |
-|---|---|---|---|
-| **ธีรณัฎฐ์** | Lead / Architect / Backend | S1, S3, S5, S8, S10 | ER, DFD, API contract, บทที่ 3, 4, 5 |
-| **นัจญมา** | Frontend + CLO/Activity module | S3, S4 (+ Dashboard UI) | Data dictionary, แบบประเมินผู้ทรงคุณวุฒิ, บทที่ 1–2 |
-| **นูรีน** | Frontend + Student/Score/Report module | S6, S7, S9 | UI design, แบบสอบถามผู้ใช้, คู่มือ, ภาคผนวก |
+> **แก้ 2026-09-13:** เปลี่ยนจาก "เจ้าของราย sprint" เป็น **เจ้าของราย feature** ตาม 9 package ใน Use Case Diagram
+> (`docs/uml/index-q/index-q-usecase.drawio`) คนละ 3 feature ทำครบตั้งแต่ API ถึงหน้าจอ · ลำดับงานราย sprint อยู่ใน [[sprint-plan-2026]]
+> ชื่อผู้รับผิดชอบรายงานย่อยในตาราง CLO 4 ด้านบนยังเป็นของการแบ่งเดิม — **ให้ถือตารางนี้เป็นหลัก** จนกว่าจะย้ายวันที่ตาม sprint-plan-2026 §9
 
-**หลักการวางกำลัง:** งานที่เป็นสูตรคำนวณ (CR-01…CR-07) และการตรวจสิทธิ์รายวิชาอยู่ที่คนเดียวเสมอ
-เพื่อไม่ให้เกิดการคำนวณซ้ำคนละที่ ซึ่ง FR-88 ห้ามไว้ชัดเจน
+| คน | Feature (UML package) | งานฐานที่ถือ | งานเอกสารหลัก |
+|---|---|---|---|
+| **ธีรณัฎฐ์** | 2 จัดการรายวิชา · 5 วิเคราะห์และสรุป CLO · 8 ตัดเกรด | login · สิทธิ์ `can()` ที่ API · merge migration | ER, DFD, API contract, บทที่ 3, 4, 5 |
+| **นัจญมา** | 1 จัดการผู้ใช้งาน · 3 กำหนด CLO · 4 วัตถุประสงค์เชิงพฤติกรรม (วิธีและเกณฑ์การประเมิน) | — | Data dictionary, แบบประเมินผู้ทรงคุณวุฒิ, บทที่ 1–2 |
+| **นูรีน** | 6 นำเข้า-ส่งออกคะแนน · 7 นำเข้า-ส่งออกรายชื่อ · 9 บัญชีของฉัน | AppShell + components · `ExcelWorkbookWriter` · seed data | UI design, แบบสอบถามผู้ใช้, คู่มือ, ภาคผนวก |
+
+**หลักการวางกำลัง:** สูตรคำนวณ CR-01…CR-11 อยู่ใน feature ของธีรณัฎฐ์ทั้งหมด (5 และ 8) และการตรวจสิทธิ์รายวิชาเป็นงานฐานของคนเดียวกัน
+เพื่อไม่ให้เกิดการคำนวณซ้ำคนละที่ ซึ่ง FR-88 ห้ามไว้ชัดเจน · นัจญมาเป็นผู้ review PR ของสูตรคำนวณเสมอ เพื่อให้มีอีกคนที่เข้าใจสูตร
 
 ---
 

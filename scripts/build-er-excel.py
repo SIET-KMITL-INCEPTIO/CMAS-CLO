@@ -231,7 +231,7 @@ COURSE = draw_entity_box(ws, 4, 13, 9, "Course", [
     ("UQ", "code+sem+year+sec", "String/Int"),
     ("", "name / nameEn", "String"),
     ("", "credits (L-P-S)", "Decimal"),
-    ("", "gradingType", "LETTER|PASS_FAIL"),
+    ("", "gradeScale", "LETTER|PASS_FAIL"),
     ("", "passCriteria", "Float %"),
     ("", "classTarget", "Float %"),
 ])
@@ -527,11 +527,11 @@ build_entity_sheet(
         ("code / semester / year / section", "String/Int/Int/String", "UQ", "unique ร่วมกัน — FR-21"),
         ("name / nameEn", "String", "", "ชื่อไทยบังคับ, อังกฤษ optional"),
         ("credits (L-P-S)", "Decimal(3,1) ×3", "CK", "0 ≤ credits ≤ 30 · ชั่วโมงทุกช่อง ≥ 0 (DC-15, รับ 0 ได้จริงสำหรับวิชาฝึกงาน)"),
-        ("gradingType", "LETTER | PASS_FAIL", "", "CR-06 — 7 วิชา (90641004-010) เป็น PASS_FAIL"),
+        ("gradeScale", "LETTER | PASS_FAIL", "", "CR-06 — 7 วิชา (90641004-010) เป็น PASS_FAIL"),
         ("passCriteria", "Float %", "CK", "0-100 (DC-14) — เกณฑ์คะแนนรวมที่ถือว่าผ่านวิชา (CR-05)"),
         ("classTarget", "Float %", "CK", "0-100 (DC-14) — สัดส่วนนักศึกษาที่ต้องผ่าน CLO จึงถือว่า CLO นั้นบรรลุ (CR-04)"),
     ],
-    sample_headers=["id", "code", "name", "sem", "year", "section", "credits", "gradingType", "passCriteria", "classTarget"],
+    sample_headers=["id", "code", "name", "sem", "year", "section", "credits", "gradeScale", "passCriteria", "classTarget"],
     sample_rows=[
         ["crs-01", "90641001", "การเขียนโปรแกรมคอมพิวเตอร์", 1, 2567, "01", "3 (2-2-5)", "LETTER", 60, 70],
         ["crs-02", "90641002", "ระบบฐานข้อมูล", 2, 2567, "01", "3 (3-0-6)", "LETTER", 50, 65],

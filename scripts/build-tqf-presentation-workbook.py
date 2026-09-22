@@ -8,17 +8,18 @@ way in, and มคอ.5 (รายงานผลการดำเนินก�
 what the system adds on top of มคอ.3 — a per-pair weight matrix that makes
 CLO attainment computable instead of estimated.
 
-Course facts (code, name, credits, description, PLO mapping) are taken from the
+Course facts (code, name, credits, description) are taken from the
 real curriculum document at docs/pdf/01. หลักสูตร ค.อ.บ. ... 2567.pdf:
     p.13/15  course list        03376120 ระบบฐานข้อมูล 3(2-2-5)
     p.281    course description
-    p.29     course x PLO matrix -> 03376120 maps to PLO 1.1 and PLO 2.3
-    p.8      canonical PLO list
 Student names and every score are fabricated.
 
 Run: python scripts/build-tqf-presentation-workbook.py
 Output: docs/excel/CMAS-TQF-Data-Entry.xlsx
 """
+
+import sys
+import math
 
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -70,15 +71,16 @@ FILL_GAP = PatternFill("solid", fgColor=BG_GAP)
 # ---------------------------------------------------------------------------
 SH_COVER = "หน้าปก"
 SH_INFO = "1 ข้อมูลรายวิชา"
-SH_CLO = "2 CLO และ PLO"
+SH_CLO = "2 CLO"
 SH_PLAN = "3 แผนประเมิน มคอ.3"
 SH_MAP = "4 เมทริกซ์ CLO x กิจกรรม"
 SH_STU = "5 รายชื่อนักศึกษา"
 SH_SCORE = "6 กรอกคะแนน"
 SH_RESULT = "7 ผลการบรรลุ CLO"
-SH_TQF5 = "8 รายงาน มคอ.5"
-SH_DB = "9 ตารางฐานข้อมูล"
-SH_FIELDMAP = "10 แผนที่ UI-DB"
+SH_GRADE = "8 ตัดเกรด"
+SH_TQF5 = "9 รายงาน มคอ.5"
+SH_DB = "10 ตารางฐานข้อมูล"
+SH_FIELDMAP = "11 แผนที่ UI-DB"
 
 # ===========================================================================
 # REAL course facts from the curriculum document
@@ -101,14 +103,9 @@ COURSE = {
     "desc": ("ศึกษาและปฏิบัติในหัวข้อ หลักการของระบบฐานข้อมูล สถาปัตยกรรมฐานข้อมูล "
              "โมเดลฐานข้อมูล ฐานข้อมูลเชิงสัมพันธ์ การออกแบบฐานข้อมูล การทำบรรทัดฐาน "
              "ภาษาสอบถามเชิงโครงสร้าง ฐานข้อมูลโนเอสคิวแอล"),
-    "gradingType": "LETTER (A–F)",
+    "gradeScale": "LETTER (A–F)",
     "passCriteria": 60,
     "classTarget": 70,
-}
-
-PLOS = {
-    "PLO 1.1": "ประยุกต์ความรู้เกี่ยวกับวิชาชีพครูและวิชาชีพเฉพาะให้เหมาะสมต่อการเปลี่ยนแปลงของบริบท",
-    "PLO 2.3": "พัฒนาโปรแกรมคอมพิวเตอร์ที่มีความปลอดภัยตามหลักการพัฒนาซอฟต์แวร์",
 }
 
 USERS = [
@@ -121,13 +118,30 @@ COURSE_INSTRUCTORS = [
     ("ci-02", "crs-01", "usr-03", "CO", "2568-06-01"),
 ]
 
-# (cloId, number, description, threshold, PLO)
+# (cloId, number, description, threshold, bloomLevel, classTarget)
+#
+# bloomLevel มาจากคำกริยาที่ขึ้นต้น CLO เอง ไม่ใช่ค่าที่เดาให้ — "ออกแบบ" คือ CREATE,
+# "เขียนคำสั่ง" คือ APPLY, "ทำบรรทัดฐาน" คือ ANALYZE, "เลือกใช้...ได้เหมาะสม" คือ EVALUATE
+#
+# classTarget เป็นค่า override ราย CLO · None = ใช้ค่าของรายวิชา (70%)
+# CLO 1 อยู่ระดับ CREATE ซึ่งเป็นระดับสูงสุดของ Bloom จึงตั้งเป้าสัดส่วนผู้ผ่านไว้ต่ำกว่า
+# ค่ากลางอย่างมีเหตุผล — นี่คือสิ่งที่ Course.classTarget ค่าเดียวแสดงไม่ได้
 CLOS = [
-    ("clo-01", 1, "ออกแบบฐานข้อมูลเชิงสัมพันธ์จากโจทย์ที่กำหนดได้", 60, "PLO 2.3"),
-    ("clo-02", 2, "เขียนคำสั่งภาษาสอบถามเชิงโครงสร้าง (SQL) เพื่อสืบค้นและจัดการข้อมูลได้", 60, "PLO 2.3"),
-    ("clo-03", 3, "ทำบรรทัดฐาน (Normalization) ถึงระดับ 3NF ได้ถูกต้อง", 65, "PLO 2.3"),
-    ("clo-04", 4, "เลือกใช้ฐานข้อมูลเชิงสัมพันธ์หรือโนเอสคิวแอลได้เหมาะสมกับลักษณะงาน", 60, "PLO 1.1"),
+    ("clo-01", 1, "ออกแบบฐานข้อมูลเชิงสัมพันธ์จากโจทย์ที่กำหนดได้", 60, "CREATE", 60),
+    ("clo-02", 2, "เขียนคำสั่งภาษาสอบถามเชิงโครงสร้าง (SQL) เพื่อสืบค้นและจัดการข้อมูลได้", 60, "APPLY", None),
+    ("clo-03", 3, "ทำบรรทัดฐาน (Normalization) ถึงระดับ 3NF ได้ถูกต้อง", 65, "ANALYZE", None),
+    ("clo-04", 4, "เลือกใช้ฐานข้อมูลเชิงสัมพันธ์หรือโนเอสคิวแอลได้เหมาะสมกับลักษณะงาน", 60, "EVALUATE", 65),
 ]
+
+# ระดับพฤติกรรมตาม Bloom's revised taxonomy — ใช้แสดงคู่กับ CLO
+BLOOM_TH = {
+    "REMEMBER":   "จำ",
+    "UNDERSTAND": "เข้าใจ",
+    "APPLY":      "ประยุกต์ใช้",
+    "ANALYZE":    "วิเคราะห์",
+    "EVALUATE":   "ประเมินค่า",
+    "CREATE":     "สร้างสรรค์",
+}
 
 OBJECTIVES = [
     ("obj-01", 0, 1, "เขียนแผนภาพ ER จากความต้องการของผู้ใช้ได้"),
@@ -202,6 +216,64 @@ for si, (sid, code, name, scores) in enumerate(STUDENTS):
         if sc is not None:
             SCORE_ROWS.append((f"sc-{_n:02d}", sid, ACTIVITIES[ai][0], sc, ai, si))
             _n += 1
+
+# ===========================================================================
+# การตัดเกรด — computed from the scores above, never hand-written, so the two
+# methods cannot silently disagree with the rest of the workbook.
+# ===========================================================================
+# CR-05: totalScore = Σ [ score/maxScore × Activity.weight ]  (weights sum to 100)
+# Only students assessed on EVERY activity enter a grade run — a partial total
+# is not comparable, and for อิงกลุ่ม it would drag mean and SD off (CR-10).
+GRADE_POP = []          # (studentIndex, sid, code, name, totalPercent)
+GRADE_EXCLUDED = []     # (name, reason)
+for si, (sid, code, name, scores) in enumerate(STUDENTS):
+    if any(sc is None for sc in scores):
+        n_missing = sum(1 for sc in scores if sc is None)
+        GRADE_EXCLUDED.append((name, f"ยังประเมินไม่ครบ ({n_missing} กิจกรรม)"))
+        continue
+    total = sum(sc / ACTIVITIES[ai][3] * ACTIVITIES[ai][4] for ai, sc in enumerate(scores))
+    GRADE_POP.append((si, sid, code, name, total))
+
+GR_N = len(GRADE_POP)
+GR_MEAN = sum(p[4] for p in GRADE_POP) / GR_N
+GR_SD = math.sqrt(sum((p[4] - GR_MEAN) ** 2 for p in GRADE_POP) / GR_N)
+GR_MIN = min(p[4] for p in GRADE_POP)
+GR_MAX = max(p[4] for p in GRADE_POP)
+
+# อิงเกณฑ์ — fixed percent cutoffs, known before the term starts
+BANDS_CRIT = [("A", 80), ("B+", 75), ("B", 70), ("C+", 65),
+              ("C", 60), ("D+", 55), ("D", 50), ("F", 0)]
+# อิงกลุ่ม — the same ladder read as T-scores (T = 50 is the class mean)
+BANDS_NORM = [("A", 65), ("B+", 60), ("B", 55), ("C+", 50),
+              ("C", 45), ("D+", 40), ("D", 35), ("F", 0)]
+
+
+def band_of(value, bands):
+    """Highest band whose minimum the value clears. Bands are ordered high->low."""
+    for grade, minv in bands:
+        if value >= minv:
+            return grade
+    return bands[-1][0]
+
+
+def t_score(x):
+    return 50 + 10 * (x - GR_MEAN) / GR_SD
+
+
+# วิธีตัดเกรดเป็นคอลัมน์บน Course ไม่ใช่ตาราง — ตัวอย่างนี้ตั้งไว้ที่อิงเกณฑ์
+COURSE_GRADE_METHOD = "CRITERION_REFERENCED"
+
+# No `order` column — rank is ORDER BY minValue DESC, which is total because no
+# two bands in one course may share a cutoff.
+GRADE_BANDS = [(f"gb-{i+1:02d}", COURSE["id"], g, v)
+               for i, (g, v) in enumerate(BANDS_CRIT)]
+
+# One row per student. The letter is stored; mean/SD and the T-score behind an
+# อิงกลุ่ม cut are computed at grading time and not kept, so the norm-referenced
+# columns on sheet 8 are a live comparison, not a second stored result.
+STUDENT_GRADE_ROWS = [[f"sg-{i+1:02d}", sid, round(total, 2),
+                       band_of(total, BANDS_CRIT), "— ว่าง —"]
+                      for i, (si, sid, code, name, total) in enumerate(GRADE_POP)]
 
 # CLO list per activity, for the มคอ.3 plan sheet
 ACT_CLO_TEXT = []
@@ -307,8 +379,7 @@ meta = [
     ("รายวิชาที่ใช้เป็นตัวอย่าง", f"{COURSE['code']}  {COURSE['name']}  ({COURSE['nameEn']})  {COURSE['credits']}"),
     ("แผนการศึกษา", COURSE["yearOfStudy"] + " · " + COURSE["group"]),
     ("ภาคการศึกษา", f"ภาคการศึกษาที่ {COURSE['semester']} ปีการศึกษา {COURSE['year']} กลุ่มเรียน {COURSE['section']}"),
-    ("ผลลัพธ์การเรียนรู้ระดับหลักสูตรที่เกี่ยวข้อง", "PLO 1.1 · PLO 2.3  (ตามตารางความสัมพันธ์รายวิชากับ PLO ในเล่มหลักสูตร)"),
-    ("จำนวน CLO ที่กำหนด", f"{N_CLO} ข้อ"),
+        ("จำนวน CLO ที่กำหนด", f"{N_CLO} ข้อ"),
     ("จำนวนกิจกรรมการประเมิน", f"{N_ACT} กิจกรรม (สัดส่วนรวม 100%)"),
     ("จำนวนนักศึกษาในตัวอย่าง", f"{N_STU} คน"),
 ]
@@ -328,12 +399,13 @@ header_row(ws, r, ["แผ่นงาน", "ตอบคำถามของ�
 r += 1
 agenda = [
     (SH_INFO, "รายวิชานี้คืออะไร และระบบเก็บข้อมูลอะไรบ้างในระดับรายวิชา"),
-    (SH_CLO, "CLO ของรายวิชามีอะไร และเชื่อมกับ PLO ของหลักสูตรอย่างไร"),
+    (SH_CLO, "CLO ของรายวิชามีอะไร ระดับพฤติกรรมใด และตั้งเป้าการบรรลุไว้เท่าไร"),
     (SH_PLAN, "แผนการประเมินผลตามแบบ มคอ.3 หมวดที่ 5 — ตารางที่อาจารย์คุ้นเคยอยู่แล้ว"),
     (SH_MAP, "สิ่งที่ระบบเพิ่มจาก มคอ.3 — น้ำหนักรายคู่ ที่ทำให้คำนวณการบรรลุ CLO ได้จริง"),
     (SH_STU, "รายชื่อนักศึกษาที่ต้องนำเข้า"),
     (SH_SCORE, "หน้าจอกรอกคะแนน — งานประจำที่อาจารย์ทำจริงทุกสัปดาห์"),
     (SH_RESULT, "ผลการบรรลุ CLO รายบุคคล ที่ระบบคำนวณให้ทันทีระหว่างภาคเรียน"),
+    (SH_GRADE, "การตัดเกรด — อิงเกณฑ์และอิงกลุ่ม บนคะแนนชุดเดียวกัน ให้ผลต่างกันอย่างไร"),
     (SH_TQF5, "ตารางสรุปสำหรับกรอก มคอ.5 — ปลายทางที่ข้อมูลทั้งหมดไปจบ"),
     (SH_DB, "ข้อมูลเดียวกันนี้ถูกเก็บในฐานข้อมูลอย่างไร (สำหรับกรรมการสายเทคนิค)"),
     (SH_FIELDMAP, "ช่องกรอกแต่ละช่องลงตารางและคอลัมน์ใด"),
@@ -345,7 +417,7 @@ for i, (s, why) in enumerate(agenda):
     r += 1
 
 r += 1
-note(ws, r, 2, "ที่มาของข้อมูลรายวิชา: รหัสวิชา ชื่อวิชา หน่วยกิต คำอธิบายรายวิชา และความสัมพันธ์กับ PLO "
+note(ws, r, 2, "ที่มาของข้อมูลรายวิชา: รหัสวิชา ชื่อวิชา หน่วยกิต และคำอธิบายรายวิชา "
                 "นำมาจากเล่มหลักสูตรฉบับปรับปรุง พ.ศ. 2567 โดยตรง  ·  ส่วน CLO กิจกรรมการประเมิน "
                 "รายชื่อนักศึกษา และคะแนนทั้งหมด เป็นข้อมูลสมมติเพื่อสาธิตการทำงานของระบบเท่านั้น", span=1)
 
@@ -376,7 +448,7 @@ info_fields = [
     ("รายวิชาที่ต้องเรียนมาก่อน", COURSE["prereq"], "— ไม่เก็บ (นอกขอบเขต v1)", None),
     ("อาจารย์ผู้รับผิดชอบรายวิชา", "ผศ.วิชัย คงเจริญ (ผู้ประสานงานรายวิชา)", "CourseInstructor.role = LEAD", None),
     ("อาจารย์ผู้สอนร่วม", "อ.สุดา พรหมมา", "CourseInstructor.role = CO", None),
-    ("รูปแบบการตัดเกรด", COURSE["gradingType"], "Course.gradingType", None),
+    ("รูปแบบการตัดเกรด", COURSE["gradeScale"], "Course.gradeScale", None),
     ("เกณฑ์คะแนนรวมที่ถือว่าผ่านรายวิชา", COURSE["passCriteria"], "Course.passCriteria", PCT_FMT),
     ("เป้าหมายสัดส่วนผู้ผ่านต่อ CLO (Class Target)", COURSE["classTarget"], "Course.classTarget", PCT_FMT),
 ]
@@ -404,33 +476,46 @@ note(ws, r, 2, "สองบรรทัดสุดท้ายของตา�
                 "การแก้ค่าของวิชานี้จึงไม่กระทบผลของวิชาอื่นหรือของภาคเรียนที่ผ่านมา", span=2)
 
 # ===========================================================================
-# 2 CLO และ PLO
+# 2 CLO
 # ===========================================================================
 ws = wb.create_sheet(SH_CLO)
 ws.sheet_view.showGridLines = False
-set_widths(ws, {"A": 8, "B": 11, "C": 8, "D": 58, "E": 14, "F": 12, "G": 52})
-title(ws, "2 · ผลลัพธ์การเรียนรู้ระดับรายวิชา (CLO) และความเชื่อมโยงกับ PLO",
-      "เทียบได้กับ มคอ.3 หมวดที่ 4 — CLO เป็นสิ่งที่อาจารย์กำหนดเอง ส่วน PLO มาจากเล่มหลักสูตร")
+set_widths(ws, {"A": 8, "B": 11, "C": 8, "D": 52, "E": 14, "F": 20, "G": 16, "H": 24})
+title(ws, "2 · ผลลัพธ์การเรียนรู้ระดับรายวิชา (CLO)",
+      "เทียบได้กับ มคอ.3 หมวดที่ 4 — CLO และเกณฑ์ทั้งหมดเป็นสิ่งที่ผู้สอนกำหนดเองในระดับรายวิชา")
 
-header_row(ws, 4, ["ลำดับ", "รหัสในระบบ", "CLO ที่", "ผลลัพธ์การเรียนรู้ที่คาดหวัง", "เกณฑ์ผ่าน (%)", "PLO", "คำอธิบาย PLO ตามเล่มหลักสูตร"], start_col=1)
+header_row(ws, 4, ["ลำดับ", "รหัสในระบบ", "CLO ที่", "ผลลัพธ์การเรียนรู้ที่คาดหวัง",
+                   "เกณฑ์ผ่านรายคน (%)", "ระดับ Bloom", "เป้าหมายผู้ผ่าน (%)", "ที่มาของเป้าหมาย"], start_col=1)
 CLO_FIRST = 5
 r = CLO_FIRST
-for i, (cid, num, desc, th, plo) in enumerate(CLOS):
+for i, (cid, num, desc, th, bloom, target) in enumerate(CLOS):
     z = i % 2 == 1
     data_cell(ws, r, 1, i + 1, zebra=z, align=Alignment(horizontal="center"))
     data_cell(ws, r, 2, cid, zebra=z, font=F_MONO)
     data_cell(ws, r, 3, num, zebra=z, align=Alignment(horizontal="center"))
     data_cell(ws, r, 4, desc, zebra=z, fill=FILL_INPUT)
     data_cell(ws, r, 5, th, zebra=z, fill=FILL_INPUT, align=Alignment(horizontal="center"))
-    data_cell(ws, r, 6, plo, zebra=z, align=Alignment(horizontal="center"), font=F_LABEL, fill=FILL_TQFROW)
-    data_cell(ws, r, 7, PLOS[plo], zebra=z, font=F_MUTED, fill=FILL_TQFROW)
+    data_cell(ws, r, 6, f"{BLOOM_TH[bloom]}  ({bloom})", zebra=z,
+              align=Alignment(horizontal="center"), font=F_LABEL, fill=FILL_INPUT)
+    # numeric and already resolved, so sheet 8 can reference it directly
+    data_cell(ws, r, 7, target if target is not None else COURSE["classTarget"],
+              zebra=z, align=Alignment(horizontal="center"),
+              font=F_LABEL if target is not None else F_BODY, fill=FILL_INPUT)
+    data_cell(ws, r, 8,
+              "กำหนดเฉพาะ CLO ข้อนี้" if target is not None else "ใช้ค่าของรายวิชา",
+              zebra=z, align=Alignment(horizontal="center"), font=F_MUTED)
     ws.row_dimensions[r].height = 32
     r += 1
 
 r += 1
-note(ws, r, 1, "สองคอลัมน์ขวาสุด (PLO) แสดงไว้เพื่อให้เห็นภาพความเชื่อมโยงกับหลักสูตรเท่านั้น — "
-                "ระบบรุ่นที่ 1 ยังไม่เก็บ PLO และไม่คำนวณการบรรลุระดับหลักสูตร เพราะขอบเขตของโครงงาน "
-                "กำหนดไว้ที่ระดับรายวิชา หากต้องการต่อยอดในอนาคตต้องเพิ่มตารางหลักสูตรก่อน", span=6, kind="gap")
+note(ws, r, 1, "ระดับ Bloom มาจากคำกริยาที่ขึ้นต้น CLO เอง ไม่ใช่ค่าที่ระบบเดาให้ — ระบบจึงไม่ตั้งค่าเริ่มต้นให้ "
+                "และผู้สอนต้องเลือกเอง  ·  ประโยชน์คือใช้ตรวจความสอดคล้องของการวัด: CLO ระดับ 'วิเคราะห์' "
+                "ที่วัดด้วยแบบทดสอบปรนัยอย่างเดียว คือสัญญาณว่าวิธีประเมินยังไม่ตรงกับสิ่งที่เขียนไว้", span=8)
+
+r += 1
+note(ws, r, 1, "คอลัมน์ขวาสุดคือสัดส่วนผู้ผ่านที่ทำให้ถือว่า CLO ข้อนั้น 'บรรลุ'  ·  CLO ข้อ 1 อยู่ระดับ "
+                "'สร้างสรรค์' ซึ่งเป็นระดับสูงสุดของ Bloom จึงตั้งเป้าไว้ที่ 60% ต่ำกว่าค่ากลางของรายวิชา (70%) "
+                "อย่างมีเหตุผล  ·  ข้อที่เว้นว่างไว้จะใช้ค่าของรายวิชาโดยอัตโนมัติ", span=8)
 
 r += 2
 ws.cell(row=r, column=1, value="จุดประสงค์เชิงพฤติกรรมของแต่ละ CLO").font = F_H2
@@ -763,12 +848,120 @@ ws.freeze_panes = "D5"
 RESULT_SHEET_CLO_COLS = [get_column_letter(4 + ci) for ci in range(N_CLO)]
 
 # ===========================================================================
-# 8 รายงาน มคอ.5
+# 8 ตัดเกรด
+# ===========================================================================
+ws = wb.create_sheet(SH_GRADE)
+ws.sheet_view.showGridLines = False
+set_widths(ws, {"A": 4, "B": 12, "C": 26, "D": 14, "E": 13, "F": 13,
+                "G": 13, "H": 13, "I": 30})
+title(ws, "8 · การตัดเกรด — อิงเกณฑ์ และ อิงกลุ่ม", None, accent=C_CALC)
+ws["A2"] = ("คะแนนชุดเดียวกัน ตัดสองวิธี ได้ผลต่างกัน — แผ่นนี้แสดงให้เห็นว่าทำไมระบบต้องเก็บว่า "
+            "ตัดด้วยวิธีใดและด้วยค่าสถิติชุดใด ไม่ใช่เก็บแค่ตัวอักษรเกรด")
+ws["A2"].font = F_SUB
+
+r = 4
+ws.cell(row=r, column=2, value="กลุ่มที่นำมาคิด (ประชากรของการตัดเกรด)").font = F_H2
+r += 1
+header_row(ws, r, ["รายการ", "ค่า", "ที่มา"], start_col=2, fill=FILL_CALC)
+r += 1
+pop_rows = [
+    ("จำนวนที่นำมาคิด (n)", GR_N, f"เฉพาะผู้ที่ประเมินครบทุกกิจกรรม จากทั้งหมด {N_STU} คน"),
+    ("คะแนนเฉลี่ย (mean)", round(GR_MEAN, 2), "คำนวณจากคะแนนรวมถ่วงน้ำหนักของ n คนนี้"),
+    ("ส่วนเบี่ยงเบนมาตรฐาน (SD)", round(GR_SD, 2), "ถ้าเป็น 0 ระบบจะไม่ยอมให้ตัดอิงกลุ่ม เพราะสูตรต้องหารด้วยค่านี้"),
+    ("คะแนนต่ำสุด / สูงสุด", f"{round(GR_MIN, 2)} / {round(GR_MAX, 2)}",
+     "แสดงประกอบเท่านั้น ไม่มีคอลัมน์เก็บ — หาได้จากคะแนนรวมของ n คนนี้เมื่อไรก็ได้ และไม่มีสูตรใดใช้"),
+]
+for i, (k, v, why) in enumerate(pop_rows):
+    z = i % 2 == 1
+    data_cell(ws, r, 2, k, zebra=z, font=F_LABEL)
+    data_cell(ws, r, 3, v, zebra=z, align=Alignment(horizontal="center"), font=F_LABEL, fill=FILL_CALCROW)
+    data_cell(ws, r, 4, why, zebra=z, font=F_MUTED)
+    ws.merge_cells(start_row=r, start_column=4, end_row=r, end_column=9)
+    r += 1
+
+r += 1
+for nm, why in GRADE_EXCLUDED:
+    note(ws, r, 2, f"ไม่นำมาคิด: {nm} — {why}  ·  คนที่ยังประเมินไม่ครบต้องไม่ถูกนับใน mean และ SD "
+                   "เพราะคะแนนที่ยังไม่ครบจะดึงค่าเฉลี่ยของทั้งห้องให้ต่ำลงและดันเกรดคนอื่นขึ้นทั้งกลุ่ม",
+         span=8, kind="gap")
+    r += 1
+
+r += 1
+ws.cell(row=r, column=2, value="ผลการตัดเกรดทั้งสองวิธี บนคะแนนชุดเดียวกัน").font = F_H2
+r += 1
+header_row(ws, r, ["รหัสนักศึกษา", "ชื่อ-นามสกุล", "คะแนนรวม (%)",
+                   "เกรด\nอิงเกณฑ์", "T-score", "เกรด\nอิงกลุ่ม", "ต่างกัน?", "หมายเหตุ"],
+           start_col=2, fill=FILL_CALC, heights=34)
+r += 1
+GRADE_FIRST = r
+n_diff = 0
+for i, (si, sid, code, name, total) in enumerate(GRADE_POP):
+    z = i % 2 == 1
+    t = t_score(total)
+    g_crit = band_of(total, BANDS_CRIT)
+    g_norm = band_of(t, BANDS_NORM)
+    differs = g_crit != g_norm
+    if differs:
+        n_diff += 1
+    data_cell(ws, r, 2, code, zebra=z, font=F_MONO, align=Alignment(horizontal="center"))
+    data_cell(ws, r, 3, name, zebra=z)
+    data_cell(ws, r, 4, round(total, 2), zebra=z, align=Alignment(horizontal="center"), numfmt="0.00")
+    data_cell(ws, r, 5, g_crit, zebra=z, align=Alignment(horizontal="center"), font=F_LABEL, fill=FILL_TQFROW)
+    data_cell(ws, r, 6, round(t, 2), zebra=z, align=Alignment(horizontal="center"), numfmt="0.00")
+    data_cell(ws, r, 7, g_norm, zebra=z, align=Alignment(horizontal="center"), font=F_LABEL, fill=FILL_CALCROW)
+    data_cell(ws, r, 8, "ต่าง" if differs else "เท่ากัน", zebra=z,
+              align=Alignment(horizontal="center"),
+              font=Font(name="Calibri", size=10, bold=True, color=TX_GAP) if differs else F_MUTED,
+              fill=FILL_GAP if differs else None)
+    data_cell(ws, r, 9, "" if not differs else f"{g_crit} → {g_norm}", zebra=z, font=F_MUTED)
+    r += 1
+
+r += 1
+_crit_counts = {}
+_norm_counts = {}
+for si, sid, code, name, total in GRADE_POP:
+    _crit_counts[band_of(total, BANDS_CRIT)] = _crit_counts.get(band_of(total, BANDS_CRIT), 0) + 1
+    g = band_of(t_score(total), BANDS_NORM)
+    _norm_counts[g] = _norm_counts.get(g, 0) + 1
+_fmt = lambda d: "  ·  ".join(f"{g} = {d[g]}" for g, _ in BANDS_CRIT if g in d)
+note(ws, r, 2, f"อิงเกณฑ์:  {_fmt(_crit_counts)}", span=8)
+r += 1
+note(ws, r, 2, f"อิงกลุ่ม:  {_fmt(_norm_counts)}", span=8)
+r += 2
+
+note(ws, r, 2, f"นักศึกษา {n_diff} คนจาก {GR_N} คน ได้เกรดไม่เท่ากันระหว่างสองวิธี ทั้งที่คะแนนดิบชุดเดียวกัน  ·  "
+               "อิงเกณฑ์ตัดสินจากคะแนนของตัวเองล้วน ๆ ส่วนอิงกลุ่มตัดสินจากตำแหน่งเทียบกับเพื่อนร่วมห้อง "
+               "คนที่ได้ 45 คะแนนจึงตกเมื่อใช้อิงเกณฑ์ แต่ไม่ตกเมื่อใช้อิงกลุ่ม เพราะทั้งห้องคะแนนไม่สูง", span=8)
+r += 1
+note(ws, r, 2, "เพราะเกรดอิงกลุ่มขึ้นกับ 'ใครอยู่ในห้องวันที่ตัด' ระบบจึงตรึงค่า n / mean / SD ไว้กับผลการตัดเกรด "
+               "แต่ละรอบ  ·  ถ้าไม่ตรึง นักศึกษาถอนรายวิชาเพียงคนเดียวจะทำให้ค่าเฉลี่ยขยับ และเกรดของ "
+               "ทุกคนเปลี่ยนตามโดยไม่มีใครแก้คะแนนสักตัว  ·  เกรดที่ประกาศแล้วจะแก้ไม่ได้ ต้องตัดรอบใหม่แทน",
+     span=8, kind="gap")
+r += 2
+
+ws.cell(row=r, column=2, value="เกณฑ์ที่ใช้ตัด").font = F_H2
+r += 1
+header_row(ws, r, ["เกรด", "อิงเกณฑ์ — คะแนนรวมขั้นต่ำ (%)", "อิงกลุ่ม — T-score ขั้นต่ำ"],
+           start_col=2, fill=FILL_CALC)
+r += 1
+for i, ((g, v_crit), (_, v_norm)) in enumerate(zip(BANDS_CRIT, BANDS_NORM)):
+    z = i % 2 == 1
+    data_cell(ws, r, 2, g, zebra=z, align=Alignment(horizontal="center"), font=F_LABEL)
+    data_cell(ws, r, 3, v_crit, zebra=z, align=Alignment(horizontal="center"), fill=FILL_TQFROW)
+    data_cell(ws, r, 4, v_norm, zebra=z, align=Alignment(horizontal="center"), fill=FILL_CALCROW)
+    r += 1
+r += 1
+note(ws, r, 2, "T-score 50 คือค่าเฉลี่ยของห้องพอดี ทุก 10 หน่วยคือ 1 ส่วนเบี่ยงเบนมาตรฐาน  ·  "
+               "สูตร T = 50 + 10 × (คะแนนของนักศึกษา − ค่าเฉลี่ย) ÷ ส่วนเบี่ยงเบนมาตรฐาน", span=8)
+ws.freeze_panes = "C5"
+
+# ===========================================================================
+# 9 รายงาน มคอ.5
 # ===========================================================================
 ws = wb.create_sheet(SH_TQF5)
 ws.sheet_view.showGridLines = False
 set_widths(ws, {"A": 4, "B": 10, "C": 50, "D": 15, "E": 15, "F": 16, "G": 16, "H": 18, "I": 34})
-title(ws, "8 · ตารางสรุปสำหรับกรอก มคอ.5", None, accent=C_TQF)
+title(ws, "9 · ตารางสรุปสำหรับกรอก มคอ.5", None, accent=C_TQF)
 ws["A2"] = ("รายงานผลการดำเนินการของรายวิชา — ระบบสรุปให้พร้อมนำไปกรอกในแบบฟอร์ม มคอ.5 "
             "โดยไม่ต้องรวบรวมคะแนนจากไฟล์ Excel หลายไฟล์อีก")
 ws["A2"].font = F_SUB
@@ -781,7 +974,7 @@ r += 2
 
 ws.cell(row=r, column=2, value="ผลการดำเนินการตามผลลัพธ์การเรียนรู้ของรายวิชา").font = F_H2
 r += 1
-header_row(ws, r, ["CLO ที่", "ผลลัพธ์การเรียนรู้ที่คาดหวัง", "PLO ที่รองรับ", "เกณฑ์ผ่านรายบุคคล (%)",
+header_row(ws, r, ["CLO ที่", "ผลลัพธ์การเรียนรู้ที่คาดหวัง", "ระดับ Bloom", "เกณฑ์ผ่านรายบุคคล (%)",
                    "เป้าหมายระดับชั้น (%)", "ผลที่ได้จริง (%)", "จำนวนที่ผ่าน / ประเมินได้", "สรุปผล"],
            start_col=2, fill=FILL_TQF, heights=40)
 TQF5_FIRST = r + 1
@@ -792,9 +985,9 @@ for ci in range(N_CLO):
     rng = f"'{SH_RESULT}'!{col}{RES_FIRST}:{col}{RES_LAST}"
     data_cell(ws, rr, 2, f"CLO {CLOS[ci][1]}", zebra=z, align=Alignment(horizontal="center"), font=F_LABEL)
     data_cell(ws, rr, 3, CLOS[ci][2], zebra=z)
-    data_cell(ws, rr, 4, CLOS[ci][4], zebra=z, align=Alignment(horizontal="center"))
+    data_cell(ws, rr, 4, BLOOM_TH[CLOS[ci][4]], zebra=z, align=Alignment(horizontal="center"))
     data_cell(ws, rr, 5, f"='{SH_CLO}'!$E${CLO_FIRST + ci}", zebra=z, align=Alignment(horizontal="center"))
-    data_cell(ws, rr, 6, f"='{SH_INFO}'!{CLASS_TARGET_CELL}", zebra=z, align=Alignment(horizontal="center"))
+    data_cell(ws, rr, 6, f"='{SH_CLO}'!$G${CLO_FIRST + ci}", zebra=z, align=Alignment(horizontal="center"))
     data_cell(ws, rr, 7, f'=IF(COUNT({rng})=0,"—",COUNTIF({rng},">="&E{rr})/COUNT({rng})*100)',
               zebra=z, align=Alignment(horizontal="center"), numfmt="0.00", font=F_LABEL)
     data_cell(ws, rr, 8, f'=COUNTIF({rng},">="&E{rr})&" / "&COUNT({rng})',
@@ -831,14 +1024,14 @@ note(ws, r, 2, "ตัวเลขทุกช่องในแผ่นนี�
                 "ซึ่งเป็นข้อแตกต่างหลักจากการรวมคะแนนด้วย Excel แบบเดิม", span=7, kind="tqf")
 
 # ===========================================================================
-# 9 ตารางฐานข้อมูล
+# 10 ตารางฐานข้อมูล
 # ===========================================================================
 ws = wb.create_sheet(SH_DB)
 ws.sheet_view.showGridLines = False
 set_widths(ws, {"A": 3, "B": 13, "C": 21, "D": 26, "E": 20, "F": 11, "G": 10, "H": 11,
                 "I": 12, "J": 13, "K": 13, "L": 14, "M": 15, "N": 13, "O": 13, "P": 19, "Q": 19})
-title(ws, "9 · ข้อมูลเดียวกันนี้ถูกเก็บในฐานข้อมูลอย่างไร", None, accent=C_DB)
-ws["A2"] = ("ทั้ง 11 ตาราง 69 คอลัมน์ ตามแผนภาพ ER ของระบบ พร้อมแถวข้อมูลที่ตรงกับทุกแผ่นงานก่อนหน้า "
+title(ws, "10 · ข้อมูลเดียวกันนี้ถูกเก็บในฐานข้อมูลอย่างไร", None, accent=C_DB)
+ws["A2"] = ("ทั้ง 13 ตาราง 80 คอลัมน์ ตามแผนภาพ ER ของระบบ พร้อมแถวข้อมูลที่ตรงกับทุกแผ่นงานก่อนหน้า "
             "— แต่ละตารางแสดงชื่อคอลัมน์ ชนิดข้อมูล และบทบาทของคีย์ครบทุกช่อง")
 ws["A2"].font = F_SUB
 
@@ -849,6 +1042,8 @@ KEY_STYLE = {
     "FK": (C_UI, "EAF1FE"),
     "UQ": (C_TQF, "FEF7E0"),
     "GEN": ("6B6478", "EDEBF2"),
+    # nullable — "เว้นว่างได้" is a real property worth showing, not an absence
+    "NULL": ("6B6478", "F3F3F5"),
     "": (C_MUTED, "FFFFFF"),
 }
 
@@ -949,7 +1144,7 @@ r = db_table(ws, r, "Course", "รายวิชา — เป็นราก�
               ("nameEn", "VARCHAR(255)", ""), ("semester", "INT", "UQ"), ("year", "INT", "UQ"),
               ("section", "VARCHAR(10)", "UQ"), ("credits", "DECIMAL(3,1)", ""),
               ("lectureHours", "DECIMAL(4,1)", ""), ("practiceHours", "DECIMAL(4,1)", ""),
-              ("selfStudyHours", "DECIMAL(4,1)", ""), ("gradingType", "ENUM('LETTER','PASS_FAIL')", ""),
+              ("selfStudyHours", "DECIMAL(4,1)", ""), ("gradeScale", "ENUM('LETTER','PASS_FAIL')", ""),
               ("passCriteria", "DOUBLE", ""), ("classTarget", "DOUBLE", ""),
               ("createdAt", "DATETIME(3)", ""), ("updatedAt", "DATETIME(3)", "")],
              [[COURSE["id"], COURSE["code"], COURSE["name"], COURSE["nameEn"], COURSE["semester"],
@@ -962,22 +1157,22 @@ r = db_table(ws, r, "Course", "รายวิชา — เป็นราก�
 
 r = db_table(ws, r, "CourseInstructor", "ใครสอนวิชาไหน ในบทบาทใด (ตารางเชื่อม User กับ Course)", SH_INFO,
              [("id", "VARCHAR(30)", "PK"), ("courseId", "VARCHAR(30)", "FK"), ("userId", "VARCHAR(30)", "FK"),
-              ("role", "ENUM('LEAD','CO','ASSISTANT')", ""), ("assignedAt", "DATETIME(3)", ""),
-              ("leadKey", "VARCHAR(30) GENERATED", "GEN")],
-             [[ci[0], ci[1], ci[2], ci[3], "2025-06-01 09:00:00",
-               COURSE["id"] if ci[3] == "LEAD" else None] for ci in COURSE_INSTRUCTORS],
-             "leadKey เป็นคอลัมน์ที่ฐานข้อมูลคำนวณให้เอง ไม่มีใครกรอก — มีค่าเท่ากับ courseId เฉพาะแถวที่เป็น LEAD "
-             "และเป็น NULL ในแถวอื่น เมื่อบังคับว่าคอลัมน์นี้ห้ามซ้ำ จึงได้กฎ 'หนึ่งรายวิชามี LEAD ได้ไม่เกินหนึ่งคน' โดยอัตโนมัติ",
-             gap_note="ข้อควรทราบ — leadKey มีเฉพาะในแผนภาพ ER ฉบับ MySQL เท่านั้น ฐานข้อมูลจริงของระบบใช้ PostgreSQL "
-                      "ซึ่งเขียนกฎเดียวกันนี้ได้ตรง ๆ ด้วย partial unique index จึงไม่มีคอลัมน์นี้")
+              ("role", "ENUM('LEAD','CO','ASSISTANT')", ""), ("assignedAt", "DATETIME(3)", "")],
+             [[ci[0], ci[1], ci[2], ci[3], "2025-06-01 09:00:00"] for ci in COURSE_INSTRUCTORS],
+             "กฎ 'หนึ่งรายวิชามี LEAD ได้ไม่เกินหนึ่งคน' ไม่ได้เก็บเป็นคอลัมน์ — PostgreSQL บังคับด้วย "
+             "partial unique index บน courseId เฉพาะแถวที่ role = LEAD  ·  ส่วน 'ต้องมีอย่างน้อยหนึ่งคน' "
+             "บังคับที่ชั้นแอปพลิเคชัน เพราะแถวรายวิชาต้องมีอยู่ก่อนจึงจะมอบหมายใครได้")
 
 r = db_table(ws, r, "CLO", "ผลลัพธ์การเรียนรู้ของรายวิชา พร้อมเกณฑ์ผ่านรายบุคคล", SH_CLO,
              [("id", "VARCHAR(30)", "PK"), ("courseId", "VARCHAR(30)", "FK"), ("number", "INT", "UQ"),
-              ("description", "VARCHAR(1000)", ""), ("threshold", "DOUBLE", "")],
-             [[c[0], COURSE["id"], c[1], c[2], c[3]] for c in CLOS],
+              ("description", "VARCHAR(1000)", ""), ("threshold", "DOUBLE", ""),
+              ("bloomLevel", "ENUM(6 ระดับ)", "NULL"), ("classTarget", "DOUBLE", "NULL")],
+             [[c[0], COURSE["id"], c[1], c[2], c[3], c[4], c[5] if c[5] is not None else "— ว่าง —"]
+              for c in CLOS],
              "courseId + number ห้ามซ้ำ — ถ้ามี CLO 1 สองแถวในวิชาเดียวกัน รายงานการบรรลุจะผิดทั้งฉบับโดยไม่มีสัญญาณเตือน",
-             gap_note="ไม่มีคอลัมน์เก็บ PLO — ระบบรุ่นที่ 1 อยู่ในขอบเขตระดับรายวิชาเท่านั้น "
-                      "หากต้องการเชื่อมถึงหลักสูตรในอนาคต ต้องเพิ่มตารางหลักสูตรและตารางเชื่อม CLO กับ PLO ก่อน")
+             "bloomLevel ไม่มีค่าเริ่มต้นโดยตั้งใจ — การเดาให้เป็น 'จำ' ทุกแถวจะทำให้คอลัมน์นี้หมดประโยชน์ "
+             "ทันที เพราะมีไว้ตรวจว่าวิธีวัดตรงกับระดับพฤติกรรมที่เขียนไว้หรือไม่  ·  classTarget ที่เว้นว่าง "
+             "หมายถึงใช้ค่าของรายวิชา ไม่ใช่ศูนย์")
 
 r = db_table(ws, r, "BehavioralObjective", "จุดประสงค์เชิงพฤติกรรมที่ย่อยลงมาจาก CLO", SH_CLO,
              [("id", "VARCHAR(30)", "PK"), ("cloId", "VARCHAR(30)", "FK"), ("number", "INT", "UQ"),
@@ -1032,23 +1227,55 @@ r = db_table(ws, r, "ScoreUploadLog", "ประวัติการนำเ�
              "บันทึกทุกครั้งที่อัปโหลด แม้ไฟล์จะผิดทั้งไฟล์ ใช้ตรวจสอบย้อนหลังว่าใครนำเข้าคะแนนชุดใดเมื่อใด  ·  "
              "ตารางนี้ไม่ได้ผูกกับตาราง Score โดยตรง เป็นเพียงบันทึกเหตุการณ์")
 
-c = ws.cell(row=r, column=2, value="รวมทั้งหมด 11 ตาราง 69 คอลัมน์  —  และไม่มีตารางใดเก็บผลการคำนวณ")
+r += 1
+c = ws.cell(row=r, column=2, value="กลุ่มตารางการตัดเกรด — เพิ่มใน v4")
+c.font = Font(name="Calibri", size=12, bold=True, color="FFFFFF")
+c.fill = FILL_CALC
+ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=17)
+ws.row_dimensions[r].height = 22
+r += 2
+
+r = db_table(ws, r, "GradeBand", "ช่วงเกรดของรายวิชา เช่น A ต้องได้ตั้งแต่ 80 ขึ้นไป", SH_GRADE,
+             [("id", "VARCHAR(30)", "PK"), ("courseId", "VARCHAR(30)", "FK"),
+              ("grade", "VARCHAR(5)", "UQ"), ("minValue", "DOUBLE", "UQ")],
+             [[b[0], b[1], b[2], b[3]] for b in GRADE_BANDS],
+             "แยกเป็นตารางแทนที่จะเก็บรวมเป็นข้อความก้อนเดียว เพราะฐานข้อมูลต้องบังคับได้ว่าเกรดห้ามซ้ำ "
+             "และสองเกรดห้ามใช้เส้นแบ่งเดียวกัน  ·  ไม่มีคอลัมน์ลำดับและไม่มีคอลัมน์บอกหน่วย "
+             "เพราะลำดับอ่านจาก minValue ได้ และหน่วยตามมาจาก Course.gradeMethod ว่าอิงเกณฑ์หรืออิงกลุ่ม")
+
+r = db_table(ws, r, "StudentGrade", "เกรดสุดท้ายของนักศึกษาแต่ละคน", SH_GRADE,
+             [("id", "VARCHAR(30)", "PK"), ("studentId", "VARCHAR(30)", "UQ"),
+              ("totalPercent", "DOUBLE", ""), ("grade", "VARCHAR(5)", ""),
+              ("overrideReason", "VARCHAR(1000)", "NULL")],
+             STUDENT_GRADE_ROWS,
+             "เก็บ 9 คอลัมน์รวมทั้งสองตาราง จากเดิม 35 — ระบบนี้มีไว้รายงานการบรรลุ CLO "
+             "การตัดเกรดเป็นผลพลอยได้ จึงเก็บเท่าที่ตอบได้ว่าได้เกรดอะไรบนเกณฑ์แบบไหน  ·  "
+             "เกรดกับคะแนนรวมถูกบันทึกเป็นค่าจริง แก้คะแนนดิบทีหลังจึงไม่ทำให้เกรดที่ให้ไปแล้วขยับ  ·  "
+             "แลกกับการที่เกรดอิงกลุ่มย้อนพิสูจน์ที่มาไม่ได้ เพราะไม่ได้เก็บ n / mean / sd ไว้")
+
+c = ws.cell(row=r, column=2, value="รวมทั้งหมด 13 ตาราง 80 คอลัมน์")
 c.font = Font(name="Calibri", size=12, bold=True, color="FFFFFF")
 c.fill = FILL_CALC
 ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=17)
 ws.row_dimensions[r].height = 22
 r += 1
-note(ws, r, 2, "ผลการบรรลุ CLO ในแผ่นที่ 7 และรายงานในแผ่นที่ 8 คำนวณใหม่ทุกครั้งที่เปิดดู จากคะแนนดิบและน้ำหนัก "
-                "จึงไม่มีทางที่ตัวเลขในรายงานจะขัดแย้งกับคะแนนที่อาจารย์กรอกไว้ และการแก้คะแนนย้อนหลัง "
-                "จะสะท้อนในรายงานทันทีโดยไม่ต้องสั่งคำนวณใหม่", span=15)
+note(ws, r, 2, "ตาราง 11 ตารางแรกไม่มีตารางใดเก็บผลการคำนวณเลย — ผลการบรรลุ CLO ในแผ่นที่ 7 และรายงานในแผ่นที่ 9 "
+                "คำนวณใหม่ทุกครั้งที่เปิดดู จากคะแนนดิบและน้ำหนัก จึงไม่มีทางที่ตัวเลขในรายงานจะขัดแย้งกับคะแนน "
+                "ที่อาจารย์กรอกไว้ และการแก้คะแนนย้อนหลังจะสะท้อนในรายงานทันที", span=15)
+r += 1
+note(ws, r, 2, "StudentGrade คือข้อยกเว้นเดียว และเป็นข้อยกเว้นโดยตั้งใจ  ·  เกรดถูกเก็บเป็นค่าจริง "
+                "ไม่ได้คำนวณสดตอนเปิดดู เพราะเกรดที่ประกาศไปเดือนตุลาคมต้องอ่านได้เหมือนเดิมในเดือนมีนาคม "
+                "แม้จะมีคนถอนรายวิชาหรือมีการแก้คะแนนย้อนหลังก็ตาม — เป็น 'ข้อเท็จจริงทางประวัติศาสตร์' "
+                "ไม่ใช่ค่าที่คำนวณใหม่แล้วได้เท่าเดิม  ·  ส่วนค่าเฉลี่ยและส่วนเบี่ยงเบนที่ใช้ตอนตัดอิงกลุ่ม "
+                "ไม่ได้เก็บไว้ จึงย้อนพิสูจน์ที่มาของเกรดอิงกลุ่มจากฐานข้อมูลอย่างเดียวไม่ได้", span=15, kind="gap")
 
 # ===========================================================================
-# 10 แผนที่ UI-DB
+# 11 แผนที่ UI-DB
 # ===========================================================================
 ws = wb.create_sheet(SH_FIELDMAP)
 ws.sheet_view.showGridLines = False
 set_widths(ws, {"A": 3, "B": 24, "C": 34, "D": 24, "E": 26, "F": 50})
-title(ws, "10 · ช่องกรอกแต่ละช่องเก็บที่ไหน", None, accent=C_PRIMARY)
+title(ws, "11 · ช่องกรอกแต่ละช่องเก็บที่ไหน", None, accent=C_PRIMARY)
 ws["A2"] = "ใช้ตอบคำถามว่าข้อมูลที่กรอกไปอยู่ที่ใด และค่าใดที่ระบบคำนวณให้โดยไม่เก็บซ้ำ"
 ws["A2"].font = F_SUB
 
@@ -1061,7 +1288,8 @@ rows_map = [
     (SH_CLO, "ผลลัพธ์การเรียนรู้ที่คาดหวัง", "CLO", "description", ""),
     (SH_CLO, "เกณฑ์ผ่านของ CLO", "CLO", "threshold", "เกณฑ์รายบุคคล ไม่ใช่ระดับชั้น"),
     (SH_CLO, "จุดประสงค์เชิงพฤติกรรม", "BehavioralObjective", "cloId, number, description", "ใช้ตามรอย ไม่กระทบคะแนน"),
-    (SH_CLO, "PLO ที่รองรับ", "— ไม่เก็บ —", "นอกขอบเขตรุ่นที่ 1", "แสดงเพื่อให้เห็นความเชื่อมโยงกับหลักสูตร"),
+    (SH_CLO, "ระดับ Bloom", "CLO", "bloomLevel", "ผู้สอนเลือกเอง ไม่มีค่าเริ่มต้น"),
+    (SH_CLO, "เป้าหมายผู้ผ่านราย CLO", "CLO", "classTarget", "เว้นว่าง = ใช้ค่าของรายวิชา"),
     (SH_PLAN, "งาน/กิจกรรม และวิธีการประเมิน", "Activity", "name, method", ""),
     (SH_PLAN, "คะแนนเต็ม", "Activity", "maxScore", "ต้องมากกว่า 0"),
     (SH_PLAN, "สัดส่วนการประเมิน (%)", "Activity", "weight", "รวมทุกกิจกรรมต้องได้ 100"),
@@ -1094,8 +1322,12 @@ r += 1
 note(ws, r, 2, "แถวสีเขียวคือค่าที่ระบบคำนวณให้ ไม่มีการเก็บซ้ำในฐานข้อมูล  ·  "
                 "แถวสีชมพูคือข้อมูลที่ มคอ. ต้องการแต่ฐานข้อมูลยังไม่รองรับ ซึ่งต้องตัดสินใจก่อนพัฒนาส่วนออกรายงาน", span=4)
 
-wb.save("docs/excel/CMAS-TQF-Data-Entry.xlsx")
-print("Saved docs/excel/CMAS-TQF-Data-Entry.xlsx")
+# Optional output path: `python scripts/build-tqf-presentation-workbook.py <out.xlsx>`
+# Excel keeps an exclusive lock on the workbook while it is open, so writing to
+# a scratch path is the way to rebuild without closing it first.
+OUT = sys.argv[1] if len(sys.argv) > 1 else "docs/excel/CMAS-TQF-Data-Entry.xlsx"
+wb.save(OUT)
+print(f"Saved {OUT}")
 print(f"  Course: {COURSE['code']} {COURSE['name']} {COURSE['credits']}")
 print(f"  Sheets: {len(wb.sheetnames)} -> {wb.sheetnames}")
 print(f"  AssessmentCriteria {len(CRITERIA)} rows / Score {len(SCORE_ROWS)} rows")

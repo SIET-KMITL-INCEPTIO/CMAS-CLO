@@ -84,7 +84,7 @@ SH_FIELDMAP = "UI to DB Mapping"
 COURSE = {
     "id": "crs-01", "code": "90641002", "name": "ระบบฐานข้อมูล", "nameEn": "Database Systems",
     "semester": 1, "year": 2568, "section": "01",
-    "credits": "3 (2-2-5)", "gradingType": "LETTER",
+    "credits": "3 (2-2-5)", "gradeScale": "LETTER",
     "passCriteria": 60, "classTarget": 70,
 }
 
@@ -330,7 +330,7 @@ course_fields = [
     ("ปีการศึกษา (พ.ศ.)", COURSE["year"], "year"),
     ("กลุ่มเรียน (Section)", COURSE["section"], "section"),
     ("หน่วยกิต (บรรยาย-ปฏิบัติ-ศึกษาเอง)", COURSE["credits"], "credits, lectureHours, practiceHours, selfStudyHours"),
-    ("รูปแบบการตัดเกรด", COURSE["gradingType"], "gradingType"),
+    ("รูปแบบการตัดเกรด", COURSE["gradeScale"], "gradeScale"),
     ("เกณฑ์ผ่านรายวิชา (%)", COURSE["passCriteria"], "passCriteria  ← CR-05 ใช้ค่านี้"),
     ("เป้าหมายระดับชั้น / Class Target (%)", COURSE["classTarget"], "classTarget  ← CR-04 ใช้ค่านี้"),
 ]
@@ -817,9 +817,9 @@ r = db_table(ws, r, "User", "บัญชีผู้ใช้ระบบ (อ�
 
 r = db_table(ws, r, "Course", "รายวิชา — รากของลำดับชั้นข้อมูลทั้งหมด ไม่มีตารางใดอยู่เหนือกว่านี้",
              SH_COURSE,
-             ["id", "code", "name", "semester", "year", "section", "gradingType", "passCriteria", "classTarget"],
+             ["id", "code", "name", "semester", "year", "section", "gradeScale", "passCriteria", "classTarget"],
              [[COURSE["id"], COURSE["code"], COURSE["name"], COURSE["semester"], COURSE["year"],
-               COURSE["section"], COURSE["gradingType"], COURSE["passCriteria"], COURSE["classTarget"]]])
+               COURSE["section"], COURSE["gradeScale"], COURSE["passCriteria"], COURSE["classTarget"]]])
 
 r = db_table(ws, r, "CourseInstructor", "ใครสอนวิชาไหน ในบทบาทอะไร (ตารางเชื่อม User ↔ Course แบบ M:N)",
              "หน้าจอมอบหมายผู้สอน (สิทธิ์ ADMIN)",

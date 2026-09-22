@@ -144,6 +144,20 @@ Authorization: Bearer <accessToken>
 ## 3. ตาราง Endpoint ทั้งหมด (สรุป)
 
 > **Role** = role ขั้นต่ำที่เข้าได้ · **Scope** = ต้องเรียก `assertCourseAccess()` หรือไม่
+>
+> ⚠ **ช่องว่างที่รู้ตัว (2569-09-12)** — คอลัมน์ Role ในตารางทั้งเจ็ดนี้รู้จักแค่ `ADMIN` กับ `any`
+> ซึ่งเขียนไว้ก่อนที่ `CourseRole` จะกลายเป็นสิทธิ์ที่บังคับใช้จริง (ASM-03a) · ทุกแถวที่เขียนว่า
+> **`any` + Scope ✅ ต้องอ่านเป็น "ผ่าน `assertCourseAccess()` **และ** ตรวจ capability ตามเมทริกซ์"**
+> ไม่ใช่ "ผู้สอนคนไหนก็ได้" · เมทริกซ์ P01–P18 อยู่ที่
+> [course-role-permissions.md §1](course-role-permissions.md) และ SEC-6 กำหนดว่า
+> **การตรวจฝั่งหน้าจอเป็น UX ล้วน ๆ · API ต้องตรวจซ้ำทุกข้อ ไม่มีข้อยกเว้น**
+>
+> สองแถวที่เปลี่ยนความหมายชัดที่สุดจากรอบนี้:
+> `PATCH /courses/:courseId` = **LEAD เท่านั้น** (P12 — ไม่ใช่ ADMIN และไม่ใช่ `any`) ·
+> `POST /courses` = **ADMIN หรือ INSTRUCTOR ที่บัญชียังใช้งานอยู่** (P17 · FR-22c แก้ 2569-09-14) ·
+> endpoint นี้ไม่มี `courseId` ให้ `assertCourseAccess()` ตรวจ · ผู้สร้างต้องถูกเพิ่มเป็น LEAD
+> ของรายวิชาใหม่ **ใน transaction เดียวกับการสร้าง** ไม่อย่างนั้นจะเกิดวิชาที่ไม่มีใครดูแล
+> การไล่แก้คอลัมน์ Role ทั้ง 60 กว่าแถวให้เป็นชื่อ capability เป็นงานคนละรอบ ยังไม่ทำ
 
 ### 3.1 Auth & Users — 11 endpoints
 
@@ -169,7 +183,7 @@ Authorization: Bearer <accessToken>
 | POST | `/courses` | ADMIN | — | FR-20, FR-21, FR-27, FR-28 |
 | GET | `/courses/:courseId` | any | ✅ | FR-25 |
 | PATCH | `/courses/:courseId` | any | ✅ | FR-20, FR-47 |
-| DELETE | `/courses/:courseId` | ADMIN | ✅ | FR-26 |
+| DELETE | `/courses/:courseId` | ADMIN · LEAD ของวิชานั้น | ✅ | FR-26 |
 | GET | `/courses/:courseId/impact` | any | ✅ | FR-26 |
 | GET | `/courses/:courseId/instructors` | any | ✅ | FR-22 |
 | POST | `/courses/:courseId/instructors` | ADMIN | ✅ | FR-22, FR-23 |
@@ -351,7 +365,7 @@ Query: `year` · `semester` · `q` (รหัสหรือชื่อ) · `pa
     "id": "clx1", "code": "90641001", "name": "การเขียนโปรแกรมคอมพิวเตอร์", "nameEn": "Computer Programming",
     "semester": 1, "year": 2568, "section": "01",
     "credits": "3.0", "lectureHours": "2.0", "practiceHours": "2.0", "selfStudyHours": "5.0",
-    "gradingType": "LETTER", "passCriteria": 60, "classTarget": 70,
+    "gradeScale": "LETTER", "passCriteria": 60, "classTarget": 70,
     "counts": { "clos": 5, "activities": 8, "students": 42 },
     "instructors": [{ "userId": "clu1", "name": "สมชาย ใจดี", "role": "LEAD" }]
   }],
@@ -368,7 +382,7 @@ Query: `year` · `semester` · `q` (รหัสหรือชื่อ) · `pa
   "code": "90641001", "name": "การเขียนโปรแกรมคอมพิวเตอร์", "nameEn": "Computer Programming",
   "semester": 1, "year": 2568, "section": "01",
   "credits": 3, "lectureHours": 2, "practiceHours": 2, "selfStudyHours": 5,
-  "gradingType": "LETTER", "passCriteria": 60, "classTarget": 70,
+  "gradeScale": "LETTER", "passCriteria": 60, "classTarget": 70,
   "instructors": [{ "userId": "clu1", "role": "LEAD" }]
 }
 ```
@@ -814,18 +828,18 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
   "success": true,
   "data": {
     "student": { "id": "cls7", "studentCode": "6703007", "name": "สมหมาย ตั้งใจ" },
-    "gradingType": "LETTER",
+    "gradeScale": "LETTER",
     "clos": [{ "cloId": "clc1", "number": 1, "score": 72.5, "threshold": 60, "status": "PASS" },
              { "cloId": "clc3", "number": 3, "score": null, "threshold": 60, "status": "NOT_EVALUATED" }],
     "activities": [{ "activityId": "cla1", "name": "สอบกลางภาค", "score": 78, "maxScore": 100, "weight": 30 }],
     "totalScore": 52.4,                 // CR-05, null ถ้ายังไม่มีคะแนนเลย
     "coursePassed": false,              // CR-05 เทียบกับ passCriteria
-    "passFailResult": null              // CR-06: "S" | "U" เมื่อ gradingType = PASS_FAIL, null เมื่อ LETTER
+    "passFailResult": null              // CR-06: "S" | "U" เมื่อ gradeScale = PASS_FAIL, null เมื่อ LETTER
   }
 }
 ```
 
-> **CR-06 / FR-86:** เมื่อ `gradingType = PASS_FAIL` API **ห้ามส่ง field เกรดตัวอักษรใด ๆ**
+> **CR-06 / FR-86:** เมื่อ `gradeScale = PASS_FAIL` API **ห้ามส่ง field เกรดตัวอักษรใด ๆ**
 > ให้ส่ง `passFailResult` เท่านั้น — การส่งมาแล้วหวังให้ client ซ่อน คือการฝากกฎทางวิชาการ
 > ไว้กับ CSS
 

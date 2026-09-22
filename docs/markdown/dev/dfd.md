@@ -34,7 +34,7 @@ See also: [[srs]] · [[schema]] · [[usecase]] · [[theory]] · [[project-plan]]
 > 2. **ตั้งชื่อ store ด้วยชื่อตารางจริง** ทุกที่ (ไดอะแกรม §3.0 · (c) · (d) · §5.3) — เลิกใช้คำรวมอย่าง "Criteria"
 >    ที่ชี้ได้ทั้ง `AssessmentCriteria` · `CLO.threshold` · `Course.passCriteria` ซึ่งอยู่คนละตาราง
 > 3. **เพิ่ม f50 (D2 → P10)** — เดิม P10 คำนวณ CR-04/05/06 โดยไม่มีเส้นส่ง `classTarget` · `passCriteria` ·
->    `gradingType` เข้ามาเลย ทั้งสามอยู่บน `Course` (= D2) ไม่ใช่ D3 → เป็น **miracle** ตามกฎข้อ 2 ของ §3.4
+>    `gradeScale` เข้ามาเลย ทั้งสามอยู่บน `Course` (= D2) ไม่ใช่ D3 → เป็น **miracle** ตามกฎข้อ 2 ของ §3.4
 > 4. **เพิ่ม f51 (D3 → P8)** — P8 ต้อง map หัวคอลัมน์ในไฟล์เป็น `activityId` และตรวจ `score ≤ maxScore`
 >    แต่เดิมไม่มีเส้นอ่าน `Activity` เลย → **miracle** ข้อที่สอง
 > 5. **ย้าย P4 ออกจาก TB-4** — จัดการผู้ใช้เป็นขอบเขตคณะ ไม่มี `courseId` ในเส้นทางเลย
@@ -258,7 +258,7 @@ flowchart TB
     P3 == "Course.id WHERE instructors.userId (f25a,f25b)" ==> DS2
 
     P4 == "User: email·name·role·isActive·passwordHash (f26a,f26b)" ==> DS1
-    P5 == "Course: code·credits·gradingType·passCriteria·classTarget<br/>+ CourseInstructor.role (f27a,f27b)" ==> DS2
+    P5 == "Course: code·credits·gradeScale·passCriteria·classTarget<br/>+ CourseInstructor.role (f27a,f27b)" ==> DS2
     P6 == "CLO.threshold · Activity.maxScore·weight<br/>AssessmentCriteria.weight · ObjectiveAssessment (f28a,f28b)" ==> DS3
     P7 == "Student.studentCode · name (PDPA) (f29a,f29b)" ==> DS4
     P7 == "Score.score ต่อคู่ studentId+activityId (f30,f49)" ==> DS5
@@ -274,7 +274,7 @@ flowchart TB
     DS3 == "CLO.threshold · Activity.weight·maxScore<br/>AssessmentCriteria.weight (f38)" ==> P10
     DS4 == "Student.studentCode · name (f39)" ==> P10
     DS5 == "Score.score รายกิจกรรม (f40)" ==> P10
-    DS2 == "Course.passCriteria·classTarget·gradingType (f50)" ==> P10
+    DS2 == "Course.passCriteria·classTarget·gradeScale (f50)" ==> P10
     P10 == "attainment% · at-risk · รายงานรายบุคคล (f41)" ==> P3
 
     P3 == "requestId · status · userId — ไม่มี PII (f42)" ==> DS9
@@ -407,7 +407,7 @@ flowchart TB
 
     P4c -- "f26a เขียน User: email·name·passwordHash(argon2)·role·isActive" --> DS1c
     DS1c -- "f26b อ่าน User: id·email·name·role·isActive (ห้ามคืน passwordHash)" --> P4c
-    P5c -- "f27a เขียน Course: code·name·semester·year·section·credits<br/>gradingType·passCriteria·classTarget + CourseInstructor: userId·role" --> DS2c
+    P5c -- "f27a เขียน Course: code·name·semester·year·section·credits<br/>gradeScale·passCriteria·classTarget + CourseInstructor: userId·role" --> DS2c
     DS2c -- "f27b อ่าน Course + CourseInstructor join User (ชื่อผู้สอน)" --> P5c
     P6c -- "f28a เขียน CLO: number·description·threshold<br/>Activity: name·method·maxScore·weight·order<br/>AssessmentCriteria: weight · BehavioralObjective · ObjectiveAssessment" --> DS3c
     DS3c -- "f28b อ่านโครงสร้าง CLO ทั้งต้นไม้ของวิชานั้น" --> P6c
@@ -451,7 +451,7 @@ flowchart TB
     DS3d -- "f38 CLO.threshold · Activity.weight·maxScore<br/>AssessmentCriteria.weight (CR-01·CR-03)" --> P10d
     DS4d -- "f39 Student.id · studentCode · name" --> P10d
     DS5d -- "f40 Score.score ต่อ (studentId, activityId)" --> P10d
-    DS2d -- "f50 Course.passCriteria (CR-05) · classTarget (CR-04)<br/>gradingType (CR-06)" --> P10d
+    DS2d -- "f50 Course.passCriteria (CR-05) · classTarget (CR-04)<br/>gradeScale (CR-06)" --> P10d
     P10d -- "f41 attainment% ราย CLO · at-risk list · รายงานรายบุคคล" --> P3d
 
     P3d -- "f42 requestId · statusCode · userId — ไม่มี PII (CON-02)" --> DS9d
@@ -459,7 +459,7 @@ flowchart TB
 ```
 
 > **f50 คือเส้นที่ v2.4.0 ขาดไป** — เกณฑ์ตัดสินทั้งสามตัวอยู่บนตาราง `Course` (= **D2**) ไม่ใช่ D3:
-> `passCriteria` (ผ่านรายวิชากี่ %) · `classTarget` (ผู้ผ่านกี่ % จึงถือว่าบรรลุ CLO) · `gradingType`
+> `passCriteria` (ผ่านรายวิชากี่ %) · `classTarget` (ผู้ผ่านกี่ % จึงถือว่าบรรลุ CLO) · `gradeScale`
 > (LETTER หรือ PASS_FAIL) เดิม P10 จึงเป็น **miracle** — ผลิตคำว่า "บรรลุ/ไม่บรรลุ" ออกมาโดยไม่มีเส้นใด
 > ส่งเกณฑ์เข้ามาเลย
 >
@@ -550,7 +550,7 @@ flowchart TB
 |---|---|---|---|
 | 13 | `ObjectiveAssessment` ไม่ปรากฏใน store ใดเลย — D3 ครอบ 4 ตาราง แต่ schema มี 5 ตารางในคลัสเตอร์นี้ ทำให้ 11 model แมปได้จริงแค่ 10 | element หาย | เติมชื่อตารางใน D3 ทุกที่ + เพิ่ม **§5.4 ตารางกระทบยอด 11 model** |
 | 14 | ชื่อ store เป็น**หมวดหมู่** ไม่ใช่ชื่อตาราง (`D3 · CLO/Activity/Criteria`) — คำว่า "Criteria" ชี้ได้ทั้ง `AssessmentCriteria` · `CLO.threshold` · `Course.passCriteria` ซึ่งอยู่คนละตารางและคนละ store | ป้ายกำกวม | ตั้งชื่อ store ด้วยชื่อ model จริง · ป้ายเส้นทุกเส้นระบุ `ตาราง.คอลัมน์` |
-| 15 | **P10 ไม่มีเส้นรับเกณฑ์ตัดสิน** — CR-04 อ่าน `Course.classTarget` · CR-05 อ่าน `Course.passCriteria` · CR-06 อ่าน `Course.gradingType` ทั้งหมดอยู่บน **D2** แต่ P10 ต่อกับ D3/D4/D5 เท่านั้น | **miracle** | เพิ่ม **f50** D2 → P10 |
+| 15 | **P10 ไม่มีเส้นรับเกณฑ์ตัดสิน** — CR-04 อ่าน `Course.classTarget` · CR-05 อ่าน `Course.passCriteria` · CR-06 อ่าน `Course.gradeScale` ทั้งหมดอยู่บน **D2** แต่ P10 ต่อกับ D3/D4/D5 เท่านั้น | **miracle** | เพิ่ม **f50** D2 → P10 |
 | 16 | **P8 ไม่มีเส้นรับ Activity** — import ต้องแปลงหัวคอลัมน์เป็น `activityId` และตรวจ `score ≤ Activity.maxScore` ก่อน commit (FR-69) แต่ไม่มีเส้นอ่าน D3 | **miracle** | เพิ่ม **f51** D3 → P8 |
 | 17 | **P4 ถูกวาดไว้ใน TB-4** ทั้งที่เส้นทางจัดการผู้ใช้ไม่มี `courseId` — ด่านคือ `rbac("ADMIN")` ไม่ใช่ `assertCourseAccess()` | boundary ผิดตัว | ย้าย P4 ออกนอก TB-4 · แก้คอลัมน์ boundary ของ f19/f44 เป็น `—` · เพิ่ม STRIDE ข้อ 9 |
 
@@ -650,7 +650,7 @@ flowchart TB
     P102 --> P103
     DS3 -- "CLO.threshold (f38)" --> P103
     DS2 -- "Course.classTarget (f50)" --> P104
-    DS2 -- "Course.passCriteria · gradingType (f50)" --> P105
+    DS2 -- "Course.passCriteria · gradeScale (f50)" --> P105
     P103 --> P104 --> OUT1
     P103 --> P106 --> OUT1
     P102 --> P105 --> OUT2
@@ -705,7 +705,7 @@ TMT 2016 สร้าง threat จาก **ชนิดของ element** ไ�
 | ID | ชื่อใน TMT | ตารางที่ครอบ (`schema.prisma`) | Stencil | Sensitive | หมายเหตุ |
 |---|---|---|---|---|---|
 | D1 | User | `User` | SQL Database | **Yes** | `passwordHash` (argon2) + `role` — เป้าหมายอันดับ 1 |
-| D2 | Course · CourseInstructor | `Course` · `CourseInstructor` | SQL Database | No | **เป็นตารางที่นิยาม TB-4** (`instructors.some.userId`) และ**ถือเกณฑ์ตัดสิน** `passCriteria`/`classTarget`/`gradingType` |
+| D2 | Course · CourseInstructor | `Course` · `CourseInstructor` | SQL Database | No | **เป็นตารางที่นิยาม TB-4** (`instructors.some.userId`) และ**ถือเกณฑ์ตัดสิน** `passCriteria`/`classTarget`/`gradeScale` |
 | D3 | CLO Structure | `CLO` · `BehavioralObjective` · `Activity` · `AssessmentCriteria` · `ObjectiveAssessment` | SQL Database | No | ไม่ใช่ PII แต่เป็น **แหล่งของน้ำหนักคำนวณทั้งหมด** — Tampering ที่นี่เงียบกว่าการแก้คะแนน |
 | D4 | Student (roster) | `Student` | SQL Database | **Yes** | `studentCode` + `name` — PDPA · หนึ่งแถว = หนึ่ง **enrolment** ไม่ใช่หนึ่งคน (ASM-01) |
 | D5 | Score | `Score` | SQL Database | **Yes** | ผลการเรียน — PDPA · **ไม่มีแถว = ยังไม่ประเมิน** ไม่ใช่ 0 (FR-62) |
@@ -815,7 +815,7 @@ TMT 2016 สร้าง threat จาก **ชนิดของ element** ไ�
 |---|---|---|---|---|
 | f26a | P4 → D1 | `User`: `email·name·passwordHash(argon2)·role·isActive` — **`role` คือฟิลด์ EoP** | TCP + TLS | TB-2 |
 | f26b | D1 → P4 | `User`: `id·email·name·role·isActive` — **ห้าม select `passwordHash`** | TCP + TLS | TB-2 |
-| f27a | P5 → D2 | `Course`: `code·name·nameEn·semester·year·section·credits·lectureHours·practiceHours·selfStudyHours·gradingType·passCriteria·classTarget` + `CourseInstructor`: `userId·role` | TCP + TLS | TB-2 |
+| f27a | P5 → D2 | `Course`: `code·name·nameEn·semester·year·section·credits·lectureHours·practiceHours·selfStudyHours·gradeScale·passCriteria·classTarget` + `CourseInstructor`: `userId·role` | TCP + TLS | TB-2 |
 | f27b | D2 → P5 | `Course` ทั้งแถว + `CourseInstructor` join `User.name` (รายชื่อผู้สอน) | TCP + TLS | TB-2 |
 | f28a | P6 → D3 | `CLO`: `number·description·threshold` · `BehavioralObjective`: `number·description` · `Activity`: `name·method·maxScore·order·weight` · `AssessmentCriteria`: `weight` · `ObjectiveAssessment`: `criteriaId·objectiveId` | TCP + TLS | TB-2 |
 | f28b | D3 → P6 | โครงสร้าง CLO ทั้งต้นไม้ของวิชา (5 ตารางข้างต้น) | TCP + TLS | TB-2 |
@@ -847,7 +847,7 @@ TMT 2016 สร้าง threat จาก **ชนิดของ element** ไ�
 | f38 | D3 → P10 | `CLO.threshold` · `Activity.weight·maxScore` · `AssessmentCriteria.weight` (ตัวตั้งของ CR-01 · CR-03) | TCP + TLS | TB-2 |
 | f39 | D4 → P10 | `Student`: `id·studentCode·name` (**PDPA**) | TCP + TLS | TB-2 |
 | f40 | D5 → P10 | `Score.score` ต่อ `(studentId, activityId)` (**PDPA**) | TCP + TLS | TB-2 |
-| **f50** | D2 → P10 | `Course.passCriteria` (CR-05) · `Course.classTarget` (CR-04) · `Course.gradingType` (CR-06) — **เกณฑ์ตัดสินทั้งหมดอยู่บน `Course` ไม่ใช่ D3** | TCP + TLS | TB-2 |
+| **f50** | D2 → P10 | `Course.passCriteria` (CR-05) · `Course.classTarget` (CR-04) · `Course.gradeScale` (CR-06) — **เกณฑ์ตัดสินทั้งหมดอยู่บน `Course` ไม่ใช่ D3** | TCP + TLS | TB-2 |
 | f41 | P10 → P3 | attainment% ราย CLO · at-risk list · รายงานรายบุคคล | in-process | **← TB-4** |
 | f42 | P3 → D9 | `requestId` · `statusCode` · `userId` — **ไม่มี PII** (CON-02) | in-process | — |
 | f43 | P8 → D9 | `fileName` + จำนวนแถว ok/fail — **ไม่มีคะแนน/ชื่อ นศ.** | in-process | **← TB-4** |
@@ -938,7 +938,7 @@ Mermaid ด้านบน **import เข้า TMT ไม่ได้** (TMT �
 | 7 | P2 | **S**poofing | FR-03 ต้องตอบข้อความเดียวกันทั้งกรณีรหัสผิดและบัญชีถูกปิด — แล้ว **เวลาตอบ** ต่างกันไหม? (timing oracle) |
 | 8 | D6 | **R**epudiation | `ScoreUploadLog` เป็นหลักฐานเดียวว่าใครแก้คะแนน — แต่การ **แก้คะแนนผ่านหน้าจอ (f30)** ไม่มี log เลย ยอมรับได้หรือไม่? |
 | 9 | f26a · P4 | **E**oP | `User.role` เป็นคอลัมน์ธรรมดาที่แก้ผ่าน f26a ได้ — ADMIN ลดสิทธิ์ตัวเองหรือยกสิทธิ์ให้คนอื่นได้โดยไม่มีด่านที่สอง และ **`isActive` คือ kill switch** ที่ปิดบัญชีใครก็ได้ · P4 อยู่นอก TB-4 จึงไม่มี `assertCourseAccess` มารับ — ด่านเดียวคือ `rbac("ADMIN")` · ต้องตอบ: ADMIN คนสุดท้ายปิดบัญชีตัวเองได้หรือไม่? |
-| 10 | f27a · f50 · D2 | **T**ampering / **R**epudiation | `Course.passCriteria` · `classTarget` · `gradingType` คือเกณฑ์ตัดสินทั้งหมดของ P10 (f50) และ **แก้ได้ผ่านหน้าจอตั้งค่ารายวิชา (f27a)** — เลื่อน `classTarget` 70 → 50 คือการเปลี่ยนผลประเมินย้อนหลังทั้งวิชาโดยไม่แตะคะแนนสักตัว ไม่มี log ใดจับได้ (D6 ครอบเฉพาะ import) · ต้องตอบ: แก้ได้ตลอดเวลาแม้หลังตัดเกรดแล้วหรือไม่? |
+| 10 | f27a · f50 · D2 | **T**ampering / **R**epudiation | `Course.passCriteria` · `classTarget` · `gradeScale` คือเกณฑ์ตัดสินทั้งหมดของ P10 (f50) และ **แก้ได้ผ่านหน้าจอตั้งค่ารายวิชา (f27a)** — เลื่อน `classTarget` 70 → 50 คือการเปลี่ยนผลประเมินย้อนหลังทั้งวิชาโดยไม่แตะคะแนนสักตัว ไม่มี log ใดจับได้ (D6 ครอบเฉพาะ import) · ต้องตอบ: แก้ได้ตลอดเวลาแม้หลังตัดเกรดแล้วหรือไม่? |
 
 > **ข้อ 8 · 9 · 10 เป็นช่องว่างชนิดเดียวกัน** — ระบบมี audit trail เฉพาะการนำเข้าไฟล์ (D6) แต่ไม่มีเลย
 > สำหรับสามการกระทำที่มีผลกระทบเท่ากันหรือมากกว่า: แก้คะแนนทีละช่อง (f30) · เปลี่ยน role/isActive (f26a) ·

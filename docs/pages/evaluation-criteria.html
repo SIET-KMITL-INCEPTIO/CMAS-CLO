@@ -6,260 +6,108 @@
 <title>CMAS — เกณฑ์การประเมินประสิทธิภาพระบบและความพึงพอใจ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="cmas-pages.css">
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   VERDURE DESIGN SYSTEM v1.4.0 — tokens (subset)
-   ═══════════════════════════════════════════════════════════════ */
-:root{
-  --font-sans:'IBM Plex Sans Thai','IBM Plex Sans',-apple-system,sans-serif;
-  --text-display:clamp(32px,5vw,44px); --text-h1:clamp(26px,4vw,34px);
-  --text-h2:clamp(20px,3vw,25px); --text-h3:19px; --text-h4:16px;
-  --text-body:14px; --text-body-sm:13px; --text-label:12px; --text-caption:11px;
-  --leading-normal:1.5; --leading-relaxed:1.7;
-  --tracking-tight:-.02em; --tracking-wider:.1em;
-
-  --md-page-frame:#e2e2e4; --md-surface:#f9f9fb;
-  --md-surface-container-lowest:#ffffff; --md-surface-container-low:#f3f3f5;
-  --md-surface-container:#eeeef0; --md-surface-container-high:#e8e8ea;
-  --md-surface-container-highest:#e2e2e4;
-  --md-on-surface:#1a1c1d; --md-on-surface-variant:#4a454a;
-  --md-outline:#7b757b; --md-outline-variant:#ccc4ca;
-  --md-primary:#19151b; --md-on-primary:#ffffff;
-  --md-secondary:#5c5c78; --md-secondary-container:#deddfe; --md-on-secondary-container:#3b3b52;
-  --md-tertiary:#635c64; --md-tertiary-container:#e9e0e9;
-  --md-error:#ba1a1a; --md-error-container:#ffdad6; --md-on-error-container:#93000a;
-
-  --status-info-bg:#EAF1FE; --status-info-border:#93BAF9; --status-info-text:#1A56C4;
-  --status-success-bg:#E6F4EA; --status-success-border:#81C995; --status-success-text:#137333;
-  --status-warning-bg:#FEF7E0; --status-warning-border:#FDD663; --status-warning-text:#B06000;
-  --status-danger-bg:#FCE8E6; --status-danger-border:#F28B82; --status-danger-text:#C5221F;
-
-  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
-  --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px; --space-16:64px;
-  --radius-xs:4px; --radius-sm:8px; --radius-md:16px; --radius-lg:24px; --radius-full:9999px;
-
-  --shadow-color:46,41,48;
-  --shadow-1:0 12px 32px rgba(var(--shadow-color),.04);
-  --shadow-2:0 20px 48px rgba(var(--shadow-color),.07);
-  --ease-default:cubic-bezier(.4,0,.2,1); --duration-default:180ms;
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:var(--space-8)}
-body{
-  font-family:var(--font-sans); font-size:var(--text-body); font-weight:400;
-  line-height:var(--leading-relaxed); color:var(--md-on-surface);
-  background:var(--md-page-frame);
-  -webkit-font-smoothing:antialiased;
-}
-
-/* ── Layout ─────────────────────────────────────────────── */
-.shell{max-width:1180px;margin:0 auto;padding:var(--space-8) var(--space-5) var(--space-16)}
-.layout{display:grid;grid-template-columns:232px minmax(0,1fr);gap:var(--space-8);align-items:start}
-@media (max-width:960px){.layout{grid-template-columns:1fr}.toc{position:static!important;max-height:none!important}}
-
-/* ── Hero ───────────────────────────────────────────────── */
-.hero{
-  background:linear-gradient(135deg,var(--md-primary) 0%,#2e2930 55%,#44405a 100%);
-  color:var(--md-on-primary); border-radius:var(--radius-lg);
-  padding:var(--space-12) var(--space-10); margin-bottom:var(--space-8);
-  box-shadow:var(--shadow-2); position:relative; overflow:hidden;
-}
-.hero::after{
-  content:"";position:absolute;inset:auto -80px -120px auto;width:340px;height:340px;
-  border-radius:50%;background:radial-gradient(circle,rgba(222,221,254,.16),transparent 70%);
-}
-.hero .eyebrow{
-  font-size:var(--text-caption);letter-spacing:var(--tracking-wider);text-transform:uppercase;
-  font-weight:600;color:#c5c3e4;margin-bottom:var(--space-3)
-}
-.hero h1{font-size:var(--text-display);font-weight:700;letter-spacing:var(--tracking-tight);line-height:1.15}
-.hero p{margin-top:var(--space-4);max-width:66ch;color:#e2e2e4;font-size:15px}
-.hero-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-6);position:relative;z-index:1}
-.hero-meta span{
-  background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.18);
-  padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);
-  font-size:var(--text-label);font-weight:500
-}
-
-/* ── TOC ────────────────────────────────────────────────── */
-.toc{
-  position:sticky;top:var(--space-6);background:var(--md-surface-container-lowest);
-  border:1px solid var(--md-outline-variant);border-radius:var(--radius-md);
-  padding:var(--space-5);box-shadow:var(--shadow-1);max-height:calc(100vh - 48px);overflow:auto
-}
-.toc h4{
-  font-size:var(--text-caption);letter-spacing:var(--tracking-wider);text-transform:uppercase;
-  color:var(--md-on-surface-variant);margin-bottom:var(--space-3);font-weight:600
-}
-.toc a{
-  display:block;padding:var(--space-2) var(--space-3);border-radius:var(--radius-xs);
-  color:var(--md-on-surface-variant);text-decoration:none;font-size:var(--text-body-sm);
-  border-left:2px solid transparent;transition:all var(--duration-default) var(--ease-default)
-}
-.toc a:hover{background:var(--md-surface-container);color:var(--md-on-surface);border-left-color:var(--md-secondary)}
-.toc a.sub{padding-left:var(--space-6);font-size:var(--text-label)}
-
-/* ── Card / section ─────────────────────────────────────── */
-.card{
-  background:var(--md-surface-container-lowest);border:1px solid var(--md-outline-variant);
-  border-radius:var(--radius-md);padding:var(--space-8);margin-bottom:var(--space-6);
-  box-shadow:var(--shadow-1)
-}
-.card > h2{
-  font-size:var(--text-h2);font-weight:700;letter-spacing:var(--tracking-tight);
-  padding-bottom:var(--space-3);margin-bottom:var(--space-5);
-  border-bottom:2px solid var(--md-surface-container-highest);display:flex;align-items:center;gap:var(--space-3)
-}
-.num{
-  display:inline-flex;align-items:center;justify-content:center;flex:none;
-  width:34px;height:34px;border-radius:var(--radius-sm);
-  background:var(--md-secondary-container);color:var(--md-on-secondary-container);
-  font-size:var(--text-body-sm);font-weight:700
-}
-h3{font-size:var(--text-h3);font-weight:600;margin:var(--space-8) 0 var(--space-3)}
-h3:first-of-type{margin-top:0}
-h4{font-size:var(--text-h4);font-weight:600;margin:var(--space-6) 0 var(--space-2)}
-p{margin-bottom:var(--space-3);color:var(--md-on-surface-variant)}
-p.lead{color:var(--md-on-surface)}
-strong{font-weight:600;color:var(--md-on-surface)}
-
-/* ── Table ──────────────────────────────────────────────── */
-.tw{overflow-x:auto;border:1px solid var(--md-outline-variant);border-radius:var(--radius-sm);margin:var(--space-4) 0}
-table{width:100%;border-collapse:collapse;font-size:var(--text-body-sm);background:var(--md-surface-container-lowest)}
-thead th{
-  background:var(--md-surface-container-high);text-align:left;font-weight:600;
-  padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--md-outline-variant);
-  font-size:var(--text-label);letter-spacing:.03em;text-transform:uppercase;color:var(--md-on-surface-variant);
-  white-space:nowrap
-}
-tbody td{padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--md-surface-container-highest);vertical-align:top;line-height:1.55}
-tbody tr:last-child td{border-bottom:none}
-tbody tr:hover{background:var(--md-surface-container-low)}
-td.c,th.c{text-align:center}
-td.dim{color:var(--md-on-surface-variant);font-size:var(--text-label)}
-td.group{
-  background:var(--md-surface-container-low);font-weight:600;color:var(--md-on-surface);
-  white-space:nowrap;border-right:1px solid var(--md-outline-variant)
-}
-code{
-  font-family:var(--font-sans);background:var(--md-surface-container);
-  padding:1px 6px;border-radius:var(--radius-xs);font-size:.92em;font-weight:500
-}
-
-/* ── Badge ──────────────────────────────────────────────── */
-.b{display:inline-block;padding:2px 10px;border-radius:var(--radius-full);font-size:var(--text-label);font-weight:600;white-space:nowrap;border:1px solid}
-.b-pass{background:var(--status-success-bg);border-color:var(--status-success-border);color:var(--status-success-text)}
-.b-info{background:var(--status-info-bg);border-color:var(--status-info-border);color:var(--status-info-text)}
-.b-warn{background:var(--status-warning-bg);border-color:var(--status-warning-border);color:var(--status-warning-text)}
-.b-dang{background:var(--status-danger-bg);border-color:var(--status-danger-border);color:var(--status-danger-text)}
-.b-neut{background:var(--md-surface-container);border-color:var(--md-outline-variant);color:var(--md-on-surface-variant)}
-
-/* ── Callout ────────────────────────────────────────────── */
-.note{
-  border-left:3px solid var(--md-secondary);background:var(--md-surface-container-low);
-  padding:var(--space-4) var(--space-5);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:var(--space-4) 0
-}
-.note.warn{border-left-color:var(--status-warning-border);background:var(--status-warning-bg)}
-.note.warn strong{color:var(--status-warning-text)}
-.note.pass{border-left-color:var(--status-success-border);background:var(--status-success-bg)}
-.note.pass strong{color:var(--status-success-text)}
-.note p:last-child{margin-bottom:0}
-.note .t{font-weight:600;color:var(--md-on-surface);margin-bottom:var(--space-1);display:block}
-
-/* ── Scale strip (5 levels) ─────────────────────────────── */
-.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space-3);margin:var(--space-5) 0}
-@media (max-width:760px){.scale{grid-template-columns:repeat(2,1fr)}}
-.lvl{
-  border:1px solid var(--md-outline-variant);border-radius:var(--radius-sm);
-  padding:var(--space-4);text-align:center;background:var(--md-surface-container-lowest);
-  position:relative;overflow:hidden
-}
-.lvl::before{content:"";position:absolute;top:0;left:0;right:0;height:4px}
-.lvl-5::before{background:#137333} .lvl-4::before{background:#81C995}
-.lvl-3::before{background:#FBBC05} .lvl-2::before{background:#F28B82}
-.lvl-1::before{background:#C5221F}
-.lvl .n{font-size:30px;font-weight:700;line-height:1.1;margin-top:var(--space-2)}
-.lvl .m{font-size:var(--text-body-sm);font-weight:600;margin-top:var(--space-1)}
-.lvl .r{font-size:var(--text-caption);color:var(--md-on-surface-variant);margin-top:var(--space-1);font-variant-numeric:tabular-nums}
-
-/* ── Stat row ───────────────────────────────────────────── */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--space-4);margin:var(--space-5) 0}
-.stat{
-  background:var(--md-surface-container-low);border:1px solid var(--md-outline-variant);
-  border-radius:var(--radius-sm);padding:var(--space-4)
-}
-.stat .k{font-size:var(--text-caption);letter-spacing:var(--tracking-wider);text-transform:uppercase;color:var(--md-on-surface-variant);font-weight:600}
-.stat .v{font-size:26px;font-weight:700;margin-top:var(--space-1);font-variant-numeric:tabular-nums}
-.stat .d{font-size:var(--text-label);color:var(--md-on-surface-variant)}
-
-/* ── Printable answer boxes ─────────────────────────────── */
-.opt{display:inline-flex;gap:5px}
-.opt i{
-  width:17px;height:17px;border:1px solid var(--md-outline);border-radius:var(--radius-xs);
-  display:inline-block;font-style:normal;font-size:9px;line-height:15px;text-align:center;
-  color:var(--md-outline)
-}
-
-footer{
-  text-align:center;color:var(--md-on-surface-variant);font-size:var(--text-label);
-  padding-top:var(--space-8);border-top:1px solid var(--md-outline-variant);margin-top:var(--space-8)
-}
-
-@media print{
-  body{background:#fff}
-  .toc,.hero::after{display:none}
-  .layout{grid-template-columns:1fr}
-  .card{box-shadow:none;border-color:#ccc;break-inside:avoid;page-break-inside:avoid}
-  .hero{background:#19151b!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .shell{padding:0;max-width:none}
-}
+/* เฉพาะสองหน้านี้ — ส่วนที่ชั้นร่วมไม่ได้ครอบคลุม */
+.sec{ background:var(--card); border:1px solid var(--edge); border-radius:var(--r-card);
+      box-shadow:var(--shadow-soft); padding:var(--s6); margin-bottom:var(--s5); }
+.sec > h2{ display:flex; align-items:baseline; gap:var(--s3); padding-bottom:var(--s3);
+           border-bottom:1px solid var(--edge2); margin-bottom:var(--s4); }
+.num{ font-size:11px; font-weight:500; letter-spacing:.1em; color:var(--dim);
+      font-variant-numeric:tabular-nums; border:1px solid var(--edge); border-radius:var(--r-chip);
+      padding:1px 7px; flex:none; }
+.tw{ overflow-x:auto; border:1px solid var(--edge2); border-radius:var(--r-btn); margin:var(--s3) 0; }
+.tw > table{ margin:0; }
+/* ป้ายชื่อเทคโนโลยี — ไม่ใช่ป้ายคำตัดสิน จึงไม่ใช้สีสถานะ */
+.pills{ display:flex; flex-wrap:wrap; gap:6px; margin:var(--s2) 0; }
+.pill{ font-size:11.5px; padding:2px 9px; border-radius:var(--r-chip); color:var(--haze);
+       background:var(--tint); border:1px solid var(--edge); white-space:nowrap; }
+.ver{ font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; font-size:11.5px;
+      color:var(--dim); font-variant-numeric:tabular-nums; }
+/* บันไดคะแนน 5 ระดับ */
+.scale{ display:grid; gap:6px; margin:var(--s3) 0; }
+.lvl{ display:flex; align-items:center; gap:var(--s3); padding:8px var(--s4);
+      border:1px solid var(--edge2); border-radius:var(--r-btn); background:var(--card); }
+.lvl .n{ font-size:15px; font-weight:500; width:20px; text-align:center; flex:none;
+         font-variant-numeric:tabular-nums; color:var(--haze); }
+.lvl .m{ font-size:13px; flex:1; min-width:0; }
+.lvl .r{ font-size:11.5px; color:var(--dim); font-variant-numeric:tabular-nums; flex:none; }
+.lvl-5{ border-left:2px solid var(--ok); } .lvl-4{ border-left:2px solid var(--peri); }
+.lvl-3{ border-left:2px solid var(--warn); } .lvl-2{ border-left:2px solid var(--cool); }
+.lvl-1{ border-left:2px solid var(--bad); }
+.opt{ display:flex; gap:var(--s2); align-items:flex-start; font-size:12.5px;
+      color:var(--ink2); padding:3px 0; }
+.opt i{ font-style:normal; color:var(--faint); flex:none; }
+/* สามชั้นสถาปัตยกรรม */
+.arch{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:var(--s3); margin:var(--s3) 0; }
+.tier{ border:1px solid var(--edge); border-radius:var(--r-card); overflow:hidden; background:var(--card); }
+.tier header{ padding:8px var(--s4); background:var(--wash); border-bottom:1px solid var(--edge2);
+              font-size:12.5px; }
+.tier .body{ padding:var(--s4); font-size:12.5px; color:var(--ink2); }
+.pro{ color:var(--ok); } .con{ color:var(--bad); }
+table{ border-collapse:separate; border-spacing:0; width:100%; font-size:13px; }
+th,td{ border-bottom:1px solid var(--edge2); padding:8px 11px; text-align:left; vertical-align:top; }
+thead th{ font-size:10px; font-weight:500; letter-spacing:.11em; text-transform:uppercase;
+          color:var(--dim); background:var(--wash); white-space:nowrap; }
+tbody tr:last-child td{ border-bottom:0; }
+tbody tr:hover{ background:#FCFCFE; }
 </style>
 </head>
 <body>
-<div class="shell">
+<header class="topbar no-print">
+  <span class="brand"><b>CMAS</b></span>
+  <span class="sep"></span>
+  <span class="doc">เกณฑ์การประเมินระบบ</span>
+  <span class="right">
+    <button class="btn" data-toc-toggle style="background:transparent;color:#fff;border-color:rgba(255,255,255,.22)">สารบัญ</button>
+    <span class="tag">12 หัวข้อ</span>
+  </span>
+</header>
+<div class="tocScrim no-print"></div>
 
-  <header class="hero">
-    <div class="eyebrow">CMAS · CLO System · Evaluation Framework</div>
-    <h1>เกณฑ์การประเมินประสิทธิภาพระบบ<br>และความพึงพอใจของผู้ใช้</h1>
-    <p class="lead">ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (Course Learning Outcome Monitoring and Assessment System) — หลักสูตร ค.อ.บ. สาขาวิชาเทคโนโลยีคอมพิวเตอร์ (ปรับปรุง พ.ศ. 2567)</p>
-    <div class="hero-meta">
-      <span>Version 0.2.0 (Draft)</span>
-      <span>ปรับปรุง 2026-08-09</span>
-      <span>มาตราส่วนประมาณค่า 5 ระดับ</span>
-      <span>ผูกกับ OBJ-5 · H5 · H6</span>
-    </div>
-  </header>
+<div class="page">
+  <nav class="toc no-print"></nav>
+  <main class="main">
+<div class="head">
+  <span class="over">CMAS · CLO System · Evaluation Framework</span>
+  <h1>เกณฑ์การประเมินประสิทธิภาพระบบ และความพึงพอใจของผู้ใช้</h1>
+  <p class="sub">ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (Course Learning Outcome Monitoring and Assessment System) — หลักสูตร ค.อ.บ. สาขาวิชาเทคโนโลยีคอมพิวเตอร์ (ปรับปรุง พ.ศ. 2567)</p>
+  <div class="meta"><span>Version 0.2.0 (Draft)</span><span>ปรับปรุง 2026-08-09</span><span>มาตราส่วนประมาณค่า 5 ระดับ</span><span>ผูกกับ OBJ-5 · H5 · H6</span></div>
+</div>
 
-  <div class="layout">
-    <nav class="toc">
-      <h4>สารบัญ</h4>
-      <a href="#s1">1 · ภาพรวมการประเมิน</a>
-      <a href="#s2">2 · ความถูกต้องเชิงฟังก์ชัน</a>
-      <a href="#s3">3 · ประสิทธิภาพเชิงเวลา</a>
-      <a href="#s4">4 · แบบประเมิน/แบบสอบถาม</a>
-      <a href="#s4" class="sub">4.1 กลุ่มผู้ประเมิน</a>
-      <a href="#f-expert" class="sub">4.2 แบบประเมิน ก. (20 ข้อ)</a>
-      <a href="#f-user" class="sub">4.3 แบบสอบถาม ข. (20 ข้อ)</a>
-      <a href="#s5">5 · เกณฑ์ให้คะแนน 5 ระดับ</a>
-      <a href="#s6">6 · เกณฑ์แปลผลค่าเฉลี่ย</a>
-      <a href="#s7">7 · สถิติที่ใช้</a>
-      <a href="#s8">8 · เกณฑ์การตัดสิน</a>
-      <a href="#s9">9 · คุณภาพเครื่องมือ (IOC)</a>
-      <a href="#s10">10 · ขั้นตอนการเก็บข้อมูล</a>
-      <a href="#s11">11 · ความเชื่อมโยง OBJ→H→เกณฑ์</a>
-      <a href="#s12">12 · ประเด็นที่ต้องปิดก่อนเก็บข้อมูล</a>
-    </nav>
+<!-- แถบคำตอบ — ตัวเลขที่ตอบคำถามหลักของหน้านี้ ต้องอ่านได้โดยไม่ต้องเลื่อน -->
+<div class="answerbar">
+  <div class="ans"><span class="k">กลุ่มผู้ประเมิน</span><span class="v">2</span>
+    <span class="d">ผู้เชี่ยวชาญ · ผู้ใช้จริง</span></div>
+  <div class="ans"><span class="k">ข้อประเมิน</span><span class="v">20<small>+20</small></span>
+    <span class="d">แบบ ก. · แบบ ข.</span></div>
+  <div class="ans"><span class="k">มาตราส่วน</span><span class="v">5</span>
+    <span class="d">ระดับ (Likert)</span></div>
+  <div class="ans ok"><span class="k">เกณฑ์ผ่าน</span><span class="v">3.51</span>
+    <span class="d">ค่าเฉลี่ยขั้นต่ำ · ระดับมาก</span></div>
+  <div class="ans"><span class="k">สถิติ</span><span class="v">x̄ · SD</span>
+    <span class="d">พร้อม IOC ตรวจคุณภาพเครื่องมือ</span></div>
+</div>
+<div class="verdictline">
+  <span class="chip warn">ยังต้องปิดประเด็น</span>
+  <span>กรอบการประเมินพร้อมใช้ แต่มีประเด็นที่ต้องตัดสินก่อนเริ่มเก็บข้อมูลจริง — อยู่ในหัวข้อสุดท้าย</span>
+</div>
 
-    <main>
+
+  
+
+  
+    
+
+    
 
     <!-- ═══ 1 ═══════════════════════════════════════════ -->
-    <section class="card" id="s1">
+    <section class="sec" id="s1">
       <h2><span class="num">1</span> ภาพรวมการประเมิน</h2>
-      <p class="lead">การประเมินแบ่งเป็น <strong>3 ด้าน</strong> ตามลักษณะของสิ่งที่วัด — ด้านที่ 1–2 วัดด้วยตัวเลขที่ระบบให้ได้เอง (objective) ส่วนด้านที่ 3 วัดด้วยแบบสอบถามมาตราส่วนประมาณค่า 5 ระดับ (subjective) ทั้งสามด้านรวมกันจึงตอบวัตถุประสงค์ข้อ <strong>OBJ-5</strong> และพิสูจน์สมมติฐาน <strong>H1–H7</strong> ได้ครบ</p>
+      <p class="lede">การประเมินแบ่งเป็น <strong>3 ด้าน</strong> ตามลักษณะของสิ่งที่วัด — ด้านที่ 1–2 วัดด้วยตัวเลขที่ระบบให้ได้เอง (objective) ส่วนด้านที่ 3 วัดด้วยแบบสอบถามมาตราส่วนประมาณค่า 5 ระดับ (subjective) ทั้งสามด้านรวมกันจึงตอบวัตถุประสงค์ข้อ <strong>OBJ-5</strong> และพิสูจน์สมมติฐาน <strong>H1–H7</strong> ได้ครบ</p>
 
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th>ด้าน</th><th>สิ่งที่วัด</th><th>วิธี / เครื่องมือ</th><th>ผู้ประเมิน</th><th>สมมติฐาน</th></tr></thead>
           <tbody>
@@ -279,21 +127,21 @@ footer{
     </section>
 
     <!-- ═══ 2 ═══════════════════════════════════════════ -->
-    <section class="card" id="s2">
+    <section class="sec" id="s2">
       <h2><span class="num">2</span> ด้านความถูกต้องเชิงฟังก์ชัน (Functional Correctness)</h2>
       <p>ประเมินโดย <strong>ผู้พัฒนาร่วมกับผู้เชี่ยวชาญ 3–5 คน</strong> ด้วยวิธี Black Box Testing เทียบผลลัพธ์ของระบบกับ “ใบคำนวณมือ” ที่อาจารย์ที่ปรึกษาตรวจรับแล้ว</p>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th>รายการประเมิน</th><th class="c">เกณฑ์ผ่าน</th><th>อ้างอิง</th></tr></thead>
           <tbody>
-            <tr><td>ความถูกต้องของสูตรคำนวณระดับการบรรลุ CLO</td><td class="c"><span class="b b-pass">ตรง 100%</span></td><td class="dim">CR-02, CR-03 · H1 · NFR-14</td></tr>
-            <tr><td>ความถูกต้องของ attainment ระดับรายวิชา</td><td class="c"><span class="b b-pass">ตรง 100%</span></td><td class="dim">CR-04 · H1</td></tr>
-            <tr><td>ความถูกต้องของคะแนนรวมและสถานะนักศึกษา</td><td class="c"><span class="b b-pass">ตรง 100%</span></td><td class="dim">CR-05 · H1</td></tr>
-            <tr><td>การจัดการกรณีขอบ: ไม่มีคะแนน → แสดง <code>—</code> ไม่ใช่ <code>0</code></td><td class="c"><span class="b b-pass">ผ่านทุกกรณี</span></td><td class="dim">FR-84 · OI-12</td></tr>
-            <tr><td><strong>การติดตามรายบุคคลระหว่างภาคเรียน</strong> — ระบุได้ว่านักศึกษาคนใดไม่บรรลุ CLO ข้อใด เมื่อกรอกคะแนนเพียงบางกิจกรรม</td><td class="c"><span class="b b-pass">ระบุถูก 100%</span></td><td class="dim"><strong>H2</strong> · FR-83, FR-85</td></tr>
-            <tr><td>การตรวจสอบไฟล์นำเข้า (6 ประเภทข้อผิดพลาด)</td><td class="c"><span class="b b-info">≥ 95%</span></td><td class="dim">H3 · FR-69</td></tr>
-            <tr><td>การบังคับสิทธิ์: INSTRUCTOR เข้าถึงเฉพาะวิชาที่ได้รับมอบหมาย</td><td class="c"><span class="b b-info">ยิง API ด้วย id วิชาอื่น → 404</span></td><td class="dim">NFR-07</td></tr>
-            <tr><td>ความครบถ้วนของฟังก์ชันตาม FR ระดับ MUST</td><td class="c"><span class="b b-pass">ครบ 100%</span></td><td class="dim">SRS §4</td></tr>
+            <tr><td>ความถูกต้องของสูตรคำนวณระดับการบรรลุ CLO</td><td class="c"><span class="chip ok">ตรง 100%</span></td><td class="dim">CR-02, CR-03 · H1 · NFR-14</td></tr>
+            <tr><td>ความถูกต้องของ attainment ระดับรายวิชา</td><td class="c"><span class="chip ok">ตรง 100%</span></td><td class="dim">CR-04 · H1</td></tr>
+            <tr><td>ความถูกต้องของคะแนนรวมและสถานะนักศึกษา</td><td class="c"><span class="chip ok">ตรง 100%</span></td><td class="dim">CR-05 · H1</td></tr>
+            <tr><td>การจัดการกรณีขอบ: ไม่มีคะแนน → แสดง <code>—</code> ไม่ใช่ <code>0</code></td><td class="c"><span class="chip ok">ผ่านทุกกรณี</span></td><td class="dim">FR-84 · OI-12</td></tr>
+            <tr><td><strong>การติดตามรายบุคคลระหว่างภาคเรียน</strong> — ระบุได้ว่านักศึกษาคนใดไม่บรรลุ CLO ข้อใด เมื่อกรอกคะแนนเพียงบางกิจกรรม</td><td class="c"><span class="chip ok">ระบุถูก 100%</span></td><td class="dim"><strong>H2</strong> · FR-83, FR-85</td></tr>
+            <tr><td>การตรวจสอบไฟล์นำเข้า (6 ประเภทข้อผิดพลาด)</td><td class="c"><span class="chip key">≥ 95%</span></td><td class="dim">H3 · FR-69</td></tr>
+            <tr><td>การบังคับสิทธิ์: INSTRUCTOR เข้าถึงเฉพาะวิชาที่ได้รับมอบหมาย</td><td class="c"><span class="chip key">ยิง API ด้วย id วิชาอื่น → 404</span></td><td class="dim">NFR-07</td></tr>
+            <tr><td>ความครบถ้วนของฟังก์ชันตาม FR ระดับ MUST</td><td class="c"><span class="chip ok">ครบ 100%</span></td><td class="dim">SRS §4</td></tr>
           </tbody>
         </table>
       </div>
@@ -304,29 +152,29 @@ footer{
     </section>
 
     <!-- ═══ 3 ═══════════════════════════════════════════ -->
-    <section class="card" id="s3">
+    <section class="sec" id="s3">
       <h2><span class="num">3</span> ด้านประสิทธิภาพเชิงเวลา (Performance)</h2>
       <p>วัดที่ขนาดข้อมูล <strong>1 รายวิชา / 200 นักศึกษา / 20 กิจกรรม</strong> บนเครื่องและเครือข่ายที่ใช้งานจริง ทำซ้ำรายการละ 5 ครั้ง รายงานค่าเฉลี่ยและค่าสูงสุด</p>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th>รายการประเมิน</th><th class="c">เกณฑ์ผ่าน</th><th>วิธีวัด</th><th>อ้างอิง</th></tr></thead>
           <tbody>
-            <tr><td>เวลาแสดงผลหน้าที่มีตารางข้อมูล</td><td class="c"><span class="b b-pass">&lt; 2 วินาที</span></td><td class="dim">DevTools Performance / Network</td><td class="dim">NFR-01</td></tr>
-            <tr><td>เวลาคำนวณ attainment ของ 1 รายวิชา</td><td class="c"><span class="b b-pass">&lt; 1 วินาที</span></td><td class="dim">จับเวลาฝั่งเซิร์ฟเวอร์ + ตรวจว่าไม่เกิด N+1 query</td><td class="dim">NFR-02</td></tr>
-            <tr><td>เวลานำเข้าไฟล์ Excel 500 แถว</td><td class="c"><span class="b b-pass">&lt; 10 วินาที</span></td><td class="dim">จับเวลาตั้งแต่อัปโหลดจนบันทึกเสร็จ</td><td class="dim">NFR-03</td></tr>
-            <tr><td>เวลาที่ผู้ใช้ใหม่นำเข้าคะแนนสำเร็จ (ไม่ใช้คู่มือ)</td><td class="c"><span class="b b-info">≤ 10 นาที</span></td><td class="dim">ทดสอบ usability กับผู้ใช้ที่ไม่เคยเห็นระบบ</td><td class="dim">NFR-09 · H7</td></tr>
+            <tr><td>เวลาแสดงผลหน้าที่มีตารางข้อมูล</td><td class="c"><span class="chip ok">&lt; 2 วินาที</span></td><td class="dim">DevTools Performance / Network</td><td class="dim">NFR-01</td></tr>
+            <tr><td>เวลาคำนวณ attainment ของ 1 รายวิชา</td><td class="c"><span class="chip ok">&lt; 1 วินาที</span></td><td class="dim">จับเวลาฝั่งเซิร์ฟเวอร์ + ตรวจว่าไม่เกิด N+1 query</td><td class="dim">NFR-02</td></tr>
+            <tr><td>เวลานำเข้าไฟล์ Excel 500 แถว</td><td class="c"><span class="chip ok">&lt; 10 วินาที</span></td><td class="dim">จับเวลาตั้งแต่อัปโหลดจนบันทึกเสร็จ</td><td class="dim">NFR-03</td></tr>
+            <tr><td>เวลาที่ผู้ใช้ใหม่นำเข้าคะแนนสำเร็จ (ไม่ใช้คู่มือ)</td><td class="c"><span class="chip key">≤ 10 นาที</span></td><td class="dim">ทดสอบ usability กับผู้ใช้ที่ไม่เคยเห็นระบบ</td><td class="dim">NFR-09 · H7</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
     <!-- ═══ 4 ═══════════════════════════════════════════ -->
-    <section class="card" id="s4">
+    <section class="sec" id="s4">
       <h2><span class="num">4</span> เครื่องมือประเมิน 5 ระดับ</h2>
-      <p class="lead">ใช้แบบมาตราส่วนประมาณค่า 5 ระดับ (Rating Scale / Likert Scale) จำนวน <strong>2 ฉบับ</strong> — ทั้งสองฉบับใช้มาตรวัดและเกณฑ์แปลผลชุดเดียวกัน (§5–§6)</p>
+      <p class="lede">ใช้แบบมาตราส่วนประมาณค่า 5 ระดับ (Rating Scale / Likert Scale) จำนวน <strong>2 ฉบับ</strong> — ทั้งสองฉบับใช้มาตรวัดและเกณฑ์แปลผลชุดเดียวกัน (§5–§6)</p>
 
       <h3>4.1 กลุ่มผู้ประเมินและวิธีเลือก</h3>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th>กลุ่ม</th><th class="c">จำนวน</th><th>วิธีเลือก</th><th>ประเมินอะไร</th><th class="c">เครื่องมือ</th></tr></thead>
           <tbody>
@@ -335,14 +183,14 @@ footer{
               <td class="c">3–5 คน</td>
               <td>เลือกแบบเจาะจง (purposive) — มีประสบการณ์ด้านการพัฒนาระบบสารสนเทศ หรือด้านการวัดและประเมินผลการเรียนรู้ ไม่น้อยกว่า 3 ปี</td>
               <td>ประสิทธิภาพของระบบ 4 ด้าน ด้วยวิธี Black Box Testing</td>
-              <td class="c"><span class="b b-neut">แบบประเมิน ก.</span></td>
+              <td class="c"><span class="chip nil">แบบประเมิน ก.</span></td>
             </tr>
             <tr>
               <td class="group">ผู้ใช้จริง<br><span class="dim">อาจารย์ผู้สอน</span></td>
               <td class="c">15–30 คน</td>
               <td>เลือกแบบเจาะจงจากอาจารย์ผู้สอนในหลักสูตร ที่ได้ทดลองใช้ระบบจริงอย่างน้อย 1 รายวิชา</td>
               <td>ความพึงพอใจในการใช้งานจริง 5 ด้าน</td>
-              <td class="c"><span class="b b-neut">แบบสอบถาม ข.</span></td>
+              <td class="c"><span class="chip nil">แบบสอบถาม ข.</span></td>
             </tr>
           </tbody>
         </table>
@@ -352,7 +200,7 @@ footer{
       </div>
 
       <h3 id="f-expert">4.2 แบบประเมิน ก. — ประสิทธิภาพของระบบ (ผู้เชี่ยวชาญ, 20 ข้อ)</h3>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th>ด้าน</th><th class="c">ข้อ</th><th>ข้อคำถาม</th><th>อ้างอิง</th><th class="c">ระดับ</th></tr></thead>
           <tbody>
@@ -388,7 +236,7 @@ footer{
       </div>
 
       <h3 id="f-user">4.3 แบบสอบถาม ข. — ความพึงพอใจของผู้ใช้ (อาจารย์ผู้สอน, 20 ข้อ)</h3>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th>ด้าน</th><th class="c">ข้อ</th><th>ข้อคำถาม</th><th class="c">ระดับ</th></tr></thead>
           <tbody>
@@ -430,7 +278,7 @@ footer{
     </section>
 
     <!-- ═══ 5 ═══════════════════════════════════════════ -->
-    <section class="card" id="s5">
+    <section class="sec" id="s5">
       <h2><span class="num">5</span> เกณฑ์การให้คะแนน 5 ระดับ</h2>
       <div class="scale">
         <div class="lvl lvl-5"><div class="k">ระดับ</div><div class="n">5</div><div class="m">ดีมาก / มากที่สุด</div><div class="r">4.51 – 5.00</div></div>
@@ -439,7 +287,7 @@ footer{
         <div class="lvl lvl-2"><div class="k">ระดับ</div><div class="n">2</div><div class="m">น้อย / ควรปรับปรุง</div><div class="r">1.51 – 2.50</div></div>
         <div class="lvl lvl-1"><div class="k">ระดับ</div><div class="n">1</div><div class="m">น้อยที่สุด / ต้องแก้ไข</div><div class="r">1.00 – 1.50</div></div>
       </div>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th class="c">คะแนน</th><th>ความหมาย — แบบประเมินประสิทธิภาพ (ก.)</th><th>ความหมาย — แบบสอบถามความพึงพอใจ (ข.)</th></tr></thead>
           <tbody>
@@ -454,27 +302,27 @@ footer{
     </section>
 
     <!-- ═══ 6 ═══════════════════════════════════════════ -->
-    <section class="card" id="s6">
+    <section class="sec" id="s6">
       <h2><span class="num">6</span> เกณฑ์การแปลความหมายค่าเฉลี่ย</h2>
       <p>คำนวณความกว้างของอันตรภาคชั้นจาก <code>(คะแนนสูงสุด − คะแนนต่ำสุด) ÷ จำนวนชั้น = (5 − 1) ÷ 5 = 0.80</code></p>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th class="c">ช่วงค่าเฉลี่ย</th><th>แปลผลประสิทธิภาพของระบบ</th><th>แปลผลความพึงพอใจ</th><th class="c">ผ่านเกณฑ์</th></tr></thead>
           <tbody>
-            <tr><td class="c"><strong>4.51 – 5.00</strong></td><td>ดีมาก</td><td>พึงพอใจมากที่สุด</td><td class="c"><span class="b b-pass">ผ่าน</span></td></tr>
-            <tr><td class="c"><strong>3.51 – 4.50</strong></td><td>ดี</td><td>พึงพอใจมาก</td><td class="c"><span class="b b-pass">ผ่าน</span></td></tr>
-            <tr><td class="c"><strong>2.51 – 3.50</strong></td><td>ปานกลาง</td><td>พึงพอใจปานกลาง</td><td class="c"><span class="b b-dang">ไม่ผ่าน</span></td></tr>
-            <tr><td class="c"><strong>1.51 – 2.50</strong></td><td>น้อย</td><td>พึงพอใจน้อย</td><td class="c"><span class="b b-dang">ไม่ผ่าน</span></td></tr>
-            <tr><td class="c"><strong>1.00 – 1.50</strong></td><td>น้อยที่สุด</td><td>พึงพอใจน้อยที่สุด</td><td class="c"><span class="b b-dang">ไม่ผ่าน</span></td></tr>
+            <tr><td class="c"><strong>4.51 – 5.00</strong></td><td>ดีมาก</td><td>พึงพอใจมากที่สุด</td><td class="c"><span class="chip ok">ผ่าน</span></td></tr>
+            <tr><td class="c"><strong>3.51 – 4.50</strong></td><td>ดี</td><td>พึงพอใจมาก</td><td class="c"><span class="chip ok">ผ่าน</span></td></tr>
+            <tr><td class="c"><strong>2.51 – 3.50</strong></td><td>ปานกลาง</td><td>พึงพอใจปานกลาง</td><td class="c"><span class="chip bad">ไม่ผ่าน</span></td></tr>
+            <tr><td class="c"><strong>1.51 – 2.50</strong></td><td>น้อย</td><td>พึงพอใจน้อย</td><td class="c"><span class="chip bad">ไม่ผ่าน</span></td></tr>
+            <tr><td class="c"><strong>1.00 – 1.50</strong></td><td>น้อยที่สุด</td><td>พึงพอใจน้อยที่สุด</td><td class="c"><span class="chip bad">ไม่ผ่าน</span></td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
     <!-- ═══ 7 ═══════════════════════════════════════════ -->
-    <section class="card" id="s7">
+    <section class="sec" id="s7">
       <h2><span class="num">7</span> สถิติที่ใช้ในการวิเคราะห์ข้อมูล</h2>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th>สถิติ</th><th>ใช้กับ</th><th>สูตร / หมายเหตุ</th></tr></thead>
           <tbody>
@@ -489,31 +337,31 @@ footer{
     </section>
 
     <!-- ═══ 8 ═══════════════════════════════════════════ -->
-    <section class="card" id="s8">
+    <section class="sec" id="s8">
       <h2><span class="num">8</span> เกณฑ์การตัดสิน</h2>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th>เกณฑ์</th><th class="c">ค่าที่ต้องได้</th><th class="c">ผูกกับ</th></tr></thead>
           <tbody>
-            <tr><td>ค่าเฉลี่ยประสิทธิภาพของระบบโดยรวม (ผู้เชี่ยวชาญ)</td><td class="c"><span class="b b-pass">≥ 3.51</span> ระดับดีขึ้นไป</td><td class="c">H5</td></tr>
-            <tr><td>ค่าเฉลี่ยความพึงพอใจโดยรวม (ผู้ใช้จริง)</td><td class="c"><span class="b b-pass">≥ 3.51</span> ระดับมากขึ้นไป</td><td class="c">H6</td></tr>
-            <tr><td>ค่าเฉลี่ยรายด้าน — ทุกด้านของทั้งสองฉบับ</td><td class="c"><span class="b b-pass">≥ 3.51</span> ไม่มีด้านใดต่ำกว่า</td><td class="c">H5, H6</td></tr>
-            <tr><td>ส่วนเบี่ยงเบนมาตรฐานรายด้าน</td><td class="c"><span class="b b-info">&lt; 1.00</span> ความเห็นสอดคล้องกัน</td><td class="c">—</td></tr>
-            <tr><td>ค่า IOC รายข้อ</td><td class="c"><span class="b b-info">≥ 0.50</span></td><td class="c">คุณภาพเครื่องมือ</td></tr>
-            <tr><td>ค่าความเชื่อมั่น α ของแบบสอบถาม ข.</td><td class="c"><span class="b b-info">≥ 0.70</span></td><td class="c">คุณภาพเครื่องมือ</td></tr>
+            <tr><td>ค่าเฉลี่ยประสิทธิภาพของระบบโดยรวม (ผู้เชี่ยวชาญ)</td><td class="c"><span class="chip ok">≥ 3.51</span> ระดับดีขึ้นไป</td><td class="c">H5</td></tr>
+            <tr><td>ค่าเฉลี่ยความพึงพอใจโดยรวม (ผู้ใช้จริง)</td><td class="c"><span class="chip ok">≥ 3.51</span> ระดับมากขึ้นไป</td><td class="c">H6</td></tr>
+            <tr><td>ค่าเฉลี่ยรายด้าน — ทุกด้านของทั้งสองฉบับ</td><td class="c"><span class="chip ok">≥ 3.51</span> ไม่มีด้านใดต่ำกว่า</td><td class="c">H5, H6</td></tr>
+            <tr><td>ส่วนเบี่ยงเบนมาตรฐานรายด้าน</td><td class="c"><span class="chip key">&lt; 1.00</span> ความเห็นสอดคล้องกัน</td><td class="c">—</td></tr>
+            <tr><td>ค่า IOC รายข้อ</td><td class="c"><span class="chip key">≥ 0.50</span></td><td class="c">คุณภาพเครื่องมือ</td></tr>
+            <tr><td>ค่าความเชื่อมั่น α ของแบบสอบถาม ข.</td><td class="c"><span class="chip key">≥ 0.70</span></td><td class="c">คุณภาพเครื่องมือ</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="note pass">
+      <div class="note ok">
         <span class="t">สรุปเกณฑ์ผ่านของโครงงาน</span>
         <p>ค่าเฉลี่ยรวมของทั้งผู้เชี่ยวชาญและผู้ใช้ <strong>≥ 3.51 (ระดับดี)</strong> และไม่มีด้านใดด้านหนึ่งต่ำกว่า 3.51 — ตรงกับประโยคสุดท้ายของสมมติฐานที่ว่า “ระบบนี้จะผ่านการประเมินจากผู้ทรงคุณวุฒิในระดับผลการประเมินดีขึ้นไป”</p>
       </div>
     </section>
 
     <!-- ═══ 9 ═══════════════════════════════════════════ -->
-    <section class="card" id="s9">
+    <section class="sec" id="s9">
       <h2><span class="num">9</span> การตรวจสอบคุณภาพเครื่องมือ</h2>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th class="c">ขั้น</th><th>กิจกรรม</th><th>ผลที่ต้องได้</th></tr></thead>
           <tbody>
@@ -528,13 +376,13 @@ footer{
     </section>
 
     <!-- ═══ 10 ═══════════════════════════════════════════ -->
-    <section class="card" id="s10">
+    <section class="sec" id="s10">
       <h2><span class="num">10</span> ขั้นตอนการเก็บข้อมูล</h2>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th class="c">ลำดับ</th><th>ขั้นตอน</th><th>ผู้เกี่ยวข้อง</th><th>ผลลัพธ์</th></tr></thead>
           <tbody>
-            <tr><td class="c">1</td><td>เก็บ baseline เวลาการทำงานด้วย Excel แบบเดิม <span class="b b-warn">ต้องทำก่อนพัฒนาเสร็จ</span></td><td>อาจารย์ 3–5 ท่าน</td><td>ตัวเลขฐานสำหรับเทียบใน §3 และข้อ 4.3 ของแบบสอบถาม ข.</td></tr>
+            <tr><td class="c">1</td><td>เก็บ baseline เวลาการทำงานด้วย Excel แบบเดิม <span class="chip warn">ต้องทำก่อนพัฒนาเสร็จ</span></td><td>อาจารย์ 3–5 ท่าน</td><td>ตัวเลขฐานสำหรับเทียบใน §3 และข้อ 4.3 ของแบบสอบถาม ข.</td></tr>
             <tr><td class="c">2</td><td>จัดทำใบคำนวณมือ 3 ชุด (ปกติ · คะแนนไม่ครบ · PASS_FAIL) และให้อาจารย์ที่ปรึกษาตรวจรับ</td><td>ผู้พัฒนา + ที่ปรึกษา</td><td>เกณฑ์อ้างอิงของ §2</td></tr>
             <tr><td class="c">3</td><td>ทดสอบด้าน 1–2 ด้วยตนเอง (unit test + Black Box) จนผ่านครบ</td><td>ผู้พัฒนา</td><td>ตารางผลการทดสอบ</td></tr>
             <tr><td class="c">4</td><td>เชิญผู้เชี่ยวชาญทดลองใช้ระบบและตอบแบบประเมิน ก.</td><td>ผู้เชี่ยวชาญ 3–5 คน</td><td>ค่าเฉลี่ย + S.D. รายด้าน (H5)</td></tr>
@@ -546,9 +394,9 @@ footer{
     </section>
 
     <!-- ═══ 11 ═══════════════════════════════════════════ -->
-    <section class="card" id="s11">
+    <section class="sec" id="s11">
       <h2><span class="num">11</span> ความเชื่อมโยง วัตถุประสงค์ → สมมติฐาน → เกณฑ์</h2>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th>วัตถุประสงค์</th><th class="c">สมมติฐาน</th><th>เกณฑ์การประเมินที่ใช้พิสูจน์</th></tr></thead>
           <tbody>
@@ -563,19 +411,19 @@ footer{
     </section>
 
     <!-- ═══ 12 ═══════════════════════════════════════════ -->
-    <section class="card" id="s12">
+    <section class="sec" id="s12">
       <h2><span class="num">12</span> ประเด็นที่ต้องปิดก่อนเริ่มเก็บข้อมูล</h2>
       <p>ข้อเหล่านี้ไม่ใช่รายละเอียดปลีกย่อย — ถ้าไม่จัดการก่อน จะพิสูจน์สมมติฐานไม่ได้เลย</p>
-      <div class="tw">
+      <div class="tw scroll-x">
         <table>
           <thead><tr><th class="c">รหัส</th><th>ประเด็น</th><th>ผลถ้าไม่จัดการ</th><th class="c">สถานะ</th></tr></thead>
           <tbody>
-            <tr><td class="c"><strong>E-01</strong></td><td>H2 ยังไม่มี baseline ของวิธีทำมือด้วย Excel</td><td>อ้างว่า “เร็วกว่าเดิม” ไม่ได้เพราะไม่มีตัวเลขเดิม</td><td class="c"><span class="b b-warn">ค้าง</span></td></tr>
-            <tr><td class="c"><strong>E-02</strong></td><td>H1 ต้องมีใบคำนวณมือที่ตรวจรับแล้วไว้เทียบ</td><td>กลายเป็นการเทียบระบบกับตัวเอง</td><td class="c"><span class="b b-warn">ค้าง</span></td></tr>
-            <tr><td class="c"><strong>E-03</strong></td><td>OI-10 ยังไม่ปิด — CR-02 กับ CR-03 ตีความน้ำหนักต่างกันถึง 20 จุด</td><td>ไม่รู้ว่า “คำตอบที่ถูก” คือสูตรไหน เขียน unit test ไม่ได้</td><td class="c"><span class="b b-dang">ต้องปิดก่อน</span></td></tr>
-            <tr><td class="c"><strong>E-04</strong></td><td>OI-12 ยังไม่ปิด — ไม่ได้นิยามว่านักศึกษาที่ยังไม่มีคะแนนเลยนับเป็น at-risk หรือไม่</td><td>OBJ-4 วัดไม่ได้เพราะนิยาม at-risk ไม่ชัด</td><td class="c"><span class="b b-dang">ต้องปิดก่อน</span></td></tr>
-            <tr><td class="c"><strong>E-05</strong></td><td>ผู้ใช้จริงอาจไม่ถึง 15 คน</td><td>สถิติความพึงพอใจอ่อน กรรมการตั้งคำถามเรื่องขนาดกลุ่มตัวอย่าง</td><td class="c"><span class="b b-warn">ค้าง</span></td></tr>
-            <tr><td class="c"><strong>E-06</strong></td><td>ความไม่ตรงกันระหว่าง SRS (multi-tenant) กับวัตถุประสงค์ (single-tenant)</td><td>—</td><td class="c"><span class="b b-pass">ปิดแล้ว 2026-08-04</span></td></tr>
+            <tr><td class="c"><strong>E-01</strong></td><td>H2 ยังไม่มี baseline ของวิธีทำมือด้วย Excel</td><td>อ้างว่า “เร็วกว่าเดิม” ไม่ได้เพราะไม่มีตัวเลขเดิม</td><td class="c"><span class="chip warn">ค้าง</span></td></tr>
+            <tr><td class="c"><strong>E-02</strong></td><td>H1 ต้องมีใบคำนวณมือที่ตรวจรับแล้วไว้เทียบ</td><td>กลายเป็นการเทียบระบบกับตัวเอง</td><td class="c"><span class="chip warn">ค้าง</span></td></tr>
+            <tr><td class="c"><strong>E-03</strong></td><td>OI-10 ยังไม่ปิด — CR-02 กับ CR-03 ตีความน้ำหนักต่างกันถึง 20 จุด</td><td>ไม่รู้ว่า “คำตอบที่ถูก” คือสูตรไหน เขียน unit test ไม่ได้</td><td class="c"><span class="chip bad">ต้องปิดก่อน</span></td></tr>
+            <tr><td class="c"><strong>E-04</strong></td><td>OI-12 ยังไม่ปิด — ไม่ได้นิยามว่านักศึกษาที่ยังไม่มีคะแนนเลยนับเป็น at-risk หรือไม่</td><td>OBJ-4 วัดไม่ได้เพราะนิยาม at-risk ไม่ชัด</td><td class="c"><span class="chip bad">ต้องปิดก่อน</span></td></tr>
+            <tr><td class="c"><strong>E-05</strong></td><td>ผู้ใช้จริงอาจไม่ถึง 15 คน</td><td>สถิติความพึงพอใจอ่อน กรรมการตั้งคำถามเรื่องขนาดกลุ่มตัวอย่าง</td><td class="c"><span class="chip warn">ค้าง</span></td></tr>
+            <tr><td class="c"><strong>E-06</strong></td><td>ความไม่ตรงกันระหว่าง SRS (multi-tenant) กับวัตถุประสงค์ (single-tenant)</td><td>—</td><td class="c"><span class="chip ok">ปิดแล้ว 2026-08-04</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -587,7 +435,7 @@ footer{
     </footer>
 
     </main>
-  </div>
 </div>
+<script src="cmas-pages.js"></script>
 </body>
 </html>

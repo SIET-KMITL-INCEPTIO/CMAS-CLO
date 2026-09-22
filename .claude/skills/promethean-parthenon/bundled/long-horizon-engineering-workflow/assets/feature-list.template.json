@@ -1,0 +1,101 @@
+{
+  "_schema": {
+    "passes": "true | false | \"blocked\" — three states, because reality has three. `true` means every step was observed to pass. `false` means it failed or has not been attempted. `\"blocked\"` means the step is correct and this environment cannot execute it — a headless browser that cannot emulate a media query, a CI run that only fires on a pull request, a clipboard that needs real user activation. Recording those as `true` with an apology in `notes` is the exact fudge invariant 2 exists to prevent, and it is what happened before this field had a third state.",
+    "blocked_reason": "Required when passes is \"blocked\". What specifically could not be observed, and why — the limitation, not the feature.",
+    "recheck_when": "Required when passes is \"blocked\". The condition under which this becomes verifiable: 'a real browser with reduced motion enabled', 'once a PR is open'. Stage 4 collects these; a blocked feature with no recheck condition is an abandoned one.",
+    "notes": "What was observed. Not what was intended.",
+    "phases": "One phase (or sprint) per branch is the default. Cut at Stage 2 BEFORE the features, grouping by contract dependency first — if a feature here reads a field, state shape, DOM node, token, route, or event another phase produces, they are one phase — and by shared premise only among what the contract test leaves free. Never group by subject matter. Sub-branches below the phase level are optional and each must have its reason written in progress.md.",
+    "phase.branch": "Two phases MAY share a branch value, but only as a deliberate compression of phases the dependency test found independent, and knowing it costs rollback resolution. The phases stay as separate rows either way — a compression is a branching decision, not a re-plan, so never delete a phase to match the branch count.",
+    "phase": "Required on every feature — which phase owns it. A feature with no phase means the phase plan was skipped; add the phase rather than a null.",
+    "phase.demonstrable": "What a person can be shown at the end of this phase, and say yes or no to. A phase whose outcome cannot be demonstrated cannot be UAT'd either, and is usually a layer masquerading as a phase.",
+    "phase.premise": "The assumption the phase's features rest on. When it expires, the blast radius is this phase — that is the reason to group by premise.",
+    "phase.status": "planned | in_progress | merged | abandoned. `abandoned` is recorded, never deleted: a dropped phase is a decision, and invariant 1 supersedes decisions in place.",
+    "phase.merged_at": "The merge commit sha. This is what makes the phase revertable as a unit and what a sprint report is later built from. Null until merged."
+  },
+  "project": {
+    "name": "<project name>",
+    "description": "<1-3 sentences: the problem being solved>",
+    "stack": "<languages, frameworks, database, hosting>",
+    "created_at": "<YYYY-MM-DD>",
+    "last_updated": "<YYYY-MM-DD>"
+  },
+  "phases": [
+    {
+      "id": "P1",
+      "name": "<short slug: the demonstrable thing, not the layer>",
+      "branch": "phase/1-<slug>",
+      "demonstrable": "<what you can walk a person through when this merges>",
+      "premise": "<the assumption these features share>",
+      "status": "in_progress",
+      "merged_at": null
+    },
+    {
+      "id": "P2",
+      "name": "<…>",
+      "branch": "phase/2-<slug>",
+      "demonstrable": "<…>",
+      "premise": "<…>",
+      "status": "planned",
+      "merged_at": null
+    }
+  ],
+  "features": [
+    {
+      "id": "F001",
+      "phase": "P1",
+      "category": "core",
+      "priority": "critical",
+      "description": "Environment bootstraps from a clean checkout",
+      "steps": [
+        "Clone to an empty directory and run the init script",
+        "Dev server starts with no errors in the console",
+        "Test suite runs and reports (pass or fail, but it runs)"
+      ],
+      "depends_on": [],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F002",
+      "phase": "P1",
+      "category": "security",
+      "priority": "critical",
+      "description": "No secrets present in tracked source",
+      "steps": [
+        "Config values load from environment, not literals",
+        "Secret scan over the tracked tree returns clean",
+        ".env and equivalents are gitignored",
+        "The harness path itself is NOT ignored — `git check-ignore -v <path>` finds no match"
+      ],
+      "depends_on": ["F001"],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "phase": "P2",
+      "category": "functional",
+      "priority": "medium",
+      "description": "<A stubbed feature: scope is known, verification is not yet writable>",
+      "steps": [],
+      "depends_on": [],
+      "passes": false,
+      "notes": "Stub — specify steps before implementing. Empty steps cannot pass."
+    },
+    {
+      "id": "F004",
+      "phase": "P2",
+      "category": "functional",
+      "priority": "medium",
+      "description": "<Example of a feature this environment cannot verify>",
+      "steps": [
+        "Panel stops animating when prefers-reduced-motion is set"
+      ],
+      "depends_on": [],
+      "passes": "blocked",
+      "blocked_reason": "This browser offers no way to emulate the media query, so the code path has never executed.",
+      "recheck_when": "A real browser with reduced motion enabled at OS level.",
+      "notes": "Implementation written and reviewed; behaviour unobserved. Do not mark true on the strength of the code reading correct."
+    }
+  ]
+}

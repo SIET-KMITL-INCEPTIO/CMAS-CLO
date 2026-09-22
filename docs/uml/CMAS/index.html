@@ -1,0 +1,1971 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CS101 — CLO Tracking (Interactive)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["IBM Plex Sans Thai", "ui-sans-serif", "system-ui"],
+              mono: ["IBM Plex Mono", "monospace"],
+            },
+            colors: {
+              olive: {
+                50: "#f6f7ed",
+                100: "#e9edd4",
+                500: "#6b7a29",
+                600: "#55621f",
+                700: "#414c18",
+                900: "#252d0c",
+              },
+              plum: {
+                50: "#f8f4fd",
+                100: "#ede3fb",
+                500: "#7c3aed",
+                600: "#6d28d9",
+                700: "#5b21b6",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background: linear-gradient(
+          160deg,
+          #fdf6fb 0%,
+          #f7f3fc 45%,
+          #f4f6f0 100%
+        );
+        background-attachment: fixed;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #ece7f2;
+        border-radius: 18px;
+      }
+      .num {
+        font-variant-numeric: tabular-nums;
+        font-family: "IBM Plex Mono", monospace;
+      }
+      .row-hover:hover {
+        background: #faf8fd;
+      }
+      .fld {
+        width: 100%;
+        padding: 0.6rem 0.8rem;
+        border: 1px solid #e6e0ee;
+        border-radius: 0.75rem;
+        font-size: 14px;
+        outline: none;
+        background: #fff;
+      }
+      .fld:focus {
+        border-color: #6b7a29;
+        box-shadow: 0 0 0 3px #6b7a2915;
+      }
+      .fld.err {
+        border-color: #e11d48;
+        background: #fff6f8;
+      }
+      .btn {
+        padding: 0.6rem 1rem;
+        border-radius: 0.75rem;
+        font-size: 14px;
+      }
+      .grow-bar {
+        transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .grow-bar {
+          transition: none;
+        }
+      }
+      .modal-in {
+        animation: pop 0.18s ease-out;
+      }
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: translateY(8px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      ::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #e3dcec;
+        border-radius: 8px;
+      }
+      .sc:focus {
+        border-color: #6b7a29;
+        background: #f6f7ed;
+      }
+    </style>
+  </head>
+  <body class="font-sans text-olive-900 min-h-screen">
+    <header class="bg-white border-b border-[#ece7f2] sticky top-0 z-30">
+      <div class="max-w-6xl mx-auto px-5">
+        <div class="flex items-center justify-between pt-4 pb-2">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-olive-900 text-white grid place-items-center"
+            >
+              📖
+            </div>
+            <div>
+              <h1
+                class="font-semibold text-[17px] leading-tight"
+                id="hTitle"
+              ></h1>
+              <p class="text-xs text-gray-500" id="hSub"></p>
+            </div>
+            <button
+              onclick="editCourse()"
+              class="text-xs px-2.5 py-1 rounded-lg border border-[#ece7f2] text-gray-500 hover:bg-gray-50"
+            >
+              แก้ไข
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <span
+              id="dirtyPill"
+              class="hidden text-xs px-2.5 py-1 rounded-full bg-amber-100 text-amber-800"
+              >ยังไม่บันทึก</span
+            >
+            <span
+              class="text-xs px-3 py-1.5 rounded-full bg-plum-50 text-plum-700 num"
+              id="headCount"
+            ></span>
+          </div>
+        </div>
+        <nav class="flex gap-6 text-sm overflow-x-auto" id="tabs">
+          <button
+            data-tab="flow"
+            class="tabbtn pb-2.5 border-b-2 border-transparent text-gray-500 whitespace-nowrap"
+          >
+            🧭 User Flow
+          </button>
+          <button
+            data-tab="roster"
+            class="tabbtn pb-2.5 border-b-2 border-transparent text-gray-500 whitespace-nowrap"
+          >
+            👥 Roster
+          </button>
+          <button
+            data-tab="clos"
+            class="tabbtn pb-2.5 border-b-2 border-transparent text-gray-500 whitespace-nowrap"
+          >
+            🎯 CLOs
+          </button>
+          <button
+            data-tab="tasks"
+            class="tabbtn pb-2.5 border-b-2 border-transparent text-gray-500 whitespace-nowrap"
+          >
+            📝 Tasks
+          </button>
+          <button
+            data-tab="gradebook"
+            class="tabbtn pb-2.5 border-b-2 border-transparent text-gray-500 whitespace-nowrap"
+          >
+            📊 Gradebook
+          </button>
+          <button
+            data-tab="insights"
+            class="tabbtn pb-2.5 border-b-2 border-transparent text-gray-500 whitespace-nowrap"
+          >
+            🕐 Insights
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-5 py-6" id="app"></main>
+
+    <!-- drawer -->
+    <div id="drawer" class="hidden fixed inset-0 z-40">
+      <div
+        class="absolute inset-0 bg-olive-900/25"
+        onclick="closeDrawer()"
+      ></div>
+      <aside
+        class="absolute right-0 top-0 h-full w-full sm:w-[440px] bg-white shadow-2xl overflow-y-auto"
+        id="drawerBody"
+      ></aside>
+    </div>
+
+    <!-- modal / form -->
+    <div
+      id="modal"
+      class="hidden fixed inset-0 z-50 grid place-items-center p-4"
+    >
+      <div class="absolute inset-0 bg-olive-900/35" onclick="closeForm()"></div>
+      <div
+        class="modal-in relative w-full max-w-lg bg-white rounded-2xl shadow-2xl max-h-[88vh] overflow-y-auto"
+        id="modalBody"
+      ></div>
+    </div>
+
+    <div
+      id="toast"
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden px-4 py-2.5 rounded-xl bg-olive-900 text-white text-sm shadow-lg"
+    ></div>
+
+    <script>
+      /* ============================== DATA ============================== */
+      const COURSE = {
+        code: "CS101",
+        name: "Computer Science I",
+        term: "1/2568",
+        teacher: "ผศ.ดร. ธนกร วิทยารักษ์",
+        passGrade: 50,
+      };
+
+      const BLOOMS = [
+        "จำ",
+        "เข้าใจ",
+        "ประยุกต์ใช้",
+        "วิเคราะห์",
+        "ประเมินค่า",
+        "สร้างสรรค์",
+      ];
+      const TASK_TYPES = [
+        "แบบทดสอบ",
+        "การบ้าน",
+        "ปฏิบัติการ",
+        "สอบ",
+        "โครงงาน",
+        "นำเสนอ",
+      ];
+      const PROGRAMS = [
+        "วิศวกรรมคอมพิวเตอร์",
+        "วิทยาการคอมพิวเตอร์",
+        "เทคโนโลยีสารสนเทศ",
+      ];
+      const STATUSES = ["ปกติ", "ลงทะเบียนสาย", "ถอนรายวิชา"];
+
+      let CLOS = [
+        {
+          id: "CLO1",
+          bloom: "เข้าใจ",
+          threshold: 60,
+          target: 70,
+          plo: "PLO1",
+          title: "อธิบายองค์ประกอบพื้นฐานของการเขียนโปรแกรมและชนิดข้อมูล",
+        },
+        {
+          id: "CLO2",
+          bloom: "ประยุกต์ใช้",
+          threshold: 60,
+          target: 70,
+          plo: "PLO2",
+          title: "เขียนโปรแกรมแก้ปัญหาด้วยโครงสร้างควบคุมและฟังก์ชัน",
+        },
+        {
+          id: "CLO3",
+          bloom: "วิเคราะห์",
+          threshold: 65,
+          target: 70,
+          plo: "PLO2",
+          title: "วิเคราะห์และแก้จุดบกพร่องของโปรแกรมอย่างเป็นระบบ",
+        },
+        {
+          id: "CLO4",
+          bloom: "ประเมินค่า",
+          threshold: 60,
+          target: 65,
+          plo: "PLO4",
+          title: "ทำงานเป็นทีมและนำเสนอโครงงานซอฟต์แวร์ได้",
+        },
+      ];
+      let TASKS = [
+        {
+          id: "t1",
+          clo: "CLO1",
+          type: "แบบทดสอบ",
+          name: "Quiz 1 · ตัวแปรและชนิดข้อมูล",
+          max: 10,
+          weight: 5,
+          due: "2025-07-05",
+          graded: true,
+        },
+        {
+          id: "t2",
+          clo: "CLO1",
+          type: "การบ้าน",
+          name: "HW1 · Input/Output",
+          max: 20,
+          weight: 5,
+          due: "2025-07-12",
+          graded: true,
+        },
+        {
+          id: "t3",
+          clo: "CLO2",
+          type: "ปฏิบัติการ",
+          name: "Lab 3 · Loop & Condition",
+          max: 30,
+          weight: 10,
+          due: "2025-07-26",
+          graded: true,
+        },
+        {
+          id: "t4",
+          clo: "CLO2",
+          type: "สอบ",
+          name: "สอบกลางภาค",
+          max: 100,
+          weight: 20,
+          due: "2025-08-16",
+          graded: true,
+        },
+        {
+          id: "t5",
+          clo: "CLO3",
+          type: "ปฏิบัติการ",
+          name: "Lab 5 · Debugging Workshop",
+          max: 30,
+          weight: 10,
+          due: "2025-09-06",
+          graded: true,
+        },
+        {
+          id: "t6",
+          clo: "CLO3",
+          type: "การบ้าน",
+          name: "HW4 · Code Review Report",
+          max: 20,
+          weight: 10,
+          due: "2025-09-20",
+          graded: true,
+        },
+        {
+          id: "t7",
+          clo: "CLO4",
+          type: "โครงงาน",
+          name: "Mini Project · ส่งงาน",
+          max: 100,
+          weight: 25,
+          due: "2025-10-11",
+          graded: true,
+        },
+        {
+          id: "t8",
+          clo: "CLO4",
+          type: "นำเสนอ",
+          name: "นำเสนอโครงงาน",
+          max: 50,
+          weight: 15,
+          due: "2025-10-25",
+          graded: false,
+        },
+      ];
+
+      const FIRST = [
+        "ณัฐพงษ์",
+        "ศิริพร",
+        "กิตติศักดิ์",
+        "พิมพ์ชนก",
+        "ธนวัฒน์",
+        "อรวรรณ",
+        "ปุณยวีร์",
+        "สมชาย",
+        "จิราภรณ์",
+        "ภาณุพงศ์",
+        "วรินทร",
+        "ชนกานต์",
+        "ธีรภัทร",
+        "สุพัตรา",
+        "อนุชา",
+        "เมธาวี",
+        "กฤษณะ",
+        "นภัสสร",
+      ];
+      const LAST = [
+        "ทองใบ",
+        "วงศ์สุวรรณ",
+        "ศรีสมบัติ",
+        "พูลสวัสดิ์",
+        "แก้วมณี",
+        "บุญมาก",
+        "อินทรีย์",
+        "ชัยวัฒน์",
+        "เจริญสุข",
+        "ธนบดี",
+        "ปิยะวงศ์",
+        "สินธุ์ทอง",
+      ];
+      let _s = 20250711;
+      const rnd = () => (_s = (_s * 16807) % 2147483647) / 2147483647;
+
+      let STUDENTS = Array.from({ length: 18 }, (_, i) => ({
+        id: "65" + String(41001 + i),
+        name: FIRST[i % FIRST.length] + " " + LAST[i % LAST.length],
+        program: PROGRAMS[i % 3],
+        status: i === 16 ? "ถอนรายวิชา" : i === 17 ? "ลงทะเบียนสาย" : "ปกติ",
+        note: "",
+        ability: 0,
+      }));
+      STUDENTS.forEach((s, i) => {
+        s.ability =
+          i < 3
+            ? 0.38 + rnd() * 0.12
+            : i < 6
+              ? 0.58 + rnd() * 0.08
+              : 0.68 + rnd() * 0.3;
+      });
+
+      const scores = {};
+      STUDENTS.forEach((s) => {
+        scores[s.id] = {};
+        TASKS.forEach((t) => {
+          if (!t.graded || s.status === "ถอนรายวิชา") {
+            scores[s.id][t.id] = null;
+            return;
+          }
+          const pen = t.clo === "CLO3" ? 0.17 : 0;
+          let r = s.ability - pen + (rnd() - 0.5) * 0.16;
+          if (rnd() < 0.05) r = 0;
+          scores[s.id][t.id] = Math.max(
+            0,
+            Math.min(t.max, Math.round(r * t.max)),
+          );
+        });
+      });
+
+      let BOUNDS = [
+        ["A", 80],
+        ["B+", 75],
+        ["B", 70],
+        ["C+", 65],
+        ["C", 60],
+        ["D+", 55],
+        ["D", 50],
+        ["F", 0],
+      ];
+      const interventions = []; // {sid, kind, at}
+
+      /* ============================== LOGIC ============================== */
+      const active = () => STUDENTS.filter((s) => s.status !== "ถอนรายวิชา");
+      const tasksOf = (clo) => TASKS.filter((t) => t.clo === clo);
+      const pct = (n, d) => (d ? (n / d) * 100 : 0);
+      const totalWeight = () => TASKS.reduce((a, t) => a + Number(t.weight), 0);
+
+      function cloScore(sid, clo) {
+        let num = 0,
+          den = 0,
+          done = 0,
+          total = 0;
+        tasksOf(clo).forEach((t) => {
+          total += t.weight;
+          const v = scores[sid]?.[t.id];
+          if (v === null || v === undefined) return;
+          num += (v / t.max) * t.weight;
+          den += t.weight;
+          done += t.weight;
+        });
+        return {
+          value: den ? (num / den) * 100 : null,
+          coverage: pct(done, total),
+        };
+      }
+      function overall(sid) {
+        let num = 0,
+          den = 0;
+        TASKS.forEach((t) => {
+          const v = scores[sid]?.[t.id];
+          if (v === null || v === undefined) return;
+          num += (v / t.max) * t.weight;
+          den += t.weight;
+        });
+        return den ? (num / den) * 100 : null;
+      }
+      const letter = (v) =>
+        v === null
+          ? "—"
+          : ([...BOUNDS].sort((a, b) => b[1] - a[1]).find((b) => v >= b[1]) || [
+              "F",
+            ])[0];
+
+      function profile(sid) {
+        const per = CLOS.map((c) => {
+          const { value, coverage } = cloScore(sid, c.id);
+          return {
+            clo: c,
+            value,
+            coverage,
+            pass: value !== null && value >= c.threshold,
+          };
+        });
+        const graded = per.filter((p) => p.value !== null),
+          failed = graded.filter((p) => !p.pass),
+          ov = overall(sid);
+        let risk = "ปลอดภัย";
+        if (failed.length >= 2 || (ov !== null && ov < 50)) risk = "เสี่ยงสูง";
+        else if (failed.length === 1 || (ov !== null && ov < 60))
+          risk = "เฝ้าระวัง";
+        return {
+          per,
+          failed,
+          risk,
+          overall: ov,
+          passCount: graded.length - failed.length,
+          gradedCount: graded.length,
+        };
+      }
+      function cloSummary(c) {
+        const list = active()
+          .map((s) => cloScore(s.id, c.id).value)
+          .filter((v) => v !== null);
+        const passed = list.filter((v) => v >= c.threshold).length,
+          rate = pct(passed, list.length);
+        const tw = tasksOf(c.id).reduce((a, t) => a + t.weight, 0);
+        return {
+          n: list.length,
+          passed,
+          rate,
+          achieved: list.length > 0 && rate >= c.target,
+          mean: list.length ? list.reduce((a, b) => a + b, 0) / list.length : 0,
+          coverage: pct(
+            tasksOf(c.id)
+              .filter((t) => t.graded)
+              .reduce((a, t) => a + t.weight, 0),
+            tw,
+          ),
+        };
+      }
+      function stats() {
+        const vals = active()
+            .map((s) => overall(s.id))
+            .filter((v) => v !== null),
+          sorted = [...vals].sort((a, b) => a - b);
+        const mean = vals.reduce((a, b) => a + b, 0) / (vals.length || 1);
+        return {
+          mean,
+          n: vals.length,
+          sd: Math.sqrt(
+            vals.reduce((a, b) => a + (b - mean) ** 2, 0) / (vals.length || 1),
+          ),
+          median: sorted.length
+            ? sorted.length % 2
+              ? sorted[(sorted.length - 1) / 2]
+              : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
+            : 0,
+          passRate: pct(
+            vals.filter((v) => v >= COURSE.passGrade).length,
+            vals.length,
+          ),
+        };
+      }
+
+      /* ============================== UI HELPERS ============================== */
+      const $ = (s) => document.querySelector(s);
+      const esc = (s) =>
+        String(s ?? "").replace(
+          /[&<>"]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+        );
+      const fmt = (v) =>
+        v === null || v === undefined ? "—" : Number(v).toFixed(1);
+      const riskTone = (r) =>
+        r === "เสี่ยงสูง"
+          ? "bg-rose-100 text-rose-600"
+          : r === "เฝ้าระวัง"
+            ? "bg-amber-100 text-amber-700"
+            : "bg-emerald-50 text-emerald-700";
+      const barTone = (v, th) =>
+        v === null
+          ? "bg-gray-200"
+          : v >= th
+            ? "bg-olive-500"
+            : v >= th - 10
+              ? "bg-amber-400"
+              : "bg-rose-500";
+      const bar = (v, th, h = "h-2") =>
+        `<div class="w-full ${h} rounded-full bg-gray-100 overflow-hidden"><div class="grow-bar ${h} rounded-full ${barTone(v, th)}" style="width:${v === null ? 0 : Math.min(100, v)}%"></div></div>`;
+      const kpi = (l, v, s, t) =>
+        `<div class="rounded-2xl p-4 ${t}"><p class="text-xs opacity-70">${l}</p><p class="text-3xl font-semibold num mt-0.5">${v}</p><p class="text-[11px] opacity-60 mt-0.5">${s || ""}</p></div>`;
+      let dirty = false;
+      function toast(m) {
+        const t = $("#toast");
+        t.textContent = m;
+        t.classList.remove("hidden");
+        clearTimeout(t._x);
+        t._x = setTimeout(() => t.classList.add("hidden"), 2000);
+      }
+      function setDirty(v) {
+        dirty = v;
+        $("#dirtyPill").classList.toggle("hidden", !v);
+      }
+
+      /* ============================== FORM ENGINE ============================== */
+      /* openForm({title, subtitle, fields[], submitLabel, validate(v)->errors, onSubmit(v), danger}) */
+      let F = null;
+      function openForm(cfg) {
+        F = cfg;
+        F.values = {};
+        F.errors = {};
+        cfg.fields.forEach(
+          (f) =>
+            (F.values[f.name] = f.value ?? (f.type === "toggle" ? false : "")),
+        );
+        renderForm();
+        $("#modal").classList.remove("hidden");
+        setTimeout(() => $("#modalBody").querySelector(".fld")?.focus(), 40);
+      }
+      function closeForm() {
+        $("#modal").classList.add("hidden");
+        F = null;
+      }
+      function setVal(n, v) {
+        F.values[n] = v;
+        if (F.errors[n]) {
+          delete F.errors[n];
+          renderForm();
+        }
+        if (F.live) renderForm();
+      }
+
+      function field(f) {
+        const err = F.errors[f.name],
+          v = F.values[f.name];
+        const label = `<label class="block text-[13px] font-medium mb-1.5">${f.label}${f.required ? '<span class="text-rose-500"> *</span>' : ""}</label>`;
+        let input;
+        if (f.type === "select")
+          input = `<select class="fld ${err ? "err" : ""}" onchange="setVal('${f.name}',this.value)">
+      ${f.options.map((o) => `<option value="${esc(o)}" ${String(v) === String(o) ? "selected" : ""}>${esc(o)}</option>`).join("")}</select>`;
+        else if (f.type === "textarea")
+          input = `<textarea rows="2" class="fld ${err ? "err" : ""}" oninput="F.values['${f.name}']=this.value">${esc(v)}</textarea>`;
+        else if (f.type === "toggle")
+          input = `<button type="button" onclick="setVal('${f.name}',${!v})"
+        class="flex items-center gap-2.5 px-3 py-2 rounded-xl border ${v ? "border-olive-500 bg-olive-50" : "border-[#e6e0ee] bg-white"} w-full text-left text-sm">
+        <span class="w-9 h-5 rounded-full ${v ? "bg-olive-600" : "bg-gray-300"} relative shrink-0">
+          <span class="absolute top-0.5 ${v ? "left-4.5" : "left-0.5"} w-4 h-4 rounded-full bg-white transition-all" style="left:${v ? "18px" : "2px"}"></span></span>
+        <span>${v ? f.onText || "เปิด" : f.offText || "ปิด"}</span></button>`;
+        else
+          input = `<input type="${f.type || "text"}" value="${esc(v)}" ${f.min !== undefined ? `min="${f.min}"` : ""} ${f.max !== undefined ? `max="${f.max}"` : ""}
+      placeholder="${esc(f.placeholder || "")}" class="fld ${f.type === "number" ? "num" : ""} ${err ? "err" : ""}"
+      oninput="setVal('${f.name}',this.value)">`;
+        return `<div class="${f.col === "half" ? "col-span-1" : "col-span-2"}">
+    ${label}${input}
+    ${err ? `<p class="text-[12px] text-rose-600 mt-1">${err}</p>` : f.hint ? `<p class="text-[12px] text-gray-400 mt-1">${f.hint}</p>` : ""}
+  </div>`;
+      }
+      function renderForm() {
+        $("#modalBody").innerHTML = `
+    <div class="px-6 pt-5 pb-4 border-b border-[#f2eef7] flex items-start justify-between gap-4">
+      <div><h3 class="font-semibold text-lg">${F.title}</h3>
+      ${F.subtitle ? `<p class="text-[13px] text-gray-500 mt-0.5">${F.subtitle}</p>` : ""}</div>
+      <button onclick="closeForm()" class="text-gray-400 text-2xl leading-none px-1">×</button>
+    </div>
+    ${F.banner ? `<div class="mx-6 mt-4 rounded-xl bg-amber-50 border border-amber-100 p-3 text-[13px] text-amber-800">${F.banner}</div>` : ""}
+    <div class="px-6 py-5 grid grid-cols-2 gap-4">${F.fields.map(field).join("")}</div>
+    <div class="px-6 py-4 border-t border-[#f2eef7] flex justify-end gap-2 sticky bottom-0 bg-white">
+      <button onclick="closeForm()" class="btn border border-[#ece7f2]">ยกเลิก</button>
+      <button onclick="submitForm()" class="btn ${F.danger ? "bg-rose-600" : "bg-olive-700"} text-white">${F.submitLabel || "บันทึก"}</button>
+    </div>`;
+      }
+      function submitForm() {
+        const errs = F.validate ? F.validate(F.values) || {} : {};
+        if (Object.keys(errs).length) {
+          F.errors = errs;
+          renderForm();
+          return;
+        }
+        const fn = F.onSubmit,
+          v = F.values;
+        closeForm();
+        fn(v);
+        render();
+      }
+      function confirmBox({ title, body, confirmLabel = "ยืนยัน", onConfirm }) {
+        F = { title, fields: [], errors: {}, values: {} };
+        $("#modal").classList.remove("hidden");
+        $("#modalBody").innerHTML = `
+    <div class="px-6 pt-5"><h3 class="font-semibold text-lg">${title}</h3>
+    <p class="text-sm text-gray-600 mt-2 leading-relaxed">${body}</p></div>
+    <div class="px-6 py-4 mt-3 border-t border-[#f2eef7] flex justify-end gap-2">
+      <button onclick="closeForm()" class="btn border border-[#ece7f2]">ยกเลิก</button>
+      <button id="cfmBtn" class="btn bg-rose-600 text-white">${confirmLabel}</button></div>`;
+        $("#cfmBtn").onclick = () => {
+          closeForm();
+          onConfirm();
+          render();
+        };
+      }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeForm();
+          closeDrawer();
+        }
+        if (
+          e.key === "Enter" &&
+          F &&
+          F.fields?.length &&
+          !e.target.matches("textarea")
+        )
+          submitForm();
+      });
+
+      /* ============================== FORMS ============================== */
+      function editCourse() {
+        openForm({
+          title: "ข้อมูลรายวิชา",
+          subtitle: "ใช้ในหัวรายงานและการส่งออกทุกไฟล์",
+          fields: [
+            {
+              name: "code",
+              label: "รหัสวิชา",
+              value: COURSE.code,
+              col: "half",
+              required: true,
+            },
+            {
+              name: "term",
+              label: "ภาคเรียน",
+              value: COURSE.term,
+              col: "half",
+              required: true,
+            },
+            {
+              name: "name",
+              label: "ชื่อรายวิชา",
+              value: COURSE.name,
+              required: true,
+            },
+            { name: "teacher", label: "ผู้สอน", value: COURSE.teacher },
+            {
+              name: "passGrade",
+              label: "คะแนนขั้นต่ำที่ถือว่าผ่านรายวิชา (%)",
+              type: "number",
+              value: COURSE.passGrade,
+              col: "half",
+              min: 0,
+              max: 100,
+            },
+          ],
+          validate: (v) => {
+            const e = {};
+            if (!v.code.trim()) e.code = "กรอกรหัสวิชา";
+            if (!v.name.trim()) e.name = "กรอกชื่อรายวิชา";
+            if (v.passGrade < 0 || v.passGrade > 100)
+              e.passGrade = "ต้องอยู่ระหว่าง 0–100";
+            return e;
+          },
+          onSubmit: (v) => {
+            Object.assign(COURSE, { ...v, passGrade: Number(v.passGrade) });
+            toast("อัปเดตข้อมูลรายวิชาแล้ว");
+          },
+        });
+      }
+
+      function studentForm(sid) {
+        const s = sid ? STUDENTS.find((x) => x.id === sid) : null;
+        openForm({
+          title: s ? "แก้ไขข้อมูลนักศึกษา" : "เพิ่มนักศึกษา",
+          subtitle: s
+            ? 'การเปลี่ยนสถานะเป็น "ถอนรายวิชา" จะกันคนนี้ออกจากทุกสถิติ'
+            : "รหัสนักศึกษาต้องไม่ซ้ำกับที่มีอยู่",
+          fields: [
+            {
+              name: "id",
+              label: "รหัสนักศึกษา",
+              value: s?.id || "",
+              col: "half",
+              required: true,
+              placeholder: "6541019",
+            },
+            {
+              name: "status",
+              label: "สถานะ",
+              type: "select",
+              options: STATUSES,
+              value: s?.status || "ปกติ",
+              col: "half",
+            },
+            {
+              name: "name",
+              label: "ชื่อ-นามสกุล",
+              value: s?.name || "",
+              required: true,
+            },
+            {
+              name: "program",
+              label: "สาขาวิชา",
+              type: "select",
+              options: PROGRAMS,
+              value: s?.program || PROGRAMS[0],
+            },
+            {
+              name: "note",
+              label: "บันทึกภายใน",
+              type: "textarea",
+              value: s?.note || "",
+              hint: "เห็นเฉพาะผู้สอน เช่น ข้อจำกัดด้านการเรียน",
+            },
+          ],
+          validate: (v) => {
+            const e = {};
+            if (!/^\d{5,10}$/.test(v.id.trim()))
+              e.id = "กรอกรหัสเป็นตัวเลข 5–10 หลัก";
+            else if (STUDENTS.some((x) => x.id === v.id.trim() && x.id !== sid))
+              e.id = "รหัสนี้มีอยู่แล้วในรายวิชา";
+            if (v.name.trim().length < 2) e.name = "กรอกชื่อ-นามสกุล";
+            return e;
+          },
+          onSubmit: (v) => {
+            if (s) {
+              const old = s.id,
+                nid = v.id.trim();
+              if (old !== nid) {
+                scores[nid] = scores[old];
+                delete scores[old];
+              }
+              Object.assign(s, { ...v, id: nid });
+              toast("บันทึกข้อมูล " + s.name + " แล้ว");
+            } else {
+              const st = { ...v, id: v.id.trim(), ability: 0.7 };
+              STUDENTS.push(st);
+              scores[st.id] = {};
+              TASKS.forEach((t) => (scores[st.id][t.id] = null));
+              toast(
+                "เพิ่ม " +
+                  st.name +
+                  " เข้ารายวิชาแล้ว · ไปกรอกคะแนนที่แท็บ Tasks",
+              );
+            }
+          },
+        });
+      }
+      function deleteStudent(sid) {
+        const s = STUDENTS.find((x) => x.id === sid);
+        confirmBox({
+          title: `ลบ ${s.name} ออกจากรายวิชา`,
+          body: `คะแนนทุกชิ้นงานของนักศึกษาคนนี้จะถูกลบไปด้วย และค่าสถิติของทุก CLO จะคำนวณใหม่ หากต้องการเก็บประวัติไว้ ให้เปลี่ยนสถานะเป็น "ถอนรายวิชา" แทน`,
+          confirmLabel: "ลบออกถาวร",
+          onConfirm: () => {
+            STUDENTS = STUDENTS.filter((x) => x.id !== sid);
+            delete scores[sid];
+            closeDrawer();
+            toast("ลบ " + s.name + " แล้ว");
+          },
+        });
+      }
+
+      function cloForm(id) {
+        const c = id ? CLOS.find((x) => x.id === id) : null;
+        const next =
+          "CLO" +
+          (Math.max(
+            0,
+            ...CLOS.map((x) => parseInt(x.id.replace(/\D/g, "")) || 0),
+          ) +
+            1);
+        openForm({
+          title: c ? `แก้ไข ${c.id}` : "เพิ่ม CLO",
+          subtitle:
+            "เกณฑ์ผ่านใช้ตัดสินรายคน · สัดส่วนผู้ผ่านใช้ตัดสินว่าการสอนบรรลุผลหรือไม่",
+          fields: [
+            {
+              name: "id",
+              label: "รหัส CLO",
+              value: c?.id || next,
+              col: "half",
+              required: true,
+            },
+            {
+              name: "bloom",
+              label: "ระดับพฤติกรรม (Bloom)",
+              type: "select",
+              options: BLOOMS,
+              value: c?.bloom || "เข้าใจ",
+              col: "half",
+            },
+            {
+              name: "title",
+              label: "คำอธิบายผลลัพธ์การเรียนรู้",
+              type: "textarea",
+              value: c?.title || "",
+              required: true,
+              hint: "ขึ้นต้นด้วยคำกริยาที่วัดได้ เช่น อธิบาย วิเคราะห์ ออกแบบ",
+            },
+            {
+              name: "threshold",
+              label: "เกณฑ์ผ่านรายคน (%)",
+              type: "number",
+              value: c?.threshold ?? 60,
+              col: "half",
+              min: 0,
+              max: 100,
+            },
+            {
+              name: "target",
+              label: "สัดส่วนผู้ผ่านที่ต้องการ (%)",
+              type: "number",
+              value: c?.target ?? 70,
+              col: "half",
+              min: 0,
+              max: 100,
+            },
+            {
+              name: "plo",
+              label: "ผูกกับ PLO ของหลักสูตร",
+              value: c?.plo || "PLO1",
+              col: "half",
+              hint: "ใช้รวมรายงานระดับหลักสูตร",
+            },
+          ],
+          validate: (v) => {
+            const e = {};
+            if (!v.id.trim()) e.id = "กรอกรหัส CLO";
+            else if (CLOS.some((x) => x.id === v.id.trim() && x.id !== id))
+              e.id = "รหัสนี้ถูกใช้แล้ว";
+            if (v.title.trim().length < 8)
+              e.title = "อธิบายให้ชัดเจนอย่างน้อย 8 ตัวอักษร";
+            if (v.threshold === "" || v.threshold < 0 || v.threshold > 100)
+              e.threshold = "ต้องอยู่ระหว่าง 0–100";
+            if (v.target === "" || v.target < 0 || v.target > 100)
+              e.target = "ต้องอยู่ระหว่าง 0–100";
+            return e;
+          },
+          onSubmit: (v) => {
+            const data = {
+              ...v,
+              id: v.id.trim(),
+              threshold: Number(v.threshold),
+              target: Number(v.target),
+            };
+            if (c) {
+              const old = c.id;
+              Object.assign(c, data);
+              if (old !== data.id)
+                TASKS.forEach((t) => {
+                  if (t.clo === old) t.clo = data.id;
+                });
+              toast("บันทึก " + data.id + " แล้ว");
+            } else {
+              CLOS.push(data);
+              toast("เพิ่ม " + data.id + " แล้ว · ยังไม่มีชิ้นงานวัดผล");
+            }
+          },
+        });
+      }
+      function deleteCLO(id) {
+        const n = tasksOf(id).length;
+        confirmBox({
+          title: `ลบ ${id}`,
+          body: n
+            ? `CLO นี้มีชิ้นงานผูกอยู่ ${n} ชิ้น การลบจะลบชิ้นงานและคะแนนทั้งหมดของชิ้นงานเหล่านั้นด้วย น้ำหนักรวมของรายวิชาจะลดลง ${tasksOf(id).reduce((a, t) => a + t.weight, 0)}%`
+            : "CLO นี้ยังไม่มีชิ้นงานผูกอยู่ ลบได้ทันที",
+          confirmLabel: "ลบ CLO",
+          onConfirm: () => {
+            TASKS.filter((t) => t.clo === id).forEach((t) =>
+              STUDENTS.forEach((s) => delete scores[s.id][t.id]),
+            );
+            TASKS = TASKS.filter((t) => t.clo !== id);
+            CLOS = CLOS.filter((c) => c.id !== id);
+            toast("ลบ " + id + " แล้ว");
+          },
+        });
+      }
+      function moveCLO(id, dir) {
+        const i = CLOS.findIndex((c) => c.id === id),
+          j = i + dir;
+        if (j < 0 || j >= CLOS.length) return;
+        [CLOS[i], CLOS[j]] = [CLOS[j], CLOS[i]];
+        render();
+      }
+
+      function taskForm(id) {
+        const t = id ? TASKS.find((x) => x.id === id) : null;
+        const used = TASKS.filter((x) => x.id !== id).reduce(
+          (a, x) => a + x.weight,
+          0,
+        );
+        openForm({
+          title: t ? "แก้ไขชิ้นงาน" : "เพิ่มชิ้นงาน",
+          subtitle: `ทุกชิ้นงานต้องผูกกับ CLO เดียว · น้ำหนักที่ใช้ไปแล้ว ${used}% เหลือ ${100 - used}%`,
+          banner: CLOS.length
+            ? null
+            : "ยังไม่มี CLO ในรายวิชา สร้าง CLO ก่อนจึงจะเพิ่มชิ้นงานได้",
+          fields: [
+            {
+              name: "name",
+              label: "ชื่อชิ้นงาน",
+              value: t?.name || "",
+              required: true,
+              placeholder: "Quiz 2 · ฟังก์ชันและพารามิเตอร์",
+            },
+            {
+              name: "clo",
+              label: "วัดผลลัพธ์ข้อใด",
+              type: "select",
+              options: CLOS.map((c) => c.id),
+              value: t?.clo || CLOS[0]?.id,
+              col: "half",
+            },
+            {
+              name: "type",
+              label: "ประเภท",
+              type: "select",
+              options: TASK_TYPES,
+              value: t?.type || "การบ้าน",
+              col: "half",
+            },
+            {
+              name: "max",
+              label: "คะแนนเต็ม",
+              type: "number",
+              value: t?.max ?? 100,
+              col: "half",
+              min: 1,
+            },
+            {
+              name: "weight",
+              label: "น้ำหนักต่อเกรดรวม (%)",
+              type: "number",
+              value: t?.weight ?? 10,
+              col: "half",
+              min: 0,
+              max: 100,
+              hint: `คงเหลือ ${100 - used}%`,
+            },
+            {
+              name: "due",
+              label: "กำหนดส่ง",
+              type: "date",
+              value: t?.due || "",
+              col: "half",
+            },
+            {
+              name: "graded",
+              label: "สถานะการตรวจ",
+              type: "toggle",
+              value: t?.graded ?? false,
+              col: "half",
+              onText: "ตรวจแล้ว — นับผลใน CLO",
+              offText: "ยังไม่ตรวจ — ยังไม่นับผล",
+            },
+          ],
+          validate: (v) => {
+            const e = {};
+            if (!CLOS.length) e.name = "ต้องมี CLO อย่างน้อย 1 ข้อก่อน";
+            if (v.name.trim().length < 3) e.name = "ตั้งชื่อชิ้นงานให้ชัดเจน";
+            if (!v.max || v.max < 1) e.max = "คะแนนเต็มต้องมากกว่า 0";
+            if (v.weight === "" || v.weight < 0)
+              e.weight = "กรอกน้ำหนักเป็นตัวเลข";
+            else if (used + Number(v.weight) > 100)
+              e.weight = `เกิน 100% ไป ${used + Number(v.weight) - 100}% — ลดน้ำหนักหรือแก้ชิ้นงานอื่นก่อน`;
+            return e;
+          },
+          onSubmit: (v) => {
+            const data = {
+              ...v,
+              max: Number(v.max),
+              weight: Number(v.weight),
+              graded: !!v.graded,
+            };
+            if (t) {
+              Object.assign(t, data);
+              STUDENTS.forEach((s) => {
+                const sc = scores[s.id][t.id];
+                if (sc !== null && sc > t.max) scores[s.id][t.id] = t.max;
+              });
+              toast("บันทึกชิ้นงานแล้ว");
+            } else {
+              const nt = { ...data, id: "t" + Date.now() };
+              TASKS.push(nt);
+              STUDENTS.forEach((s) => (scores[s.id][nt.id] = null));
+              toast('เพิ่ม "' + nt.name + '" แล้ว');
+            }
+          },
+        });
+      }
+      function deleteTask(id) {
+        const t = TASKS.find((x) => x.id === id);
+        const n = STUDENTS.filter(
+          (s) => scores[s.id][id] !== null && scores[s.id][id] !== undefined,
+        ).length;
+        confirmBox({
+          title: `ลบ "${t.name}"`,
+          body: `มีคะแนนบันทึกไว้แล้ว ${n} คน คะแนนเหล่านี้จะหายไป และ ${t.clo} จะคำนวณจากชิ้นงานที่เหลือแทน`,
+          confirmLabel: "ลบชิ้นงาน",
+          onConfirm: () => {
+            TASKS = TASKS.filter((x) => x.id !== id);
+            STUDENTS.forEach((s) => delete scores[s.id][id]);
+            toast("ลบชิ้นงานแล้ว");
+          },
+        });
+      }
+
+      function boundsForm() {
+        openForm({
+          title: "เกณฑ์ตัดเกรด",
+          subtitle: "กรอกคะแนนขั้นต่ำของแต่ละเกรด ระบบจะเรียงลำดับให้เอง",
+          fields: BOUNDS.filter((b) => b[0] !== "F").map((b) => ({
+            name: b[0],
+            label: `เกรด ${b[0]} · ขั้นต่ำ (%)`,
+            type: "number",
+            value: b[1],
+            col: "half",
+            min: 0,
+            max: 100,
+          })),
+          validate: (v) => {
+            const e = {};
+            const vals = Object.entries(v).map(([k, x]) => [k, Number(x)]);
+            vals.forEach(([k, x]) => {
+              if (x < 0 || x > 100 || isNaN(x)) e[k] = "ต้องอยู่ระหว่าง 0–100";
+            });
+            const sorted = [...vals].sort((a, b) => b[1] - a[1]);
+            const order = BOUNDS.filter((b) => b[0] !== "F").map((b) => b[0]);
+            sorted.forEach(([k], i) => {
+              if (k !== order[i])
+                e[k] = "ลำดับเกรดต้องลดหลั่นกัน เกรดสูงต้องมีเกณฑ์สูงกว่า";
+            });
+            return e;
+          },
+          onSubmit: (v) => {
+            BOUNDS = [
+              ...Object.entries(v).map(([g, x]) => [g, Number(x)]),
+              ["F", 0],
+            ];
+            toast("อัปเดตเกณฑ์ตัดเกรดแล้ว");
+          },
+        });
+      }
+
+      function interveneForm(sid) {
+        const s = STUDENTS.find((x) => x.id === sid),
+          p = profile(sid);
+        openForm({
+          title: "บันทึกการช่วยเหลือ",
+          subtitle: `${s.name} · ${p.failed.length ? "ยังไม่ผ่าน " + p.failed.map((f) => f.clo.id).join(", ") : "ยังไม่พบจุดที่ต้องช่วย"}`,
+          fields: [
+            {
+              name: "kind",
+              label: "รูปแบบ",
+              type: "select",
+              options: [
+                "นัดสอนเสริม",
+                "มอบหมายงานซ่อม",
+                "ติดต่ออาจารย์ที่ปรึกษา",
+                "เชิญพบเพื่อพูดคุย",
+              ],
+              col: "half",
+            },
+            {
+              name: "clo",
+              label: "มุ่งเป้าที่",
+              type: "select",
+              options: ["ทั้งรายวิชา", ...CLOS.map((c) => c.id)],
+              value: p.failed[0]?.clo.id || "ทั้งรายวิชา",
+              col: "half",
+            },
+            { name: "date", label: "วันที่นัด", type: "date", col: "half" },
+            {
+              name: "note",
+              label: "รายละเอียด",
+              type: "textarea",
+              placeholder: "เช่น ทบทวน loop ซ้อน 1 ชม. ก่อนสอบปลายภาค",
+            },
+          ],
+          validate: (v) => {
+            const e = {};
+            if (!v.date) e.date = "เลือกวันที่";
+            return e;
+          },
+          submitLabel: "บันทึกการช่วยเหลือ",
+          onSubmit: (v) => {
+            interventions.push({ sid, ...v });
+            toast("บันทึกการช่วยเหลือ " + s.name + " แล้ว");
+            if (!$("#drawer").classList.contains("hidden")) openDrawer(sid);
+          },
+        });
+      }
+
+      function importForm() {
+        openForm({
+          title: "นำเข้าคะแนนจาก Excel",
+          subtitle:
+            "ไฟล์ต้องมีคอลัมน์ รหัสนักศึกษา และคอลัมน์ชื่อชิ้นงานตรงกับในระบบ",
+          fields: [
+            {
+              name: "task",
+              label: "นำเข้าเข้าชิ้นงาน",
+              type: "select",
+              options: ["ทุกชิ้นงานในไฟล์", ...TASKS.map((t) => t.name)],
+            },
+            {
+              name: "mode",
+              label: "เมื่อพบคะแนนเดิม",
+              type: "select",
+              options: ["เขียนทับคะแนนเดิม", "ข้ามคนที่มีคะแนนแล้ว"],
+              col: "half",
+            },
+            {
+              name: "blank",
+              label: "ช่องว่างในไฟล์",
+              type: "select",
+              options: ["ถือว่ายังไม่ตรวจ", "ถือว่าได้ 0 คะแนน"],
+              col: "half",
+            },
+            {
+              name: "file",
+              label: "ไฟล์",
+              value: "grades_cs101.xlsx",
+              hint: "ตัวอย่างนี้จำลองการเลือกไฟล์",
+            },
+          ],
+          submitLabel: "นำเข้าคะแนน",
+          onSubmit: (v) =>
+            toast("นำเข้าคะแนนสำเร็จ · ตรวจผลได้ที่แท็บ Insights"),
+        });
+      }
+
+      /* ============================== VIEWS ============================== */
+      function viewFlow() {
+        const step = (
+          n,
+          t,
+          who,
+          b,
+          o,
+        ) => `<div class="relative pl-11 pb-7 border-l border-dashed border-olive-100 last:border-transparent">
+    <span class="absolute -left-[13px] top-0 w-6 h-6 rounded-full bg-olive-900 text-white text-[11px] grid place-items-center num">${n}</span>
+    <div class="flex items-baseline gap-2 flex-wrap"><h4 class="font-semibold">${t}</h4>
+    <span class="text-[11px] px-2 py-0.5 rounded-full bg-plum-50 text-plum-700">${who}</span></div>
+    <p class="text-sm text-gray-600 mt-1">${b}</p>
+    <p class="text-[12px] text-olive-600 mt-1.5">↳ ${o}</p></div>`;
+        return `
+  <section class="card p-6 mb-5">
+    <h2 class="text-xl font-semibold">User Flow — ติดตามผลลัพธ์การเรียนรู้รายวิชา</h2>
+    <p class="text-sm text-gray-500 mt-1">ทุกขั้นตอนในผังนี้กดใช้งานได้จริงในต้นแบบนี้ ลองเริ่มจากปุ่มด้านล่าง</p>
+    <div class="flex flex-wrap gap-2 mt-4 mb-6">
+      <button onclick="cloForm()" class="btn bg-olive-700 text-white">+ เพิ่ม CLO</button>
+      <button onclick="taskForm()" class="btn bg-plum-700 text-white">+ เพิ่มชิ้นงาน</button>
+      <button onclick="studentForm()" class="btn border border-[#ece7f2] bg-white">+ เพิ่มนักศึกษา</button>
+      <button onclick="importForm()" class="btn border border-[#ece7f2] bg-white">↑ นำเข้าคะแนน</button>
+    </div>
+    <div class="max-w-3xl">
+      ${step(1, "ตั้งค่ารายวิชาและ CLO", "อาจารย์", "กำหนด CLO พร้อมสองเกณฑ์: เกณฑ์ผ่านรายคน และสัดส่วนผู้ผ่านที่ต้องการของทั้งห้อง แล้วผูกเข้ากับ PLO", "โครงร่างการวัดผลที่ตรวจย้อนกลับได้")}
+      ${step(2, "สร้างชิ้นงานและผูกกับ CLO", "อาจารย์", "ทุกชิ้นงานผูกกับ CLO เดียว ฟอร์มจะไม่ให้บันทึกถ้าน้ำหนักรวมเกิน 100%", "แผนผัง CLO ↔ ชิ้นงาน")}
+      ${step(3, "นำเข้ารายชื่อ", "อาจารย์ / เจ้าหน้าที่", "เพิ่มทีละคนหรือนำเข้าไฟล์ ระบบตรวจรหัสซ้ำ ผู้ถอนรายวิชาถูกกันออกจากทุกสถิติ", "Roster พร้อมใช้")}
+      ${step(4, "บันทึกคะแนน", "อาจารย์ / TA", "กรอกในตารางด้วยคีย์บอร์ด (Enter ลงแถวถัดไป, ลูกศรเลื่อนช่อง) ช่องว่าง = ยังไม่ตรวจ", "คะแนนดิบรายชิ้นงาน")}
+      ${step(5, "ระบบคำนวณอัตโนมัติ", "ระบบ", "แปลงคะแนนดิบเป็นคะแนน CLO รายคน สถานะผ่าน อัตราการผ่านราย CLO และระดับความเสี่ยง ทุกครั้งที่ข้อมูลเปลี่ยน", "ตัวเลขทุกหน้าตรงกัน")}
+      ${step(6, "ติดตามและคัดกรอง", "อาจารย์", "Insights ชี้ CLO ที่ยังไม่บรรลุ และรายชื่อที่ต้องเข้าช่วยเรียงตามความเร่งด่วน", "รายการที่ต้องลงมือทำ")}
+      ${step(7, "เข้าช่วยเหลือรายคน", "อาจารย์", "เปิดโปรไฟล์ ดูว่าตก CLO ใด ชิ้นงานใดฉุด แล้วบันทึกการช่วยเหลือพร้อมวันนัด", "ประวัติการช่วยเหลือ")}
+      ${step(8, "ปรับกลยุทธ์การสอน", "อาจารย์", "CLO ที่ทั้งห้องไม่ผ่านคือสัญญาณของการสอน ไม่ใช่รายคน", "บันทึก มคอ.5")}
+      ${step(9, "ประกาศเกรดและออกรายงาน", "อาจารย์ → หัวหน้าสาขา", "ตรวจฉบับร่าง ประกาศเกรด ส่งออกรายงานการบรรลุ CLO", "รายงานประกันคุณภาพ")}
+    </div>
+  </section>
+  <section class="card p-6">
+    <h3 class="font-semibold mb-1">สูตรที่ใช้คำนวณ</h3>
+    <p class="text-sm text-gray-500 mb-4">ทุกหน้าจออ่านจากสูตรชุดเดียวกัน แก้ที่ใดก็อัปเดตทั้งระบบ</p>
+    <div class="grid sm:grid-cols-2 gap-3 text-[13px]">
+    ${[
+      [
+        "คะแนน CLO รายคน",
+        "Σ(คะแนน ÷ เต็ม × น้ำหนัก) ÷ Σ(น้ำหนักที่ตรวจแล้ว) × 100",
+        "งานที่ยังไม่ตรวจไม่ถูกนับเป็นศูนย์",
+      ],
+      [
+        "ผ่าน CLO รายคน",
+        "คะแนน CLO ≥ เกณฑ์ผ่านของ CLO นั้น",
+        "ตั้งค่าได้รายข้อในฟอร์ม CLO",
+      ],
+      [
+        "อัตราการผ่านราย CLO",
+        "ผู้ผ่าน ÷ ผู้มีคะแนน × 100",
+        "บรรลุเมื่อ ≥ สัดส่วนที่ตั้งไว้",
+      ],
+      [
+        "ระดับความเสี่ยง",
+        "ตก ≥2 CLO หรือรวม &lt;50 = เสี่ยงสูง · ตก 1 CLO หรือ &lt;60 = เฝ้าระวัง",
+        "ใช้จัดลำดับการเข้าช่วย",
+      ],
+      [
+        "ความครบถ้วนข้อมูล",
+        "น้ำหนักที่ตรวจแล้ว ÷ น้ำหนักทั้งหมดของ CLO",
+        "ต่ำกว่า 100% = ผลยังชั่วคราว",
+      ],
+      [
+        "เกรดรวม",
+        "Σ(คะแนน ÷ เต็ม × น้ำหนัก) ÷ น้ำหนักที่ตรวจแล้ว",
+        "เทียบตารางเกณฑ์ที่แก้ไขได้",
+      ],
+    ]
+      .map(
+        ([
+          a,
+          b,
+          c,
+        ]) => `<div class="rounded-xl border border-[#ece7f2] p-3.5"><p class="font-medium">${a}</p>
+      <p class="num text-[12px] text-plum-700 mt-1.5">${b}</p><p class="text-gray-500 text-[12px] mt-1.5">${c}</p></div>`,
+      )
+      .join("")}
+    </div>
+  </section>`;
+      }
+
+      let rf = { q: "", risk: "ทั้งหมด", status: "ทั้งหมด" };
+      function viewRoster() {
+        const rows = STUDENTS.map((s) => ({ s, p: profile(s.id) }))
+          .filter((r) =>
+            rf.status === "ทั้งหมด"
+              ? r.s.status !== "ถอนรายวิชา"
+              : r.s.status === rf.status,
+          )
+          .filter((r) => rf.risk === "ทั้งหมด" || r.p.risk === rf.risk)
+          .filter(
+            (r) => !rf.q || r.s.name.includes(rf.q) || r.s.id.includes(rf.q),
+          )
+          .sort((a, b) => (a.p.overall ?? 999) - (b.p.overall ?? 999));
+        const all = active().map((s) => profile(s.id)),
+          st = stats();
+        return `
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+    ${kpi("นักศึกษา", active().length, `ถอนรายวิชา ${STUDENTS.length - active().length} คน`, "bg-plum-50 text-plum-700")}
+    ${kpi("เสี่ยงสูง", all.filter((p) => p.risk === "เสี่ยงสูง").length, "ตก 2 CLO ขึ้นไป", "bg-rose-50 text-rose-600")}
+    ${kpi("เฝ้าระวัง", all.filter((p) => p.risk === "เฝ้าระวัง").length, "ตก 1 CLO", "bg-amber-50 text-amber-700")}
+    ${kpi("คะแนนเฉลี่ย", st.mean.toFixed(1) + "%", `ผ่านเกณฑ์ ${st.passRate.toFixed(0)}%`, "bg-olive-50 text-olive-700")}
+  </div>
+  <div class="flex flex-wrap gap-2 mb-4">
+    <button onclick="studentForm()" class="btn bg-olive-700 text-white">+ เพิ่มนักศึกษา</button>
+    <input id="q" value="${esc(rf.q)}" placeholder="ค้นหารหัสหรือชื่อ..." class="fld w-56">
+    <select id="riskSel" class="fld w-36">${["ทั้งหมด", "เสี่ยงสูง", "เฝ้าระวัง", "ปลอดภัย"].map((o) => `<option ${rf.risk === o ? "selected" : ""}>${o}</option>`).join("")}</select>
+    <select id="stSel" class="fld w-40">${["ทั้งหมด", ...STATUSES].map((o) => `<option ${rf.status === o ? "selected" : ""}>${o}</option>`).join("")}</select>
+    <button onclick="toast('ส่งออก CSV แล้ว')" class="btn border border-[#ece7f2] bg-white">↓ ส่งออก</button>
+    <span class="ml-auto self-center text-sm text-gray-500 num">${rows.length} คน</span>
+  </div>
+  <div class="card overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-[#faf8fd] text-[11px] uppercase text-gray-500">
+        <tr><th class="text-left px-5 py-3">นักศึกษา</th><th class="text-left py-3">สาขา</th>
+        <th class="text-left py-3">สถานะ CLO</th><th class="text-left py-3">ความเสี่ยง</th>
+        <th class="text-right py-3">คะแนนรวม</th><th class="px-5"></th></tr></thead>
+      <tbody class="divide-y divide-[#f2eef7]">
+      ${
+        rows
+          .map(
+            ({
+              s,
+              p,
+            }) => `<tr class="row-hover cursor-pointer" onclick="openDrawer('${s.id}')">
+        <td class="px-5 py-3"><p class="font-medium">${esc(s.name)}</p>
+          <p class="text-xs text-gray-400 num">${s.id}${s.status !== "ปกติ" ? ` · <span class="text-amber-600">${s.status}</span>` : ""}</p></td>
+        <td class="py-3 text-gray-500 text-[13px]">${s.program}</td>
+        <td class="py-3"><div class="flex gap-1">${
+          p.per
+            .map(
+              (x) => `<span title="${x.clo.id} ${fmt(x.value)}%"
+          class="w-7 h-6 rounded-md text-[10px] grid place-items-center font-medium ${x.value === null ? "bg-gray-100 text-gray-400" : x.pass ? "bg-olive-100 text-olive-700" : "bg-rose-100 text-rose-600"}">${x.clo.id.replace(/\D/g, "")}</span>`,
+            )
+            .join("") ||
+          '<span class="text-xs text-gray-400">ยังไม่มี CLO</span>'
+        }</div></td>
+        <td class="py-3"><span class="text-[11px] px-2 py-1 rounded-full ${riskTone(p.risk)}">${p.risk}</span></td>
+        <td class="py-3 text-right"><span class="num font-semibold">${fmt(p.overall)}%</span>
+          <span class="text-xs text-gray-400 ml-1">${letter(p.overall)}</span></td>
+        <td class="px-5 text-right whitespace-nowrap">
+          <button onclick="event.stopPropagation();studentForm('${s.id}')" class="text-xs px-2 py-1 rounded-lg border border-[#ece7f2] hover:bg-gray-50">แก้ไข</button>
+          <button onclick="event.stopPropagation();deleteStudent('${s.id}')" class="text-xs px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50">ลบ</button></td>
+      </tr>`,
+          )
+          .join("") ||
+        `<tr><td colspan="6" class="text-center py-14 text-gray-400">
+        ไม่พบนักศึกษาตามเงื่อนไข <button onclick="rf={q:'',risk:'ทั้งหมด',status:'ทั้งหมด'};render()" class="text-olive-600 underline">ล้างตัวกรอง</button></td></tr>`
+      }
+      </tbody></table></div>`;
+      }
+
+      function viewClos() {
+        const tw = totalWeight();
+        return `
+  <div class="flex items-end justify-between mb-4 gap-3 flex-wrap">
+    <div><h2 class="text-xl font-semibold">CLO Management</h2>
+      <p class="text-sm text-gray-500 num">${CLOS.length} ข้อ · น้ำหนักรวมทุกชิ้นงาน ${tw}%
+      ${tw === 100 ? '<span class="text-olive-600">— ครบถ้วน</span>' : `<span class="text-rose-600">— ต้องปรับให้ครบ 100%</span>`}</p></div>
+    <button onclick="cloForm()" class="btn bg-olive-700 text-white">+ เพิ่ม CLO</button>
+  </div>
+  ${
+    CLOS.length
+      ? `<div class="space-y-3">
+  ${CLOS.map((c, i) => {
+    const s = cloSummary(c),
+      w = tasksOf(c.id).reduce((a, t) => a + t.weight, 0);
+    return `<div class="card p-5">
+      <div class="flex items-start gap-4">
+        <div class="flex flex-col items-center gap-1 shrink-0">
+          <button onclick="moveCLO('${c.id}',-1)" class="text-gray-300 hover:text-olive-700 text-xs leading-none ${i === 0 ? "invisible" : ""}">▲</button>
+          <span class="w-8 h-8 rounded-full bg-olive-700 text-white grid place-items-center num text-sm">${i + 1}</span>
+          <button onclick="moveCLO('${c.id}',1)" class="text-gray-300 hover:text-olive-700 text-xs leading-none ${i === CLOS.length - 1 ? "invisible" : ""}">▼</button>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-semibold num">${c.id}</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-plum-50 text-plum-700">${c.bloom}</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 num">ผ่าน ≥${c.threshold}%</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 num">เป้าห้อง ≥${c.target}%</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">${esc(c.plo)}</span>
+            ${w === 0 ? '<span class="text-[11px] px-2 py-0.5 rounded-full bg-rose-100 text-rose-600">ยังไม่มีชิ้นงานวัด</span>' : ""}
+            ${s.coverage < 100 && w > 0 ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 num">ข้อมูล ${s.coverage.toFixed(0)}%</span>` : ""}
+          </div>
+          <p class="text-sm text-gray-700 mt-1.5">${esc(c.title)}</p>
+          <p class="text-xs text-gray-400 mt-1">${
+            w
+              ? `วัดจาก ${tasksOf(c.id)
+                  .map((t) => esc(t.name.split("·")[0].trim()))
+                  .join(" · ")} (รวม ${w}%)`
+              : `<button onclick="taskForm()" class="text-olive-600 underline">เพิ่มชิ้นงานให้ ${c.id}</button>`
+          }</p>
+          <div class="mt-3 flex items-center gap-3">
+            <div class="flex-1">${bar(s.rate, c.target)}</div>
+            <span class="num text-sm ${s.achieved ? "text-olive-600" : "text-rose-600"} font-semibold w-28 text-right">${s.rate.toFixed(0)}% ผ่าน (${s.passed}/${s.n})</span>
+          </div>
+        </div>
+        <div class="text-right shrink-0">
+          <span class="text-[11px] px-2.5 py-1 rounded-full ${s.achieved ? "bg-olive-100 text-olive-700" : "bg-rose-100 text-rose-600"}">${s.achieved ? "บรรลุเกณฑ์" : "ยังไม่บรรลุ"}</span>
+          <div class="mt-2 flex gap-1 justify-end">
+            <button onclick="cloForm('${c.id}')" class="text-xs px-2 py-1 rounded-lg border border-[#ece7f2] hover:bg-gray-50">แก้ไข</button>
+            <button onclick="deleteCLO('${c.id}')" class="text-xs px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50">ลบ</button>
+          </div>
+        </div>
+      </div></div>`;
+  }).join("")}</div>`
+      : `<div class="card p-12 text-center"><p class="text-gray-500 mb-4">ยังไม่มี CLO ในรายวิชานี้ เริ่มจากผลลัพธ์ข้อแรกที่ต้องการให้นักศึกษาทำได้</p>
+    <button onclick="cloForm()" class="btn bg-olive-700 text-white">+ เพิ่ม CLO ข้อแรก</button></div>`
+  }`;
+      }
+
+      function viewTasks() {
+        const st = active(),
+          tw = totalWeight();
+        return `
+  <div class="flex items-end justify-between mb-4 flex-wrap gap-2">
+    <div><h2 class="text-xl font-semibold">Tasks &amp; CLO Mapping</h2>
+      <p class="text-sm text-gray-500 num">${TASKS.length} ชิ้นงาน · ${CLOS.length} CLO · น้ำหนักรวม ${tw}%
+      ${tw !== 100 ? '<span class="text-rose-600">— ยังไม่ครบ 100%</span>' : ""}</p></div>
+    <div class="flex gap-2 flex-wrap">
+      <button onclick="importForm()" class="btn border border-[#ece7f2] bg-white">↑ นำเข้าคะแนน</button>
+      <button onclick="toast('ดาวน์โหลดเทมเพลตแล้ว')" class="btn border border-[#ece7f2] bg-white">📄 เทมเพลต</button>
+      <button onclick="taskForm()" class="btn bg-plum-700 text-white">+ ชิ้นงานใหม่</button>
+    </div>
+  </div>
+
+  <div class="space-y-3 mb-5">
+  ${CLOS.map((c) => {
+    const s = cloSummary(c),
+      ts = tasksOf(c.id);
+    return `<div class="card p-4">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded-lg bg-olive-900 text-white text-xs num">${c.id}</span>
+        <div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${esc(c.title)}</p>
+          <p class="text-xs text-gray-400 num">เกณฑ์ ${c.threshold}% · น้ำหนักรวม ${ts.reduce((a, t) => a + t.weight, 0)}% · ${ts.length} ชิ้นงาน</p></div>
+        <div class="w-24">${bar(s.rate, c.target)}</div>
+        <span class="num text-sm font-semibold ${s.achieved ? "text-olive-600" : "text-rose-600"} w-12 text-right">${s.rate.toFixed(0)}%</span>
+      </div>
+      <div class="mt-3 divide-y divide-[#f5f1f9] border-t border-[#f5f1f9]">
+        ${
+          ts
+            .map(
+              (t) => `<div class="flex items-center gap-3 py-2 text-sm">
+          <span class="text-[11px] px-2 py-0.5 rounded-md bg-gray-100 text-gray-600 w-20 text-center shrink-0">${t.type}</span>
+          <span class="flex-1 truncate">${esc(t.name)}</span>
+          <span class="num text-xs text-gray-400 hidden sm:inline">เต็ม ${t.max}</span>
+          <span class="num text-xs text-gray-500 w-16 text-right">น้ำหนัก ${t.weight}%</span>
+          <button onclick="toggleGraded('${t.id}')" class="text-[11px] px-2 py-0.5 rounded-full w-24 text-center ${t.graded ? "bg-olive-50 text-olive-700" : "bg-gray-100 text-gray-500"}">${t.graded ? "ตรวจแล้ว" : "ยังไม่ตรวจ"}</button>
+          <button onclick="taskForm('${t.id}')" class="text-xs px-2 py-1 rounded-lg border border-[#ece7f2]">แก้ไข</button>
+          <button onclick="deleteTask('${t.id}')" class="text-xs px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50">ลบ</button>
+        </div>`,
+            )
+            .join("") ||
+          `<p class="py-3 text-xs text-gray-400">ยังไม่มีชิ้นงานสำหรับ CLO นี้ — <button onclick="taskForm()" class="text-olive-600 underline">เพิ่มชิ้นงาน</button></p>`
+        }
+      </div></div>`;
+  }).join("")}
+  </div>
+
+  <div class="card overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-3.5 border-b border-[#f2eef7] gap-3 flex-wrap">
+      <div><h3 class="font-semibold">ตารางกรอกคะแนน</h3>
+        <p class="text-xs text-gray-400">Enter = ลงแถวถัดไป · ลูกศรเลื่อนช่อง · เว้นว่าง = ยังไม่ตรวจ</p></div>
+      <button onclick="saveScores()" class="btn ${dirty ? "bg-olive-700 text-white" : "bg-gray-100 text-gray-400"}">บันทึกคะแนน</button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="text-sm min-w-full"><thead class="bg-[#faf8fd] text-[11px] text-gray-500">
+        <tr><th class="text-left px-5 py-2.5 sticky left-0 bg-[#faf8fd]">นักศึกษา</th>
+        ${TASKS.map(
+          (t) => `<th class="px-2 py-2.5 text-center min-w-[80px]">
+          <div class="truncate max-w-[80px] mx-auto">${esc(t.name.split("·")[0].trim())}</div>
+          <div class="num text-[10px] text-gray-400">${t.clo} /${t.max}</div></th>`,
+        ).join("")}
+        <th class="px-4 text-right">รวม</th><th class="px-4 text-right">CLO ผ่าน</th></tr></thead>
+      <tbody class="divide-y divide-[#f2eef7]">
+      ${st
+        .map((s, ri) => {
+          const p = profile(s.id);
+          return `<tr class="row-hover">
+        <td class="px-5 py-1.5 sticky left-0 bg-white"><p class="font-medium text-[13px]">${esc(s.name)}</p>
+          <p class="text-[11px] text-gray-400 num">${s.id}</p></td>
+        ${TASKS.map(
+          (t, ci) => `<td class="px-1.5 py-1.5 text-center">
+          <input type="number" min="0" max="${t.max}" value="${scores[s.id][t.id] ?? ""}" placeholder="—"
+            data-sid="${s.id}" data-tid="${t.id}" data-r="${ri}" data-c="${ci}"
+            oninput="editScore(this)" onkeydown="gridKey(event,this)"
+            class="sc w-16 px-1.5 py-1 rounded-lg border border-[#ece7f2] text-center num text-[13px] outline-none"></td>`,
+        ).join("")}
+        <td class="px-4 text-right num font-semibold">${fmt(p.overall)}</td>
+        <td class="px-4 text-right"><span class="num text-xs px-2 py-1 rounded-full ${riskTone(p.risk)}">${p.passCount}/${p.gradedCount}</span></td>
+      </tr>`;
+        })
+        .join("")}
+      </tbody></table></div></div>`;
+      }
+
+      function viewGradebook() {
+        const st = stats();
+        const bins = Array.from({ length: 10 }, (_, i) => ({
+          lo: i * 10,
+          n: 0,
+        }));
+        active().forEach((s) => {
+          const v = overall(s.id);
+          if (v !== null) bins[Math.min(9, Math.floor(v / 10))].n++;
+        });
+        const maxBin = Math.max(...bins.map((b) => b.n), 1);
+        const counts = {};
+        BOUNDS.forEach((b) => (counts[b[0]] = 0));
+        active().forEach((s) => {
+          const v = overall(s.id);
+          if (v !== null) counts[letter(v)]++;
+        });
+        return `
+  <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+    <div><h2 class="text-xl font-semibold">Grade Management</h2>
+      <p class="text-sm text-gray-500">${esc(COURSE.code)} — ${esc(COURSE.name)} · ภาค ${esc(COURSE.term)}</p></div>
+    <div class="flex items-center gap-2">
+      <span class="text-xs px-3 py-1.5 rounded-full bg-amber-100 text-amber-800">ฉบับร่าง</span>
+      <button onclick="publishForm()" class="btn bg-olive-700 text-white">ประกาศเกรด</button></div>
+  </div>
+  <div class="grid lg:grid-cols-3 gap-4">
+    <div class="card p-5 lg:col-span-2">
+      <h3 class="font-semibold text-sm mb-4">การกระจายคะแนน</h3>
+      <div class="flex items-end gap-1.5 h-40">
+        ${bins
+          .map(
+            (b) => `<div class="flex-1 flex flex-col items-center gap-1">
+          <span class="text-[10px] num text-gray-400">${b.n || ""}</span>
+          <div class="w-full rounded-t-md ${b.lo < COURSE.passGrade ? "bg-rose-500/70" : b.lo < 60 ? "bg-amber-400" : "bg-olive-500"}"
+            style="height:${(b.n / maxBin) * 100}%;min-height:${b.n ? 4 : 0}px"></div>
+          <span class="text-[9px] num text-gray-400">${b.lo}</span></div>`,
+          )
+          .join("")}
+      </div>
+      <div class="grid grid-cols-4 gap-3 mt-5 pt-4 border-t border-[#f2eef7] text-center">
+        ${[
+          ["ค่าเฉลี่ย", st.mean.toFixed(1)],
+          ["มัธยฐาน", st.median.toFixed(1)],
+          ["ส่วนเบี่ยงเบน", st.sd.toFixed(1)],
+          ["อัตราผ่าน", st.passRate.toFixed(0) + "%"],
+        ]
+          .map(
+            ([k, v]) =>
+              `<div><p class="text-[11px] text-gray-400">${k}</p><p class="num text-lg font-semibold">${v}</p></div>`,
+          )
+          .join("")}
+      </div>
+    </div>
+    <div class="space-y-4">
+      <div class="card p-5"><h3 class="font-semibold text-sm mb-3">น้ำหนักตาม CLO</h3>
+        ${CLOS.map((c) => {
+          const w = tasksOf(c.id).reduce((a, t) => a + t.weight, 0);
+          return `<div class="mb-2.5"><div class="flex justify-between text-xs mb-1"><span class="num">${c.id}</span><span class="num text-gray-500">${w}%</span></div>
+          <div class="h-1.5 rounded-full bg-gray-100"><div class="h-1.5 rounded-full bg-olive-500" style="width:${w}%"></div></div></div>`;
+        }).join("")}
+        <p class="text-[11px] ${totalWeight() === 100 ? "text-gray-400" : "text-rose-600"} mt-3 num">รวม ${totalWeight()}%</p>
+      </div>
+      <div class="card p-5">
+        <div class="flex items-center justify-between mb-3"><h3 class="font-semibold text-sm">เกณฑ์ตัดเกรด</h3>
+          <button onclick="boundsForm()" class="text-xs px-2.5 py-1 rounded-lg border border-[#ece7f2]">แก้ไข</button></div>
+        ${[...BOUNDS]
+          .sort((a, b) => b[1] - a[1])
+          .map(
+            ([g, v]) => `<div class="flex items-center gap-3 py-1">
+          <span class="w-8 h-8 rounded-full grid place-items-center text-xs font-semibold ${v >= 70 ? "bg-olive-100 text-olive-700" : v >= 50 ? "bg-amber-100 text-amber-700" : "bg-rose-100 text-rose-600"}">${g}</span>
+          <span class="num text-xs text-gray-500 flex-1">≥ ${v}%</span><span class="num text-sm">${counts[g]} คน</span></div>`,
+          )
+          .join("")}
+      </div>
+    </div>
+  </div>
+  <div class="card mt-4 overflow-hidden">
+    <div class="px-5 py-3.5 border-b border-[#f2eef7] flex items-center justify-between">
+      <h3 class="font-semibold text-sm">สมุดคะแนนรายคน</h3>
+      <button onclick="toast('ส่งออกรายงาน Excel แล้ว')" class="text-sm px-3.5 py-1.5 rounded-lg border border-[#ece7f2]">↓ ส่งออกรายงาน</button></div>
+    <div class="overflow-x-auto"><table class="w-full text-sm">
+      <thead class="bg-[#faf8fd] text-[11px] text-gray-500"><tr>
+        <th class="text-left px-5 py-2.5">นักศึกษา</th>${CLOS.map((c) => `<th class="py-2.5 text-center num">${c.id}</th>`).join("")}
+        <th class="text-right py-2.5">รวม</th><th class="text-right px-5">เกรด</th></tr></thead>
+      <tbody class="divide-y divide-[#f2eef7]">
+      ${active()
+        .map((s) => {
+          const p = profile(s.id);
+          return `<tr class="row-hover cursor-pointer" onclick="openDrawer('${s.id}')">
+        <td class="px-5 py-2.5"><span class="font-medium">${esc(s.name)}</span> <span class="num text-[11px] text-gray-400">${s.id}</span></td>
+        ${p.per.map((x) => `<td class="text-center num text-[13px] ${x.value === null ? "text-gray-300" : x.pass ? "text-olive-700" : "text-rose-600 font-semibold"}">${fmt(x.value)}</td>`).join("")}
+        <td class="text-right num font-semibold">${fmt(p.overall)}</td>
+        <td class="text-right px-5 num font-semibold ${p.overall !== null && p.overall < COURSE.passGrade ? "text-rose-600" : ""}">${letter(p.overall)}</td>
+      </tr>`;
+        })
+        .join("")}</tbody></table></div></div>`;
+      }
+      function publishForm() {
+        const n = active().length,
+          f = active().filter((s) => {
+            const v = overall(s.id);
+            return v !== null && v < COURSE.passGrade;
+          }).length;
+        const un = TASKS.filter((t) => !t.graded);
+        openForm({
+          title: "ประกาศเกรด",
+          subtitle: `นักศึกษา ${n} คน · ได้ F ${f} คน`,
+          banner: un.length
+            ? `ยังมีชิ้นงานที่ยังไม่ตรวจ ${un.length} ชิ้น (${un.map((t) => esc(t.name)).join(", ")}) เกรดที่ประกาศจะคำนวณจากงานที่ตรวจแล้วเท่านั้น`
+            : null,
+          fields: [
+            {
+              name: "when",
+              label: "เวลาที่ให้นักศึกษาเห็น",
+              type: "select",
+              options: ["ทันทีที่กดประกาศ", "ตั้งเวลาประกาศ"],
+            },
+            {
+              name: "date",
+              label: "วันเวลาที่ตั้งไว้",
+              type: "date",
+              col: "half",
+            },
+            {
+              name: "notify",
+              label: "แจ้งเตือนนักศึกษา",
+              type: "toggle",
+              value: true,
+              col: "half",
+              onText: "ส่งอีเมลแจ้ง",
+              offText: "ไม่ต้องแจ้ง",
+            },
+            {
+              name: "show",
+              label: "สิ่งที่นักศึกษาเห็น",
+              type: "select",
+              options: ["เกรดและคะแนน CLO รายข้อ", "เกรดอย่างเดียว"],
+            },
+            {
+              name: "msg",
+              label: "ข้อความถึงนักศึกษา",
+              type: "textarea",
+              placeholder: "ทักท้วงเกรดได้ภายใน 7 วัน",
+            },
+          ],
+          validate: (v) => {
+            const e = {};
+            if (v.when === "ตั้งเวลาประกาศ" && !v.date)
+              e.date = "เลือกวันที่ประกาศ";
+            return e;
+          },
+          submitLabel: "ยืนยันประกาศเกรด",
+          onSubmit: (v) =>
+            toast(
+              "ประกาศเกรดแล้ว" +
+                (v.notify ? " · ส่งอีเมลถึงนักศึกษา " + n + " คน" : ""),
+            ),
+        });
+      }
+
+      function viewInsights() {
+        const sums = CLOS.map((c) => ({ c, s: cloSummary(c) }));
+        const all = active().map((s) => ({ s, p: profile(s.id) }));
+        const high = all.filter((x) => x.p.risk === "เสี่ยงสูง"),
+          watch = all.filter((x) => x.p.risk === "เฝ้าระวัง");
+        const failing = sums.filter((x) => !x.s.achieved);
+        return `
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+    ${kpi("นักศึกษา", active().length, "กำลังเรียน", "bg-plum-50 text-plum-700")}
+    ${kpi("CLO บรรลุเกณฑ์", `${sums.filter((x) => x.s.achieved).length}/${CLOS.length}`, "เทียบสัดส่วนที่ตั้งไว้", "bg-olive-50 text-olive-700")}
+    ${kpi("เฝ้าระวัง", watch.length, "ตก 1 CLO", "bg-amber-50 text-amber-700")}
+    ${kpi("เสี่ยงสูง", high.length, "ตก 2 CLO ขึ้นไป", "bg-rose-50 text-rose-600")}
+  </div>
+  <div class="grid lg:grid-cols-5 gap-4">
+    <div class="card p-5 lg:col-span-3">
+      <h3 class="font-semibold text-sm">อัตราการผ่านราย CLO</h3>
+      <p class="text-xs text-gray-400 mb-5">เส้นประ = สัดส่วนผู้ผ่านที่ตั้งเป้าไว้</p>
+      ${
+        sums
+          .map(
+            ({ c, s }) => `<div class="mb-4">
+        <div class="flex justify-between text-xs mb-1.5">
+          <button onclick="cloForm('${c.id}')" class="num font-medium hover:text-olive-600">${c.id} <span class="text-gray-400 font-normal">· ${c.bloom}</span></button>
+          <span class="num ${s.achieved ? "text-olive-600" : "text-rose-600"}">${s.rate.toFixed(0)}% / เป้า ${c.target}%</span></div>
+        <div class="relative h-3 rounded-full bg-gray-100 overflow-hidden">
+          <div class="grow-bar h-3 rounded-full ${s.achieved ? "bg-olive-500" : "bg-rose-500"}" style="width:${s.rate}%"></div>
+          <div class="absolute top-0 h-3 border-l-2 border-dashed border-amber-500" style="left:${c.target}%"></div></div>
+        <p class="text-[11px] text-gray-400 mt-1 num">ผ่าน ${s.passed}/${s.n} คน · เฉลี่ย ${s.mean.toFixed(1)}%${s.coverage < 100 ? ` · ข้อมูลครบ ${s.coverage.toFixed(0)}%` : ""}</p>
+      </div>`,
+          )
+          .join("") ||
+        '<p class="text-sm text-gray-400 py-6 text-center">ยังไม่มี CLO</p>'
+      }
+    </div>
+    <div class="card p-5 lg:col-span-2">
+      <h3 class="font-semibold text-sm mb-3">สิ่งที่ควรทำต่อ</h3>
+      ${
+        failing.length
+          ? failing
+              .map(
+                ({
+                  c,
+                  s,
+                }) => `<div class="rounded-xl bg-rose-50 border border-rose-100 p-3.5 mb-2.5">
+        <p class="text-[13px] font-medium text-rose-600 num">${c.id} ยังไม่บรรลุ — ${s.rate.toFixed(0)}% (เป้า ${c.target}%)</p>
+        <p class="text-xs text-gray-600 mt-1.5">${s.rate < 40 ? "ทั้งห้องไม่ผ่านเกินครึ่ง ควรทบทวนวิธีสอนหัวข้อนี้ก่อนช่วยรายคน" : "ใกล้ถึงเป้า เน้นช่วยกลุ่มที่คะแนนใกล้เกณฑ์จะขยับได้เร็วที่สุด"}</p>
+        <button onclick="cloForm('${c.id}')" class="text-[12px] text-rose-700 underline mt-2">ทบทวนเกณฑ์ของ ${c.id}</button></div>`,
+              )
+              .join("")
+          : `<div class="rounded-xl bg-olive-50 border border-olive-100 p-4 text-sm text-olive-700">ทุก CLO บรรลุเกณฑ์ ติดตามต่อเมื่อมีคะแนนชิ้นงานที่เหลือ</div>`
+      }
+      ${
+        TASKS.some((t) => !t.graded)
+          ? `<div class="rounded-xl bg-amber-50 border border-amber-100 p-3.5 text-xs text-amber-800 mt-1">
+        ยังไม่ตรวจ: ${TASKS.filter((t) => !t.graded)
+          .map((t) => esc(t.name))
+          .join(", ")} — ผลของ CLO ที่เกี่ยวข้องยังเป็นค่าชั่วคราว</div>`
+          : ""
+      }
+      ${interventions.length ? `<p class="text-[12px] text-gray-500 mt-3 num">บันทึกการช่วยเหลือแล้ว ${interventions.length} ครั้ง</p>` : ""}
+    </div>
+  </div>
+  <div class="card mt-4 overflow-hidden">
+    <div class="px-5 py-3.5 border-b border-[#f2eef7] flex items-center justify-between">
+      <h3 class="font-semibold text-sm">รายชื่อที่ควรเข้าช่วยเหลือ</h3>
+      <span class="text-xs text-gray-500 num">${high.length + watch.length} คน · เรียงตามความเร่งด่วน</span></div>
+    ${
+      [...high, ...watch].length
+        ? `<div class="divide-y divide-[#f2eef7]">
+      ${[...high, ...watch]
+        .sort((a, b) => (a.p.overall ?? 0) - (b.p.overall ?? 0))
+        .map(
+          ({ s, p }) => `
+        <div class="flex items-center gap-3 px-5 py-3 row-hover cursor-pointer" onclick="openDrawer('${s.id}')">
+          <span class="text-[11px] px-2 py-1 rounded-full ${riskTone(p.risk)} w-20 text-center shrink-0">${p.risk}</span>
+          <div class="flex-1 min-w-0"><p class="font-medium text-[13px]">${esc(s.name)} <span class="num text-[11px] text-gray-400">${s.id}</span></p>
+          <p class="text-xs text-gray-500 truncate">ยังไม่ผ่าน ${p.failed.map((f) => `${f.clo.id} (${fmt(f.value)}%)`).join(", ") || "—"}
+          ${interventions.filter((i) => i.sid === s.id).length ? ` · ช่วยเหลือแล้ว ${interventions.filter((i) => i.sid === s.id).length} ครั้ง` : ""}</p></div>
+          <span class="num text-sm font-semibold">${fmt(p.overall)}%</span>
+          <button onclick="event.stopPropagation();interveneForm('${s.id}')" class="text-xs px-3 py-1.5 rounded-lg border border-[#ece7f2] hover:bg-gray-50">บันทึกการช่วยเหลือ</button>
+        </div>`,
+        )
+        .join("")}</div>`
+        : `<div class="p-8 text-center text-sm text-olive-700 bg-olive-50">นักศึกษาทุกคนผ่านเกณฑ์ CLO ทั้งหมด</div>`
+    }
+  </div>`;
+      }
+
+      /* ============================== DRAWER ============================== */
+      function openDrawer(sid) {
+        const s = STUDENTS.find((x) => x.id === sid);
+        if (!s) return;
+        const p = profile(sid),
+          acts = interventions.filter((i) => i.sid === sid);
+        $("#drawerBody").innerHTML = `
+    <div class="p-5 border-b border-[#f2eef7] flex items-start justify-between gap-3">
+      <div><h3 class="font-semibold text-lg">${esc(s.name)}</h3>
+        <p class="text-xs text-gray-400 num">${s.id} · ${s.program} · ${s.status}</p></div>
+      <button onclick="closeDrawer()" class="text-gray-400 text-2xl leading-none px-1">×</button></div>
+    <div class="p-5 space-y-5">
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="rounded-xl bg-plum-50 py-3"><p class="text-[11px] text-gray-500">คะแนนรวม</p><p class="num text-xl font-semibold text-plum-700">${fmt(p.overall)}</p></div>
+        <div class="rounded-xl bg-olive-50 py-3"><p class="text-[11px] text-gray-500">เกรด</p><p class="num text-xl font-semibold text-olive-700">${letter(p.overall)}</p></div>
+        <div class="rounded-xl ${riskTone(p.risk)} py-3"><p class="text-[11px] opacity-70">ความเสี่ยง</p><p class="text-sm font-semibold mt-1.5">${p.risk}</p></div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="studentForm('${sid}')" class="flex-1 btn border border-[#ece7f2] text-sm">แก้ไขข้อมูล</button>
+        <button onclick="interveneForm('${sid}')" class="flex-1 btn bg-olive-700 text-white text-sm">บันทึกการช่วยเหลือ</button>
+      </div>
+      <div><h4 class="text-sm font-semibold mb-3">ผลลัพธ์รายด้าน</h4>
+        ${
+          p.per
+            .map(
+              (x) => `<div class="mb-3">
+          <div class="flex justify-between text-xs mb-1"><span class="num">${x.clo.id} <span class="text-gray-400">· เกณฑ์ ${x.clo.threshold}%</span></span>
+          <span class="num ${x.value === null ? "text-gray-400" : x.pass ? "text-olive-600" : "text-rose-600"}">${fmt(x.value)}%</span></div>
+          ${bar(x.value, x.clo.threshold)}
+          <p class="text-[11px] text-gray-400 mt-1">${esc(x.clo.title)}</p></div>`,
+            )
+            .join("") || '<p class="text-xs text-gray-400">ยังไม่มี CLO</p>'
+        }
+      </div>
+      <div><h4 class="text-sm font-semibold mb-2">คะแนนรายชิ้นงาน</h4>
+        <div class="divide-y divide-[#f5f1f9] text-sm">
+        ${TASKS.map((t) => {
+          const v = scores[sid][t.id];
+          const r = v === null || v === undefined ? null : pct(v, t.max);
+          return `<div class="flex items-center gap-2 py-2">
+            <span class="num text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">${t.clo}</span>
+            <span class="flex-1 truncate text-[13px]">${esc(t.name)}</span>
+            <span class="num text-xs ${r === null ? "text-gray-300" : r < 50 ? "text-rose-600" : "text-gray-600"}">${v === null || v === undefined ? "ยังไม่ตรวจ" : `${v}/${t.max}`}</span>
+          </div>`;
+        }).join("")}</div>
+      </div>
+      ${
+        acts.length
+          ? `<div><h4 class="text-sm font-semibold mb-2">ประวัติการช่วยเหลือ</h4>
+        ${acts
+          .map(
+            (
+              a,
+            ) => `<div class="rounded-xl border border-[#f2eef7] p-3 mb-2 text-[13px]">
+          <p class="font-medium">${a.kind} <span class="text-gray-400 num text-xs">· ${a.date} · ${a.clo}</span></p>
+          ${a.note ? `<p class="text-gray-500 text-xs mt-1">${esc(a.note)}</p>` : ""}</div>`,
+          )
+          .join("")}</div>`
+          : ""
+      }
+      ${
+        s.note
+          ? `<div class="rounded-xl bg-[#faf8fd] p-4"><h4 class="text-sm font-semibold mb-1">บันทึกภายใน</h4>
+        <p class="text-xs text-gray-600">${esc(s.note)}</p></div>`
+          : ""
+      }
+      <button onclick="deleteStudent('${sid}')" class="w-full btn text-rose-600 border border-rose-100 text-sm">ลบออกจากรายวิชา</button>
+    </div>`;
+        $("#drawer").classList.remove("hidden");
+      }
+      const closeDrawer = () => $("#drawer").classList.add("hidden");
+
+      /* ============================== SCORE GRID ============================== */
+      function editScore(el) {
+        const t = TASKS.find((x) => x.id === el.dataset.tid);
+        let v =
+          el.value === ""
+            ? null
+            : Math.max(0, Math.min(t.max, Number(el.value)));
+        if (v !== null && Number(el.value) > t.max) {
+          el.value = t.max;
+          toast("คะแนนเต็มของชิ้นงานนี้คือ " + t.max);
+        }
+        scores[el.dataset.sid][el.dataset.tid] = v;
+        if (v !== null && !t.graded) t.graded = true;
+        setDirty(true);
+        const row = el.closest("tr"),
+          p = profile(el.dataset.sid),
+          tds = row.querySelectorAll("td");
+        tds[tds.length - 2].textContent = fmt(p.overall);
+        tds[tds.length - 1].innerHTML =
+          `<span class="num text-xs px-2 py-1 rounded-full ${riskTone(p.risk)}">${p.passCount}/${p.gradedCount}</span>`;
+      }
+      function gridKey(e, el) {
+        const r = +el.dataset.r,
+          c = +el.dataset.c;
+        const go = (dr, dc) => {
+          const n = document.querySelector(
+            `input[data-r="${r + dr}"][data-c="${c + dc}"]`,
+          );
+          if (n) {
+            n.focus();
+            n.select();
+            e.preventDefault();
+          }
+        };
+        if (e.key === "Enter" || e.key === "ArrowDown") go(1, 0);
+        else if (e.key === "ArrowUp") go(-1, 0);
+        else if (
+          e.key === "ArrowRight" &&
+          el.selectionStart === el.value.length
+        )
+          go(0, 1);
+        else if (e.key === "ArrowLeft" && el.selectionStart === 0) go(0, -1);
+      }
+      function toggleGraded(id) {
+        const t = TASKS.find((x) => x.id === id);
+        t.graded = !t.graded;
+        toast(
+          `"${t.name}" → ${t.graded ? "ตรวจแล้ว (นับผลใน CLO)" : "ยังไม่ตรวจ (ไม่นับผล)"}`,
+        );
+        render();
+      }
+      function saveScores() {
+        setDirty(false);
+        render();
+        toast("บันทึกคะแนนแล้ว · คำนวณ CLO ใหม่ทุกหน้า");
+      }
+
+      /* ============================== ROUTER ============================== */
+      let tab = "flow";
+      const VIEWS = {
+        flow: viewFlow,
+        roster: viewRoster,
+        clos: viewClos,
+        tasks: viewTasks,
+        gradebook: viewGradebook,
+        insights: viewInsights,
+      };
+      function render() {
+        $("#app").innerHTML = VIEWS[tab]();
+        $("#hTitle").textContent = `${COURSE.code} — ${COURSE.name}`;
+        $("#hSub").textContent =
+          `ภาคเรียน ${COURSE.term}${COURSE.teacher ? " · " + COURSE.teacher : ""}`;
+        $("#headCount").textContent = "👥 " + active().length;
+        document.querySelectorAll(".tabbtn").forEach((b) => {
+          const on = b.dataset.tab === tab;
+          b.classList.toggle("border-olive-700", on);
+          b.classList.toggle("font-semibold", on);
+          b.classList.toggle("text-olive-900", on);
+          b.classList.toggle("text-gray-500", !on);
+        });
+        if (tab === "roster") {
+          $("#q").oninput = (e) => {
+            rf.q = e.target.value;
+            render();
+            const i = $("#q");
+            i.focus();
+            i.setSelectionRange(i.value.length, i.value.length);
+          };
+          $("#riskSel").onchange = (e) => {
+            rf.risk = e.target.value;
+            render();
+          };
+          $("#stSel").onchange = (e) => {
+            rf.status = e.target.value;
+            render();
+          };
+        }
+      }
+      document.querySelectorAll(".tabbtn").forEach(
+        (b) =>
+          (b.onclick = () => {
+            tab = b.dataset.tab;
+            render();
+            window.scrollTo({ top: 0 });
+          }),
+      );
+      render();
+    </script>
+  </body>
+</html>
