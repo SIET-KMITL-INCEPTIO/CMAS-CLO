@@ -260,7 +260,7 @@ Activity.type (LECTURE/LAB/TEST/PROJECT) · assessmentMethod (QUIZ/EXAM/RUBRIC/W
 ### 5.6 · ที่ยังค้าง
 1. รัน 0005 + 0006 กับฐานข้อมูลทดลอง (shadow DB) และทดสอบ backfill ด้วยข้อมูลที่มี CLO หลาย threshold
 2. `Course.cloPassMark` เริ่มจาก **ค่าเฉลี่ย threshold เดิม** — วิชาที่ CLO เคยใช้ threshold ต่างกันจะมีคำตัดสินเปลี่ยน ต้องให้เจ้าของงานยืนยัน
-3. รายการคำกริยา Bloom (`BLOOM_VERBS`) เป็นชุดเริ่มต้น — ควรเทียบกับคู่มือ คอบ. และชื่อ SOLO 3 ระดับยังชั่วคราว (§4 ข้อ 2)
+3. ~~รายการคำกริยา Bloom (`BLOOM_VERBS`)~~ ถูกตัดออก 2569-09-23 (O3): เลิกเดาระดับจากคำกริยา ผู้สอนเลือก Bloom เอง แล้ว SOLO ตามตาราง `BLOOM_TO_SOLO` หรือเลือกเองทั้งสองระดับ · ตาราง Bloom→SOLO และชื่อ SOLO 3 ระดับยังชั่วคราว ควรเทียบกับคู่มือ คอบ. (§4 ข้อ 2)
 4. เอกสาร/สคริปต์ที่ยังอ้าง `threshold` / `ObjectiveAssessment` / `AssessmentCriteria.cloId`: `srs.md` (CR-02, CR-03, FR-32, FR-35), `api-design.md`, `dfd.md`, `mysql-*.md`, `scripts/build-er-*.py`, `build-index-q-uml-drawio.py`, `docs/reference/db/mysql/index-q.sql`
 
 ---
