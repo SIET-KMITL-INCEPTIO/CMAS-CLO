@@ -4,7 +4,7 @@
  *
  *   node scripts/thesis-ch2-docx.mjs
  *
- * เนื้อหามาจาก docs/markdown/dev/theory.md — ถ้าแก้ทฤษฎี ให้แก้ที่นั่นก่อน
+ * เนื้อหามาจาก docs/markdown/dev/thesis/theory.md — ถ้าแก้ทฤษฎี ให้แก้ที่นั่นก่อน
  * แล้วค่อยปรับไฟล์นี้ให้ตรงกัน
  *
  * รูปแบบที่บังคับตาม RULE.md §2.4–2.5 (ห้ามแก้ RULE.md):

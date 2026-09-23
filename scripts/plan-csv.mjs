@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url"
 import { dirname, join } from "node:path"
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..")
-const SOURCE = join(root, "docs/markdown/dev/project-plan.md")
+const SOURCE = join(root, "docs/markdown/dev/planning/project-plan.md")
 const TARGET = join(root, "docs/generated/project-plan.csv")
 
 /**

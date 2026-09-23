@@ -38,7 +38,7 @@ tailwind.config = {
 
    Data     mirrors database/schema.prisma v4 across FOUR courses chosen to
             exercise the edge cases the schema and SRS actually name.
-   Rules    CR-01…CR-11 from docs/markdown/dev/srs.md are implemented, not
+   Rules    CR-01…CR-11 from docs/markdown/dev/requirements/srs.md are implemented, not
             paraphrased — every figure on screen is derived, never typed.
    ══════════════════════════════════════════════════════════════════ */
 :root{
@@ -1091,7 +1091,7 @@ const db = {
 })();
 
 /* ══════════════════════════════════════════════════════════════════
-   2 · DERIVATION — CR-01…CR-11 from docs/markdown/dev/srs.md.
+   2 · DERIVATION — CR-01…CR-11 from docs/markdown/dev/requirements/srs.md.
    Everything on screen comes from here. Nothing is typed in twice.
    ══════════════════════════════════════════════════════════════════ */
 const byId  = function(arr, id){ return arr.find(function(x){ return x.id === id; }); };
@@ -6658,7 +6658,7 @@ function setCourse(cid){
 
 /* ══════════════════════════════════════════════════════════════════
    7b · สิทธิ์ตามบทบาทในรายวิชา (PERM · SEC)
-   เป้าหมาย: docs/markdown/dev/course-role-permissions.md
+   เป้าหมาย: docs/markdown/dev/requirements/course-role-permissions.md
    ยกเลิก ASM-03 — CourseRole เคยเป็นป้ายเฉย ๆ ตอนนี้บังคับใช้จริง
    ══════════════════════════════════════════════════════════════════ */
 

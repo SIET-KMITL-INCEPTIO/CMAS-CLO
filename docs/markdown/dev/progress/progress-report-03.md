@@ -25,7 +25,7 @@
 | 3.1.2 | ออกแบบ ER-Diagram | ธีรณัฎฐ์ | 20–24 ก.ย. | 70% | **90%** | ตามแผน | `cmas_app_mysql_v4.sql` (13 ตาราง · 80 คอลัมน์ · 16 FK) · `ER-INDEX-Q.drawio` / `.pdf` |
 | **3.2** | **ออกแบบสถาปัตยกรรมระบบ (System Architecture)** | ธีรณัฎฐ์ | 20 ส.ค. – 24 ก.ย. | 0% | **90%** | ⚠ ต้องอัปเดตในไฟล์แผน | — |
 | 3.2.1 | จัดทำ System Architecture Diagram | ธีรณัฎฐ์ | 21 ส.ค. – 24 ก.ย. | 0% | **90%** | ⚠ เสร็จแล้ว | `docs/markdown/graph/tech-stack.md` · `docs/uml/CMAS/Structure.drawio` · `index-q-architecture.md` · `README.md` §Structure |
-| 3.2.2 | DFD Level 0 และ Level 1 | ธีรณัฎฐ์ | — | 0% | **100%** | ⚠ **เสร็จเกินแผน** (ทำถึง Level 2) | `docs/markdown/dev/dfd.md` v2.5.0 — L0 · L1 (10 process · 9 data store · 4 trust boundary · 56 data flow) · L2 สองกระบวนการ |
+| 3.2.2 | DFD Level 0 และ Level 1 | ธีรณัฎฐ์ | — | 0% | **100%** | ⚠ **เสร็จเกินแผน** (ทำถึง Level 2) | `docs/markdown/dev/architecture/dfd.md` v2.5.0 — L0 · L1 (10 process · 9 data store · 4 trust boundary · 56 data flow) · L2 สองกระบวนการ |
 | **3.3** | **การออกแบบ API** | ธีรณัฎฐ์ | — | 0% | **95%** | ⚠ ต้องอัปเดตในไฟล์แผน | — |
 | 3.3.1 | ตาราง endpoint ครบทุก module (path / method / role / response) | ธีรณัฎฐ์ | — | 0% | **95%** | ⚠ เสร็จแล้ว | `api-design.md` 911 บรรทัด · **58 endpoint** · 7 module · §11 traceability FR → Endpoint |
 | **3.4** | **ออกแบบ Design System และ UI/UX** | ทั้ง 3 คน | 12 ก.ค. – 24 ก.ย. | — | **90%** | ตามแผน | — |

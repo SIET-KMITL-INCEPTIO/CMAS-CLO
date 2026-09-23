@@ -421,7 +421,7 @@ flowchart LR
 ### 6.1a สิทธิ์ตามบทบาทในรายวิชา (ASM-03a · ASM-03b · FR-22a · FR-22c)
 
 `CourseInstructor.role` เคยเป็นป้ายแสดงผลล้วน ๆ ตอนนี้บังคับใช้จริง
-เมทริกซ์เต็มและผลการตรวจอยู่ที่ [course-role-permissions.md](../markdown/dev/course-role-permissions.md)
+เมทริกซ์เต็มและผลการตรวจอยู่ที่ [course-role-permissions.md](../markdown/dev/requirements/course-role-permissions.md)
 
 สามประโยคที่เมทริกซ์ย่อลงได้ (แก้ 2569-09-12):
 **ผู้ดูแลระบบผูกคนเข้ากับรายวิชาแล้วออกไป · ผู้ประสานงานทำได้ทุกอย่างในรายวิชา ·

@@ -445,7 +445,7 @@ CMAS/
 
 - Response envelope มาตรฐาน `{ success, data, error }` ทุก endpoint (SRS §5.2)
 - ชุดรหัสข้อผิดพลาดกลาง ใช้ร่วมกันทั้งระบบ
-- รวม **58 endpoint** ครอบคลุมทุกโมดูล — รายละเอียดใน `docs/markdown/dev/api-design.md`
+- รวม **58 endpoint** ครอบคลุมทุกโมดูล — รายละเอียดใน `docs/markdown/dev/architecture/api-design.md`
 
 ## 2.6 Data Flow Diagram (DFD)
 
@@ -534,18 +534,18 @@ flowchart LR
 
 | หัวข้อในเอกสารนี้ | ไฟล์ต้นทางในรีโพซิทอรี |
 |---|---|
-| ขอบเขต feature / หน้าจอ | `docs/markdown/dev/features-pages.md` |
-| ข้อกำหนดระบบ (FR / NFR / CR) | `docs/markdown/dev/srs.md` |
+| ขอบเขต feature / หน้าจอ | `docs/markdown/dev/architecture/features-pages.md` |
+| ข้อกำหนดระบบ (FR / NFR / CR) | `docs/markdown/dev/requirements/srs.md` |
 | Use Case Diagram | `docs/markdown/graph/usecase.md` · `docs/uml/index-q/index-q-usecase.drawio` |
 | ER-Diagram | `database/schema.prisma` · `docs/markdown/sql/mysql-er-diagram.md` · `docs/uml/index-q/ER-INDEX-Q.drawio` |
-| Tech Stack | `docs/markdown/graph/tech-stack.md` · `docs/markdown/dev/dev.md` §1 |
+| Tech Stack | `docs/markdown/graph/tech-stack.md` · `docs/markdown/dev/architecture/dev.md` §1 |
 | Architecture | `README.md` §Structure · `docs/uml/CMAS/UML.md` · `docs/uml/index-q/index-q-architecture.md` |
-| DFD | `docs/markdown/dev/dfd.md` (v2.5.0) |
+| DFD | `docs/markdown/dev/architecture/dfd.md` (v2.5.0) |
 | Mock-up | `docs/pages/index-q.html` · `docs/pages/design-system-preview.html` |
-| ผลทบทวน mockup | `docs/markdown/dev/mockup-feedback-plan.md` |
-| แผนงาน | `docs/markdown/dev/project-plan.md` (WBS / Gantt) · `docs/markdown/dev/sprint-plan-2026.md` |
+| ผลทบทวน mockup | `docs/markdown/dev/planning/mockup-feedback-plan.md` |
+| แผนงาน | `docs/markdown/dev/planning/project-plan.md` (WBS / Gantt) · `docs/markdown/dev/planning/sprint-plan-2026.md` |
 | รายงานความก้าวหน้า | `docs/markdown/dev/progress-report-02.md` |
-| สัญญา API | `docs/markdown/dev/api-design.md` (58 endpoint) |
+| สัญญา API | `docs/markdown/dev/architecture/api-design.md` (58 endpoint) |
 | กฎของทีม | `docs/markdown/rule/code-rule.md` · `git-rule.md` · `security-rule.md` |
 
 ## ภาคผนวก ข — ข้อสังเกตและประเด็นค้าง

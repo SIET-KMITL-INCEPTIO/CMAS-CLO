@@ -1,7 +1,7 @@
 -- ============================================================================
 -- 0006 — Mockup review round 2 (2026-09-17): CLO → objective → activity
 --
--- Decisions (docs/markdown/dev/mockup-feedback-plan.md §5):
+-- Decisions (docs/markdown/dev/planning/mockup-feedback-plan.md §5):
 --   E1  a CLO is passed on Course.cloPassMark (one value per course); the
 --       per-CLO threshold is removed (T7)
 --   E2  CLO.weight is entered by the instructor and checked against the share

@@ -74,7 +74,7 @@ export class CloController {
 ## service: `<name>.service.ts`
 
 **All business logic lives here.** No other layer may contain domain rules. See
-[dev.md §7.1](../../../../docs/markdown/dev/dev.md).
+[dev.md §7.1](../../../../docs/markdown/dev/architecture/dev.md).
 
 - Export a class (`CloService`) whose methods take plain typed inputs and return
   plain data, never `FastifyRequest` or `FastifyReply`.

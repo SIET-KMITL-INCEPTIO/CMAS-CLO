@@ -41,7 +41,7 @@ npm run docker:up
 ```
 
 Runs client and server in containers against the same Supabase database. No
-local Node install required — see [dev.md §2.2b](docs/markdown/dev/dev.md).
+local Node install required — see [dev.md §2.2b](docs/markdown/dev/architecture/dev.md).
 
 ---
 
@@ -147,11 +147,11 @@ image build on every PR.
 
 | Document                                                                                                                                                  | Contents                                                        |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [dev.md](docs/markdown/dev/dev.md)                                                                                                                        | Tech stack, setup, conventions, API standards, review checklist |
-| [features-pages.md](docs/markdown/dev/features-pages.md)                                                                                                  | Feature and page scope — the scope source of truth              |
+| [dev.md](docs/markdown/dev/architecture/dev.md)                                                                                                                        | Tech stack, setup, conventions, API standards, review checklist |
+| [features-pages.md](docs/markdown/dev/architecture/features-pages.md)                                                                                                  | Feature and page scope — the scope source of truth              |
 | [tech-stack.md](docs/markdown/graph/tech-stack.md)                                                                                                        | Architecture diagram                                            |
 | [schema.md](docs/markdown/sql/schema.md)                                                                                                                  | Schema summary — `database/schema.prisma` wins on conflict      |
-| [design-system.md](docs/markdown/dev/design-system.md)                                                                                                    | Design tokens and components                                    |
+| [design-system.md](docs/markdown/dev/architecture/design-system.md)                                                                                                    | Design tokens and components                                    |
 | [code-rule.md](docs/markdown/rule/code-rule.md) · [git-rule.md](docs/markdown/rule/git-rule.md) · [security-rule.md](docs/markdown/rule/security-rule.md) | Team rules                                                      |
 
 Rebuild the browsable HTML docs with `npm run docs:build`.
@@ -165,4 +165,4 @@ place; most API endpoints and pages are not implemented yet.
 
 - **Working:** auth scaffolding, `GET /health`, Login / Users / CourseList pages
 - **Scaffolded, not implemented:** the remaining routes in `app/server/src/modules/index.ts`
-- **Scope:** 15 features / 15 pages — see [features-pages.md](docs/markdown/dev/features-pages.md)
+- **Scope:** 15 features / 15 pages — see [features-pages.md](docs/markdown/dev/architecture/features-pages.md)

@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════════
    VERDURE DESIGN SYSTEM — TOKENS  ·  v1.4.0
    Source of truth for colors, type, spacing, shape, elevation, motion.
-   See: docs/markdown/dev/design-system.md
+   See: docs/markdown/dev/architecture/design-system.md
 
    Two layers:
    1. @theme        → registers fonts / radius / text-scale / shadows with

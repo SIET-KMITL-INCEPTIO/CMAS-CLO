@@ -9,7 +9,7 @@ SAME mock course from two angles:
   * Mapping    : field-by-field "this input box lands in that table.column"
 
 The CLO results sheet uses LIVE Excel formulas implementing CR-02..CR-05 from
-docs/markdown/dev/srs.md, so the team can change a score in UI-6 and watch
+docs/markdown/dev/requirements/srs.md, so the team can change a score in UI-6 and watch
 attainment move. Nothing on UI-7 is stored in the database — that is the point
 the sheet is meant to make.
 

@@ -8,9 +8,9 @@ This file is the entry point, not a duplicate. Details live in:
 
 - `README.md`: setup, commands, structure
 - `docs/README.md`: how docs are organized (Thai). `docs/markdown/` is the source; `docs/html/` is generated
-- `docs/markdown/dev/dev.md`: architecture, structure (§3), naming (§4), patterns
+- `docs/markdown/dev/architecture/dev.md`: architecture, structure (§3), naming (§4), patterns
 - `docs/markdown/rule/code-rule.md`: layer rules (Route → Controller → Service → Repository)
-- `docs/markdown/dev/srs.md`: requirements (FR-xx / NFR-xx IDs cited in code comments)
+- `docs/markdown/dev/requirements/srs.md`: requirements (FR-xx / NFR-xx IDs cited in code comments)
 - `app/client/src/features/README.md`, `app/server/src/modules/README.md`: per-feature file contract
 
 **Source of truth is the current code.** When a doc disagrees with the code, trust the code

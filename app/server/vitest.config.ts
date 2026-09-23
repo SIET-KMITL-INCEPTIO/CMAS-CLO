@@ -12,7 +12,7 @@ export default defineConfig({
       // Boot/wiring files and the Prisma singleton have no logic worth covering.
       exclude: ["src/index.ts", "src/modules/index.ts", "src/db/prisma.ts", "src/**/*.test.ts"],
       thresholds: {
-        // Matches docs/markdown/dev/dev.md §11.1 (services 80%, validators 90%).
+        // Matches docs/markdown/dev/architecture/dev.md §11.1 (services 80%, validators 90%).
         // Raise these as modules/*/ services and validators get implemented.
         lines: 60,
         functions: 60,
