@@ -11,6 +11,10 @@
       rel="stylesheet"
     />
     <title>CLO System</title>
+    <!-- Google Identity Services (FR-08): renders the sign-in button and
+         hands us a signed ID token; the server verifies it, this script
+         never sees anything secret. -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body>
     <div id="root"></div>

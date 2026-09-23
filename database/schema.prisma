@@ -131,6 +131,17 @@ enum AuthProvider {
   GOOGLE
 }
 
+// FR-08: a Google sign-in outside the institution's email domain must not
+// silently become an active INSTRUCTOR account. It lands PENDING until an
+// ADMIN approves it. This is deliberately separate from User.isActive — the
+// two answer different questions ("has anyone vetted this account" vs "is
+// this account currently allowed in") and collapsing them would mean a
+// re-suspension and an approval fight over the same bit.
+enum AccountStatus {
+  PENDING
+  ACTIVE
+}
+
 // ---------------------------------------------------------------------------
 // PEOPLE
 // ---------------------------------------------------------------------------
@@ -144,6 +155,12 @@ model User {
   passwordHash String?
   role         Role    @default(INSTRUCTOR)
   isActive     Boolean @default(true) // account kill switch (FR-03)
+
+  // FR-08: PENDING for a Google sign-in from outside the institution domain,
+  // until an ADMIN approves it. Everyone else (EMAIL registrations, in-domain
+  // Google sign-ins) is ACTIVE from creation — this column exists only to
+  // gate the out-of-domain case, not to re-implement email verification.
+  status AccountStatus @default(ACTIVE)
 
   // Self-registration (D6). An EMAIL account cannot sign in until verified;
   // a Google account is verified by Google, so this is set on creation.
@@ -163,6 +180,7 @@ model User {
   verificationTokens EmailVerificationToken[]
 
   @@index([role, isActive])
+  @@index([status]) // Admin's pending-approval list (FR-08)
 }
 
 // One-time email verification link (D6). Only the SHA-256 of the token is

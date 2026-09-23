@@ -4,6 +4,7 @@ import { envSchema } from "./env.schema.js"
 const valid = {
   DATABASE_URL: "postgresql://postgres:pw@db.example.supabase.co:5432/postgres",
   JWT_SECRET: "a".repeat(32),
+  GOOGLE_CLIENT_ID: "test-client-id.apps.googleusercontent.com",
 }
 
 describe("envSchema", () => {
@@ -17,6 +18,13 @@ describe("envSchema", () => {
     expect(env.CORS_ORIGIN).toBe("http://localhost:5173")
     expect(env.RATE_LIMIT_MAX).toBe(100)
     expect(env.RATE_LIMIT_WINDOW).toBe("1 minute")
+    expect(env.INSTITUTION_EMAIL_DOMAIN).toBe("kmitl.ac.th")
+  })
+
+  it("requires GOOGLE_CLIENT_ID", () => {
+    const withoutGoogleClientId: Record<string, unknown> = { ...valid }
+    delete withoutGoogleClientId.GOOGLE_CLIENT_ID
+    expect(envSchema.safeParse(withoutGoogleClientId).success).toBe(false)
   })
 
   it("rejects a JWT_SECRET shorter than 32 characters", () => {

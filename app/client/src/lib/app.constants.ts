@@ -1,4 +1,5 @@
 export const API_URL: string = import.meta.env.VITE_API_URL ?? "http://localhost:3001"
+export const GOOGLE_CLIENT_ID: string = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ""
 
 export const CLO_STATUS_COLORS = {
   pass: "bg-green-100 text-green-800",

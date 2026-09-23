@@ -1,4 +1,5 @@
 export type Role = "ADMIN" | "INSTRUCTOR"
+export type AccountStatus = "PENDING" | "ACTIVE"
 
 export type User = {
   id: string
@@ -6,4 +7,5 @@ export type User = {
   name: string
   role: Role
   isActive: boolean
+  status: AccountStatus
 }

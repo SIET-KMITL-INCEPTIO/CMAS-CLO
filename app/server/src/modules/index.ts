@@ -9,12 +9,13 @@
  * so skipping it exposes a colleague's course rather than merely a
  * colleague's view.
  *
- * /health is the only legitimately unauthenticated route.
+ * /health and /auth/* (the login routes themselves) are the only
+ * legitimately unauthenticated routes.
  */
 import type { FastifyInstance } from "fastify"
 import { healthRoutes } from "./health/health.route.js"
-// import { authRoutes } from "./auth/auth.route.js"
-// import { usersRoutes } from "./users/users.route.js"
+import { authRoutes } from "./auth/auth.route.js"
+import { usersRoutes } from "./users/users.route.js"
 // import { coursesRoutes } from "./courses/courses.route.js"
 // import { closRoutes } from "./clos/clos.route.js"
 // import { excelRoutes } from "./excel/excel.route.js"
@@ -22,8 +23,8 @@ import { healthRoutes } from "./health/health.route.js"
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(healthRoutes)
-  // await app.register(authRoutes, { prefix: "/auth" })
-  // await app.register(usersRoutes, { prefix: "/users" })
+  await app.register(authRoutes, { prefix: "/auth" })
+  await app.register(usersRoutes, { prefix: "/users" })
   // await app.register(coursesRoutes, { prefix: "/courses" })
   // await app.register(closRoutes, { prefix: "/clos" })
   // await app.register(excelRoutes, { prefix: "/excel" })
