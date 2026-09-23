@@ -4,8 +4,8 @@ import helmet from "@fastify/helmet"
 import rateLimit from "@fastify/rate-limit"
 import multipart from "@fastify/multipart"
 import { env } from "./lib/env.js"
-import { errorHandler } from "./middlewares/errorHandler.js"
-import { registerRoutes } from "./routes/index.js"
+import { errorHandler } from "./middlewares/error-handler.middleware.js"
+import { registerRoutes } from "./modules/index.js"
 
 const app = Fastify({
   logger: env.NODE_ENV === "development" ? { transport: { target: "pino-pretty" } } : true,

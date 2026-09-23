@@ -4,7 +4,7 @@ See also: [[srs]] · [[schema]] · [[usecase]] · [[theory]] · [[project-plan]]
 
 > **Version:** 2.5.0 | **Updated:** 2026-08-05
 > **Baseline:** [[srs]] v2.0.0 · `database/schema.prisma` (**11 models — single-tenant**) ·
-> `app/server/src/middlewares/{auth,rbac}.middleware.ts` · `services/authorization.service.ts`
+> `app/server/src/middlewares/{auth,rbac}.middleware.ts` · `modules/authorization/authorization.service.ts`
 > **Purpose:** เอกสารนี้เป็นทั้ง **แผนภาพกระแสข้อมูลสำหรับบทที่ 3** และ **input ของ threat modeling**
 > (TMT — Microsoft Threat Modeling Tool 2016) — โครงสร้างข้อมูลยึด [[schema]] เสมอ
 >
@@ -115,7 +115,7 @@ See also: [[srs]] · [[schema]] · [[usecase]] · [[theory]] · [[project-plan]]
 | สัญลักษณ์ | ความหมาย |
 |---|---|
 | ✅ | implement แล้วและใช้งานได้จริง ณ 2026-08-05 |
-| 🕐 | ยังไม่ implement — route ยัง comment ไว้ใน `routes/index.ts` (กฎข้อ 1 ของ §1) |
+| 🕐 | ยังไม่ implement — route ยัง comment ไว้ใน `modules/index.ts` (กฎข้อ 1 ของ §1) |
 | 🔒 | Trust boundary |
 | 👤 | External entity ที่เป็นคน |
 | 🗂️ | External entity ที่เป็นระบบไฟล์ |
@@ -127,7 +127,7 @@ See also: [[srs]] · [[schema]] · [[usecase]] · [[theory]] · [[project-plan]]
 
 | กฎ | เหตุผล |
 |---|---|
-| **สิ่งที่ไม่มีในโค้ด ห้ามอยู่ในไดอะแกรม** | DFD ที่วาดจากความตั้งใจ ไม่ใช่จากระบบจริง จะให้ threat list ที่ผิด — route ที่ยัง comment ไว้ใน `routes/index.ts` ถูกทำเครื่องหมาย `(planned)` |
+| **สิ่งที่ไม่มีในโค้ด ห้ามอยู่ในไดอะแกรม** | DFD ที่วาดจากความตั้งใจ ไม่ใช่จากระบบจริง จะให้ threat list ที่ผิด — route ที่ยัง comment ไว้ใน `modules/index.ts` ถูกทำเครื่องหมาย `(planned)` |
 | **นักศึกษาไม่ใช่ external entity** | ตาม [[srs]] §2.2 นักศึกษาเป็น **ข้อมูล** ไม่ใช่ผู้ใช้ระบบใน v1 — แต่เป็น **data subject** ตาม PDPA จึงมีผลกับ Information Disclosure |
 | **Middleware chain เป็น process แยก (3.0)** | `authMiddleware → rbac → assertCourseAccess` คือจุดบังคับ trust boundary ทั้งหมด ถ้ายุบรวมกับ process อื่น จะมองไม่เห็น threat ที่เกิดจาก "route ที่ลืมต่อ middleware" |
 | **ขอบเขตข้อมูลคือรายวิชา ไม่ใช่สถาบัน** | single-tenant ทำให้เหลือ boundary เดียว (TB-4) และ**บังคับที่ชั้นแอปพลิเคชัน** (`assertCourseAccess`) ไม่ใช่ที่ network layer — ต้องเขียนกำกับไว้ในโมเดล |
@@ -468,9 +468,9 @@ flowchart TB
 > โดยไม่แตะคะแนนสักตัวเดียวและไม่มี log ใด ๆ จับได้ (D6 บันทึกเฉพาะการนำเข้าไฟล์) — ดู §9 ข้อ 10
 
 > **สิ่งที่ยังไม่ถูก implement (ณ 2026-08-05):** ทุก process ที่ทำเครื่องหมาย 🕐 — คือ 1.0–8.0 และ 10.0
-> route ยังถูก comment ไว้ใน `app/server/src/routes/index.ts` มีเพียง ✅ 9.0 `/health` ที่ทำงานจริง
+> route ยังถูก comment ไว้ใน `app/server/src/modules/index.ts` มีเพียง ✅ 9.0 `/health` ที่ทำงานจริง
 > DFD นี้จึงเป็น **target-state model** ใช้ทำ threat modeling **ก่อน** implement ไม่ใช่หลัง
-> (ข้อยกเว้น: `services/authorization.service.ts` เขียนเสร็จแล้ว แต่ยังไม่มี route เรียกใช้)
+> (ข้อยกเว้น: `modules/authorization/authorization.service.ts` เขียนเสร็จแล้ว แต่ยังไม่มี route เรียกใช้)
 
 ### 3.1 ตารางเทียบ process ↔ ข้อกำหนด ↔ โค้ด
 
@@ -484,14 +484,14 @@ flowchart TB
 | P4 User Administration | §4.1 (FR-05…FR-08) | `users.route.ts` | 🕐 comment ไว้ · **นอก TB-4** (ไม่มี `:courseId`) |
 | P5 Course & Instructor Mgmt | §4.3 (FR-20…FR-29) | `courses.route.ts` | 🕐 comment ไว้ |
 | P6 CLO · Activity · Criteria | §4.4 + §4.5 (FR-30…FR-48) | `clos.route.ts` | 🕐 comment ไว้ |
-| P7 Roster & Score Entry | §4.6 + §4.7 ส่วนกรอกมือ (FR-50…FR-65) | **ยังไม่มีโมดูลใน `routes/index.ts`** | 🕐 **ช่องว่าง — ดู §3.2** |
+| P7 Roster & Score Entry | §4.6 + §4.7 ส่วนกรอกมือ (FR-50…FR-65) | **ยังไม่มีโมดูลใน `modules/index.ts`** | 🕐 **ช่องว่าง — ดู §3.2** |
 | P8 Excel Import/Export | §4.7 ส่วนไฟล์ (FR-66…FR-71) | `excel.route.ts` | 🕐 comment ไว้ |
 | P9 Health Check | — (infrastructure) | `health.route.ts` | ✅ **ทำงานจริง** |
 | P10 Attainment Calc & Reporting | §4.8 (FR-80…FR-88) | `dashboard.route.ts` | 🕐 comment ไว้ |
 
 ### 3.2 ช่องว่างที่พบตอน audit
 
-`routes/index.ts` วางแผนไว้ **6 โมดูล** แต่ DFD มี **8 process ฝั่งเซิร์ฟเวอร์** ส่วนที่ไม่มีเจ้าภาพคือ
+`modules/index.ts` วางแผนไว้ **6 โมดูล** แต่ DFD มี **8 process ฝั่งเซิร์ฟเวอร์** ส่วนที่ไม่มีเจ้าภาพคือ
 **P7 (roster + กรอกคะแนนทีละช่อง)** — ต้องตัดสินใจว่าจะยุบเข้า `courses.route.ts` หรือเปิด
 `scores.route.ts` แยก **ก่อนเริ่ม Sprint 5** มิฉะนั้นงาน FR-50…FR-65 จะไม่มีที่ลง
 
@@ -882,9 +882,9 @@ TMT 2016 วาดขอบเขตได้เฉพาะระดับ **el
 อยู่ที่ระดับ row (แถว `Course` ที่ผู้ใช้ถูกมอบหมาย) ผลคือ:
 
 - ใน TMT ให้วาด TB-4 ล้อมรอบ process **5.0–8.0 และ 10.0** (ไม่รวม 4.0 — ดูย่อหน้าถัดไป)
-  **แล้วเขียน note กำกับว่า enforcement อยู่ที่ `services/authorization.service.ts` ไม่ใช่ที่ network layer**
+  **แล้วเขียน note กำกับว่า enforcement อยู่ที่ `modules/authorization/authorization.service.ts` ไม่ใช่ที่ network layer**
 - **4.0 User Admin อยู่นอก TB-4** เส้นทางจัดการผู้ใช้ไม่รับ `courseId` เลยสักเส้น
-  ([routes/index.ts](../../../app/server/src/routes/index.ts) — `usersRoutes` ไม่มี `:courseId`)
+  ([modules/index.ts](../../../app/server/src/modules/index.ts) — `usersRoutes` ไม่มี `:courseId`)
   ด่านของมันคือ `rbac("ADMIN")` ([rbac.middleware.ts](../../../app/server/src/middlewares/rbac.middleware.ts))
   ซึ่งถาม "role อะไร" ไม่ใช่ "ข้อมูลของใคร" — สองคำถามนี้แยกกันตาม comment ในไฟล์นั้นเอง
 - Threat "cross-course read" จะ **ไม่ถูก generate อัตโนมัติ** ต้องเพิ่มเองแบบ manual

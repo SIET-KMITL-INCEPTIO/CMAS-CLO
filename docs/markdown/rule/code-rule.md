@@ -21,7 +21,7 @@ See also: [[git-rule]] · [[security-rule]] · [[features-pages]] · [[dev]]
 
 | ประเภทของ | อยู่ใน 1 ไฟล์ | ชื่อไฟล์ |
 |---|---|---|
-| Class (Service / Controller / Repository) | 1 class ต่อไฟล์ | `PascalCase.ts` ตรงกับชื่อ class |
+| Class (Service / Controller / Repository) | 1 class ต่อไฟล์ | `kebab-case.<layer>.ts` export class `PascalCase` (เช่น `courses.service.ts` → `CourseService`) — ดู [[dev]] §4.2 |
 | Pure function (helper / computation) | 1 function ต่อไฟล์ | `camelCase.ts` ตรงกับชื่อ function |
 | React Component | 1 component ต่อไฟล์ | `PascalCase.tsx` |
 | React Hook | 1 hook ต่อไฟล์ | `useXxx.ts` |
@@ -80,7 +80,7 @@ Route (ลงทะเบียน path)
 ```
 
 ```typescript
-// repositories/CourseRepository.ts — 1 class, คุยกับ DB อย่างเดียว
+// modules/courses/course.repository.ts — 1 class, คุยกับ DB อย่างเดียว
 export class CourseRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
@@ -93,7 +93,7 @@ export class CourseRepository {
   }
 }
 
-// services/CourseService.ts — 1 class, business logic
+// modules/courses/courses.service.ts — 1 class, business logic
 export class CourseService {
   constructor(private readonly courseRepo: CourseRepository) {}
 
@@ -104,7 +104,7 @@ export class CourseService {
   }
 }
 
-// controllers/CourseController.ts — 1 class, ผอมมาก
+// modules/courses/courses.controller.ts — 1 class, ผอมมาก
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 

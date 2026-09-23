@@ -56,7 +56,7 @@ client ต้องพก id ทุกชั้นติดตัวไปหม
 ขึ้นไปถึง course ได้ที่ฝั่ง server อยู่แล้ว — และการ resolve นั้น**บังคับ** ตาม A-3
 จึงไม่ได้แลกความปลอดภัยกับความสั้น
 
-โครงสร้างนี้ตรงกับ route file ที่ตั้งไว้แล้วใน `routes/index.ts`
+โครงสร้างนี้ตรงกับ route file ที่ตั้งไว้แล้วใน `modules/index.ts`
 (`/auth` · `/users` · `/courses` · `/clos` · `/excel` · `/dashboard`)
 
 ---
@@ -897,14 +897,14 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
 
 | # | ช่องว่าง | ผลถ้าไม่แก้ | ต้องทำ |
 |---|---|---|---|
-| **G-1** | `registerRoutes()` ([routes/index.ts](../../../app/server/src/routes/index.ts)) register โดย**ไม่มี prefix `/api/v1`** ขัดกับ SRS §5.2 | path จริงไม่ตรงเอกสารทั้งเล่ม และเปลี่ยนทีหลังต้องแก้ client ทุกไฟล์ | `app.register(..., { prefix: "/api/v1" })` ที่ชั้นบนสุด |
-| **G-2** | `API_URL` ฝั่ง client default `http://localhost:3001` ([constants.ts](../../../app/client/src/lib/constants.ts)) ไม่มี `/api/v1` ต่อท้าย | ทุก request 404 ทันทีที่ G-1 ถูกแก้ | เปลี่ยน default เป็น `http://localhost:3001/api/v1` |
+| **G-1** | `registerRoutes()` ([modules/index.ts](../../../app/server/src/modules/index.ts)) register โดย**ไม่มี prefix `/api/v1`** ขัดกับ SRS §5.2 | path จริงไม่ตรงเอกสารทั้งเล่ม และเปลี่ยนทีหลังต้องแก้ client ทุกไฟล์ | `app.register(..., { prefix: "/api/v1" })` ที่ชั้นบนสุด |
+| **G-2** | `API_URL` ฝั่ง client default `http://localhost:3001` ([app.constants.ts](../../../app/client/src/lib/app.constants.ts)) ไม่มี `/api/v1` ต่อท้าย | ทุก request 404 ทันทีที่ G-1 ถูกแก้ | เปลี่ยน default เป็น `http://localhost:3001/api/v1` |
 | **G-3** | `rbac("ADMIN")` ([rbac.middleware.ts](../../../app/server/src/middlewares/rbac.middleware.ts)) ผ่านเมื่อ role ตรง **หรือเป็น ADMIN** — จึงไม่มีทางเขียน "INSTRUCTOR เท่านั้น ADMIN ห้าม" ได้ | ไม่กระทบ v1 (ADMIN เห็นทุกอย่างโดยเจตนา — FR-25) แต่ต้องรู้ตัวว่าเป็นข้อจำกัด ไม่ใช่ bug | เขียน comment ยืนยันเจตนา หรือเพิ่ม `rbacExact()` ถ้าอนาคตต้องการ |
 | **G-4** | ไม่มี `User.mustChangePassword` ใน `schema.prisma` | FR-07 (บังคับเปลี่ยนรหัสหลัง reset) ทำไม่ได้ | เพิ่มคอลัมน์ + migration ก่อน implement `/users/:userId/reset-password` |
 | **G-5** | `ScoreUploadLog` เก็บแค่ `recordsOk` / `recordsFail` ไม่เก็บ**รายละเอียดแถวที่ผิด** | `GET /uploads/:uploadId/errors` ทำไม่ได้ → FR-68 (ดาวน์โหลดแถวที่ไม่ผ่าน) และครึ่งหลังของ FR-72 ตกไป | เลือกทางใดทางหนึ่ง: เพิ่ม `errorDetails Json?` บน `ScoreUploadLog` (ง่าย พอสำหรับ v1) หรือสร้าง `ScoreUploadError` เป็นตารางลูก |
 | **G-6** | **OI-10 ยังไม่ sign-off** — CR-03 ไม่ใช้ `Activity.weight` แต่ CR-02 ใช้ ต่างกัน **20 จุด** บนข้อมูลชุดเดียวกัน | `GET /dashboard/attainment` และ `/students/:studentId` คืนตัวเลขที่ยังไม่รู้ว่าถูกหรือผิด → **H1 พิสูจน์ไม่ได้** | sign-off ก่อนเขียน `attainment.service.ts` ([[objectives-hypotheses-evaluation]] E-03) |
 | **G-7** | **OI-12 ยังไม่ sign-off** — `cloScore = null` นับเป็น at-risk หรือไม่ | `GET /dashboard/at-risk` นิยามไม่ได้ → **H2 และ OBJ-4 วัดไม่ได้** | sign-off ก่อน implement §10.3 ([[objectives-hypotheses-evaluation]] E-04) |
-| **G-8** | ยังไม่มี route file จริงสักไฟล์นอกจาก `health.route.ts` — ที่เหลือใน `routes/index.ts` ยังเป็น comment · `controllers/` และ `validators/` มีแค่ `README.md` · `services/` มีเฉพาะ `authorization.service.ts` | — | สร้างตามลำดับ: `auth` → `courses` → `clos`/`activities` → `students`/`scores` → `dashboard` (ตรงกับการแบ่งงาน 3 คนใน [[features-pages]] §3) |
+| **G-8** | ยังไม่มี route file จริงสักไฟล์นอกจาก `health.route.ts` — ที่เหลือใน `modules/index.ts` ยังเป็น comment · `controllers/` และ `validators/` มีแค่ `README.md` · `services/` มีเฉพาะ `authorization.service.ts` | — | สร้างตามลำดับ: `auth` → `courses` → `clos`/`activities` → `students`/`scores` → `dashboard` (ตรงกับการแบ่งงาน 3 คนใน [[features-pages]] §3) |
 
 ---
 

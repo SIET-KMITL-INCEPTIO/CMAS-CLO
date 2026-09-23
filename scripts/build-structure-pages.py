@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Two structure pages appended to docs/uml/CMAS/Struture.drawio.
+"""Two structure pages appended to docs/uml/CMAS/Structure.drawio.
 
    Page 1 of that file is hand-drawn and is NEVER touched — this script keeps
    every <diagram> it did not write, verbatim, and replaces only its own. Its
@@ -44,7 +44,7 @@ for _s in (sys.stdout, sys.stderr):
         _s.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = Path(__file__).resolve().parents[1]
-TARGET = ROOT / 'docs' / 'uml' / 'CMAS' / 'Struture.drawio'
+TARGET = ROOT / 'docs' / 'uml' / 'CMAS' / 'Structure.drawio'
 APP = ROOT / 'docs' / 'pages' / 'index-q.html'
 MY_ID = 'cmasGenStruct'
 

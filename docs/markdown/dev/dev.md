@@ -223,10 +223,11 @@ CMAS/
 │   └── server/           # Node.js + Fastify + TypeScript — deploys to Railway/Fly.io
 ├── database/
 │   ├── schema.prisma      # single source of truth, shared by all tooling
-│   └── .env.example
-├── docs/
-│   ├── markdown/          # เอกสารทั้งหมด (ไฟล์นี้อยู่ที่นี่)
-│   └── pdf/                # PD01 อนุมัติหัวข้อโครงงาน
+│   ├── .env.example
+│   ├── migrations/        # สร้างโดย Prisma — ห้ามเปลี่ยนชื่อโฟลเดอร์
+│   └── seed.ts
+├── docs/                  # ดู docs/README.md — markdown/ คือต้นฉบับ
+├── scripts/               # setup.mjs + ตัวสร้าง/ตรวจ diagram, workbook
 ├── .gitignore
 ├── package.json            # root workspace scripts
 └── README.md
@@ -239,45 +240,32 @@ CMAS/
 ```
 app/client/
 ├── src/
-│   ├── api/                          # เรียก Fastify backend
-│   │   ├── client.ts                 # fetch wrapper + JWT header + toast on error
-│   │   ├── auth.ts
-│   │   ├── courses.ts
-│   │   ├── clos.ts
-│   │   ├── excel.ts                  # downloadTemplate() / uploadScores()
-│   │   └── dashboard.ts
-│   ├── components/
+│   ├── features/                     # 1 โฟลเดอร์ต่อ feature — ชื่อตรงกับ app/server/src/modules/ (ดู features/README.md)
+│   │   ├── auth/
+│   │   │   ├── Login.page.tsx
+│   │   │   └── useAuthStore.ts       # Zustand + persist (auth state เท่านั้น)
+│   │   ├── users/
+│   │   │   └── Users.page.tsx        # 5.1 จัดการสิทธิ์ผู้ใช้
+│   │   ├── courses/
+│   │   │   └── CourseList.page.tsx   # 5.2.1
+│   │   ├── clos/                     # (TODO) Clos.page.tsx 5.2.2 · useClos.ts · clos.api.ts
+│   │   ├── assessment/               # (TODO) Assessment.page.tsx 5.2.3
+│   │   ├── excel/                    # (TODO) Excel.page.tsx 5.2.4 · ScoreUploadDialog.tsx · TemplateDownloadButton.tsx
+│   │   ├── dashboard/                # (TODO) 5.3.1 Dashboard · 5.3.2 Students · 5.3.3 Report · CloBarChart.tsx
+│   │   └── home/
+│   │       └── Home.page.tsx
+│   ├── components/                   # ใช้ร่วมตั้งแต่ 2 feature ขึ้นไปเท่านั้น
 │   │   ├── ui/                       # shadcn/ui
-│   │   ├── layout/                   # AppShell, Sidebar, Topbar
-│   │   ├── clo/
-│   │   ├── dashboard/                # CloBarChart, AtRiskDonut, StudentRadar
-│   │   └── excel/
-│   │       ├── TemplateDownloadButton.tsx
-│   │       └── ScoreUploadDialog.tsx
-│   ├── hooks/
-│   │   ├── useAuth.ts
-│   │   ├── useClos.ts
-│   │   └── useDashboard.ts
+│   │   └── layout/                   # AppShell, Sidebar, Topbar
+│   ├── hooks/                        # hook ที่ใช้ร่วมตั้งแต่ 2 feature ขึ้นไปเท่านั้น
 │   ├── lib/
-│   │   ├── utils.ts                  # cn() — shadcn helper
-│   │   └── constants.ts
-│   ├── pages/
-│   │   ├── auth/Login.tsx
-│   │   ├── admin/Users.tsx           # 5.1 จัดการสิทธิ์ผู้ใช้
-│   │   └── courses/
-│   │       ├── CourseList.tsx        # 5.2.1
-│   │       └── [courseId]/
-│   │           ├── Clos.tsx          # 5.2.2
-│   │           ├── Assessment.tsx    # 5.2.3
-│   │           ├── Excel.tsx         # 5.2.4
-│   │           └── dashboard/
-│   │               ├── index.tsx     # 5.3.1
-│   │               ├── Students.tsx  # 5.3.2
-│   │               └── Report.tsx    # 5.3.3
-│   ├── store/
-│   │   └── authStore.ts              # Zustand + persist (auth state เท่านั้น)
+│   │   ├── apiClient.ts              # fetch wrapper + JWT header + toast on error
+│   │   ├── app.constants.ts          # API_URL, CLO_STATUS_COLORS
+│   │   └── utils.ts                  # cn() — shadcn helper
+│   ├── styles/                       # tokens / base / components / animations — @import จาก index.css
 │   ├── types/
-│   │   └── index.ts                  # User, Role, ApiResponse<T>
+│   │   ├── api.types.ts              # ApiResponse<T>
+│   │   └── user.types.ts             # User, Role
 │   ├── App.tsx                       # <Toaster /> (sonner) + <BrowserRouter> + Suspense
 │   ├── main.tsx
 │   ├── index.css                     # @import "tailwindcss";
@@ -299,28 +287,28 @@ app/client/
 app/server/
 ├── src/
 │   ├── index.ts                    # Fastify app + register plugins (helmet, cors, rate-limit, multipart)
-│   ├── routes/
-│   │   ├── index.ts                # registerRoutes() — รวมทุก route
-│   │   ├── health.route.ts         # GET /health
-│   │   ├── auth.route.ts           # (TODO)
-│   │   ├── users.route.ts          # (TODO)
-│   │   ├── courses.route.ts        # (TODO)
-│   │   ├── clos.route.ts           # (TODO)
-│   │   ├── excel.route.ts          # (TODO)
-│   │   └── dashboard.route.ts      # (TODO)
-│   ├── controllers/                # thin request/response layer (ยังไม่ implement)
-│   ├── services/                   # Business logic ทั้งหมดอยู่นี่ (ยังไม่ implement)
+│   ├── modules/                    # 1 โฟลเดอร์ต่อ feature — ดู modules/README.md
+│   │   ├── index.ts                # registerRoutes() — รวมทุก module
+│   │   ├── health/
+│   │   │   └── health.route.ts     # GET /health
+│   │   ├── authorization/
+│   │   │   └── authorization.service.ts  # assertCourseAccess() — course-scope guard (NFR-07)
+│   │   ├── auth/                   # (TODO) auth.route.ts · auth.controller.ts · auth.service.ts · user.repository.ts · auth.validator.ts
+│   │   ├── users/                  # (TODO)
+│   │   ├── courses/                # (TODO)
+│   │   ├── clos/                   # (TODO)
+│   │   ├── excel/                  # (TODO)
+│   │   └── dashboard/              # (TODO)
 │   ├── middlewares/
 │   │   ├── auth.middleware.ts      # JWT verify → request.userId / request.userRole
 │   │   ├── rbac.middleware.ts      # rbac("ADMIN" | "INSTRUCTOR")
-│   │   └── errorHandler.ts         # ZodError / Prisma error → standardized response
-│   ├── validators/                 # Zod schemas ต่อ resource (ยังไม่ implement)
-│   ├── lib/
-│   │   ├── env.ts                  # Zod-validated process.env, fail-fast on boot
-│   │   ├── prisma.ts               # PrismaClient singleton
-│   │   ├── jwt.ts                  # signAccessToken / signRefreshToken / verifyToken (jose)
-│   │   └── response.ts             # ok / created / badRequest / unauthorized / forbidden / notFound / serverError
-│   └── types/                       # (ว่าง — เพิ่มเมื่อจำเป็น)
+│   │   └── error-handler.middleware.ts  # ZodError / Prisma error → standardized response
+│   ├── db/
+│   │   └── prisma.ts               # PrismaClient singleton — ใช้ใน *.repository.ts
+│   └── lib/
+│       ├── env.ts                  # Zod-validated process.env, fail-fast on boot
+│       ├── jwt.ts                  # signAccessToken / signRefreshToken / verifyToken (jose)
+│       └── response.ts             # ok / created / badRequest / unauthorized / forbidden / notFound / serverError
 ├── eslint.config.ts
 ├── package.json
 └── tsconfig.json
@@ -350,17 +338,21 @@ Prisma client generate ไปที่ root `node_modules/@prisma/client` (npm w
 
 | ประเภท | รูปแบบ | ตัวอย่าง |
 | --- | --- | --- |
+| Feature folder | `kebab-case/` ชื่อเดียวกันทั้ง client และ server | `features/clos/` ↔ `modules/clos/` |
 | React Component | `PascalCase.tsx` | `CloListItem.tsx` |
-| React Page | `PascalCase.tsx` (ใน `pages/`) | `CourseList.tsx` |
+| React Page | `PascalCase.page.tsx` (ใน `features/<name>/`) | `CourseList.page.tsx` |
 | Hook | `camelCase.ts` ขึ้นต้นด้วย `use` | `useCloReorder.ts` |
+| Client API wrapper | `camelCase.api.ts` | `clos.api.ts` |
 | Utility / Helper | `camelCase.ts` | `formatDate.ts` |
-| Fastify Route | `camelCase.route.ts` | `clos.route.ts` |
-| Controller | `camelCase.controller.ts` | `courses.controller.ts` |
-| Service | `camelCase.service.ts` | `clo.service.ts` |
-| Validator | `camelCase.validator.ts` | `clo.validator.ts` |
-| Type / Interface | `camelCase.ts`, ใช้ `type` แทน `interface` | `course.ts` |
+| Fastify Route | `kebab-case.route.ts` | `clos.route.ts` |
+| Controller | `kebab-case.controller.ts` | `clos.controller.ts` |
+| Service | `kebab-case.service.ts` | `clos.service.ts` |
+| Repository | `kebab-case.repository.ts` ตั้งตาม model (เอกพจน์) | `clo.repository.ts` |
+| Validator | `kebab-case.validator.ts` | `clos.validator.ts` |
+| Middleware | `kebab-case.middleware.ts` | `error-handler.middleware.ts` |
+| Type / Interface | `camelCase.types.ts`, ใช้ `type` แทน `interface` | `course.types.ts` |
 | Test | ชื่อไฟล์ที่ test + `.test.ts` | `cloScore.test.ts` |
-| Constant | `constants.ts` หรือ `SCREAMING_SNAKE_CASE.ts` | `constants.ts` |
+| Constant | `camelCase.constants.ts` | `app.constants.ts` |
 
 ### 4.3 Variables & Functions
 
@@ -573,7 +565,7 @@ const data: any = /* ... */
 useEffect(() => { fetch("/api/clos") }, [])
 ```
 
-> **หมายเหตุ:** หน้า `pages/*.tsx` ต้องเป็น `export default` เพราะ `pages.config.ts` ใช้ `lazy(() => import(...))` ซึ่งต้องการ default export — นี่คือข้อยกเว้นเดียวของกฎ named-export
+> **หมายเหตุ:** หน้า `*.page.tsx` ต้องเป็น `export default` เพราะ `pages.config.ts` ใช้ `lazy(() => import(...))` ซึ่งต้องการ default export — นี่คือข้อยกเว้นเดียวของกฎ named-export
 
 ### 6.2 Routing Pattern (React Router 7 — explicit route table, ไม่ใช่ file-based)
 
@@ -583,7 +575,7 @@ useEffect(() => { fetch("/api/clos") }, [])
 // src/pages.config.ts
 import { lazy, type ComponentType, type LazyExoticComponent } from "react"
 
-const CourseList = lazy(() => import("./pages/courses/CourseList.tsx"))
+const CourseList = lazy(() => import("./features/courses/CourseList.page.tsx"))
 
 export type AppRoute = { path: string; element: LazyExoticComponent<ComponentType> }
 
@@ -603,14 +595,14 @@ export const routes: AppRoute[] = [
 ### 6.3 Data Fetching Pattern (TanStack Query + `apiClient`)
 
 ```tsx
-// api/clos.ts — API function layer
-import { apiClient } from "./client.ts"
-import type { CloResponse } from "../types/index.ts"
+// features/clos/clos.api.ts — API function layer
+import { apiClient } from "../../lib/apiClient.ts"
+import type { CloResponse } from "./clo.types.ts"
 
 export const getClosByCourse = (courseId: string) =>
   apiClient.get<CloResponse[]>(`/courses/${courseId}/clos`)
 
-// hooks/useClos.ts — Query hook
+// features/clos/useClos.ts — Query hook
 export function useClos(courseId: string) {
   return useQuery({
     queryKey: ["clos", courseId],
@@ -631,12 +623,12 @@ export function CloList({ courseId }: { courseId: string }) {
 }
 ```
 
-`apiClient` (`src/api/client.ts`) แนบ JWT header อัตโนมัติจาก `authStore`, และเรียก `toast.error()` (sonner) ให้เองเมื่อ request ล้มเหลว — ไม่ต้องเขียน error toast ซ้ำในทุกที่ที่เรียก API
+`apiClient` (`src/lib/apiClient.ts`) แนบ JWT header อัตโนมัติจาก `useAuthStore`, และเรียก `toast.error()` (sonner) ให้เองเมื่อ request ล้มเหลว — ไม่ต้องเขียน error toast ซ้ำในทุกที่ที่เรียก API
 
 ### 6.4 Excel Upload Pattern
 
 ```tsx
-// components/excel/ScoreUploadDialog.tsx
+// features/excel/ScoreUploadDialog.tsx
 // ใช้ xlsx (client-side) พรีวิวแถวก่อน submit เท่านั้น
 // การ parse+validate จริงเกิดที่ server (excel.service.ts) เสมอ — ห้าม trust ฝั่ง client
 ```
@@ -680,19 +672,23 @@ Request
   → Route      (path + middleware registration)
   → Controller (parse request, call service, return response)
   → Service    (all business logic lives here)
-  → Prisma     (database layer)
+  → Repository (the only layer that talks to Prisma — code-rule §3)
+  → Prisma     (db/prisma.ts)
 ```
 
 **Route (`clos.route.ts`)** — ลงทะเบียน path + middleware เท่านั้น:
 
 ```typescript
 import type { FastifyInstance } from "fastify"
-import { authMiddleware } from "../middlewares/auth.middleware.js"
-import { rbac } from "../middlewares/rbac.middleware.js"
-import { CloController } from "../controllers/clos.controller.js"
+import { authMiddleware } from "../../middlewares/auth.middleware.js"
+import { rbac } from "../../middlewares/rbac.middleware.js"
+import { prisma } from "../../db/prisma.js"
+import { CloController } from "./clos.controller.js"
+import { CloService } from "./clos.service.js"
+import { CloRepository } from "./clo.repository.js"
 
 export async function closRoutes(app: FastifyInstance) {
-  const ctrl = new CloController()
+  const ctrl = new CloController(new CloService(new CloRepository(prisma)))
 
   app.addHook("preHandler", authMiddleware)
   app.get("/", ctrl.list)
@@ -705,12 +701,12 @@ export async function closRoutes(app: FastifyInstance) {
 
 ```typescript
 import type { FastifyReply, FastifyRequest } from "fastify"
-import { CloService } from "../services/clo.service.js"
-import { createCloSchema } from "../validators/clo.validator.js"
-import { ok, created } from "../lib/response.js"
+import { CloService } from "./clos.service.js"
+import { createCloSchema } from "./clos.validator.js"
+import { ok, created } from "../../lib/response.js"
 
 export class CloController {
-  private service = new CloService()
+  constructor(private readonly service: CloService) {}
 
   list = async (request: FastifyRequest<{ Params: { courseId: string } }>, reply: FastifyReply) => {
     const clos = await this.service.listByCourse(request.params.courseId)
@@ -725,11 +721,12 @@ export class CloController {
 }
 ```
 
-**Service (`clo.service.ts`)** — business logic ทั้งหมด:
+**Service (`clos.service.ts`)** — business logic ทั้งหมด:
 
 ```typescript
-import { prisma } from "../lib/prisma.js"
-import type { CreateCloInput } from "../validators/clo.validator.js"
+// ตัวอย่างนี้เรียก prisma ตรง ๆ เพื่อให้สั้น — โค้ดจริงต้องผ่าน clo.repository.ts ตาม code-rule §3
+import { prisma } from "../../db/prisma.js"
+import type { CreateCloInput } from "./clos.validator.js"
 
 export class CloService {
   async listByCourse(courseId: string) {
@@ -906,7 +903,7 @@ await prisma.$queryRaw`SELECT * FROM "CLO"`
 ### 10.1 Backend — Global Error Handler (`app.setErrorHandler`)
 
 ```typescript
-// middlewares/errorHandler.ts — ของจริงอยู่ที่ app/server/src/middlewares/errorHandler.ts
+// middlewares/error-handler.middleware.ts — ของจริงอยู่ที่ app/server/src/middlewares/error-handler.middleware.ts
 export function errorHandler(err: FastifyError | Error, request: FastifyRequest, reply: FastifyReply) {
   request.log.error(err)
 
@@ -927,7 +924,7 @@ app.setErrorHandler(errorHandler)
 ### 10.2 Frontend — API Error Handling
 
 ```tsx
-// apiClient (src/api/client.ts) throw + toast.error() ให้อัตโนมัติเมื่อ res.ok เป็น false
+// apiClient (src/lib/apiClient.ts) throw + toast.error() ให้อัตโนมัติเมื่อ res.ok เป็น false
 // Component ใช้ isError จาก TanStack Query สำหรับ inline error state
 const { data, isError, error } = useQuery(/* ... */)
 if (isError) return <ErrorState message={error.message} />
@@ -968,9 +965,9 @@ describe("computeCloScore", () => {
 | Layer | Min Coverage |
 | --- | --- |
 | computation logic (คำนวณ CLO score, at-risk) | 90% |
-| `app/server/src/services` | 80% |
-| `app/server/src/validators` | 90% |
-| `app/client/src/hooks` | 70% |
+| `app/server/src/modules/*/*.service.ts` | 80% |
+| `app/server/src/modules/*/*.validator.ts` | 90% |
+| `app/client/src/**/use*.ts` | 70% |
 
 ### 11.2 แผน — Integration & E2E
 

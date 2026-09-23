@@ -39,7 +39,7 @@ SQL_V4 = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'cmas_app_mysql_v4.sql'
 SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
 GEN = [('scripts/build-usecase-drawio.py', 'docs/uml/index-q/index-q-usecase.drawio'),
        ('scripts/build-index-q-uml-drawio.py', 'docs/uml/index-q/UML-INDEX-Q.drawio'),
-       ('scripts/build-structure-pages.py', 'docs/uml/CMAS/Struture.drawio'),
+       ('scripts/build-structure-pages.py', 'docs/uml/CMAS/Structure.drawio'),
        ('scripts/build-er-index-q-drawio.py', 'docs/uml/index-q/ER-INDEX-Q.drawio')]
 
 # ตารางที่ index-q.sql เสนอเพิ่มจาก schema.prisma · มีบันทึกเหตุผลไว้ใน coverage GAPS
@@ -202,7 +202,7 @@ print('  index-q.html มีบทบาทในรายวิชา %d + ผ�
 if len(md_actors) < len(app_actors) + 1:
     warn.append('UML-5 · UML.md วาด actor %d ตัว แต่ระบบมี %d — ประกาศไว้ในหัวไฟล์แล้ว'
                 % (len(md_actors), len(app_actors) + 1))
-    print('  ! ภาพ Layer 0 ยังเป็นรุ่นสอง actor · ภาพสามบทบาทอยู่ใน Struture.drawio '
+    print('  ! ภาพ Layer 0 ยังเป็นรุ่นสอง actor · ภาพสามบทบาทอยู่ใน Structure.drawio '
           'หน้า 2 และ UML-INDEX-Q.drawio (ระบุไว้ในหัว UML.md แล้ว)')
 else:
     print('  ✓ ตรงกัน')

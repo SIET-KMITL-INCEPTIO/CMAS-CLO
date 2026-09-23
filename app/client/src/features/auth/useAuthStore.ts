@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import type { User } from "../types/index.ts"
+import type { User } from "../../types/user.types.ts"
 
 type AuthState = {
   user: User | null

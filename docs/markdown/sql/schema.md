@@ -272,7 +272,7 @@ erDiagram
 
 เดิมมี 2 ด่านซ้อนกัน: ชั้น Prisma extension กรองทุก query ด้วย `institutionId` แล้วจึงตรวจสิทธิ์
 รายวิชาอีกชั้น ตอนนี้เหลือด่านเดียวคือ `assertCourseAccess()` ใน
-[`authorization.service.ts`](../../../app/server/src/services/authorization.service.ts)
+[`authorization.service.ts`](../../../app/server/src/modules/authorization/authorization.service.ts)
 ซึ่งเป็น**โค้ดที่คนต้องจำเรียก** ไม่ใช่กลไกที่บังคับอัตโนมัติ
 
 ผลที่ตามมา: route ใหม่ที่รับ `:courseId` แล้วลืมเรียก จะไม่มีอะไรมารับไว้เลย —

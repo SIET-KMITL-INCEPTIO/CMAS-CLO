@@ -238,7 +238,7 @@ See also: [[project-plan]] · [[code-rule]] · [[git-rule]] · [[features-pages]
 ## 8. กติกาทำงานขนานกัน
 
 1. **1 feature = 1 เจ้าของ** — เจ้าของตัดสินใจเรื่องภายใน feature ได้เอง คนอื่นเสนอผ่าน PR review ไม่แก้โค้ดของ feature คนอื่นตรง ๆ
-2. **แยกโฟลเดอร์ตาม feature** — `app/server/src/modules/<feature>/` และ `app/client/src/pages/<feature>/` ตามโครง Route → Controller → Service → Repository ใน [[code-rule]] §3
+2. **แยกโฟลเดอร์ตาม feature** — `app/server/src/modules/<feature>/` และ `app/client/src/features/<feature>/` ตามโครง Route → Controller → Service → Repository ใน [[code-rule]] §3
 3. **ไฟล์ที่ใช้ร่วม** (`database/schema.prisma` · migration · routes index · เมนู AppShell) — เปิด PR เล็กแยกต่างหาก · **ธ เป็นผู้ merge migration คนเดียว** เพื่อไม่ให้เลข migration ชนกัน
 4. **Branch** `feature/<เลข feature>-<งาน>` เช่น `feature/f6-score-import` แตกจาก `develop` ตาม [[git-rule]] §2
 5. **คู่ review:** สูตรคำนวณของ ธ (F5, F8) → น review · Excel ของ นู (F6, F7) → ธ review · ที่เหลือ review ข้ามคนตามสะดวก — [[git-rule]] บังคับอย่างน้อย 1 คนอยู่แล้ว

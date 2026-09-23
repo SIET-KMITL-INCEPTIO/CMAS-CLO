@@ -1,9 +1,9 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from "react"
 
-const Login = lazy(() => import("./pages/auth/Login.tsx"))
-const Users = lazy(() => import("./pages/admin/Users.tsx"))
-const CourseList = lazy(() => import("./pages/courses/CourseList.tsx"))
-const Home = lazy(() => import("./pages/Home.tsx"))
+const Login = lazy(() => import("./features/auth/Login.page.tsx"))
+const Users = lazy(() => import("./features/users/Users.page.tsx"))
+const CourseList = lazy(() => import("./features/courses/CourseList.page.tsx"))
+const Home = lazy(() => import("./features/home/Home.page.tsx"))
 
 export type AppRoute = {
   path: string

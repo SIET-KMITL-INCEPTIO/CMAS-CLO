@@ -4,41 +4,22 @@
     {
       "name": "client-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "--prefix",
-        "client",
-        "run",
-        "dev"
-      ],
-      "port": 10005,
+      "runtimeArgs": ["run", "dev", "-w", "app/client"],
+      "port": 5173,
       "autoPort": false
     },
     {
       "name": "client-preview",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "--prefix",
-        "client",
-        "run",
-        "preview",
-        "--",
-        "--port",
-        "10006",
-        "--strictPort"
-      ],
-      "port": 10006,
+      "runtimeArgs": ["run", "preview", "-w", "app/client", "--", "--port", "4173", "--strictPort"],
+      "port": 4173,
       "autoPort": false
     },
     {
       "name": "server-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "--prefix",
-        "server",
-        "run",
-        "dev"
-      ],
-      "port": 3000,
+      "runtimeArgs": ["run", "dev", "-w", "app/server"],
+      "port": 3001,
       "autoPort": false
     },
     {

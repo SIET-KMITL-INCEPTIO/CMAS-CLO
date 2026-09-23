@@ -63,27 +63,28 @@ CMAS/
 ├── app/
 │   ├── client/          React 19 + React Router 7 (SPA) → Vercel
 │   │   └── src/
-│   │       ├── api/         fetch wrappers, JWT header, error toasts
-│   │       ├── components/  UI — see components/README.md
-│   │       ├── hooks/       TanStack Query — the only place that calls the API
-│   │       ├── pages/       route targets (default exports)
-│   │       └── store/       Zustand, auth state only
+│   │       ├── features/    one folder per feature: pages, components, hooks, api
+│   │       ├── components/  shared UI only (ui/ = shadcn, layout/)
+│   │       ├── hooks/       shared hooks only
+│   │       ├── lib/         apiClient (JWT header, error toasts), constants, cn()
+│   │       ├── styles/      design tokens + base CSS
+│   │       └── types/       shared DTOs
 │   └── server/          Fastify 5 + TypeScript → Railway / Fly.io
 │       └── src/
-│           ├── routes/       path + middleware registration only
-│           ├── controllers/  thin request/response layer
-│           ├── services/     all business logic
-│           ├── validators/   Zod schemas per resource
+│           ├── modules/      one folder per feature: route → controller → service → repository
 │           ├── middlewares/  auth, RBAC, error handler
-│           └── lib/          env, prisma, jwt, response helpers
-├── database/            schema.prisma (source of truth) + seed.ts
-├── scripts/             setup.mjs
-└── docs/                standards, diagrams, SQL reference
+│           ├── db/           the single PrismaClient
+│           └── lib/          env, jwt, response helpers
+├── database/            schema.prisma (source of truth), migrations/, seed.ts
+├── scripts/             setup.mjs + diagram / workbook generators and checkers
+└── docs/                standards, diagrams, SQL reference — see docs/README.md
 ```
 
 Each app deploys independently. They share nothing but the API contract and
-`database/schema.prisma`. Every layer directory contains a `README.md`
-describing its contract — read those before adding files.
+`database/schema.prisma`. A feature has the **same folder name on both sides**
+(`features/clos/` ↔ `modules/clos/`), so one search finds every layer. Read
+[features/README.md](app/client/src/features/README.md) and
+[modules/README.md](app/server/src/modules/README.md) before adding files.
 
 ---
 
@@ -163,5 +164,5 @@ Early development. The database schema and the client/server skeletons are in
 place; most API endpoints and pages are not implemented yet.
 
 - **Working:** auth scaffolding, `GET /health`, Login / Users / CourseList pages
-- **Scaffolded, not implemented:** the remaining routes in `app/server/src/routes/index.ts`
+- **Scaffolded, not implemented:** the remaining routes in `app/server/src/modules/index.ts`
 - **Scope:** 15 features / 15 pages — see [features-pages.md](docs/markdown/dev/features-pages.md)

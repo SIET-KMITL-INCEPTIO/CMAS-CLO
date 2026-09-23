@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify"
-import { ok } from "../lib/response.js"
+import { ok } from "../../lib/response.js"
 
 export async function healthRoutes(app: FastifyInstance) {
   app.get("/health", async (_request, reply) => {

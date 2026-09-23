@@ -9,7 +9,7 @@
  * It also covers leaf rows (CLO, Activity, Score, ...) whose scope arrives as
  * a caller-supplied parent id: resolve the course, assert access, then act.
  */
-import { prisma } from "../lib/prisma.js"
+import { prisma } from "../../db/prisma.js"
 
 export type Caller = {
   userId: string

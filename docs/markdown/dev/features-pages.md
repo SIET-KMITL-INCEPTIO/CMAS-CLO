@@ -4,7 +4,7 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
 
 > อ้างอิงจาก `database/schema.prisma` ปัจจุบัน — **single-tenant, 11 models:** User, Course,
 > CourseInstructor, CLO, BehavioralObjective, Activity, AssessmentCriteria, ObjectiveAssessment,
-> Student, Score, ScoreUploadLog — และโครงสร้าง route ที่มีอยู่ใน `app/client/src/pages/`
+> Student, Score, ScoreUploadLog — และโครงสร้าง route ที่มีอยู่ใน `app/client/src/features/`
 >
 > **อัปเดต 2026-08-04:** ตัด Curriculum / Institution ออกตามงาน 2.7 → เหลือ **13 feature / 13 หน้า**
 
@@ -36,7 +36,7 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
 
 ## 2. Page Count
 
-แผนที่หน้า (routes) ที่ต้องมีตามโครงสร้าง `app/client/src/pages/` (อิงรูปแบบจาก [[dev]] §3.2):
+แผนที่หน้า (routes) ที่ต้องมีตามโครงสร้าง `app/client/src/features/` (อิงรูปแบบจาก [[dev]] §3.2):
 
 | # | Route | หน้าจอ | Feature ที่เกี่ยวข้อง | สถานะ |
 |---|---|---|---|---|

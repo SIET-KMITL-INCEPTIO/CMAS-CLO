@@ -1,7 +1,7 @@
 import { toast } from "sonner"
-import { API_URL } from "../lib/constants.ts"
-import { useAuthStore } from "../store/authStore.ts"
-import type { ApiResponse } from "../types/index.ts"
+import { API_URL } from "./app.constants.ts"
+import { useAuthStore } from "../features/auth/useAuthStore.ts"
+import type { ApiResponse } from "../types/api.types.ts"
 
 type RequestOptions = Omit<RequestInit, "body"> & { body?: BodyInit | Record<string, unknown> }
 

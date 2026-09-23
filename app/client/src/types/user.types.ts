@@ -7,10 +7,3 @@ export type User = {
   role: Role
   isActive: boolean
 }
-
-export type ApiResponse<T> = {
-  success: boolean
-  data?: T
-  message?: string
-  errors?: unknown
-}

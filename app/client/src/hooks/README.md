@@ -1,11 +1,15 @@
 # hooks/
 
-The **only** place the client is allowed to talk to the API. Components call
-hooks; hooks call `@/api/*`; `@/api/client.ts` attaches the JWT and surfaces
-errors as toasts.
+**Shared hooks only.** A data hook for one feature lives with it
+(`features/clo/useClos.ts`) and moves here only when a second feature needs it.
+See [features/README.md](../features/README.md).
+
+Hooks are the **only** code allowed to talk to the API. Components call hooks,
+hooks call a feature's `xxx.api.ts`, and that calls `@/lib/apiClient.ts`, which
+attaches the JWT and shows errors as toasts.
 
 ```
-Component  →  hook (TanStack Query)  →  api/*.ts  →  apiClient  →  server
+Component  →  useXxx.ts (TanStack Query)  →  xxx.api.ts  →  lib/apiClient.ts  →  server
 ```
 
 ## Contract

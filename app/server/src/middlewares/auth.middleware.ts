@@ -10,7 +10,7 @@
  */
 import type { FastifyReply, FastifyRequest } from "fastify"
 import { verifyToken } from "../lib/jwt.js"
-import { prisma } from "../lib/prisma.js"
+import { prisma } from "../db/prisma.js"
 import { unauthorized } from "../lib/response.js"
 
 declare module "fastify" {
