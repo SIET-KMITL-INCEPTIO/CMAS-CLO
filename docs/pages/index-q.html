@@ -2897,9 +2897,10 @@ function viewRoster(){
       /* P3 (2569-09-23) — ปฏิบัติการให้คะแนนแบบ "เต็มแล้วหักตามที่ทำไม่ได้" ช่องว่างจึงโชว์คะแนนเต็มเป็นค่าเริ่ม
          และมีปุ่มเติมคะแนนเต็มให้ทุกช่องที่ยังว่างในคอลัมน์ · ช่องว่างยังหมายถึง "ยังไม่ประเมิน" จนกว่าจะกดเติม (FR-62) */
       const blanks = a.type === 'LAB' ? d.roster.filter(function(st){ return d.scoreOf(st.id, a.id) === null; }).length : 0;
-      return '<th' + gcls(a, 'num') + '><div>' + esc(a.name) + '</div>' +
-        '<div class="tnum font-normal normal-case tracking-normal text-faint">เต็ม ' + n2x(a.maxScore) +
-          ' · ผ่านที่ ' + n2x(passScoreOf(a)) + ' · ' + a.weight + '% ของวิชา</div>' +
+      /* หัวคอลัมน์แสดงแค่ชื่อกิจกรรม — คะแนนเต็มอยู่ท้ายทุกช่อง (/30) ส่วนเกณฑ์ผ่านและน้ำหนักดูได้จาก tooltip
+         และในหน้ากิจกรรม */
+      return '<th' + gcls(a, 'num') + ' title="' + esc(a.name) + ' · ' + critText(a) + ' · ' + a.weight + '% ของวิชา">' +
+        '<div>' + esc(a.name) + '</div>' +
         (blanks ? '<button class="mt-1 text-[12.5px] font-normal normal-case tracking-normal underline underline-offset-2 text-ink2 hover:text-ink no-print" ' +
             'data-act="fill-max" data-id="' + a.id + '" title="ใส่คะแนนเต็ม ' + n2x(a.maxScore) + ' ให้ ' + blanks +
             ' คนที่ยังไม่มีคะแนน แล้วหักลงรายคน">เริ่มจากคะแนนเต็ม (' + blanks + ')</button>' : '') + '</th>';
