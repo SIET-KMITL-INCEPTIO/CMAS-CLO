@@ -1,0 +1,249 @@
+<mxfile host="65bd71144e">
+    <diagram id="febedb" name="Frontend → Backend → Database">
+        <mxGraphModel dx="1998" dy="1163" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2100" pageHeight="1500" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="febedb-1" value="CMAS · Frontend → Backend → Database" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=26;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="1400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-3" value="Frontend" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="100" width="520" height="720" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-4" value="React 19" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="140" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-5" value="TypeScript" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="148" y="140" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-6" value="Vite 7" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="226" y="140" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-7" value="Tailwind" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="304" y="140" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-8" value="Router 7" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/reactrouter/reactrouter-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="382" y="140" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-9" value="TanStack Query" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/npm/simple-icons@13/icons/reactquery.svg;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="140" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-10" value="&lt;b&gt;Page&lt;/b&gt; · React 19 + React Router 7&lt;br&gt;Users.page.tsx : ผู้ใช้กด &quot;อนุมัติ&quot;&lt;br&gt;เรียก approve.mutate(user.id)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=12;align=left;spacingLeft=8;spacingLeft=140;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="260" width="440" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-11" value="React" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="268" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-12" value="Router" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/reactrouter/reactrouter-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="174" y="268" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-13" value="&lt;b&gt;Hook&lt;/b&gt; · TanStack Query&lt;br&gt;useApproveUser → useMutation&lt;br&gt;mutationFn = usersApi.approve(id)&lt;br&gt;⑩ onSuccess: invalidateQueries → refetch → re-render" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=12;align=left;spacingLeft=8;spacingLeft=76;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="360" width="440" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-14" value="Query" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/npm/simple-icons@13/icons/reactquery.svg;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="368" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-15" value="&lt;b&gt;users.api.ts&lt;/b&gt;&lt;br&gt;apiClient.patch&amp;lt;User&amp;gt;(&quot;/users/:id/approve&quot;)&lt;br&gt;บอกแค่ path + type" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=12;align=left;spacingLeft=8;spacingLeft=76;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="460" width="440" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-16" value="TS" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="468" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-17" value="&lt;b&gt;lib/apiClient.ts&lt;/b&gt; · fetch&lt;br&gt;ใส่ Authorization: Bearer &amp;lt;token&amp;gt; + JSON&lt;br&gt;ถ้า !res.ok → toast.error + throw · คืน json.data" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=12;align=left;spacingLeft=8;spacingLeft=76;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="560" width="440" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-18" value="fetch" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="568" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-19" value="&lt;b&gt;useAuthStore&lt;/b&gt; · Zustand (persist)&lt;br&gt;localStorage &quot;clo-auth&quot; = { user, accessToken }&lt;br&gt;apiClient อ่าน token จากที่นี่ทุก request" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=12;align=left;spacingLeft=8;spacingLeft=140;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="670" width="440" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-20" value="Zustand" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=11;fontStyle=1;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="684" width="56" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-21" value="storage" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/chrome/chrome-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="174" y="678" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-22" value="mutate(id)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-10" target="febedb-13" edge="1">
+                    <mxGeometry x="0.3232" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="febedb-23" value="mutationFn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-13" target="febedb-15" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-24" value="path + type" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-15" target="febedb-17" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-25" value="token" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="febedb-19" target="febedb-17" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-26" value="data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endArrow=open;" parent="1" source="febedb-17" target="febedb-13" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="62" y="597"/>
+                            <mxPoint x="62" y="397"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="febedb-27" value="Backend" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="760" y="400" width="640" height="990" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-28" value="Node.js" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="440" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-29" value="TypeScript" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="440" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-30" value="Fastify 5" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="440" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-31" value="Zod 4" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/npm/simple-icons@13/icons/zod.svg;" parent="1" vertex="1">
+                    <mxGeometry x="1090" y="440" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-32" value="Prisma 6" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="1190" y="440" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-33" value="jose" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/npm/simple-icons@13/icons/jsonwebtokens.svg;" parent="1" vertex="1">
+                    <mxGeometry x="1290" y="440" width="48" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-34" value="&lt;b&gt;Fastify plugins&lt;/b&gt; · hook onRequest&lt;br&gt;helmet: security headers · cors: ตรวจ origin&lt;br&gt;rate-limit: นับ request (เกิน → 429)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#9673A6;fontSize=12;align=left;spacingLeft=8;spacingLeft=76;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="570" width="560" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-35" value="Fastify" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="578" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-36" value="&lt;b&gt;Route&lt;/b&gt; · xxx.route.ts (Fastify routing)&lt;br&gt;จับ PATCH /users/:id/approve → ประกอบ&lt;br&gt;Controller(Service(Repository)) · ใส่ preHandler" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#82B366;fontSize=12;align=left;spacingLeft=8;spacingLeft=76;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="670" width="560" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-37" value="Fastify" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="678" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-38" value="&lt;b&gt;authMiddleware&lt;/b&gt; · preHandler[0] + &lt;b&gt;jose&lt;/b&gt;&lt;br&gt;jwtVerify(token) → sub · แล้ว prisma.user.findUnique(sub)&lt;br&gt;อ่าน role/isActive ใหม่ทุก request (ผิด → 401)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#B85450;fontSize=12;align=left;spacingLeft=8;spacingLeft=204;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="770" width="560" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-39" value="Fastify" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="778" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-40" value="jose" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/npm/simple-icons@13/icons/jsonwebtokens.svg;" parent="1" vertex="1">
+                    <mxGeometry x="884" y="778" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-41" value="Prisma" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="948" y="778" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-42" value="&lt;b&gt;rbac(&#39;ADMIN&#39;)&lt;/b&gt; · preHandler[1]&lt;br&gt;เทียบ req.userRole (มาจาก DB) กับ ADMIN&lt;br&gt;ไม่ผ่าน → 403" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#B85450;fontSize=12;align=left;spacingLeft=8;spacingLeft=76;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="870" width="560" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-43" value="Fastify" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="878" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-44" value="&lt;b&gt;Controller&lt;/b&gt; + &lt;b&gt;Zod 4&lt;/b&gt;&lt;br&gt;userIdParamsSchema.parse(req.params) → { id }&lt;br&gt;ไม่ผ่าน → throw ZodError → errorHandler → 400" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#9673A6;fontSize=12;align=left;spacingLeft=8;spacingLeft=140;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="970" width="560" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-45" value="Fastify" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="978" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-46" value="Zod" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/npm/simple-icons@13/icons/zod.svg;" parent="1" vertex="1">
+                    <mxGeometry x="884" y="978" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-47" value="&lt;b&gt;Service&lt;/b&gt; · UsersService.approve(id)&lt;br&gt;findById → ไม่มี: null (→ 404) · ACTIVE แล้ว: คืนค่าเดิม&lt;br&gt;ไม่ใช่: repo.approve(id) · (route ผูก course: assertCourseAccess)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#82B366;fontSize=12;align=left;spacingLeft=8;spacingLeft=76;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="1070" width="560" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-48" value="TS" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="1078" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-49" value="&lt;b&gt;Repository&lt;/b&gt; + &lt;b&gt;Prisma Client&lt;/b&gt;&lt;br&gt;prisma.user.update({ where:{id}, data:{status:&quot;ACTIVE&quot;} })&lt;br&gt;ไฟล์เดียวที่แตะ prisma.user" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#9673A6;fontSize=12;align=left;spacingLeft=8;spacingLeft=76;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="1170" width="560" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-50" value="Prisma" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="1178" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-51" value="&lt;b&gt;lib/response.ts&lt;/b&gt; → ok(reply, user)&lt;br&gt;200 { success:true, data }&lt;br&gt;&lt;b&gt;errorHandler&lt;/b&gt;: ZodError 400 · P2002 400 · P2025 404 · อื่น ๆ 500" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#B85450;fontSize=12;align=left;spacingLeft=8;spacingLeft=204;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="1270" width="560" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-52" value="Fastify" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="1278" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-53" value="Zod" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/npm/simple-icons@13/icons/zod.svg;" parent="1" vertex="1">
+                    <mxGeometry x="884" y="1278" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-54" value="Prisma" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="948" y="1278" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-55" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-34" target="febedb-36" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-56" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-36" target="febedb-38" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-57" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-38" target="febedb-42" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-58" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-42" target="febedb-44" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-59" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-44" target="febedb-47" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-60" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-47" target="febedb-49" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-61" value="User → ตอบกลับ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-49" target="febedb-51" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-62" value="HTTPS · JSON&lt;br&gt;PATCH /users/:id/approve&lt;br&gt;Authorization: Bearer &amp;lt;JWT&amp;gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" parent="1" source="febedb-17" target="febedb-34" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-63" value="⑨ 200 { success, data }" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;dashed=1;endArrow=open;" parent="1" source="febedb-51" target="febedb-17" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="660" y="1307"/>
+                            <mxPoint x="660" y="615"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="febedb-64" value="Database" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1620" y="1000" width="420" height="390" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-65" value="PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="1840" y="1030" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-66" value="Supabase (host)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="1930" y="1030" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-67" value="&lt;b&gt;Prisma Query Engine&lt;/b&gt; (Rust)&lt;br&gt;รับ query จาก Prisma Client&lt;br&gt;สร้าง SQL แล้วส่งผ่าน TCP (DATABASE_URL)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#9673A6;fontSize=12;align=left;spacingLeft=8;spacingLeft=140;" parent="1" vertex="1">
+                    <mxGeometry x="1650" y="1160" width="360" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-68" value="Prisma" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="1670" y="1168" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-69" value="Rust" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="1734" y="1168" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-70" value="&lt;b&gt;PostgreSQL&lt;/b&gt; · ตาราง &quot;User&quot;&lt;br&gt;UPDATE &quot;User&quot; SET status=&#39;ACTIVE&#39; WHERE id=$1&lt;br&gt;CHECK ~40 + triggers ตรวจซ้ำอีกชั้น" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#D79B00;fontSize=12;align=left;spacingLeft=8;spacingLeft=76;" parent="1" vertex="1">
+                    <mxGeometry x="1650" y="1280" width="360" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-71" value="Postgres" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=10;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="1670" y="1288" width="36" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-72" value="SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="febedb-67" target="febedb-70" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-73" value="update(...)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" parent="1" source="febedb-49" target="febedb-67" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-74" value="row → User (มี type)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.8;exitDx=0;exitDy=0;entryX=1;entryY=0.8;entryDx=0;entryDy=0;dashed=1;endArrow=open;" parent="1" source="febedb-67" target="febedb-49" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="febedb-75" value="SELECT role,isActive&lt;br&gt;(authMiddleware)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" parent="1" source="febedb-38" target="febedb-67" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1500" y="807"/>
+                            <mxPoint x="1830" y="807"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

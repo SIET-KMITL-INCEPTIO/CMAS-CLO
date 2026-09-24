@@ -1,0 +1,1506 @@
+<mxfile host="65bd71144e">
+    <diagram id="arch-0" name="0 · Stack + Flow">
+        <mxGraphModel dx="3499" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1520" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="arch-0-1" value="CMAS · System Architecture &amp; Data Flow" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=26;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="1400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-3" value="Frontend  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Browser · Vite dev :5173 · app/client&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="90" width="1000" height="330" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-4" value="React 19" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="135" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-5" value="TypeScript" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="175" y="135" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-6" value="Vite 7" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="135" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-7" value="Tailwind v4" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="365" y="135" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-8" value="React Router 7" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/reactrouter/reactrouter-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="135" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-9" value="TanStack Query" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/npm/simple-icons@13/icons/reactquery.svg;" parent="1" vertex="1">
+                    <mxGeometry x="555" y="135" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-10" value="Zustand" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="143" width="76" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-11" value="sonner" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="736" y="143" width="64" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-12" value="recharts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="810" y="143" width="76" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-13" value="xlsx" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="896" y="143" width="60" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-14" value="&lt;b&gt;Page&lt;/b&gt;&lt;br&gt;xxx.page.tsx (React Router)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="250" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-15" value="&lt;b&gt;Hook&lt;/b&gt;&lt;br&gt;useQuery / useMutation" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="310" y="250" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-16" value="&lt;b&gt;xxx.api.ts&lt;/b&gt;&lt;br&gt;path + type" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="550" y="250" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-17" value="&lt;b&gt;apiClient&lt;/b&gt;&lt;br&gt;fetch + Bearer + JSON" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="250" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-18" value="&lt;b&gt;useAuthStore&lt;/b&gt; (Zustand)&lt;br&gt;localStorage &quot;clo-auth&quot;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="345" width="200" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-0-14" target="arch-0-15" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-0-15" target="arch-0-16" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-0-16" target="arch-0-17" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-22" value="token" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="arch-0-18" target="arch-0-17" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-23" value="⑩ data → cache → re-render" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;endArrow=open;" parent="1" source="arch-0-17" target="arch-0-15" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="830" y="330"/>
+                            <mxPoint x="410" y="330"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-0-24" value="" style="html=1;endArrow=none;strokeColor=#F5A623;strokeWidth=3;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="20" y="480" as="sourcePoint"/>
+                        <mxPoint x="1480" y="480" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-0-25" value="Client" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=right;verticalAlign=top;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1390" y="448" width="90" height="28" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-26" value="Server" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=right;verticalAlign=top;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1390" y="488" width="90" height="28" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-27" value="Backend  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Node.js · Fastify 5 :3001 · app/server&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="560" width="1000" height="360" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-28" value="Node.js" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="605" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-29" value="TypeScript" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="180" y="605" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-30" value="Fastify 5" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="605" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-31" value="Zod 4" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/npm/simple-icons@13/icons/zod.svg;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="605" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-32" value="Prisma 6" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="605" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-33" value="jose (JWT)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/npm/simple-icons@13/icons/jsonwebtokens.svg;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="605" width="56" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-34" value="argon2" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="613" width="80" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-35" value="pino (log)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="770" y="613" width="80" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-36" value="xlsx" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="613" width="60" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-37" value="&lt;b&gt;Plugins&lt;/b&gt;&lt;br&gt;helmet · cors&lt;br&gt;rate-limit" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="715" width="118" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-38" value="&lt;b&gt;Route&lt;/b&gt;&lt;br&gt;xxx.route.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="205" y="715" width="118" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-39" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-0-37" target="arch-0-38" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-40" value="&lt;b&gt;authMiddleware&lt;/b&gt;&lt;br&gt;jose verify&lt;br&gt;+ อ่าน User" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="715" width="118" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-41" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-0-38" target="arch-0-40" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-42" value="&lt;b&gt;rbac()&lt;/b&gt;&lt;br&gt;ตรวจ role" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="475" y="715" width="118" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-43" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-0-40" target="arch-0-42" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-44" value="&lt;b&gt;Controller&lt;/b&gt;&lt;br&gt;Zod parse" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="610" y="715" width="118" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-45" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-0-42" target="arch-0-44" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-46" value="&lt;b&gt;Service&lt;/b&gt;&lt;br&gt;business rule&lt;br&gt;assertCourseAccess" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="745" y="715" width="118" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-47" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-0-44" target="arch-0-46" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-48" value="&lt;b&gt;Repository&lt;/b&gt;&lt;br&gt;Prisma Client" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="715" width="118" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-49" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-0-46" target="arch-0-48" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-50" value="&lt;b&gt;lib/response.ts&lt;/b&gt; → { success, data } / { success:false, message | errors }" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="830" width="440" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-51" value="&lt;b&gt;error-handler&lt;/b&gt; → ZodError 400 · Prisma P2002 400 / P2025 404 · อื่น ๆ 500" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="830" width="460" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-52" value="Databases" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="600" width="220" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-53" value="PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="1270" y="650" width="64" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-54" value="Supabase (host)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="1370" y="650" width="64" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-55" value="13 ตาราง (schema.prisma)&lt;br&gt;~40 CHECK + 4 triggers&lt;br&gt;prisma migrate เท่านั้น" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="770" width="180" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-56" value="Services  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;ภายนอก&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1010" width="1000" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-57" value="Google Identity" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="1065" width="64" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-58" value="&lt;b&gt;accounts.google.com&lt;/b&gt;&lt;br&gt;ปุ่ม Sign in with Google → ID token (JWT ของ Google)&lt;br&gt;ใช้ฝั่ง client · ①" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="1060" width="370" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-59" value="&lt;b&gt;googleapis.com/oauth2/v3/certs&lt;/b&gt;&lt;br&gt;JWKS: public key สำหรับตรวจลายเซ็น&lt;br&gt;ใช้ฝั่ง server (jose createRemoteJWKSet) · ③" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="620" y="1060" width="390" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-60" value="② POST /auth/google { idToken }&lt;br&gt;⑥ HTTPS + JSON&lt;br&gt;Authorization: Bearer &amp;lt;JWT&amp;gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.46;exitY=1;exitDx=0;exitDy=0;entryX=0.46;entryY=0;entryDx=0;entryDy=0;labelPosition=left;align=right;" parent="1" source="arch-0-3" target="arch-0-27" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-61" value="⑤ { user, accessToken }&lt;br&gt;⑨ { success, data }" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.52;exitY=0;exitDx=0;exitDy=0;entryX=0.52;entryY=1;entryDx=0;entryDy=0;labelPosition=right;align=left;" parent="1" source="arch-0-27" target="arch-0-3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-62" value="④ ⑦ ⑧ SQL (Prisma)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.3889;exitDx=0;exitDy=0;entryX=0;entryY=0.3571;entryDx=0;entryDy=0;" parent="1" source="arch-0-27" target="arch-0-52" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-63" value="rows" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5714;exitDx=0;exitDy=0;entryX=1;entryY=0.5556;entryDx=0;entryDy=0;endArrow=open;dashed=1;" parent="1" source="arch-0-52" target="arch-0-27" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-64" value="③ GET JWKS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.46;exitY=1;exitDx=0;exitDy=0;entryX=0.46;entryY=0;entryDx=0;entryDy=0;labelPosition=left;align=right;" parent="1" source="arch-0-27" target="arch-0-56" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-65" value="public keys" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.52;exitY=0;exitDx=0;exitDy=0;entryX=0.52;entryY=1;entryDx=0;entryDy=0;labelPosition=right;align=left;endArrow=open;dashed=1;" parent="1" source="arch-0-56" target="arch-0-27" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-66" value="① Sign in → ID token" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.6;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;dashed=1;" parent="1" source="arch-0-3" target="arch-0-56" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="20" y="288"/>
+                            <mxPoint x="20" y="1067"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-0-67" value="ลำดับการทำงาน (Flow)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="90" width="620" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-68" value="&lt;b&gt;#&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#333333;fontColor=#FFFFFF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="130" width="40" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-69" value="&lt;b&gt;จาก → ไป&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#333333;fontColor=#FFFFFF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="130" width="170" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-70" value="&lt;b&gt;ส่งอะไร / ทำอะไร&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#333333;fontColor=#FFFFFF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="130" width="270" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-71" value="&lt;b&gt;Library&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#333333;fontColor=#FFFFFF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="130" width="140" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-72" value="①" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;fontSize=12;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="166" width="40" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-73" value="Login.page → Google" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="166" width="170" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-74" value="ผู้ใช้กด Sign in, Google คืน ID token (credential)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="166" width="270" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-75" value="Google Identity Services" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="166" width="140" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-76" value="②" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;fontSize=12;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="250" width="40" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-77" value="apiClient → POST /auth/google" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="250" width="170" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-78" value="ส่ง { idToken } เป็น JSON ผ่าน HTTPS · ผ่าน cors + rate-limit" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="250" width="270" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-79" value="fetch · @fastify/cors · rate-limit" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="250" width="140" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-80" value="③" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;fontSize=12;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="334" width="40" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-81" value="AuthService → Google JWKS" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="334" width="170" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-82" value="ตรวจลายเซ็น, iss, aud = GOOGLE_CLIENT_ID, exp, email_verified" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="334" width="270" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-83" value="jose" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="334" width="140" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-84" value="④" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;fontSize=12;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="418" width="40" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-85" value="UserRepository → PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="418" width="170" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-86" value="หา User จาก googleSub / email ถ้าไม่มีก็สร้างใหม่ · โดเมนคณะ = ACTIVE, นอกคณะ = PENDING" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="418" width="270" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-87" value="Prisma" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="418" width="140" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-88" value="⑤" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;fontSize=12;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="502" width="40" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-89" value="Fastify → React" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="502" width="170" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-90" value="ออก accessToken 15 นาที + refresh 7 วัน · client เก็บ user + accessToken" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="502" width="270" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-91" value="jose SignJWT · Zustand persist" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="502" width="140" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-92" value="⑥" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;fontSize=12;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="586" width="40" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-93" value="Page → Hook → api → apiClient → Fastify" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="586" width="170" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-94" value="ทุก request แนบ Authorization: Bearer &amp;lt;JWT&amp;gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="586" width="270" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-95" value="TanStack Query · fetch" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="586" width="140" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-96" value="⑦" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;fontSize=12;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="670" width="40" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-97" value="authMiddleware → PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="670" width="170" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-98" value="verify JWT แล้วอ่าน role + isActive ใหม่ทุก request → rbac() ตรวจ role (401 / 403)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="670" width="270" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-99" value="jose · Prisma" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="670" width="140" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-100" value="⑧" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;fontSize=12;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="754" width="40" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-101" value="Controller → Service → Repository → DB" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="754" width="170" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-102" value="Zod ตรวจ input → กฎธุรกิจ + assertCourseAccess (404) → query" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="754" width="270" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-103" value="Zod · Prisma" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="754" width="140" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-104" value="⑨" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;fontSize=12;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="838" width="40" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-105" value="Fastify → React" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="838" width="170" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-106" value="{ success, data } หรือ error 400/401/403/404/500 จาก error-handler" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="838" width="270" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-107" value="lib/response.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="838" width="140" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-108" value="⑩" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;fontSize=12;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="922" width="40" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-109" value="apiClient → Hook → Page" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="922" width="170" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-110" value="คืน data เข้า cache แล้ว re-render · ถ้า error แสดง toast · mutation สำเร็จ → invalidate แล้ว refetch" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="1750" y="922" width="270" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-111" value="TanStack Query · sonner" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#FFFFFF;strokeColor=#BBBBBB;fontSize=12;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="2020" y="922" width="140" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-112" value="&lt;b&gt;Frontend libraries ทำหน้าที่อะไร&lt;/b&gt;&lt;br&gt;• React 19 — วาด UI เป็น component · React Router 7 — map URL → Page (pages.config.ts)&lt;br&gt;• TanStack Query — เรียก API, cache, retry, invalidate · Zustand — เก็บ user + token (auth อย่างเดียว)&lt;br&gt;• Tailwind v4 (+ cva, tailwind-merge, lucide แบบ shadcn/ui แต่ยังไม่มี component) · sonner — toast&lt;br&gt;• recharts — กราฟ dashboard · xlsx (SheetJS) — อ่าน/สร้าง Excel (ทั้งคู่ติดตั้งแล้ว แต่ยังไม่ได้ใช้)&lt;br&gt;• Vite 7 — dev server + build · TypeScript strict — type ร่วมกับ response ของ server" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=note;size=16;fillColor=#FFF2CC;strokeColor=#D6B656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1250" width="720" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-0-113" value="&lt;b&gt;Backend libraries ทำหน้าที่อะไร&lt;/b&gt;&lt;br&gt;• Fastify 5 — HTTP server, route, preHandler · helmet / cors / rate-limit / multipart — plugin ความปลอดภัย + upload&lt;br&gt;• Zod 4 — ตรวจ input ทุก request + ตรวจ .env ตอน boot · jose — ออก/ตรวจ JWT + ตรวจ Google ID token&lt;br&gt;• Prisma 6 — ORM → PostgreSQL, migration · argon2 — hash รหัสผ่าน (สำหรับ login ด้วย email, ยังไม่มี route)&lt;br&gt;• pino — log (pino-pretty ตอน dev) · xlsx — อ่านไฟล์ Excel คะแนน (ติดตั้งแล้ว แต่ module excel ยังไม่มี)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=note;size=16;fillColor=#FFF2CC;strokeColor=#D6B656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="1250" width="700" height="140" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="arch-1" name="1 · ภาพรวม 3-tier">
+        <mxGraphModel dx="3699" dy="1008" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1000" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="arch-1-1" value="CMAS · Software Architecture (ภาพรวม)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=24;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="900" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-2" value="อ้างอิงโค้ดจริง commit ff6ed7c (2026-09-24) · กล่องเส้นประ = ยังไม่มีในโค้ด" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="66" width="900" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-3" value="Presentation tier · Browser&lt;br&gt;React 19 SPA (Vite :5173)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=none;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontStyle=1;fontSize=16;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="100" width="480" height="560" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-4" value="&lt;b&gt;Pages&lt;/b&gt; (pages.config.ts)&lt;br&gt;/ · /auth/login · /admin/users · /courses" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="170" width="420" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-5" value="&lt;b&gt;Hooks&lt;/b&gt; — TanStack Query&lt;br&gt;useQuery / useMutation · cache" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="260" width="420" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-6" value="&lt;b&gt;Feature API&lt;/b&gt; — xxx.api.ts&lt;br&gt;path + type เท่านั้น" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="350" width="420" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-7" value="&lt;b&gt;lib/apiClient.ts&lt;/b&gt;&lt;br&gt;ใส่ Bearer token · JSON · unwrap data · toast error" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="430" width="420" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-8" value="&lt;b&gt;useAuthStore&lt;/b&gt; (Zustand + persist)&lt;br&gt;localStorage &quot;clo-auth&quot; = { user, accessToken }" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="530" width="420" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-1-4" target="arch-1-5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-1-5" target="arch-1-6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-1-6" target="arch-1-7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-12" value="accessToken" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="arch-1-8" target="arch-1-7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-13" value="Application tier · API Server&lt;br&gt;Fastify 5 + Node (:3001)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=none;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontStyle=1;fontSize=16;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="100" width="560" height="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-14" value="&lt;b&gt;Plugins&lt;/b&gt; — helmet · cors · rate-limit · multipart(10MB)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="170" width="500" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-15" value="&lt;b&gt;Route&lt;/b&gt; — xxx.route.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="240" width="500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-16" value="&lt;b&gt;preHandler&lt;/b&gt; — authMiddleware → rbac()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="300" width="500" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-17" value="&lt;b&gt;Controller&lt;/b&gt; — Zod parse · เลือก response" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="370" width="500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-18" value="&lt;b&gt;Service&lt;/b&gt; — business rule · assertCourseAccess()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="430" width="500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-19" value="&lt;b&gt;Repository&lt;/b&gt; — ไฟล์เดียวที่แตะ prisma.&amp;lt;model&amp;gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="490" width="500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-20" value="&lt;b&gt;db/prisma.ts&lt;/b&gt; — PrismaClient ตัวเดียว" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="550" width="500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-1-14" target="arch-1-15" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-1-15" target="arch-1-16" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-1-16" target="arch-1-17" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-1-17" target="arch-1-18" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-25" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-1-18" target="arch-1-19" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-1-19" target="arch-1-20" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-27" value="Modules ที่มีจริง" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="610" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-28" value="health" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="635" width="115" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-29" value="auth" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="795" y="635" width="115" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-30" value="users" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="635" width="115" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-31" value="authorization" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1045" y="635" width="115" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-32" value="Modules ตามแผน (comment อยู่ใน modules/index.ts)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="685" width="500" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-33" value="courses" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#999999;dashed=1;fontColor=#777777;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="710" width="115" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-34" value="clos" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#999999;dashed=1;fontColor=#777777;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="795" y="710" width="115" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-35" value="excel" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#999999;dashed=1;fontColor=#777777;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="710" width="115" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-36" value="dashboard" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#999999;dashed=1;fontColor=#777777;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1045" y="710" width="115" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-37" value="&lt;b&gt;error-handler&lt;/b&gt;: Zod→400 · P2002→400 · P2025→404 · อื่น→500" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="755" width="500" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-38" value="&lt;b&gt;PostgreSQL&lt;/b&gt; (Supabase)&lt;br&gt;Prisma 6&lt;br&gt;+ ~40 CHECK&lt;br&gt;+ 4 triggers" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="470" width="200" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-39" value="Data tier" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="440" width="200" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-40" value="&lt;b&gt;Google Identity Services&lt;/b&gt;&lt;br&gt;accounts.google.com (ปุ่ม Sign-in, ID token)&lt;br&gt;googleapis.com/oauth2/v3/certs (JWKS)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="360" y="860" width="640" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-41" value="HTTPS · JSON&lt;br&gt;Authorization: Bearer &amp;lt;JWT&amp;gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="arch-1-7" target="arch-1-14" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-42" value="{ success, data | message | errors }" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.8;exitDx=0;exitDy=0;entryX=1;entryY=0.8;entryDx=0;entryDy=0;dashed=1;endArrow=open;" parent="1" source="arch-1-14" target="arch-1-7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-43" value="SQL (TCP, DATABASE_URL)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="arch-1-20" target="arch-1-38" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-44" value="① popup → ID token (credential)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" parent="1" source="arch-1-4" target="arch-1-40" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-1-45" value="② GET JWKS ตรวจลายเซ็น (cache)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" parent="1" source="arch-1-18" target="arch-1-40" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="arch-2" name="2 · Client (React SPA)">
+        <mxGraphModel dx="1499" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="arch-2-1" value="Client — ข้อมูลไหลอย่างไรใน app/client/src" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=24;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="900" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-2" value="&lt;b&gt;main.tsx&lt;/b&gt;&lt;br&gt;QueryClient (retry 1, staleTime 30s)&lt;br&gt;QueryClientProvider" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="80" width="340" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-3" value="&lt;b&gt;App.tsx&lt;/b&gt;&lt;br&gt;BrowserRouter · Toaster (sonner) · Suspense" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="190" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-4" value="&lt;b&gt;pages.config.ts&lt;/b&gt;&lt;br&gt;route table + lazy import" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="290" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-2-2" target="arch-2-3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-2-3" target="arch-2-4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-7" value="&lt;b&gt;Home.page&lt;/b&gt;&lt;br&gt;/" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="400" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="arch-2-4" target="arch-2-7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-9" value="&lt;b&gt;Login.page&lt;/b&gt;&lt;br&gt;/auth/login" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="400" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="arch-2-4" target="arch-2-9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-11" value="&lt;b&gt;Users.page&lt;/b&gt;&lt;br&gt;/admin/users" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="720" y="400" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="arch-2-4" target="arch-2-11" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-13" value="&lt;b&gt;CourseList.page&lt;br&gt;(ยังว่าง)&lt;/b&gt;&lt;br&gt;/courses" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFFFFF;strokeColor=#999999;dashed=1;fontColor=#777777;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="400" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="arch-2-4" target="arch-2-13" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-15" value="&lt;b&gt;useUsers.ts&lt;/b&gt;&lt;br&gt;usePendingUsers → useQuery [&#39;users&#39;,&#39;PENDING&#39;]&lt;br&gt;useApproveUser → useMutation&lt;br&gt;onSuccess: invalidateQueries([&#39;users&#39;])" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="510" width="380" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-16" value="&lt;b&gt;users.api.ts&lt;/b&gt;&lt;br&gt;list(status) → GET /users?status=&lt;br&gt;approve(id) → PATCH /users/:id/approve" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="640" width="380" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-2-11" target="arch-2-15" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-2-15" target="arch-2-16" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-19" value="&lt;b&gt;window.google.accounts.id&lt;/b&gt;&lt;br&gt;initialize · renderButton&lt;br&gt;callback(credential)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="510" width="300" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-20" value="โหลดปุ่ม" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="arch-2-9" target="arch-2-19" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-21" value="&lt;b&gt;lib/apiClient.ts&lt;/b&gt;&lt;br&gt;1 อ่าน accessToken จาก store&lt;br&gt;2 ใส่ Authorization: Bearer&lt;br&gt;3 JSON.stringify body (ยกเว้น FormData)&lt;br&gt;4 fetch(API_URL + path)&lt;br&gt;5 !res.ok → toast.error + throw&lt;br&gt;6 return json.data" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="760" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-2-16" target="arch-2-21" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-23" value="POST /auth/google {idToken}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" parent="1" source="arch-2-9" target="arch-2-21" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-24" value="&lt;b&gt;useAuthStore&lt;/b&gt; (Zustand persist)&lt;br&gt;{ user, accessToken }&lt;br&gt;setAuth · clearAuth (ยังไม่มีใครเรียก)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="800" width="300" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-25" value="localStorage&lt;br&gt;&quot;clo-auth&quot;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#F5F5F5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="960" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-26" value="setAuth(user, accessToken)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.15;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="arch-2-9" target="arch-2-24" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-27" value="getState().accessToken" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.6;entryDx=0;entryDy=0;" parent="1" source="arch-2-24" target="arch-2-21" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-28" value="persist" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-2-24" target="arch-2-25" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-29" value="&lt;b&gt;API Server&lt;/b&gt; :3001&lt;br&gt;(VITE_API_URL)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="960" y="800" width="220" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-30" value="HTTP request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" parent="1" source="arch-2-21" target="arch-2-29" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-31" value="ApiResponse&amp;lt;T&amp;gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.7;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;dashed=1;endArrow=open;" parent="1" source="arch-2-29" target="arch-2-21" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-2-32" value="&lt;b&gt;กติกาชั้น client&lt;/b&gt;&lt;br&gt;Page → useXxx (Query) → xxx.api → apiClient → fetch&lt;br&gt;• Page ไม่เรียก fetch ตรง&lt;br&gt;• server state อยู่ใน TanStack Query cache&lt;br&gt;• Zustand ใช้เฉพาะ auth&lt;br&gt;• ยังไม่มี route guard: /admin/users เปิดได้ แต่ server ตอบ 401/403" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=note;size=16;fillColor=#FFF2CC;strokeColor=#D6B656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="520" width="380" height="170" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="arch-3" name="3 · Server request pipeline">
+        <mxGraphModel dx="1499" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1250" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="arch-3-1" value="Server — เส้นทางของ 1 request (Fastify)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=24;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="900" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-2" value="HTTP request" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="80" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-3" value="&lt;b&gt;helmet&lt;/b&gt; → security headers" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="162" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-4" value="index.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="178" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-2" target="arch-3-3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-6" value="&lt;b&gt;cors&lt;/b&gt; → origin = CORS_ORIGIN, credentials" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="244" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-7" value="index.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="260" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-3" target="arch-3-6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-9" value="&lt;b&gt;rate-limit&lt;/b&gt; → RATE_LIMIT_MAX / RATE_LIMIT_WINDOW (100/นาที)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="326" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-10" value="index.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="342" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-6" target="arch-3-9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-12" value="&lt;b&gt;multipart&lt;/b&gt; → ไฟล์ ≤ 10MB" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="408" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-13" value="index.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="424" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-9" target="arch-3-12" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-15" value="&lt;b&gt;Route&lt;/b&gt; → จับ method+path, ประกอบ Controller(Service(Repository))" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="490" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-16" value="xxx.route.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="506" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-12" target="arch-3-15" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-18" value="&lt;b&gt;authMiddleware&lt;/b&gt; → verify JWT (HS256) → SELECT role,isActive FROM User&lt;br&gt;→ request.userId, request.userRole (จาก DB)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="572" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-19" value="auth.middleware.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="588" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-15" target="arch-3-18" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-21" value="&lt;b&gt;rbac(role)&lt;/b&gt; → ไม่ตรง role และไม่ใช่ ADMIN → 403" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="654" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-22" value="rbac.middleware.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="670" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-18" target="arch-3-21" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-24" value="&lt;b&gt;Controller&lt;/b&gt; → Zod.parse(body/query/params) → เรียก service → เลือก response" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="736" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-25" value="xxx.controller.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="752" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-21" target="arch-3-24" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-27" value="&lt;b&gt;Service&lt;/b&gt; → business rule · assertCourseAccess(courseId) → 404" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="818" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-28" value="xxx.service.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="834" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-24" target="arch-3-27" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-30" value="&lt;b&gt;Repository&lt;/b&gt; → prisma.&amp;lt;model&amp;gt;.*" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="900" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-31" value="xxx.repository.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="916" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-32" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-27" target="arch-3-30" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-33" value="&lt;b&gt;PostgreSQL&lt;/b&gt; → CHECK + triggers ตรวจซ้ำชั้นสุดท้าย" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="982" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-34" value="migrations/0002, 0004" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="998" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-35" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-30" target="arch-3-33" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-36" value="&lt;b&gt;lib/response.ts&lt;/b&gt; → ok / created / badRequest / unauthorized / forbidden / notFound" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="1064" width="620" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-37" value="response.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="1080" width="260" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-38" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-3-33" target="arch-3-36" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-39" value="401 ไม่มี/ผิด token&lt;br&gt;หรือบัญชีไม่ active" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="572" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-40" value="&lt;b&gt;error-handler.middleware.ts&lt;/b&gt;&lt;br&gt;ZodError → 400 { errors: flatten }&lt;br&gt;Prisma P2002 → 400 Duplicate entry&lt;br&gt;Prisma P2025 → 404 Record not found&lt;br&gt;อื่น ๆ → 500" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="700" width="340" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-41" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" parent="1" source="arch-3-24" target="arch-3-40" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-42" value="throw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" parent="1" source="arch-3-27" target="arch-3-40" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-43" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" parent="1" source="arch-3-30" target="arch-3-40" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-44" value="&lt;b&gt;Response envelope&lt;/b&gt;&lt;br&gt;{ success: true, data }&lt;br&gt;{ success: false, message }&lt;br&gt;{ success: false, errors }" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=note;size=16;fillColor=#FFF2CC;strokeColor=#D6B656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="900" width="340" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-3-45" value="&lt;b&gt;Endpoints ที่มีจริง&lt;/b&gt;&lt;br&gt;GET /health — public&lt;br&gt;POST /auth/google — public (เป็น route login เอง)&lt;br&gt;GET /users?status= — auth + ADMIN&lt;br&gt;PATCH /users/:id/approve — auth + ADMIN" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=note;size=16;fillColor=#FFF2CC;strokeColor=#D6B656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="90" width="360" height="130" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="arch-4" name="4 · Sequence · Google login (FR-08)">
+        <mxGraphModel dx="1499" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1400" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="arch-4-1" value="Sequence — Login ด้วย Google (POST /auth/google)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=22;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="1500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-2" value="ผู้ใช้" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#F5F5F5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="80" width="152" height="1180" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-3" value="Login.page" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="222" y="80" width="152" height="1180" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-4" value="Google GIS" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#F5F5F5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="404" y="80" width="152" height="1180" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-5" value="useAuthStore" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="586" y="80" width="152" height="1180" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-6" value="Fastify&lt;br&gt;/auth/google" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="768" y="80" width="152" height="1180" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-7" value="AuthController" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="950" y="80" width="152" height="1180" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-8" value="AuthService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="1132" y="80" width="152" height="1180" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-9" value="lib/google.ts&lt;br&gt;+ Google JWKS" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#F5F5F5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="1314" y="80" width="152" height="1180" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-10" value="UserRepository" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="1496" y="80" width="152" height="1180" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-11" value="PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="1678" y="80" width="152" height="1180" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-4-12" value="เปิด /auth/login" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="116" y="170" as="sourcePoint"/>
+                        <mxPoint x="298" y="170" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-13" value="initialize(client_id) + renderButton" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="298" y="220" as="sourcePoint"/>
+                        <mxPoint x="480" y="220" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-14" value="คลิก Sign in, เลือกบัญชี" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="116" y="270" as="sourcePoint"/>
+                        <mxPoint x="480" y="270" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-15" value="callback({ credential: ID token })" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="480" y="320" as="sourcePoint"/>
+                        <mxPoint x="298" y="320" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-16" value="apiClient.post(&#39;/auth/google&#39;, { idToken })" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="298" y="370" as="sourcePoint"/>
+                        <mxPoint x="844" y="370" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-17" value="loginWithGoogle(req)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="844" y="420" as="sourcePoint"/>
+                        <mxPoint x="1026" y="420" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-18" value="googleLoginSchema.parse → idToken" style="html=1;fontSize=12;align=left;spacingLeft=6;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1026" y="470" as="sourcePoint"/>
+                        <mxPoint x="1026" y="494" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1062" y="470"/>
+                            <mxPoint x="1062" y="494"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-19" value="loginWithGoogle(idToken)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1026" y="530" as="sourcePoint"/>
+                        <mxPoint x="1208" y="530" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-20" value="verifyGoogleIdToken: sig, iss, aud=GOOGLE_CLIENT_ID, exp" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1208" y="580" as="sourcePoint"/>
+                        <mxPoint x="1390" y="580" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-21" value="{ sub, email, emailVerified, name, hd } หรือ throw → invalid" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1390" y="630" as="sourcePoint"/>
+                        <mxPoint x="1208" y="630" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-22" value="findByGoogleSub(sub)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1208" y="680" as="sourcePoint"/>
+                        <mxPoint x="1572" y="680" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-23" value="SELECT User WHERE googleSub" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1572" y="730" as="sourcePoint"/>
+                        <mxPoint x="1754" y="730" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-24" value="ไม่เจอ → findByEmail(email)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1572" y="780" as="sourcePoint"/>
+                        <mxPoint x="1208" y="780" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-25" value="เจอ email → linkGoogleSub  |  ไม่เจอ → createFromGoogle" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1208" y="830" as="sourcePoint"/>
+                        <mxPoint x="1572" y="830" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-26" value="UPDATE / INSERT User (role=INSTRUCTOR, status=ACTIVE ถ้าโดเมนตรง ไม่งั้น PENDING)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1572" y="880" as="sourcePoint"/>
+                        <mxPoint x="1754" y="880" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-27" value="User" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1754" y="930" as="sourcePoint"/>
+                        <mxPoint x="1208" y="930" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-28" value="!isActive → denied · PENDING → pending · ok → sign access 15m + refresh 7d" style="html=1;fontSize=12;align=left;spacingLeft=6;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1208" y="980" as="sourcePoint"/>
+                        <mxPoint x="1208" y="1004" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1244" y="980"/>
+                            <mxPoint x="1244" y="1004"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-29" value="{ outcome, user?, accessToken?, refreshToken? }" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1208" y="1040" as="sourcePoint"/>
+                        <mxPoint x="1026" y="1040" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-30" value="200 ACTIVE {user, tokens} · 200 PENDING {message} · 401 (invalid/denied)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1026" y="1090" as="sourcePoint"/>
+                        <mxPoint x="298" y="1090" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-31" value="ACTIVE: setAuth(user, accessToken) → localStorage" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="298" y="1140" as="sourcePoint"/>
+                        <mxPoint x="662" y="1140" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-32" value="ACTIVE: navigate(&#39;/&#39;) · PENDING: toast.info · 401: toast.error" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="298" y="1190" as="sourcePoint"/>
+                        <mxPoint x="116" y="1190" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-4-33" value="invalid กับ denied ตอบ 401 เหมือนกัน เพื่อไม่ให้รู้ว่าบัญชีมีอยู่จริง (FR-03)&lt;br&gt;refreshToken ถูกส่งกลับ แต่ client ยังไม่เก็บ และยังไม่มี /auth/refresh" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=note;size=16;fillColor=#FFF2CC;strokeColor=#D6B656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1330" width="900" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="arch-5" name="5 · Sequence · Admin อนุมัติผู้ใช้">
+        <mxGraphModel dx="2598" dy="1512" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1370" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="arch-5-1" value="Sequence — ADMIN อนุมัติบัญชี PENDING (PATCH /users/:id/approve)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=22;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="1500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-2" value="Users.page" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="80" width="152" height="1250" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-3" value="useApproveUser&lt;br&gt;(TanStack)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="222" y="80" width="152" height="1250" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-4" value="apiClient" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="404" y="80" width="152" height="1250" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-5" value="Fastify&lt;br&gt;/users" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="586" y="80" width="152" height="1250" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-6" value="authMiddleware" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#F8CECC;strokeColor=#B85450;" parent="1" vertex="1">
+                    <mxGeometry x="768" y="80" width="152" height="1250" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-7" value="rbac(&#39;ADMIN&#39;)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#F8CECC;strokeColor=#B85450;" parent="1" vertex="1">
+                    <mxGeometry x="950" y="80" width="152" height="1250" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-8" value="UsersController" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="1132" y="80" width="152" height="1250" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-9" value="UsersService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="1314" y="80" width="152" height="1250" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-10" value="UserRepository" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="1496" y="80" width="152" height="1250" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-11" value="PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="1678" y="80" width="152" height="1250" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-5-12" value="approve.mutate(user.id)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="116" y="170" as="sourcePoint"/>
+                        <mxPoint x="298" y="170" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-13" value="usersApi.approve(id) → patch(&#39;/users/:id/approve&#39;)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="298" y="220" as="sourcePoint"/>
+                        <mxPoint x="480" y="220" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-14" value="PATCH + Authorization: Bearer &lt;accessToken&gt;" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="480" y="270" as="sourcePoint"/>
+                        <mxPoint x="662" y="270" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-15" value="preHandler[0]" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="662" y="320" as="sourcePoint"/>
+                        <mxPoint x="844" y="320" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-16" value="verifyToken(JWT) → sub (ผิด/หมดอายุ → 401)" style="html=1;fontSize=12;align=left;spacingLeft=6;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="844" y="370" as="sourcePoint"/>
+                        <mxPoint x="844" y="394" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="880" y="370"/>
+                            <mxPoint x="880" y="394"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-17" value="SELECT role, isActive FROM User WHERE id = sub" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="844" y="430" as="sourcePoint"/>
+                        <mxPoint x="1754" y="430" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-18" value="{ role, isActive } (ไม่มี/ไม่ active → 401)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1754" y="480" as="sourcePoint"/>
+                        <mxPoint x="844" y="480" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-19" value="request.userRole (จาก DB)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="844" y="530" as="sourcePoint"/>
+                        <mxPoint x="1026" y="530" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-20" value="ADMIN ผ่าน (ไม่ใช่ → 403)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1026" y="580" as="sourcePoint"/>
+                        <mxPoint x="1208" y="580" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-21" value="userIdParamsSchema.parse(params)" style="html=1;fontSize=12;align=left;spacingLeft=6;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1208" y="630" as="sourcePoint"/>
+                        <mxPoint x="1208" y="654" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1244" y="630"/>
+                            <mxPoint x="1244" y="654"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-22" value="approve(id)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1208" y="690" as="sourcePoint"/>
+                        <mxPoint x="1390" y="690" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-23" value="findById(id)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1390" y="740" as="sourcePoint"/>
+                        <mxPoint x="1572" y="740" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-24" value="SELECT User" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1572" y="790" as="sourcePoint"/>
+                        <mxPoint x="1754" y="790" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-25" value="User | null (null → 404)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1754" y="840" as="sourcePoint"/>
+                        <mxPoint x="1390" y="840" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-26" value="status ACTIVE อยู่แล้ว → คืนค่าเดิม (idempotent)" style="html=1;fontSize=12;align=left;spacingLeft=6;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1390" y="890" as="sourcePoint"/>
+                        <mxPoint x="1390" y="914" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1426" y="890"/>
+                            <mxPoint x="1426" y="914"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-27" value="approve(id)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1390" y="950" as="sourcePoint"/>
+                        <mxPoint x="1572" y="950" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-28" value="UPDATE User SET status = &#39;ACTIVE&#39;" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1572" y="1000" as="sourcePoint"/>
+                        <mxPoint x="1754" y="1000" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-29" value="User" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1754" y="1050" as="sourcePoint"/>
+                        <mxPoint x="1208" y="1050" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-30" value="200 { success: true, data: user }" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1208" y="1100" as="sourcePoint"/>
+                        <mxPoint x="480" y="1100" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-31" value="json.data" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="480" y="1150" as="sourcePoint"/>
+                        <mxPoint x="298" y="1150" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-32" value="invalidateQueries([&#39;users&#39;]) → refetch GET /users?status=PENDING" style="html=1;fontSize=12;align=left;spacingLeft=6;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="298" y="1200" as="sourcePoint"/>
+                        <mxPoint x="298" y="1224" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="334" y="1200"/>
+                            <mxPoint x="334" y="1224"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-5-33" value="onSuccess → toast.success" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="298" y="1260" as="sourcePoint"/>
+                        <mxPoint x="116" y="1260" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="arch-6" name="6 · Data layer + Trust boundaries">
+        <mxGraphModel dx="2598" dy="1512" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1250" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="arch-6-1" value="Data layer (schema.prisma) และขอบเขตความปลอดภัย" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=24;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="1200" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-2" value="&lt;b&gt;User&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="100" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-3" value="&lt;b&gt;CourseInstructor&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="100" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-4" value="&lt;b&gt;Course&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="100" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-5" value="&lt;b&gt;EmailVerificationToken&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="260" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-6" value="&lt;b&gt;CLO&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="100" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-7" value="&lt;b&gt;BehavioralObjective&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="100" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-8" value="&lt;b&gt;AssessmentCriteria&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="260" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-9" value="&lt;b&gt;Activity&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="260" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-10" value="&lt;b&gt;Score&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="420" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-11" value="&lt;b&gt;Student&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="420" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-12" value="&lt;b&gt;StudentGrade&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="420" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-13" value="&lt;b&gt;GradeBand&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="260" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-14" value="&lt;b&gt;ScoreUploadLog&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="260" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-15" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-2" target="arch-6-3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-16" value="N : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-3" target="arch-6-4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-17" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-4" target="arch-6-6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-18" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-6" target="arch-6-7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-19" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-7" target="arch-6-8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-20" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-9" target="arch-6-8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-21" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-4" target="arch-6-9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-22" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-9" target="arch-6-10" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-23" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-11" target="arch-6-10" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-24" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-4" target="arch-6-11" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-25" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERone;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-11" target="arch-6-12" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-26" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-4" target="arch-6-13" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-27" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-4" target="arch-6-14" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-28" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;endArrow=ERmany;startArrow=ERmandOne;endFill=0;" parent="1" source="arch-6-2" target="arch-6-5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-29" value="ป้องกันข้อมูล 3 ชั้น" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=18;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="560" width="600" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-30" value="&lt;b&gt;ชั้น 1 · Zod&lt;/b&gt; (Controller)&lt;br&gt;รูปแบบ + ช่วงค่าของ input ทุกตัว&lt;br&gt;Excel ตรวจทีละแถว (แผน)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="600" width="360" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-31" value="&lt;b&gt;ชั้น 2 · Service + authorization&lt;/b&gt;&lt;br&gt;assertCourseAccess() · กฎธุรกิจ" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="600" width="360" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-32" value="&lt;b&gt;ชั้น 3 · PostgreSQL&lt;/b&gt;&lt;br&gt;~40 CHECK (chk_*)&lt;br&gt;trg_score_validate · trg_criteria_same_course&lt;br&gt;trg_objassess_same_clo · gradeband_passfail" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="600" width="400" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-33" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-6-30" target="arch-6-31" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" parent="1" source="arch-6-31" target="arch-6-32" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-35" value="Trust boundaries" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=18;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="740" width="600" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-36" value="Browser → Server" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="780" width="240" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-37" value="CORS · rate limit · helmet" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=13;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="780" width="620" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-38" value="index.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fontColor=#555555;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="780" width="340" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-39" value="ตัวตน" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="830" width="240" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-40" value="Google ID token ตรวจฝั่ง server (iss/aud/exp) → JWT ของระบบ (HS256)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=13;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="830" width="620" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-41" value="lib/google.ts · lib/jwt.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fontColor=#555555;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="830" width="340" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-42" value="บัญชียังใช้งานได้" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="880" width="240" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-43" value="อ่าน User row ทุก request (ไม่เชื่อ role ใน token)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=13;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="880" width="620" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-44" value="auth.middleware.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fontColor=#555555;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="880" width="340" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-45" value="บทบาท" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="930" width="240" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-46" value="rbac(&#39;ADMIN&#39; | &#39;INSTRUCTOR&#39;)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=13;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="930" width="620" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-47" value="rbac.middleware.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fontColor=#555555;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="930" width="340" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-48" value="ข้อมูลของใคร" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="980" width="240" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-49" value="assertCourseAccess() → 404 เสมอ ไม่ใช่ 403" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=13;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="980" width="620" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-50" value="authorization.service.ts" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fontColor=#555555;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="980" width="340" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-51" value="ความถูกต้องข้อมูล" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1030" width="240" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-52" value="CHECK + triggers (migrate เท่านั้น ห้าม db push)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=13;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="1030" width="620" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-53" value="migrations/0002 · 0004" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fontColor=#555555;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="1030" width="340" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-6-54" value="&lt;b&gt;ช่องว่างที่พบ (2026-09-24)&lt;/b&gt;&lt;br&gt;• refreshToken ส่งกลับแต่ client ไม่เก็บ · ไม่มี /auth/refresh → login ใหม่ทุก 15 นาที&lt;br&gt;• client ไม่มี route guard (server ยังกันด้วย 401/403)&lt;br&gt;• ไม่มี logout (clearAuth ไม่มีใครเรียก)&lt;br&gt;• accessToken อยู่ใน localStorage → เสี่ยงถ้ามี XSS&lt;br&gt;• authMiddleware + authorization.service เรียก prisma ตรง (ไม่ผ่าน repository)&lt;br&gt;• courses / clos / excel / dashboard มีแค่ schema + DB constraint ยังไม่มี API/UI" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=note;size=16;fillColor=#FFF2CC;strokeColor=#D6B656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1300" y="560" width="460" height="230" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="arch-7" name="7 · Tool-level flow">
+        <mxGraphModel dx="1299" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1700" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="arch-7-1" value="Tool-level flow — GET /users?status=PENDING : Fastify · jose · Zod · Prisma ทำงานต่อกันอย่างไร" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=22;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="1500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-2" value="React&lt;br&gt;apiClient" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-3" value="Fastify 5&lt;br&gt;(core + lifecycle)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-4" value="Plugins&lt;br&gt;helmet·cors·rate-limit" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-5" value="authMiddleware&lt;br&gt;(โค้ดเรา)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#F8CECC;strokeColor=#B85450;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-6" value="jose" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-7" value="Controller&lt;br&gt;(โค้ดเรา)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="1090" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-8" value="Zod 4" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="1" vertex="1">
+                    <mxGeometry x="1300" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-9" value="Service +&lt;br&gt;Repository&lt;br&gt;(โค้ดเรา)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="1510" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-10" value="Prisma Client&lt;br&gt;(TypeScript)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="1" vertex="1">
+                    <mxGeometry x="1720" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-11" value="Query Engine&lt;br&gt;(Rust)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="1" vertex="1">
+                    <mxGeometry x="1930" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-12" value="PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=umlLifeline;perimeter=lifelinePerimeter;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="2140" y="80" width="180" height="1480" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-13" value="HTTP GET /users?status=PENDING + Authorization: Bearer JWT" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="130" y="170" as="sourcePoint"/>
+                        <mxPoint x="340" y="170" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-14" value="hook onRequest" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="340" y="220" as="sourcePoint"/>
+                        <mxPoint x="550" y="220" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-15" value="ใส่ CORS/security headers · นับ rate limit (เกิน → 429)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="550" y="270" as="sourcePoint"/>
+                        <mxPoint x="340" y="270" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-16" value="จับ route ที่ตรง → เตรียม req.query / req.params (ยังเป็น unknown)" style="html=1;fontSize=12;align=left;spacingLeft=6;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="340" y="320" as="sourcePoint"/>
+                        <mxPoint x="340" y="344" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="376" y="320"/>
+                            <mxPoint x="376" y="344"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-17" value="preHandler[0] : authMiddleware(req, reply)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="340" y="380" as="sourcePoint"/>
+                        <mxPoint x="760" y="380" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-18" value="jwtVerify(token, JWT_SECRET)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="760" y="430" as="sourcePoint"/>
+                        <mxPoint x="970" y="430" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-19" value="payload { sub, role }  |  throw → 401" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="970" y="480" as="sourcePoint"/>
+                        <mxPoint x="760" y="480" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-20" value="prisma.user.findUnique({ where:{id: sub}, select:{role,isActive} })" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="760" y="530" as="sourcePoint"/>
+                        <mxPoint x="1810" y="530" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-21" value="สร้าง query จาก schema.prisma" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1810" y="580" as="sourcePoint"/>
+                        <mxPoint x="2020" y="580" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-22" value="SELECT role, isActive FROM &quot;User&quot; WHERE id = $1   (TCP · DATABASE_URL)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2020" y="630" as="sourcePoint"/>
+                        <mxPoint x="2230" y="630" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-23" value="row → { role, isActive } (ไม่มี/ไม่ active → 401)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2230" y="680" as="sourcePoint"/>
+                        <mxPoint x="760" y="680" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-24" value="set req.userId, req.userRole · return (ไม่ตอบ = ไปต่อ)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="760" y="730" as="sourcePoint"/>
+                        <mxPoint x="340" y="730" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-25" value="preHandler[1] : rbac(&#39;ADMIN&#39;) ตรวจ req.userRole (ไม่ผ่าน → 403)" style="html=1;fontSize=12;align=left;spacingLeft=6;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="340" y="780" as="sourcePoint"/>
+                        <mxPoint x="340" y="804" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="376" y="780"/>
+                            <mxPoint x="376" y="804"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-26" value="handler : controller.list(req, reply)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="340" y="840" as="sourcePoint"/>
+                        <mxPoint x="1180" y="840" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-27" value="listUsersQuerySchema.parse(req.query)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1180" y="890" as="sourcePoint"/>
+                        <mxPoint x="1390" y="890" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-28" value="{ status?: &#39;PENDING&#39; | &#39;ACTIVE&#39; }  |  throw ZodError → 400" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1390" y="940" as="sourcePoint"/>
+                        <mxPoint x="1180" y="940" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-29" value="service.list(status) → repo.listByStatus(status)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1180" y="990" as="sourcePoint"/>
+                        <mxPoint x="1600" y="990" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-30" value="prisma.user.findMany({ where, orderBy, select })" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1600" y="1040" as="sourcePoint"/>
+                        <mxPoint x="1810" y="1040" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-31" value="แปลง options เป็น query plan" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1810" y="1090" as="sourcePoint"/>
+                        <mxPoint x="2020" y="1090" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-32" value="SELECT id,email,name,... FROM &quot;User&quot; WHERE status=$1 ORDER BY createdAt DESC" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2020" y="1140" as="sourcePoint"/>
+                        <mxPoint x="2230" y="1140" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-33" value="rows" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2230" y="1190" as="sourcePoint"/>
+                        <mxPoint x="2020" y="1190" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-34" value="ผลลัพธ์ดิบ" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="2020" y="1240" as="sourcePoint"/>
+                        <mxPoint x="1810" y="1240" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-35" value="User[] (มี type จาก schema.prisma)" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1810" y="1290" as="sourcePoint"/>
+                        <mxPoint x="1600" y="1290" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-36" value="User[]" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1600" y="1340" as="sourcePoint"/>
+                        <mxPoint x="1180" y="1340" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-37" value="return ok(reply, users) → reply.status(200).send({ success:true, data })" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1180" y="1390" as="sourcePoint"/>
+                        <mxPoint x="340" y="1390" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-38" value="hook onSend" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="340" y="1440" as="sourcePoint"/>
+                        <mxPoint x="550" y="1440" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-39" value="HTTP 200 JSON { success:true, data:[...] }" style="html=1;fontSize=12;verticalAlign=bottom;labelBackgroundColor=#FFFFFF;endArrow=open;dashed=1;endFill=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="340" y="1490" as="sourcePoint"/>
+                        <mxPoint x="130" y="1490" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arch-7-40" value="&lt;b&gt;ทางแยก error&lt;/b&gt; — throw จากที่ใดก็ได้ (Zod, jose, Prisma, โค้ดเรา) ในตัว handler ที่เป็น async&lt;br&gt;→ Fastify จับ rejected promise แล้วเรียก setErrorHandler(errorHandler)&lt;br&gt;ZodError → 400 { errors: flatten() } · Prisma P2002 → 400 · P2025 → 404 · อื่น ๆ → 500&lt;br&gt;ส่วน 401/403 ไม่ได้ throw: authMiddleware / rbac ใช้ &lt;i&gt;return unauthorized(reply)&lt;/i&gt; ปิด request เอง" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=note;size=16;fillColor=#FFF2CC;strokeColor=#D6B656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1590" width="1100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="arch-7-41" value="&lt;b&gt;ม่วง = library&lt;/b&gt; · &lt;b&gt;เขียว/แดง = โค้ดของเรา&lt;/b&gt;&lt;br&gt;Fastify ไม่ได้เรียก Zod หรือ Prisma เอง — Controller / Repository เป็นตัวเรียก" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=note;size=16;fillColor=#FFF2CC;strokeColor=#D6B656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1180" y="1590" width="640" height="100" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
