@@ -357,7 +357,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="arch-1" name="1 · ภาพรวม 3-tier">
-        <mxGraphModel dx="3699" dy="1008" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1000" math="0" shadow="0">
+        <mxGraphModel dx="2999" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1000" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -500,7 +500,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="arch-2" name="2 · Client (React SPA)">
-        <mxGraphModel dx="1499" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1299" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -604,7 +604,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="arch-3" name="3 · Server request pipeline">
-        <mxGraphModel dx="1499" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1250" math="0" shadow="0">
+        <mxGraphModel dx="1299" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1250" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -747,7 +747,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="arch-4" name="4 · Sequence · Google login (FR-08)">
-        <mxGraphModel dx="1499" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1400" math="0" shadow="0">
+        <mxGraphModel dx="1299" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1400" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -925,7 +925,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="arch-5" name="5 · Sequence · Admin อนุมัติผู้ใช้">
-        <mxGraphModel dx="2598" dy="1512" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1370" math="0" shadow="0">
+        <mxGraphModel dx="1299" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1370" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -1114,7 +1114,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="arch-6" name="6 · Data layer + Trust boundaries">
-        <mxGraphModel dx="2598" dy="1512" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1250" math="0" shadow="0">
+        <mxGraphModel dx="1299" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1250" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
