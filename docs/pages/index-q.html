@@ -848,7 +848,7 @@ const db = {
     { id:'clo32', courseId:'c3', number:2, weight:35, levelSource:'AUTO', bloomLevel:'APPLY', soloLevel:'DEEP', classTarget:null,
       description:'ประยุกต์การทดสอบสมมติฐานกับข้อมูลการทำงานของระบบ' },
     // bloomLevel is nullable on purpose: a wrong level is worse than a missing
-    // one. MANUAL, because the instructor cleared what the verb suggested.
+    // one. MANUAL, because the instructor set SOLO without choosing a Bloom level.
     { id:'clo33', courseId:'c3', number:3, weight:25, levelSource:'MANUAL', bloomLevel:null, soloLevel:'DEEP', classTarget:null,
       description:'ตีความผลการวิเคราะห์ทางสถิติเพื่อสนับสนุนการตัดสินใจเชิงวิศวกรรม' },
     // Added late in the term with no objective yet — the warning state: the
@@ -1156,7 +1156,7 @@ const db = {
     acts.forEach(function(a, j){
       if (j === 9 && (i === 8 || i === 13)) return;   // ยังไม่มีคะแนนปลายภาค = ยังไม่ประเมิน (FR-62)
       const jit = (((i * 7 + j * 13) % 11) - 5) / 100;
-      const p = Math.min(1, Math.max(0, ability[i] + offset[a[1]] + jit));
+      const p = Math.min(1, Math.max(0, ability[i] + (offset[a[1]] || 0) + jit));
       db.score.push({ id:'sc5_' + i + '_' + j, studentId:sid, activityId:'a5_' + (j + 1),
         score:Math.round(a[3] * p), uploadedAt:'2568-09-10' });
     });
@@ -7643,14 +7643,18 @@ document.addEventListener('click', function(e){
   if (act === 'dup-activity') {
     const a = byId(db.activity, el.dataset.id);
     /* คัดลอกทุกฟิลด์ แล้วทับเฉพาะสิ่งที่ต้องต่างจากต้นฉบับ — การไล่ชื่อฟิลด์เองทำให้
-       เกณฑ์ที่เพิ่งเป็นตัวเลข (passScore/groupId) หล่นหายไปเงียบ ๆ */
+       เกณฑ์ที่เพิ่งเป็นตัวเลข (passScore) หล่นหายไปเงียบ ๆ */
     const copy = { id:'a_' + Date.now() };
     Object.keys(a).forEach(function(k){ if (k !== 'id') copy[k] = a[k]; });
     copy.name = a.name + ' (สำเนา)';
     copy.weight = 0;
     copy.order = Math.max.apply(null, D().acts.map(function(x){ return x.order; })) + 1;
     db.activity.push(copy);
-    invalidate(); render(); toast('ทำสำเนากิจกรรมแล้ว — น้ำหนักตั้งต้นเป็น 0 และยังไม่ได้เชื่อมจุดประสงค์'); return;
+    invalidate(); render();
+    /* โหมดกลุ่ม: สำเนาได้ส่วนแบ่งจากน้ำหนักกลุ่มทันที กิจกรรมอื่นในกลุ่มจึงลดลง — ต้องบอก ไม่ใช่บอกว่าเป็น 0 */
+    toast(D().course.weightMode === 'GROUP'
+      ? 'ทำสำเนากิจกรรมแล้ว — น้ำหนักกลุ่ม' + (ACT_TYPE_TH[copy.type] || '') + 'ถูกแบ่งใหม่รวมสำเนานี้ และยังไม่ได้เชื่อมจุดประสงค์'
+      : 'ทำสำเนากิจกรรมแล้ว — น้ำหนักตั้งต้นเป็น 0 และยังไม่ได้เชื่อมจุดประสงค์'); return;
   }
   if (act === 'override')  { modalOverride(el.dataset.id); return; }
   if (act === 'override-save') {
@@ -7669,7 +7673,7 @@ document.addEventListener('click', function(e){
   if (act === 'import-prev')  { modalImport(S.tab.importStep - 1); return; }
   if (act === 'import-back')  { IMPORT = null; modalImport(1); return; }
   if (act === 'clear-filter') { S.filter[el.dataset.key] = ''; render(); return; }
-  if (act === 'need-bloom')   { toast('ระบุระดับได้ในหน้าแก้ไข CLO — ให้ระบบเสนอจากคำกริยา หรือกำหนดเอง'); return; }
+  if (act === 'need-bloom')   { toast('ระบุระดับได้ในหน้าแก้ไข CLO — เลือก Bloom แล้วให้ SOLO ตามอัตโนมัติ หรือกำหนดเองทั้งสองระดับ'); return; }
 
   if (act === 'import-done') {
     const res = commitImport();
