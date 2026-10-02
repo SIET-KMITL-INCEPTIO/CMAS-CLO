@@ -95,7 +95,7 @@ def unique_single(t, col):
 COLUMNS = [
     ['User', 'AuthEvent', 'EmailVerificationToken'],
     ['CourseInstructor', 'ScoreUploadLog', 'UploadReject'],
-    ['Course', 'GradeBand'],
+    ['Course', 'GradeBand', 'CourseGroupWeight'],
     ['CLO', 'Activity', 'Student'],
     # AssessmentCriteria directly under BehavioralObjective: the objective ->
     # criteria FK loops on the right inside one column, and Activity -> criteria

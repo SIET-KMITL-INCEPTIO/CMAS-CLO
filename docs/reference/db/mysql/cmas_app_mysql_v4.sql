@@ -1,6 +1,12 @@
 -- ============================================================================
 -- CMAS / CLO SYSTEM — Application Schema — MySQL 8.0 dialect — v4 (GRADING)
 --
+-- !! FROZEN 2026-09-26 at migration 0004. This file no longer mirrors schema.prisma:
+-- !! migration 0005-0007 (CourseRole dropped, EmailVerificationToken added,
+-- !! ObjectiveAssessment merged into AssessmentCriteria, CLO.threshold ->
+-- !! Course.cloPassMark, User.status, ...) are NOT here. Use index-q.sql for the
+-- !! current model. Kept as the grading-era (v4) snapshot.
+--
 -- Purpose : diagramming artifact for MySQL Workbench
 --           File > Import > Reverse Engineer MySQL Create Script...
 --           No ON DELETE actions, no CHECK constraints, no triggers, no views —

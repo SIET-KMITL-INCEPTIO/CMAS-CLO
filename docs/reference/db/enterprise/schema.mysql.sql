@@ -2,7 +2,7 @@
 -- CMAS / CLO SYSTEM — Enterprise Schema — MySQL 8.0 dialect
 -- Course-Level Learning Outcome Assessment & Tracking Platform
 --
--- Source of truth : docs/markdown/sql/schema.sql (PostgreSQL 14+)
+-- Source of truth : docs/reference/db/enterprise/schema.pg.sql (PostgreSQL 14+)
 -- This file        : hand-translated to MySQL 8.0.16+ so MySQL Workbench can
 --                    "Reverse Engineer" it into an EER diagram.
 --

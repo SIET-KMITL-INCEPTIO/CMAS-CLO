@@ -2,7 +2,7 @@
 -- MIGRATION 001 — Course instructors: 1:M  ->  M:N
 --
 -- Applies to a database that ALREADY HAS DATA. For a fresh install just run
--- docs/markdown/sql/mysql/cmas_app_production_v3.sql instead; it already contains
+-- docs/reference/db/mysql/superseded/cmas_app_production_v3.sql instead; it already contains
 -- the final shape.
 --
 -- WHAT THIS DOES
@@ -30,7 +30,7 @@
 
 -- ############################################################################
 -- ###  SECTION A — MySQL 8.0.16+                                            ###
--- ###  (matches docs/markdown/sql/mysql/cmas_app_production_v3.sql)            ###
+-- ###  (matches docs/reference/db/mysql/superseded/cmas_app_production_v3.sql)            ###
 -- ############################################################################
 
 -- ---------------------------------------------------------------------------

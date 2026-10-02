@@ -6,8 +6,17 @@ Companion doc for the MySQL-dialect DDL used to generate **Entity–Relationship
 entities relate.
 
 See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
-[`reference/db/schema.sql`](../../reference/db/schema.sql) (PostgreSQL full institutional reference model) ·
+[`reference/db/enterprise/schema.pg.sql`](../../reference/db/enterprise/schema.pg.sql) (PostgreSQL full institutional reference model) ·
+[`VERSIONS.md`](../../VERSIONS.md) (which file is current, and how the version numbers line up) ·
 [`../../../database/schema.prisma`](../../../database/schema.prisma) (app source of truth).
+
+> **Updated 2026-09-26 — ไฟล์ MySQL ที่ตรงกับ `schema.prisma` ตอนนี้คือ `index-q.sql`, ไม่ใช่ v4.**
+> `cmas_app_mysql_v4.sql` ถูกแช่แข็งที่สถานะ migration `0004` (13 ตาราง มี `ObjectiveAssessment`
+> ไม่มี `EmailVerificationToken`) — migration `0005`–`0007` ไม่ได้ถูกตามเข้าไป
+> `reference/db/mysql/index-q.sql` ใช้ Prisma ถึง `0007` เป็นฐาน (13 ตาราง) แล้วเติมส่วนที่ต้นแบบ `index-q.html`
+> เสนอเพิ่มอีก 3 ตาราง (`AuthEvent` · `UploadReject` · `CourseGroupWeight`) รวม **16 ตาราง · 19 FK**
+> — ทุกอย่างที่เพิ่มติดป้าย `[index-q]` ใน COMMENT · ภาพ ER ของไฟล์นี้: `docs/uml/index-q/ER-INDEX-Q.*`
+> · แผนภาพ mermaid ด้านล่างเป็นของ **`schema.prisma` ปัจจุบัน** (ไม่รวมส่วนที่ index-q เสนอเพิ่ม)
 
 > **Updated 2026-09-06 — ตารางตัดเกรดเหลือ 2 ตาราง.** ตัด `GradeScheme` และ `GradeRun` ออก
 > · `GradeScheme` ยุบเป็นคอลัมน์ `Course.gradeMethod` (อิงเกณฑ์ / อิงกลุ่ม) เพราะหน่วยของ
@@ -30,10 +39,11 @@ See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
 
 | File | Model | Size | Translated from |
 |---|---|---|---|
-| [`reference/db/mysql/cmas_enterprise_mysql.sql`](../../reference/db/mysql/cmas_enterprise_mysql.sql) | Full institutional design — **reference only** | 36 tables, 4 views, 59 FKs | `schema.sql` (PostgreSQL 14+) |
-| [`reference/db/mysql/cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql) | **Live app schema — diagramming mirror. USE THIS ONE.** | 13 tables, 16 FKs | `database/schema.prisma` (Prisma) |
-| [`reference/db/mysql/cmas_app_mysql_v3.sql`](../../reference/db/mysql/cmas_app_mysql_v3.sql) | ~~Diagramming mirror~~ — **superseded by v4**, kept for history | 11 tables, 14 FKs | — |
-| [`reference/db/mysql/cmas_app_production_v3.sql`](../../reference/db/mysql/cmas_app_production_v3.sql) | Live app schema — executable, hardened | 11 tables, CHECKs, triggers, views | `database/migrations/` |
+| [`reference/db/enterprise/schema.mysql.sql`](../../reference/db/enterprise/schema.mysql.sql) | Full institutional design — **reference only** | 36 tables, 4 views, 59 FKs | `enterprise/schema.pg.sql` (PostgreSQL 14+) |
+| [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) | **Prisma through migration 0007 + what `index-q.html` proposes. USE THIS ONE** | 16 tables, 19 FKs | `database/schema.prisma` + prototype deltas |
+| [`reference/db/mysql/cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql) | ~~Diagramming mirror~~ — **frozen at migration 0004**, stale since 0005 (still has `ObjectiveAssessment`, `CourseRole`, `CLO.threshold`) | 13 tables, 16 FKs | `database/schema.prisma` as of 2026-09-06 |
+| [`reference/db/mysql/superseded/cmas_app_mysql_v3.sql`](../../reference/db/mysql/superseded/cmas_app_mysql_v3.sql) | ~~Diagramming mirror~~ — **superseded by v4**, kept for history | 11 tables, 14 FKs | — |
+| [`reference/db/mysql/superseded/cmas_app_production_v3.sql`](../../reference/db/mysql/superseded/cmas_app_production_v3.sql) | ~~Executable, hardened~~ — **superseded**, the v3 tables with CHECKs, triggers and views. Not the live schema: the app runs PostgreSQL from `database/migrations/` | 11 tables, CHECKs, triggers, views | `database/migrations/` 0001–0002 |
 | [`mysql-dumps.md`](./mysql-dumps.md) | How-to | — | Workbench steps + translation table |
 
 **Requires MySQL 8.0.16+** (for `CHECK`, expression defaults, and the stored
@@ -58,16 +68,17 @@ Full steps (including the live-database route and the `.mwb` model save) are in
 
 ---
 
-## แผนภาพ ER ของระบบจริง (13 ตาราง)
+## แผนภาพ ER ของระบบจริง (13 ตาราง · migration 0007)
 
 เรนเดอร์ได้ทันทีใน Obsidian / GitHub — ใช้ตรวจรูปทรงก่อนเปิด Workbench
-โครงสร้างตรงกับ [`cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql)
-ซึ่งเป็นไฟล์ที่ใช้ reverse-engineer จริง (13 ตาราง · 80 คอลัมน์ · 16 FK)
+โครงสร้างตรงกับ `database/schema.prisma` ปัจจุบัน · ไฟล์ที่ reverse-engineer ได้ที่ตรงกันคือ
+[`index-q.sql`](../../reference/db/mysql/index-q.sql) (13 ตารางนี้ + 3 ตารางที่ต้นแบบเสนอเพิ่ม)
 
 ```mermaid
 erDiagram
     User ||--o{ CourseInstructor : "ถูกมอบหมาย"
     User ||--o{ ScoreUploadLog : "อัปโหลด"
+    User ||--o{ EmailVerificationToken : "ได้รับลิงก์"
     Course ||--o{ CourseInstructor : "มีผู้สอน"
     Course ||--o{ CLO : "กำหนด"
     Course ||--o{ Activity : "มีกิจกรรม"
@@ -75,11 +86,9 @@ erDiagram
     Course ||--o{ GradeBand : "มีช่วงเกรด"
     Course ||--o{ ScoreUploadLog : "มีบันทึกนำเข้า"
     CLO ||--o{ BehavioralObjective : "แตกย่อยเป็น"
-    CLO ||--o{ AssessmentCriteria : "ถูกวัดโดย"
-    Activity ||--o{ AssessmentCriteria : "วัด CLO ผ่าน"
+    BehavioralObjective ||--o{ AssessmentCriteria : "ถูกวัดโดย"
+    Activity ||--o{ AssessmentCriteria : "วัดจุดประสงค์ผ่าน"
     Activity ||--o{ Score : "ถูกให้คะแนน"
-    AssessmentCriteria ||--o{ ObjectiveAssessment : "ตามรอย"
-    BehavioralObjective ||--o{ ObjectiveAssessment : "ถูกตามรอย"
     Student ||--o{ Score : "ได้คะแนน"
     Student ||--o| StudentGrade : "ได้เกรด"
 
@@ -87,9 +96,20 @@ erDiagram
         varchar id PK
         varchar email UK
         varchar name
-        varchar passwordHash
+        varchar passwordHash "NULL ได้ — Google อย่างเดียว"
         enum role "ADMIN | INSTRUCTOR"
         tinyint isActive
+        enum status "PENDING | ACTIVE (0007)"
+        enum authProvider "EMAIL | GOOGLE"
+        varchar googleSub UK
+        datetime emailVerifiedAt
+    }
+    EmailVerificationToken {
+        varchar id PK
+        varchar userId FK
+        varchar tokenHash UK "SHA-256 ของ token"
+        datetime expiresAt
+        datetime usedAt
     }
     Course {
         varchar id PK
@@ -101,21 +121,24 @@ erDiagram
         enum gradeScale "LETTER | PASS_FAIL"
         enum gradeMethod "อิงเกณฑ์ | อิงกลุ่ม"
         double passCriteria
-        double classTarget
+        double cloPassMark "เกณฑ์ผ่าน CLO ค่าเดียวทั้งวิชา (0006)"
+        double classTarget "default 100"
     }
     CourseInstructor {
         varchar id PK
         varchar courseId FK "UK คู่กับ userId"
         varchar userId FK
-        enum role "LEAD | CO | ASSISTANT"
+        datetime assignedAt
     }
     CLO {
         varchar id PK
         varchar courseId FK "UK คู่กับ number"
         int number
         varchar description
-        double threshold
+        double weight "NULL จนกว่าจะกรอก (0006)"
         enum bloomLevel
+        enum soloLevel
+        enum levelSource "AUTO | MANUAL"
         double classTarget "NULL = ใช้ค่าของ Course"
     }
     BehavioralObjective {
@@ -123,25 +146,25 @@ erDiagram
         varchar cloId FK "UK คู่กับ number"
         int number
         varchar description
+        double weight "รวมต่อ CLO = 100"
     }
     Activity {
         varchar id PK
         varchar courseId FK
         varchar name
+        enum type "LECTURE | LAB | TEST | PROJECT"
+        enum assessmentMethod
+        varchar criteriaNote
+        double passMark "% ของ maxScore"
         double maxScore
         int order
         double weight "รวมทุกกิจกรรม = 100"
     }
     AssessmentCriteria {
         varchar id PK
-        varchar activityId FK "UK คู่กับ cloId"
-        varchar cloId FK
-        double weight "รวมต่อกิจกรรม = 100"
-    }
-    ObjectiveAssessment {
-        varchar id PK
-        varchar criteriaId FK "UK คู่กับ objectiveId"
+        varchar activityId FK "UK คู่กับ objectiveId"
         varchar objectiveId FK
+        double weight "รวมต่อกิจกรรม = 100"
     }
     Student {
         varchar id PK
@@ -182,11 +205,11 @@ erDiagram
 
 **รูปทรงที่ควรเห็น** — `Course` อยู่กลาง มี 6 ตารางแตกออก (CourseInstructor, CLO,
 Activity, Student, GradeBand, ScoreUploadLog) ถ้า `Course` ไม่ใช่จุดที่มีเส้นเยอะที่สุด
-แปลว่า import ผิดหรือ FK หาย
+แปลว่า import ผิดหรือ FK หาย · `EmailVerificationToken` ห้อยอยู่กับ `User` ตารางเดียว
 
-**ตารางเชื่อม (associative) 3 ตัว** — `CourseInstructor` (อาจารย์ × รายวิชา),
-`AssessmentCriteria` (กิจกรรม × CLO พร้อมน้ำหนัก), `ObjectiveAssessment`
-(เกณฑ์ × จุดประสงค์) ทั้งสามมี UNIQUE บนคู่ FK เสมอ เพื่อกันแถวซ้ำ
+**ตารางเชื่อม (associative) 2 ตัว** — `CourseInstructor` (อาจารย์ × รายวิชา) และ
+`AssessmentCriteria` (กิจกรรม × **จุดประสงค์** พร้อมน้ำหนัก — ถึง CLO ผ่านจุดประสงค์)
+ทั้งสองมี UNIQUE บนคู่ FK เสมอ เพื่อกันแถวซ้ำ · `ObjectiveAssessment` ถูกตัดใน migration `0006`
 
 ---
 
@@ -238,7 +261,7 @@ The 13-table app diagram is the working system today (React + Fastify + Prisma).
 |---|---|---|
 | **Identity** | `User` (`role` = ADMIN/INSTRUCTOR, a plain column) | N─N `Course` via `CourseInstructor` (co-teaching) |
 | **Live course** | `Course` 1─N `CLO` 1─N `BehavioralObjective` | `Course` is the ROOT — nothing sits above it. It carries `credits`, the three hour columns and `gradeScale`, which moved up from the deleted `CurriculumCourse`, plus `gradeMethod` |
-| **Assessment** | `Course` 1─N `Activity`; `Activity` N─N `CLO` via `AssessmentCriteria` | weighted CLO tagging per activity |
+| **Assessment** | `Course` 1─N `Activity`; `Activity` N─N `BehavioralObjective` via `AssessmentCriteria` | weighted objective tagging per activity (CLO reached through the objective) |
 | **Enrollment & scoring** | `Course` 1─N `Student`; `Student` N─N `Activity` via `Score` | one score per (student, activity) |
 | **Grading** | `Course` 1─N `GradeBand`; `Student` 1─1 `StudentGrade` | the ladder and the result. The method is `Course.gradeMethod`, not a table |
 | **Audit** | `ScoreUploadLog` | FKs to `Course` + `User` in the production DDL |
@@ -246,11 +269,11 @@ The 13-table app diagram is the working system today (React + Fastify + Prisma).
 ### Key cardinalities (app)
 
 ```
-User N─N Course     (via CourseInstructor, role = LEAD | CO | ASSISTANT)
+User N─N Course     (via CourseInstructor — ไม่มี role แล้ว, 0005)
 Course 1─N CLO 1─N BehavioralObjective
-Course 1─N Activity ;  Activity N─N CLO   (via AssessmentCriteria)
+Course 1─N Activity ;  Activity N─N BehavioralObjective (via AssessmentCriteria)
 Course 1─N Student  ;  Student  N─N Activity (via Score, one per student+activity)
-AssessmentCriteria N─N BehavioralObjective (via ObjectiveAssessment, traceability only)
+User 1─N EmailVerificationToken
 Course 1─N GradeBand ;  Student 1─1 StudentGrade
 Course 1─N ScoreUploadLog N─1 User
 ```
@@ -258,9 +281,9 @@ Course 1─N ScoreUploadLog N─1 User
 No self-referencing relationship survives in v3: `Curriculum.clonedFrom` was the
 only one, and it went with the table.
 
-> **Two files, two purposes.** [`reference/db/mysql/cmas_app_mysql_v3.sql`](../../reference/db/mysql/cmas_app_mysql_v3.sql)
+> **Two files, two purposes** (both now in `superseded/`). [`cmas_app_mysql_v3.sql`](../../reference/db/mysql/superseded/cmas_app_mysql_v3.sql)
 > is the diagramming mirror — tables and FKs only, so Workbench imports cleanly.
-> [`reference/db/mysql/cmas_app_production_v3.sql`](../../reference/db/mysql/cmas_app_production_v3.sql) is the
+> [`cmas_app_production_v3.sql`](../../reference/db/mysql/superseded/cmas_app_production_v3.sql) is the
 > executable one: cascade rules, CHECK constraints, the LEAD generated column,
 > triggers and reporting views. Both are 11 tables and both are single-tenant.
 

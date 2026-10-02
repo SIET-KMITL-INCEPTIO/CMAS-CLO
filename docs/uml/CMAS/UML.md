@@ -5,7 +5,7 @@
 <!-- STATUS:AUTHORITATIVE
      บรรทัดที่ขึ้นต้นด้วย STATUS: ถูกอ่านโดย scripts/check-diagrams.py
      ห้ามลบ ถ้าจะเปลี่ยนสถานะของไฟล์ให้แก้ที่นี่ที่เดียว
-STATUS:SUPERSEDED UML-Layer2.drawio เลข use case เป็นฉบับร่างแรก ใช้ index-q แทน
+STATUS:SUPERSEDED UML-Layer2_Handwritten.drawio เลข use case เป็นฉบับร่างแรก ใช้ index-q แทน
 -->
 
 ## ไฟล์ไหนเป็นฉบับจริงของอะไร
@@ -18,8 +18,8 @@ STATUS:SUPERSEDED UML-Layer2.drawio เลข use case เป็นฉบับ�
 | `index-q/index-q-usecase.drawio` | ✅ ฉบับจริงของ **รายละเอียดและสิทธิ์** · สร้างจากโค้ด 6 หน้า | เจาะรายแพ็กเกจ · UML 2.5 เต็มรูป |
 | `index-q/UML-INDEX-Q.drawio` | ✅ ข้อมูลชุดเดียวกัน หน้าเดียว สัญกรณ์เดียวกับ Layer2 | ภาพรวมบนสไลด์เดียว |
 | `Structure.drawio` | ✅ โครงสร้างสิทธิ์ 3 หน้า | อธิบายบทบาทและ capability |
-| `UML-Layer1.drawio` | ⚠ ร่างแรก | ประกอบเท่านั้น |
-| `UML-Layer2.drawio` | ⛔ **ร่างแรก · เลขไม่ตรงกับไฟล์นี้** | **อย่าฉายคู่กับไฟล์อื่น** |
+| `UML-Layer1_Handwritten.drawio` | ⚠ ร่างแรก | ประกอบเท่านั้น |
+| `UML-Layer2_Handwritten.drawio` | ⛔ **ร่างแรก · เลขไม่ตรงกับไฟล์นี้** | **อย่าฉายคู่กับไฟล์อื่น** |
 
 > **ทำไม Layer2 ถึงห้ามฉายคู่** — `scripts/check-diagrams.py` วัดแล้ว: เลข 10 ตัว
 > ในนั้นหมายถึงคนละ use case กับไฟล์นี้ (เช่น 1.4 ในไฟล์นี้คือ *กำหนดบทบาทและสิทธิ์*

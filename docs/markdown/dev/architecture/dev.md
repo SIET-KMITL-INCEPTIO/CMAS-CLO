@@ -4,7 +4,7 @@ See also: [[Schema]] · [[Summary Project]] · [[website final]] · [[concept-cl
 
 ## ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO System)
 
-> **Version:** 2.0.0 | **Updated:** 2026-07 | **Owner:** ทีมพัฒนา 67030098 / 67030110 / 67030120
+> **Version:** 2.1.0 | **Updated:** 2026-09-26 | **Owner:** ทีมพัฒนา 67030098 / 67030110 / 67030120
 
 ---
 
@@ -318,9 +318,12 @@ app/server/
 
 ```
 database/
-├── schema.prisma    # User, Curriculum, CurriculumCourse,
-│                     # Course, CLO, BehavioralObjective, Activity,
-│                     # AssessmentCriteria, Student, Score, ScoreUploadLog
+├── schema.prisma    # 13 models (migration 0001–0007): User, EmailVerificationToken,
+│                     # Course, CourseInstructor, CLO, BehavioralObjective, Activity,
+│                     # AssessmentCriteria, Student, Score, ScoreUploadLog,
+│                     # GradeBand, StudentGrade — Curriculum/Institution ถูกตัดแล้ว (2026-08-04)
+├── migrations/      # 0001_init … 0007_google_domain_account_status (0002–0007 เขียนมือทั้งหมด — ยังไม่ได้ตรวจกับ shadow DB ดูหัวแต่ละไฟล์)
+├── seed.ts
 └── .env.example
 ```
 

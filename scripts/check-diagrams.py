@@ -6,7 +6,7 @@
    การนำเสนอพัง ไม่ใช่ความสวยของภาพ
 
    ตรวจ 7 ข้อ:
-     UML-1  เลข use case ตรงกันระหว่าง UML.md · UML-Layer2.drawio · index-q.html
+     UML-1  เลข use case ตรงกันระหว่าง UML.md · UML-Layer2_Handwritten.drawio · index-q.html
      UML-2  ไม่มีเลขซ้ำในไฟล์เดียวกัน
      UML-3  ไม่มี use case ที่ไม่มีเลข
      UML-4  ไฟล์ที่สร้างด้วยสคริปต์ ตรงกับ index-q.html ณ ตอนนี้
@@ -32,7 +32,7 @@ for _s in (sys.stdout, sys.stderr):
 
 ROOT = Path(__file__).resolve().parents[1]
 UML_MD = ROOT / 'docs' / 'uml' / 'CMAS' / 'UML.md'
-LAYER2 = ROOT / 'docs' / 'uml' / 'CMAS' / 'UML-Layer2.drawio'
+LAYER2 = ROOT / 'docs' / 'uml' / 'CMAS' / 'UML-Layer2_Handwritten.drawio'
 APP = ROOT / 'docs' / 'pages' / 'index-q.html'
 PRISMA = ROOT / 'database' / 'schema.prisma'
 SQL_V4 = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'cmas_app_mysql_v4.sql'
@@ -145,7 +145,7 @@ print('  UML.md %d ข้อ · UML-Layer2 %d ข้อ (มีเลข) · ind
       % (len(UML_MD_UC), len(L2_UC), len(APP_UC)))
 if clash:
     report(fail, 'UML-1 · UML-Layer2 ให้ความหมายเลข %d เลข ไม่ตรงกับ UML.md' % len(clash),
-           'UML-Layer2.drawio')
+           'UML-Layer2_Handwritten.drawio')
     print('  ✗ เลขเดียวกันแต่คนละ use case %d เลข:' % len(clash))
     for k, a, b in clash:
         print('      %-5s UML.md: %-38s Layer2: %s' % (k, a, b))
@@ -176,12 +176,12 @@ if md_app:
 head('UML-2/3', 'เลขซ้ำ และ use case ที่ไม่มีเลข')
 for label, dups, un in [('UML-Layer2', L2_DUP, L2_UNNUMBERED)]:
     if dups:
-        report(fail, 'UML-2 · %s มีเลขซ้ำ %d จุด' % (label, len(dups)), 'UML-Layer2.drawio')
+        report(fail, 'UML-2 · %s มีเลขซ้ำ %d จุด' % (label, len(dups)), 'UML-Layer2_Handwritten.drawio')
         print('  ✗ %s เลขซ้ำ:' % label)
         for d in dups:
             print('      ' + d)
     if un:
-        report(fail, 'UML-3 · %s มี use case ไม่มีเลข %d ข้อ' % (label, len(un)), 'UML-Layer2.drawio')
+        report(fail, 'UML-3 · %s มี use case ไม่มีเลข %d ข้อ' % (label, len(un)), 'UML-Layer2_Handwritten.drawio')
         print('  ✗ %s ไม่มีเลข %d ข้อ:' % (label, len(un)))
         for u in un:
             print('      ' + u)

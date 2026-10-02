@@ -6,7 +6,7 @@
    This is the SAME MODEL as build-usecase-drawio.py drawn a second way. That
    script renders strict UML 2.5 for a reviewer: monochrome, uc frames, subject
    boundary, extension-point compartments, six pages. This one renders the
-   notation the team already uses in docs/uml/CMAS/UML-Layer2.drawio, so the new
+   notation the team already uses in docs/uml/CMAS/UML-Layer2_Handwritten.drawio, so the new
    diagram sits beside the old ones without looking imported from elsewhere:
 
      * one tall page, yellow #FFFFCC system boundary, "System" in 25px bold
@@ -294,7 +294,7 @@ def build():
             'สร้างจาก USE_CASES และเมทริกซ์ PERM ใน <i>docs/pages/index-q.html</i> ด้วย '
             '<i>scripts/build-index-q-uml-drawio.py</i> — แก้ที่ไฟล์ต้นทางแล้วสร้างใหม่ '
             'อย่าแก้ที่ภาพนี้<br><br>'
-            'สัญกรณ์เดียวกับ <i>docs/uml/CMAS/UML-Layer2.drawio</i><br><br>'
+            'สัญกรณ์เดียวกับ <i>docs/uml/CMAS/UML-Layer2_Handwritten.drawio</i><br><br>'
             '<b>บทบาทในรายวิชามีบทบาทเดียว</b> — ผู้สอนทุกคนของวิชาทำได้เท่ากัน (D1) '
             'ไม่มีผู้ประสานงาน / ผู้สอนร่วม / ผู้ช่วยสอนแล้ว<br><br>'
             '<b>ผู้ดูแลระบบไม่ทำงานในรายวิชา</b> — สร้าง ลบ และผูกผู้สอนเข้ากับรายวิชาเท่านั้น '

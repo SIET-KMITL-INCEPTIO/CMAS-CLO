@@ -134,7 +134,7 @@ import { z } from "zod"
 export const createCloSchema = z.object({
   courseId: z.string().cuid(),
   description: z.string().min(1).max(500),
-  threshold: z.number().min(0).max(100).default(60),
+  weight: z.number().min(0).max(100).nullable().default(null),
 })
 
 export type CreateCloInput = z.infer<typeof createCloSchema>
@@ -142,7 +142,7 @@ export type CreateCloInput = z.infer<typeof createCloSchema>
 
 - Encode the _business_ rules the database can't enforce, and return messages
   that justify a 422: activity weights summing to 100, `score <= maxScore`, CLO
-  `threshold` within 0–100.
+  `weight` within 0–100 (the pass mark lives on `Course.cloPassMark`, not on the CLO).
 - Never trust client-side validation. Validate Excel uploads row by row on the
   server (dev.md §6.4, §13 Security).
 - These are pure functions with no I/O, so they are the cheapest tests in the

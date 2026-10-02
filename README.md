@@ -163,6 +163,20 @@ Rebuild the browsable HTML docs with `npm run docs:build`.
 Early development. The database schema and the client/server skeletons are in
 place; most API endpoints and pages are not implemented yet.
 
-- **Working:** auth scaffolding, `GET /health`, Login / Users / CourseList pages
-- **Scaffolded, not implemented:** the remaining routes in `app/server/src/modules/index.ts`
-- **Scope:** 15 features / 15 pages — see [features-pages.md](docs/markdown/dev/architecture/features-pages.md)
+- **Working:** `GET /health`, `POST /auth/google`, `GET /users`, `PATCH /users/:id/approve` (FR-08b), and the Home / Login / Users / CourseList pages
+- **Not implemented:** everything course-level — CLOs, objectives, activities, criteria, roster, scores, Excel import, dashboard, grading
+- **Database:** 13 Prisma models, migrations `0001`–`0007` (`0002`–`0007` hand-written, not yet replayed against a shadow DB)
+- **Scope:** 14 features / 14 pages — see [features-pages.md](docs/markdown/dev/architecture/features-pages.md)
+
+### Two tracks: the app (CMAS) and the prototype (`index-q.html`)
+
+|  | **CMAS** (`app/`, `database/`) | **`docs/pages/index-q.html`** |
+|---|---|---|
+| What | The real system: React + Fastify + Postgres | A single-file UI prototype (~8,000 lines, Tailwind CDN + SheetJS, data in an in-page `db` object) — opens from `file://` |
+| Covers | Auth, user approval, course list | Every course-level flow, permission matrix `PERM`, all formulas (CR-01…CR-11), grading, Excel import/export |
+| Role | What ships | The behavioural spec the app is built against — it is **ahead of** the app and of `schema.prisma` |
+| Derived docs | `docs/markdown/**`, `database/schema.prisma` | `docs/uml/index-q/*` (ER · UML · use case), `docs/reference/db/mysql/index-q.sql`, `index-q-ux-pass.md`, `mockup-feedback-plan.md`, `scripts/build-*index-q*.py`, `check-perm-matrix.js` · `check-action-caps.js` · `check-auth-events.js` |
+
+`index-q.sql` = Prisma through migration `0007` **plus** what the prototype proposes and Prisma lacks (`AuthEvent`, `UploadReject`,
+`CourseGroupWeight`, `Course.weightMode`, `Activity.passScore`, password-flow columns on `User`, `ScoreUploadLog.kind`) — those are candidates
+for a future migration `0008`, not requirements yet.

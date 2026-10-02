@@ -6,7 +6,7 @@
 --
 -- What this is: the data model the UI prototype docs/pages/index-q.html
 -- actually runs on. Its baseline is database/schema.prisma as of migration
--- 0006 (revised 2569-09-18 — it was v4 copied verbatim until then), plus the
+-- 0007 (revised 2569-09-25; 0006 on 2569-09-18, v4 verbatim before that), plus the
 -- deltas the prototype needs that Prisma does not have yet. Every delta is
 -- tagged [index-q] at its definition and in its COMMENT, so the EER diagram
 -- shows what is proposed without this header open beside it.
@@ -29,14 +29,41 @@
 --         T3  Activity.method DROPPED -> type · assessmentMethod · criteriaNote
 --             · passMark
 --         D2  Course.classTarget default 70 -> 100
+--   0007  FR-08 User.status (PENDING / ACTIVE) — out-of-domain Google sign-in
+--             waits for ADMIN approval · index on status (revised 2569-09-25)
+--         O3  CLO.levelSource now means: AUTO = SOLO follows from the Bloom level
+--             the instructor picked · MANUAL = both picked by hand. The verb
+--             analysis of E3 is gone; only the column's meaning changed.
 --
--- WHAT index-q.html ADDS ON TOP — 15 tables · 18 FKs
+-- WHAT index-q.html ADDS ON TOP — 17 tables · 23 FKs
 -- ----------------------------------------------------------------------------
---   UploadReject   NEW  one row per refused cell of an Excel import (FR-65)
---   AuthEvent      NEW  account history incl. refused actions (UC 1.6, FR-22b)
---                       and the self-registration trail (REGISTER, VERIFY, LOGIN*)
+--   UploadReject      NEW  one row per refused cell of an Excel import (FR-65)
+--   AuthEvent         NEW  account history incl. refused actions (UC 1.6, FR-22b)
+--                          and the self-registration trail (REGISTER, VERIFY, LOGIN*)
+--   CourseGroupWeight NEW  N1/N2 — one weight per activity TYPE when
+--                          Course.weightMode = GROUP (db.course[].groupWeight)
 --   User           +3   mustChangePassword · pwResetAt · pwChangedAt (UC 1.5)
+--   Course         +1   weightMode — MANUAL (per activity) or GROUP (per type)
+--   Activity       +1   passScore — the pass mark as a SCORE; passMark (%) is
+--                       derived from passScore / maxScore (M3)
 --   ScoreUploadLog +1   kind — the roster import is logged here too (UC 7.1)
+--   ScoreChange       NEW  R5 (2569-10-02) one row per changed score cell: who,
+--                          when, from what to what, by which path (typed in the
+--                          grid · import · fill · closing an activity)
+--   Student        +2   R2 status (ENROLLED / WITHDRAWN) · withdrawnAt — a
+--                       withdrawn enrolment leaves every denominator; its
+--                       scores stay, so the status is reversible
+--   Activity       +1   R3 closedAt — NULL = still collecting scores. After it
+--                       is set, a missing Score row means "did not submit",
+--                       no longer "not assessed yet"
+--   Score          +2   R3 status (SCORED / EXCUSED) · U6 excuseReason; score becomes NULLable:
+--                       EXCUSED = this activity does not count for this
+--                       student, the remaining weight is renormalised
+--   Why: all four exist so that "who needs help" is answered correctly. With
+--   the class target fixed at 100% the per-CLO verdict is almost always "not
+--   met"; the list of people is the product. A withdrawn student must leave
+--   it, a student who never handed work in must enter it, and a score that
+--   moved someone in or out must be explainable afterwards.
 --
 -- AND TWO THINGS IT DELIBERATELY DOES NOT ADD
 --   index-q.html keeps grade overrides in a separate map, db.override. That is
@@ -80,7 +107,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- OPTIONAL teardown for re-importing over an existing model. DESTRUCTIVE —
 -- uncomment only against a scratch schema, never anything holding data.
--- DROP TABLE IF EXISTS UploadReject, AuthEvent, StudentGrade, GradeBand,
+-- DROP TABLE IF EXISTS ScoreChange, UploadReject, AuthEvent, CourseGroupWeight, StudentGrade, GradeBand,
 --                      ScoreUploadLog, Score, Student,
 --                      AssessmentCriteria, Activity, BehavioralObjective,
 --                      CLO, CourseInstructor, Course,
@@ -106,6 +133,10 @@ CREATE TABLE `User` (
                               COMMENT 'how the account was first created',
     googleSub    VARCHAR(255) NULL    COMMENT 'Google subject id from the VERIFIED token — matched on, never the email',
     emailVerifiedAt DATETIME(3) NULL  COMMENT 'NULL = รอยืนยันอีเมล · Google sets it on creation',
+    -- FR-08 (migration 0007). Separate from isActive on purpose: status only
+    -- moves PENDING -> ACTIVE, isActive is the kill switch that can flip back.
+    status       ENUM('PENDING','ACTIVE') NOT NULL DEFAULT 'ACTIVE'
+                              COMMENT 'PENDING = Google นอกโดเมนสถาบัน รอผู้ดูแลอนุมัติ',
 
     -- [index-q] UC 1.5 รีเซ็ตรหัสผ่าน and the self-service change-password form.
     -- A reset without this flag cannot force the next login to pick a new
@@ -122,7 +153,8 @@ CREATE TABLE `User` (
     UNIQUE KEY uq_user_googlesub (googleSub),
     -- Composite, not two single-column keys: every user list filters by BOTH
     -- ("active instructors", "active admins") and never by role alone.
-    KEY idx_user_role_active (role, isActive)
+    KEY idx_user_role_active (role, isActive),
+    KEY idx_user_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='ผู้ใช้ระบบ — ADMIN หรือ INSTRUCTOR (ไม่มี role นักศึกษา) · ลงทะเบียนเองได้ (D6)';
 
@@ -187,6 +219,12 @@ CREATE TABLE Course (
     classTarget    DOUBLE       NOT NULL DEFAULT 100
                                 COMMENT 'สัดส่วนผู้ผ่าน CLO จึงถือว่าบรรลุ (%) — D2 ทุกคนผ่าน · CLO may override',
 
+    -- [index-q] N1 (2569-09-23). GROUP: the instructor enters one weight per
+    -- activity type (CourseGroupWeight) and each activity's weight is split from
+    -- it in proportion to maxScore. MANUAL: Activity.weight is entered directly.
+    weightMode     ENUM('MANUAL','GROUP') NOT NULL DEFAULT 'MANUAL'
+                                COMMENT '[index-q] กรอกน้ำหนักรายกิจกรรม หรือรายกลุ่มประเภท',
+
     createdAt      DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     updatedAt      DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
                                 ON UPDATE CURRENT_TIMESTAMP(3),
@@ -230,13 +268,12 @@ CREATE TABLE CLO (
     weight      DOUBLE        NULL
                               COMMENT 'สัดส่วนของ CLO ในรายวิชา (%) — รวม 100 ต่อวิชา · NULL = ยังไม่กรอก',
     levelSource ENUM('AUTO','MANUAL') NOT NULL DEFAULT 'AUTO'
-                              COMMENT 'AUTO = ระบบเสนอ Bloom/SOLO จากคำกริยาแรก (E3) · MANUAL = ผู้สอนกำหนด',
+                              COMMENT 'AUTO = ผู้สอนเลือก Bloom แล้วระบบแปลงเป็น SOLO (O3) · MANUAL = ผู้สอนเลือกทั้งสองระดับเอง',
 
     -- Nullable and WITHOUT a default: the column exists to check that
     -- assessment method matches cognitive level, and a fabricated REMEMBER on
     -- every legacy row would quietly defeat that.
-    bloomLevel  ENUM('REMEMBER','UNDERSTAND','APPLY',
-                     'ANALYZE','EVALUATE','CREATE') NULL
+    bloomLevel  ENUM('REMEMBER','UNDERSTAND','APPLY','ANALYZE','EVALUATE','CREATE') NULL
                               COMMENT 'ระดับพฤติกรรมตาม Bloom — จำ/เข้าใจ/ประยุกต์/วิเคราะห์/ประเมิน/สร้างสรรค์',
     -- D4. Nullable for the same reason as bloomLevel.
     soloLevel   ENUM('SURFACE','DEEP','TRANSFER') NULL
@@ -290,9 +327,18 @@ CREATE TABLE Activity (
     criteriaNote VARCHAR(1000) NOT NULL DEFAULT '' COMMENT 'เกณฑ์การประเมิน / รูบริก — ข้อความอิสระ',
     passMark DOUBLE       NOT NULL DEFAULT 50
                           COMMENT '% of maxScore that passes THIS activity — reported, never decides a CLO (E1)',
+    -- [index-q] M3 (2569-09-21). The instructor enters and reads a SCORE, not a
+    -- percent; passMark is kept equal to passScore / maxScore * 100.
+    -- NULL = not entered, the UI falls back to passMark * maxScore / 100.
+    passScore DOUBLE      NULL
+                          COMMENT '[index-q] คะแนนที่ถือว่าผ่านกิจกรรม — passMark คำนวณจากค่านี้',
     maxScore DOUBLE       NOT NULL COMMENT 'must be > 0 — every formula divides by it',
     `order`  INT          NOT NULL,
     weight   DOUBLE       NOT NULL COMMENT '% of course total; all activities sum to 100',
+    -- [index-q] R3 — NULL = still collecting scores, a missing Score row means
+    -- "not assessed yet". Once set, a missing row means "did not submit" and
+    -- someone has to decide: 0, or EXCUSED. Re-opening sets it back to NULL.
+    closedAt DATE         NULL COMMENT '[index-q] ปิดรับคะแนนเมื่อ · NULL = ยังเก็บคะแนนอยู่',
     PRIMARY KEY (id),
     KEY idx_activity_course (courseId),
     KEY idx_activity_order (courseId, `order`),
@@ -300,6 +346,22 @@ CREATE TABLE Activity (
         FOREIGN KEY (courseId) REFERENCES Course (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='กิจกรรมประเมิน — คะแนนถูกบันทึกรายกิจกรรมเท่านั้น';
+
+-- [index-q] N1/N2 — db.course[].groupWeight in index-q.html, e.g. { LAB:25,
+-- TEST:75 }. Stored as rows, not a JSON column: one weight per (course, type)
+-- is exactly what the unique key says. Read only when Course.weightMode =
+-- GROUP; the rows are kept when the course switches back to MANUAL.
+CREATE TABLE CourseGroupWeight (
+    id       VARCHAR(30) NOT NULL,
+    courseId VARCHAR(30) NOT NULL,
+    type     ENUM('LECTURE','LAB','TEST','PROJECT') NOT NULL COMMENT 'ประเภทกิจกรรม — same values as Activity.type',
+    weight   DOUBLE      NOT NULL COMMENT '% of course total for ALL activities of this type',
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_groupweight_course_type (courseId, type),
+    CONSTRAINT fk_groupweight_course
+        FOREIGN KEY (courseId) REFERENCES Course (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='[index-q] น้ำหนักต่อกลุ่มประเภทกิจกรรม — ระบบแบ่งให้กิจกรรมในกลุ่มตามคะแนนเต็ม';
 
 -- Associative entity: Activity <-> BehavioralObjective is M:N and `weight`
 -- belongs to the pairing rather than to either side (T4, migration 0006).
@@ -333,6 +395,12 @@ CREATE TABLE Student (
     studentCode VARCHAR(50)  NOT NULL,
     name        VARCHAR(255) NOT NULL,
     courseId    VARCHAR(30)  NOT NULL,
+    -- [index-q] R2 — WITHDRAWN leaves every denominator (attainment, mean/SD,
+    -- completeness, the follow-up list) and shows grade W. The Score rows are
+    -- kept on purpose: restoring the status brings the student back whole.
+    status      ENUM('ENROLLED','WITHDRAWN') NOT NULL DEFAULT 'ENROLLED'
+                             COMMENT '[index-q] ถอนรายวิชา = ไม่นับในผลใด ๆ แต่คะแนนยังเก็บไว้',
+    withdrawnAt DATE         NULL COMMENT '[index-q] วันที่ถอน · NULL เมื่อยังลงทะเบียนอยู่',
     PRIMARY KEY (id),
     -- Unique inside a course. The same code in two courses is two enrolments
     -- of one person, which is correct and must stay legal.
@@ -348,9 +416,18 @@ CREATE TABLE Score (
     id         VARCHAR(30) NOT NULL,
     studentId  VARCHAR(30) NOT NULL,
     activityId VARCHAR(30) NOT NULL,
-    -- NOT NULL, and no row means "ยังไม่ประเมิน". A 0 here is a real zero the
-    -- student earned; the ABSENCE of the row is the missing value.
-    score      DOUBLE      NOT NULL,
+    -- No row means "ยังไม่ประเมิน". A 0 here is a real zero the student
+    -- earned; the ABSENCE of the row is the missing value.
+    -- [index-q] R3 — score is NULL only when status = EXCUSED: the student is
+    -- exempt from this activity and it leaves both numerator and denominator.
+    -- App rule (and a CHECK when this becomes a migration):
+    --   (status = 'SCORED') = (score IS NOT NULL)
+    score      DOUBLE      NULL,
+    status     ENUM('SCORED','EXCUSED') NOT NULL DEFAULT 'SCORED'
+                           COMMENT '[index-q] EXCUSED = ยกเว้น ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้',
+    -- [index-q] U6 — why the student was excused. Optional, set only while
+    -- status = EXCUSED (cleared when the cell becomes a score or empty again).
+    excuseReason VARCHAR(255) NULL COMMENT '[index-q] เหตุผลการยกเว้น · ไม่บังคับ',
     uploadedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     PRIMARY KEY (id),
     UNIQUE KEY uq_score_student_activity (studentId, activityId),
@@ -476,6 +553,41 @@ CREATE TABLE UploadReject (
 -- the whole self-service trail (REGISTER, VERIFY, LOGIN, LOGIN_GOOGLE,
 -- LOGOUT), different for every admin action. DENY records a refused action
 -- (FR-22b): the permission matrix is only auditable if refusals leave a trace.
+-- [index-q] R5 — db.scoreChange in index-q.html. Every score write goes
+-- through one function (writeScore), and that function appends here. Without
+-- it a hand-edited cell leaves no trace: ScoreUploadLog only knows imports,
+-- and "who changed this, and from what" is the first question of any grade
+-- appeal. An unchanged value writes nothing. Rows die with their Student or
+-- Activity (ON DELETE CASCADE) — the history of a deleted cell has no reader.
+CREATE TABLE ScoreChange (
+    id         VARCHAR(30) NOT NULL,
+    studentId  VARCHAR(30) NOT NULL,
+    activityId VARCHAR(30) NOT NULL,
+    -- NULL = the cell was empty. excused flags keep "ยกเว้น" apart from NULL.
+    fromScore   DOUBLE     NULL,
+    fromExcused TINYINT(1) NOT NULL DEFAULT 0,
+    toScore     DOUBLE     NULL,
+    toExcused   TINYINT(1) NOT NULL DEFAULT 0,
+    source     ENUM('MANUAL','IMPORT','FILL','FILL_UNDO','CLOSE','PASTE','NOTE') NOT NULL
+               COMMENT 'กรอกในตาราง · นำเข้าไฟล์ · เริ่มจากคะแนนเต็ม · ย้อนการเติม · ปิดรับคะแนน · วางจากตาราง Excel · แก้เหตุผลการยกเว้น',
+    note       VARCHAR(255) NULL COMMENT 'เหตุผลการยกเว้น ณ ตอนนั้น (ใช้กับ EXCUSED และ NOTE)',
+    changedBy  VARCHAR(30) NOT NULL,
+    logId      VARCHAR(30) NULL COMMENT 'ScoreUploadLog ของการนำเข้าที่ทำให้เปลี่ยน · NULL เมื่อไม่ใช่การนำเข้า',
+    changedAt  DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    KEY idx_scorechange_cell (studentId, activityId, changedAt),
+    KEY idx_scorechange_activity (activityId),
+    CONSTRAINT fk_scorechange_student
+        FOREIGN KEY (studentId) REFERENCES Student (id) ON DELETE CASCADE,
+    CONSTRAINT fk_scorechange_activity
+        FOREIGN KEY (activityId) REFERENCES Activity (id) ON DELETE CASCADE,
+    CONSTRAINT fk_scorechange_user
+        FOREIGN KEY (changedBy) REFERENCES `User` (id),
+    CONSTRAINT fk_scorechange_log
+        FOREIGN KEY (logId) REFERENCES ScoreUploadLog (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='[index-q] ประวัติการเปลี่ยนคะแนนรายช่อง — ใคร เมื่อไร จากอะไรเป็นอะไร ด้วยวิธีไหน';
+
 CREATE TABLE AuthEvent (
     id       VARCHAR(30)   NOT NULL,
     userId   VARCHAR(30)   NOT NULL COMMENT 'บัญชีที่ถูกกระทำ',
@@ -499,10 +611,11 @@ CREATE TABLE AuthEvent (
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================================
--- END — 15 tables · 18 foreign keys · 0 deferred FKs
---   13 tables as schema.prisma has them after migration 0006
---   · User (+3 columns) and ScoreUploadLog (+1 column) extended by index-q.html
---   · 2 tables proposed by index-q.html
+-- END — 17 tables · 23 foreign keys · 0 deferred FKs
+--   13 tables as schema.prisma has them after migration 0007
+--   · User (+3), Course (+1), Activity (+1), ScoreUploadLog (+1) columns
+--     extended by index-q.html
+--   · 3 tables proposed by index-q.html
 --
 -- Every FK points at a table already created above it, so the file runs
 -- top-to-bottom even with FOREIGN_KEY_CHECKS ON. UploadReject comes after
@@ -513,9 +626,9 @@ SET FOREIGN_KEY_CHECKS = 1;
 --   2. Select this file · tick "Place imported objects on a diagram"
 --   3. Arrange > Autolayout
 --   4. View > Object Descriptions shows the COMMENTs — the [index-q] tag is how
---      the two proposed tables and four proposed columns identify themselves
+--      the three proposed tables and six proposed columns identify themselves
 --
--- Expected diagram shape: Course is still the busiest node with six tables
+-- Expected diagram shape: Course is still the busiest node with seven tables
 -- hanging off it. `User` now has five edges (CourseInstructor, ScoreUploadLog,
 -- EmailVerificationToken, and AuthEvent twice — once as the subject, once as
 -- the actor). AssessmentCriteria sits between Activity and BehavioralObjective,

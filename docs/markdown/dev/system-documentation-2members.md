@@ -1,7 +1,7 @@
 # เอกสารสรุปโครงการระบบ (System Documentation)
 ## ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา — CMAS / CLO System
 
-> **จัดทำ:** 21 กันยายน 2569 · **สถานะโครงงาน:** CLO 3 (ออกแบบสถาปัตยกรรม) ใกล้ปิด · CLO 4 (พัฒนา) อยู่ใน Sprint 2
+> **อัปเดตตามโค้ด 26 กันยายน 2569** (migration 0001–0007 · 14 feature) · **จัดทำ:** 21 กันยายน 2569 · **สถานะโครงงาน:** CLO 3 (ออกแบบสถาปัตยกรรม) ใกล้ปิด · CLO 4 (พัฒนา) อยู่ใน Sprint 2
 > **ขอบเขตเอกสาร:** แบ่งตามความรับผิดชอบของสมาชิก 2 ท่าน — **นูรีน** (Technical & General Tasks) · **นัท** (System Design & Architecture)
 > **แหล่งอ้างอิง:** อ่านจากโค้ดและเอกสารจริงในรีโพซิทอรี ณ วันที่จัดทำ (ดูภาคผนวก ก)
 
@@ -35,7 +35,7 @@
 | **แนวคิดหลัก** | กำหนด CLO → แตกเป็นวัตถุประสงค์เชิงพฤติกรรม → ผูกกับกิจกรรมประเมิน (Constructive Alignment) → นำเข้าคะแนน → คำนวณระดับการบรรลุ (attainment) และตัดเกรด |
 | **ผู้ใช้ระบบ** | 2 บทบาท — **ADMIN** (ผู้ดูแลระบบระดับคณะ) และ **INSTRUCTOR** (ผู้สอน) · นักศึกษาเป็น *ข้อมูล* ไม่ใช่ผู้ใช้ระบบใน v1 |
 | **ขอบเขตสถาปัตยกรรม** | **Single-tenant** — ใช้งานคณะเดียว ตัดชั้น Institution / Curriculum ออก (มติ 4 ส.ค. 2569) ขอบเขตข้อมูลที่เหลือคือ **รายวิชา** |
-| **ขนาดงาน** | 13 feature / 13 หน้าจอ · 58 endpoint ตามสัญญา API · 99 FR · 19 NFR · 11 กฎการคำนวณ (CR-01…CR-11) |
+| **ขนาดงาน** | 14 feature / 14 หน้าจอ · 58 endpoint ตามสัญญา API · 99 FR · 19 NFR · 11 กฎการคำนวณ (CR-01…CR-11) |
 | **ทีมพัฒนา** | 3 คน — แบ่งเจ้าของราย feature คนละ 3 feature จาก 9 package ใน Use Case Diagram |
 | **กำหนดการ** | CLO 4 (พัฒนา) 8 sprint × 2 สัปดาห์ · Feature freeze 13 ธ.ค. 2569 · tag `v1.0.0` 30 ธ.ค. 2569 · CLO 5 (ทดสอบ / เล่ม / สอบป้องกัน) 25 ม.ค. – 27 มี.ค. 2570 |
 
@@ -45,7 +45,7 @@
 |---|---|---|
 | Server | Fastify 5 · Prisma 6 · Zod · jose (JWT) · argon2 · `auth.middleware.ts` · `rbac.middleware.ts` · `authorization.service.ts` · `GET /health` | endpoint ธุรกิจทั้งหมด (ยัง comment ไว้ใน `routes/index.ts`) |
 | Client | React 19 · React Router 7 · TanStack Query · Zustand · หน้า `Home` `Login` `Users` `CourseList` | AppShell · component library · ทุกหน้าระดับรายวิชา |
-| Database | 13 model · migration 0001–0006 (รวม CHECK constraint + trigger + การตัดเกรด + ลำดับชั้น CLO) | — (schema ปิดแล้ว รอ feature เรียกใช้) |
+| Database | 13 model · migration 0001–0007 (รวม CHECK constraint + trigger + การตัดเกรด + ลำดับชั้น CLO → จุดประสงค์ → กิจกรรม + สถานะบัญชี PENDING/ACTIVE) | — (schema ปิดแล้ว รอ feature เรียกใช้) |
 | เอกสารออกแบบ | SRS · DFD L0–L2 · ER (Prisma + MySQL mirror) · API contract · Design System · ต้นแบบ `index-q.html` | — |
 
 ---
@@ -315,12 +315,12 @@ erDiagram
 |---|---|---|
 | `User` | บัญชีผู้ใช้ + บทบาทระดับคณะ | `role` = ADMIN / INSTRUCTOR · `isActive` ใช้ระงับบัญชี · รหัสผ่าน hash ด้วย argon2 |
 | `EmailVerificationToken` | โทเคนยืนยันอีเมลตอนลงทะเบียนเอง | เพิ่มตามมติ D6 |
-| `Course` | รายวิชาที่เปิดสอนจริงต่อภาคการศึกษา | ถือ `credits` · `gradeScale` · `gradeMethod` · `passCriteria` · `classTarget` |
+| `Course` | รายวิชาที่เปิดสอนจริงต่อภาคการศึกษา | ถือ `credits` · `gradeScale` · `gradeMethod` · `passCriteria` · `cloPassMark` (เกณฑ์ผ่าน CLO ค่าเดียวทั้งวิชา) · `classTarget` (default 100) |
 | `CourseInstructor` | ตารางเชื่อมผู้สอน ↔ รายวิชา | ผู้สอนทุกคนสิทธิ์เท่ากัน (ตัด `CourseRole` แล้ว) |
-| `CLO` | ผลลัพธ์การเรียนรู้ระดับรายวิชา | `number` จัดลำดับ · `threshold` เกณฑ์ผ่านรายบุคคล · `bloomLevel` |
-| `BehavioralObjective` | จุดประสงค์เชิงพฤติกรรมที่แตกจาก CLO | ชั้นกลางของ constructive alignment |
-| `Activity` | กิจกรรมประเมิน (สอบ / งาน / ปฏิบัติ) | มี `weight` · `maxScore` · `order` |
-| `AssessmentCriteria` | ผูก Activity ↔ CLO พร้อมน้ำหนักต่อคู่ | น้ำหนักรวมต่อกิจกรรมต้องเป็น 100% |
+| `CLO` | ผลลัพธ์การเรียนรู้ระดับรายวิชา | `number` จัดลำดับ · `weight` (กรอกเอง) · `bloomLevel` / `soloLevel` / `levelSource` · `classTarget` ราย CLO · *(`threshold` ถูกตัดใน 0006)* |
+| `BehavioralObjective` | จุดประสงค์เชิงพฤติกรรมที่แตกจาก CLO | ชั้นกลางของ constructive alignment · มี `weight` (รวม 100 ต่อ CLO) · **กิจกรรมผูกที่ระดับนี้** |
+| `Activity` | กิจกรรมประเมิน (สอบ / งาน / ปฏิบัติ) | มี `type` · `assessmentMethod` · `weight` · `maxScore` · `passMark` · `order` |
+| `AssessmentCriteria` | ผูก Activity ↔ **จุดประสงค์เชิงพฤติกรรม** พร้อมน้ำหนักต่อคู่ (ถึง CLO ผ่านจุดประสงค์) | น้ำหนักรวมต่อกิจกรรมต้องเป็น 100% · ไม่มี `ObjectiveAssessment` แล้ว |
 | `Student` | รายชื่อนักศึกษาในรายวิชา | ขอบเขตด้วย `courseId` · ข้อมูลอ่อนไหวตาม PDPA |
 | `Score` | คะแนนรายนักศึกษาต่อกิจกรรม | **ว่าง ≠ 0** · บังคับ `score ≤ maxScore` ด้วย trigger |
 | `ScoreUploadLog` | ประวัติการนำเข้าไฟล์ | จำนวนแถวสำเร็จ / ล้มเหลว · ใช้ตอบหมวด Repudiation |
@@ -337,14 +337,16 @@ erDiagram
 | `BloomLevel` / `SoloLevel` | ตาม taxonomy | ระดับพฤติกรรมของ CLO ขับ constructive alignment |
 | `ActivityType` / `AssessmentMethod` | ชนิดกิจกรรม / วิธีประเมิน | ใช้ตรวจความเหมาะสมของวิธีวัดกับระดับ CLO |
 | `AuthProvider` | ช่องทางยืนยันตัวตน | รองรับการลงทะเบียนเอง (D6) |
+| `AccountStatus` | PENDING · ACTIVE | Google นอกโดเมนคณะรอ ADMIN อนุมัติ (FR-08, 0007) — แยกจาก `isActive` |
+| `LevelSource` | AUTO · MANUAL | SOLO ตามระดับ Bloom อัตโนมัติ หรือเลือกเอง (O3) |
 
 ### 2.3.5 ไฟล์ประกอบ
 
 | ไฟล์ | ใช้ทำอะไร |
 |---|---|
 | `database/schema.prisma` | **แหล่งจริง** ของโครงสร้างข้อมูล (PostgreSQL) |
-| `database/migrations/0001…0006` | ลำดับการเปลี่ยนโครงสร้าง + CHECK constraint + trigger |
-| `docs/reference/db/mysql/cmas_app_mysql_v4.sql` | สำเนาเชิง MySQL สำหรับ reverse-engineer เป็น EER Diagram ใน MySQL Workbench (13 ตาราง · 80 คอลัมน์ · 16 FK) |
+| `database/migrations/0001…0007` | ลำดับการเปลี่ยนโครงสร้าง + CHECK constraint + trigger |
+| `docs/reference/db/mysql/index-q.sql` | สำเนาเชิง MySQL สำหรับ reverse-engineer เป็น EER Diagram ใน MySQL Workbench — Prisma ถึง 0007 + ส่วนที่ต้นแบบ index-q เสนอเพิ่ม (16 ตาราง · 19 FK) · `cmas_app_mysql_v4.sql` แช่แข็งที่ 0004 ไม่ตรง schema แล้ว |
 | `docs/uml/index-q/ER-INDEX-Q.drawio` / `.pdf` | ไดอะแกรมสำหรับใส่เล่มและพรีเซนต์ |
 
 ## 2.4 Tech Stack

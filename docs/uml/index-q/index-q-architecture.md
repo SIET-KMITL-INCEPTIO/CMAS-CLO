@@ -7,7 +7,11 @@ See also: [[UML]] · [[srs]] · [[user-flow]] · [[features-pages]] · `database
 >
 > **ต่างจาก [[UML]]:** ไฟล์นั้นเป็นแบบจำลองของ*ระบบที่จะสร้าง* · ไฟล์นี้เป็นภาพของ*ต้นแบบที่สร้างแล้ว*
 
-**ต้นแบบโดยย่อ** — ไฟล์ HTML เดียว 3,861 บรรทัด (264 KB) · พึ่งภายนอกแค่ 2 อย่าง (Tailwind CDN, Google Fonts) · เปิดจาก `file://` ได้ ไม่ต้องมีเซิร์ฟเวอร์ · 9 หน้า · 7 entity ที่ CRUD ได้ · ข้อมูลตัวอย่าง 4 รายวิชา / 30 การลงทะเบียน / 120 แถวคะแนน
+> **อัปเดต 2026-09-26 — สกัดใหม่จากต้นแบบที่รันอยู่ (`db`, `ROUTES`, `FORMS`, `PERM`, `derive()` ผ่าน browser):**
+> §1 (ER) · §2 (ตัวเลขชั้นโครงสร้าง) · §3 (เส้นทางหลัก) เขียนใหม่ให้ตรงกับต้นแบบปัจจุบัน ·
+> **§4–§7 ยังเป็นผลสกัดของ 2026-09-10** — ตัวเลขและชื่อขั้นตอนอาจล้าหลัง (ต้นแบบโตจาก 3,861 → 8,187 บรรทัดตั้งแต่นั้น) · ไม่ได้ตรวจซ้ำในรอบนี้
+
+**ต้นแบบโดยย่อ (ณ 2026-09-26)** — ไฟล์ HTML เดียว **8,187 บรรทัด (634 KB)** · พึ่งภายนอก 3 อย่าง (Tailwind CDN, Google Fonts, SheetJS สำหรับ `.xlsx` จริง) · เปิดจาก `file://` ได้ ไม่ต้องมีเซิร์ฟเวอร์ · **10 หน้า** (`overview` · `clos` · `objectives` · `activities` · `roster` · `dashboard` · `grading` · `courses` · `users` · `coverage`) · 7 entity ที่ CRUD ได้ (`FORMS`) · `db` **14 collection** (array) + `override` (object map) · ข้อมูลตัวอย่าง 5 รายวิชา / 45 นักศึกษา / 268 แถวคะแนน / 15 CLO / 30 จุดประสงค์ / 22 กิจกรรม / 56 แถวเกณฑ์ · เมทริกซ์สิทธิ์ `PERM` 17 capability · `derive()` คืนค่า 48 อย่าง
 
 ---
 
@@ -17,18 +21,18 @@ See also: [[UML]] · [[srs]] · [[user-flow]] · [[features-pages]] · `database
 erDiagram
     User ||--o{ CourseInstructor : "ถูกมอบหมาย (Restrict)"
     User ||--o{ ScoreUploadLog : "อัปโหลด (Restrict)"
+    User ||--o{ authEvent : "เป็นเป้าหมาย / ผู้กระทำ"
     Course ||--o{ CourseInstructor : "มีผู้สอน"
     Course ||--o{ CLO : "กำหนด"
     Course ||--o{ Activity : "มีกิจกรรม"
     Course ||--o{ Student : "มีผู้ลงทะเบียน"
     Course ||--o{ GradeBand : "มีขั้นบันไดเกรด"
     Course ||--o{ ScoreUploadLog : "มีประวัตินำเข้า"
+    ScoreUploadLog ||--o{ uploadReject : "แถวที่ถูกปฏิเสธ"
     CLO ||--o{ BehavioralObjective : "แตกเป็น"
-    CLO ||--o{ AssessmentCriteria : "ถูกวัดโดย"
-    Activity ||--o{ AssessmentCriteria : "วัด"
+    BehavioralObjective ||--o{ AssessmentCriteria : "ถูกวัดโดย"
+    Activity ||--o{ AssessmentCriteria : "วัดจุดประสงค์ผ่าน"
     Activity ||--o{ Score : "ให้คะแนน"
-    AssessmentCriteria ||--o{ ObjectiveAssessment : "เป็นหลักฐานของ"
-    BehavioralObjective ||--o{ ObjectiveAssessment : "ถูกอ้างโดย"
     Student ||--o{ Score : "ได้รับ"
     Student ||--o| StudentGrade : "ได้เกรด"
 
@@ -43,28 +47,36 @@ erDiagram
         string id PK
         string code
         string name
+        string nameEn
         int semester
         int year
         string section
         float credits
+        float lectureHours
+        float practiceHours
+        float selfStudyHours
         enum gradeScale
         enum gradeMethod
         float passCriteria
+        float cloPassMark
         float classTarget
     }
     CourseInstructor {
         string id PK
         string courseId FK
         string userId FK
-        enum role
+        string role "เหลือค่าเดียว INSTRUCTOR"
         string assignedAt
     }
     CLO {
         string id PK
         string courseId FK
         int number
-        float threshold
+        string description
+        float weight
+        enum levelSource
         enum bloomLevel
+        enum soloLevel
         float classTarget
     }
     BehavioralObjective {
@@ -72,26 +84,26 @@ erDiagram
         string cloId FK
         int number
         string description
+        float weight
     }
     Activity {
         string id PK
         string courseId FK
         int order
         string name
-        string method
+        enum type
+        enum assessmentMethod
         float maxScore
+        float passScore "ต้นแบบเท่านั้น"
+        float passMark
+        string criteriaNote
         float weight
     }
     AssessmentCriteria {
         string id PK
         string activityId FK
-        string cloId FK
-        float weight
-    }
-    ObjectiveAssessment {
-        string id PK
-        string criteriaId FK
         string objectiveId FK
+        float weight
     }
     Student {
         string id PK
@@ -113,6 +125,8 @@ erDiagram
         string fileName
         int recordsOk
         int recordsFail
+        enum kind "ต้นแบบเท่านั้น SCORE/ROSTER"
+        string createdAt
     }
     GradeBand {
         string id PK
@@ -127,19 +141,41 @@ erDiagram
         string grade
         string overrideReason
     }
+    authEvent {
+        string id PK
+        string userId FK
+        string actorId FK
+        string action
+        string detail
+        string at
+    }
+    uploadReject {
+        string logId FK
+        int row
+        string studentCode
+        string field
+        string value
+        string reason
+    }
 ```
 
-### 1.1 ความตรงกับ `schema.prisma`
+> `StudentGrade` ไม่มีคอลเลกชันจริงในต้นแบบ (`db.studentGrade` ว่าง) — เกรดที่ปรับมืออยู่ใน `db.override` (ดู §1.2)
 
-| Model | ตรงระดับฟิลด์ | ฟิลด์ที่ schema มีแต่ต้นแบบไม่มี |
+### 1.1 ความตรงกับ `schema.prisma` (migration 0007)
+
+| Model | ตรงระดับฟิลด์ | หมายเหตุ |
 |---|:--:|---|
-| CourseInstructor · CLO · BehavioralObjective · Activity · AssessmentCriteria · ObjectiveAssessment · Student · Score · ScoreUploadLog · GradeBand · StudentGrade | ✓ (11 model) | — |
-| `User` | ✕ | `passwordHash`, `createdAt`, `updatedAt` |
-| `Course` | ✕ | `createdAt`, `updatedAt` |
+| BehavioralObjective · AssessmentCriteria · Student · Score · GradeBand · StudentGrade | ✓ | — |
+| `User` | ✕ | ขาด `passwordHash` · `status` · `authProvider` · `googleSub` · `emailVerifiedAt` · `createdAt` · `updatedAt` (ต้นแบบไม่ทำการยืนยันตัวตนจริง — ส่วนหนึ่งจำลองผ่าน `authEvent`) |
+| `Course` | ✕ | ขาด `createdAt` · `updatedAt` · ต้นแบบมี `groupWeight` ซ้อนใน record ของวิชาที่ `weightMode = GROUP` (ไม่มีใน Prisma) |
+| `CourseInstructor` | ✕ | ต้นแบบยังมี `role` (ค่าเดียว `INSTRUCTOR`) — Prisma ตัดคอลัมน์ทิ้งแล้วใน 0005 |
+| `CLO` · `Activity` | ✕ | `Activity.passScore` มีเฉพาะต้นแบบ (Prisma มี `passMark` % อย่างเดียว) |
+| `ScoreUploadLog` | ✕ | ต้นแบบมี `kind` (SCORE / ROSTER) เพิ่ม |
+| `EmailVerificationToken` | — | ต้นแบบไม่มี (ไม่ได้ส่งอีเมลจริง) |
 
-ที่ขาดคือ **รหัสผ่านกับ timestamp เท่านั้น** ซึ่งเป็นการตัดที่ถูกต้องสำหรับต้นแบบที่ไม่มีระบบล็อกอินและไม่มีฐานข้อมูลจริง — **ไม่มีฟิลด์เชิงธุรกิจข้อใดหายไป**
+**ผลรวม:** Prisma 13 model ↔ ต้นแบบ 12 collection ที่ตรงกับ 12 model (ขาด `EmailVerificationToken`; `db.studentGrade` ว่าง) + `db.authEvent` + `db.uploadReject` + `db.override` ที่เกินมา · `ObjectiveAssessment` **ไม่มีทั้งสองฝั่งแล้ว** (0006)
 
-### 1.2 สามสิ่งที่ต้นแบบมีแต่ ER ไม่มี
+### 1.2 สิ่งที่ต้นแบบมีแต่ Prisma ไม่มี
 
 ```mermaid
 erDiagram
@@ -171,12 +207,13 @@ erDiagram
 
 | สิ่งที่เพิ่มมา | รูปแบบ | ควรจะเป็น |
 |---|---|---|
-| **`db.override`** | object map `studentId → {to, why}` **ไม่ใช่ array** | นี่คือ `StudentGrade.grade` + `overrideReason` ที่ ER มีอยู่แล้ว — ต้นแบบแยกออกมาเพราะ `StudentGrade` ยังว่างจนกว่าจะกด "ประมวลผลเกรด" **ตอนต่อฐานข้อมูลจริงต้องยุบกลับเข้า `StudentGrade`** |
-| **`db.uploadReject`** | array แถวที่ถูกปฏิเสธตอนนำเข้า | **ไม่มีใน schema เลย** — ปัจจุบัน `ScoreUploadLog` เก็บแค่จำนวน `recordsFail` ไม่ได้เก็บว่าแถวไหนผิดเพราะอะไร ถ้าต้องการรายงานข้อผิดพลาดจริง (FR-65) ต้องเพิ่มตารางนี้ · ตอนนี้ตัวตรวจไฟล์เขียนลงตารางนี้จริงทุกครั้งที่ปฏิเสธแถว |
-| **`db.authEvent`** | array เหตุการณ์กับบัญชี (`SUSPEND` `ACTIVATE` `PW_RESET` `ROLE_SET`) | **ไม่มีใน schema เลย** — UC 1.6 (ตรวจสอบประวัติการใช้งาน) เป็นไปไม่ได้ถ้าไม่มี ต้นแบบจึงจำลองไว้ให้เห็นว่าหน้าจอรองรับได้ · รูปทรงตั้งใจให้ตรงกับ `AuditLog` ที่เสนอไว้ในหัวข้อ 6 เพื่อให้การรับมาเป็น migration ไม่ใช่การออกแบบใหม่ |
+| **`db.override`** | object map `studentId → {to, why}` **ไม่ใช่ array** | นี่คือ `StudentGrade.grade` + `overrideReason` ที่ Prisma มีอยู่แล้ว — ต้นแบบแยกเก็บเพราะยังไม่มีแถว `StudentGrade` (ตรึงเกรดยังไม่ทำ) |
+| **`db.uploadReject`** | array แถวที่ถูกปฏิเสธตอนนำเข้า | **ไม่มีใน Prisma** — `ScoreUploadLog` เก็บแค่จำนวน `recordsOk` / `recordsFail` ทำให้ FR-68 (ดาวน์โหลดแถวที่ผิด) เป็นไปไม่ได้ · เสนอในชื่อ `UploadReject` ใน `index-q.sql` |
+| **`db.authEvent`** | array เหตุการณ์กับบัญชี (`SUSPEND` `ACTIVATE` `PW_RESET` `ROLE_SET` …) | **ไม่มีใน Prisma** — UC 1.6 (ตรวจสอบประวัติการใช้งาน) ทำไม่ได้ถ้าไม่มี · เสนอในชื่อ `AuthEvent` ใน `index-q.sql` |
+| **`Course.groupWeight` · `weightMode`** | ซ้อนใน record ของ `db.course` | น้ำหนักรายประเภทกิจกรรม (N1/N2) · เสนอเป็นตาราง `CourseGroupWeight` ใน `index-q.sql` |
 
-> **ข้อสรุปของหัวข้อ 1:** ต้นแบบสะท้อน ER ได้ 13/13 model และตรงระดับฟิลด์ 11/13
-> ส่วนที่เกินมา 3 อย่างไม่ใช่ความผิดพลาด แต่เป็น **คำถามที่ ER ยังไม่ได้ตอบ** และควรตัดสินก่อนลงมือต่อระบบจริง
+> **ข้อสรุปของหัวข้อ 1 (2026-09-26):** ต้นแบบอยู่ **ข้างหน้า** Prisma — ส่วนที่เกินมาไม่ใช่ความผิดพลาด แต่เป็นคำถามที่ Prisma ยังไม่ได้ตอบ
+> (ตรึงเกรด · แถวที่ถูกปฏิเสธ · ประวัติบัญชี · น้ำหนักรายกลุ่ม) ควรตัดสินเป็น migration `0008` ก่อนลงมือทำ endpoint ที่เกี่ยวข้อง
 
 ---
 
@@ -187,12 +224,12 @@ erDiagram
 ```mermaid
 flowchart TB
     subgraph L1["1 · MODEL — สถานะเดียวของระบบ"]
-        DB["db<br/>15 collection · 13 ตรงกับ ER"]
-        ST["S<br/>สถานะ UI 11 คีย์<br/>course · route · sub · sort<br/>filter · role · density · listw<br/>area · expanded · tab"]
+        DB["db<br/>14 collection + override · 12 ตรงกับ Prisma"]
+        ST["S<br/>สถานะ UI 14 คีย์<br/>course · route · tab · sub · sort<br/>filter · newStu · role · meId · density<br/>longtext · listw · area · expanded"]
     end
 
     subgraph L2["2 · DERIVATION — กฎ CR-01…CR-11"]
-        DER["derive(courseId)<br/>คืนค่า 33 อย่าง<br/>cloScore · attain · total<br/>grades · readiness · blockers"]
+        DER["derive(courseId)<br/>คืนค่า 48 อย่าง<br/>cloScore · attain · total<br/>grades · readiness · blockers"]
         CACHE["CACHE ต่อรายวิชา<br/>ล้างด้วย invalidate()"]
     end
 
@@ -201,8 +238,8 @@ flowchart TB
         CH["chartAttainment<br/>chartStatus<br/>chartHistogram"]
     end
 
-    subgraph L4["4 · VIEWS — 9 หน้า"]
-        VC["ระดับรายวิชา 6<br/>overview · clos · activities<br/>roster · dashboard · grading"]
+    subgraph L4["4 · VIEWS — 10 หน้า"]
+        VC["ระดับรายวิชา 7<br/>overview · clos · objectives · activities<br/>roster · dashboard · grading"]
         VS["ระดับระบบ 3<br/>courses · users · coverage"]
     end
 
@@ -280,7 +317,7 @@ classDiagram
 
 `course` ใช้ฟอร์มของตัวเอง (`modalCourse`) เพราะมีตัวแก้ผู้สอนซ้อนอยู่ แต่**การลบเดินผ่าน engine เดียวกัน** จึงมี cascade อยู่ที่เดียวในระบบ
 
-`ObjectiveAssessment` **ไม่มี descriptor** — อ่านได้ ลบตามได้ แต่ผูกจาก UI ไม่ได้ (FR-34 ระดับ SHOULD)
+การผูกกิจกรรมกับจุดประสงค์ (`AssessmentCriteria`) ไม่มี descriptor ใน `FORMS` — แก้ผ่านเมทริกซ์เชื่อมโยง (ขั้น 5) และตัวติ๊กในฟอร์มกิจกรรมตอนสร้าง (T8) · `ObjectiveAssessment` ถูกตัดแล้ว (0006)
 
 ---
 
@@ -291,13 +328,13 @@ classDiagram
 ```mermaid
 stateDiagram-v2
     [*] --> สร้างรายวิชา
-    สร้างรายวิชา --> มอบหมายผู้สอน : ADMIN
+    สร้างรายวิชา --> มอบหมายผู้สอน : ADMIN / ผู้สอน
     มอบหมายผู้สอน --> กำหนด_CLO : INSTRUCTOR
-    กำหนด_CLO --> สร้างกิจกรรม
-    สร้างกิจกรรม --> ผูกกิจกรรมกับ_CLO
-    ผูกกิจกรรมกับ_CLO --> นำเข้ารายชื่อ
-    นำเข้ารายชื่อ --> กรอกคะแนน
-    กรอกคะแนน --> ตรวจความพร้อม
+    กำหนด_CLO --> กำหนดจุดประสงค์
+    กำหนดจุดประสงค์ --> สร้างกิจกรรมและวิธีประเมิน
+    สร้างกิจกรรมและวิธีประเมิน --> เชื่อมกิจกรรมกับจุดประสงค์
+    เชื่อมกิจกรรมกับจุดประสงค์ --> นักศึกษาและคะแนน
+    นักศึกษาและคะแนน --> ตรวจความพร้อม
 
     state ตรวจความพร้อม <<choice>>
     ตรวจความพร้อม --> ล็อก : มีข้อ ✕
@@ -305,24 +342,27 @@ stateDiagram-v2
     ตรวจความพร้อม --> ยังไม่มีคะแนน : ไม่มีแถว Score
     ตรวจความพร้อม --> ผลการประเมิน : ผ่านหมด
 
-    ล็อก --> ผูกกิจกรรมกับ_CLO : กดรายการที่ค้าง
-    ยังไม่มีคะแนน --> กรอกคะแนน
+    ล็อก --> เชื่อมกิจกรรมกับจุดประสงค์ : กดรายการที่ค้าง
+    ยังไม่มีคะแนน --> นักศึกษาและคะแนน
     เตือนแต่คำนวณได้ --> ผลการประเมิน
     ผลการประเมิน --> ตัดเกรด
     ตัดเกรด --> [*]
 ```
 
-**เงื่อนไขล็อก มีข้อเดียว** — น้ำหนักเกณฑ์ของกิจกรรมใดกิจกรรมหนึ่งไม่ครบ 100% (FR-45)
-CLO ที่ยังไม่มีกิจกรรมวัด เป็น **⚠ ไม่ใช่ ✕** เพราะ CLO ข้ออื่นยังคำนวณได้ตามปกติ (user-flow §7.1)
+**เงื่อนไขล็อก (ต้นแบบปัจจุบัน — ตามรอบที่ 2, T4/T6):** น้ำหนักเกณฑ์ของกิจกรรมใดไม่ครบ 100% (FR-45) · มีกิจกรรมที่ไม่ผูกจุดประสงค์เลย (FR-34) ·
+น้ำหนักจุดประสงค์รวมต่อ CLO ไม่ครบ 100% (T6) — CLO ที่ยังไม่มีจุดประสงค์หรือไม่มีกิจกรรมวัดเป็น **⚠ ไม่ใช่ ✕** เพราะ CLO ข้ออื่นยังคำนวณได้ตามปกติ ·
+น้ำหนัก CLO ที่กรอกไม่ตรงค่าคำนวณเป็น **⚠** เช่นกัน (E2)
 
-| ขั้น | คีย์ | ปลายทางเมื่อกด |
-|---|---|---|
-| 1 มอบหมายผู้สอน | `staff` | เปิดฟอร์มตั้งค่ารายวิชา |
-| 2 กำหนด CLO | `clo` | หน้า CLO |
-| 3 สร้างกิจกรรม | `act` | กิจกรรม → แท็บกิจกรรม |
-| 4 ผูกกิจกรรมกับ CLO | `crit` | กิจกรรม → แท็บเกณฑ์ |
-| 5 นำเข้ารายชื่อ | `roster` | นักศึกษา → แท็บคะแนน |
-| 6 กรอกคะแนน | `score` | นักศึกษา → แท็บคะแนน |
+| ขั้น | ปลายทางเมื่อกด |
+|---|---|
+| 1 ผู้สอน | เปิดฟอร์มตั้งค่ารายวิชา |
+| 2 CLO | หน้า CLO |
+| 3 จุดประสงค์ | หน้าจุดประสงค์เชิงพฤติกรรม |
+| 4 กิจกรรมและวิธีประเมิน | หน้ากิจกรรม |
+| 5 เชื่อมกิจกรรมกับจุดประสงค์ | หน้ากิจกรรม → เมทริกซ์เชื่อมโยง |
+| 6 นักศึกษาและคะแนน | หน้านักศึกษาและคะแนน (รวมนำเข้ารายชื่อกับกรอกคะแนนเป็นขั้นเดียว — T5) |
+
+*(ตัวเลข 6 ขั้นและชื่อขั้นตามต้นแบบหลังรอบที่ 2 — ดู [mockup-feedback-plan.md](../../markdown/dev/planning/mockup-feedback-plan.md) §5.3 T11)*
 
 ---
 
@@ -388,7 +428,7 @@ flowchart LR
 
 | ระดับ | หน้า | แท็บย่อย |
 |---|---|---|
-| รายวิชา | ภาพรวม · CLO · กิจกรรมและเกณฑ์ · นักศึกษาและคะแนน · ผลการประเมิน · การตัดเกรด | `กิจกรรม│เกณฑ์` · `คะแนน│ประวัตินำเข้า` · `สรุปผล│รายบุคคล` |
+| รายวิชา | ภาพรวม · CLO · จุดประสงค์ · กิจกรรมและเกณฑ์ · นักศึกษาและคะแนน · ผลการประเมิน · การตัดเกรด | `กิจกรรม│เกณฑ์` · `คะแนน│ประวัตินำเข้า` · `สรุปผล│รายบุคคล` |
 | ระบบ | รายวิชา · จัดการผู้ใช้งาน · ความครอบคลุมของแบบจำลอง | — |
 
 ---

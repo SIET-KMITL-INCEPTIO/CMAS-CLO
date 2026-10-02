@@ -4,10 +4,16 @@ See also: [[srs]] · [[dev]] · [[features-pages]] · [[schema]] · [[dfd]] · [
 
 ## ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO System / CMAS)
 
-> **Version:** 1.0.0 (Draft) | **Created:** 2026-08-06
-> **Baseline:** [[srs]] v2.0.0 (single-tenant) · `database/schema.prisma` v4 (11 models) ·
-> `app/server/src/` (Fastify 5 skeleton — auth/rbac/authorization พร้อมแล้ว routes ยังไม่ทำ)
+> **Version:** 1.1.0 (Draft) | **Created:** 2026-08-06 | **Updated:** 2026-09-26
+> **Baseline:** [[srs]] v2.4.0 (single-tenant) · `database/schema.prisma` (**13 models · migration 0001–0007**) ·
+> `app/server/src/` (Fastify 5 — **implement แล้ว 4 endpoint**: `GET /health` · `POST /auth/google` · `GET /users` · `PATCH /users/:id/approve` · ที่เหลือใน §3 ยังเป็น contract)
 > **สถานะ:** Draft — เป็น **contract** ระหว่าง client กับ server ก่อนเริ่ม implement Sprint 1
+>
+> **v1.1.0 (2026-09-26) — ตามโมเดลข้อมูลหลัง migration `0005`–`0007`:** ไม่มี `CourseRole` (ผู้สอนสิทธิ์เท่ากัน — D1) ·
+> เกณฑ์ผ่าน CLO อยู่ที่ `Course.cloPassMark` แทน `CLO.threshold` (E1) · `CLO` / `BehavioralObjective` มี `weight` กรอกเองได้ (E2) ·
+> `AssessmentCriteria` ผูก Activity ↔ **จุดประสงค์** ไม่ใช่ CLO และไม่มี `ObjectiveAssessment` แล้ว (0006) · `Activity` มี `type` /
+> `assessmentMethod` / `passMark` / `criteriaNote` · `User.status` + `PATCH /users/:id/approve` (FR-08b) · ไม่มี endpoint
+> `PUT /criteria/:criteriaId/objectives` อีกต่อไป · ช่องว่าง G-6 / G-7 ปิดแล้ว ดู §12
 >
 > เอกสารนี้เป็น source of truth ของ **หน้าตา API** — [[srs]] เป็น source of truth ของ
 > **requirement** และ `schema.prisma` เป็น source of truth ของ **data**
@@ -105,7 +111,7 @@ client ต้องพก id ทุกชั้นติดตัวไปหม
 | `403` | มี token แต่ **role** ไม่พอ | INSTRUCTOR ยิง `POST /users` |
 | `404` | ไม่พบ **หรือไม่มีสิทธิ์เข้าถึงรายวิชานั้น** | INSTRUCTOR ยิง courseId ของเพื่อน (NFR-07) |
 | `409` | ชนกับ unique constraint | `(code, semester, year, section)` ซ้ำ · `studentCode` ซ้ำในวิชา |
-| `422` | ผ่าน schema แล้วแต่ผิด **business rule** | `score > maxScore` · แต่งตั้ง LEAD คนที่สอง · ลบ LEAD คนสุดท้าย |
+| `422` | ผ่าน schema แล้วแต่ผิด **business rule** | `score > maxScore` · ลบผู้สอนคนสุดท้ายของรายวิชา |
 | `429` | Rate limit | login ผิดเกิน 5 ครั้ง/15 นาที (FR-04) |
 | `500` | ไม่คาดคิด | — |
 
@@ -145,37 +151,40 @@ Authorization: Bearer <accessToken>
 
 > **Role** = role ขั้นต่ำที่เข้าได้ · **Scope** = ต้องเรียก `assertCourseAccess()` หรือไม่
 >
-> ⚠ **ช่องว่างที่รู้ตัว (2569-09-12)** — คอลัมน์ Role ในตารางทั้งเจ็ดนี้รู้จักแค่ `ADMIN` กับ `any`
-> ซึ่งเขียนไว้ก่อนที่ `CourseRole` จะกลายเป็นสิทธิ์ที่บังคับใช้จริง (ASM-03a) · ทุกแถวที่เขียนว่า
-> **`any` + Scope ✅ ต้องอ่านเป็น "ผ่าน `assertCourseAccess()` **และ** ตรวจ capability ตามเมทริกซ์"**
-> ไม่ใช่ "ผู้สอนคนไหนก็ได้" · เมทริกซ์ P01–P18 อยู่ที่
-> [course-role-permissions.md §1](course-role-permissions.md) และ SEC-6 กำหนดว่า
+> ⚠ **อ่านคอลัมน์ Role อย่างไร (แก้ 2026-09-26)** — คอลัมน์ Role ในตารางรู้จักแค่ `ADMIN` กับ `any` · หลัง D1 ไม่มีบทบาทในรายวิชาแล้ว
+> ทุกแถวที่เขียนว่า **`any` + Scope ✅ ต้องอ่านเป็น "ผู้สอนที่ถูกมอบหมายรายวิชานั้น ผ่าน `assertCourseAccess()`"** —
+> ผู้สอนทุกคนของรายวิชามีสิทธิ์เท่ากัน (รวมแก้ CLO · ตั้งค่ารายวิชา · ตัดเกรด) · `ADMIN` ผูกคนเข้ารายวิชาและจัดการบัญชี ไม่ทำงานภายในรายวิชาแทนผู้สอน ·
+> เมทริกซ์ปัจจุบันอยู่ที่ [course-role-permissions.md](course-role-permissions.md) (ส่วนหัว) และ SEC-6 กำหนดว่า
 > **การตรวจฝั่งหน้าจอเป็น UX ล้วน ๆ · API ต้องตรวจซ้ำทุกข้อ ไม่มีข้อยกเว้น**
 >
-> สองแถวที่เปลี่ยนความหมายชัดที่สุดจากรอบนี้:
-> `PATCH /courses/:courseId` = **LEAD เท่านั้น** (P12 — ไม่ใช่ ADMIN และไม่ใช่ `any`) ·
-> `POST /courses` = **ADMIN หรือ INSTRUCTOR ที่บัญชียังใช้งานอยู่** (P17 · FR-22c แก้ 2569-09-14) ·
-> endpoint นี้ไม่มี `courseId` ให้ `assertCourseAccess()` ตรวจ · ผู้สร้างต้องถูกเพิ่มเป็น LEAD
-> ของรายวิชาใหม่ **ใน transaction เดียวกับการสร้าง** ไม่อย่างนั้นจะเกิดวิชาที่ไม่มีใครดูแล
-> การไล่แก้คอลัมน์ Role ทั้ง 60 กว่าแถวให้เป็นชื่อ capability เป็นงานคนละรอบ ยังไม่ทำ
+> สองแถวที่ควรระวัง: `POST /courses` = **ADMIN หรือ INSTRUCTOR ที่บัญชียังใช้งานอยู่** (P17 · FR-22c) · endpoint นี้ไม่มี `courseId` ให้
+> `assertCourseAccess()` ตรวจ · ผู้สร้างต้องถูกเพิ่มเป็นผู้สอนของรายวิชาใหม่ **ใน transaction เดียวกับการสร้าง** ไม่อย่างนั้นจะเกิดวิชาที่ไม่มีใครดูแล ·
+> `DELETE /courses/:courseId` = ADMIN หรือผู้สอนของวิชานั้น (P16)
 
-### 3.1 Auth & Users — 11 endpoints
+### 3.1 Auth & Users — 13 endpoints (**implement แล้ว 3**)
 
-| Method | Path | Role | Scope | FR |
-|---|---|---|---|---|
-| POST | `/auth/login` | — | — | FR-01, FR-03, FR-04 |
-| POST | `/auth/refresh` | — | — | FR-01 |
-| POST | `/auth/logout` | any | — | FR-01 |
-| GET | `/auth/me` | any | — | NFR-19 |
-| PATCH | `/auth/password` | any | — | FR-08 |
-| GET | `/users` | ADMIN | — | FR-05 |
-| POST | `/users` | ADMIN | — | FR-05 |
-| GET | `/users/:userId` | ADMIN | — | FR-05 |
-| PATCH | `/users/:userId` | ADMIN | — | FR-05 |
-| PATCH | `/users/:userId/status` | ADMIN | — | FR-03, FR-06 |
-| POST | `/users/:userId/reset-password` | ADMIN | — | FR-07 |
+> สถานะ: ✅ = มีใน `app/server/src/modules/` แล้ว · ⬜ = contract ยังไม่ทำ · ปัจจุบันเข้าสู่ระบบได้ทาง Google อย่างเดียว
+> (`POST /auth/google` — ตรวจ ID token ที่เซิร์ฟเวอร์ FR-08) · email + password (`/auth/login`) ยังไม่มี
 
-### 3.2 Course — 9 endpoints
+| | Method | Path | Role | Scope | FR |
+|---|---|---|---|---|---|
+| ✅ | POST | `/auth/google` | — | — | FR-01, FR-08 |
+| ⬜ | POST | `/auth/login` | — | — | FR-01, FR-03, FR-04 |
+| ⬜ | POST | `/auth/refresh` | — | — | FR-01 |
+| ⬜ | POST | `/auth/logout` | any | — | FR-01 |
+| ⬜ | GET | `/auth/me` | any | — | NFR-19 |
+| ⬜ | PATCH | `/auth/password` | any | — | FR-09 |
+| ✅ | GET | `/users` (`?status=PENDING` หรือ `ACTIVE`) | ADMIN | — | FR-05, FR-08b |
+| ✅ | PATCH | `/users/:id/approve` | ADMIN | — | FR-08b |
+| ⬜ | POST | `/users` | ADMIN | — | FR-05 |
+| ⬜ | GET | `/users/:userId` | ADMIN | — | FR-05 |
+| ⬜ | PATCH | `/users/:userId` | ADMIN | — | FR-05 |
+| ⬜ | PATCH | `/users/:userId/status` | ADMIN | — | FR-03, FR-06 |
+| ⬜ | POST | `/users/:userId/reset-password` | ADMIN | — | FR-07 |
+
+> ที่ implement แล้วใช้ `:id` ไม่ใช่ `:userId` · ยังไม่มี prefix `/api/v1` (G-1)
+
+### 3.2 Course — 9 endpoints (ไม่นับ PATCH instructors ที่ยกเลิก)
 
 | Method | Path | Role | Scope | FR |
 |---|---|---|---|---|
@@ -183,12 +192,12 @@ Authorization: Bearer <accessToken>
 | POST | `/courses` | ADMIN | — | FR-20, FR-21, FR-27, FR-28 |
 | GET | `/courses/:courseId` | any | ✅ | FR-25 |
 | PATCH | `/courses/:courseId` | any | ✅ | FR-20, FR-47 |
-| DELETE | `/courses/:courseId` | ADMIN · LEAD ของวิชานั้น | ✅ | FR-26 |
+| DELETE | `/courses/:courseId` | ADMIN · ผู้สอนของวิชานั้น | ✅ | FR-26 |
 | GET | `/courses/:courseId/impact` | any | ✅ | FR-26 |
 | GET | `/courses/:courseId/instructors` | any | ✅ | FR-22 |
-| POST | `/courses/:courseId/instructors` | ADMIN | ✅ | FR-22, FR-23 |
-| PATCH | `/courses/:courseId/instructors/:userId` | ADMIN | ✅ | FR-22, FR-23 |
-| DELETE | `/courses/:courseId/instructors/:userId` | ADMIN | ✅ | FR-23 |
+| POST | `/courses/:courseId/instructors` | ADMIN · ผู้สอนของวิชานั้น | ✅ | FR-22, FR-23 |
+| — | ~~`PATCH /courses/:courseId/instructors/:userId`~~ — **ยกเลิก** ไม่มี `role` ให้แก้ (D1) | | | |
+| DELETE | `/courses/:courseId/instructors/:userId` | ADMIN · ผู้สอนของวิชานั้น | ✅ | FR-23 |
 
 ### 3.3 CLO & Behavioral Objectives — 9 endpoints
 
@@ -204,7 +213,7 @@ Authorization: Bearer <accessToken>
 | PATCH | `/objectives/:objectiveId` | any | ✅ (resolve) | FR-33 |
 | DELETE | `/objectives/:objectiveId` | any | ✅ (resolve) | FR-33 |
 
-### 3.4 Activity & Assessment Criteria — 8 endpoints
+### 3.4 Activity & Assessment Criteria — 7 endpoints
 
 | Method | Path | Role | Scope | FR |
 |---|---|---|---|---|
@@ -215,7 +224,7 @@ Authorization: Bearer <accessToken>
 | DELETE | `/activities/:activityId` | any | ✅ (resolve) | FR-40 |
 | GET | `/courses/:courseId/criteria` | any | ✅ | FR-44, FR-45, FR-48 |
 | PUT | `/courses/:courseId/criteria` | any | ✅ | FR-44, FR-45, FR-46 |
-| PUT | `/criteria/:criteriaId/objectives` | any | ✅ (resolve) | FR-34, FR-35 |
+| — | ~~`PUT /criteria/:criteriaId/objectives`~~ — **ยกเลิก (0006)** ไม่มี `ObjectiveAssessment` · เมทริกซ์ผูกจุดประสงค์ตรงที่ `PUT /courses/:courseId/criteria` | | | |
 
 ### 3.5 Student Roster — 7 endpoints
 
@@ -365,9 +374,10 @@ Query: `year` · `semester` · `q` (รหัสหรือชื่อ) · `pa
     "id": "clx1", "code": "90641001", "name": "การเขียนโปรแกรมคอมพิวเตอร์", "nameEn": "Computer Programming",
     "semester": 1, "year": 2568, "section": "01",
     "credits": "3.0", "lectureHours": "2.0", "practiceHours": "2.0", "selfStudyHours": "5.0",
-    "gradeScale": "LETTER", "passCriteria": 60, "classTarget": 70,
+    "gradeScale": "LETTER", "gradeMethod": "CRITERION_REFERENCED",
+    "passCriteria": 60, "cloPassMark": 60, "classTarget": 100,
     "counts": { "clos": 5, "activities": 8, "students": 42 },
-    "instructors": [{ "userId": "clu1", "name": "สมชาย ใจดี", "role": "LEAD" }]
+    "instructors": [{ "userId": "clu1", "name": "สมชาย ใจดี" }]
   }],
   "meta": { "total": 12, "page": 1, "perPage": 20 }
 }
@@ -382,8 +392,9 @@ Query: `year` · `semester` · `q` (รหัสหรือชื่อ) · `pa
   "code": "90641001", "name": "การเขียนโปรแกรมคอมพิวเตอร์", "nameEn": "Computer Programming",
   "semester": 1, "year": 2568, "section": "01",
   "credits": 3, "lectureHours": 2, "practiceHours": 2, "selfStudyHours": 5,
-  "gradeScale": "LETTER", "passCriteria": 60, "classTarget": 70,
-  "instructors": [{ "userId": "clu1", "role": "LEAD" }]
+  "gradeScale": "LETTER", "gradeMethod": "CRITERION_REFERENCED",
+  "passCriteria": 60, "cloPassMark": 60, "classTarget": 100,
+  "instructors": [{ "userId": "clu1" }]
 }
 ```
 
@@ -395,15 +406,15 @@ Query: `year` · `semester` · `q` (รหัสหรือชื่อ) · `pa
 | `semester` | int 1–3 | schema comment (DB CHECK กว้างกว่าที่ 1–6) |
 | `year` | int 2500–2600 — **พ.ศ.** | ASM-05 |
 | `section` | string default `"01"` | FR-20 |
-| `credits` | number **0–30** (0 ต้องผ่าน) | FR-27, DC-15 |
-| `*Hours` | number ≥ 0 | FR-27, DC-15 |
-| `passCriteria` / `classTarget` | number 0–100 | DC-14 |
-| `instructors` | array ≥ 1 และมี `role: "LEAD"` **พอดี 1 คน** | FR-23 |
+| `credits` | number **0–30** (0 ต้องผ่าน) | FR-27 |
+| `*Hours` | number ≥ 0 | FR-27 |
+| `passCriteria` / `cloPassMark` / `classTarget` | number 0–100 (default 60 / 60 / **100**) | DC-02, DC-15 |
+| `instructors` | array ≥ 1 ไม่มี `role` (ผู้สอนสิทธิ์เท่ากัน — D1) | FR-23 |
 
 | กรณี | ผลลัพธ์ |
 |---|---|
 | `(code, semester, year, section)` ซ้ำ | `409` — `"รหัสวิชานี้มีอยู่แล้วในภาคเรียนนี้"` (FR-21) |
-| ไม่มี LEAD หรือมี LEAD > 1 | `422` — `"รายวิชาต้องมีผู้ประสานงานรายวิชา (LEAD) 1 คน"` (FR-23) |
+| `instructors` ว่าง | `422` — `"รายวิชาต้องมีผู้สอนอย่างน้อย 1 คน"` (FR-23) |
 
 การสร้าง Course + CourseInstructor ต้องอยู่ใน **transaction เดียว** (NFR-11) — ไม่งั้นจะเกิด
 วิชาที่ไม่มีอาจารย์ ซึ่ง FR-23 ห้าม แต่ DB บังคับแทนไม่ได้ (แถว course ต้องเกิดก่อน)
@@ -424,18 +435,17 @@ Query: `year` · `semester` · `q` (รหัสหรือชื่อ) · `pa
 ### 5.5 `POST /courses/:courseId/instructors` — FR-22, FR-23
 
 ```jsonc
-{ "userId": "clu2", "role": "CO" }   // → 201
+{ "userId": "clu2" }   // → 201 · ไม่มี role — ผู้สอนทุกคนสิทธิ์เท่ากัน (D1)
 ```
 
 | กรณี | ผลลัพธ์ |
 |---|---|
 | ผู้ใช้คนนี้อยู่ในวิชาแล้ว | `409` (unique `[courseId, userId]`) |
-| ตั้ง `LEAD` ทั้งที่มี LEAD อยู่แล้ว | `422` — `"รายวิชานี้มีผู้ประสานงานรายวิชาอยู่แล้ว"` (DC-07 partial index จะดักซ้ำอีกชั้น) |
-| ผู้ใช้ `isActive = false` | `422` — `"บัญชีนี้ถูกปิดใช้งาน"` |
+| ผู้ใช้ `isActive = false` หรือ `status = PENDING` | `422` — `"บัญชีนี้ยังใช้งานไม่ได้"` |
 
 ### 5.6 `DELETE /courses/:courseId/instructors/:userId` — FR-23
 
-`422` เมื่อจะเหลือ 0 คน หรือจะเหลือ 0 LEAD — `"รายวิชาต้องมีผู้ประสานงานรายวิชาอย่างน้อย 1 คน"`
+`422` เมื่อจะเหลือ 0 คน — `"รายวิชาต้องมีผู้สอนอย่างน้อย 1 คน"` (ไม่มี PATCH เปลี่ยนบทบาทแล้ว)
 
 ---
 
@@ -448,24 +458,31 @@ Query: `year` · `semester` · `q` (รหัสหรือชื่อ) · `pa
   "success": true,
   "data": [{
     "id": "clc1", "number": 1, "description": "อธิบายหลักการเขียนโปรแกรมเชิงวัตถุได้",
-    "threshold": 60,
-    "computedWeight": 27.5,          // CR-02 — READ-ONLY เสมอ
+    "weight": 25,                    // ที่ผู้สอนกรอก (E2) · null จนกว่าจะกรอก
+    "computedWeight": 27.5,          // CR-02 — READ-ONLY เสมอ ใช้เทียบกับ weight
+    "bloomLevel": "APPLY", "soloLevel": "DEEP", "levelSource": "AUTO",
+    "classTarget": null,             // null = ใช้ Course.classTarget
     "objectiveCount": 3,
-    "isMeasured": true               // FR-48 — false = ไม่มีกิจกรรมใดวัด CLO นี้
-  }]
+    "isMeasured": true               // FR-48 — false = ไม่มีกิจกรรมใดวัดจุดประสงค์ของ CLO นี้
+  }],
+  "meta": { "weightSum": 95, "weightWarnings": [{ "cloId": "clc1", "entered": 25, "computed": 27.5 }] }
 }
 ```
 
-> **`computedWeight` เป็นค่าอนุพัทธ์ตาม CR-02 และไม่มีทางเขียนกลับได้** —
-> `PATCH /clos/:cloId` ที่ส่ง `weight` หรือ `computedWeight` มา ต้องตอบ `400`
-> ไม่ใช่เพิกเฉยเงียบ ๆ (FR-32, OI-02) การรับแล้วทิ้งคือวิธีที่ bug ประเภทนี้รอดไปถึง production
+> **`computedWeight` เป็นค่าอนุพัทธ์ตาม CR-02 และไม่มีทางเขียนกลับได้** — `PATCH` ที่ส่ง `computedWeight` มาต้องตอบ `400`
+> ไม่ใช่เพิกเฉยเงียบ ๆ · ส่วน `weight` **เขียนได้** (E2, FR-32) — ผลรวม ≠ 100 หรือต่างจาก `computedWeight` ≥ 0.5 จุด → `200` พร้อม
+> `meta.weightWarnings` **ไม่ใช่ `4xx`** (เตือน ไม่บล็อก)
+> *(v1.0.0 เขียนว่ารับ `weight` แล้วต้องตอบ `400` — ยกเลิกหลังมติ E2 2026-09-17)*
 
 ### 6.2 `POST /courses/:courseId/clos` — FR-30, FR-31
 
 ```jsonc
-{ "number": 3, "description": "...", "threshold": 60 }   // → 201
+{ "number": 3, "description": "...", "weight": 25,
+  "bloomLevel": "ANALYZE", "soloLevel": "DEEP", "levelSource": "AUTO", "classTarget": null }   // → 201
 ```
-`409` เมื่อ `number` ซ้ำในวิชา · `threshold` 0–100 (DC-02)
+`409` เมื่อ `number` ซ้ำในวิชา · `weight` 0–100 หรือ null (DC-15) · **ไม่มี `threshold`** — เกณฑ์ผ่าน CLO อยู่ที่ `Course.cloPassMark` (`PATCH /courses/:courseId`) ·
+`levelSource = AUTO` → server คำนวณ `soloLevel` จากตาราง Bloom→SOLO เอง (REMEMBER/UNDERSTAND→SURFACE · APPLY/ANALYZE→DEEP · EVALUATE/CREATE→TRANSFER) ·
+`MANUAL` → รับทั้งสองระดับตามที่ส่ง
 
 ### 6.3 `PATCH /courses/:courseId/clos/reorder` — FR-31
 
@@ -479,7 +496,7 @@ Query: `year` · `semester` · `q` (รหัสหรือชื่อ) · `pa
 
 ### 6.4 `DELETE /clos/:cloId` — FR-36
 
-ถ้ามี `AssessmentCriteria` ผูกอยู่ → ต้องส่ง `?confirm=true` ไม่งั้น `422` พร้อม
+ถ้ามี `AssessmentCriteria` ผูกอยู่กับจุดประสงค์ของ CLO นี้ → ต้องส่ง `?confirm=true` ไม่งั้น `422` พร้อม
 
 ```jsonc
 { "success": false, "message": "การลบ CLO นี้จะทำให้ผลการประเมินที่คำนวณไว้เปลี่ยน",
@@ -489,11 +506,13 @@ Query: `year` · `semester` · `q` (รหัสหรือชื่อ) · `pa
 ### 6.5 Behavioral Objectives — FR-33
 
 ```
-GET    /clos/:cloId/objectives          → [{ id, number, description, assessmentCount }]
-POST   /clos/:cloId/objectives          { number, description }        → 201 | 409 (number ซ้ำต่อ CLO)
-PATCH  /objectives/:objectiveId         { number?, description? }      → 200
-DELETE /objectives/:objectiveId                                        → 200
+GET    /clos/:cloId/objectives          → [{ id, number, description, weight, activityCount }]
+POST   /clos/:cloId/objectives          { number, description, weight? }   → 201 | 409 (number ซ้ำต่อ CLO)
+PATCH  /objectives/:objectiveId         { number?, description?, weight? } → 200
+DELETE /objectives/:objectiveId                                            → 200 (cascade AssessmentCriteria)
 ```
+
+`weight` = สัดส่วนของจุดประสงค์ต่อ CLO นี้ · รวมต่อ CLO ควร = 100 ไม่ครบ → `meta.warnings` และ **ล็อกผลการประเมินของ CLO นั้น** (FR-34, CR-01) · null ได้ระหว่างกรอก
 
 ---
 
@@ -504,7 +523,8 @@ DELETE /objectives/:objectiveId                                        → 200
 ```jsonc
 {
   "success": true,
-  "data": [{ "id": "cla1", "name": "สอบกลางภาค", "method": "ข้อสอบปรนัย", "maxScore": 100, "order": 1, "weight": 30,
+  "data": [{ "id": "cla1", "name": "สอบกลางภาค", "type": "TEST", "assessmentMethod": "EXAM", "criteriaNote": "",
+             "passMark": 50, "maxScore": 100, "order": 1, "weight": 30,
              "scoredCount": 38, "studentCount": 42 }],     // FR-64
   "meta": { "totalWeight": 95, "isWeightComplete": false } // FR-43 — เตือน ไม่บล็อก
 }
@@ -516,9 +536,10 @@ DELETE /objectives/:objectiveId                                        → 200
 ### 7.2 `POST /courses/:courseId/activities` — FR-40, FR-41
 
 ```jsonc
-{ "name": "สอบกลางภาค", "method": "ข้อสอบปรนัย", "maxScore": 100, "weight": 30, "order": 1 }  // → 201
+{ "name": "สอบกลางภาค", "type": "TEST", "assessmentMethod": "EXAM", "criteriaNote": "ข้อสอบปรนัย 40 ข้อ",
+  "passMark": 50, "maxScore": 100, "weight": 30, "order": 1 }  // → 201
 ```
-`maxScore` **> 0 เคร่งครัด** (FR-41, DC-03 — ทุกสูตรใน §3 หารด้วยค่านี้) · `weight` 0–100
+`maxScore` **> 0 เคร่งครัด** (FR-41, DC-03 — ทุกสูตรใน §3 หารด้วยค่านี้) · `weight` 0–100 · `passMark` 0–100 (% ของ `maxScore` — รายงานอย่างเดียว ไม่ใช่เกณฑ์ผ่าน CLO) · `type` ∈ LECTURE / LAB / TEST / PROJECT · `assessmentMethod` ∈ QUIZ / EXAM / RUBRIC / WORK / OBSERVATION
 
 ### 7.3 `PATCH /activities/:activityId` — FR-40, FR-41
 
@@ -534,53 +555,48 @@ DELETE /objectives/:objectiveId                                        → 200
 
 ### 7.4 `GET /courses/:courseId/criteria` — FR-44, FR-45, FR-48
 
-เมทริกซ์ Activity × CLO เต็มใบในหนึ่ง request (หน้า Assessment Criteria แสดงทั้งตาราง)
+เมทริกซ์ Activity × **จุดประสงค์** เต็มใบในหนึ่ง request (หน้าเชื่อมกิจกรรมกับจุดประสงค์แสดงทั้งตาราง)
 
 ```jsonc
 {
   "success": true,
   "data": {
-    "clos": [{ "id": "clc1", "number": 1 }, { "id": "clc2", "number": 2 }],
+    "objectives": [{ "id": "clo1", "cloId": "clc1", "number": 1, "label": "1.1", "weight": 40 },
+                   { "id": "clo2", "cloId": "clc1", "number": 2, "label": "1.2", "weight": 60 }],
     "activities": [{ "id": "cla1", "name": "สอบกลางภาค", "weight": 30 }],
-    "cells": [{ "activityId": "cla1", "cloId": "clc1", "weight": 60 },
-              { "activityId": "cla1", "cloId": "clc2", "weight": 40 }]
+    "cells": [{ "activityId": "cla1", "objectiveId": "clo1", "weight": 60 },
+              { "activityId": "cla1", "objectiveId": "clo2", "weight": 40 }]
   },
   "meta": {
     "activityWeightSums": { "cla1": 100 },      // FR-45 — ต้อง = 100 ต่อกิจกรรม
-    "unmeasuredCloIds": ["clc5"],               // FR-48
+    "unlinkedActivityIds": [],                  // กิจกรรมที่ไม่ผูกจุดประสงค์เลย → ล็อก (FR-34)
+    "unmeasuredObjectiveIds": ["clo5"],         // FR-48
+    "objectiveWeightSums": { "clc1": 100 },     // CR-01 — ต้อง = 100 ต่อ CLO
     "isReadyForDashboard": false                // FR-84
   }
 }
 ```
 
-### 7.5 `PUT /courses/:courseId/criteria` — FR-44, FR-45, FR-46
+### 7.5 `PUT /courses/:courseId/criteria` — FR-34, FR-44, FR-45, FR-46
 
 **แทนที่เมทริกซ์ทั้งใบในหนึ่ง transaction** (ไม่ใช่ POST/DELETE ทีละช่อง) — หน้าจอนี้ผู้ใช้แก้
 หลายช่องแล้วกดบันทึกครั้งเดียว การยิงทีละช่องจะทิ้งสถานะครึ่ง ๆ กลาง ๆ ไว้เมื่อ request ที่ 3 ล้ม
 
 ```jsonc
-{ "cells": [{ "activityId": "cla1", "cloId": "clc1", "weight": 60 },
-            { "activityId": "cla1", "cloId": "clc2", "weight": 40 }] }
+{ "cells": [{ "activityId": "cla1", "objectiveId": "clo1", "weight": 60 },
+            { "activityId": "cla1", "objectiveId": "clo2", "weight": 40 }] }
 ```
 
 | กรณี | ผลลัพธ์ |
 |---|---|
-| `activityId` หรือ `cloId` ไม่ได้อยู่ในวิชานี้ | `422` — **ต้องตรวจที่ API ก่อน** ถึงจะมี DB trigger รออยู่ (FR-46, DC-04) |
+| `activityId` หรือ `objectiveId` ไม่ได้อยู่ในวิชานี้ (จุดประสงค์นับตาม CLO ของมัน) | `422` — **ต้องตรวจที่ API ก่อน** ถึงจะมี DB trigger `trg_criteria_same_course` รออยู่ (FR-46, DC-04) |
 | น้ำหนักรวมต่อกิจกรรม ≠ 100 | `200` + `meta.warnings` (FR-45 = เตือนตอนบันทึก, บล็อกที่ Dashboard) |
-| `weight` < 0 หรือ > 100 | `400` |
+| `weight` ≤ 0 หรือ > 100 | `400` (CHECK `chk_criteria_weight` : > 0 และ ≤ 100) |
 
-ช่องที่หายไปจาก `cells` = ลบ criteria นั้น (พร้อม `ObjectiveAssessment` ที่ห้อยอยู่, cascade)
+ช่องที่หายไปจาก `cells` = ลบแถว `AssessmentCriteria` นั้น
 
-### 7.6 `PUT /criteria/:criteriaId/objectives` — FR-34, FR-35
-
-```jsonc
-{ "objectiveIds": ["clo1", "clo2"] }   // → 200
-```
-`422` เมื่อ objective ไม่ได้เป็นของ CLO เดียวกับ criteria (DC-06)
-
-> **FR-35 เป็นข้อกำหนดเชิงลบที่ต้องมี test คุ้ม:** การผูก/ถอด objective ที่นี่
-> **ห้ามเปลี่ยนตัวเลขใด ๆ ที่ `/dashboard/attainment` คืน** — เขียน test ที่เรียก attainment
-> ก่อนและหลัง แล้ว assert ว่าเท่ากันทุกตัว
+> **ไม่มี `PUT /criteria/:criteriaId/objectives` และไม่มีข้อกำหนด FR-35 แล้ว (0006)** — การผูกจุดประสงค์ **เป็นเส้นทางคำนวณหลัก** ของ CR-03
+> ไม่ใช่ข้อมูลเสริมที่ต้องไม่กระทบคะแนน · test ที่ควรมีแทนคือ: เปลี่ยน `AssessmentCriteria.weight` แล้ว `objScore` / `cloScore` เปลี่ยนตามสูตร CR-03 ทุกตัว
 
 ---
 
@@ -777,10 +793,10 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
 {
   "success": true,
   "data": {
-    "classTarget": 70,
+    "classTarget": 100,
+    "cloPassMark": 60,
     "clos": [{
       "cloId": "clc1", "number": 1, "description": "...",
-      "threshold": 60,
       "attainment": 76.19,          // CR-04 — null ถ้าคำนวณไม่ได้
       "status": "ACHIEVED",         // ACHIEVED | NOT_ACHIEVED | INSUFFICIENT_DATA
       "passedCount": 32, "evaluableCount": 42, "notEvaluatedCount": 0
@@ -809,14 +825,14 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
   "success": true,
   "data": [{
     "studentId": "cls7", "studentCode": "6703007", "name": "สมหมาย ตั้งใจ",
-    "failedClos": [{ "cloId": "clc2", "number": 2, "score": 41.25, "threshold": 60 }],
+    "failedClos": [{ "cloId": "clc2", "number": 2, "score": 41.25, "passMark": 60 }],
     "totalScore": 52.4, "coursePassed": false
   }],
   "meta": { "atRiskCount": 6, "notEvaluatedCount": 4, "evaluatedCount": 38 }
 }
 ```
 
-> ⚠ **ขึ้นกับ OI-12 ที่ยังไม่ sign-off** — นักศึกษาที่ `cloScore = null` ทุกตัว (ยังไม่มีคะแนนเลย)
+> **OI-12 ปิดแล้ว (2026-08-23 · CR-03.1)** — นักศึกษาที่ `cloScore = null` ทุกตัว (ยังไม่มีคะแนนเลย)
 > **ไม่นับเป็น at-risk** แต่ต้องโผล่ใน `meta.notEvaluatedCount` เป็นสถานะที่สาม
 > ถ้าไม่ทำแบบนี้ ต้นเทอมระบบจะรายงาน at-risk ต่ำกว่าความจริง ซึ่งขัดกับ **H2**
 > ([[objectives-hypotheses-evaluation]] §2 · E-04)
@@ -829,8 +845,9 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
   "data": {
     "student": { "id": "cls7", "studentCode": "6703007", "name": "สมหมาย ตั้งใจ" },
     "gradeScale": "LETTER",
-    "clos": [{ "cloId": "clc1", "number": 1, "score": 72.5, "threshold": 60, "status": "PASS" },
-             { "cloId": "clc3", "number": 3, "score": null, "threshold": 60, "status": "NOT_EVALUATED" }],
+    "clos": [{ "cloId": "clc1", "number": 1, "score": 72.5, "passMark": 60, "status": "PASS",
+               "objectives": [{ "objectiveId": "clo1", "score": 80.0 }, { "objectiveId": "clo2", "score": 68.3 }] },
+             { "cloId": "clc3", "number": 3, "score": null, "passMark": 60, "status": "NOT_EVALUATED", "objectives": [] }],
     "activities": [{ "activityId": "cla1", "name": "สอบกลางภาค", "score": 78, "maxScore": 100, "weight": 30 }],
     "totalScore": 52.4,                 // CR-05, null ถ้ายังไม่มีคะแนนเลย
     "coursePassed": false,              // CR-05 เทียบกับ passCriteria
@@ -858,20 +875,21 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
 | FR-02 | ทุก endpoint ที่เขียน `passwordHash` (argon2 เท่านั้น) |
 | FR-05, FR-06 | `GET/POST /users` · `PATCH /users/:userId` · `PATCH /users/:userId/status` |
 | FR-07 | `POST /users/:userId/reset-password` |
-| FR-08 | `PATCH /auth/password` |
+| FR-09 | `PATCH /auth/password` |
+| FR-08, FR-08b | `POST /auth/google` ✅ · `GET /users?status=PENDING` ✅ · `PATCH /users/:id/approve` ✅ |
 | FR-20, FR-21, FR-27, FR-28 | `POST /courses` · `PATCH /courses/:courseId` |
-| FR-22, FR-23 | `/courses/:courseId/instructors` ทั้งชุด |
+| FR-22, FR-23 | `POST` / `DELETE /courses/:courseId/instructors` (ไม่มี PATCH — ไม่มี role) |
 | FR-24, FR-25 | `GET /courses` |
 | FR-26 | `GET /courses/:courseId/impact` · `DELETE /courses/:courseId?confirm=true` |
 | FR-30, FR-32 | `GET/POST /courses/:courseId/clos` · `PATCH /clos/:cloId` |
 | FR-31 | `PATCH /courses/:courseId/clos/reorder` |
 | FR-33 | `/clos/:cloId/objectives` · `/objectives/:objectiveId` |
-| FR-34, FR-35 | `PUT /criteria/:criteriaId/objectives` |
+| FR-34 | `PUT /courses/:courseId/criteria` (เมทริกซ์ Activity × จุดประสงค์) · FR-35 ยกเลิก (0006) |
 | FR-36 | `DELETE /clos/:cloId` |
 | FR-40, FR-41, FR-43 | `/courses/:courseId/activities` · `PATCH /activities/:activityId` |
 | FR-42 | `PATCH /courses/:courseId/activities/reorder` |
 | FR-44…FR-46, FR-48 | `GET/PUT /courses/:courseId/criteria` |
-| FR-47 | `PATCH /courses/:courseId` (passCriteria, classTarget) + `PATCH /clos/:cloId` (threshold) |
+| FR-47 | `PATCH /courses/:courseId` (passCriteria, cloPassMark, classTarget) + `PATCH /clos/:cloId` (classTarget override) |
 | FR-50, FR-51, FR-53, FR-54 | `/courses/:courseId/students` · `/students/:studentId` |
 | FR-52 | `/courses/:courseId/students/template` · `/import/preview` · `/import/commit` |
 | FR-60…FR-64 | `GET/PUT /courses/:courseId/scores` |
@@ -893,18 +911,18 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
 
 ## 12. ช่องว่างที่ต้องแก้ในโค้ดปัจจุบัน
 
-> ตรวจกับโค้ดจริงเมื่อ 2026-08-06 — ต้องปิดก่อนหรือระหว่าง implement route ชุดแรก
+> ตรวจกับโค้ดจริงเมื่อ 2026-09-26 (เดิม 2026-08-06) — ต้องปิดก่อนหรือระหว่าง implement route ชุดแรก
 
 | # | ช่องว่าง | ผลถ้าไม่แก้ | ต้องทำ |
 |---|---|---|---|
 | **G-1** | `registerRoutes()` ([modules/index.ts](../../../app/server/src/modules/index.ts)) register โดย**ไม่มี prefix `/api/v1`** ขัดกับ SRS §5.2 | path จริงไม่ตรงเอกสารทั้งเล่ม และเปลี่ยนทีหลังต้องแก้ client ทุกไฟล์ | `app.register(..., { prefix: "/api/v1" })` ที่ชั้นบนสุด |
 | **G-2** | `API_URL` ฝั่ง client default `http://localhost:3001` ([app.constants.ts](../../../app/client/src/lib/app.constants.ts)) ไม่มี `/api/v1` ต่อท้าย | ทุก request 404 ทันทีที่ G-1 ถูกแก้ | เปลี่ยน default เป็น `http://localhost:3001/api/v1` |
 | **G-3** | `rbac("ADMIN")` ([rbac.middleware.ts](../../../app/server/src/middlewares/rbac.middleware.ts)) ผ่านเมื่อ role ตรง **หรือเป็น ADMIN** — จึงไม่มีทางเขียน "INSTRUCTOR เท่านั้น ADMIN ห้าม" ได้ | ไม่กระทบ v1 (ADMIN เห็นทุกอย่างโดยเจตนา — FR-25) แต่ต้องรู้ตัวว่าเป็นข้อจำกัด ไม่ใช่ bug | เขียน comment ยืนยันเจตนา หรือเพิ่ม `rbacExact()` ถ้าอนาคตต้องการ |
-| **G-4** | ไม่มี `User.mustChangePassword` ใน `schema.prisma` | FR-07 (บังคับเปลี่ยนรหัสหลัง reset) ทำไม่ได้ | เพิ่มคอลัมน์ + migration ก่อน implement `/users/:userId/reset-password` |
-| **G-5** | `ScoreUploadLog` เก็บแค่ `recordsOk` / `recordsFail` ไม่เก็บ**รายละเอียดแถวที่ผิด** | `GET /uploads/:uploadId/errors` ทำไม่ได้ → FR-68 (ดาวน์โหลดแถวที่ไม่ผ่าน) และครึ่งหลังของ FR-72 ตกไป | เลือกทางใดทางหนึ่ง: เพิ่ม `errorDetails Json?` บน `ScoreUploadLog` (ง่าย พอสำหรับ v1) หรือสร้าง `ScoreUploadError` เป็นตารางลูก |
-| **G-6** | **OI-10 ยังไม่ sign-off** — CR-03 ไม่ใช้ `Activity.weight` แต่ CR-02 ใช้ ต่างกัน **20 จุด** บนข้อมูลชุดเดียวกัน | `GET /dashboard/attainment` และ `/students/:studentId` คืนตัวเลขที่ยังไม่รู้ว่าถูกหรือผิด → **H1 พิสูจน์ไม่ได้** | sign-off ก่อนเขียน `attainment.service.ts` ([[objectives-hypotheses-evaluation]] E-03) |
-| **G-7** | **OI-12 ยังไม่ sign-off** — `cloScore = null` นับเป็น at-risk หรือไม่ | `GET /dashboard/at-risk` นิยามไม่ได้ → **H2 และ OBJ-4 วัดไม่ได้** | sign-off ก่อน implement §10.3 ([[objectives-hypotheses-evaluation]] E-04) |
-| **G-8** | ยังไม่มี route file จริงสักไฟล์นอกจาก `health.route.ts` — ที่เหลือใน `modules/index.ts` ยังเป็น comment · `controllers/` และ `validators/` มีแค่ `README.md` · `services/` มีเฉพาะ `authorization.service.ts` | — | สร้างตามลำดับ: `auth` → `courses` → `clos`/`activities` → `students`/`scores` → `dashboard` (ตรงกับการแบ่งงาน 3 คนใน [[features-pages]] §3) |
+| **G-4** | ไม่มี `User.mustChangePassword` (และ `pwResetAt` / `pwChangedAt`) ใน `schema.prisma` — ต้นแบบ `index-q` ใช้แล้ว (UC 1.5) | FR-07 (บังคับเปลี่ยนรหัสหลัง reset) ทำไม่ได้ | เพิ่มคอลัมน์ + migration `0008` ก่อน implement `/users/:userId/reset-password` |
+| **G-5** | `ScoreUploadLog` เก็บแค่ `recordsOk` / `recordsFail` ไม่เก็บ**รายละเอียดแถวที่ผิด** — ต้นแบบ `index-q` เสนอตาราง `UploadReject` (FR-65) แต่ยังไม่อยู่ใน Prisma | `GET /uploads/:uploadId/errors` ทำไม่ได้ → FR-68 (ดาวน์โหลดรายการแถวที่ผิด) | ตัดสินใจเรื่อง `UploadReject` แล้วเพิ่ม migration `0008` |
+| ~~**G-6**~~ | **ปิดแล้ว 2026-08-23** — OI-10 sign-off · CR-03 ถ่วง `Activity.weight` (ปัจจุบันคำนวณสองชั้นระดับจุดประสงค์ ดู SRS CR-03) | — | — |
+| ~~**G-7**~~ | **ปิดแล้ว 2026-08-23** — OI-12 sign-off · `cloScore = null` เป็นสถานะที่สาม (CR-03.1) | — | — |
+| **G-8** | route จริงมี 4 endpoint (`/health` · `/auth/google` · `/users` · `/users/:id/approve`) จาก 68 ตัวใน §3 · ยังไม่มี `criteria` / `clos` / `activities` / `scores` / dashboard ในโค้ดจริง — ต้นแบบ `docs/pages/index-q.html` มีครบแล้วและเป็นต้นแบบของ contract นี้ | client ต่อ API ไม่ได้นอกจากหน้า login / users | ทำ route ตามลำดับ Sprint · ปิดช่องว่างข้อนี้ทีละ module |
 
 ---
 

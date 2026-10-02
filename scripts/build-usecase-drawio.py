@@ -27,7 +27,7 @@
        role holding it. CHAIN is one role long now; the machinery is kept so a
        role added back to PERM lands on its own page instead of vanishing — and
        an unknown role in PERM stops the build
-     * include/extend structure follows the team's UML-Layer2.drawio, and
+     * include/extend structure follows the team's UML-Layer2_Handwritten.drawio, and
        UML.md's rule that an included/extending use case has no direct actor
        line. Where an extension needs MORE rights than its base, the extend
        carries a condition — computed from PERM, not typed.
