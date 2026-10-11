@@ -36,41 +36,67 @@
 --             analysis of E3 is gone; only the column's meaning changed.
 --
 -- WHAT index-q.html ADDS ON TOP — 17 tables · 23 FKs
+--   = 13 tables of schema.prisma + 4 proposed tables · 11 proposed columns
 -- ----------------------------------------------------------------------------
+--   4 tables
 --   UploadReject      NEW  one row per refused cell of an Excel import (FR-65)
 --   AuthEvent         NEW  account history incl. refused actions (UC 1.6, FR-22b)
 --                          and the self-registration trail (REGISTER, VERIFY, LOGIN*)
 --   CourseGroupWeight NEW  N1/N2 — one weight per activity TYPE when
 --                          Course.weightMode = GROUP (db.course[].groupWeight)
---   User           +3   mustChangePassword · pwResetAt · pwChangedAt (UC 1.5)
---   Course         +1   weightMode — MANUAL (per activity) or GROUP (per type)
---   Activity       +1   passScore — the pass mark as a SCORE; passMark (%) is
---                       derived from passScore / maxScore (M3)
---   ScoreUploadLog +1   kind — the roster import is logged here too (UC 7.1)
 --   ScoreChange       NEW  R5 (2569-10-02) one row per changed score cell: who,
 --                          when, from what to what, by which path (typed in the
---                          grid · import · fill · closing an activity)
+--                          grid · pasted · import · fill · closing an activity
+--                          · undo)
+--   11 columns
+--   User           +3   mustChangePassword · pwResetAt · pwChangedAt (UC 1.5)
+--   Course         +1   weightMode — MANUAL (per activity) or GROUP (per type)
+--   Activity       +2   passScore — the pass mark as a SCORE; passMark (%) is
+--                       derived from passScore / maxScore (M3)
+--                       R3 closedAt — NULL = still collecting scores. After it
+--                       is set, a missing Score row means "did not submit",
+--                       no longer "not assessed yet"
+--   ScoreUploadLog +1   kind — the roster import is logged here too (UC 7.1)
 --   Student        +2   R2 status (ENROLLED / WITHDRAWN) · withdrawnAt — a
 --                       withdrawn enrolment leaves every denominator; its
 --                       scores stay, so the status is reversible
---   Activity       +1   R3 closedAt — NULL = still collecting scores. After it
---                       is set, a missing Score row means "did not submit",
---                       no longer "not assessed yet"
---   Score          +2   R3 status (SCORED / EXCUSED) · U6 excuseReason; score becomes NULLable:
---                       EXCUSED = this activity does not count for this
---                       student, the remaining weight is renormalised
---   Why: all four exist so that "who needs help" is answered correctly. With
---   the class target fixed at 100% the per-CLO verdict is almost always "not
---   met"; the list of people is the product. A withdrawn student must leave
---   it, a student who never handed work in must enter it, and a score that
---   moved someone in or out must be explainable afterwards.
+--   Score          +2   R3 status (SCORED / EXCUSED) · U6 excuseReason
+--   1 changed column
+--   Score.score         NOT NULL -> NULL. NULL only when status = EXCUSED: this
+--                       activity does not count for this student, the remaining
+--                       weight is renormalised
+--   Why R2 / R3 / R5: they exist so that "who needs help" is answered correctly.
+--   With the class target fixed at 100% the per-CLO verdict is almost always
+--   "not met"; the list of people is the product. A withdrawn student must
+--   leave it, a student who never handed work in must enter it, and a score
+--   that moved someone in or out must be explainable afterwards.
 --
--- AND TWO THINGS IT DELIBERATELY DOES NOT ADD
---   index-q.html keeps grade overrides in a separate map, db.override. That is
---   a prototype convenience, not a table: StudentGrade.overrideReason already
---   holds exactly that record. Fold it back in; do not create an Override table.
---   index-q.html still writes role:'INSTRUCTOR' on every courseInstructor row.
---   It is a constant with one legal value; the column is gone (D1), not kept.
+-- PROTOTYPE <-> SQL — every name that is NOT the same on both sides
+-- ----------------------------------------------------------------------------
+-- Checked 2569-10-02 against the live db object of index-q.html: every other
+-- field of every collection has a column of the same name here, and every
+-- other column here is either read by the prototype or comes from the
+-- schema.prisma baseline (passwordHash, googleSub, User.status, createdAt /
+-- updatedAt, the EmailVerificationToken table).
+--
+--   index-q.html                      this file
+--   --------------------------------  ----------------------------------------
+--   db.course[].groupWeight {type:n}  CourseGroupWeight — one row per type
+--   db.courseInstructor[].role        (none) constant 'INSTRUCTOR'; the column
+--                                     is gone since D1
+--   db.override[studentId]{to,why}    StudentGrade.grade + overrideReason — a
+--                                     prototype convenience, NOT a table
+--   db.user[].emailVerified (bool)    User.emailVerifiedAt (NULL = not yet)
+--   db.user[]._demoPw                 User.passwordHash — the prototype keeps
+--                                     no hash; nothing here stores a password
+--   db.scoreChange[].from / .to       fromScore + fromExcused / toScore +
+--     number | null | 'EXCUSED'       toExcused
+--   db.scoreChange[].courseId         (none) a filter shortcut; here it is
+--                                     reached through Activity.courseId
+--   db.uploadReject[] has no id       UploadReject.id — surrogate key only
+--   db.student[].status absent        Student.status DEFAULT 'ENROLLED'
+--   db.score[].status absent          Score.status DEFAULT 'SCORED'
+--   dates as 'พ.ศ.-MM-DD HH:mm' text  DATETIME(3) / DATE in ค.ศ.
 --
 -- ============================================================================
 -- AUTHORIZATION — enforced in the APP, not in SQL (revised 2569-09-18)
@@ -100,6 +126,11 @@
 --   Reserved words back-ticked: `User`, `order`, `row`, `at`
 --   No ON DELETE actions, CHECKs or triggers — those live in the Prisma
 --   migrations (0002, 0004, 0005, 0006). This file exists so the EER draws cleanly.
+--   One exception: ScoreChange carries ON DELETE CASCADE on its Student and
+--   Activity keys. It has no migration yet to hold the rule, and the prototype
+--   already behaves that way (deleting either drops the cell's history).
+--   Runs clean top to bottom on MySQL 8.0 (verified 2569-10-02 on a scratch
+--   server: 17 tables, 23 foreign keys, 11 columns tagged [index-q]).
 -- ============================================================================
 
 SET NAMES utf8mb4;
@@ -520,11 +551,14 @@ CREATE TABLE ScoreUploadLog (
   COMMENT='ตามรอยการนำเข้าไฟล์ Excel — ใครทำ เมื่อไร ด้วยไฟล์อะไร · คะแนนและรายชื่อ แยกด้วย kind';
 
 -- ----------------------------------------------------------------------------
--- [index-q] PROPOSED — tables index-q.html stores that schema.prisma v4 lacks
+-- [index-q] PROPOSED — tables index-q.html stores that schema.prisma lacks
 --
--- Both sit outside the calculation path like ScoreUploadLog: no formula reads
--- them, so adding them is a migration, not a redesign. Their shapes mirror
--- db.uploadReject and db.authEvent in index-q.html field for field.
+-- All three below sit outside the calculation path like ScoreUploadLog: no
+-- formula reads them, so adding them is a migration, not a redesign. (The
+-- fourth proposed table, CourseGroupWeight, is in the ASSESSMENT section
+-- because Activity.weight is derived from it.) UploadReject and AuthEvent
+-- mirror db.uploadReject and db.authEvent field for field; ScoreChange differs
+-- from db.scoreChange in the three names listed in the header.
 -- ----------------------------------------------------------------------------
 
 -- Which rows of an upload were refused, and why. ScoreUploadLog keeps only the
@@ -548,17 +582,17 @@ CREATE TABLE UploadReject (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='[index-q] แถวที่ถูกปฏิเสธตอนนำเข้า — ทำให้รายงานข้อผิดพลาด FR-65 สร้างได้จริง';
 
--- UC 1.6 ตรวจสอบประวัติการใช้งาน. userId is whom the event happened TO;
--- actorId is who DID it — the same person for PW_CHANGE, EDIT-by-self and
--- the whole self-service trail (REGISTER, VERIFY, LOGIN, LOGIN_GOOGLE,
--- LOGOUT), different for every admin action. DENY records a refused action
--- (FR-22b): the permission matrix is only auditable if refusals leave a trace.
 -- [index-q] R5 — db.scoreChange in index-q.html. Every score write goes
 -- through one function (writeScore), and that function appends here. Without
 -- it a hand-edited cell leaves no trace: ScoreUploadLog only knows imports,
 -- and "who changed this, and from what" is the first question of any grade
 -- appeal. An unchanged value writes nothing. Rows die with their Student or
 -- Activity (ON DELETE CASCADE) — the history of a deleted cell has no reader.
+-- Undo is not a deletion of history: it is one more write, source = UNDO.
+-- Prototype shape vs this table: index-q.html keeps one value per side
+-- (from / to = number | null | 'EXCUSED'), stored here as fromScore+fromExcused
+-- and toScore+toExcused; its courseId is a filter shortcut, derivable here
+-- through Activity. changedBy / changedAt / note / logId are the same names.
 CREATE TABLE ScoreChange (
     id         VARCHAR(30) NOT NULL,
     studentId  VARCHAR(30) NOT NULL,
@@ -568,8 +602,8 @@ CREATE TABLE ScoreChange (
     fromExcused TINYINT(1) NOT NULL DEFAULT 0,
     toScore     DOUBLE     NULL,
     toExcused   TINYINT(1) NOT NULL DEFAULT 0,
-    source     ENUM('MANUAL','IMPORT','FILL','FILL_UNDO','CLOSE','PASTE','NOTE') NOT NULL
-               COMMENT 'กรอกในตาราง · นำเข้าไฟล์ · เริ่มจากคะแนนเต็ม · ย้อนการเติม · ปิดรับคะแนน · วางจากตาราง Excel · แก้เหตุผลการยกเว้น',
+    source     ENUM('MANUAL','IMPORT','FILL','FILL_UNDO','CLOSE','PASTE','NOTE','UNDO') NOT NULL
+               COMMENT 'กรอกในตาราง · นำเข้าไฟล์ · เริ่มจากคะแนนเต็ม · ย้อนการเติม · ปิดรับคะแนน · วางจากตาราง Excel · แก้เหตุผลการยกเว้น · เลิกทำ',
     note       VARCHAR(255) NULL COMMENT 'เหตุผลการยกเว้น ณ ตอนนั้น (ใช้กับ EXCUSED และ NOTE)',
     changedBy  VARCHAR(30) NOT NULL,
     logId      VARCHAR(30) NULL COMMENT 'ScoreUploadLog ของการนำเข้าที่ทำให้เปลี่ยน · NULL เมื่อไม่ใช่การนำเข้า',
@@ -588,6 +622,11 @@ CREATE TABLE ScoreChange (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='[index-q] ประวัติการเปลี่ยนคะแนนรายช่อง — ใคร เมื่อไร จากอะไรเป็นอะไร ด้วยวิธีไหน';
 
+-- UC 1.6 ตรวจสอบประวัติการใช้งาน. userId is whom the event happened TO;
+-- actorId is who DID it — the same person for PW_CHANGE, EDIT-by-self and
+-- the whole self-service trail (REGISTER, VERIFY, LOGIN, LOGIN_GOOGLE,
+-- LOGOUT), different for every admin action. DENY records a refused action
+-- (FR-22b): the permission matrix is only auditable if refusals leave a trace.
 CREATE TABLE AuthEvent (
     id       VARCHAR(30)   NOT NULL,
     userId   VARCHAR(30)   NOT NULL COMMENT 'บัญชีที่ถูกกระทำ',
@@ -613,26 +652,33 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ============================================================================
 -- END — 17 tables · 23 foreign keys · 0 deferred FKs
 --   13 tables as schema.prisma has them after migration 0007
---   · User (+3), Course (+1), Activity (+1), ScoreUploadLog (+1) columns
---     extended by index-q.html
---   · 3 tables proposed by index-q.html
+--   · 11 columns added by index-q.html: User (+3), Course (+1), Activity (+2),
+--     ScoreUploadLog (+1), Student (+2), Score (+2) — and Score.score NULLable
+--   · 4 tables proposed by index-q.html: CourseGroupWeight, UploadReject,
+--     ScoreChange, AuthEvent
 --
 -- Every FK points at a table already created above it, so the file runs
--- top-to-bottom even with FOREIGN_KEY_CHECKS ON. UploadReject comes after
--- ScoreUploadLog and AuthEvent after `User` for exactly this reason.
+-- top-to-bottom even with FOREIGN_KEY_CHECKS ON. UploadReject and ScoreChange
+-- come after ScoreUploadLog, AuthEvent after `User`, for exactly this reason.
 --
 -- MySQL Workbench:
 --   1. File > Import > Reverse Engineer MySQL Create Script...
 --   2. Select this file · tick "Place imported objects on a diagram"
 --   3. Arrange > Autolayout
 --   4. View > Object Descriptions shows the COMMENTs — the [index-q] tag is how
---      the three proposed tables and six proposed columns identify themselves
+--      the four proposed tables and eleven proposed columns identify themselves
+--   5. File > Export > Export as Single Page PDF... -> index-q_er-diagram.pdf
+--      (the copy in this folder is older than this file until that is redone)
 --
--- Expected diagram shape: Course is still the busiest node with seven tables
--- hanging off it. `User` now has five edges (CourseInstructor, ScoreUploadLog,
--- EmailVerificationToken, and AuthEvent twice — once as the subject, once as
--- the actor). AssessmentCriteria sits between Activity and BehavioralObjective,
--- so CLO reaches scores only through its objectives. UploadReject hangs off
--- ScoreUploadLog. If AuthEvent shows only one edge to `User`,
--- Workbench merged the two FKs and the diagram is lying about who did what.
+-- Expected diagram shape — count the lines to know the import was complete:
+--   Course  7 edges  CourseInstructor, CLO, Activity, CourseGroupWeight,
+--                    Student, GradeBand, ScoreUploadLog
+--   `User`  6 edges  CourseInstructor, ScoreUploadLog, EmailVerificationToken,
+--                    ScoreChange (changedBy), and AuthEvent twice — once as
+--                    the subject, once as the actor
+--   ScoreChange  4 edges  Student, Activity, `User`, ScoreUploadLog
+-- AssessmentCriteria sits between Activity and BehavioralObjective, so CLO
+-- reaches scores only through its objectives. UploadReject hangs off
+-- ScoreUploadLog. If AuthEvent shows only one edge to `User`, Workbench merged
+-- the two FKs and the diagram is lying about who did what.
 -- ============================================================================

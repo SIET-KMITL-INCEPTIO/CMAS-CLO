@@ -15,6 +15,13 @@
    layout variables and the same edge waypoints, so the inspected picture and
    the editable file cannot disagree about where a line runs.
 
+   FAR RELATIONSHIPS: a table whose parents sit more than one column apart
+   (ScoreChange: User on the far left, Student/Activity on the right) cannot be
+   placed next to all of them. Such a relationship leaves its parent into the
+   nearest gap, drops to a horizontal BUS below every table, and comes back up
+   in the gap beside its child — two lanes, one in each gap, and it never runs
+   through a table box. The first version refused to draw these at all.
+
    ROUTING: every relationship gets its OWN vertical lane inside the gap it
    crosses. The first version turned every edge at the gap's midpoint, so six
    relationships between the CLO/Activity/Student column and the next merged
@@ -64,8 +71,11 @@ for m in re.finditer(r'^CREATE TABLE\s+`?(\w+)`?\s*\((.*?)^\)(.*?);', src, re.S 
             continue
         c = re.match(r'^`?(\w+)`?\s+([A-Z]+(?:\([^)]*\))?)', s)
         if c and c.group(1).upper() not in KEYWORDS:
-            # a COMMENT may wrap onto the next line; read both for the tag
-            joined = s + ' ' + (lines[i + 1].strip() if i + 1 < len(lines) else '')
+            # a COMMENT may wrap onto the next line; read both for the tag — but a
+            # `--` line after a column describes the NEXT column, not this one: reading
+            # it tagged Activity.weight and Student.courseId as [index-q] by mistake.
+            nxt = lines[i + 1].strip() if i + 1 < len(lines) else ''
+            joined = s + ' ' + ('' if nxt.startswith('--') else nxt)
             typ = 'ENUM' if c.group(2).startswith('ENUM') else c.group(2)
             t['cols'].append({'name': c.group(1), 'type': typ,
                               'null': ' NULL' in s and 'NOT NULL' not in s,
@@ -95,7 +105,9 @@ def unique_single(t, col):
 COLUMNS = [
     ['User', 'AuthEvent', 'EmailVerificationToken'],
     ['CourseInstructor', 'ScoreUploadLog', 'UploadReject'],
-    ['Course', 'GradeBand', 'CourseGroupWeight'],
+    # ScoreChange under Course's column: Student/Activity are one gap to the
+    # right, ScoreUploadLog one gap to the left. Only User is far (bus route).
+    ['Course', 'GradeBand', 'CourseGroupWeight', 'ScoreChange'],
     ['CLO', 'Activity', 'Student'],
     # AssessmentCriteria directly under BehavioralObjective: the objective ->
     # criteria FK loops on the right inside one column, and Activity -> criteria
@@ -149,24 +161,35 @@ for tname in ORDER:
         else:
             r.update(ax=px, bx=cx + W, da=-1, db=1, gap=cc)
         if abs(cc - pc) > 1:
-            bad.append('%s → %s ข้ามมากกว่าหนึ่งช่องว่าง — เส้นจะพาดผ่านตาราง' % (rt, tname))
+            # far: lane in the gap beside the parent, bus under the tables, lane2 in the gap beside the child
+            r.update(far=True, gap=pc if cc > pc else pc - 1, gap2=cc - 1 if cc > pc else cc)
         RELS.append(r)
 
-for g in sorted({r['gap'] for r in RELS}):
+for g in sorted({r['gap'] for r in RELS} | {r['gap2'] for r in RELS if r.get('far')}):
     # A same-column loop takes the lanes NEAREST its own table: its horizontals
     # then stay left of every cross-column lane instead of cutting through them.
     # Measured on the render — sorting by y alone made the User→AuthEvent loops
     # cross the User→CourseInstructor/ScoreUploadLog lines.
-    group = sorted((r for r in RELS if r['gap'] == g),
+    group = sorted((r for r in RELS if r['gap'] == g and not r.get('far')),
                    key=lambda r: (0 if COL_OF[r['parent']] == COL_OF[r['child']] else 1,
                                   min(r['ay'], r['by']), max(r['ay'], r['by'])))
+    # A far relationship takes the lane NEAREST the table it is leaving for
+    # (parent side) or arriving at (child side), so its long vertical does not
+    # sit between the short ones. ('lane' in its parent's gap, 'lane2' in its child's.)
+    far_a = [(r, 'lane') for r in RELS if r.get('far') and r['gap'] == g]
+    far_b = [(r, 'lane2') for r in RELS if r.get('far') and r['gap2'] == g]
+    slots = [(r, 'lane') for r in group]
+    for r, key in far_a + far_b:
+        toward_right = (key == 'lane') == (r['da'] == 1)      # which side of the gap its table is on
+        slots = ([(r, key)] + slots) if toward_right else (slots + [(r, key)])
+    group = slots
     usable = GAP_X - 2 * MARK
     step = usable / (len(group) - 1) if len(group) > 1 else 0
     if len(group) > 1 and step < 8:
         bad.append('ช่องว่างคอลัมน์ %d มี %d เส้น — ห่างกันไม่ถึง 8px จะอ่านไม่ออก' % (g, len(group)))
     left = X0 + g * (W + GAP_X) + W
-    for i, r in enumerate(group):
-        r['lane'] = left + MARK + (i * step if len(group) > 1 else usable / 2)
+    for i, (r, key) in enumerate(group):
+        r[key] = left + MARK + (i * step if len(group) > 1 else usable / 2)
 
 
 def key_tags(t, col):
@@ -183,12 +206,16 @@ def key_tags(t, col):
 # ══ page, title, notes — notes go UNDER the tables, not beside them ══
 RIGHT = max(g[0] + g[2] for g in GEO.values())
 BOTTOM = max(g[1] + g[3] for g in GEO.values())
-NY = BOTTOM + 50
+# Far relationships run on a bus under every table, one track each.
+FAR = [r for r in RELS if r.get('far')]
+for i, r in enumerate(FAR):
+    r['bus'] = BOTTOM + 22 + i * 12
+NY = BOTTOM + 50 + (12 * len(FAR) + 8 if FAR else 0)
 # A same-column loop in the LAST column runs in the gap to its right, which
 # lies past RIGHT — widen the page for it or the loop is cut off at the edge.
 if any(r['gap'] == len(COLUMNS) - 1 for r in RELS):
     RIGHT += GAP_X - MARK
-PAGE_W, PAGE_H = RIGHT + X0, NY + 262
+PAGE_W, PAGE_H = RIGHT + X0, NY + 287
 TITLE = 'ER Diagram · ข้อมูลของ index-q.html'
 SUBTITLE = ('สร้างจาก docs/reference/db/mysql/index-q.sql ด้วย scripts/build-er-index-q-drawio.py — '
             'แก้ที่ไฟล์ SQL แล้วสร้างใหม่ อย่าแก้ที่ภาพ · %d ตาราง · %d ความสัมพันธ์ · '
@@ -201,6 +228,8 @@ NOTE_HOW = ('<b>อ่านภาพนี้อย่างไร</b><br><br>'
             'หนึ่งการลงทะเบียนมีเกรดเดียว<br>'
             '<b>AuthEvent มีเส้นไป User สองเส้น</b> — userId คือบัญชีที่ถูกกระทำ '
             'actorId คือผู้กระทำ<br>'
+            '<b>เส้นที่อ้อมใต้ตาราง</b> — ตารางแม่อยู่ไกลเกินหนึ่งช่อง (ScoreChange.changedBy → User) '
+            'จึงเดินตามรางใต้ตารางทั้งหมด ไม่พาดผ่านกล่องใด<br>'
             '<b>คะแนน CLO ไปถึงผ่านจุดประสงค์</b> — Activity → AssessmentCriteria → '
             'BehavioralObjective → CLO (migration 0006)<br>'
             '<b>Course คือราก</b> — ไม่มีตารางใดอยู่เหนือรายวิชา (ตัด Curriculum/PLO ตามมติ 2.7)')
@@ -218,7 +247,7 @@ NOTE_APP = ('<b>สิ่งที่ SQL บังคับไม่ได้ �
             'น้ำหนักรวม 100% · คะแนนไม่เกินคะแนนเต็ม · กิจกรรมกับจุดประสงค์อยู่วิชาเดียวกัน · '
             'passwordHash หรือ googleSub ต้องมีอย่างน้อยหนึ่ง — '
             'อยู่ใน migrations/0002 0004 0005 0006 ไม่ได้อยู่ในไฟล์ diagram นี้')
-NOTES = [(NOTE_HOW, X0, NY, 820, 175),
+NOTES = [(NOTE_HOW, X0, NY, 820, 200),
          (NOTE_TINT, X0 + 900, NY, 640, 60),
          (NOTE_APP, X0 + 862, NY + 72, 720, 160)]  # Thai wraps to 5 lines at 720px; 103 clipped the border
 SWATCH = (X0 + 862, NY + 4, 28, 18)
@@ -288,10 +317,12 @@ for r in RELS:
              % (1 if r['da'] == 1 else 0, 1 if r['db'] == 1 else 0))
     cells.append('<mxCell id="e%d" style="%s%sstartArrow=%s;endArrow=%s;" edge="1" parent="1" '
                  'source="%s" target="%s"><mxGeometry relative="1" as="geometry"><Array as="points">'
-                 '<mxPoint x="%g" y="%g"/><mxPoint x="%g" y="%g"/></Array></mxGeometry></mxCell>'
+                 '%s</Array></mxGeometry></mxCell>'
                  % (counter[0], S_EDGE, ports, r['start'], r['end'],
                     row_id[(r['parent'], r['pcol'])], row_id[(r['child'], r['ccol'])],
-                    r['lane'], r['ay'], r['lane'], r['by']))
+                    ''.join('<mxPoint x="%g" y="%g"/>' % pt for pt in (
+                        [(r['lane'], r['ay']), (r['lane'], r['bus']), (r['lane2'], r['bus']), (r['lane2'], r['by'])]
+                        if r.get('far') else [(r['lane'], r['ay']), (r['lane'], r['by'])]))))
 vertex(TITLE, S_TITLE, X0, 26, 900, 34)
 vertex(SUBTITLE, S_SUB, X0, 62, 1600, 40)
 for text, x, y, w, h in NOTES:
@@ -326,8 +357,12 @@ def marker(x, y, kind, d):
 
 svg = []
 for r in RELS:
-    svg.append('<path d="M%g %gH%gV%gH%g" stroke="%s" fill="none" stroke-width="1.3"/>'
-               % (r['ax'], r['ay'], r['lane'], r['by'], r['bx'], INK))
+    if r.get('far'):
+        svg.append('<path d="M%g %gH%gV%gH%gV%gH%g" stroke="%s" fill="none" stroke-width="1.3"/>'
+                   % (r['ax'], r['ay'], r['lane'], r['bus'], r['lane2'], r['by'], r['bx'], INK))
+    else:
+        svg.append('<path d="M%g %gH%gV%gH%g" stroke="%s" fill="none" stroke-width="1.3"/>'
+                   % (r['ax'], r['ay'], r['lane'], r['by'], r['bx'], INK))
     svg.append(marker(r['ax'], r['ay'], r['start'], r['da']))
     svg.append(marker(r['bx'], r['by'], r['end'], r['db']))
 
@@ -389,4 +424,6 @@ print('  %d ตาราง · %d ความสัมพันธ์ (FK ใ�
          sum(c['iq'] for t in TABLES.values() for c in t['cols'])))
 for g in sorted({r['gap'] for r in RELS}):
     print('  ช่องว่างหลังคอลัมน์ %d: %d เส้น แยกคนละเลน' % (g, sum(1 for r in RELS if r['gap'] == g)))
+for r in FAR:
+    print('  เส้นอ้อมใต้ตาราง: %s.%s → %s.%s' % (r['child'], r['ccol'], r['parent'], r['pcol']))
 print('  1:1 → %s' % ', '.join('%s.%s' % (r['child'], r['ccol']) for r in RELS if r['end'] == 'ERzeroToOne'))

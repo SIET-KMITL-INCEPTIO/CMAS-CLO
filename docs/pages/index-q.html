@@ -22,7 +22,7 @@ tailwind.config = {
         ink:'#1E233C', ink2:'#4A5070', dim:'#878CB4', faint:'#9AA0BE',
         fgray:'#B8BED7', csub:'#AFAECC', mount:'#85758F', ev1:'#524E68', ev2:'#44405A',
         ok:'#4F7C68', okBg:'#E7EFEA', okBd:'#BCD3C6',
-        warn:'#96793D', warnBg:'#F4EEE1', warnBd:'#DFCFA6',
+        warn:'#7D6430', warnBg:'#F4EEE1', warnBd:'#DFCFA6',
         bad:'#A2504F', badBg:'#F4E8E8', badBd:'#DCBABA',
         info:'#4A5A86', infoBg:'#E9ECF6'
       },
@@ -92,6 +92,8 @@ b,strong{ font-weight:500; }
 .meter{ position:relative; height:7px; background:#E7E8F2; border-radius:99px; }
 .meter > i{ position:absolute; left:0; top:0; bottom:0; display:block; border-radius:99px; }
 .meter > b{ position:absolute; top:-4px; bottom:-4px; width:1.5px; background:var(--ink); border-radius:2px; }
+.sharebar{ display:flex; height:7px; background:#E7E8F2; border-radius:99px; overflow:hidden; }
+.sharebar > i{ display:block; height:100%; }
 
 .scroll-x{ overflow-x:auto; scrollbar-width:thin; scrollbar-color:#D5D7E6 transparent; }
 .scroll-x::-webkit-scrollbar{ height:9px; }
@@ -113,13 +115,20 @@ table.dt th, table.dt td{ border-bottom:1px solid var(--edge2); padding:var(--ro
 table.dt thead th{ font-size:12px; font-weight:500; letter-spacing:.11em; text-transform:uppercase; padding-top:8px; padding-bottom:8px;
   color:var(--dim); background:#F6F7FC; white-space:nowrap; border-bottom-color:var(--edge);
   position:sticky; top:0; z-index:5; }
+/* V1 — หัวคอลัมน์ชื่อ sticky ทั้งบนและซ้าย: z-index 5 เท่ากับหัวคอลัมน์อื่นทำให้ถูกหัวคอลัมน์ถัดไปทับเมื่อเลื่อนขวา */
+table.dt thead th.who{ z-index:12; }
+/* V1 — ชื่อกิจกรรมยาวตัดได้สองบรรทัด: เดิม nowrap ทำให้คอลัมน์กว้างเท่าชื่อ (10 กิจกรรม = ตารางกว้าง 3,100px) */
+table.dt thead th .colname{ white-space:normal; text-align:left; min-width:84px; max-width:150px; line-height:1.35;
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
 table.dt tbody tr:last-child td{ border-bottom:0; }
 /* N4 — หัวตารางสองชั้น: แถวบน = ชื่อกลุ่มคร่อมกิจกรรม · แถวล่างต้อง sticky ใต้แถวบน ไม่ใช่ทับกัน */
 table.dt thead tr.ghead th{ text-align:center; color:var(--ink2); border-left:1px solid var(--edge); }
 table.dt thead tr.ghead th.who{ text-align:left; border-left:0; }
 table.dt thead tr.ghead + tr th{ top:33px; }
 table.dt th.gstart, table.dt td.gstart{ border-left:1px solid var(--edge); }
-table.dt tbody tr:hover{ background:#FAFAFD; }
+table.dt tbody tr:hover{ background:var(--tint); }
+/* คอลัมน์ชื่อ (sticky) มีพื้นขาวของตัวเอง ต้องเปลี่ยนตามแถว ไม่งั้น hover ขาดช่วงที่คอลัมน์แรก */
+table.dt tbody tr:hover > td.who.bg-white{ background:var(--tint); }
 table.dt td.num, table.dt th.num{ text-align:right; font-variant-numeric:tabular-nums; }
 th.sortable{ cursor:pointer; user-select:none; }
 th.sortable:hover{ color:var(--ink); }
@@ -134,8 +143,13 @@ td.scorecell{ white-space:nowrap; position:relative; }
 .cellmenu{ position:absolute; top:1px; right:1px; width:16px; height:16px; line-height:14px; font-size:11px; border-radius:5px;
   color:var(--dim); background:transparent; border:0; opacity:0; cursor:pointer; padding:0; }
 td.scorecell:hover .cellmenu, td.scorecell:focus-within .cellmenu, .cellmenu:focus-visible{ opacity:1; background:var(--wash); }
-@media (hover:none){ .cellmenu{ opacity:.55; } }
-.menubtn{ width:26px; height:26px; line-height:22px; border-radius:7px; color:var(--ink2); font-size:16px; border:0; background:transparent; cursor:pointer; }
+/* V1 — จอสัมผัสไม่มีคลิกขวา ปุ่มนี้คือทางเดียวไปเมนูของช่อง: 16px กดไม่โดน จึงขยายและกันที่ให้ในช่อง */
+@media (hover:none){
+  .cellmenu{ opacity:.7; width:24px; height:24px; line-height:22px; font-size:13px; top:50%; transform:translateY(-50%); right:2px; }
+  td.scorecell{ padding-right:30px; }
+  .menubtn{ width:34px; height:34px; line-height:30px; }
+}
+.menubtn{ flex:none; width:26px; height:26px; line-height:22px; border-radius:7px; color:var(--ink2); font-size:16px; border:0; background:transparent; cursor:pointer; }
 .menubtn:hover, .menubtn[aria-expanded="true"]{ background:var(--wash); }
 .ctxmenu{ position:fixed; z-index:80; min-width:216px; max-width:300px; background:#fff; border:1px solid var(--edge);
   border-radius:12px; box-shadow:var(--shadow-pop); padding:6px; }
@@ -191,6 +205,8 @@ html[data-density="compact"] td.who .nm{ display:inline; }
         box-shadow:var(--shadow-pop); display:flex; align-items:center; gap:10px; max-width:380px;
         opacity:0; transform:translateY(8px); transition:opacity .18s, transform .18s; }
 .toast.on{ opacity:1; transform:translateY(0); }
+/* ผิดพลาดต้องต่างจากสำเร็จที่สีพื้น ไม่ใช่แค่ไอคอน */
+.toast.bad{ background:#A2504F; color:#fff; }
 
 kbd{ font-family:'Inter',sans-serif; font-size:12px; padding:2px 6px; border-radius:5px;
      background:#EAEBF4; color:var(--ink-soft); border:1px solid var(--edge); }
@@ -225,6 +241,8 @@ kbd{ font-family:'Inter',sans-serif; font-size:12px; padding:2px 6px; border-rad
   font-size:14px; color:#DCDEF0; cursor:text; transition:background .15s;
 }
 .cmdsearch:hover{ background:rgba(255,255,255,.24); }
+.cmdsearch{ min-width:0; }
+.cmdsearch > span:first-child{ min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .cmdright{ display:flex; align-items:center; gap:10px; }
 
 .apprail{
@@ -383,11 +401,6 @@ table.dt tbody tr.cgrouphead:hover td{ background:#F1F2F9; }
    told apart by a hover tooltip — and a tooltip is unreadable on a touch
    screen, which is exactly where the compact default is chosen for the user.
    A labelled button that opens a labelled panel needs no tooltip at all. */
-.lybtn{ display:inline-flex; align-items:center; gap:6px; padding:6px 11px; font-size:14px;
-        color:var(--ink2); background:#fff; border:1px solid var(--edge); border-radius:9px;
-        white-space:nowrap; }
-.lybtn:hover{ color:var(--ink); border-color:#C8CDEB; }
-.lybtn[aria-expanded="true"]{ color:var(--ink); border-color:#C8CDEB; background:var(--wash); }
 .lypop{ position:absolute; z-index:70; width:268px; padding:6px; background:var(--card);
         border:1px solid var(--edge); border-radius:12px; box-shadow:var(--shadow-pop);
         opacity:0; transform:translateY(-4px); transition:opacity .14s, transform .14s; }
@@ -597,6 +610,23 @@ html[data-density="compact"] table.dt td{ font-size:14px; }
   .drawerbox.on{ transform:translateY(0); }
   #toasts{ left:12px; right:12px; bottom:64px; }
   .toast{ max-width:none; }
+
+  /* V1 — ตารางคะแนนบนโทรศัพท์: คอลัมน์ชื่อ (sticky) เดิมกว้าง 258px จาก 375px เหลือที่ให้คะแนนไม่ถึงหนึ่งช่อง
+     รหัสกับชื่อจึงซ้อนสองบรรทัดและคอลัมน์แคบลงเหลือ 118px — เห็นคะแนนพร้อมกัน 2–3 กิจกรรม */
+  td.who, th.who{ min-width:0; width:118px; max-width:118px; }
+  html[data-density] td.who .code{ display:block; margin-right:0; font-size:11.5px; }
+  html[data-density] td.who .nm{ display:block; max-width:102px; font-size:13px; }
+  td.who > button{ padding:6px 6px 6px 10px !important; }
+  /* คำอธิบายใต้ชื่อหน้าซ้ำกับปุ่ม ? — บนโทรศัพท์คืนพื้นที่ให้ตาราง · แถวปุ่มเลื่อนแนวนอนแทนการซ้อนสามแถว */
+  .csub{ display:none; }
+  .ctools{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
+  .ctools::-webkit-scrollbar{ height:0; }
+  .ctools > *{ flex:none; }
+  /* ช่องกรอกที่ตัวอักษรเล็กกว่า 16px ทำให้ iOS ซูมหน้าเข้าเองทุกครั้งที่แตะ */
+  .inp, .cellinp, select, textarea{ font-size:16px; }
+  .cellinp{ width:60px; padding:5px 5px; }
+  table.dt td.scorecell{ padding-left:6px; }
+  table.dt thead th .colname{ min-width:72px; }
 }
 
 /* Account menu — anchored under the avatar, not a full overlay: it is a
@@ -762,7 +792,6 @@ const METHOD_TH = { CRITERION_REFERENCED:'อิงเกณฑ์', NORM_REFERE
 const ACT_TYPE_TH = { LECTURE:'นำเสนอ', LAB:'ปฏิบัติการ (Lab)', TEST:'สอบ', PROJECT:'โครงงาน / ชิ้นงาน' };
 const ASSESS_TH   = { QUIZ:'แบบทดสอบ (Quiz)', EXAM:'ข้อสอบ', RUBRIC:'รูบริก (Rubric)',
                       WORK:'ตรวจชิ้นงาน / รายงาน', OBSERVATION:'สังเกตพฤติกรรม' };
-const LEVEL_SOURCE_TH = { AUTO:'SOLO ตาม Bloom', MANUAL:'กำหนดเอง' };
 
 /* M2 (2569-09-21) — คะแนนเต็มตั้งต้นตามประเภทกิจกรรม
    ปฏิบัติการและการสอบมีคะแนนเต็มที่เป็นธรรมเนียมของมันอยู่แล้ว การให้พิมพ์ทุกครั้ง
@@ -1035,7 +1064,9 @@ const db = {
   ],
 
   /* Rejected rows kept beside the log so the error report (FR-65) has real
-     content. These never became Score rows — that is the point. */
+     content. These never became Score rows — that is the point.
+     field = the column heading as the instructor sees it in the file: รหัสนักศึกษา ·
+     ชื่อ-นามสกุล · or the activity's name (same values the importer writes). */
   /* Prototype-only, like uploadReject: the schema has no AuditLog, and UC 1.6
      cannot be demonstrated without one. Shape kept deliberately close to the
      table proposed in the ER gap list so adopting it is a migration, not a
@@ -1046,10 +1077,10 @@ const db = {
   ],
 
   uploadReject: [
-    { logId:'l1', row:7,  studentCode:'6604101013', field:'studentCode', value:'6604101013', reason:'ไม่พบรหัสนี้ในรายชื่อของรายวิชา' },
-    { logId:'l1', row:11, studentCode:'6604101008', field:'score',       value:'105',        reason:'คะแนนเกินคะแนนเต็มของกิจกรรม (100)' },
-    { logId:'l2', row:5,  studentCode:'6604101011', field:'score',       value:'-3',         reason:'คะแนนติดลบ ไม่ผ่าน CHECK score >= 0' },
-    { logId:'l6', row:4,  studentCode:'6604101003', field:'score',       value:'ไม่มา',      reason:'ค่าที่กรอกไม่ใช่ตัวเลข' }
+    { logId:'l1', row:7,  studentCode:'6604101013', field:'รหัสนักศึกษา', value:'6604101013', reason:'ไม่พบรหัสนี้ในรายชื่อของรายวิชา' },
+    { logId:'l1', row:11, studentCode:'6604101008', field:'โครงงานกลุ่ม', value:'105',        reason:'คะแนนเกินคะแนนเต็มของกิจกรรม (100)' },
+    { logId:'l2', row:5,  studentCode:'6604101011', field:'ปฏิบัติการ UML', value:'-3',         reason:'คะแนนติดลบ ไม่ผ่าน CHECK score >= 0' },
+    { logId:'l6', row:4,  studentCode:'6604101003', field:'สอบกลางภาค', value:'ไม่มา',      reason:'ค่าที่กรอกไม่ใช่ตัวเลข' }
   ]
 };
 
@@ -1272,14 +1303,16 @@ function syncGroupWeights(course){
      Activity.closedAt              ปิดรับคะแนน — ช่องว่างหลังปิดคือ "ขาดส่ง" ไม่ใช่ "ยังไม่ได้ประเมิน"
      Score.status = EXCUSED         ยกเว้น — ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้ (score เป็น null)
      ScoreChange                    หนึ่งแถวต่อการเปลี่ยนคะแนนหนึ่งช่อง: ใคร เมื่อไร จากอะไรเป็นอะไร ด้วยวิธีไหน
+                                    (ต้นแบบเก็บ from/to เป็นค่าเดียว: ตัวเลข | null | 'EXCUSED' — ใน SQL คือ fromScore+fromExcused
+                                    และ toScore+toExcused · courseId ในต้นแบบเป็นทางลัดของการกรอง ใน SQL ได้จาก Activity)
    ข้อมูลตั้งต้นมีแถวจริงของทุกกรณี: c5 มีคนถอน 1 คน · c1 มีช่องขาดส่ง 1 ช่อง (ปฏิบัติการ UML ปิดแล้ว)
    กับช่องที่ยังรอคะแนน 1 ช่อง (โครงงานยังเปิด) · c2 มีการยกเว้น 1 ช่อง */
 const PROTO_NOW = '2568-09-07 09:00';   /* "ตอนนี้" ของต้นแบบ — ค่าเดียวกับที่ประวัติอื่นใช้ */
 db.scoreChange = [
-  { id:'chg2', courseId:'c1', studentId:'s1_12', activityId:'a14', from:56, to:60, source:'MANUAL', by:'u1',
-    at:'2568-09-04 10:12', logId:null },
-  { id:'chg1', courseId:'c1', studentId:'s1_12', activityId:'a14', from:null, to:56, source:'IMPORT', by:'u1',
-    at:'2568-09-02 20:37', logId:'l1' }
+  { id:'chg2', courseId:'c1', studentId:'s1_12', activityId:'a14', from:56, to:60, source:'MANUAL', changedBy:'u1',
+    changedAt:'2568-09-04 10:12', logId:null, note:null },
+  { id:'chg1', courseId:'c1', studentId:'s1_12', activityId:'a14', from:null, to:56, source:'IMPORT', changedBy:'u1',
+    changedAt:'2568-09-02 20:37', logId:'l1', note:null }
 ];
 (function seedStates(){
   const w = byId(db.student, 's5_14');
@@ -1290,7 +1323,7 @@ db.scoreChange = [
   for (let i = 1; i <= 9; i++) closed['a5_' + i] = '2568-08-' + String(10 + i).padStart(2, '0');
   db.activity.forEach(function(a){ a.closedAt = closed[a.id] || null; });
   db.score.push({ id:'sc_ex1', studentId:'s2_7', activityId:'a23', score:null, status:'EXCUSED', uploadedAt:'2568-09-05',
-                  reason:'ลาป่วยช่วงสัปดาห์สุดท้าย มีใบรับรองแพทย์' });
+                  excuseReason:'ลาป่วยช่วงสัปดาห์สุดท้าย มีใบรับรองแพทย์' });
 })();
 
 /* R5 — ทางเดียวที่คะแนนถูกเขียน · value: ตัวเลข | null (ลบ = กลับเป็นช่องว่าง) | 'EXCUSED'
@@ -1307,16 +1340,16 @@ function writeScore(sid, aid, value, source, logId, note){
   if (value === null) db.score.splice(i, 1);
   else if (row) {
     row.score = exc ? null : value; row.status = exc ? 'EXCUSED' : 'SCORED';
-    if (exc) row.reason = why; else delete row.reason;      /* U6 — เหตุผลอยู่กับสถานะ "ยกเว้น" เท่านั้น */
+    if (exc) row.excuseReason = why; else delete row.excuseReason;      /* U6 — เหตุผลอยู่กับสถานะ "ยกเว้น" เท่านั้น */
   } else {
     const n = { id:'sc_' + Date.now() + '_' + (++SCORE_SEQ), studentId:sid, activityId:aid,
                 score: exc ? null : value, status: exc ? 'EXCUSED' : 'SCORED', uploadedAt:PROTO_NOW.slice(0, 10) };
-    if (exc) n.reason = why;
+    if (exc) n.excuseReason = why;
     db.score.push(n);
   }
   const a = byId(db.activity, aid);
   db.scoreChange.unshift({ id:'chg_' + Date.now() + '_' + (++SCORE_SEQ), courseId:a ? a.courseId : null,
-    studentId:sid, activityId:aid, from:cur, to:value, source:source, by:me().id, at:PROTO_NOW, logId:logId || null,
+    studentId:sid, activityId:aid, from:cur, to:value, source:source, changedBy:me().id, changedAt:PROTO_NOW, logId:logId || null,
     note: why });
   if (source !== 'FILL') delete FILLED[sid + '|' + aid];   /* Q12 — ช่องที่ถูกแตะไม่ใช่ "ค่าที่เติมให้" อีกต่อไป */
   return true;
@@ -1325,20 +1358,20 @@ function writeScore(sid, aid, value, source, logId, note){
 function setExcuseReason(sid, aid, note){
   const row = db.score.find(function(x){ return x.studentId === sid && x.activityId === aid && x.status === 'EXCUSED'; });
   const why = note ? String(note).trim().slice(0, 255) || null : null;
-  if (!row || (row.reason || null) === why) return false;
-  row.reason = why;
+  if (!row || (row.excuseReason || null) === why) return false;
+  row.excuseReason = why;
   const a = byId(db.activity, aid);
   db.scoreChange.unshift({ id:'chg_' + Date.now() + '_' + (++SCORE_SEQ), courseId:a ? a.courseId : null,
-    studentId:sid, activityId:aid, from:'EXCUSED', to:'EXCUSED', source:'NOTE', by:me().id, at:PROTO_NOW, logId:null, note:why });
+    studentId:sid, activityId:aid, from:'EXCUSED', to:'EXCUSED', source:'NOTE', changedBy:me().id, changedAt:PROTO_NOW, logId:null, note:why });
   return true;
 }
 const excuseReasonOf = function(sid, aid){
   const r = db.score.find(function(x){ return x.studentId === sid && x.activityId === aid && x.status === 'EXCUSED'; });
-  return r && r.reason ? r.reason : '';
+  return r && r.excuseReason ? r.excuseReason : '';
 };
 const SCORE_SOURCE_TH = { MANUAL:'กรอกในตาราง', IMPORT:'นำเข้าไฟล์', FILL:'เริ่มจากคะแนนเต็ม',
                           FILL_UNDO:'ย้อนการเติม', CLOSE:'ปิดรับคะแนน', PASTE:'วางจากตาราง Excel',
-                          NOTE:'แก้เหตุผลการยกเว้น' };
+                          NOTE:'แก้เหตุผลการยกเว้น', UNDO:'เลิกทำ' };
 const scoreWord = function(v){ return v === null || v === undefined ? 'ว่าง' : v === 'EXCUSED' ? 'ยกเว้น' : n2x(v); };
 
 /* Q9 (2569-10-01) — derive() อ่านอย่างเดียว · เดิมมันเรียก syncGroupWeights() แล้วเขียน Activity.weight ระหว่าง
@@ -1709,7 +1742,7 @@ function derive(courseId){
 /* ── status register, desaturated into the palette ─────────────────── */
 const TONE = {
   ok:  { bg:'#E7EFEA', tx:'#4F7C68', bar:'#6E9C87' },
-  warn:{ bg:'#F4EEE1', tx:'#96793D', bar:'#C7A860' },
+  warn:{ bg:'#F4EEE1', tx:'#7D6430', bar:'#C7A860' },
   bad: { bg:'#F4E8E8', tx:'#A2504F', bar:'#B96F6E' },
   info:{ bg:'#E9ECF6', tx:'#4A5A86', bar:'#8C97BE' },
   nil: { bg:'#F1F2F8', tx:'#878CB4', bar:'#C8CDEB' }
@@ -1828,27 +1861,17 @@ const sheet = function(o){
 /* M4 · วิธีจัดกลุ่มกิจกรรม — ทุกแบบมาจากข้อมูลที่มีอยู่แล้ว
    N1 (2569-09-23) — ตัด "กลุ่มที่ตั้งเอง" ออก ค่าตั้งต้นเป็นตามประเภทกิจกรรม: ผู้สอนไม่ต้องตั้งชื่อกลุ่ม
    `of` คืนคีย์ของกลุ่ม · `head` คืนชื่อที่แสดง · null = "ยังไม่จัดกลุ่ม" ซึ่งต้องอยู่ท้ายเสมอ */
-const ACT_GROUPBY = [
-  { id:'none',   label:'ไม่จัดกลุ่ม',      of:function(){ return null; }, head:function(){ return ''; } },
-  { id:'type',   label:'ประเภทกิจกรรม',   of:function(a){ return a.type; },
-    head:function(k){ return ACT_TYPE_TH[k] || 'ไม่ระบุประเภท'; } },
-  { id:'method', label:'วิธีประเมิน',      of:function(a){ return a.assessmentMethod; },
-    head:function(k){ return ASSESS_TH[k] || 'ไม่ระบุวิธี'; } },
-  { id:'clo',    label:'CLO ที่วัด',        of:function(a, d){
-      const cs = d.clos.filter(function(c){ return !!d.critOf(a.id, c.id); });
-      return cs.length ? cs.map(function(c){ return c.number; }).join(',') : null; },
-    head:function(k){ return 'วัด CLO ' + k; } }
-];
-const actGroupBy = function(){
-  const want = S.tab.actGroup || 'type';
-  return ACT_GROUPBY.find(function(g){ return g.id === want; }) || ACT_GROUPBY[1];
-};
+/* W1 (2569-10-03) — เหลือแบบเดียว: ตามประเภทกิจกรรม · ตารางคะแนนและตารางตรวจการเชื่อมจัดตามประเภทอยู่แล้ว
+   และน้ำหนักต่อกลุ่มกรอกได้เฉพาะตอนจัดตามประเภท — ตัวเลือกอีกสามแบบจึงซ่อนช่องนั้นไปเฉย ๆ */
+const ACT_GROUPBY = { id:'type', of:function(a){ return a.type; },
+  head:function(k){ return ACT_TYPE_TH[k] || 'ไม่ระบุประเภท'; } };
 
 /* Sub-views inside one section — the Teams "Posts | Files | Wiki" row. */
 const SUBTABS = {
   activities:[{ id:'list', label:'กิจกรรมและวิธีประเมิน' }, { id:'matrix', label:'ตรวจการเชื่อมกับ CLO' }],
-  dashboard: [{ id:'summary', label:'ภาพรวมชั้นเรียน' }, { id:'students', label:'รายนักศึกษา' },
-              { id:'raw', label:'คะแนนดิบราย CLO' }]
+  /* W1 (2569-10-03) — แท็บ "ภาพรวมชั้นเรียน" ถูกตัดออก: ตัวเลขสรุป เรดาร์ และรายชื่อที่ต้องติดตาม
+     เป็นชุดเดียวกับหน้าภาพรวม จึงเหลือที่เดียว · หน้านี้เหลือเฉพาะตารางรายนักศึกษา */
+  dashboard: [{ id:'students', label:'ร้อยละราย CLO' }, { id:'raw', label:'คะแนนดิบราย CLO' }]
 };
 /* P2 (2569-09-21) — หน้าที่มีแถบขั้นตอนพาไปถึง sub-view อยู่แล้ว ไม่ต้องวาดแท็บซ้ำ
    หน้ากิจกรรมเป็นบ้านของขั้นที่ 4 (view 'list') และขั้นที่ 5 (view 'matrix') แถบขั้นตอน
@@ -1878,14 +1901,6 @@ const LONGTEXT_TH = { clip:'ตัดเป็นบรรทัดเดีย�
 const LONGTEXT_SUB = { clip:'ทุกแถวสูงเท่ากัน · คลิกที่ข้อความเพื่อกางดูเต็ม',
                        full:'แถวสูงตามเนื้อหา ข้อความยาวดันแถวให้สูงขึ้น' };
 
-function layoutBtn(){
-  return '<button id="lyBtn" class="lybtn" data-act="layout" aria-haspopup="dialog" aria-expanded="false">' +
-    '<svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" ' +
-      'stroke-width="1.5" stroke-linecap="round" aria-hidden="true">' +
-      '<rect x="3" y="3.5" width="14" height="13" rx="2"/><path d="M3 8h14"/><path d="M3 12h14"/>' +
-    '</svg>มุมมองตาราง</button>';
-}
-
 /* Rendered fresh every time the panel opens or a choice changes, so the marked
    option is read from S rather than tracked separately and drifting from it. */
 function layoutPanelHtml(){
@@ -1907,22 +1922,20 @@ function layoutPanelHtml(){
     '</div>';
 }
 
-/* Anchored under its own button, the same way the ? popover is — a settings
-   panel this small does not deserve a dimmed page behind it. */
+/* W1 (2569-10-03) — เปิดจากเมนูบัญชี (ที่เดียว) แทนปุ่ม "มุมมองตาราง" บนแถบเครื่องมือของหกหน้า:
+   เป็นค่าที่ตั้งครั้งเดียวและใช้กับทุกตาราง จึงไม่ควรกินที่ข้างปุ่มงานของแต่ละหน้า · แผงยึดใต้ปุ่มบัญชี */
 function layoutPop(force){
   const pop = document.getElementById('lyPop');
-  const btn = document.getElementById('lyBtn');
+  const btn = document.getElementById('acctBtn');
   const open = force === undefined ? pop.hidden : force;
   if (!open) {
     pop.classList.remove('on');
     setTimeout(function(){ if (!pop.classList.contains('on')) pop.hidden = true; }, 150);
-    if (btn) btn.setAttribute('aria-expanded', 'false');
     return;
   }
   pop.innerHTML = layoutPanelHtml();
   pop.hidden = false;
   if (btn) {
-    btn.setAttribute('aria-expanded', 'true');
     const r = btn.getBoundingClientRect();
     pop.style.top = (window.scrollY + r.bottom + 8) + 'px';
     pop.style.left = Math.max(12, Math.min(window.scrollX + r.right - 268,
@@ -1964,7 +1977,6 @@ const btn = function(label, kind, attr){
   return '<button ' + a + ' class="btn">' + label + '</button>';
 };
 
-const statbar = function(cells){ return '<div class="statbar">' + cells + '</div>'; };
 const stat = function(label, value, sub, t){
   const c = t ? TONE[t] : null;
   return '<div class="statcell"><div class="over">' + label + '</div>' +
@@ -1995,8 +2007,6 @@ const verdictChip = function(a){
       : chip('ผ่านทุกคน','ok')) +
     (a.risk * 2 > a.n ? '<div class="text-[12.5px] text-bad mt-1 whitespace-nowrap" title="คนส่วนใหญ่ไม่ผ่านข้อเดียวกัน — ' +
       'เป็นสัญญาณของการสอนหรือการวัดผล มากกว่าของนักศึกษารายคน">เกินครึ่งชั้น</div>' : '') +
-    '<div class="text-[12.5px] text-dim mt-1 whitespace-nowrap" title="เป้าหมายของชั้นคือทุกคนผ่าน (100%)">' +
-      (a.met ? 'ถึงเป้า 100%' : 'ยังไม่ถึงเป้า 100%') + '</div>' +
     (open ? '<div class="text-[12.5px] text-warn mt-1 whitespace-nowrap" title="คะแนนยังไม่ครบ ' + a.partial +
       ' คน · ยังไม่มีคะแนน ' + a.pending + ' คน — จำนวนที่ต้องช่วยอาจเปลี่ยนเมื่อคะแนนครบ">ชั่วคราว · รอ ' + open + ' คน</div>' : '');
 };
@@ -2118,58 +2128,6 @@ const legend = function(items){
         i[0] + '</span>'; }).join('') + '</div>';
 };
 
-/* One horizontal bar per CLO, split into ผ่าน / ต่ำกว่าเกณฑ์ / ยังไม่มีคะแนน, with
-   the class target drawn on top. Horizontal, because the labels are Thai and
-   read left to right — a vertical chart forces the eye to rotate. */
-function chartAttainment(d){
-  const rows = d.attain;
-  if (!rows.length) return hollow('ยังไม่มี CLO');
-  const n = d.roster.length || 1;
-  const rowH = 44, padL = 62, padR = 76, W = 660;
-  const H = rows.length * rowH + 26;
-  const plotW = W - padL - padR;
-
-  const ticks = [0,25,50,75,100].map(function(v){
-    const x = padL + plotW * v / 100;
-    return '<line x1="' + x + '" y1="14" x2="' + x + '" y2="' + (H - 14) +
-      '" stroke="' + CH.line + '"' + (v ? ' stroke-dasharray="2 4"' : '') + '/>' +
-      '<text x="' + x + '" y="' + (H - 2) + '" text-anchor="middle" font-size="10.5" fill="' + CH.dim + '">' + v + '%</text>';
-  }).join('');
-
-  const bars = rows.map(function(a, i){
-    const y = 18 + i * rowH;
-    const w = function(c){ return plotW * c / n; };
-    const segs = [[a.pass, CH.ok, 'ผ่าน'], [a.risk, CH.risk, 'ต่ำกว่าเกณฑ์'], [a.pending, CH.pend, 'ยังไม่มีคะแนน']];
-    let x = padL, out = '';
-    segs.forEach(function(sg){
-      if (!sg[0]) return;
-      const bw = w(sg[0]);
-      out += '<rect x="' + x + '" y="' + y + '" width="' + bw + '" height="18" fill="' + sg[1] + '">' +
-        '<title>CLO ' + a.clo.number + ' · ' + sg[2] + ' ' + sg[0] + ' คน</title></rect>' +
-        (bw > 22 ? '<text x="' + (x + bw / 2) + '" y="' + (y + 13) + '" text-anchor="middle" font-size="11.5" ' +
-          'fill="' + (sg[1] === CH.pend ? CH.dim : '#fff') + '">' + sg[0] + '</text>' : '');
-      x += bw;
-    });
-    const tx = padL + plotW * a.target / 100;
-    return out +
-      '<rect x="' + padL + '" y="' + y + '" width="' + plotW + '" height="18" fill="none" rx="3" ' +
-        'stroke="' + CH.line + '"/>' +
-      /* G1 — เป้า 100 คือขอบขวาของกล่องอยู่แล้ว ไม่ต้องขีดทับ */
-      (a.target >= 100 ? '' :
-        '<line x1="' + tx + '" y1="' + (y - 4) + '" x2="' + tx + '" y2="' + (y + 22) +
-        '" stroke="' + CH.ink + '" stroke-width="1.5" stroke-linecap="round"><title>เป้าหมาย ' + n0(a.target) + '%</title></line>') +
-      '<text x="' + (padL - 9) + '" y="' + (y + 13) + '" text-anchor="end" font-size="12.5" fill="' + CH.ink + '">CLO ' + a.clo.number + '</text>' +
-      '<text x="' + (W - padR + 8) + '" y="' + (y + 13) + '" font-size="12.5" fill="' +
-        (a.met ? TONE.ok.tx : CH.ink) + '">' + (a.share === null ? '—' : n2(a.share) + '%') + '</text>';
-  }).join('');
-
-  return '<div class="p-4 pt-3">' +
-    legend([['ผ่าน', CH.ok], ['ต่ำกว่าเกณฑ์', CH.risk], ['ยังไม่มีคะแนน', CH.pend]]) +
-    '<div class="scroll-x mt-3"><svg viewBox="0 0 ' + W + ' ' + H + '" class="h-auto" ' +
-      'style="min-width:560px;width:100%" role="img" ' +
-      'aria-label="สัดส่วนผู้ผ่านแต่ละ CLO">' + ticks + bars + '</svg></div></div>';
-}
-
 /* Radar — one axis per CLO: the share of assessed students who passed it.
    L1 — every course gets one, so the reader always finds the same picture in the
    same place. What the chart may not do is invent a number:
@@ -2214,14 +2172,14 @@ function chartRadar(d){
   const vals = rows.map(function(a){ return a.share === null ? 0 : a.share; });
   const shape = (locked || n === 0) ? ''
     : n >= 3
-      ? '<polygon points="' + poly(vals) + '" fill="rgba(70,80,120,.16)" stroke="' + PAL.sel + '" stroke-width="1.8" stroke-linejoin="round"/>'
+      ? '<polygon points="' + poly(vals) + '" fill="rgba(70,80,120,.28)" stroke="' + PAL.sel + '" stroke-width="2.5" stroke-linejoin="round"/>'
       : n === 2
-        ? '<polyline points="' + poly(vals) + '" fill="none" stroke="' + PAL.sel + '" stroke-width="1.8"/>'
+        ? '<polyline points="' + poly(vals) + '" fill="none" stroke="' + PAL.sel + '" stroke-width="2.5"/>'
         : '';
   const marks = (locked || n === 0) ? '' : rows.map(function(a, i){
     const p = pt(i, a.share === null ? 0 : a.share);
     const col = a.share === null ? CH.pend : (a.met ? CH.ok : CH.risk);
-    return '<circle cx="' + f1(p[0]) + '" cy="' + f1(p[1]) + '" r="4" fill="' + col + '" stroke="#fff" stroke-width="1.5">' +
+    return '<circle cx="' + f1(p[0]) + '" cy="' + f1(p[1]) + '" r="5" fill="' + col + '" stroke="#fff" stroke-width="1.5">' +
       '<title>CLO ' + a.clo.number + ' · ผ่าน ' + a.pass + '/' + a.n + ' คน' +
       (a.share === null ? '' : ' (' + n2(a.share) + '%)') + '</title></circle>';
   }).join('');
@@ -2248,43 +2206,6 @@ function chartRadar(d){
     (note ? '<div class="text-[13px] mt-2 text-center text-soft">' + note + '</div>' : '') +
   '</div>';
 }
-
-/* Course status at a glance. A donut, because there are three parts of one
-   whole and the whole (the roster) is the fact worth seeing. */
-function chartStatus(d){
-  const pass = d.complete.filter(function(r){ return r.passCourse === true; }).length;
-  const fail = d.complete.length - pass;
-  const pend = d.rows.length - d.complete.length;
-  const total = d.rows.length;
-  if (!total) return hollow('ยังไม่มีนักศึกษา');
-
-  const R = 54, SW = 18, C = 2 * Math.PI * R;
-  let off = 0;
-  const arcs = [[pass, CH.ok, 'ผ่านรายวิชา'], [fail, CH.risk, 'ไม่ผ่าน'], [pend, CH.pend, 'รอประเมิน']]
-    .map(function(sg){
-      if (!sg[0]) return '';
-      const len = C * sg[0] / total;
-      const el = '<circle r="' + R + '" cx="70" cy="70" fill="none" stroke="' + sg[1] + '" stroke-width="' + SW +
-        '" stroke-dasharray="' + len + ' ' + (C - len) + '" stroke-dashoffset="' + (-off) +
-        '" transform="rotate(-90 70 70)"><title>' + sg[2] + ' ' + sg[0] + ' คน</title></circle>';
-      off += len; return el;
-    }).join('');
-
-  return '<div class="p-4 flex items-center gap-5 flex-wrap">' +
-    '<svg viewBox="0 0 140 140" style="width:128px;height:128px" role="img" aria-label="สถานะนักศึกษาในรายวิชา">' +
-      '<circle r="' + R + '" cx="70" cy="70" fill="none" stroke="' + TONE.nil.bg + '" stroke-width="' + SW + '"/>' + arcs +
-      '<text x="70" y="66" text-anchor="middle" font-size="27" fill="' + CH.ink + '">' + total + '</text>' +
-      '<text x="70" y="84" text-anchor="middle" font-size="11.5" fill="' + CH.dim + '">คน</text></svg>' +
-    '<div class="space-y-2 min-w-[132px]">' +
-      [[pass, CH.ok, 'ผ่านรายวิชา'], [fail, CH.risk, 'ไม่ผ่าน'], [pend, CH.pend, 'รอประเมิน']].map(function(sg){
-        return '<div class="flex items-center gap-2.5 text-[14px]">' +
-          '<span style="width:9px;height:9px;border-radius:2px;background:' + sg[1] + '"></span>' +
-          '<span class="text-ink2 flex-1">' + sg[2] + '</span>' +
-          '<span class="tnum text-ink">' + sg[0] + '</span>' +
-          '<span class="tnum text-dim w-[42px] text-right">' + n0(sg[0] / total * 100) + '%</span></div>';
-      }).join('') + '</div></div>';
-}
-
 
 /* G2 · สองคำถามต่อกิจกรรมในภาพเดียว — ชั้นทำคะแนนเฉลี่ยได้เท่าไร และมีกี่ส่วนที่ถึงเกณฑ์
    สองค่านี้ไม่เท่ากัน กิจกรรมที่เฉลี่ยสวยแต่คนผ่านน้อยคือกิจกรรมที่คะแนนกระจุกอยู่กับคนกลุ่มเดียว
@@ -2527,10 +2448,11 @@ function modalShortcuts(){
 function toast(msg, kind, action){
   const host = document.getElementById('toasts');
   const el = document.createElement('div');
-  el.className = 'toast';
-  el.innerHTML = '<span style="color:' + (kind === 'bad' ? PAL.badBd : PAL.okBd) + '">' +
+  el.className = 'toast' + (kind === 'bad' ? ' bad' : '');
+  el.innerHTML = '<span style="color:' + (kind === 'bad' ? PAL.white : PAL.okBd) + '">' +
     (kind === 'bad' ? '⚠' : '✓') + '</span><span>' + msg + '</span>' +
-    (action ? '<button class="toastbtn" data-act="' + action.act + '">' + esc(action.label) + '</button>' : '');
+    (action ? '<button class="toastbtn" data-act="' + action.act + '"' + (action.attrs ? ' ' + action.attrs : '') + '>' +
+      esc(action.label) + '</button>' : '');
   host.appendChild(el);
   /* Cap the stack. Switching course a few times should not bury the screen. */
   while (host.children.length > 3) host.removeChild(host.firstChild);
@@ -2589,9 +2511,7 @@ function followWhy(d, x){
   if (r.failingClos.length)
     parts.push('ต่ำกว่าเกณฑ์ ' + r.failingClos.map(function(c){
         return 'CLO ' + c.number + (r.clo[c.id].complete ? '' : '*') +
-          ' <span class="text-dim tnum">(−' + n2x(Math.round((d.passMark - r.clo[c.id].pct) * 10) / 10) + ')</span>'; }).join(', ') +
-      (r.failingClos.some(function(c){ return !r.clo[c.id].complete; })
-        ? ' <span class="text-warn">· * คะแนนของข้อนั้นยังไม่ครบ ตัดสินชั่วคราว</span>' : ''));
+          ' <span class="text-dim tnum">(−' + n2x(Math.round((d.passMark - r.clo[c.id].pct) * 10) / 10) + ')</span>'; }).join(', '));
   else if (x.lvl === 3) parts.push('คะแนนรวมต่ำกว่าเกณฑ์ผ่าน ' + n0(d.course.passCriteria) + '%');
   if (r.overdue.length)
     parts.push('<span class="text-bad">ขาดส่ง ' + r.overdue.map(function(a){ return esc(a.name); }).join(', ') + '</span>');
@@ -2603,9 +2523,7 @@ function followWhy(d, x){
 
 function viewOverview(){
   const d = D(), C = d.course;
-  const metClos = d.attain.filter(function(a){ return a.met; }).length;
   const passing = d.complete.filter(function(r){ return r.passCourse === true; }).length;
-  const pending = d.rows.filter(function(r){ return !r.total.complete; }).length;
   const avg = d.complete.length
     ? d.complete.reduce(function(t,r){ return t + r.total.pct; }, 0) / d.complete.length : null;
 
@@ -2622,23 +2540,26 @@ function viewOverview(){
     ? '<div class="px-6 py-10 text-center">' +
       '<div class="text-[15px] text-ink">ยังไม่แสดงผลการบรรลุ CLO</div>' +
       '<div class="text-[14px] text-ink2 mt-2 max-w-[52ch] mx-auto leading-relaxed">' +
-        'ตัวเลขที่คำนวณจากการจับคู่ที่ยังไม่ครบจะอธิบายต่อกรรมการหลักสูตรไม่ได้ — แก้ข้อที่เป็น ✕ ด้านบนให้ครบก่อน</div>' +
+        esc(d.blockers[0].label) + ' — ' + esc(d.blockers[0].detail) + '</div>' +
       '<div class="mt-5">' + btn('ไปยังสิ่งที่ต้องแก้','','data-act="goto" data-route="' + d.blockers[0].route + '"') + '</div></div>'
+    /* W1 — คอลัมน์ "ผู้ผ่าน" เป็นแถบเทียบเป้า 100% (FR-81 กราฟแท่งราย CLO) แทนกราฟแท่งแยกที่เคยอยู่หน้าผลการประเมิน
+       น้ำหนักตามแผนและระดับ Bloom/SOLO เป็นข้อมูลตั้งค่า ดูได้ที่หน้า CLO จึงไม่อยู่ในตารางผล */
     : '<table class="dt"><thead><tr>' +
         '<th style="width:74px">CLO</th><th>คำอธิบาย</th>' +
-        '<th class="num mob-hide" style="width:112px" title="น้ำหนักตามแผนของ CLO ที่ผู้สอนกำหนด · ใช้ตรวจกับค่าที่คำนวณจากกิจกรรม ไม่เข้าสูตรคะแนน">น้ำหนักตามแผน</th>' +
-        '<th class="num" style="width:74px">ผ่าน</th><th style="width:132px">ต้องช่วย</th>' +
+        '<th style="width:150px">ผู้ผ่าน</th><th style="width:132px">ต้องช่วย</th>' +
       '</tr></thead><tbody>' + d.attain.map(function(a){
+        const seg = function(v, col){
+          return v ? '<i style="width:' + (v / (d.roster.length || 1) * 100) + '%;background:' + col + '"></i>' : ''; };
         return '<tr>' +
           '<td class="whitespace-nowrap"><span class="tnum text-[14px] font-medium">CLO ' + a.clo.number + '</span></td>' +
           '<td class="wrapcell"><div class="text-[14px] clip">' + esc(a.clo.description) + '</div>' +
-            '<div class="mt-1.5 flex gap-2 flex-wrap">' + bloomChip(a.clo.bloomLevel) + soloChip(a.clo.soloLevel) +
-            (a.measuredBy.length === 0 ? chip('ยังไม่มีกิจกรรมวัด','bad') : '') + '</div></td>' +
-          '<td class="num tnum text-[14px] mob-hide" title="กำหนดที่หน้า CLO · คำนวณจากกิจกรรมได้ ' + n2(a.derivedWeight) + '%">' +
-            n2(a.weight) + '%</td>' +
-          '<td class="num tnum text-[14px] font-medium">' + (a.share === null ? '—' : n2(a.share) + '%') +
-            '<div class="text-[12.5px] text-dim font-normal tnum whitespace-nowrap">' +
-              a.pass + '/' + a.n + ' คน</div></td>' +
+            (a.measuredBy.length === 0 ? '<div class="mt-1.5">' + chip('ยังไม่มีกิจกรรมวัด','bad') + '</div>' : '') + '</td>' +
+          '<td><div class="flex items-baseline justify-between gap-2 tnum text-[14px]">' +
+              '<span class="font-medium">' + (a.share === null ? '—' : n2(a.share) + '%') + '</span>' +
+              '<span class="text-[12.5px] text-dim whitespace-nowrap">' + a.pass + '/' + a.n + ' คน</span></div>' +
+            '<div class="sharebar mt-1.5" role="img" aria-label="ผ่าน ' + a.pass + ' · ต่ำกว่าเกณฑ์ ' + a.risk +
+              ' · ยังไม่มีคะแนน ' + a.pending + ' คน" title="ผ่าน ' + a.pass + ' · ต่ำกว่าเกณฑ์ ' + a.risk +
+              ' · ยังไม่มีคะแนน ' + a.pending + ' คน">' + seg(a.pass, CH.ok) + seg(a.risk, CH.risk) + seg(a.pending, CH.pend) + '</div></td>' +
           '<td>' + verdictChip(a) + '</td>' +
         '</tr>';
       }).join('') + '</tbody></table>';
@@ -2646,14 +2567,13 @@ function viewOverview(){
   const follow = followList(d), risk = follow.risk;
   const nFail = follow.nFail, nClo = follow.nClo, nOver = follow.nOver, nInc = follow.nInc;
   const help = helpSummary(d);
-  const RISKLBL = FOLLOW_LBL;
   const riskCard = '<div class="card overflow-hidden mb-4">' +
     band('นักศึกษาที่ต้องติดตาม',
       d.roster.length === 0 ? '' :
-      '<span class="flex items-center gap-2">ไม่ผ่านรายวิชา ' + nFail + ' · ต่ำกว่าเกณฑ์ CLO ' + nClo + ' · ขาดส่ง ' + nOver + ' · รอคะแนน ' + nInc +
-        tip('เรียงตามความรุนแรง ไม่ใช่ตามคะแนน: ไม่ผ่านรายวิชา → ต่ำกว่าเกณฑ์ CLO หรือขาดส่งงาน → รอคะแนน\n' +
-            'ในระดับเดียวกันเรียงจากคนที่ห่างเกณฑ์มากที่สุด · ตัวเลขในวงเล็บคือระยะห่างจากเกณฑ์ผ่าน CLO\n' +
-            'ขาดส่ง = ช่องว่างในกิจกรรมที่ปิดรับคะแนนแล้ว · รอคะแนน = ช่องว่างในกิจกรรมที่ยังเปิดอยู่ ยังไม่ใช่คนที่ตก') + '</span>') +
+      '<span class="flex items-center gap-2">' +
+        tip('เรียงตามความรุนแรง: ไม่ผ่านรายวิชา → ต่ำกว่าเกณฑ์ CLO หรือขาดส่ง → รอคะแนน\n' +
+            'ตัวเลขในวงเล็บคือระยะห่างจากเกณฑ์ผ่าน CLO · * = คะแนนของข้อนั้นยังไม่ครบ\n' +
+            'ขาดส่ง = ช่องว่างในกิจกรรมที่ปิดรับคะแนนแล้ว') + '</span>') +
     (d.roster.length === 0
       ? hollow('ยังไม่มีรายชื่อนักศึกษา')
       : risk.length === 0
@@ -2663,7 +2583,7 @@ function viewOverview(){
           '<th class="mob-hide">เหตุผล</th>' +
           '<th class="num" style="width:96px">รวม (%)</th>' +
           '<th class="no-print" style="width:96px"></th></tr></thead><tbody>' +
-        risk.slice(0, 12).map(function(x){
+        risk.map(function(x){
           const r = x.r, L = x.lbl;
           const why = followWhy(d, x);
           return '<tr' + (x.lvl === 3 ? ' style="box-shadow:inset 3px 0 0 ' + TONE.bad.bar + '"' : '') + '>' +
@@ -2674,75 +2594,55 @@ function viewOverview(){
             '<td class="num tnum text-[14px]">' + (r.total.pct === null ? '—' : n2(r.total.pct)) + '</td>' +
             '<td class="no-print text-right">' +
               btn('ดูรายบุคคล','quiet','data-act="student" data-id="' + r.student.id + '"') + '</td></tr>';
-        }).join('') + '</tbody></table></div>' +
-        (risk.length > 12
-          ? '<div class="px-5 py-3 hair-t text-[14px] text-dim flex items-center gap-3">' +
-            'แสดง 12 จาก ' + risk.length + ' คน' +
-            '<button class="ml-auto btn btn-quiet" data-act="goto" data-route="dashboard">ดูทั้งหมดในแดชบอร์ด</button></div>'
-          : '')) + '</div>';
+        }).join('') + '</tbody></table></div>') + '</div>';
 
-  /* G2 — การ์ดผู้สอนและการ์ดน้ำหนักกิจกรรมถูกตัดออกจากหน้านี้ — ผู้สอนดูได้ที่
-     “ตั้งค่ารายวิชา” กับหน้ากิจกรรมอยู่แล้ว ค่าเฉลี่ยของชั้นย้ายมาอยู่กับกราฟแทน */
-  const avgCard = '<div class="card overflow-hidden">' +
-    chartHead('คะแนนเฉลี่ยของทั้งชั้น',
-      avg === null ? 'ยังไม่มีนักศึกษาที่คะแนนครบ' : 'จาก ' + d.complete.length + ' คนที่คะแนนครบ',
-      'ขีดเข้มบนแถบคือเกณฑ์ผ่านรายวิชา ' + n0(C.passCriteria) + '%\nนักศึกษาที่คะแนนยังไม่ครบไม่ถูกนับ เพราะคะแนนที่ขาดไม่ใช่ 0') +
-    '<div class="p-4">' +
-      '<div class="tnum text-[36px] font-light leading-none">' + (avg === null ? '—' : n2(avg)) +
-        '<span class="text-[17px] text-dim">' + (avg === null ? '' : '%') + '</span></div>' +
-      '<div class="mt-4">' + meter(avg, C.passCriteria) + '</div>' +
-      (d.complete.length ? '<div class="hair-t mt-4 pt-3 text-[13px] text-dim leading-relaxed">' +
-        'สูงสุด <b class="text-ink tnum">' + n2(Math.max.apply(null, d.complete.map(function(r){ return r.total.pct; }))) + '%</b>' +
-        ' · ต่ำสุด <b class="text-ink tnum">' + n2(Math.min.apply(null, d.complete.map(function(r){ return r.total.pct; }))) + '%</b></div>' : '') +
-    '</div></div>';
-
+  /* W1 (2569-10-03) — หน้านี้เป็นหน้าสรุปผลหน้าเดียวของรายวิชา · แท็บ "ภาพรวมชั้นเรียน" ของหน้าผลการประเมิน
+     แสดงตัวเลขสรุป เรดาร์ และรายชื่อที่ต้องติดตามชุดเดียวกันซ้ำ จึงยุบมารวมที่นี่
+     ที่ย้ายมา: การกระจายคะแนนรวม · ที่ตัด: กราฟแท่งราย CLO (เป็นแถบในตารางแล้ว) วงสถานะการผ่าน (ซ้ำตัวเลขสรุป)
+     ตารางตรวจยอดราย CLO (เป็นการตรวจระบบ ไม่ใช่งานของผู้สอน) และการ์ดคะแนนเฉลี่ย (เป็นตัวเลขสรุปแล้ว) */
   const actCard = '<div class="card overflow-hidden">' +
-    chartHead('แต่ละกิจกรรม ชั้นทำคะแนนได้เท่าไร',
-      'เส้นประคือเกณฑ์ผ่านของแต่ละกิจกรรม',
-      '“ถึงเกณฑ์” ของกิจกรรม = ได้ตั้งแต่เกณฑ์ผ่านที่ตั้งไว้ในกิจกรรมนั้น (% ของคะแนนเต็ม)\n' +
-      'ใช้ดูภาพรวมเท่านั้น ไม่มีผลต่อการตัดสิน CLO ซึ่งใช้เกณฑ์ผ่าน CLO ของรายวิชา ' + n0(C.cloPassMark) + '%',
-      d.acts.length ? '<span class="tnum ' + (d.actWeightSum === 100 ? '' : 'text-bad') +
-        '">น้ำหนักรวม ' + d.actWeightSum + '%</span>' : '') +
+    chartHead('คะแนนของชั้นในแต่ละกิจกรรม', 'เส้นประ = เกณฑ์ผ่านของกิจกรรม',
+      'เกณฑ์ผ่านของกิจกรรมใช้ดูภาพรวมเท่านั้น ไม่มีผลต่อการตัดสิน CLO') +
     chartActivity(d) + '</div>';
-
+  const histCard = '<div class="card overflow-hidden">' +
+    chartHead('การกระจายคะแนนรวม (คน)', 'เส้นประ = เกณฑ์ผ่านรายวิชา ' + n0(C.passCriteria) + '%',
+      'นับเฉพาะคนที่คะแนนครบ — คะแนนที่ขาดไม่ใช่ 0') +
+    chartHistogram(d) + '</div>';
 
   return sheet({
     title:'ภาพรวมรายวิชา',
-    note:'หน้านี้ตอบสามคำถาม — “วิชานี้พร้อมคำนวณผลหรือยัง ถ้ายัง เหลืออะไร” · “CLO ข้อไหนมีคนต้องช่วย กี่คน” · “ต้องตามใครก่อน” · เรดาร์กับตารางเป็นตัวเลขชุดเดียวกัน แกนหนึ่งแกนคือ CLO หนึ่งข้อ ระยะจากจุดศูนย์กลางคือสัดส่วนผู้ผ่านจริง และวงนอกสุดคือทุกคนผ่าน (เป้าหมายคือ 100% เสมอ จึงไม่มีช่องให้ตั้งค่า) · ตัวเลขทุกค่าคำนวณจากตาราง Score ที่มีอยู่จริง กิจกรรมที่ยังไม่มีแถวคะแนนจะถูกตัดออกจากตัวหาร ไม่ถูกนับเป็น 0 · รายชื่อที่ต้องติดตามเรียงตามความรุนแรง ไม่ใช่ตามคะแนน เพราะคนที่ยังประเมินไม่ครบยังไม่ใช่คนที่ตก',
-    actions: btn('ส่งออกผลการเรียน','','data-act="export" data-what="results"') + btn('ตั้งค่ารายวิชา','primary','data-act="course-settings"'),
+    note:'ผลสรุปของทั้งชั้น · เป้าหมายคือทุกคนผ่านทุก CLO จึงนับจำนวนคนที่ยังต้องช่วย — กดที่จำนวนเพื่อดูรายชื่อ · คะแนนที่ยังไม่มีไม่ถูกนับเป็น 0',
+    actions: btn('ตั้งค่ารายวิชา','','data-act="course-settings"'),
     body:
       '<div class="statbar mb-4">' +
-        stat('นักศึกษาใน Sec', d.roster.length, d.roster.length
-             ? 'รายชื่อใน Sec นี้' + (d.withdrawn.length ? ' · ถอนรายวิชา ' + d.withdrawn.length + ' คน' : '') : 'ยังไม่มีรายชื่อ') +
+        stat('ผ่านรายวิชา', d.complete.length ? n2(passing / d.complete.length * 100) + '%' : '—',
+             d.complete.length ? passing + '/' + d.complete.length + ' คนที่คะแนนครบ · เกณฑ์ ' + n0(C.passCriteria) + '%' : 'ยังไม่มีคะแนนครบ') +
+        stat('คะแนนรวมเฉลี่ย', avg === null ? '—' : n2(avg) + '%',
+             avg === null ? 'ยังไม่มีคะแนนครบ'
+               : 'สูงสุด ' + n2(Math.max.apply(null, d.complete.map(function(r){ return r.total.pct; }))) +
+                 ' · ต่ำสุด ' + n2(Math.min.apply(null, d.complete.map(function(r){ return r.total.pct; })))) +
         /* R1 — ไม่นับว่า "บรรลุกี่ข้อ" (ด้วยเป้า 100% คำตอบคือ 0 เกือบเสมอ) แต่นับว่ามีกี่ข้อที่ยังมีคนต้องช่วย และกี่คน */
         stat('CLO ที่มีคนต้องช่วย', (d.locked || d.clos.length === 0) ? '—' : help.clos + ' / ' + d.clos.length,
-             d.locked ? 'ล็อกจนกว่าจะแก้ครบ' : help.people ? 'รวม ' + help.people + ' คน · เป้าหมายคือทุกคนผ่าน' : 'ทุกคนที่มีคะแนนแล้วผ่านทุกข้อ',
+             d.locked ? 'ล็อกจนกว่าจะตั้งค่าครบ' : help.people ? 'รวม ' + help.people + ' คน' : 'ทุกคนผ่านทุกข้อ',
              (d.locked || d.clos.length === 0) ? 'nil' : (help.clos ? 'warn' : 'ok')) +
-        stat('สัดส่วนผู้ผ่านรายวิชา', d.complete.length ? n2(passing / d.complete.length * 100) + '%' : '—',
-             d.complete.length ? 'เกณฑ์ผ่าน ' + n0(C.passCriteria) + '% · ' + passing + '/' + d.complete.length + ' คน' : 'ยังไม่มีคะแนนครบ') +
-        stat('นักศึกษาที่ต้องติดตาม', d.roster.length === 0 ? '—' : (nFail + nClo + nOver),
-             d.roster.length === 0 ? '—' : (nFail + nClo + nOver
+        stat('นักศึกษาที่ต้องติดตาม', d.roster.length === 0 ? '—' : (nFail + nClo + nOver) + ' / ' + d.roster.length,
+             d.roster.length === 0 ? 'ยังไม่มีรายชื่อ' : (nFail + nClo + nOver
                ? 'ไม่ผ่านรายวิชา ' + nFail + ' · ต่ำกว่าเกณฑ์ CLO ' + nClo + (nOver ? ' · ขาดส่ง ' + nOver : '')
-               : 'ไม่มีใครต่ำกว่าเกณฑ์') + (nInc ? ' · รอคะแนนอีก ' + nInc : ''),
+               : 'ไม่มีใครต่ำกว่าเกณฑ์') + (nInc ? ' · รอคะแนน ' + nInc : ''),
              d.roster.length === 0 ? 'nil' : (nFail ? 'bad' : ((nClo + nOver) ? 'warn' : 'ok'))) +
       '</div>' +
-      /* K3 — เรดาร์คือกราฟหลักของหน้า: การ์ดแรกหลังตัวเลขสรุป ชื่อใหญ่ที่สุดในหน้า
-         และบอกคำตัดสินรวมไว้ขวามือ คนที่อ่านแค่หัวการ์ดก็ได้คำตอบ */
       '<div class="card overflow-hidden mb-4">' +
-        chartHead('นักศึกษาผ่าน CLO แต่ละข้อกี่เปอร์เซ็นต์',
+        chartHead('ผู้ผ่านราย CLO',
           d.clos.length === 0 ? 'ยังไม่มี CLO'
-            : d.locked ? 'ยังคำนวณไม่ได้ — ตั้งค่าให้ครบก่อน'
-            : 'ขอบนอกสุดของกราฟ = ผ่านทุกคน · ข้อที่ยุบเข้าหาจุดกลางคือข้อที่ต้องดูก่อน',
-          'แกนหนึ่งแกนคือ CLO หนึ่งข้อ · ระยะจากจุดกลางคือสัดส่วนนักศึกษาที่ผ่านจริง\n' +
-          'เป้าหมายของชั้นคือทุกคนผ่าน (100%) — สิ่งที่ต้องดูจึงเป็นจำนวนคนที่ยังต้องช่วยในแต่ละข้อ กดที่จำนวนเพื่อดูรายชื่อ\n' +
-          'นักศึกษาถูกตัดสินทันทีที่มีคะแนนของ CLO ข้อนั้น แม้จะยังไม่ครบทุกกิจกรรม — ป้าย “ชั่วคราว” บอกว่ายังรอคะแนนอีกกี่คน\n' +
-          'ตัวเลขชุดเดียวกับตารางข้างกราฟ',
+            : d.locked ? 'ยังคำนวณไม่ได้ — ตั้งค่าให้ครบก่อน' : '',
+          'ขอบนอกสุดของเรดาร์ = ผ่านทุกคน\n' +
+          'นักศึกษาถูกตัดสินทันทีที่มีคะแนนของ CLO ข้อนั้น — “ชั่วคราว” คือยังรอคะแนนของบางคน',
           (d.locked || d.clos.length === 0) ? '' : helpChip(d),
           true) +
         '<div class="split2"><div class="min-w-0">' + cloChart + '</div>' +
           '<div class="min-w-0 scroll-x">' + attainBody + '</div></div></div>' +
-      '<div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_330px] gap-4 mb-4">' +
-        actCard + avgCard + '</div>' +
+      (d.locked || d.noScores ? '' :
+        '<div class="grid grid-cols-1 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-4 mb-4">' + actCard + histCard + '</div>') +
       riskCard
   });
 }
@@ -2755,11 +2655,6 @@ const inlineNum = function(attr, id, value, label, width){
     'aria-label="' + esc(label) + '" title="' + esc(label) + ' · กด Enter หรือออกจากช่องเพื่อบันทึก">';
 };
 const sumTone = function(v){ return Math.abs(v - 100) < 0.01 ? 'text-ok' : 'text-warn'; };
-const levelSourceChip = function(clo){
-  if (clo.levelSource !== 'AUTO') return '';
-  return '<span class="text-[12px] text-faint" title="SOLO ได้จากระดับ Bloom ที่เลือก · เปลี่ยนเป็นกำหนดเองได้ในหน้าแก้ไข">' +
-    LEVEL_SOURCE_TH.AUTO + '</span>';
-};
 
 /* ── 02 · CLO — น้ำหนักตามแผน และเกณฑ์ผ่าน CLO ของรายวิชา (T1, T7) ───────
    Q8 (2569-10-01) — CLO.weight ไม่เข้าสูตรคะแนนใดเลย (CR-01 · E2): คะแนน CLO ถ่วงด้วยน้ำหนักจุดประสงค์
@@ -2773,7 +2668,7 @@ function viewClos(){
     title: TITLE,
     actions: btn('เพิ่ม CLO','primary','data-act="crud-new" data-kind="clo"'),
     body: empty('ยังไม่มี CLO ในรายวิชานี้',
-      'CLO คือจุดเริ่มของทุกอย่างในระบบ — จุดประสงค์ กิจกรรม วิธีประเมิน และผลการประเมินทั้งหมดอ้างอิงกลับมาที่ CLO',
+      'เริ่มจาก CLO — จุดประสงค์ กิจกรรม และผลการประเมินอ้างอิงกลับมาที่นี่',
       btn('เพิ่ม CLO ข้อแรก','primary','data-act="crud-new" data-kind="clo"'))
   });
 
@@ -2797,7 +2692,7 @@ function viewClos(){
           '</div>' +
           '<p class="text-[16px] mt-2 leading-relaxed">' + esc(clo.description) + '</p>' +
           '<div class="flex items-center gap-x-2 gap-y-1.5 flex-wrap mt-2.5 text-[13px] text-dim">' +
-            bloomChip(clo.bloomLevel) + soloChip(clo.soloLevel) + levelSourceChip(clo) +
+            bloomChip(clo.bloomLevel) + soloChip(clo.soloLevel) +
           '</div>' +
           /* T8 — ทางลัดไปหน้าจุดประสงค์ของ CLO ข้อนี้ บอกสถานะไว้ก่อนกด */
           '<div class="flex items-center gap-2 flex-wrap mt-3 text-[14px]">' +
@@ -2829,24 +2724,21 @@ function viewClos(){
   const sum = d.cloWeightSum;
   return sheet({
     title: TITLE,
-    note:'น้ำหนักตามแผนของ CLO คือสัดส่วนที่ผู้สอนตั้งใจให้แต่ละข้อมีในรายวิชา กำหนดเองตั้งแต่แรก และควรรวมได้ 100% — ถ้ารวมไม่ครบระบบจะเตือน แต่ไม่ล็อกการคำนวณ เพราะน้ำหนัก CLO เป็นค่าตามแผนที่ใช้ตรวจความสอดคล้อง ไม่ได้เข้าสูตรคะแนน (สิ่งที่ล็อกผลคือน้ำหนักกิจกรรมและน้ำหนักจุดประสงค์) · ระบบคำนวณน้ำหนักอีกทางจากกิจกรรมที่วัดจุดประสงค์ของแต่ละ CLO แล้วแสดงคู่กัน ถ้าต่างกันจะเตือน แต่ไม่ล็อกการคำนวณ — กด “ใช้ค่าที่คำนวณได้” เพื่อรับค่าจากกิจกรรมมาเป็นแผน หรือกลับไปปรับกิจกรรมให้ตรงแผน · นักศึกษาผ่าน CLO เมื่อคะแนน CLO (รวมจากจุดประสงค์ตามน้ำหนัก) ถึงเกณฑ์ผ่าน CLO ของรายวิชา ซึ่งเป็นค่าเดียวทุกข้อ',
+    note:'น้ำหนักตามแผนควรรวมได้ 100% · เป็นค่าที่ใช้เทียบกับน้ำหนักที่คำนวณจากกิจกรรม ไม่เข้าสูตรคะแนน ถ้าไม่ตรงระบบจะเตือนแต่ไม่ล็อกผล · นักศึกษาผ่าน CLO เมื่อคะแนนของข้อนั้นถึงเกณฑ์ผ่าน CLO ของรายวิชา',
     actions: btn('เพิ่ม CLO','primary','data-act="crud-new" data-kind="clo"'),
     body:
       '<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">' +
         '<div class="card px-4 py-3 flex items-center justify-between gap-3 flex-wrap">' +
           '<span class="text-[14px] text-ink2 flex items-center gap-2">น้ำหนักตามแผนรวมของทุก CLO' +
-            tip('น้ำหนักตามแผน = สัดส่วนที่ผู้สอนตั้งใจให้ CLO แต่ละข้อมีในรายวิชา\n' +
-                'ไม่เข้าสูตรคะแนน: คะแนน CLO ถ่วงด้วยน้ำหนักจุดประสงค์ คะแนนรวมถ่วงด้วยน้ำหนักกิจกรรม\n' +
-                'ระบบใช้ค่านี้ตรวจกับน้ำหนักที่คำนวณได้จากกิจกรรม แล้วเตือนเมื่อต่างกันตั้งแต่ 0.5%') + '</span>' +
+            tip('ใช้เทียบกับน้ำหนักที่คำนวณจากกิจกรรม ไม่เข้าสูตรคะแนน\nเตือนเมื่อต่างกันตั้งแต่ 0.5%') + '</span>' +
           '<span class="tnum text-[14px] ' + sumTone(sum) + '">' + n2(sum) + '%' +
-            (Math.abs(sum - 100) < 0.01 ? ' ✓' : ' — ควรรวมได้ 100% (เตือน ไม่ล็อกผล)') + '</span>' +
+            (Math.abs(sum - 100) < 0.01 ? ' ✓' : ' — ควรรวมได้ 100%') + '</span>' +
           (canSync && d.weightGap.length
             ? '<button class="btn btn-quiet no-print" data-act="clo-weight-sync" title="ตั้งน้ำหนักตามแผนของทุก CLO ' +
                 'ให้เท่ากับค่าที่คำนวณจากกิจกรรม (รวม 100% พอดี)">ใช้ค่าที่คำนวณได้ทุกข้อ</button>' : '') + '</div>' +
         '<div class="card px-4 py-3 flex items-center justify-between gap-3 flex-wrap">' +
           '<span class="text-[14px] text-ink2 flex items-center gap-2">เกณฑ์ผ่าน CLO ของรายวิชา (%)' +
-            tip('นักศึกษา 1 คนผ่าน CLO ข้อหนึ่งเมื่อคะแนนของ CLO ข้อนั้นได้ตั้งแต่ค่านี้ขึ้นไป\n' +
-                'คะแนน CLO = Σ (น้ำหนักจุดประสงค์ × คะแนนจุดประสงค์)\nใช้ค่าเดียวกันทุก CLO') + '</span>' +
+            tip('นักศึกษาผ่าน CLO เมื่อคะแนนของข้อนั้นได้ตั้งแต่ค่านี้ · ใช้ค่าเดียวทุกข้อ') + '</span>' +
           inlineNum('data-passmark', d.course.id, d.course.cloPassMark, 'เกณฑ์ผ่าน CLO ของรายวิชา (%)', 72) +
         '</div>' +
       '</div>' +
@@ -2861,7 +2753,7 @@ function viewObjectives(){
   if (d.clos.length === 0) return sheet({
     title: TITLE,
     body: empty('ยังไม่มี CLO ให้แตกเป็นจุดประสงค์',
-      'จุดประสงค์เชิงพฤติกรรมอยู่ใต้ CLO เสมอ — เพิ่ม CLO ก่อน แล้วกลับมาที่หน้านี้',
+      'เพิ่ม CLO ก่อน แล้วกลับมาที่หน้านี้',
       btn('ไปเพิ่ม CLO','primary','data-act="goto" data-route="clos"'))
   });
 
@@ -2919,7 +2811,7 @@ function viewObjectives(){
 
   return sheet({
     title: TITLE,
-    note:'จุดประสงค์คือพฤติกรรมที่สังเกตหรือวัดได้ ซึ่งแสดงว่านักศึกษาบรรลุ CLO ข้อนั้น · น้ำหนักของจุดประสงค์ใต้ CLO เดียวกันต้องรวมได้ 100% · คะแนน CLO ของนักศึกษา = Σ (น้ำหนักจุดประสงค์ × คะแนนจุดประสงค์) และคะแนนจุดประสงค์มาจากกิจกรรมที่ผูกไว้ในฟอร์มกิจกรรม (ขั้นที่ 4) และตรวจทั้งวิชาได้ในขั้นที่ 5 “ตรวจการเชื่อมกับ CLO”',
+    note:'น้ำหนักของจุดประสงค์ใต้ CLO เดียวกันต้องรวมได้ 100% · คะแนน CLO = ผลรวมของคะแนนจุดประสงค์ตามน้ำหนัก · กิจกรรมที่วัดแต่ละข้อเลือกในฟอร์มกิจกรรม',
     actions: btn('เพิ่มจุดประสงค์','primary','data-act="crud-new" data-kind="objective"'),
     body: '<div class="space-y-4">' + sections + '</div>'
   });
@@ -2931,7 +2823,7 @@ function viewActivities(){
   const tab = subOf('activities');
   const TITLE = 'กิจกรรมและวิธีประเมิน';
 
-  const gb = actGroupBy();
+  const gb = ACT_GROUPBY;
   const byGroup = d.course.weightMode === 'GROUP';
   /* P2 (2569-09-21) — แถวร่างในตารางถูกตัดออก การสร้างกิจกรรมใช้ฟอร์มใน modal ตัวเดียวกับ
      “แก้ไข” (FORMS.activity) · ก่อนหน้านี้หน้าเดียวมีสองหน้าตาสำหรับงานเดียวกัน: แถวร่าง
@@ -2943,7 +2835,7 @@ function viewActivities(){
     title: TITLE,
     actions: btn('เพิ่มกิจกรรม','primary','data-act="crud-new" data-kind="activity"'),
     body: empty('ยังไม่มีกิจกรรม',
-      'กิจกรรมคือที่มาของคะแนนทั้งหมด แต่ละกิจกรรมมีประเภท วิธีประเมิน คะแนนเต็ม และคะแนนที่ถือว่าผ่านเป็นตัวเลขของตัวเอง น้ำหนักของทุกกิจกรรมรวมกันต้องได้ 100%',
+      'กิจกรรมคือที่มาของคะแนน · น้ำหนักของทุกกิจกรรมต้องรวมได้ 100%',
       btn('เพิ่มกิจกรรมแรก','primary','data-act="crud-new" data-kind="activity"'))
   });
 
@@ -2958,9 +2850,8 @@ function viewActivities(){
             '" data-dir="1" title="เลื่อนลง" aria-label="เลื่อนลง">▼</button></span>' +
         '<span class="tnum text-[13px] text-dim">' + String(a.order).padStart(2,'0') + '</span></div></td>' +
       '<td class="wrapcell"><div class="text-[14px] clip">' + esc(a.name) + '</div>' +
-        /* M3 — บรรทัดเกณฑ์ถูกสร้างจากตัวเลข จึงตรงกับคอลัมน์ขวาเสมอ */
-        '<div class="text-[13px] text-dim clip">' + esc(critText(a)) +
-          (a.criteriaNote ? ' · ' + esc(a.criteriaNote) : '') + '</div>' +
+        /* W1 — คะแนนเต็มกับคะแนนผ่านอยู่ในคอลัมน์ขวาแล้ว บรรทัดนี้เหลือเฉพาะหมายเหตุเกณฑ์ที่ผู้สอนพิมพ์เอง */
+        (a.criteriaNote ? '<div class="text-[13px] text-dim clip">' + esc(a.criteriaNote) + '</div>' : '') +
         (a.closedAt ? '<div class="text-[12.5px] text-dim">ปิดรับคะแนนแล้ว · <span class="tnum">' + esc(a.closedAt) + '</span></div>' : '') + '</td>' +
       '<td><div class="text-[14px]">' + esc(ACT_TYPE_TH[a.type] || '—') + '</div>' +
         '<div class="text-[13px] text-dim">' + esc(ASSESS_TH[a.assessmentMethod] || '—') + '</div></td>' +
@@ -2988,8 +2879,7 @@ function viewActivities(){
      กลุ่มจึงเปิด/ปิดได้อิสระ และปุ่มเลื่อนขึ้น-ลงยังหมายถึงลำดับจริงเสมอ */
   const ACT_COLS = 8;
   let listRows;
-  if (gb.id === 'none') listRows = d.acts.map(actRow).join('');
-  else {
+  {
     const bucket = [], seenG = {};
     d.acts.forEach(function(a){
       const k = gb.of(a, d);
@@ -3004,7 +2894,7 @@ function viewActivities(){
       const w = bk.items.reduce(function(t, a){ return t + a.weight; }, 0);
       const pts = bk.items.reduce(function(t, a){ return t + (a.maxScore || 0); }, 0);
       /* N1 — โหมดตามกลุ่ม: น้ำหนักของกลุ่มกรอกที่หัวกลุ่มนี้ที่เดียว */
-      const editable = byGroup && gb.id === 'type' && bk.key !== '\u0000none';
+      const editable = byGroup && bk.key !== '\u0000none';
       return '<tr class="cgrouphead"><td colspan="' + ACT_COLS + '">' +
         '<div class="flex items-center gap-3 flex-wrap">' +
           '<span><span class="text-[14px] text-ink">' +
@@ -3021,22 +2911,13 @@ function viewActivities(){
     }).join('');
   }
 
-  const groupBar = '<div class="flex items-center gap-1.5 flex-wrap text-[13px]">' +
-    '<span class="text-dim">จัดกลุ่มตาม</span>' +
-    ACT_GROUPBY.map(function(g){
-      return '<button class="chipbtn" data-act="act-group-by" data-val="' + g.id + '"' +
-        (g.id === gb.id ? ' aria-current="true"' : '') + '>' + g.label + '</button>'; }).join('') + '</div>';
-
   const listBody =
-    '<div class="mb-3 flex items-center justify-between gap-4 flex-wrap">' + groupBar +
-      '<span class="text-[13px] text-dim">' + d.acts.length + ' กิจกรรม · คะแนนเต็มรวม ' +
-        n2x(d.acts.reduce(function(t, a){ return t + (a.maxScore || 0); }, 0)) + ' คะแนน</span></div>' +
     /* N1 — ตารางกว้างคงที่ขั้นต่ำ แล้วเลื่อนแนวนอนแทนการบีบคอลัมน์ · เดิม overflow-hidden ของการ์ด
        ชนะ overflow-x:auto ของ .scroll-x ตารางจึงถูกบีบจนชิปจุดประสงค์ตกเป็นหลายบรรทัด */
     '<div class="card scroll-x" style="container-type:inline-size">' +
       '<table class="dt" style="min-width:1080px"><thead><tr>' +
         '<th style="width:56px"></th>' +
-        '<th style="min-width:260px">กิจกรรม · เกณฑ์</th>' +
+        '<th style="min-width:260px">กิจกรรม</th>' +
         '<th style="width:150px">ประเภท · วิธีประเมิน</th>' +
         '<th class="num" style="width:92px">คะแนนเต็ม</th>' +
         '<th class="num" style="width:104px" title="คะแนนที่ถือว่าผ่านกิจกรรมนี้ และค่าเดียวกันคิดเป็น % ของคะแนนเต็ม">ผ่านที่ (คะแนน)</th>' +
@@ -3055,10 +2936,8 @@ function viewActivities(){
           '>ต่อกลุ่มประเภท</button>' +
         '<button class="chipbtn" data-act="weight-mode" data-val="MANUAL"' + (byGroup ? '' : ' aria-current="true"') +
           '>ทีละกิจกรรม</button>' +
-        tip('ต่อกลุ่มประเภท: กรอกน้ำหนักที่หัวกลุ่ม (เช่น ปฏิบัติการ 25%) ครั้งเดียว\n' +
-            'ระบบแบ่งให้กิจกรรมในกลุ่มตามสัดส่วนคะแนนเต็ม — ทศนิยมได้ตามจริง เช่น 13.33%\n' +
-            'ทีละกิจกรรม: กรอกน้ำหนักในฟอร์มของแต่ละกิจกรรม\n' +
-            'น้ำหนัก CLO กรอกเองที่หน้า CLO เสมอ ไม่ขึ้นกับตัวเลือกนี้') +
+        tip('ต่อกลุ่มประเภท: กรอกที่หัวกลุ่ม ระบบแบ่งให้กิจกรรมในกลุ่มตามคะแนนเต็ม\n' +
+            'ทีละกิจกรรม: กรอกในฟอร์มของแต่ละกิจกรรม') +
       '</div>' +
     '</div>';
 
@@ -3130,7 +3009,7 @@ function viewActivities(){
   const partial = d.badRows.filter(function(a){ return d.rowSum(a.id) !== 0; });
   if (partial.length) problems.push('สัดส่วนยังไม่ครบ 100%: ' + partial.map(function(a){ return esc(a.name) + ' รวมได้ ' + d.rowSum(a.id) + '%'; }).join(' · '));
   if (d.unmeasuredObjs.length) problems.push('จุดประสงค์ที่ยังไม่มีกิจกรรมวัด: ' + d.unmeasuredObjs.map(d.objLabel).join(', ') +
-    ' — เปิด “แก้ไข” ของกิจกรรมที่ควรวัดข้อนั้น (แท็บรายการกิจกรรม) แล้วติ๊กจุดประสงค์พร้อมสัดส่วน');
+    ' — เลือกในฟอร์ม “แก้ไข” ของกิจกรรมที่วัดข้อนั้น');
 
   const matrixBody = cloGroups.length === 0
     ? empty('ยังไม่มีจุดประสงค์ให้เชื่อม',
@@ -3144,33 +3023,31 @@ function viewActivities(){
         const sumBad = d.actWeightSum !== 100;
         const t = (sumBad || d.weightGap.length) ? 'warn' : 'ok';
         const msg = sumBad
-          ? 'การเชื่อมครบทุกกิจกรรม · แต่น้ำหนักกิจกรรมรวม ' + d.actWeightSum + '% ยังไม่เท่ากับ 100% — แก้ที่ขั้นที่ 4'
+          ? 'เชื่อมครบ · แต่น้ำหนักกิจกรรมรวม ' + d.actWeightSum + '% ยังไม่เท่ากับ 100% — แก้ที่หน้ากิจกรรม'
           : d.weightGap.length
-          ? 'การเชื่อมครบทุกกิจกรรม · น้ำหนัก CLO ที่คำนวณได้ไม่ตรงกับแผน: ' + d.weightGap.map(function(c){
+          ? 'เชื่อมครบ · น้ำหนัก CLO ไม่ตรงกับแผน: ' + d.weightGap.map(function(c){
               return 'CLO ' + c.number + ' คำนวณ ' + n2(d.cloWeight(c.id)) + '% / แผน ' + n2(c.weight || 0) + '%'; }).join(' · ')
-          : 'ตรวจครบแล้ว — ทุกกิจกรรมเชื่อมครบ 100% · ทุกจุดประสงค์มีกิจกรรมวัด · น้ำหนัก CLO ตรงกับแผน';
+          : 'เชื่อมครบทุกกิจกรรม และน้ำหนัก CLO ตรงกับแผน';
         return '<div class="mb-4 px-5 py-3 rounded-lg flex items-center gap-3 flex-wrap text-[14px]" style="background:' +
           TONE[t].bg + ';color:' + TONE[t].tx + '"><span class="flex-1 min-w-[240px]">' + msg + '</span>' +
           (!sumBad && d.weightGap.length
             ? '<button class="btn btn-quiet no-print" data-act="clo-weight-sync">ใช้ค่าที่คำนวณได้ทุกข้อ</button>' : '') + '</div>';
       })()) +
       '<div class="flex items-center gap-2 mb-2.5 text-[14px] text-ink2 flex-wrap">' +
-        '<span>ตารางนี้สรุปการเชื่อมที่ตั้งไว้ในฟอร์มกิจกรรม (ขั้นที่ 4) · แต่ละแถวต้องรวมได้ 100% · ' +
-          '<b class="font-medium">ปรับยอดราย CLO ได้ในช่อง · ล้างช่อง = เลิกผูก CLO นั้น</b></span>' +
-        tip('ทุกกิจกรรมต้องวัด CLO อย่างน้อย 1 ข้อ\n' +
-            'วัด CLO เดียว กรอก 100 · สองข้อ 50/50 · สัดส่วน 2:1 กรอก 67/33\n' +
-            'ช่องคือยอดรวมของ CLO · จุดประสงค์ข้อใดได้เท่าไรตั้งไว้ในฟอร์ม “แก้ไข” ของกิจกรรม (ชี้ที่ช่องเพื่อดู)\n' +
-            'แก้ค่าในช่อง = ปรับยอดรวม โดยคงชุดจุดประสงค์และสัดส่วนเดิมไว้\n' +
-            'ผูก CLO ครั้งแรกจากช่องนี้ = แบ่งให้ทุกจุดประสงค์ใต้ CLO นั้นตามน้ำหนักจุดประสงค์\n' +
-            'ปุ่ม “แบ่งเท่ากัน” ท้ายแถวเกลี่ยยอดระหว่าง CLO ให้เท่ากัน\nEnter = ลงแถวถัดไป · Tab = ไปช่องขวา') + '</div>' +
+        '<span>แต่ละแถวต้องรวมได้ 100% · แก้ในช่องได้ · ล้างช่อง = เลิกผูก</span>' +
+        tip('ช่อง = % ของกิจกรรมที่วัด CLO นั้น (รวมทุกจุดประสงค์ใต้ CLO)\n' +
+            'แก้ค่า = ปรับยอดรวม คงสัดส่วนระหว่างจุดประสงค์เดิม\n' +
+            'ผูกครั้งแรกจากช่องนี้ = แบ่งให้ทุกจุดประสงค์ตามน้ำหนัก') + '</div>' +
       '<div class="card scroll-x">' +
         '<table class="dt"><thead>' + head + '</thead><tbody>' + body + foot + '</tbody></table></div>';
 
   return sheet({
-    title: TITLE,
-    note:'กิจกรรมแต่ละรายการมีประเภท (นำเสนอ · ปฏิบัติการ · สอบ · โครงงาน) และวิธีประเมิน (แบบทดสอบ · ข้อสอบ · รูบริก · ตรวจชิ้นงาน · สังเกต) · เกณฑ์การประเมินเป็นตัวเลขทั้งหมด: จำนวนหน่วย × คะแนนต่อหน่วย = คะแนนเต็ม และคะแนนที่ถือว่าผ่าน — ไม่ต้องบรรยายเป็นประโยคอีก · คะแนนเต็มมีค่าตั้งต้นตามประเภทกิจกรรม และลดลงได้ (แต่ไม่ต่ำกว่าคะแนนที่กรอกไว้แล้ว — ระบบไม่ปัดคะแนนของนักศึกษาให้) · จัดกลุ่มกิจกรรมตามประเภทกิจกรรมเป็นค่าตั้งต้น และเปลี่ยนเป็นตามวิธีประเมินหรือ CLO ที่วัดได้ · น้ำหนักในวิชากรอกได้สองแบบ: ต่อกลุ่มประเภท (ระบบแบ่งให้กิจกรรมในกลุ่มตามคะแนนเต็ม ทศนิยมได้ตามจริง) หรือทีละกิจกรรม · น้ำหนัก CLO กรอกเองที่หน้า CLO เสมอ · การเชื่อมตั้งไว้ในฟอร์มของแต่ละกิจกรรม · ช่องในขั้นที่ 5 “ตรวจการเชื่อมกับ CLO” คือสัดส่วนของกิจกรรมที่ใช้วัด CLO นั้น แต่ละแถวต้องรวมได้ 100% มิฉะนั้นการคำนวณผลจะถูกล็อก',
-    actions: btn('ดาวน์โหลดเทมเพลตคะแนน','','data-act="template"') +
-             btn('เพิ่มกิจกรรม','primary','data-act="crud-new" data-kind="activity"'),
+    title: tab === 'list' ? TITLE : 'ตรวจการเชื่อมกับ CLO',
+    note: tab === 'list'
+      ? 'น้ำหนักของทุกกิจกรรมต้องรวมได้ 100% · แต่ละกิจกรรมต้องวัดจุดประสงค์อย่างน้อย 1 ข้อ สัดส่วนรวม 100% · ถ้าไม่ครบ ผลการประเมินจะถูกล็อก'
+      : 'ช่อง = % ของกิจกรรมที่ใช้วัด CLO นั้น · ทุกแถวต้องรวมได้ 100% · แถวล่างเทียบน้ำหนัก CLO ที่คำนวณได้กับแผน',
+    /* W1 — เทมเพลตคะแนนอยู่ที่หน้านักศึกษาและคะแนน ที่เดียว */
+    actions: btn('เพิ่มกิจกรรม','primary','data-act="crud-new" data-kind="activity"'),
     body: tab === 'list' ? listBody : matrixBody
   });
 }
@@ -3197,7 +3074,7 @@ function viewRoster(){
     title: TITLE,
     actions: importBtns + btn('เพิ่มนักศึกษา','primary','data-act="stu-new-row"'),
     body: empty('ยังไม่มีรายชื่อนักศึกษา',
-      'เพิ่มทีละคนในตาราง หรือนำเข้าจากไฟล์ Excel ทั้งชั้น — ระบบตรวจรูปแบบและรายการซ้ำก่อนบันทึก เมื่อมีรายชื่อแล้วกรอกคะแนนในตารางเดียวกันได้ทันที',
+      'เพิ่มทีละคนในตาราง หรือนำเข้าทั้งชั้นจาก Excel',
       btn('นำเข้ารายชื่อจาก Excel','','data-act="import" data-what="roster"') +
       btn('เพิ่มนักศึกษา','primary','data-act="stu-new-row"'))
   });
@@ -3205,6 +3082,24 @@ function viewRoster(){
   const key = 'roster';
   const shown = sortRows(key, d.rows.filter(function(r){
     return match(key, r.student.studentCode + ' ' + r.student.name); }));
+  /* V1 (2569-10-02) — แบ่งหน้า: ช่องกรอกคะแนนคือส่วนที่เบราว์เซอร์จัดวางช้าที่สุด และทุกการแก้หนึ่งช่องวาดตารางใหม่ทั้งตาราง
+     วัดจริง: 150 คน × 10 กิจกรรม = 1,500 ช่อง ใช้ ~0.9 วินาทีต่อการแก้หนึ่งช่อง · หน้าละ 50 คนคงที่ไม่ว่าชั้นใหญ่แค่ไหน
+     การค้นหา การเรียง การวางจาก Excel ด้วยรหัส และคำสั่งของคอลัมน์ ยังทำกับทั้ง Sec — แบ่งเฉพาะสิ่งที่วาดบนจอ */
+  if (ROSTER_PG.course !== d.course.id) { ROSTER_PG.course = d.course.id; ROSTER_PG.page = 0; }
+  const nPages = ROSTER_PG.all ? 1 : Math.max(1, Math.ceil(shown.length / ROSTER_PAGE));
+  const pg = Math.min(ROSTER_PG.page, nPages - 1);
+  ROSTER_PG.page = pg;
+  const pageRows = ROSTER_PG.all ? shown : shown.slice(pg * ROSTER_PAGE, (pg + 1) * ROSTER_PAGE);
+  const nextRow = ROSTER_PG.all ? null : shown[(pg + 1) * ROSTER_PAGE], prevRow = pg > 0 ? shown[pg * ROSTER_PAGE - 1] : null;
+  ROSTER_PG.nextFirst = nextRow ? nextRow.student.id : null;      /* Enter ที่แถวสุดท้ายของหน้า → แถวแรกของหน้าถัดไป */
+  ROSTER_PG.prevLast  = prevRow ? prevRow.student.id : null;
+  const pager = nPages < 2 ? '' :
+    '<div class="flex items-center gap-2 flex-wrap no-print">' +
+      btn('‹ ก่อนหน้า', '', 'data-act="roster-page" data-page="' + (pg - 1) + '"' + (pg === 0 ? ' disabled' : '')) +
+      '<span class="text-[14px] tnum">คนที่ ' + (pg * ROSTER_PAGE + 1) + '–' + (pg * ROSTER_PAGE + pageRows.length) +
+        ' จาก ' + shown.length + '</span>' +
+      btn('ถัดไป ›', '', 'data-act="roster-page" data-page="' + (pg + 1) + '"' + (pg >= nPages - 1 ? ' disabled' : '')) +
+      '</div>';
 
   /* N4 — หัวตารางสองชั้น: ชื่อกลุ่มประเภทคร่อมคอลัมน์กิจกรรมของกลุ่มนั้น
      คอลัมน์จึงเรียงตามกลุ่ม (colspan ต้องติดกัน) ภายในกลุ่มยังเรียงตามลำดับกิจกรรมเดิม */
@@ -3234,7 +3129,7 @@ function viewRoster(){
           (nBlank && a.weight > 0 ? ' · <span class="text-bad">ค้างตัดสิน ' + nBlank + '</span>' : '') + '</div>' : '') +
         (nFilled ? '<div class="' + lineCls + ' text-ink2">เติมไว้ ' + nFilled + ' · รอตรวจ</div>' : '');
       return '<th' + gcls(a, 'num') + ' title="' + esc(a.name) + ' · ' + critText(a) + ' · ' + a.weight + '% ของวิชา">' +
-        '<div class="flex items-start justify-between gap-1"><span>' + esc(a.name) + '</span>' +
+        '<div class="flex items-start justify-between gap-1"><span class="colname">' + esc(a.name) + '</span>' +
           '<button class="menubtn no-print" data-act="menu" data-menu="col" data-id="' + a.id + '" aria-haspopup="menu" ' +
             'aria-expanded="false" aria-label="คำสั่งของคอลัมน์ ' + esc(a.name) + '" title="คำสั่งของคอลัมน์นี้">⋯</button></div>' +
         status + '</th>';
@@ -3244,7 +3139,7 @@ function viewRoster(){
   /* R5 — การแก้ครั้งล่าสุดของแต่ละช่อง (d.changes เรียงใหม่ → เก่า) แสดงใน tooltip ของช่อง */
   const lastChange = {};
   d.changes.forEach(function(c){ const k = c.studentId + '|' + c.activityId; if (!lastChange[k]) lastChange[k] = c; });
-  const body = shown.map(function(r){
+  const body = pageRows.map(function(r){
     const cells = cols.map(function(a){
       const k2 = r.student.id + '|' + a.id;
       const stt = d.stateOf(r.student.id, a.id);
@@ -3259,7 +3154,7 @@ function viewRoster(){
       const bg = late ? TONE.bad.bg : none ? PAL.blank : (exc || filled) ? TONE.info.bg : '';
       const word = late ? 'ขาดส่ง' : none ? 'ยังไม่ประเมิน' : exc ? 'ยกเว้น' : (below ? 'ต่ำกว่าเกณฑ์ผ่านกิจกรรม' : '');
       const ch = lastChange[k2];
-      const who = ch ? (byId(db.user, ch.by) || { name:'—' }).name : '';
+      const who = ch ? (byId(db.user, ch.changedBy) || { name:'—' }).name : '';
       const say = (late ? 'ขาดส่ง — กิจกรรมปิดรับคะแนนแล้วแต่ยังไม่มีคะแนน · พิมพ์คะแนน (0 ถ้าไม่ได้ส่ง) หรือ x เพื่อยกเว้น'
         : none ? 'ยังไม่ประเมิน — พิมพ์คะแนนเพื่อบันทึก · x = ยกเว้น'
         : exc ? 'ยกเว้น — ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้ · พิมพ์คะแนนเพื่อเปลี่ยน · ลบ x ออก = กลับเป็นช่องว่าง'
@@ -3267,7 +3162,7 @@ function viewRoster(){
           (below ? 'ต่ำกว่าเกณฑ์ผ่านกิจกรรม ' + n2x(passScoreOf(a)) + ' คะแนน · ' : '') +
           'ลบค่าออกเพื่อกลับเป็นช่องว่าง · x = ยกเว้น') +
         (exc && excuseReasonOf(r.student.id, a.id) ? ' · เหตุผล: ' + excuseReasonOf(r.student.id, a.id) : '') +
-        (ch ? ' · แก้ล่าสุด ' + ch.at + ' โดย ' + who + ' (' + (SCORE_SOURCE_TH[ch.source] || ch.source) + ')' : '') +
+        (ch ? ' · แก้ล่าสุด ' + ch.changedAt + ' โดย ' + who + ' (' + (SCORE_SOURCE_TH[ch.source] || ch.source) + ')' : '') +
         ' · คลิกขวาหรือปุ่ม ▾ = เมนู';
       return '<td' + gcls(a, 'num scorecell') + (bg ? ' style="background:' + bg + '"' : '') + '>' +
         '<input class="cellinp' + (none ? ' empty' : '') + (below ? ' text-bad' : '') + '" data-score="' + k2 +
@@ -3320,15 +3215,15 @@ function viewRoster(){
       '<td class="no-print text-right"><button class="menubtn" data-act="menu" data-menu="rowgone" data-id="' + st.id +
         '" aria-haspopup="menu" aria-expanded="false" aria-label="คำสั่งของ ' + esc(st.name) + '">⋯</button></td></tr>';
   }).join('');
-  const goneBlock = !gone.length ? '' :
+  const goneBlock = (!gone.length || pg < nPages - 1) ? '' :
     '<tr class="cgrouphead"><td colspan="' + (cols.length + 4) + '"><span class="text-[14px] text-ink">ถอนรายวิชา</span>' +
       '<span class="text-[13px] text-dim"> · ' + gone.length + ' คน · ไม่นับในผลการประเมิน สถิติ และการตัดเกรด</span></td></tr>' + goneRows;
 
   /* R5 — ประวัติการแก้คะแนนของทั้งวิชา: แผงพับคู่กับประวัติการนำเข้าไฟล์ */
   const chgOpen = !!S.tab.scoreLog;
   const chgRows = d.changes.slice(0, 40).map(function(c){
-    const st = byId(db.student, c.studentId), a = byId(db.activity, c.activityId), u = byId(db.user, c.by);
-    return '<tr><td class="tnum text-[13px] whitespace-nowrap">' + esc(c.at) + '</td>' +
+    const st = byId(db.student, c.studentId), a = byId(db.activity, c.activityId), u = byId(db.user, c.changedBy);
+    return '<tr><td class="tnum text-[13px] whitespace-nowrap">' + esc(c.changedAt) + '</td>' +
       '<td class="text-[14px]">' + (st ? '<span class="tnum text-dim">' + esc(st.studentCode) + '</span> ' + esc(st.name) : '—') + '</td>' +
       '<td class="text-[14px]">' + (a ? esc(a.name) : '—') + '</td>' +
       '<td class="tnum text-[14px] whitespace-nowrap"><span class="text-dim">' + scoreWord(c.from) + '</span> → <b class="font-medium">' +
@@ -3342,8 +3237,7 @@ function viewRoster(){
       '" aria-expanded="' + (chgOpen ? 'true' : 'false') + '">' +
       '<span class="text-faint text-[12.5px] w-3">' + (chgOpen ? '▾' : '▸') + '</span>' +
       '<span class="text-[14px]">ประวัติการแก้คะแนน</span>' +
-      '<span class="text-[13px] text-dim tnum">(' + d.changes.length + ')</span>' +
-      '<span class="ml-auto text-[13px] text-dim">ทุกช่องที่เปลี่ยน: ใคร เมื่อไร จากอะไรเป็นอะไร</span></button>' +
+      '<span class="text-[13px] text-dim tnum">(' + d.changes.length + ')</span></button>' +
     (!chgOpen ? '' : d.changes.length === 0 ? hollow('ยังไม่มีการแก้คะแนนในรายวิชานี้')
       : '<div class="scroll-x hair-t"><table class="dt"><thead><tr><th>เวลา</th><th>นักศึกษา</th><th>กิจกรรม</th>' +
         '<th>เดิม → ใหม่</th><th>วิธี</th><th>ผู้แก้</th></tr></thead><tbody>' + chgRows + '</tbody></table></div>' +
@@ -3368,8 +3262,7 @@ function viewRoster(){
       '" aria-expanded="' + (logOpen ? 'true' : 'false') + '">' +
       '<span class="text-faint text-[12.5px] w-3">' + (logOpen ? '▾' : '▸') + '</span>' +
       '<span class="text-[14px]">ประวัติการนำเข้าไฟล์</span>' +
-      '<span class="text-[13px] text-dim tnum">(' + d.logs.length + ')</span>' +
-      '<span class="ml-auto text-[13px] text-dim">บันทึกเพื่อสอบทาน ไม่อยู่ในเส้นทางคำนวณ</span></button>' +
+      '<span class="text-[13px] text-dim tnum">(' + d.logs.length + ')</span></button>' +
     (!logOpen ? '' : d.logs.length === 0 ? hollow('ยังไม่มีประวัติการนำเข้าไฟล์')
       : '<div class="scroll-x hair-t"><table class="dt"><thead><tr><th>เวลา</th><th>ไฟล์</th><th>ผู้อัปโหลด</th>' +
         '<th class="num">สำเร็จ</th><th class="num">ล้มเหลว</th><th></th></tr></thead><tbody>' + logs + '</tbody></table></div>') +
@@ -3377,26 +3270,26 @@ function viewRoster(){
 
   return sheet({
     title: TITLE,
-    note:'รายชื่อและคะแนนอยู่ในตารางเดียว — เพิ่มนักศึกษาเป็นแถวใหม่แล้วกรอกคะแนนต่อได้ทันที · ช่องสีเหลืองคือ “ยังไม่ประเมิน” ซึ่งต่างจากคะแนน 0 ที่นักศึกษาได้จริง · คำสั่งของกิจกรรม (ปิดรับคะแนน · เริ่มจากคะแนนเต็ม) อยู่ในเมนู ⋯ ที่หัวคอลัมน์ — เมื่อเก็บคะแนนครบแล้วกด “ปิดรับคะแนน” ช่องที่ยังว่างจะให้เลือกว่าได้ 0 หรือยกเว้น และช่องที่ยังไม่ตัดสินจะขึ้นเป็น “ขาดส่ง” สีแดง · คลิกขวาที่ช่อง (หรือกด ▾) เพื่อให้ได้ 0 / ยกเว้นพร้อมเหตุผล / ล้างช่อง หรือพิมพ์ x เพื่อยกเว้นทันที · วางช่วงคะแนนจาก Excel ได้ ระบบแสดงสรุปก่อนบันทึก · นักศึกษาที่ถอนรายวิชาใช้เมนู ⋯ ท้ายแถว คะแนนยังเก็บไว้แต่ไม่นับในผลใด ๆ · ทุกการแก้คะแนนถูกบันทึกไว้ในแผง “ประวัติการแก้คะแนน” · ตัวเลขสีแดงคือต่ำกว่าเกณฑ์ผ่านของกิจกรรมนั้น · กดชื่อเพื่อดูผลรายบุคคล',
+    note:'ช่องเหลือง = ยังไม่ประเมิน (ไม่ใช่ 0) · ช่องแดง = ขาดส่งในกิจกรรมที่ปิดรับแล้ว · พิมพ์ x = ยกเว้น · วางช่วงคะแนนจาก Excel ได้ (Ctrl+V) และเลิกทำได้ (Ctrl+Z) · คำสั่งของกิจกรรมอยู่ที่ ⋯ หัวคอลัมน์ ของนักศึกษาอยู่ที่ ⋯ ท้ายแถว · กดชื่อเพื่อดูผลรายบุคคล',
     actions: filterBox(key,'ค้นหารหัสหรือชื่อ') +
              btn('+ นักศึกษา','','data-act="stu-new-row"') +
              btn('นำเข้ารายชื่อ','','data-act="import" data-what="roster"') +
-             btn('เทมเพลตคะแนน','','data-act="template"') +
+             /* W1 — เทมเพลตคะแนนดาวน์โหลดได้ในหน้าต่างนำเข้าคะแนน จึงไม่มีปุ่มซ้ำบนแถบ */
              btn('ส่งออกคะแนน','','data-act="export"') +
              btn('นำเข้าคะแนน','primary','data-act="import"'),
     body:
       (shown.length === 0 && !gone.length && !S.newStu
         ? empty('ไม่พบรายชื่อที่ตรงกับคำค้น', 'ลองพิมพ์รหัสนักศึกษาหรือชื่อบางส่วน', btn('ล้างคำค้น','','data-act="clear-filter" data-key="' + key + '"'))
-        : '<div class="card scroll-x"><table class="dt"><thead>' + head + '</thead><tbody>' + body + draftStu + goneBlock + '</tbody></table></div>') +
+        : (pager ? '<div class="mb-3">' + pager + '</div>' : '') +
+          '<div class="card scroll-x"><table class="dt"><thead>' + head + '</thead><tbody>' + body + draftStu + goneBlock + '</tbody></table></div>' +
+          (pager ? '<div class="mt-3">' + pager + '</div>' : '')) +
       '<div class="mt-3 flex items-center gap-3 flex-wrap text-[13px] text-dim">' +
-        '<span>แสดง ' + shown.length + ' จาก ' + d.rows.length + ' คน' +
+        '<span>แสดง ' + pageRows.length + ' จาก ' + d.rows.length + ' คน' +
+          (shown.length !== d.rows.length ? ' (ตรงคำค้น ' + shown.length + ')' : '') +
           (d.withdrawn.length ? ' · ถอนรายวิชา ' + d.withdrawn.length + ' คน' : '') + '</span>' +
-        '<span>· พิมพ์ได้เลย · <b>Enter</b> ลงแถวถัดไป · <b>Tab</b> ไปช่องขวา · <b>Esc</b> ยกเลิก</span>' +
-        '<span>· วางช่วงจาก Excel ได้ (<b>Ctrl+V</b>) · คลิกขวาที่ช่องเพื่อเปิดเมนู</span>' +
-        '<span>· ช่องพื้นเหลืองคือยังไม่ประเมิน</span>' +
-        (anyLate ? '<span>· ช่องพื้นแดงคือขาดส่งในกิจกรรมที่ปิดรับคะแนนแล้ว</span>' : '') +
-        (anyExc ? '<span>· x คือยกเว้น ไม่นับกิจกรรมนั้นสำหรับคนนั้น</span>' : '') +
-        (anyFilled ? '<span>· ช่องพื้นฟ้าคือคะแนนเต็มที่เติมให้ ยังไม่ได้ตรวจรายคน</span>' : '') + '</div>' +
+        '<span>· เหลือง = ยังไม่ประเมิน' + (anyLate ? ' · แดง = ขาดส่ง' : '') + (anyExc ? ' · x = ยกเว้น' : '') +
+          (anyFilled ? ' · ฟ้า = คะแนนเต็มที่เติมไว้ ยังไม่ตรวจ' : '') + '</span>' +
+        '<span>· วางจาก Excel ได้ (<b>Ctrl+V</b>)</span></div>' +
       logPanel + chgPanel
   });
 }
@@ -3409,19 +3302,19 @@ function viewDashboard(){
      be rendered as 0%. A zero means "nobody passed", which is a different and
      much more alarming fact than "cannot compute yet" (FR-84). */
   if (!d.locked && d.noScores) return sheet({
-    title:'ผลการประเมิน',
+    title:'ผลรายนักศึกษา',
     body: empty('ยังไม่มีคะแนนในรายวิชานี้',
-      'ตั้งค่าครบแล้ว เหลือเพียงนำเข้าหรือกรอกคะแนน เมื่อมีคะแนนอย่างน้อยหนึ่งกิจกรรม หน้านี้จะคำนวณผลให้ทันที',
+      'กรอกหรือนำเข้าคะแนนอย่างน้อยหนึ่งกิจกรรมก่อน',
       btn('ไปหน้ากรอกคะแนน','primary','data-act="goto" data-route="roster"'))
   });
 
   if (d.locked) return sheet({
-    title:'ผลการประเมิน',
+    title:'ผลรายนักศึกษา',
     body: '<div class="card overflow-hidden">' +
       band('ยังคำนวณไม่ได้','<span style="color:' + TONE.bad.tx + '">คำนวณผลไม่ได้</span>') +
       '<div class="px-4 py-5">' +
-        '<p class="text-[16px] text-ink2 leading-relaxed max-w-[62ch]">การคำนวณผลสัมฤทธิ์ถูกล็อกไว้จนกว่าจะแก้ข้อที่เป็น ✕ ให้ครบ — ระบบไม่แสดงตัวเลขที่คำนวณจากข้อมูลไม่สมบูรณ์ เพราะตัวเลขนั้นจะอธิบายต่อกรรมการหลักสูตรไม่ได้</p>' +
-        '<div class="mt-6 space-y-2.5">' + d.blockers.map(function(b){
+        '<p class="text-[14px] text-ink2">แก้ข้อต่อไปนี้ให้ครบก่อน ระบบจึงจะคำนวณผลให้</p>' +
+        '<div class="mt-4 space-y-2.5">' + d.blockers.map(function(b){
           return '<button data-act="goto" data-route="' + b.route + '" class="w-full text-left px-5 py-3.5 rounded-lg flex items-center gap-4 hover:opacity-80 transition-opacity" style="background:' + TONE.bad.bg + '">' +
             '<span class="text-bad">✕</span>' +
             '<span class="min-w-0 flex-1"><span class="block text-[14px] text-ink">' + b.label + '</span>' +
@@ -3431,63 +3324,8 @@ function viewDashboard(){
   });
 
 
-  const metClos = d.attain.filter(function(a){ return a.met; }).length;
-  const passing = d.complete.filter(function(r){ return r.passCourse === true; }).length;
-  const avg = d.complete.length
-    ? d.complete.reduce(function(t, r){ return t + r.total.pct; }, 0) / d.complete.length : null;
-
-  /* ── ส่วนหัวของกราฟ — สามชั้นเสมอ (2569-09-17)
-       ชื่อ   = วัดอะไร + หน่วย          เช่น "ผลการประเมินราย CLO (จำนวนนักศึกษา)"
-       คำอ่าน = อ่านกราฟอย่างไร 1 บรรทัด  เช่น "ตัวเลขท้ายแถบ = % ผู้ผ่าน"
-       ชิปขวา = คำตอบ ตัวเลขที่ต้องรู้     เช่น "ต่ำสุด CLO 3 · 66.67%"
-     คนที่อ่านแค่ชิปก็ได้คำตอบ คนที่อ่านชื่อก็รู้ว่าตัวเลขนั้นมาจากไหน */
-  const PM = d.passMark, PC = d.course.passCriteria;
-  const scoredAttain = d.attain.filter(function(a){ return a.share !== null; });
-  const weakest = scoredAttain.slice().sort(function(a, b){ return (b.risk - a.risk) || (a.share - b.share); })[0] || null;
-  const help = helpSummary(d);
-  const section = function(title, sub){
-    return '<div class="mt-6 mb-3 first:mt-0"><h2 class="text-[17px] text-ink">' + title + '</h2>' +
-      '<div class="text-[13px] text-dim mt-0.5">' + sub + '</div></div>';
-  };
-
-  const threeState = '<div class="card overflow-hidden">' +
-    chartHead('จำนวนนักศึกษาราย CLO แยกตามสถานะ (คน)',
-      'ผ่าน + ต่ำกว่าเกณฑ์ + ยังไม่มีคะแนน = นักศึกษาทั้งหมด ' + d.roster.length + ' คน ทุกแถว',
-      'ใช้ตรวจว่าไม่มีนักศึกษาตกหล่นจากการคำนวณ — ถ้าแถวใดรวมไม่เท่าจำนวนนักศึกษา แปลว่าระบบคำนวณผิด\n' +
-      'นักศึกษาถูกนับเป็น ผ่าน หรือ ต่ำกว่าเกณฑ์ ทันทีที่มีคะแนนของ CLO ข้อนั้น\n' +
-      '“ในนี้คะแนนยังไม่ครบ” คือจำนวนคนในสองช่องแรกที่ยังขาดคะแนนบางกิจกรรมของข้อนั้น — ผลของคนกลุ่มนี้ยังเปลี่ยนได้',
-      chip(d.attain.every(function(a){ return a.checksum; }) ? 'ครบทุกแถว' : 'มีแถวไม่ครบ',
-           d.attain.every(function(a){ return a.checksum; }) ? 'ok' : 'bad')) +
-    '<div class="scroll-x"><table class="dt"><thead><tr><th>CLO</th>' +
-      '<th class="num">ผ่าน</th><th class="num">ต่ำกว่าเกณฑ์</th><th class="num">ยังไม่มีคะแนน</th>' +
-      '<th class="num">รวม</th><th class="num">ในนี้คะแนนยังไม่ครบ</th></tr></thead><tbody>' +
-    d.attain.map(function(a){
-      const sum = a.pass + a.risk + a.pending;
-      return '<tr><td class="text-[14px] whitespace-nowrap">CLO ' + a.clo.number + '</td>' +
-        '<td class="num tnum" style="color:' + TONE.ok.tx + '">' + a.pass + '</td>' +
-        '<td class="num tnum" style="color:' + TONE.bad.tx + '">' + (a.risk
-          ? '<button class="underline underline-offset-2" data-act="clo-help" data-clo="' + a.clo.id +
-            '" title="ดูรายชื่อที่ต้องช่วยของ CLO ' + a.clo.number + '">' + a.risk + '</button>' : '0') + '</td>' +
-        '<td class="num tnum" style="color:' + TONE.warn.tx + '">' + a.pending + '</td>' +
-        '<td class="num tnum' + (a.checksum ? '' : ' text-bad') + '">' + sum + (a.checksum ? ' ✓' : ' ✕') + '</td>' +
-        '<td class="num tnum' + (a.partial ? ' text-warn' : ' text-dim') + '">' + a.partial + '</td></tr>';
-    }).join('') + '</tbody></table></div></div>';
-
-  /* CR-05 — at-risk is "at least one CLO below the course CLO pass mark", not a rank.
-     Q16 — รายการที่ต้องติดตามคือชุดเดียวกับหน้าภาพรวม (followList) แสดงครบทุกคน ไม่ตัดที่ 12 */
+  const PM = d.passMark;
   const atRisk = d.rows.filter(function(r){ return r.atRisk; });
-  const follow = followList(d);
-  const riskList = follow.risk.length === 0
-    ? hollow('ไม่มีนักศึกษาที่ต่ำกว่าเกณฑ์ใด และทุกคนมีคะแนนครบ','ok')
-    : '<div class="px-4">' + follow.risk.map(function(x){
-        const r = x.r, L = x.lbl;
-        return '<button data-act="student" data-id="' + r.student.id + '" class="w-full text-left py-3 hair last:border-0 hover:opacity-75 transition-opacity">' +
-          '<div class="flex items-baseline justify-between gap-3">' +
-            '<span class="text-[14px]">' + esc(r.student.name) + '</span>' +
-            '<span class="tnum text-[13px] text-dim">' + esc(r.student.studentCode) + '</span></div>' +
-          '<div class="flex items-center gap-2 flex-wrap mt-1.5">' + chip(L[0], L[1]) +
-            '<span class="text-[13px] text-ink2">' + followWhy(d, x) + '</span></div></button>';
-      }).join('') + '</div>';
 
   const key = 'heat';
   const shown = sortRows(key, d.rows.filter(function(r){
@@ -3574,104 +3412,30 @@ function viewDashboard(){
 
   const rawTab = '<div class="card overflow-hidden">' +
       chartHead('คะแนนดิบราย CLO (คะแนน)',
-        'ช่อง = คะแนนที่ได้ / คะแนนเต็มของ CLO ข้อนั้น · <span class="text-warn">*</span> = ยังประเมินไม่ครบ ตัวหารจึงเป็นเฉพาะส่วนที่ประเมินแล้ว',
-        'คะแนนเต็มของ CLO = Σ (คะแนนเต็มกิจกรรม × สัดส่วนที่กิจกรรมนั้นวัด CLO ข้อนี้) — ไม่ใช่ผลรวมคะแนนเต็มของทุกกิจกรรม',
+        'คะแนนที่ได้ / คะแนนเต็มของ CLO · <span class="text-warn">*</span> = ยังประเมินไม่ครบ',
+        'คะแนนเต็มของ CLO = Σ (คะแนนเต็มกิจกรรม × สัดส่วนที่กิจกรรมนั้นวัด CLO ข้อนี้)\n' +
+        'ใช้อธิบายที่มาเท่านั้น — การตัดสินผ่าน CLO ใช้ % เทียบเกณฑ์ ' + n0(PM) + '%',
         chip('คะแนนเต็มรวมทุก CLO ' + n2x(Math.round(
           d.clos.reduce(function(t, c){ return t + d.cloRawMax(c.id); }, 0) * 100) / 100), 'info'), true) +
       (rawShown.length === 0
         ? hollow('ไม่พบนักศึกษาที่ตรงกับคำค้น')
         : '<div class="scroll-x"><table class="dt"><thead>' + rawHead + '</thead><tbody>' +
           rawBody + rawFoot + '</tbody></table></div>') +
-    '</div>' +
-    '<div class="card mt-4 px-6 py-4 text-[14px] text-ink2 leading-relaxed">' +
-      'คะแนนดิบกับ % ของ CLO ไม่จำเป็นต้องเรียงลำดับตรงกัน — % ถ่วงด้วยน้ำหนักจุดประสงค์ ส่วนคะแนนดิบถ่วงด้วยคะแนนเต็มของกิจกรรม ' +
-      'การตัดสินว่า “ผ่าน CLO” ยังใช้ % เทียบเกณฑ์ ' + n0(PM) + '% เหมือนเดิม คะแนนดิบมีไว้เพื่ออธิบายที่มา ไม่ใช่เพื่อตัดสิน' +
     '</div>';
 
   return sheet({
-    title:'ผลการประเมิน',
-    note:'หน้านี้ตอบว่าใครต้องได้รับความช่วยเหลือ ใน CLO ไหน และเพราะอะไร — เป้าหมายของชั้นคือทุกคนผ่าน จำนวนคนที่ยังต้องช่วยจึงเป็นตัวเลขหลัก กดที่จำนวนเพื่อดูรายชื่อเรียงตามระยะห่างจากเกณฑ์ · ผลการบรรลุ CLO เป็นการอิงเกณฑ์เสมอ แม้รายวิชาจะตัดเกรดแบบอิงกลุ่ม — สถิติของกลุ่มไม่เข้ามาในตัวเลขหน้านี้เด็ดขาด',
+    title:'ผลรายนักศึกษา',
+    note:'คะแนน CLO ของนักศึกษาแต่ละคน · กดแถวเพื่อดูรายบุคคล · ผลสรุปของทั้งชั้นอยู่ที่หน้าภาพรวม',
     actions: filterBox(subOf('dashboard') === 'raw' ? rawKey : key,'ค้นหานักศึกษา') +
              btn('ส่งออกผลการเรียน','','data-act="export" data-what="results"'),
-    body: subOf('dashboard') === 'raw' ? rawTab : subOf('dashboard') === 'students' ? (
+    body: subOf('dashboard') === 'raw' ? rawTab : (
       '<div class="card overflow-hidden">' +
-        chartHead('คะแนน CLO ของนักศึกษารายคน (%)',
-          'ช่องสีแดง = ต่ำกว่าเกณฑ์ผ่าน CLO ' + n0(PM) + '% · <span class="text-warn">*</span> = คะแนนยังไม่ครบ · กดแถวเพื่อดูรายละเอียด',
-          'เรียงจากนักศึกษาที่ผ่าน CLO น้อยที่สุดขึ้นก่อน · กดหัวคอลัมน์เพื่อเรียงใหม่',
-          chip('ต่ำกว่าเกณฑ์ ' + atRisk.length + ' คน', atRisk.length ? 'bad' : 'ok'), true) +
+        chartHead('คะแนน CLO รายคน (%)',
+          'สีแดง = ต่ำกว่าเกณฑ์ผ่าน CLO ' + n0(PM) + '% · <span class="text-warn">*</span> = คะแนนยังไม่ครบ',
+          '', chip('ต่ำกว่าเกณฑ์ ' + atRisk.length + ' คน', atRisk.length ? 'bad' : 'ok'), true) +
         (shown.length === 0
           ? hollow('ไม่พบนักศึกษาที่ตรงกับคำค้น')
           : '<div class="scroll-x"><table class="dt"><thead>' + heatHead + '</thead><tbody>' + heatBody + '</tbody></table></div>') +
-      '</div>'
-    ) : (
-      (d.warns.length
-        ? '<div class="mb-4 px-4 py-3 rounded-lg flex gap-3 items-start" style="background:' + TONE.warn.bg + '">' +
-          '<span class="text-warn">!</span><div class="text-[14px] text-warn flex-1">' +
-          d.warns.map(function(w){ return esc(w.detail); }).join(' · ') + '</div>' +
-          btn('ไปแก้','quiet','data-act="goto" data-route="' + d.warns[0].route + '"') + '</div>'
-        : '') +
-      statbar(
-        stat('นักศึกษาทั้งหมด', d.roster.length + ' คน', 'Sec ' + d.course.section +
-             (d.withdrawn.length ? ' · ถอนรายวิชา ' + d.withdrawn.length + ' คน' : '')) +
-        stat('CLO ที่มีคนต้องช่วย', help.clos + ' / ' + d.clos.length + ' ข้อ',
-             help.people ? 'รวม ' + help.people + ' คน · เป้าหมายคือทุกคนผ่าน' : 'ทุกคนที่มีคะแนนแล้วผ่านทุกข้อ',
-             help.clos ? 'warn' : 'ok') +
-        stat('ผ่านรายวิชา', d.complete.length ? n2(passing / d.complete.length * 100) + '%' : '—',
-             passing + ' จาก ' + d.complete.length + ' คนที่คะแนนครบ') +
-        stat('คะแนนรวมเฉลี่ย', avg === null ? '—' : n2(avg) + '%', 'เกณฑ์ผ่านรายวิชา ' + n0(PC) + '%')
-      ) +
-
-      section('1 · ผลลัพธ์ราย CLO', 'CLO ข้อไหนที่นักศึกษายังทำไม่ได้') +
-      '<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">' +
-        '<div class="card overflow-hidden">' +
-          chartHead('ผลการประเมินราย CLO (จำนวนนักศึกษา)',
-            'แถบยาวเท่ากับนักศึกษาทั้งชั้น · ตัวเลขท้ายแถบ = % ผู้ผ่านจากคนที่มีคะแนนแล้ว · เกณฑ์ผ่าน CLO ' + n0(PM) + '%',
-            'เขียว = ผ่าน · แดง = ต่ำกว่าเกณฑ์ · เทา = ยังไม่มีคะแนน\n' +
-            'คนที่มีคะแนนบางกิจกรรมของ CLO แล้วถูกนับในเขียวหรือแดง — จำนวนที่คะแนนยังไม่ครบดูได้ในตารางตรวจยอดด้านล่าง',
-            weakest && weakest.risk ? chip('ต้องช่วยมากที่สุด CLO ' + weakest.clo.number + ' · ' + weakest.risk + ' คน', 'warn')
-              : (weakest ? chip('ทุกคนผ่านทุกข้อ', 'ok') : '')) +
-          chartAttainment(d) + '</div>' +
-        '<div class="card overflow-hidden">' +
-          chartHead('ร้อยละผู้ผ่านราย CLO (%)',
-            'หนึ่งแกนคือ CLO หนึ่งข้อ · ขอบนอกสุด = ผ่านทุกคน (เป้าหมาย) · ยุบเข้ากลาง = ต้องแก้',
-            'ตัวเลขชุดเดียวกับกราฟแท่งข้าง ๆ แสดงเป็นรูปทรงเพื่อเห็นข้อที่อ่อนในครั้งเดียว',
-            helpChip(d)) +
-          chartRadar(d) + '</div>' +
-      '</div>' +
-
-      section('2 · ผลลัพธ์รายวิชา', 'นักศึกษาผ่านรายวิชากี่คน และคะแนนรวมกระจายอยู่ตรงไหน') +
-      '<div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_380px] gap-4">' +
-        '<div class="card overflow-hidden">' +
-          chartHead('การกระจายคะแนนรวมของชั้นเรียน (จำนวนนักศึกษา)',
-            'ช่วงละ 10% · เส้นประ = เกณฑ์ผ่านรายวิชา ' + n0(PC) + '% · นับ ' + d.complete.length + ' คนที่คะแนนครบ',
-            'นักศึกษาที่ยังมีคะแนนขาดไม่ถูกนับ เพราะคะแนนที่ขาดไม่ใช่ 0',
-            avg === null ? '' : chip('เฉลี่ย ' + n2(avg) + '%', avg >= PC ? 'ok' : 'bad')) +
-          chartHistogram(d) + '</div>' +
-        '<div class="card overflow-hidden">' +
-          chartHead('สถานะการผ่านรายวิชา (คน)',
-            'ตัดสินจากคะแนนรวมเทียบเกณฑ์ผ่าน ' + n0(PC) + '%',
-            'รอประเมิน = ยังมีคะแนนกิจกรรมที่ขาด จึงยังตัดสินไม่ได้',
-            d.complete.length ? chip('ผ่าน ' + passing + ' / ' + d.complete.length + ' คน',
-              passing === d.complete.length ? 'ok' : 'warn') : '') +
-          chartStatus(d) + '</div>' +
-      '</div>' +
-
-      section('3 · นักศึกษาที่ต้องติดตาม', 'ใครต้องได้รับการช่วยเหลือ และตัวเลขทั้งหมดครบถ้วนหรือไม่') +
-      '<div class="grid grid-cols-1 xl:grid-cols-[380px_minmax(0,1fr)] gap-4 mb-4">' +
-        '<div class="card overflow-hidden">' +
-          chartHead('นักศึกษาที่ต้องติดตาม',
-            'ไม่ผ่านรายวิชา ' + follow.nFail + ' · ต่ำกว่าเกณฑ์ CLO ' + follow.nClo + ' · ขาดส่ง ' + follow.nOver +
-              ' · รอคะแนน ' + follow.nInc +
-              ' · เรียงตามความรุนแรง · กดชื่อเพื่อดูรายละเอียด',
-            'รายการเดียวกับหน้าภาพรวม: ไม่ผ่านรายวิชา → ต่ำกว่าเกณฑ์ CLO หรือขาดส่งงาน → รอคะแนน\n' +
-            'ตัวเลขในวงเล็บคือระยะห่างจากเกณฑ์ผ่าน CLO · ขาดส่ง = ช่องว่างในกิจกรรมที่ปิดรับคะแนนแล้ว\n' +
-            'ต่ำกว่าเกณฑ์ CLO = คะแนน CLO ต่ำกว่า ' + n0(PM) + '% อย่างน้อย 1 ข้อ\n' +
-            '* = คะแนนของ CLO ข้อนั้นยังไม่ครบทุกกิจกรรม เป็นคำเตือนล่วงหน้า ยังไม่ใช่ผลสุดท้าย\n' +
-            'คนที่ยังประเมินไม่ครบยังไม่ใช่คนที่ตก',
-            chip((follow.nFail + follow.nClo + follow.nOver) + ' คน' + (follow.nInc ? ' · รอคะแนน ' + follow.nInc : ''),
-                 follow.nFail ? 'bad' : ((follow.nClo + follow.nOver) ? 'warn' : 'ok'))) +
-          riskList + '</div>' +
-        threeState +
       '</div>')
   });
 }
@@ -3753,7 +3517,7 @@ function viewGrading(){
         '<td class="tnum text-[15px] font-medium">' + (g.grade || '<span class="text-dim">—</span>') +
           (g.overrideReason ? ' <span class="text-[12.5px] font-normal text-warn">ปรับแล้ว</span>' : '') +
           /* Q1 — บอกสถานะการตรึงไว้ข้างเกรด: ยังไม่ตรึง / ตรึงแล้วแต่คะแนนเปลี่ยน */
-          (g.grade && !g.frozen ? ' <span class="text-[12.5px] font-normal text-dim">ยังไม่ตรึง</span>' : '') +
+          (g.grade && !g.frozen && d.frozenCount ? ' <span class="text-[12.5px] font-normal text-dim">ยังไม่ตรึง</span>' : '') +
           (g.stale ? '<div class="text-[12.5px] font-normal text-warn whitespace-nowrap" title="เกรดที่ออกยังเป็นค่าที่ตรึงไว้ ' +
             '(คะแนนรวมตอนตรึง ' + n2(g.frozen.totalPercent) + '%) — กด “ประมวลผลเกรด” เพื่อคำนวณและตรึงใหม่">' +
             'คะแนนเปลี่ยนหลังตรึง · ตอนนี้ได้ ' + (g.live || 'ยังไม่ครบ') + '</div>' : '') + '</td>' +
@@ -3770,7 +3534,7 @@ function viewGrading(){
   const nStale = d.grades.filter(function(g){ return g.stale; }).length;
   const nLoose = d.grades.filter(function(g){ return g.grade && !g.frozen; }).length;
   const freezeNote = (d.frozenCount === 0
-    ? (nLoose ? ['info', 'ยังไม่ได้ประมวลผลเกรด — เกรดในตารางเป็นค่าที่คำนวณจากคะแนนตอนนี้ และจะเปลี่ยนตามคะแนนจนกว่าจะกด “ประมวลผลเกรด” เพื่อตรึง'] : null)
+    ? (nLoose ? ['info', 'ยังไม่ได้ประมวลผลเกรด — เกรดในตารางยังเปลี่ยนตามคะแนน'] : null)
     : (nStale || nLoose)
       ? ['warn', [nStale ? 'มี ' + nStale + ' คนที่คะแนนเปลี่ยนหลังตรึงเกรด — เกรดที่ออกยังเป็นค่าที่ตรึงไว้' : '',
                   nLoose ? 'มี ' + nLoose + ' คนที่คะแนนครบแล้วแต่ยังไม่ถูกตรึง' : '']
@@ -3785,9 +3549,9 @@ function viewGrading(){
 
   return sheet({
     title:'การตัดเกรด',
-    note:'เกรดถูกตรึงไว้ตอนกด “ประมวลผลเกรด” ไม่ได้อ่านทะลุไปที่คะแนนดิบ — แก้คะแนนภายหลังจะไม่ทำให้เกรดที่ออกไปแล้วเปลี่ยนเงียบ ๆ ระบบจะบอกว่าใครคะแนนเปลี่ยนหลังตรึง และต้องประมวลผลใหม่จึงจะเปลี่ยนเกรด · ก่อนประมวลผลครั้งแรก เกรดที่เห็นเป็นค่าคำนวณสดและมีป้าย “ยังไม่ตรึง” · การปรับเกรดต้องมีเหตุผลกำกับเสมอ',
+    note:'“ประมวลผลเกรด” ตรึงเกรดไว้ — แก้คะแนนภายหลังเกรดจะไม่เปลี่ยนจนกว่าจะประมวลผลใหม่ · การปรับเกรดต้องมีเหตุผลกำกับ',
     actions: btn(withIcon('tune', 'ตั้งค่าการตัดเกรด'),'','data-act="grading-settings"') +
-             btn('ส่งออกใบส่งเกรด','','data-act="export" data-what="results"') +
+             btn('ส่งออกผลการเรียน','','data-act="export" data-what="results"') +
              btn('ประมวลผลเกรด','primary','data-act="run-grading"'),
     body:
       '<div class="grid grid-cols-1 xl:grid-cols-[330px_minmax(0,1fr)] gap-4 mb-4">' +
@@ -4335,6 +4099,7 @@ function acctMenu(force){
     '<div class="hair-t mt-1.5 pt-1.5">' +
       '<button class="acctitem" data-act="role" data-val="' + (S.role === 'ADMIN' ? 'INSTRUCTOR' : 'ADMIN') + '">' +
         icon('people','w-4 h-4') + 'สลับเป็น' + (S.role === 'ADMIN' ? 'ผู้สอน' : 'ผู้ดูแลระบบ') + '</button>' +
+      '<button class="acctitem" data-act="layout">' + icon('grid','w-4 h-4') + 'มุมมองตาราง</button>' +
       '<button class="acctitem" data-act="shortcuts">' + icon('search','w-4 h-4') + 'แป้นพิมพ์ลัด</button>' +
       '<button class="acctitem" data-act="auth-logout">' + icon('ext','w-4 h-4') + 'ออกจากระบบ</button>' +
     '</div>';
@@ -4667,13 +4432,13 @@ function studentDrawer(sid, back){
   /* R5 — ประวัติการแก้คะแนนของคนนี้: สิ่งแรกที่ถูกถามเมื่อมีการอุทธรณ์ */
   const mine = d.changes.filter(function(c){ return c.studentId === s.id; });
   const histRows = mine.slice(0, 12).map(function(c){
-    const a = byId(db.activity, c.activityId), u = byId(db.user, c.by);
+    const a = byId(db.activity, c.activityId), u = byId(db.user, c.changedBy);
     return '<div class="py-2 hair last:border-0 text-[13px]">' +
       '<div class="flex items-baseline justify-between gap-3">' +
         '<span class="text-[14px] text-ink">' + (a ? esc(a.name) : '—') + '</span>' +
         '<span class="tnum whitespace-nowrap"><span class="text-dim">' + scoreWord(c.from) + '</span> → <b class="font-medium">' +
           scoreWord(c.to) + '</b></span></div>' +
-      '<div class="text-dim tnum">' + esc(c.at) + ' · ' + esc(u ? u.name : '—') + ' · ' +
+      '<div class="text-dim tnum">' + esc(c.changedAt) + ' · ' + esc(u ? u.name : '—') + ' · ' +
         (SCORE_SOURCE_TH[c.source] || esc(c.source)) + '</div>' +
       (c.note ? '<div class="text-ink2">เหตุผล: ' + esc(c.note) + '</div>' : '') + '</div>';
   }).join('');
@@ -4871,8 +4636,8 @@ function readForm(fields){
 /* ══ U5 · ข้อผิดพลาดชี้ช่อง ═══════════════════════════════════════════════
    เดิมข้อผิดพลาดเป็นแถบลอย 3 วินาที ไม่บอกว่าช่องไหน — คนที่กรอก 8 ช่องต้องเดาเองแล้วหาเอง
    ตอนนี้: ข้อความอยู่ใต้ช่อง · ช่องขึ้นขอบแดง · เคอร์เซอร์ไปที่ช่อง · พิมพ์แก้แล้วข้อความหายเอง
-   validator ยังคืนข้อความอย่างเดียว (ที่เดียวที่กติกาอยู่) — FORM_ERR_FIELD จับคู่ข้อความกับช่อง ถ้าจับไม่ได้ใช้แถบลอยเหมือนเดิม */
-function fieldError(id, msg){
+   ทุกช่องที่ผิดขึ้นพร้อมกัน เคอร์เซอร์ไปที่ช่องแรก (V1) · ช่องที่หาบนฟอร์มไม่เจอ ข้อความไปขึ้นแถบลอยแทน ไม่หาย */
+function fieldError(id, msg, noFocus){
   const el = document.getElementById(id);
   if (!el) return false;
   const wrap = el.closest('[class*="col-span-"]') || el.parentElement;
@@ -4881,6 +4646,7 @@ function fieldError(id, msg){
   e.className = 'ferr'; e.id = 'fe-' + id; e.setAttribute('role', 'alert'); e.textContent = msg;
   wrap.appendChild(e);
   el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', 'fe-' + id);
+  if (noFocus) return true;
   if (el.scrollIntoView) el.scrollIntoView({ block:'nearest' });
   const f = el.matches('input, select, textarea') ? el : el.querySelector('input, select, textarea');
   if (f) f.focus();
@@ -4902,30 +4668,33 @@ function onFieldEdited(e){
 }
 document.addEventListener('input', onFieldEdited);
 document.addEventListener('change', onFieldEdited);
-const FORM_ERR_FIELD = {
-  clo: [['กรอกข้อความ CLO','description'], ['ลำดับ','number'], ['มี CLO ลำดับ','number'], ['กรอกน้ำหนัก','weight'], ['น้ำหนักตามแผน','weight']],
-  objective: [['กรอกข้อความจุดประสงค์','description'], ['ลำดับ','number'], ['มีจุดประสงค์ลำดับ','number'],
-              ['กรอกน้ำหนัก','weight'], ['น้ำหนักใน CLO','weight']],
-  activity: [['กรอกชื่อกิจกรรม','name'], ['คะแนนเต็มต้อง','maxScore'], ['ลดคะแนนเต็ม','maxScore'], ['คะแนนที่ถือว่าผ่าน','passScore'],
-             ['กรอกน้ำหนัก','weight'], ['น้ำหนักในวิชา','weight'], ['ลำดับ','order'], ['มีกิจกรรมลำดับ','order'],
-             ['เลือกจุดประสงค์','objectives'], ['สัดส่วน','objectives']],
-  student: [['กรอกรหัส','studentCode'], ['รหัส ','studentCode'], ['กรอกชื่อ','name']],
-  band: [['กรอกชื่อเกรด','grade'], ['มีเกรดอื่นใช้ขอบล่าง','minValue'], ['มีเกรด','grade'], ['รายวิชาแบบผ่าน/ไม่ผ่านมีได้เฉพาะ','grade'],
-         ['ค่าขอบล่าง','minValue'], ['ขอบล่าง','minValue'], ['ต้องมีระดับเกรด','minValue']],
-  user: [['กรอกชื่อ','name'], ['นี่คือผู้ดูแลระบบที่ใช้งานอยู่คนสุดท้าย','role'], ['อีเมล','email']]
+/* V1 (2569-10-03) — ตัวตรวจคืน "ทุกช่องที่ผิด" ในรอบเดียว: errors(v, r) → [[ช่อง, ข้อความ], …] หนึ่งช่องหนึ่งข้อความ
+   เดิมตัวตรวจหยุดที่ข้อแรก ผู้ใช้ต้องกดบันทึก–แก้–กดบันทึกวนไปทีละช่อง และการจับคู่ข้อความกับช่องทำด้วยตารางคำขึ้นต้น
+   ซึ่งหลุดเงียบ ๆ เมื่อใครแก้ถ้อยคำ · ตอนนี้ชื่อช่องอยู่กับกติกาเลย validate() ยังมีไว้สำหรับผู้เรียกที่ต้องการข้อแรกข้อเดียว */
+const fieldErrors = function(){
+  const list = [], seen = {};
+  return { list:list, has:function(f){ return !!seen[f]; },
+           add:function(f, m){ if (seen[f]) return; seen[f] = true; list.push([f, m]); } };
 };
-function formErrorField(kind, msg){
-  const tbl = FORM_ERR_FIELD[kind] || [];
-  for (let i = 0; i < tbl.length; i++) if (msg.indexOf(tbl[i][0]) === 0) return tbl[i][1];
-  return /อีเมล|email/i.test(msg) && kind === 'user' ? 'email' : null;
-}
+const firstError = function(F, v, r){ const e = F.errors(v, r); return e.length ? e[0][1] : null; };
 
 /* ══ U8 · เลิกทำการแก้น้ำหนักและการเชื่อม ═════════════════════════════════
    น้ำหนักแก้ได้ทันทีในหน้า (บันทึกเมื่อออกจากช่อง) และปุ่ม “ใช้ค่าที่คำนวณได้ทุกข้อ” เขียนทับหลายค่าในคลิกเดียว
    จึงต้องมีทางกลับ · เก็บเฉพาะ "ฟิลด์ที่เปลี่ยน" ไม่ใช่ทั้งฐานข้อมูล — การเลิกทำจึงไม่ไปย้อนสิ่งอื่นที่แก้ระหว่างนั้น
    รายการล่าสุดรายการเดียว · ปุ่มอยู่ในแถบแจ้งเตือน และกด Ctrl+Z นอกช่องกรอก · หมดอายุใน 2 นาที */
-let UNDO = null;
-function setUndo(label, cap, restore){ UNDO = { label:label, cap:cap, restore:restore, at:Date.now() }; }
+/* V2 (2569-10-03) — เลิกทำได้หลายขั้น (ล่าสุดก่อน สูงสุด 20 รายการ หมดอายุใน 5 นาที) และครอบคลุมคะแนนด้วย:
+   ช่องที่พิมพ์ · เมนูของช่อง · วางจาก Excel · เริ่มจากคะแนนเต็ม · ปิดรับคะแนน · นำเข้าไฟล์ · ถอน/คืนสถานะ
+   การเลิกทำคะแนนเขียนผ่าน writeScore เหมือนทุกทาง จึงมีแถวในประวัติ (วิธี = เลิกทำ) ไม่ใช่การลบร่องรอย */
+const UNDOS = [];
+const UNDO_TTL = 5 * 60000, UNDO_MAX = 20;
+function setUndo(label, cap, restore){
+  UNDOS.push({ label:label, cap:cap, restore:restore, at:Date.now() });
+  if (UNDOS.length > UNDO_MAX) UNDOS.shift();
+}
+const undoTop = function(){
+  if (UNDOS.length && Date.now() - UNDOS[UNDOS.length - 1].at > UNDO_TTL) UNDOS.length = 0;   /* ตัวบนสุดหมดอายุ = ทั้งกองเก่ากว่า */
+  return UNDOS.length ? UNDOS[UNDOS.length - 1] : null;
+};
 const UNDO_ACTION = { label:'เลิกทำ', act:'undo' };
 const recSnap = function(rec, fields){
   const o = {}; fields.forEach(function(f){ o[f] = rec[f]; });
@@ -4939,19 +4708,37 @@ const critSnap = function(aid){
       .concat(rows.map(function(r){ return Object.assign({}, r); }));
   };
 };
+/* cells = [[studentId, activityId], …] — จำค่าและเหตุผลก่อนเปลี่ยน แล้วเขียนกลับด้วย writeScore */
+const scoreSnap = function(cells){
+  const was = cells.map(function(c){
+    const r = db.score.find(function(x){ return x.studentId === c[0] && x.activityId === c[1]; });
+    return [c[0], c[1], !r ? null : (r.status === 'EXCUSED' ? 'EXCUSED' : r.score), (r && r.excuseReason) || null];
+  });
+  return function(){
+    was.forEach(function(w){
+      if (!writeScore(w[0], w[1], w[2], 'UNDO', null, w[3]) && w[2] === 'EXCUSED') setExcuseReason(w[0], w[1], w[3]);
+    });
+  };
+};
 const allOf = function(fns){ return function(){ fns.forEach(function(f){ f(); }); }; };
 function doUndo(){
-  if (!UNDO || Date.now() - UNDO.at > 120000) { UNDO = null; toast('ไม่มีอะไรให้เลิกทำแล้ว'); return; }
-  if (!can(UNDO.cap)) { deny(UNDO.cap); return; }
-  const u = UNDO; UNDO = null;
+  const u = undoTop();
+  if (!u) { toast('ไม่มีอะไรให้เลิกทำแล้ว'); return; }
+  if (!can(u.cap)) { deny(u.cap); return; }
+  UNDOS.pop();
   u.restore(); invalidate(); render();
-  toast('เลิกทำแล้ว — ' + u.label);
+  toast('เลิกทำแล้ว — ' + u.label + (UNDOS.length ? ' · เลิกทำต่อได้อีก ' + UNDOS.length + ' รายการ' : ''),
+    undefined, UNDOS.length ? UNDO_ACTION : null);
 }
 document.addEventListener('keydown', function(e){
   if (!(e.ctrlKey || e.metaKey) || e.shiftKey || e.altKey || e.key.toLowerCase() !== 'z') return;
-  if (document.body.dataset.auth === 'out' || !UNDO) return;
+  if (document.body.dataset.auth === 'out' || !undoTop()) return;
   const t = e.target, tag = (t.tagName || '').toLowerCase();
-  if (tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable) return;   /* ให้ช่องกรอกเลิกทำของมันเอง */
+  if (tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable) {
+    /* ช่องกรอกเลิกทำของมันเอง — ยกเว้นช่องคะแนนที่ไม่มีข้อความค้างพิมพ์ (ค่าในช่อง = ค่าที่บันทึก):
+       ตอนกรอกตาราง โฟกัสอยู่ในช่องเสมอ ถ้าไม่ยกเว้น Ctrl+Z จะใช้ในตารางคะแนนไม่ได้เลย */
+    if (!(t.dataset && t.dataset.score && t.value === storedCellValue(t))) return;
+  }
   e.preventDefault(); doUndo();
 });
 
@@ -4992,10 +4779,10 @@ function crudSave(more){
   const rec = FORM_ID ? F.read(FORM_ID) : null;
   clearFieldErrors(document.getElementById('modal'));
   const v = readForm(F.fields(rec));
-  const err = F.validate(v, rec);
-  if (err) {
-    const fid = formErrorField(kind, err);
-    if (!(fid && fieldError('ff-' + fid, err))) toast(err, 'bad');
+  const errs = F.errors(v, rec);
+  if (errs.length) {
+    let shown = 0;
+    errs.forEach(function(e){ if (fieldError('ff-' + e[0], e[1], shown > 0)) shown++; else toast(e[1], 'bad'); });
     return;
   }
   F.save(v, rec);
@@ -5251,16 +5038,18 @@ const FORMS = {
             return [k, SOLO_TH[k] + ' · ' + SOLO_HINT[k]]; })) }
       ];
     },
-    validate: function(v, r){
-      if (!v.description) return 'กรอกข้อความ CLO ก่อน';
-      if (!isOrdinal(v.number)) return 'ลำดับต้องเป็นจำนวนเต็มตั้งแต่ 1';
-      if (v.weight === null) return 'กรอกน้ำหนักตามแผนของ CLO นี้ (ที่เหลือ ' +
-        n2x(Math.max(0, +(100 - D().clos.reduce(function(t, c){ return t + (r && c.id === r.id ? 0 : (c.weight || 0)); }, 0)).toFixed(2))) + '%)';
-      if (!in0100(v.weight)) return 'น้ำหนักตามแผนต้องอยู่ระหว่าง 0–100';
-      if (uniq(D().clos, function(x){ return x.number === v.number; }, r && r.id))
-        return 'มี CLO ลำดับ ' + v.number + ' อยู่แล้วในรายวิชานี้';
-      return null;
+    errors: function(v, r){
+      const E = fieldErrors();
+      if (!v.description) E.add('description', 'กรอกข้อความ CLO ก่อน');
+      if (!isOrdinal(v.number)) E.add('number', 'ลำดับต้องเป็นจำนวนเต็มตั้งแต่ 1');
+      else if (uniq(D().clos, function(x){ return x.number === v.number; }, r && r.id))
+        E.add('number', 'มี CLO ลำดับ ' + v.number + ' อยู่แล้วในรายวิชานี้');
+      if (v.weight === null) E.add('weight', 'กรอกน้ำหนักตามแผนของ CLO นี้ (ที่เหลือ ' +
+        n2x(Math.max(0, +(100 - D().clos.reduce(function(t, c){ return t + (r && c.id === r.id ? 0 : (c.weight || 0)); }, 0)).toFixed(2))) + '%)');
+      else if (!in0100(v.weight)) E.add('weight', 'น้ำหนักตามแผนต้องอยู่ระหว่าง 0–100');
+      return E.list;
     },
+    validate: function(v, r){ return firstError(this, v, r); },
     save: function(v, r){
       const t = r || { id:'clo_' + Date.now(), courseId:S.course };
       if (!r) db.clo.push(t);
@@ -5312,16 +5101,18 @@ const FORMS = {
           ph:'เช่น เขียน Use Case Diagram จากโจทย์ที่กำหนด' }
       ];
     },
-    validate: function(v, r){
-      if (!v.description) return 'กรอกข้อความจุดประสงค์ก่อน';
-      if (!isOrdinal(v.number)) return 'ลำดับต้องเป็นจำนวนเต็มตั้งแต่ 1';
-      if (v.weight === null) return 'กรอกน้ำหนักของจุดประสงค์นี้ใน CLO (ดูยอดที่เหลือใต้ช่อง)';
-      if (!in0100(v.weight)) return 'น้ำหนักใน CLO ต้องอยู่ระหว่าง 0–100';
-      if (uniq(where(db.behavioralObjective, 'cloId', v.cloId),
+    errors: function(v, r){
+      const E = fieldErrors();
+      if (!v.description) E.add('description', 'กรอกข้อความจุดประสงค์ก่อน');
+      if (!isOrdinal(v.number)) E.add('number', 'ลำดับต้องเป็นจำนวนเต็มตั้งแต่ 1');
+      else if (uniq(where(db.behavioralObjective, 'cloId', v.cloId),
                function(x){ return x.number === v.number; }, r && r.id))
-        return 'มีจุดประสงค์ลำดับนี้อยู่แล้วภายใต้ CLO เดียวกัน';
-      return null;
+        E.add('number', 'มีจุดประสงค์ลำดับนี้อยู่แล้วภายใต้ CLO เดียวกัน');
+      if (v.weight === null) E.add('weight', 'กรอกน้ำหนักของจุดประสงค์นี้ใน CLO (ดูยอดที่เหลือใต้ช่อง)');
+      else if (!in0100(v.weight)) E.add('weight', 'น้ำหนักใน CLO ต้องอยู่ระหว่าง 0–100');
+      return E.list;
     },
+    validate: function(v, r){ return firstError(this, v, r); },
     save: function(v, r){
       const t = r || { id:'bo_' + Date.now() };
       if (!r) db.behavioralObjective.push(t);
@@ -5396,49 +5187,53 @@ const FORMS = {
           hint:'<span id="ff-passhint">เว้นว่าง = 50% ของคะแนนเต็ม · ใช้ดูภาพรวมเท่านั้น ไม่มีผลต่อคำตัดสิน CLO</span>' }
       ];
     },
-    validate: function(v, r){
-      if (!v.name) return 'กรอกชื่อกิจกรรมก่อน';
-      if (v.maxScore === null || !(v.maxScore > 0)) return 'คะแนนเต็มต้องมากกว่า 0';
+    errors: function(v, r){
+      const E = fieldErrors();
+      if (!v.name) E.add('name', 'กรอกชื่อกิจกรรมก่อน');
+      const maxOk = v.maxScore !== null && v.maxScore > 0;
+      if (!maxOk) E.add('maxScore', 'คะแนนเต็มต้องมากกว่า 0');
       /* U2 — ว่างได้ (ใช้ 50%) · ถ้ากรอกต้องเป็นตัวเลขที่ถูกต้อง */
       if (v.passScore !== null && v.passScore !== undefined) {
-        if (v.passScore < 0) return 'คะแนนที่ถือว่าผ่านต้องเป็นตัวเลขไม่ติดลบ';
-        if (v.passScore > v.maxScore) return 'คะแนนที่ถือว่าผ่านมากกว่าคะแนนเต็มไม่ได้';
+        if (v.passScore < 0) E.add('passScore', 'คะแนนที่ถือว่าผ่านต้องเป็นตัวเลขไม่ติดลบ');
+        else if (maxOk && v.passScore > v.maxScore) E.add('passScore', 'คะแนนที่ถือว่าผ่านมากกว่าคะแนนเต็มไม่ได้');
       }
       /* Q5 (2569-10-01) — ลดคะแนนเต็มให้ต่ำกว่าคะแนนที่กรอกไว้แล้วไม่ได้ · เดิมถามแล้วปัดคะแนนที่เกินลงมา
          เท่าคะแนนเต็มใหม่: 45/50 กลายเป็น 40/40 = 100% ซึ่งเปลี่ยนความหมายของคะแนนที่นักศึกษาได้
-         ผู้สอนต้องแก้คะแนนเหล่านั้นเองก่อน (ฝั่งฐานข้อมูลทริกเกอร์ score <= maxScore ก็ปฏิเสธเช่นกัน)
-         และ validate ไม่ถามผู้ใช้อีก — มันตอบได้แค่ผ่านหรือไม่ผ่าน */
-      if (r) {
+         ผู้สอนต้องแก้คะแนนเหล่านั้นเองก่อน (ฝั่งฐานข้อมูลทริกเกอร์ score <= maxScore ก็ปฏิเสธเช่นกัน) */
+      if (r && maxOk) {
         const over = db.score.filter(function(x){ return x.activityId === r.id && x.score > v.maxScore; });
         if (over.length) {
           const hi = Math.max.apply(null, over.map(function(x){ return x.score; }));
-          return 'ลดคะแนนเต็มเป็น ' + n2x(v.maxScore) + ' ไม่ได้ — มีคะแนนที่กรอกไว้แล้ว ' + over.length +
-            ' รายการเกินค่านี้ (สูงสุด ' + n2x(hi) + ') · แก้คะแนนเหล่านั้นก่อน หรือใช้คะแนนเต็มไม่ต่ำกว่า ' + n2x(hi);
+          E.add('maxScore', 'ลดคะแนนเต็มเป็น ' + n2x(v.maxScore) + ' ไม่ได้ — มีคะแนนที่กรอกไว้แล้ว ' + over.length +
+            ' รายการเกินค่านี้ (สูงสุด ' + n2x(hi) + ') · แก้คะแนนเหล่านั้นก่อน หรือใช้คะแนนเต็มไม่ต่ำกว่า ' + n2x(hi));
         }
       }
       /* Q4 (2569-10-01) — น้ำหนักและลำดับเคยไม่ถูกตรวจเลย: ช่องว่าง, −20 และ 250 บันทึกได้ทั้งหมด
          v.weight เป็น undefined เฉพาะโหมดน้ำหนักตามกลุ่ม (ไม่มีช่องให้กรอก) · ผลรวมเกิน 100 ยังบันทึกได้
          ตาม FR-43 แถบสรุปท้ายตารางและขั้นตอนเป็นผู้บอก */
       if (v.weight !== undefined && v.weight === null)
-        return 'กรอกน้ำหนักในวิชาของกิจกรรมนี้ (ดูยอดที่เหลือใต้ช่อง · ใส่ 0 ได้ถ้ายังไม่ให้น้ำหนัก)';
-      if (v.weight !== undefined && !in0100(v.weight)) return 'น้ำหนักในวิชาต้องเป็นตัวเลขระหว่าง 0–100';
-      if (!isOrdinal(v.order)) return 'ลำดับต้องเป็นจำนวนเต็มตั้งแต่ 1';
-      if (uniq(D().acts, function(x){ return x.order === v.order; }, r && r.id))
-        return 'มีกิจกรรมลำดับ ' + v.order + ' อยู่แล้วในรายวิชานี้ — ใช้ปุ่ม ▲▼ ในตารางเพื่อสลับลำดับ';
-      /* T4 — ฟอร์มนี้บังคับ · แถวร่างในตาราง (ไม่มีช่องติ๊ก) ส่ง objectives มาเป็น undefined จึงผ่านได้
-         แล้วขั้น “เชื่อมกิจกรรมกับจุดประสงค์” จะล็อกไว้จนกว่าจะผูก */
+        E.add('weight', 'กรอกน้ำหนักในวิชาของกิจกรรมนี้ (ดูยอดที่เหลือใต้ช่อง · ใส่ 0 ได้ถ้ายังไม่ให้น้ำหนัก)');
+      else if (v.weight !== undefined && !in0100(v.weight)) E.add('weight', 'น้ำหนักในวิชาต้องเป็นตัวเลขระหว่าง 0–100');
+      if (!isOrdinal(v.order)) E.add('order', 'ลำดับต้องเป็นจำนวนเต็มตั้งแต่ 1');
+      else if (uniq(D().acts, function(x){ return x.order === v.order; }, r && r.id))
+        E.add('order', 'มีกิจกรรมลำดับ ' + v.order + ' อยู่แล้วในรายวิชานี้ — ใช้ปุ่ม ▲▼ ในตารางเพื่อสลับลำดับ');
+      /* T4 — ฟอร์มนี้บังคับ · ผู้เรียกที่ไม่มีช่องติ๊กส่ง objectives มาเป็น undefined จึงผ่านได้
+         แล้วขั้นตรวจการเชื่อมจะล็อกไว้จนกว่าจะผูก */
       if (Array.isArray(v.objectives) && v.objectives.length === 0 && D().objs.length)
-        return 'เลือกจุดประสงค์ที่กิจกรรมนี้วัดอย่างน้อย 1 ข้อ — ทุกกิจกรรมต้องเชื่อมกับ CLO';
+        E.add('objectives', 'เลือกจุดประสงค์ที่กิจกรรมนี้วัดอย่างน้อย 1 ข้อ — ทุกกิจกรรมต้องเชื่อมกับ CLO');
       /* P2 — สัดส่วนรายจุดประสงค์ที่ผู้สอนกำหนดเอง: ทุกช่องเป็นตัวเลขมากกว่า 0 และรวมได้ 100 */
       if (v.objectivesWeights && v.objectives.length) {
         const ws = v.objectives.map(function(id){ return v.objectivesWeights[id]; });
         if (ws.some(function(w){ return w === null || !(w > 0) || w > 100; }))
-          return 'สัดส่วนของแต่ละจุดประสงค์ต้องเป็นตัวเลขมากกว่า 0 และไม่เกิน 100';
-        const sum = ws.reduce(function(t, w){ return t + w; }, 0);
-        if (Math.abs(sum - 100) >= 0.01) return 'สัดส่วนของจุดประสงค์ต้องรวมได้ 100% (ตอนนี้ ' + n2x(sum) + '%)';
+          E.add('objectives', 'สัดส่วนของแต่ละจุดประสงค์ต้องเป็นตัวเลขมากกว่า 0 และไม่เกิน 100');
+        else {
+          const sum = ws.reduce(function(t, w){ return t + w; }, 0);
+          if (Math.abs(sum - 100) >= 0.01) E.add('objectives', 'สัดส่วนของจุดประสงค์ต้องรวมได้ 100% (ตอนนี้ ' + n2x(sum) + '%)');
+        }
       }
-      return null;
+      return E.list;
     },
+    validate: function(v, r){ return firstError(this, v, r); },
     save: function(v, r){
       const t = r || { id:'a_' + Date.now(), courseId:S.course };
       if (!r) db.activity.push(t);
@@ -5504,13 +5299,15 @@ const FORMS = {
         { id:'name', label:'ชื่อ-สกุล', type:'text', col:2, req:true, def:'' }
       ];
     },
-    validate: function(v, r){
-      if (!v.studentCode) return 'กรอกรหัสนักศึกษาก่อน';
-      if (!v.name) return 'กรอกชื่อ-สกุลก่อน';
-      if (uniq(D().rosterAll, function(x){ return x.studentCode === v.studentCode; }, r && r.id))
-        return 'รหัส ' + esc(v.studentCode) + ' มีอยู่ในรายวิชานี้แล้ว';
-      return null;
+    errors: function(v, r){
+      const E = fieldErrors();
+      if (!v.studentCode) E.add('studentCode', 'กรอกรหัสนักศึกษาก่อน');
+      else if (uniq(D().rosterAll, function(x){ return x.studentCode === v.studentCode; }, r && r.id))
+        E.add('studentCode', 'รหัส ' + esc(v.studentCode) + ' มีอยู่ในรายวิชานี้แล้ว');
+      if (!v.name) E.add('name', 'กรอกชื่อ-สกุลก่อน');
+      return E.list;
     },
+    validate: function(v, r){ return firstError(this, v, r); },
     save: function(v, r){
       const t = r || { id:'st_' + Date.now(), courseId:S.course };
       if (!r) db.student.push(t);
@@ -5549,24 +5346,25 @@ const FORMS = {
                     : 'ได้ตั้งแต่ค่านี้ขึ้นไปจนถึงก่อนขอบล่างของเกรดที่สูงกว่า' }
       ];
     },
-    validate: function(v, r){
-      const d = D();
-      if (!v.grade) return 'กรอกชื่อเกรดก่อน';
-      if (v.minValue === null || v.minValue < 0) return 'ค่าขอบล่างต้องเป็นตัวเลขไม่ติดลบ';
+    errors: function(v, r){
+      const d = D(), E = fieldErrors();
+      if (!v.grade) E.add('grade', 'กรอกชื่อเกรดก่อน');
+      else if (d.course.gradeScale === 'PASS_FAIL' && ['S','U'].indexOf(v.grade) < 0)
+        E.add('grade', 'รายวิชาแบบผ่าน/ไม่ผ่านมีได้เฉพาะ S และ U');
+      else if (uniq(d.bands, function(x){ return x.grade === v.grade; }, r && r.id))
+        E.add('grade', 'มีเกรด ' + v.grade + ' อยู่แล้วในรายวิชานี้');
+      if (v.minValue === null || v.minValue < 0) E.add('minValue', 'ค่าขอบล่างต้องเป็นตัวเลขไม่ติดลบ');
       /* อิงเกณฑ์อ่านขอบล่างเป็นร้อยละของคะแนนรวม — เกิน 100 คือเกรดที่ไม่มีใครได้ · T-score ไม่มีเพดานนี้ */
-      if (d.course.gradeMethod !== 'NORM_REFERENCED' && v.minValue > 100)
-        return 'ขอบล่างเป็นร้อยละของคะแนนรวม จึงเกิน 100 ไม่ได้';
-      if (d.course.gradeScale === 'PASS_FAIL' && ['S','U'].indexOf(v.grade) < 0)
-        return 'รายวิชาแบบผ่าน/ไม่ผ่านมีได้เฉพาะ S และ U';
-      if (uniq(d.bands, function(x){ return x.grade === v.grade; }, r && r.id))
-        return 'มีเกรด ' + v.grade + ' อยู่แล้วในรายวิชานี้';
-      if (uniq(d.bands, function(x){ return x.minValue === v.minValue; }, r && r.id))
-        return 'มีเกรดอื่นใช้ขอบล่าง ' + n2(v.minValue) + ' อยู่แล้ว — สองเกรดใช้เส้นแบ่งเดียวกันไม่ได้';
+      else if (d.course.gradeMethod !== 'NORM_REFERENCED' && v.minValue > 100)
+        E.add('minValue', 'ขอบล่างเป็นร้อยละของคะแนนรวม จึงเกิน 100 ไม่ได้');
+      else if (uniq(d.bands, function(x){ return x.minValue === v.minValue; }, r && r.id))
+        E.add('minValue', 'มีเกรดอื่นใช้ขอบล่าง ' + n2(v.minValue) + ' อยู่แล้ว — สองเกรดใช้เส้นแบ่งเดียวกันไม่ได้');
       /* CR-09 — without a floor at 0 some student falls through with no grade. */
-      if (r && r.minValue === 0 && v.minValue !== 0)
-        return 'ต้องมีระดับเกรดที่ขอบล่างเป็น 0 เสมอ มิฉะนั้นจะมีนักศึกษาที่ไม่ได้เกรด';
-      return null;
+      else if (r && r.minValue === 0 && v.minValue !== 0)
+        E.add('minValue', 'ต้องมีระดับเกรดที่ขอบล่างเป็น 0 เสมอ มิฉะนั้นจะมีนักศึกษาที่ไม่ได้เกรด');
+      return E.list;
     },
+    validate: function(v, r){ return firstError(this, v, r); },
     save: function(v, r){
       const t = r || { id:'gb_' + Date.now(), courseId:S.course };
       if (!r) db.gradeBand.push(t);
@@ -5607,18 +5405,21 @@ const FORMS = {
           options:[['1','ใช้งานอยู่'],['0','ระงับการใช้งาน']] }
       ];
     },
-    validate: function(v, r){
-      if (!v.name) return 'กรอกชื่อ-สกุลก่อน';
+    errors: function(v, r){
+      const E = fieldErrors();
+      if (!v.name) E.add('name', 'กรอกชื่อ-สกุลก่อน');
       const emailErr = EMAIL_POLICY.check(v.email);
-      if (emailErr) return emailErr;
-      if (uniq(db.user, function(x){ return x.email.toLowerCase() === v.email.toLowerCase(); }, r && r.id))
-        return 'อีเมลนี้ถูกใช้แล้ว';
+      if (emailErr) E.add('email', emailErr);
+      else if (uniq(db.user, function(x){ return x.email.toLowerCase() === v.email.toLowerCase(); }, r && r.id))
+        E.add('email', 'อีเมลนี้ถูกใช้แล้ว');
       /* Demoting or suspending the last active admin empties the room as
          surely as deleting them. Same rule, two more doors. */
       if (r && r.role === 'ADMIN' && (v.role !== 'ADMIN' || v.isActive !== '1') && lastAdmin(r))
-        return 'นี่คือผู้ดูแลระบบที่ใช้งานอยู่คนสุดท้าย — ตั้งผู้ดูแลอีกคนก่อนจึงเปลี่ยนบทบาทหรือระงับบัญชีนี้ได้';
-      return null;
+        E.add(v.role !== 'ADMIN' ? 'role' : 'isActive',
+          'นี่คือผู้ดูแลระบบที่ใช้งานอยู่คนสุดท้าย — ตั้งผู้ดูแลอีกคนก่อนจึงเปลี่ยนบทบาทหรือระงับบัญชีนี้ได้');
+      return E.list;
     },
+    validate: function(v, r){ return firstError(this, v, r); },
     save: function(v, r){
       const t = r || { id:'u_' + Date.now() };
       const isNew = !r;
@@ -5812,29 +5613,112 @@ function modalExcuse(sid, aid){
 }
 
 /* ══ U1 · วางช่วงคะแนนจาก Excel ═══════════════════════════════════════
-   ตำแหน่งนำทาง: เริ่มที่ช่องที่วางลง ไล่ไปทางขวา (กิจกรรม) และลงล่าง (นักศึกษา) ตามที่ "เห็นบนจอ" รวมการกรองและการเรียง
    ผ่านกติกาเดียวกับการกรอกทีละช่อง (ตัวเลขล้วน · 0–คะแนนเต็ม · x/ยกเว้น) และแสดงสรุปก่อนบันทึกเสมอ
    ช่องว่างในข้อมูลที่วาง = ไม่เปลี่ยน (ไม่ใช่ล้าง) — ล้างต้องทำทีละช่องหรือผ่านเมนู */
 let PASTE = null;
+/* V3 (2569-10-03) — วางแล้วจับคู่ให้เอง เมื่อข้อมูลที่วางบอกได้ว่าเป็นของใครและของกิจกรรมไหน:
+     · มีคอลัมน์รหัสนักศึกษา → จับคู่แถวด้วยรหัส (ลำดับในไฟล์ต่างจากบนจอได้ ซ่อนด้วยตัวกรองอยู่ก็ลงถูกคน)
+     · แถวแรกเป็นหัวตารางที่เป็นชื่อ/รหัสกิจกรรม → จับคู่คอลัมน์ด้วยหัว (สลับคอลัมน์ได้ คอลัมน์ที่ไม่รู้จักถูกข้ามและแจ้ง)
+     · ไม่มีทั้งสองอย่าง → ตามตำแหน่งบนจอเหมือนเดิม เริ่มที่ช่องที่วางลง
+   เดิมมีแต่ตามตำแหน่ง: ไฟล์ที่เรียงคนละลำดับกับตารางทำให้คะแนนลงผิดคนโดยไม่มีอะไรเตือนนอกจากสรุป 14 แถวแรก
+   สรุปก่อนบันทึกบอกเสมอว่าใช้วิธีจับคู่แบบไหน */
+function parseTsv(text){
+  const rows = [[]]; let cur = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; continue; }
+    if (ch === '"' && cur === '') { q = true; continue; }
+    if (ch === '\t') { rows[rows.length - 1].push(cur); cur = ''; continue; }
+    if (ch === '\r') continue;
+    if (ch === '\n') { rows[rows.length - 1].push(cur); cur = ''; rows.push([]); continue; }
+    cur += ch;
+  }
+  rows[rows.length - 1].push(cur);
+  if (rows.length > 1 && rows[rows.length - 1].length === 1 && rows[rows.length - 1][0] === '') rows.pop();
+  return rows;
+}
 function planPaste(start, text){
-  const clean = text.replace(/\r?\n$/, '');
-  const grid = clean.split(/\r?\n/).map(function(l){ return l.split('\t'); });
+  const grid = parseTsv(text);
+  const d = D();
   const trs = [].slice.call(document.querySelectorAll('#stage table.dt tbody tr'))
     .filter(function(tr){ return tr.querySelector('input[data-score]'); });
   const r0 = trs.indexOf(start.closest('tr'));
-  const c0 = [].slice.call(start.closest('tr').querySelectorAll('input[data-score]')).indexOf(start);
-  const d = D();
-  const plan = [], rejects = [];
-  let same = 0, blank = 0, clipped = 0;
-  grid.forEach(function(rowVals, ri){
-    const tr = trs[r0 + ri];
+  const startInputs = [].slice.call(start.closest('tr').querySelectorAll('input[data-score]'));
+  const c0 = startInputs.indexOf(start);
+  const screenActs = startInputs.slice(c0).map(function(i){ return byId(db.activity, i.dataset.score.split('|')[1]); });
+
+  /* หัวตาราง: ช่องในแถวแรกที่ระบุกิจกรรมของรายวิชานี้ได้ (รหัสใน [ ] หรือชื่อตรงกันทั้งคำ) */
+  const actOfHead = function(h){
+    const id = parseHead(h);
+    const byI = id ? d.acts.find(function(x){ return x.id === id; }) : null;
+    if (byI) return byI;
+    const lines = String(h).split(/\r?\n/);
+    const bare = lines[lines.length - 1].replace(/\s*\[[^\]]*\]\s*$/, '').trim();
+    const ex = d.acts.filter(function(x){ return x.name === bare; });
+    return ex.length === 1 ? ex[0] : null;
+  };
+  const headActs = (grid[0] || []).map(actOfHead);
+  const hasHead = headActs.some(Boolean);
+  const data = hasHead ? grid.slice(1) : grid;
+
+  /* คอลัมน์รหัส: คอลัมน์ (ในสามคอลัมน์แรก) ที่ค่าส่วนใหญ่เป็นรหัสนักศึกษาของ Sec นี้ */
+  const byCode = {};
+  d.rosterAll.forEach(function(st){ byCode[String(st.studentCode).trim()] = st; });
+  let codeCol = -1;
+  for (let c = 0; c < 3 && codeCol < 0; c++) {
+    const vals = data.map(function(r){ return String(r[c] === undefined ? '' : r[c]).trim(); }).filter(Boolean);
+    if (vals.length && vals.filter(function(v){ return !!byCode[v]; }).length / vals.length >= 0.6) codeCol = c;
+  }
+  const width = grid.reduce(function(m, r){ return Math.max(m, r.length); }, 0);
+  const isScoreLike = function(v){ return v === '' || /^(x|ยกเว้น)$/i.test(v) || !isNaN(strictNum(v)); };
+
+  /* คอลัมน์ของข้อมูลที่วาง → กิจกรรม */
+  const colAct = {}, skippedCols = [];
+  if (hasHead) {
+    for (let c = 0; c < width; c++) {
+      if (c === codeCol) continue;
+      const h = String((grid[0] || [])[c] === undefined ? '' : grid[0][c]).trim();
+      if (headActs[c]) { if (Object.keys(colAct).some(function(k){ return colAct[k] === headActs[c]; })) skippedCols.push(h + ' (ซ้ำ)'); else colAct[c] = headActs[c]; continue; }
+      const n = rosterNorm(h);
+      if (h === '' || ROSTER_HEAD.code.test(n) || ROSTER_HEAD.full.test(n) || ROSTER_HEAD.first.test(n) || ROSTER_HEAD.last.test(n) ||
+          ROSTER_HEAD.prefix.test(n) || ROSTER_HEAD.seq.test(n) || /^(คะแนนรวม|รวม|total)$/i.test(h)) continue;
+      skippedCols.push(h);
+    }
+  } else {
+    /* ไม่มีหัว: คอลัมน์ที่ไม่ใช่รหัสและไม่ใช่ข้อความล้วน (ชื่อ) เรียงตามคอลัมน์บนจอ เริ่มจากช่องที่วาง */
+    let k = 0;
+    for (let c = 0; c < width; c++) {
+      if (c === codeCol) continue;
+      if (codeCol >= 0 && !data.every(function(r){ return isScoreLike(String(r[c] === undefined ? '' : r[c]).trim()); })) continue;
+      if (screenActs[k]) colAct[c] = screenActs[k];
+      k++;
+    }
+  }
+
+  const plan = [], rejects = [], seenCode = {};
+  let same = 0, blank = 0, clipped = 0, rowsMatched = 0;
+  data.forEach(function(rowVals, ri){
+    let st = null;
+    if (codeCol >= 0) {
+      const code = String(rowVals[codeCol] === undefined ? '' : rowVals[codeCol]).trim();
+      if (!code) return;
+      st = byCode[code];
+      const whyRow = !st ? 'ไม่มีรหัสนี้ใน Sec' : st.status === 'WITHDRAWN' ? 'ถอนรายวิชาแล้ว' : seenCode[code] ? 'รหัสซ้ำในข้อมูลที่วาง' : null;
+      if (whyRow) { rejects.push({ st: st || { studentCode:code, name:'—' }, a:{ name:'ทั้งแถว' }, v:code, why:whyRow }); return; }
+      seenCode[code] = true;
+    } else {
+      const tr = trs[r0 + ri];
+      const inp = tr ? tr.querySelector('input[data-score]') : null;
+      st = inp ? byId(db.student, inp.dataset.score.split('|')[0]) : null;
+      if (!st) { clipped += rowVals.filter(function(v){ return String(v).trim() !== ''; }).length; return; }
+    }
+    rowsMatched++;
     rowVals.forEach(function(raw, ci){
-      const inp = tr ? tr.querySelectorAll('input[data-score]')[c0 + ci] : null;
-      if (!inp) { clipped++; return; }
+      if (ci === codeCol) return;
       const v = String(raw).trim();
+      const a = colAct[ci];
+      if (!a) { if (v !== '' && codeCol < 0 && !hasHead) clipped++; return; }
       if (v === '') { blank++; return; }
-      const p = inp.dataset.score.split('|'), st = byId(db.student, p[0]), a = byId(db.activity, p[1]);
-      if (!st || !a) { clipped++; return; }
       const stt = d.stateOf(st.id, a.id), curv = stt === 'excused' ? 'EXCUSED' : d.scoreOf(st.id, a.id);
       let to = null, why = null;
       if (/^(x|ยกเว้น)$/i.test(v)) to = 'EXCUSED';
@@ -5850,11 +5734,24 @@ function planPaste(start, text){
       plan.push({ sid:st.id, aid:a.id, st:st, a:a, from:curv, to:to });
     });
   });
+
   PASTE = { plan:plan };
   const nNew = plan.filter(function(x){ return x.from === null; }).length, nChg = plan.length - nNew;
-  if (!plan.length && !rejects.length) { PASTE = null; toast('ไม่มีอะไรเปลี่ยน — ' + (same ? 'ค่าที่วางเท่ากับของเดิมทั้งหมด' : 'ข้อมูลที่วางไม่มีค่า')); return; }
+  if (!plan.length && !rejects.length && !skippedCols.length) {
+    PASTE = null; toast('ไม่มีอะไรเปลี่ยน — ' + (same ? 'ค่าที่วางเท่ากับของเดิมทั้งหมด' : 'ข้อมูลที่วางไม่มีค่า')); return; }
+  const usedActs = Object.keys(colAct).map(function(k){ return colAct[k]; });
+  const how = '<div class="mb-4 px-4 py-3 rounded-lg text-[14px] text-ink2" style="background:' + TONE.info.bg + '">' +
+    '<div><b class="font-medium">แถว:</b> ' + (codeCol >= 0
+      ? 'จับคู่ด้วยรหัสนักศึกษาในคอลัมน์ที่ ' + (codeCol + 1) + ' ของข้อมูลที่วาง (' + rowsMatched + ' คน) — ลำดับไม่ต้องตรงกับบนจอ'
+      : 'ตามลำดับแถวบนจอ เริ่มจากแถวที่วางลง — ข้อมูลที่วางไม่มีคอลัมน์รหัสนักศึกษา') + '</div>' +
+    '<div class="mt-1"><b class="font-medium">คอลัมน์:</b> ' + (hasHead
+      ? 'จับคู่ด้วยหัวตาราง → ' + (usedActs.length ? usedActs.map(function(a){ return esc(a.name); }).join(' · ') : '(ไม่พบกิจกรรม)')
+      : 'ตามลำดับคอลัมน์บนจอ เริ่มจาก “' + esc(screenActs[0] ? screenActs[0].name : '') + '”' +
+        (usedActs.length > 1 ? ' ถึง “' + esc(usedActs[usedActs.length - 1].name) + '”' : '')) + '</div>' +
+    (skippedCols.length ? '<div class="mt-1" style="color:' + TONE.warn.tx + '">ข้ามคอลัมน์ที่ไม่ตรงกับกิจกรรมใด: ' +
+      skippedCols.map(esc).join(' · ') + '</div>' : '') + '</div>';
   const show = plan.slice().sort(function(a, b){ return (a.from === null) - (b.from === null); }).slice(0, 14);
-  openModal(modalFrame('วางคะแนนจาก Excel',
+  openModal(modalFrame('วางคะแนนจาก Excel', how +
     '<div class="grid grid-cols-3 gap-3 mb-4">' +
       '<div class="px-4 py-3 rounded-lg" style="background:' + TONE.ok.bg + '"><div class="tnum text-[26px] font-light" style="color:' + TONE.ok.tx + '">' + nNew +
         '</div><div class="text-[13px]" style="color:' + TONE.ok.tx + '">ช่องใหม่</div></div>' +
@@ -5864,20 +5761,21 @@ function planPaste(start, text){
         (rejects.length ? TONE.bad.tx : TONE.nil.tx) + '">' + rejects.length + '</div><div class="text-[13px]" style="color:' +
         (rejects.length ? TONE.bad.tx : TONE.nil.tx) + '">ไม่ผ่าน (ไม่บันทึก)</div></div></div>' +
     (plan.length ? '<div class="over mb-1">ที่จะบันทึก' + (plan.length > show.length ? ' (แสดง ' + show.length + ' จาก ' + plan.length + ')' : '') + '</div>' +
-      '<div class="scroll-y" style="max-height:26vh"><table class="dt"><tbody>' + show.map(function(x){
+      '<div class="scroll-y" style="max-height:24vh"><table class="dt"><tbody>' + show.map(function(x){
         return '<tr><td class="text-[14px]"><span class="tnum text-dim">' + esc(x.st.studentCode) + '</span> ' + esc(x.st.name) + '</td>' +
           '<td class="text-[13px] text-dim">' + esc(x.a.name) + '</td>' +
           '<td class="tnum text-[14px] whitespace-nowrap"><span class="text-dim">' + scoreWord(x.from) + '</span> → <b class="font-medium">' + scoreWord(x.to) + '</b></td></tr>';
       }).join('') + '</tbody></table></div>' : '') +
-    (rejects.length ? '<div class="over mt-4 mb-1">ที่ไม่ผ่าน</div><div class="scroll-y" style="max-height:18vh"><table class="dt"><tbody>' +
+    (rejects.length ? '<div class="over mt-4 mb-1">ที่ไม่ผ่าน</div><div class="scroll-y" style="max-height:16vh"><table class="dt"><tbody>' +
       rejects.slice(0, 10).map(function(x){
         return '<tr><td class="text-[14px]"><span class="tnum text-dim">' + esc(x.st.studentCode) + '</span> ' + esc(x.st.name) + '</td>' +
           '<td class="text-[13px] text-dim">' + esc(x.a.name) + '</td><td class="tnum text-[14px] text-bad">' + esc(x.v) +
           '</td><td class="text-[13px] text-ink2">' + esc(x.why) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
       (rejects.length > 10 ? '<div class="text-[13px] text-dim mt-1">และอีก ' + (rejects.length - 10) + ' รายการ</div>' : '') : '') +
-    '<div class="mt-4 text-[13px] text-dim leading-relaxed">วางเริ่มจากช่องที่เลือก ไล่ตามที่เห็นบนจอ' +
-      (same ? ' · เท่าเดิม ' + same + ' ช่อง (ข้าม)' : '') + (blank ? ' · ช่องว่างในข้อมูลที่วาง ' + blank + ' ช่อง (ไม่เปลี่ยน)' : '') +
-      (clipped ? ' · <span class="text-warn">เกินขอบตาราง ' + clipped + ' ช่อง (ตัดทิ้ง)</span>' : '') + '</div>',
+    '<div class="mt-4 text-[13px] text-dim leading-relaxed">' +
+      [same ? 'เท่าเดิม ' + same + ' ช่อง (ข้าม)' : '', blank ? 'ช่องว่างในข้อมูลที่วาง ' + blank + ' ช่อง (ไม่เปลี่ยน)' : '',
+       clipped ? '<span class="text-warn">เกินขอบตาราง ' + clipped + ' ช่อง (ตัดทิ้ง)</span>' : '']
+        .filter(Boolean).join(' · ') + '</div>',
     btn('ยกเลิก','','data-act="close"') +
     (plan.length ? btn('บันทึก ' + plan.length + ' ช่อง','primary','data-act="paste-do"') : btn('ไม่มีช่องที่บันทึกได้','','disabled'))));
 }
@@ -6498,6 +6396,12 @@ async function exportRoster(blank){
   toast((blank ? 'ดาวน์โหลดเทมเพลตรายชื่อแล้ว · ' : 'ส่งออกรายชื่อแล้ว · ') + nm);
 }
 
+/* V5 (2569-10-03) — คำนำหน้า: ค่าตั้งต้นคือไม่รวม (Student เก็บชื่อ-สกุลล้วน) แต่ถ้าไฟล์มีคอลัมน์คำนำหน้า
+   ขั้นตรวจสอบมีช่องติ๊ก “รวมคำนำหน้าในชื่อ” · คำนำหน้าไทยติดชื่อ (นายสมชาย) คำนำหน้าอื่นเว้นวรรค (Mr. John) */
+const rosterName = function(im, x){
+  if (!im.withPrefix || !x.prefix) return x.name;
+  return /[\u0E00-\u0E7F]$/.test(x.prefix) ? x.prefix + x.name : x.prefix + ' ' + x.name;
+};
 /* U4 (2569-10-02) — ตัวอ่านรายชื่ออ่านหัวตารางแทนการล็อกตำแหน่ง (เดิม: รหัสต้องอยู่คอลัมน์ A ชื่ออยู่ B)
    ไฟล์จากทะเบียนมักมี ลำดับ · คำนำหน้า · ชื่อ · นามสกุล แยกกัน — ระบบหาคอลัมน์รหัสและชื่อเอง รวมชื่อกับนามสกุลให้
    คอลัมน์ที่ไม่ใช้ (ลำดับ · คำนำหน้า · อื่น ๆ) แสดงในขั้นตรวจสอบ ผู้ใช้เห็นก่อนยืนยันว่าอ่านอะไรเป็นอะไร
@@ -6516,16 +6420,17 @@ function mapRosterColumns(all){
     const row = (all[ri] || []).map(rosterNorm);
     const at = function(re){ return row.findIndex(function(h){ return h && re.test(h); }); };
     const code = at(ROSTER_HEAD.code), full = at(ROSTER_HEAD.full), first = at(ROSTER_HEAD.first), last = at(ROSTER_HEAD.last);
+    const prefix = at(ROSTER_HEAD.prefix);
     if (code < 0 || (full < 0 && first < 0)) continue;
     const nameCols = full >= 0 ? [full] : (last >= 0 ? [first, last] : [first]);
     const used = {}; used[code] = 'รหัสนักศึกษา'; nameCols.forEach(function(c){ used[c] = 'ชื่อ-นามสกุล'; });
     const ignored = [];
     (all[ri] || []).forEach(function(h, c){
-      if (used[c] !== undefined || String(h).trim() === '') return;
+      if (used[c] !== undefined || String(h).trim() === '' || c === prefix) return;
       if (ROSTER_HEAD.prefix.test(rosterNorm(h)) || ROSTER_HEAD.seq.test(rosterNorm(h))) { ignored.push({ col:c, head:String(h).trim(), why:'ไม่ใช้' }); return; }
       ignored.push({ col:c, head:String(h).trim(), why:'ไม่ใช่รหัสหรือชื่อ' });
     });
-    return { head:ri, code:code, names:nameCols, ignored:ignored, legacy:false };
+    return { head:ri, code:code, names:nameCols, prefix:prefix, ignored:ignored, legacy:false };
   }
   return null;
 }
@@ -6540,7 +6445,7 @@ function validateRoster(wb, fileName){
     /* ไม่เจอหัวตาราง: ไฟล์แบนแบบเก่า (แถวแรกเป็นหัว รหัสคอลัมน์ A ชื่อคอลัมน์ B) — ยังนำเข้าได้ แต่บอกว่าเดา */
     const anyCode = all.slice(0, 40).some(function(r){ return (r || []).some(function(h){ return ROSTER_HEAD.code.test(rosterNorm(h)); }); });
     if (anyCode) throw new Error('พบคอลัมน์รหัสนักศึกษาแต่ไม่พบคอลัมน์ชื่อ — ต้องมีหัว “ชื่อ-นามสกุล” หรือ “ชื่อ” (และ “นามสกุล”)');
-    mp = { head:0, code:0, names:[1], ignored:[], legacy:true };
+    mp = { head:0, code:0, names:[1], prefix:-1, ignored:[], legacy:true };
   }
   const aoa = all.slice(mp.head);
   const rowOffset = base + mp.head;
@@ -6567,11 +6472,12 @@ function validateRoster(wb, fileName){
         ? 'รหัสนี้ถอนรายวิชาไปแล้ว (' + existing[code].name + ') — คืนสถานะจากตารางแทนการเพิ่มใหม่'
         : 'มีรหัสนี้ใน Sec อยู่แล้ว (' + existing[code].name + ') — ข้ามไว้ ไม่ทับของเดิม' }); return; }
     seen[code] = row;
-    ok.push({ studentCode:code, name:name });
+    ok.push({ studentCode:code, name:name, prefix: mp.prefix >= 0 ? cell(r, mp.prefix) : '' });
   });
 
   const L = function(c){ return XLSX.utils.encode_col(c); };
   const map = { code:L(mp.code), name:mp.names.map(L).join(' + '), legacy:mp.legacy,
+                prefix: mp.prefix >= 0 ? L(mp.prefix) : null,
                 headRow:mp.head + 1 + base,
                 ignored:mp.ignored.map(function(x){ return { col:L(x.col), head:x.head, why:x.why }; }) };
   return { mode:'roster', fileName:fileName, ok:ok, rejects:rejects, map:map,
@@ -7038,7 +6944,7 @@ function commitImport(){
   if (im.mode === 'roster') {
     im.ok.forEach(function(x, i){
       db.student.push({ id:'st_' + Date.now() + '_' + i, courseId:im.courseId,
-        studentCode:x.studentCode, name:x.name });
+        studentCode:x.studentCode, name:rosterName(im, x) });
     });
     /* kind — the roster import shares this log with score imports; without it
        a roster row reads as a score upload (index-q.sql ScoreUploadLog.kind).
@@ -7140,12 +7046,16 @@ function modalImport(step){
             pill('<span class="tnum text-dim">' + im.map.code + '</span> → รหัสนักศึกษา') +
             pill('<span class="tnum text-dim">' + esc(im.map.name) + '</span> → ชื่อ-นามสกุล' +
               (im.map.name.indexOf('+') >= 0 ? ' (รวมชื่อกับนามสกุล)' : '')) + '</div>' +
+          (im.map.prefix ? '<label class="mt-3 flex items-center gap-2 text-[14px] cursor-pointer">' +
+            '<input type="checkbox" id="imp-prefix"' + (im.withPrefix ? ' checked' : '') + '>' +
+            '<span><span class="tnum text-dim">' + im.map.prefix + '</span> “คำนำหน้า” — รวมคำนำหน้าในชื่อ ' +
+            '<span class="text-dim">(ค่าตั้งต้น: ไม่รวม)</span></span></label>' : '') +
           (im.map.ignored.length ? '<div class="mt-2 text-[13px] text-dim">ไม่ได้ใช้: ' + im.map.ignored.map(function(x){
             return '<span class="tnum">' + x.col + '</span> “' + esc(x.head) + '”'; }).join(' · ') + '</div>' : '') +
           (im.map.legacy ? '<div class="mt-2 px-4 py-3 rounded-lg text-[14px]" style="background:' + TONE.warn.bg + ';color:' + TONE.warn.tx + '">' +
             'ไม่พบหัวคอลัมน์ที่รู้จัก — ระบบเดาว่าแถวแรกเป็นหัวตาราง คอลัมน์ A คือรหัส และ B คือชื่อ ตรวจตัวอย่างด้านล่างก่อนกด “ถัดไป”</div>' : '') +
           (im.ok.length ? '<div class="mt-3 text-[13px] text-ink2">ตัวอย่าง: ' + im.ok.slice(0, 3).map(function(x){
-            return '<span class="tnum text-dim">' + esc(x.studentCode) + '</span> ' + esc(x.name); }).join(' · ') + '</div>' : '') +
+            return '<span class="tnum text-dim">' + esc(x.studentCode) + '</span> ' + esc(rosterName(im, x)); }).join(' · ') + '</div>' : '') +
         '</div>' : '') +
       /* Q13 — คอลัมน์ไหนถูกอ่านเป็นกิจกรรมไหน และคอลัมน์ไหนไม่ถูกนำเข้า บอกก่อนถึงขั้นยืนยัน */
       (roster ? '' :
@@ -7201,7 +7111,7 @@ function modalImport(step){
           '<thead><tr><th>รหัสนักศึกษา</th><th>ชื่อ-นามสกุล</th></tr></thead><tbody>' +
           im.ok.slice(0, 60).map(function(x){
             return '<tr><td class="tnum text-[14px]">' + esc(x.studentCode) + '</td>' +
-              '<td class="text-[14px]">' + esc(x.name) + '</td></tr>'; }).join('') +
+              '<td class="text-[14px]">' + esc(rosterName(im, x)) + '</td></tr>'; }).join('') +
           '</tbody></table></div>'
         : '<table class="dt mt-5"><thead><tr><th>กิจกรรม</th><th class="num">คะแนนใหม่</th>' +
             '<th class="num">ทับค่าเดิม</th><th class="num">เท่าเดิม</th></tr></thead><tbody>' +
@@ -7340,7 +7250,7 @@ const ROUTES = [
   { id:'objectives', label:'จุดประสงค์',          ic:'check',  level:'course', render:viewObjectives },
   { id:'activities', label:'กิจกรรมและวิธีประเมิน', ic:'link', level:'course', render:viewActivities },
   { id:'roster',     label:'นักศึกษาและคะแนน',   ic:'people', level:'course', render:viewRoster },
-  { id:'dashboard',  label:'ผลการประเมิน',       ic:'chart',  level:'course', render:viewDashboard },
+  { id:'dashboard',  label:'ผลรายนักศึกษา',      ic:'chart',  level:'course', render:viewDashboard },
   { id:'grading',    label:'การตัดเกรด',         ic:'award',  level:'course', render:viewGrading },
   { id:'courses',    label:'จัดการรายวิชา',       ic:'book',   level:'system', render:viewCourses },
   { id:'users',      label:'จัดการผู้ใช้งาน',     ic:'user',   level:'system', render:viewUsers, admin:true },
@@ -7360,8 +7270,8 @@ function nextStep(d){
              detail:'กรอกแล้ว ' + d.filledCells + ' จาก ' + d.scoredCells + ' ช่อง', cta:'กรอกคะแนน' };
   const w = d.readiness.find(function(r){ return r.state === 'warn'; });
   if (w) return { label:w.label, detail:w.detail, route:w.route, cta:'ไปตรวจสอบ', tone:'warn' };
-  return { label:'ตั้งค่าครบแล้ว', detail:'อ่านผลการประเมินได้ทันที', route:'dashboard',
-           cta:'ดูผลการประเมิน', tone:'ok' };
+  return { label:'ตั้งค่าครบแล้ว', detail:'', route:'overview',
+           cta:'ดูภาพรวม', tone:'ok' };
 }
 
 /* The six steps ARE the course navigation. Two signals live on one control:
@@ -7383,11 +7293,11 @@ const STEP_HOME = {
 };
 const STEP_WHAT = {
   staff:  'เพิ่มอาจารย์ผู้สอนของรายวิชา',
-  clo:    'เขียน CLO ของรายวิชา และกำหนดน้ำหนักตามแผนของแต่ละข้อ (ควรรวม 100%)',
-  obj:    'แตก CLO แต่ละข้อเป็นจุดประสงค์ที่วัดได้ และกำหนดน้ำหนักในข้อนั้น (รวม 100% ต่อ CLO)',
-  act:    'เพิ่มกิจกรรม เลือกประเภทและวิธีประเมิน กำหนดเกณฑ์ผ่าน เลือกจุดประสงค์ที่วัดพร้อมสัดส่วน และให้น้ำหนักรวมได้ 100%',
-  crit:   'ตรวจทั้งวิชาในตารางเดียว: ทุกกิจกรรมเชื่อมครบ 100% ทุกจุดประสงค์มีกิจกรรมวัด และน้ำหนัก CLO ตรงกับแผน — ปรับยอดราย CLO ได้ที่นี่',
-  roster: 'เพิ่มหรือนำเข้ารายชื่อ แล้วกรอกคะแนนให้ครบทุกกิจกรรมในตารางเดียวกัน'
+  clo:    'เขียน CLO และน้ำหนักตามแผนของแต่ละข้อ',
+  obj:    'แตก CLO เป็นจุดประสงค์ที่วัดได้ น้ำหนักรวม 100% ต่อ CLO',
+  act:    'เพิ่มกิจกรรม เลือกจุดประสงค์ที่วัด น้ำหนักรวม 100%',
+  crit:   'ตรวจว่าทุกกิจกรรมเชื่อมกับ CLO ครบ',
+  roster: 'เพิ่มรายชื่อ แล้วกรอกหรือนำเข้าคะแนน'
 };
 const stepAttrs = function(key){
   const h = STEP_HOME[key];
@@ -7440,8 +7350,8 @@ function stepFooter(d){
     : '<span></span>';
   const fwd = next
     ? '<button class="btn btn-primary" ' + stepAttrs(next.key) + '>ขั้นที่ ' + (last + 2) + ' · ' + esc(next.label) + ' →</button>'
-    : (d.locked ? '<span class="text-[14px] text-dim">ทำขั้นที่ยังไม่เสร็จให้ครบ แล้วจึงดูผลการประเมินได้</span>'
-                : btn('ดูผลการประเมิน →', 'primary', 'data-act="goto" data-route="dashboard"'));
+    : (d.locked ? '<span></span>'
+                : btn('ดูภาพรวม →', 'primary', 'data-act="goto" data-route="overview"'));
   return '<div class="stepfoot no-print">' + back + fwd + '</div>';
 }
 
@@ -7466,19 +7376,21 @@ function stepnav(){
       /* K4 — เลขลำดับไม่ถูกแทนด้วย ✓ อีก: คนที่ทำตามขั้นต้องรู้ว่าตัวเองอยู่ขั้นที่เท่าไร
          สถานะบอกด้วยสีของวงและคำใต้ชื่อขั้น */
       '<span class="num" style="background:' + c.bg + ';color:' + c.tx + '">' + (i + 1) + '</span>' +
-      '<span class="lb"><span class="block text-ink">' + r.label + '</span>' +
-      '<span class="block text-[12px] truncate" style="color:' +
-        (r.state === 'ok' ? 'var(--dim)' : c.tx) + '">' + k.label + '</span></span></button>';
+      /* W1 — ขั้นที่เสร็จแล้วได้ ✓ ท้ายชื่อ ไม่มีบรรทัดสถานะ · บรรทัดที่สองมีเฉพาะขั้นที่ยังต้องทำ */
+      '<span class="lb"><span class="block text-ink">' + r.label + (r.state === 'ok' ? ' <span class="text-ok">✓</span>' : '') + '</span>' +
+      (r.state === 'ok' ? '' : '<span class="block text-[12px] truncate" style="color:' + c.tx + '">' + k.label + '</span>') +
+      '</span></button>';
   }).join('');
 
+  /* W1 (2569-10-03) — แถบขั้นตอนอยู่เฉพาะหน้าตั้งค่า (ที่มันเป็นทางเดิน) · หน้าผลลัพธ์ได้แถบ "ขั้นต่อไป" บรรทัดเดียว
+     และเฉพาะเมื่อยังมีอะไรค้าง — เดิมทั้งสองแถบอยู่บนทุกหน้า ซ้ำกับเมนูซ้ายที่พาไปหน้าเดียวกัน */
   const done = nx.tone === 'ok';
-  const sameHere = nx.route === S.route;
+  const setup = stepsHere(d).length > 0;
+  if (!setup && done) return '';
   return '<div class="stepbar no-print">' +
-    '<div class="stepper">' + steps + '</div>' +
-    (sameHere ? '' :
+    (setup ? '<div class="stepper">' + steps + '</div>' :
     '<div class="nextbar" style="background:' + TONE[nx.tone].bg + '">' +
-      '<span class="text-[13px]" style="color:' + TONE[nx.tone].tx + '">' +
-        (done ? 'สถานะ' : 'ขั้นต่อไป') + '</span>' +
+      '<span class="text-[13px]" style="color:' + TONE[nx.tone].tx + '">ขั้นต่อไป</span>' +
       '<span class="text-[14px] text-ink">' + esc(nx.label) + '</span>' +
       '<span class="text-[13px] text-dim truncate">' + esc(nx.detail || '') + '</span>' +
       '<span class="ml-auto shrink-0">' +
@@ -7645,7 +7557,7 @@ function paintHead(){
 
   document.getElementById('ctTools').innerHTML =
     (PAGE.note ? '<button data-act="help" class="helpbtn" aria-label="คำอธิบายหน้านี้" title="คำอธิบายหน้านี้">?</button>' : '') +
-    (PAGE.actions || '') + (['clos','objectives','overview','grading'].indexOf(S.route) >= 0 ? '' : layoutBtn());
+    (PAGE.actions || '');
 
   const steps = document.getElementById('ctSteps');
   steps.innerHTML = r.level === 'course' ? stepnav() : '';
@@ -7696,6 +7608,9 @@ function paintShell(){
    Remember which cell it was (by its data key, not by node) and put the caret
    back after the new table exists. */
 let CELL_FOCUS = null;
+/* V1 — สถานะการแบ่งหน้าของตารางคะแนน (ของหน้าจอ ไม่ใช่ข้อมูล) · all = วาดทุกแถว ใช้ตอนพิมพ์ */
+const ROSTER_PAGE = 50;
+const ROSTER_PG = { course:null, page:0, all:false, nextFirst:null, prevLast:null };
 
 function restoreCellFocus(){
   if (!CELL_FOCUS) return;
@@ -7750,6 +7665,17 @@ function cellNav(e){
   if (!next && e.key === 'Tab') return;          // let the browser leave the grid
   e.preventDefault();
 
+  /* V1 — ขอบหน้าของตารางคะแนนที่แบ่งหน้า: ลงจากแถวสุดท้าย/ขึ้นจากแถวแรก = เปลี่ยนหน้าแล้วอยู่คอลัมน์เดิม */
+  const edge = (!next && t.dataset.score && e.key !== 'Tab')
+    ? (e.key === 'ArrowUp' ? ROSTER_PG.prevLast : ROSTER_PG.nextFirst) : null;
+  if (edge) {
+    CELL_FOCUS = edge + '|' + t.dataset.score.split('|')[1];
+    ROSTER_PG.page += e.key === 'ArrowUp' ? -1 : 1;
+    if (t.value !== storedCellValue(t)) t.dispatchEvent(new Event('change', { bubbles:true }));
+    else render();
+    return;
+  }
+
   CELL_FOCUS = next ? cellKey(next) : cellKey(t);
   if (t.value !== storedCellValue(t)) t.dispatchEvent(new Event('change', { bubbles:true }));
   else restoreCellFocus();
@@ -7760,6 +7686,9 @@ document.addEventListener('focusout', function(e){
   if (to && to.dataset && cellKey(to)) CELL_FOCUS = cellKey(to);   /* clicked another cell */
 });
 document.addEventListener('keydown', cellNav, true);
+/* V1 — พิมพ์ = ทุกแถว: การแบ่งหน้าเป็นเรื่องของจอ กระดาษต้องได้ทั้ง Sec */
+window.addEventListener('beforeprint', function(){ if (S.route === 'roster' && !ROSTER_PG.all) { ROSTER_PG.all = true; render(); } });
+window.addEventListener('afterprint',  function(){ if (ROSTER_PG.all) { ROSTER_PG.all = false; render(); } });
 
 function render(){
   closeMenu(false);
@@ -7771,6 +7700,15 @@ function render(){
   document.getElementById('stage').innerHTML =
     body + (dStep ? stepFooter(dStep) : '');
   paintShell(); paintApprail(); paintList(); paintHead();
+  /* V1 — บนจอแคบแถบขั้นตอนเลื่อนแนวนอน: เดิมค้างที่ขั้น 1 เสมอ ขั้นที่กำลังดูอยู่จึงหลุดจอ */
+  const curStp = document.querySelector('.stepper .stp[aria-current="page"]');
+  if (curStp) {
+    const sp = curStp.parentElement;
+    if (sp.scrollWidth > sp.clientWidth) {
+      const a = curStp.getBoundingClientRect(), b = sp.getBoundingClientRect();
+      sp.scrollLeft += a.left - b.left - (sp.clientWidth - a.width) / 2;
+    }
+  }
   /* หลัง paint ทุกอย่างแล้วจึงเก็บสิ่งที่กดไม่ได้ออก — เป็น UX ล้วน ๆ (SEC-1) */
   applyPermissions();
   if (!CELL_FOCUS) document.getElementById('content').scrollTop = 0;
@@ -7999,10 +7937,10 @@ function deny(cap, courseId){
    READ_ACTS คือรายการ *ปิด* ของสิ่งที่ไม่เปลี่ยนข้อมูล ทุกอย่างนอกรายการนี้
    ต้องมี capability และถ้าไม่มีในตาราง CAP_OF จะตกลงมาที่ course.settings
    ซึ่งเป็นสิทธิ์สูงสุดที่ไม่ใช่ ADMIN — นั่นคือ SEC-2 ในรูปของโค้ด */
-const READ_ACTS = ['acct','area','be','clear-filter','close','copy-link','density','longtext','layout','goto','help',
+const READ_ACTS = ['acct','area','be','clear-filter','roster-page','close','copy-link','density','longtext','layout','goto','help',
   'open-section','pal-go','pane-close','pane-toggle','pick-course','profile','profile-save',
   'pw-change','pw-change-save','role','shortcuts','step','student','subnav',
-  'toggle-team','user-detail','err-report','errreport','need-bloom','course-group','course-view','act-group-by',
+  'toggle-team','user-detail','err-report','errreport','need-bloom','course-group','course-view',
   'import-next','import-prev','import-back','import-pick','close-all','clo-help','menu','drawer-back',
   /* D6/D7 · หน้าเข้าสู่ระบบ — ยังไม่มีบัญชีให้ตรวจสิทธิ์ ออกจากระบบทำได้ทุกคน */
   'auth-go','auth-google','auth-pick','auth-google-other','auth-google-create','auth-login',
@@ -8036,7 +7974,7 @@ function capOf(act, el){
     }
     case 'move': case 'dup-activity':   return act === 'move' ? 'clo.write' : 'activity.write';
     case 'obj-even': case 'clo-weight-sync': return 'clo.write';
-    case 'undo': return UNDO ? UNDO.cap : null;    /* เลิกทำต้องมีสิทธิ์เดียวกับการแก้ที่เลิก */
+    case 'undo': return undoTop() ? undoTop().cap : null;    /* เลิกทำต้องมีสิทธิ์เดียวกับการแก้ที่เลิก */
     case 'crit-even': return 'activity.write';
     case 'fill-max': case 'fill-max-do': case 'fill-max-undo': case 'fill-max-keep':
     case 'cell-set': case 'cell-excuse': case 'cell-excuse-do': case 'paste-do': return 'score.edit';
@@ -8507,7 +8445,7 @@ document.addEventListener('click', function(e){
 
   if (!(e.target.closest && e.target.closest('#pop, [data-act="help"]'))) hideHelp();
   if (!(e.target.closest && e.target.closest('#acctMenu, #acctBtn'))) acctMenu(false);
-  if (!(e.target.closest && e.target.closest('#lyPop, #lyBtn'))) layoutPop(false);
+  if (!(e.target.closest && e.target.closest('#lyPop, [data-act="layout"]'))) layoutPop(false);
   if (MENU.open && !(e.target.closest && e.target.closest('#ctxMenu, [data-act="menu"]'))) closeMenu(false);
 
   /* Unfolding a cut-off cell is not an action — it reveals what is already on
@@ -8543,24 +8481,34 @@ document.addEventListener('click', function(e){
   /* U6 — เมนูของช่อง */
   if (act === 'cell-set') {
     const v = el.dataset.val === 'ZERO' ? 0 : null;
-    writeScore(el.dataset.sid, el.dataset.aid, v, 'MANUAL');
-    invalidate(); render(); return;
+    const snap = scoreSnap([[el.dataset.sid, el.dataset.aid]]);
+    if (writeScore(el.dataset.sid, el.dataset.aid, v, 'MANUAL')) {
+      setUndo(v === 0 ? 'ให้คะแนน 0' : 'ล้างช่องคะแนน', 'score.edit', snap);
+      invalidate(); render();
+      toast(v === 0 ? 'ให้คะแนน 0 แล้ว' : 'ล้างช่องแล้ว — กลับเป็นช่องว่าง', undefined, UNDO_ACTION);
+    }
+    return;
   }
   if (act === 'cell-excuse')    { modalExcuse(el.dataset.sid, el.dataset.aid); return; }
   if (act === 'cell-excuse-do') {
     const t = EXCUSE_TARGET; if (!t) return;
     const why = (document.getElementById('ex-why') || {}).value || '';
-    if (D().stateOf(t.sid, t.aid) === 'excused') setExcuseReason(t.sid, t.aid, why);
-    else writeScore(t.sid, t.aid, 'EXCUSED', 'MANUAL', null, why);
+    const snap = scoreSnap([[t.sid, t.aid]]);
+    const done = D().stateOf(t.sid, t.aid) === 'excused' ? setExcuseReason(t.sid, t.aid, why)
+                                                         : writeScore(t.sid, t.aid, 'EXCUSED', 'MANUAL', null, why);
+    if (done) setUndo('การยกเว้น', 'score.edit', snap);
     EXCUSE_TARGET = null; closeOverlays(); invalidate(); render();
-    toast('บันทึกการยกเว้นแล้ว' + (why.trim() ? ' · เก็บเหตุผลลงประวัติ' : ' · ไม่ได้ระบุเหตุผล')); return;
+    toast('บันทึกการยกเว้นแล้ว' + (why.trim() ? ' · เก็บเหตุผลลงประวัติ' : ' · ไม่ได้ระบุเหตุผล'), undefined,
+      done ? UNDO_ACTION : null); return;
   }
   /* U1 — ยืนยันการวางช่วงคะแนน */
   if (act === 'paste-do') {
     if (!PASTE || !PASTE.plan.length) return;
+    const snap = scoreSnap(PASTE.plan.map(function(x){ return [x.sid, x.aid]; }));
     let n = 0; PASTE.plan.forEach(function(x){ if (writeScore(x.sid, x.aid, x.to, 'PASTE')) n++; });
+    if (n) setUndo('วางคะแนน ' + n + ' ช่อง', 'score.edit', snap);
     PASTE = null; closeOverlays(); invalidate(); render();
-    toast('วางคะแนนแล้ว ' + n + ' ช่อง — ดูย้อนหลังได้ที่ “ประวัติการแก้คะแนน”'); return;
+    toast('วางคะแนนแล้ว ' + n + ' ช่อง — ดูย้อนหลังได้ที่ “ประวัติการแก้คะแนน”', undefined, n ? UNDO_ACTION : null); return;
   }
   /* ── auth (D6/D7) ── */
   if (act === 'auth-go')            { AUTH.show(el.dataset.view); return; }
@@ -8635,7 +8583,7 @@ document.addEventListener('click', function(e){
   }
   if (act === 'help')         { showHelp(el); return; }
   if (act === 'shortcuts')    { modalShortcuts(); return; }
-  if (act === 'layout')       { layoutPop(); return; }
+  if (act === 'layout')       { acctMenu(false); layoutPop(); return; }
   if (act === 'density')      { S.density  = el.dataset.val; applyLayout(); saveLayout(); render(); return; }
   if (act === 'longtext')     { S.longtext = el.dataset.val; applyLayout(); saveLayout(); render(); return; }
   if (act === 'close')        { closeOverlays(); return; }
@@ -8647,7 +8595,6 @@ document.addEventListener('click', function(e){
   if (act === 'fold')         { S.tab[el.dataset.key] = el.dataset.open !== '1'; render(); return; }
   /* G5 — ความสะดวกที่เคยมากับช่องติ๊ก (1 ช่อง = 100 · 2 = 50/50 · 3 = 33/33/34)
      ยังอยู่ แต่ย้ายมาเป็นปุ่มของแถว ผู้ใช้จึงเลือกเองว่าจะเกลี่ยเมื่อไร */
-  if (act === 'act-group-by') { S.tab.actGroup = el.dataset.val; render(); return; }
   if (act === 'weight-mode') {
     const c = byId(db.course, S.course);
     if (!c) return;
@@ -8694,12 +8641,17 @@ document.addEventListener('click', function(e){
     const st = byId(db.student, el.dataset.id);
     if (!st) return;
     const out = act === 'stu-withdraw-do';
+    const sgWas = db.studentGrade.filter(function(x){ return x.studentId === st.id; }).map(function(x){ return Object.assign({}, x); });
+    const stSnap = recSnap(st, ['status', 'withdrawnAt']);
+    setUndo(out ? 'ถอนรายวิชา ' + st.name : 'คืนสถานะ ' + st.name, 'student.write', function(){
+      stSnap();
+      db.studentGrade = db.studentGrade.filter(function(x){ return x.studentId !== st.id; }).concat(sgWas); });
     st.status = out ? 'WITHDRAWN' : 'ENROLLED';
     st.withdrawnAt = out ? PROTO_NOW.slice(0, 10) : null;
     if (out) db.studentGrade = db.studentGrade.filter(function(x){ return x.studentId !== st.id; });
     closeOverlays(); invalidate(); render();
     toast(out ? 'ถอนรายวิชาแล้ว — ' + esc(st.name) + ' ไม่ถูกนับในผลการประเมินอีก'
-              : 'คืนสถานะแล้ว — ' + esc(st.name) + ' กลับมาอยู่ในผลการประเมินพร้อมคะแนนเดิม');
+              : 'คืนสถานะแล้ว — ' + esc(st.name) + ' กลับมาอยู่ในผลการประเมินพร้อมคะแนนเดิม', undefined, UNDO_ACTION);
     return;
   }
 
@@ -8711,8 +8663,9 @@ document.addEventListener('click', function(e){
     const dd = D();
     const blanks = dd.roster.filter(function(st){ return dd.stateOf(st.id, a.id) === 'blank'; });
     if (!blanks.length) {
-      if (!a.closedAt) { a.closedAt = PROTO_NOW.slice(0, 10); invalidate(); render();
-        toast('ปิดรับคะแนน “' + esc(a.name) + '” แล้ว — ทุกคนมีคะแนนครบ'); }
+      if (!a.closedAt) { setUndo('ปิดรับคะแนน ' + a.name, 'score.edit', recSnap(a, ['closedAt']));
+        a.closedAt = PROTO_NOW.slice(0, 10); invalidate(); render();
+        toast('ปิดรับคะแนน “' + esc(a.name) + '” แล้ว — ทุกคนมีคะแนนครบ', undefined, UNDO_ACTION); }
       return;
     }
     const radio = function(sid, val, label, on){
@@ -8731,7 +8684,10 @@ document.addEventListener('click', function(e){
       '<div class="scroll-y" style="max-height:34vh"><table class="dt"><tbody>' + blanks.map(function(st){
         return '<tr><td class="text-[14px]"><span class="tnum text-dim">' + esc(st.studentCode) + '</span> ' + esc(st.name) + '</td>' +
           '<td class="text-[14px]">' + radio(st.id, 'ZERO', 'ได้ 0') + radio(st.id, 'EXCUSED', 'ยกเว้น') +
-            radio(st.id, 'LATER', 'เว้นไว้ก่อน', true) + '</td></tr>'; }).join('') + '</tbody></table></div>',
+            radio(st.id, 'LATER', 'เว้นไว้ก่อน', true) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
+      '<div class="mt-4"><label class="text-[14px] text-ink2 block mb-1.5" for="cl-why">เหตุผลของการยกเว้น ' +
+        '<span class="text-dim">(ใช้กับทุกคนที่เลือก “ยกเว้น” · ไม่บังคับ · แก้รายคนได้ภายหลังจากเมนูของช่อง)</span></label>' +
+        '<input class="inp" id="cl-why" maxlength="255" placeholder="เช่น ไปแข่งขันทักษะวิชาการ"></div>',
       btn('ยกเลิก','','data-act="close"') +
       btn(a.closedAt ? 'บันทึกการตัดสิน' : 'ปิดรับคะแนน','primary','data-act="act-close-do" data-id="' + a.id + '"')));
     return;
@@ -8745,25 +8701,32 @@ document.addEventListener('click', function(e){
     const a = byId(db.activity, el.dataset.id);
     if (!a) return;
     const tally = { ZERO:0, EXCUSED:0, LATER:0 };
+    const whyAll = ((document.getElementById('cl-why') || {}).value || '').trim();     /* V4 — เหตุผลเดียวสำหรับทุกคนที่เลือกยกเว้น */
+    const picks = [];
     D().roster.forEach(function(st){
       const pick = document.querySelector('#modal input[name="cl-' + st.id + '"]:checked');
-      if (!pick) return;
-      tally[pick.value]++;
-      if (pick.value === 'ZERO') writeScore(st.id, a.id, 0, 'CLOSE');
-      if (pick.value === 'EXCUSED') writeScore(st.id, a.id, 'EXCUSED', 'CLOSE');
+      if (pick) picks.push([st.id, pick.value]);
+    });
+    const restore = allOf([scoreSnap(picks.map(function(x){ return [x[0], a.id]; })), recSnap(a, ['closedAt'])]);
+    picks.forEach(function(x){
+      tally[x[1]]++;
+      if (x[1] === 'ZERO') writeScore(x[0], a.id, 0, 'CLOSE');
+      if (x[1] === 'EXCUSED') writeScore(x[0], a.id, 'EXCUSED', 'CLOSE', null, whyAll);
     });
     if (!a.closedAt) a.closedAt = PROTO_NOW.slice(0, 10);
+    setUndo('ปิดรับคะแนน ' + a.name, 'score.edit', restore);
     closeOverlays(); invalidate(); render();
     toast('ปิดรับคะแนน “' + esc(a.name) + '” แล้ว · ได้ 0: ' + tally.ZERO + ' · ยกเว้น: ' + tally.EXCUSED +
-      (tally.LATER ? ' · ยังค้างตัดสิน: ' + tally.LATER : ''));
+      (tally.LATER ? ' · ยังค้างตัดสิน: ' + tally.LATER : ''), undefined, UNDO_ACTION);
     return;
   }
   if (act === 'act-reopen') {
     const a = byId(db.activity, el.dataset.id);
     if (!a) return;
+    setUndo('เปิดรับคะแนน ' + a.name + ' อีกครั้ง', 'score.edit', recSnap(a, ['closedAt']));
     a.closedAt = null;
     invalidate(); render();
-    toast('เปิดรับคะแนน “' + esc(a.name) + '” อีกครั้ง — ช่องว่างกลับเป็น “ยังไม่ประเมิน” คะแนนที่มีอยู่ไม่เปลี่ยน');
+    toast('เปิดรับคะแนน “' + esc(a.name) + '” อีกครั้ง — ช่องว่างกลับเป็น “ยังไม่ประเมิน” คะแนนที่มีอยู่ไม่เปลี่ยน', undefined, UNDO_ACTION);
     return;
   }
 
@@ -8792,13 +8755,18 @@ document.addEventListener('click', function(e){
     const a = byId(db.activity, el.dataset.id);
     if (!a) return;
     let n = 0;
+    const fillSnap = scoreSnap(D().roster.filter(function(st){
+      return !db.score.some(function(x){ return x.studentId === st.id && x.activityId === a.id; }); })
+      .map(function(st){ return [st.id, a.id]; }));
     D().roster.forEach(function(st){
       if (db.score.some(function(x){ return x.studentId === st.id && x.activityId === a.id; })) return;
       writeScore(st.id, a.id, a.maxScore, 'FILL'); n++;
       FILLED[st.id + '|' + a.id] = true;
     });
     closeOverlays(); invalidate(); render();
-    toast('ใส่คะแนนเต็ม ' + n2x(a.maxScore) + ' ให้ ' + n + ' คนใน “' + esc(a.name) + '” แล้ว — หักลงรายคนได้เลย'); return;
+    if (n) setUndo('เริ่มจากคะแนนเต็ม ' + n + ' ช่อง', 'score.edit', fillSnap);
+    toast('ใส่คะแนนเต็ม ' + n2x(a.maxScore) + ' ให้ ' + n + ' คนใน “' + esc(a.name) + '” แล้ว — หักลงรายคนได้เลย',
+      undefined, n ? UNDO_ACTION : null); return;
   }
   /* ย้อน = ลบเฉพาะช่องที่เติมให้และยังเป็นคะแนนเต็มอยู่ · ช่องที่แก้แล้วไม่ถูกแตะ */
   if (act === 'fill-max-undo' || act === 'fill-max-keep') {
@@ -8951,16 +8919,21 @@ document.addEventListener('click', function(e){
   if (act === 'import-next')  { modalImport(S.tab.importStep + 1); return; }
   if (act === 'import-prev')  { modalImport(S.tab.importStep - 1); return; }
   if (act === 'import-back')  { IMPORT = null; modalImport(1); return; }
-  if (act === 'clear-filter') { S.filter[el.dataset.key] = ''; render(); return; }
+  if (act === 'clear-filter') { S.filter[el.dataset.key] = ''; if (el.dataset.key === 'roster') ROSTER_PG.page = 0; render(); return; }
+  if (act === 'roster-page')  { ROSTER_PG.page = Math.max(0, parseInt(el.dataset.page, 10) || 0); render(); return; }
   if (act === 'need-bloom')   { toast('ระบุระดับได้ในหน้าแก้ไข CLO — เลือก Bloom แล้วให้ SOLO ตามอัตโนมัติ หรือกำหนดเองทั้งสองระดับ'); return; }
 
   if (act === 'import-done') {
+    /* V2 — การนำเข้าคะแนนเลิกทำได้ทั้งชุด · แถวประวัติการนำเข้ายังอยู่ (เป็นบันทึกว่าเคยนำเข้า) */
+    const impSnap = IMPORT && IMPORT.mode !== 'roster'
+      ? scoreSnap(IMPORT.ok.map(function(x){ return [x.studentId, x.activityId]; })) : null;
     const res = commitImport();
     if (!res) { toast('ยังไม่ได้เลือกไฟล์','bad'); return; }
+    if (impSnap && res.ok) setUndo('นำเข้าคะแนน ' + res.ok + ' ช่อง', 'score.import', impSnap);
     closeOverlays(); invalidate(); render();
     /* หน่วยต้องตรงกับสิ่งที่นำเข้า — "3 ช่องคะแนน" ตอนนำเข้ารายชื่อคือข้อความที่ผิด */
     toast('บันทึกแล้ว ' + res.ok + ' ' + (res.mode === 'roster' ? 'รายชื่อ' : 'ช่องคะแนน') +
-      (res.fail ? ' · ข้าม ' + res.fail + ' รายการ' : ''));
+      (res.fail ? ' · ข้าม ' + res.fail + ' รายการ' : ''), undefined, impSnap && res.ok ? UNDO_ACTION : null);
     return;
   }
 
@@ -9114,21 +9087,24 @@ document.addEventListener('click', function(e){
     if (!can(capS, selfId || undefined)) return deny(capS, selfId || undefined);
 
     clearFieldErrors(document.getElementById('modal'));
-    const fail = function(id, msg){ if (!fieldError(id, msg)) toast(msg, 'bad'); };
-    if (!code)  { fail('f-code', 'กรอกรหัสวิชาก่อน'); return; }
-    if (!name)  { fail('f-cname', 'กรอกชื่อรายวิชาก่อน'); return; }
-    if (!(year > 2400)) { fail('f-year', 'ปีการศึกษาต้องเป็น พ.ศ. เช่น 2568'); return; }
+    /* V1 — ทุกช่องที่ผิดขึ้นพร้อมกัน เคอร์เซอร์ไปที่ช่องแรก */
+    let nBad = 0;
+    const fail = function(id, msg){ if (!fieldError(id, msg, nBad > 0)) toast(msg, 'bad'); nBad++; };
+    if (!code)  fail('f-code', 'กรอกรหัสวิชาก่อน');
+    if (!name)  fail('f-cname', 'กรอกชื่อรายวิชาก่อน');
+    if (!(year > 2400)) fail('f-year', 'ปีการศึกษาต้องเป็น พ.ศ. เช่น 2568');
 
     /* FR-21 — (code, semester, year, section) is the identity of a course. */
     const clash = db.course.some(function(x){
       return x.id !== selfId && x.code === code && x.semester === sem && x.year === year && x.section === sec; });
-    if (clash) { fail('f-sec', 'รหัสวิชานี้มีอยู่แล้วในภาคเรียน ' + sem + '/' + year + ' Sec ' + sec + ' — เปลี่ยน Sec หรือภาคเรียน'); return; }
+    if (code && clash) fail('f-sec', 'รหัสวิชานี้มีอยู่แล้วในภาคเรียน ' + sem + '/' + year + ' Sec ' + sec + ' — เปลี่ยน Sec หรือภาคเรียน');
 
     const cr = f('f-cr'), lec = f('f-lec'), pr = f('f-prac'), sf = f('f-self');
     /* FR-27 / DC-15 — 0 credits is legal; only a negative or blank is not. */
-    const hrs = [['f-cr', cr], ['f-lec', lec], ['f-prac', pr], ['f-self', sf]]
-      .filter(function(x){ return isNaN(x[1]) || x[1] < 0; });
-    if (hrs.length) { fail(hrs[0][0], 'ต้องเป็นตัวเลขไม่ติดลบ (0 ใส่ได้)'); return; }
+    [['f-cr', cr], ['f-lec', lec], ['f-prac', pr], ['f-self', sf]]
+      .filter(function(x){ return isNaN(x[1]) || x[1] < 0; })
+      .forEach(function(x){ fail(x[0], 'ต้องเป็นตัวเลขไม่ติดลบ (0 ใส่ได้)'); });
+    if (nBad) return;
     /* Grading policy moved to modalGrading (feedback F2). This form keeps what
        a course already has, and a new course starts at the defaults — the same
        values the removed selects used to preselect. */
@@ -9209,6 +9185,7 @@ document.addEventListener('input', function(e){
   const f = e.target.dataset && e.target.dataset.filter;
   if (!f) return;
   S.filter[f] = e.target.value;
+  if (f === 'roster') ROSTER_PG.page = 0;      /* V1 — ผลการค้นหาเริ่มที่หน้าแรกเสมอ */
   const pos = e.target.selectionStart;
   render();
   const again = document.querySelector('[data-filter="' + f + '"]');
@@ -9291,6 +9268,7 @@ function gradingSync(){
 document.addEventListener('change', function(e){
   const t = e.target;
   if (t.name === 'g-scale') { gradingSync(); return; }
+  if (t.id === 'imp-prefix' && IMPORT) { IMPORT.withPrefix = t.checked; modalImport(2); return; }   /* V5 */
   /* P2 — ติ๊ก/เอาออก = แบ่งเท่ากันใหม่ในชุดที่ติ๊ก */
   if (t.type === 'checkbox' && t.closest && t.closest('[data-weighted]')) {
     owRepaint(t.closest('[data-weighted]'), true); return; }
@@ -9305,13 +9283,27 @@ document.addEventListener('change', function(e){
     if (!can('score.edit')) { deny('score.edit'); render(); return; }
     const parts = t.dataset.score.split('|'), a = byId(db.activity, parts[1]);
     const raw = t.value.trim();
-    if (raw === '') { writeScore(parts[0], parts[1], null, 'MANUAL'); invalidate(); render(); return; }
-    /* R3 — x หรือ "ยกเว้น" = ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้ */
-    if (/^(x|ยกเว้น)$/i.test(raw)) { writeScore(parts[0], parts[1], 'EXCUSED', 'MANUAL'); invalidate(); render(); return; }
+    /* V2 — ทุกการพิมพ์ในช่องเลิกทำได้ (Ctrl+Z) · ไม่มีแถบแจ้งเตือนต่อช่องเหมือนเดิม */
+    const stN = byId(db.student, parts[0]);
+    const put = function(val){
+      const snap = scoreSnap([[parts[0], parts[1]]]);
+      const done = writeScore(parts[0], parts[1], val, 'MANUAL');
+      if (done) setUndo('คะแนน ' + (stN ? stN.name : '') + ' · ' + (a ? a.name : ''), 'score.edit', snap);
+      return done;
+    };
+    if (raw === '') { put(null); invalidate(); render(); return; }
+    /* R3 — x หรือ "ยกเว้น" = ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้
+       V4 — ยกเว้นทันที (ไม่ขวางการกรอก) แล้วชวนใส่เหตุผลในแถบแจ้งเตือน: เดิมทางลัดนี้ไม่เคยถามเหตุผลเลย */
+    if (/^(x|ยกเว้น)$/i.test(raw)) {
+      const done = put('EXCUSED'); invalidate(); render();
+      if (done) toast('ยกเว้น ' + esc(stN ? stN.name : '') + ' จาก “' + esc(a ? a.name : '') + '” แล้ว — ยังไม่มีเหตุผล', undefined,
+        { label:'ใส่เหตุผล', act:'cell-excuse', attrs:'data-sid="' + parts[0] + '" data-aid="' + parts[1] + '"' });
+      return;
+    }
     const v = strictNum(raw);   /* Q13 — กติกาเดียวกับตัวนำเข้า: “12abc” ไม่ใช่ 12 */
     if (isNaN(v) || v < 0)      { toast('คะแนนต้องเป็นตัวเลขไม่ติดลบ (CHECK score >= 0) · x = ยกเว้น','bad'); render(); return; }
     if (v > a.maxScore)         { toast('คะแนนเกินคะแนนเต็ม ' + a.maxScore + ' — ทริกเกอร์ปฏิเสธ','bad'); render(); return; }
-    writeScore(parts[0], parts[1], v, 'MANUAL');
+    put(v);
     /* No toast: filling a grid produces one per cell, and the number appearing
        in the cell with the row total moving is already the confirmation. */
     invalidate(); render(); return;

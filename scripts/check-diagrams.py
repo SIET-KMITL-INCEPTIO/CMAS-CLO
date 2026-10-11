@@ -48,6 +48,8 @@ GEN = [('scripts/build-usecase-drawio.py', 'docs/uml/index-q/index-q-usecase.dra
 PROPOSED = {
     'AuthEvent': 'UC 1.6 ตรวจสอบประวัติการใช้งาน · SEC-5 บันทึกการถูกปฏิเสธ · D6 ลงทะเบียน',
     'UploadReject': 'UC 6.5 / 7.5 รายงานแถวที่ถูกปฏิเสธตอนนำเข้า',
+    'CourseGroupWeight': 'N1/N2 น้ำหนักต่อกลุ่มประเภทกิจกรรม เมื่อ Course.weightMode = GROUP',
+    'ScoreChange': 'R5 ประวัติการเปลี่ยนคะแนนรายช่อง — ใคร เมื่อไร จากอะไรเป็นอะไร ด้วยวิธีไหน',
 }
 # คอลัมน์ [index-q] ที่เสนอเพิ่มบนตารางที่ prisma มีอยู่แล้ว
 PROPOSED_COLS = {
@@ -55,6 +57,13 @@ PROPOSED_COLS = {
     ('User', 'pwResetAt'): 'UC 1.5',
     ('User', 'pwChangedAt'): 'UC 9.2',
     ('ScoreUploadLog', 'kind'): 'UC 7.1 แยกการนำเข้ารายชื่อกับคะแนน',
+    ('Course', 'weightMode'): 'N1 กรอกน้ำหนักกิจกรรมทีละรายการ หรือต่อกลุ่มประเภท',
+    ('Activity', 'passScore'): 'M3 เกณฑ์ผ่านกิจกรรมเป็นคะแนน (passMark คำนวณจากค่านี้)',
+    ('Activity', 'closedAt'): 'R3 ปิดรับคะแนน — ช่องว่างหลังปิดคือขาดส่ง',
+    ('Student', 'status'): 'R2 ถอนรายวิชา — ออกจากตัวหารทุกตัว',
+    ('Student', 'withdrawnAt'): 'R2',
+    ('Score', 'status'): 'R3 ยกเว้น — ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้',
+    ('Score', 'excuseReason'): 'U6 เหตุผลการยกเว้น',
 }
 
 fail, warn = [], []

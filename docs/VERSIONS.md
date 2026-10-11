@@ -65,7 +65,16 @@ are not versions of each other.
 ### 3.1 ER diagrams of the current model: siblings
 
 Each one comes from `reference/db/mysql/index-q.sql`. They are current together,
-so none replaces another.
+so none replaces another. The three `uml/index-q/ER-INDEX-Q.*` files were
+regenerated 2026-10-02 from the 17-table SQL (ScoreChange added; its link to
+`User` runs on a bus under the tables because the two sit three columns apart).
+
+`index-q.sql` was checked against the prototype on 2026-10-02 in two ways: the
+script was run top to bottom on a scratch MySQL 8.0.43 server (17 tables, 23
+foreign keys, 11 columns tagged `[index-q]`, sample rows inserted into every
+proposed table and column), and its columns were compared with the fields of
+the live `db` object of `index-q.html`. Every name that differs on purpose is
+listed in the header of the SQL file under "PROTOTYPE <-> SQL".
 
 | File | Made by | Use it to |
 |---|---|---|
@@ -73,7 +82,7 @@ so none replaces another.
 | `uml/index-q/ER-INDEX-Q.drawio` | `scripts/build-er-index-q-drawio.py` | edit the layout |
 | `uml/index-q/ER-INDEX-Q.html` | same script | open in a browser |
 | `uml/index-q/ER-INDEX-Q.pdf` | Edge headless print of the `.html` | present or attach |
-| `reference/db/mysql/index-q_er-diagram.pdf` | MySQL Workbench export, 2026-09-25 | show the Workbench-style EER (was the untracked `index-q-v2.pdf`) |
+| `reference/db/mysql/index-q_er-diagram.pdf` | MySQL Workbench export, 2026-09-25 | show the Workbench-style EER (was the untracked `index-q-v2.pdf`) · **behind since 2026-10-02**: 16 tables, no `ScoreChange`, no `Student.status` / `Activity.closedAt` / `Score.status` — re-export from Workbench after importing the current `index-q.sql` (steps 1–5 at the end of that file; Workbench reads it cleanly: 17 tables, 23 relationships) |
 
 Older version: `reference/db/mysql/superseded/index-q_er-diagram_2026-09-13.pdf`
 (was `index-q.pdf`: 15 tables, no `EmailVerificationToken`).
