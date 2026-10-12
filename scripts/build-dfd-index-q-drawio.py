@@ -69,7 +69,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'docs' / 'uml' / 'index-q' / 'DFD-INDEX-Q.drawio'
 PRISMA = ROOT / 'database' / 'schema.prisma'
 SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
-VERSION = '1.2 · 2026-10-12'
+VERSION = '1.3 · 2026-10-13'
 
 INK, MUTED, TINT, WASH = '#1E233C', '#6B7192', '#E9EBF5', '#F4F5FA'
 FONT = ('fontFamily=IBM Plex Sans Thai;'
