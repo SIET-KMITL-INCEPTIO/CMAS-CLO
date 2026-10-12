@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 """index-q.html as a data flow diagram a non-programmer can read.
 
-   Output: docs/uml/index-q/DFD-INDEX-Q.drawio — two pages
+   Output: docs/uml/index-q/DFD-INDEX-Q.drawio — four pages
      1  ระดับ 0 · Context   the whole system as ONE process and who it talks to
      2  ระดับ 1             that process opened into six, with six data stores
+     3  ระดับ 2 · งาน 4.0   scores: showing the table / checking and saving
+     4  ระดับ 2 · งาน 6.0   results: CLO evaluation / grading
+
+   Level 2 opens only the two processes that do more than one job. The other
+   four are a single read-and-write of their own data store and would redraw
+   level 1 with a new number on the box.
 
    This is NOT the DFD in docs/markdown/dev/architecture/dfd.md. That one is the
    input to threat modelling: ten processes, 56 numbered flows, trust
@@ -16,10 +22,9 @@
      * every interaction is TWO arrows, a request and a response — a read from
        a data store is drawn as the question and the answer, not as one arrow
        coming out of the store by itself
-     * a process never talks to another process. 6.0 does both the CLO
-       evaluation and the grading for that reason: grading needs every
-       student's total, and the only other way to give it one is an arrow from
-       the evaluation process
+     * a process never talks to another process. On level 2 that means 6.1 and
+       6.2 each read the scores themselves instead of one handing a total to
+       the other
 
    Notation is Gane–Sarson, the one Thai SA textbooks teach:
      square            external entity (a person or system outside CMAS)
@@ -37,8 +42,10 @@
      R2  every process has at least one flow in and one flow out
      R3  every data store is both written and read
      R4  every flow has a name, and one arrow carries one direction
-     R5  level 0 and level 1 balance: same entities, same data crossing the
-         system boundary
+     R5  the levels balance: level 0 and level 1 have the same entities and
+         the same data crossing the system boundary, and a level-2 page touches
+         exactly the entities and stores its parent process touches, in the
+         same directions
      R6  every schema.prisma model and every table index-q.sql proposes sits
          in exactly one data store
      R7  no two shapes overlap, every arrow starts and ends on the border of
@@ -62,7 +69,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'docs' / 'uml' / 'index-q' / 'DFD-INDEX-Q.drawio'
 PRISMA = ROOT / 'database' / 'schema.prisma'
 SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
-VERSION = '1.1 · 2026-10-12'
+VERSION = '1.2 · 2026-10-12'
 
 INK, MUTED, TINT, WASH = '#1E233C', '#6B7192', '#E9EBF5', '#F4F5FA'
 FONT = ('fontFamily=IBM Plex Sans Thai;'
@@ -268,7 +275,7 @@ def level1():
             'ตาราง CLO และกิจกรรม · ผลตรวจน้ำหนัก', ['ตาราง CLO และกิจกรรม'])
     store('P3', 'D3', 838, 882, 'CLO · กิจกรรม · เกณฑ์', 'CLO และกิจกรรมที่มีอยู่')
     # 4.0 — reads the store above it and the store below it
-    teacher('P4', 'คะแนน (กรอกเองหรือไฟล์ Excel)', ['คะแนน (กรอกเองหรือไฟล์ Excel)'],
+    teacher('P4', 'คะแนน (กรอกเองหรือไฟล์ Excel)<br>คำขอดูตารางคะแนน', ['คะแนน (กรอกเองหรือไฟล์ Excel)'],
             'ตารางคะแนน · แบบฟอร์ม Excel<br>ผลตรวจไฟล์', ['ตารางคะแนนและผลตรวจไฟล์'])
     store('P4', 'D4', 1078, 1122, 'คะแนน · ประวัติการแก้', 'คะแนนที่มีอยู่')
     p.flow('P4', 'D3', 'คำขอรายการกิจกรรม', [(700, 1040), (700, 972), (1230, 972), (1230, 898)], lx=0.1)
@@ -302,6 +309,91 @@ def level1():
     return p
 
 
+# ── level 2 ──────────────────────────────────────────────────────────
+def level2(parent, title, left, right, middle, extra=None):
+    """One parent process opened into two.
+
+    Everything both halves talk to stands in a column between them — ผู้สอน on
+    top, the data stores under it — so each half reaches it from its own side
+    and no arrow has to cross another. `left` / `right` are (number, name,
+    {item: (what the process sends, what it gets back)}); for ผู้สอน the pair
+    is (what ผู้สอน sends, what ผู้สอน gets back). `extra` is a store only the
+    right half uses.
+    """
+    p = Page('ระดับ 2 · งาน %s' % parent[1])
+    p.parent = parent[0]
+    sname = {k: nm for k, nm, _t in STORES}
+    LX, MX, RX, PW, SW, SH, PITCH, TOP = 80, 780, 1490, 250, 260, 76, 200, 210
+    p.box(None, None, 'แผนภาพกระแสข้อมูล ระดับ 2 — งาน %s %s' % (parent[1], title), S_TITLE, 60, 20, 1500, 40)
+    p.box(None, None, 'เปิดกล่อง %s ของระดับ 1 ออกเป็น 2 งานย่อย · สิ่งที่ทั้งสองงานใช้ร่วมกันอยู่ตรงกลาง · รุ่น %s'
+          % (parent[1], VERSION), S_SUB, 60, 62, 1500, 30)
+    centre = {}
+    for i, k in enumerate(middle):
+        cy = centre[k] = TOP + i * PITCH
+        if k == T:
+            p.box(T, ENT, T, S_ENTITY, MX, cy - 45, SW, 90)
+        else:
+            p.box(k, STORE, '<b>%s</b>&nbsp;&nbsp;│&nbsp;&nbsp;%s' % (k, sname[k]), S_STORE, MX, cy - SH / 2, SW, SH)
+    h = 56 * len(middle) + 32
+    top = TOP + (len(middle) - 1) * PITCH / 2 - h / 2
+    for num, nm, talks, px, near, far in ((left + (LX, LX + PW, MX)), (right + (RX, RX, MX + SW))):
+        key = 'S' + num
+        p.box(key, PROC, proc_label(num, nm), S_PROC, px, top, PW, h)
+        for i, k in enumerate(middle):
+            first, second = talks[k]
+            upper = [(near, top + 30 + 56 * i), (far, centre[k] - 16)]
+            lower = [(far, centre[k] + 16), (near, top + 58 + 56 * i)]
+            if k == T:      # ผู้สอน speaks first: the upper arrow runs towards the process
+                p.flow(k, key, first, upper[::-1], lx=-0.5)
+                p.flow(key, k, second, lower[::-1], lx=-0.45)      # label by the process, clear of the one above
+            else:
+                p.flow(key, k, first, upper, lx=0.5)
+                p.flow(k, key, second, lower, lx=-0.5)
+    bottom = max(top + h, centre[middle[-1]] + SH / 2)
+    if extra:
+        k, (write, read) = extra
+        cy, ex = top + h / 2, RX + PW + 330
+        p.box(k, STORE, '<b>%s</b>&nbsp;&nbsp;│&nbsp;&nbsp;%s' % (k, sname[k]), S_STORE, ex, cy - SH / 2, SW, SH)
+        p.flow('S' + right[0], k, write, [(RX + PW, cy - 22), (ex, cy - 22)])
+        p.flow(k, 'S' + right[0], read, [(ex, cy + 22), (RX + PW, cy + 22)])
+    p.box(None, None, LEGEND, S_NOTE, 60, bottom + 70, 640, 130)
+    p.size = (RX + PW + (330 + SW if extra else 0) + 100, int(bottom + 240))
+    return p
+
+
+def level2_pages():
+    scores = level2(
+        ('P4', '4.0'), 'บันทึกและนำเข้าคะแนน',
+        ('4.1', 'แสดงตารางคะแนน<br>และออกแบบฟอร์ม Excel', {
+            T: ('คำขอดูตารางคะแนน', 'ตารางคะแนน · แบบฟอร์ม Excel'),
+            'D3': ('คำขอรายการกิจกรรม', 'กิจกรรมและคะแนนเต็ม'),
+            'D4': ('คำขอคะแนน', 'คะแนนที่มีอยู่'),
+            'D5': ('คำขอรายชื่อ', 'รายชื่อนักศึกษา')}),
+        ('4.2', 'ตรวจและบันทึกคะแนน', {
+            T: ('คะแนน (กรอกเองหรือไฟล์ Excel)', 'ผลการบันทึก · ผลตรวจไฟล์'),
+            'D3': ('คำขอคะแนนเต็มของกิจกรรม', 'คะแนนเต็ม · สถานะปิดรับ'),
+            'D4': ('คะแนน · ประวัติการแก้', 'คะแนนเดิม'),
+            'D5': ('คำขอตรวจรหัสนักศึกษา', 'รายชื่อและสถานะถอน')}),
+        [T, 'D3', 'D4', 'D5'])
+    results = level2(
+        ('P6', '6.0'), 'ประเมินผล CLO ติดตามนักศึกษา และตัดเกรด',
+        ('6.1', 'ประเมินผล CLO<br>และติดตามนักศึกษา', {
+            T: ('คำขอดูผลและรายงาน', 'ผลการบรรลุ CLO · รายงาน Excel<br>รายชื่อที่ต้องช่วยเหลือ'),
+            'D2': ('คำขอเกณฑ์ผ่าน', 'เกณฑ์ผ่านของรายวิชา'),
+            'D3': ('คำขอ CLO และกิจกรรม', 'CLO · กิจกรรม · น้ำหนัก'),
+            'D4': ('คำขอคะแนน', 'คะแนน'),
+            'D5': ('คำขอรายชื่อ', 'รายชื่อ (ไม่นับผู้ถอน)')}),
+        ('6.2', 'ตัดเกรด', {
+            T: ('ช่วงเกรด · คำสั่งตัดเกรด<br>การปรับเกรดพร้อมเหตุผล', 'เกรด · สถิติ · ไฟล์ผลการเรียน'),
+            'D2': ('คำขอวิธีตัดเกรด', 'วิธีตัดเกรด'),
+            'D3': ('คำขอน้ำหนักกิจกรรม', 'กิจกรรมและน้ำหนัก'),
+            'D4': ('คำขอคะแนน', 'คะแนน'),
+            'D5': ('คำขอรายชื่อ', 'รายชื่อ (ไม่นับผู้ถอน)')}),
+        [T, 'D2', 'D3', 'D4', 'D5'],
+        extra=('D6', ('ช่วงเกรด · เกรดที่ตรึง', 'ช่วงเกรด · เกรดที่มีอยู่')))
+    return [scores, results]
+
+
 # ── rules ────────────────────────────────────────────────────────────
 def on_border(pt, box):
     _c, x, y, w, h = box
@@ -325,9 +417,9 @@ def crosses(s1, s2):
     return side(a, b, c) * side(a, b, d) < 0 and side(c, d, a) * side(c, d, b) < 0
 
 
-def check(l0, l1):
+def check(l0, l1, l2):
     bad = []
-    for p in (l0, l1):
+    for p in [l0, l1] + l2:
         io_ = {k: [0, 0] for k in p.box_of}
         seen = set()
         for f in p.flows:
@@ -395,6 +487,21 @@ def check(l0, l1):
             {l1.owner[k] for k in l1.box_of if l1.kind_of[k] == ENT}:
         bad.append('R5 · external entity ของสองระดับไม่ตรงกัน')
 
+    # R5 — a level-2 page touches what its parent touches, in the same directions
+    def outside(p, inner):
+        out = set()
+        for f in p.flows:
+            if inner(f['a']) and not inner(f['b']):
+                out.add((p.owner[f['b']], 'out'))
+            if inner(f['b']) and not inner(f['a']):
+                out.add((p.owner[f['a']], 'in'))
+        return out
+    for p in l2:
+        want = outside(l1, lambda k: k == p.parent)
+        got = outside(p, lambda k: p.kind_of[k] == PROC)
+        for ent, side in sorted(want ^ got):
+            bad.append('R5 · %s กับ %s ในระดับ 1 ไม่สมดุลที่ %s (%s)' % (p.name, p.parent, ent, side))
+
     # R6 — tables
     models = set(re.findall(r'^model\s+(\w+)', io.open(PRISMA, encoding='utf-8').read(), re.M))
     sql = set(re.findall(r'^CREATE TABLE `?(\w+)`?', io.open(SQL_IQ, encoding='utf-8').read(), re.M))
@@ -409,25 +516,28 @@ def check(l0, l1):
 
 
 def build():
-    l0, l1 = level0(), level1()
-    bad, n_models, n_proposed = check(l0, l1)
-    return l0, l1, bad, n_models, n_proposed
+    l0, l1, l2 = level0(), level1(), level2_pages()
+    bad, n_models, n_proposed = check(l0, l1, l2)
+    return l0, l1, l2, bad, n_models, n_proposed
 
 
 def main():
-    l0, l1, bad, n_models, n_proposed = build()
+    l0, l1, l2, bad, n_models, n_proposed = build()
     if bad:
         for b in bad:
             print('✗', b)
         print('ไม่เขียนไฟล์ — ผิดกฎ %d ข้อ' % len(bad))
         return 1
-    xml = ('<mxfile host="drawio" agent="CMAS scripts/build-dfd-index-q-drawio.py" version="24.0.0">%s%s</mxfile>'
-           % (l0.xml('dfd0', 1780, 920), l1.xml('dfd1', 2640, 1460)))
+    xml = ('<mxfile host="drawio" agent="CMAS scripts/build-dfd-index-q-drawio.py" version="24.0.0">%s%s%s%s</mxfile>'
+           % (l0.xml('dfd0', 1780, 920), l1.xml('dfd1', 2640, 1460),
+              l2[0].xml('dfd2-4', *l2[0].size), l2[1].xml('dfd2-6', *l2[1].size)))
     io.open(OUT, 'w', encoding='utf-8', newline='\n').write(xml)
     n_proc = sum(1 for k in l1.kind_of.values() if k == PROC)
     n_store = sum(1 for k in l1.kind_of.values() if k == STORE)
-    print('เขียน %s — ระดับ 0: %d เส้น · ระดับ 1: %d process, %d data store, %d เส้น · ตาราง %d + เสนอเพิ่ม %d · ผ่านกฎ R1–R9'
-          % (OUT.relative_to(ROOT), len(l0.flows), n_proc, n_store, len(l1.flows), n_models, n_proposed))
+    print('เขียน %s — ระดับ 0: %d เส้น · ระดับ 1: %d process, %d data store, %d เส้น · ระดับ 2: %s · '
+          'ตาราง %d + เสนอเพิ่ม %d · ผ่านกฎ R1–R9'
+          % (OUT.relative_to(ROOT), len(l0.flows), n_proc, n_store, len(l1.flows),
+             ' / '.join('%s %d เส้น' % (p.name.split('· ')[1], len(p.flows)) for p in l2), n_models, n_proposed))
     return 0
 
 
