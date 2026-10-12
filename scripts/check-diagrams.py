@@ -40,7 +40,8 @@ SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
 GEN = [('scripts/build-usecase-drawio.py', 'docs/uml/index-q/index-q-usecase.drawio'),
        ('scripts/build-index-q-uml-drawio.py', 'docs/uml/index-q/UML-INDEX-Q.drawio'),
        ('scripts/build-structure-pages.py', 'docs/uml/CMAS/Structure.drawio'),
-       ('scripts/build-er-index-q-drawio.py', 'docs/uml/index-q/ER-INDEX-Q.drawio')]
+       ('scripts/build-er-index-q-drawio.py', 'docs/uml/index-q/ER-INDEX-Q.drawio'),
+       ('scripts/build-dfd-index-q-drawio.py', 'docs/uml/index-q/DFD-INDEX-Q.drawio')]
 
 # ตารางที่ index-q.sql เสนอเพิ่มจาก schema.prisma · มีบันทึกเหตุผลไว้ใน coverage GAPS
 # (2569-09-18: ฐานเทียบเปลี่ยนจาก v4 เป็น schema.prisma — migration 0005/0006
