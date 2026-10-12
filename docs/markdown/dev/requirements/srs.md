@@ -4,9 +4,13 @@ See also: [[dev]] · [[features-pages]] · [[schema]] · [[usecase]] · [[code-r
 
 ## ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO System / CMAS)
 
-> **Version:** 2.4.2 | **Updated:** 2026-10-02 | **Owner:** ทีมพัฒนา 67030098 / 67030110 / 67030120
+> **Version:** 2.4.3 | **Updated:** 2026-10-11 | **Owner:** ทีมพัฒนา 67030098 / 67030110 / 67030120
 > **Baseline:** `database/schema.prisma` (**13 models — single-tenant**) + Figma `Project CLOs` (14 frames)
 > **สถานะ:** Draft — §9 มีข้อตัดสินใจที่ยังค้าง ต้อง sign-off ก่อนเริ่ม implement module ที่เกี่ยวข้อง
+>
+> **v2.4.3 (2026-10-11) — CR-10 ระบุชนิดของ SD:** ใช้ **SD ประชากร (หารด้วย n)** ไม่ใช่ n − 1 และ T เป็น
+> **linear T-score** (ไม่ normalize) · เดิมเขียนแค่ "SD" ซึ่งตีความได้สองแบบและให้เกรดต่างกัน · ตรงกับที่ต้นแบบ
+> `docs/pages/index-q.html` คำนวณอยู่แล้ว ฝั่งเซิร์ฟเวอร์ยังไม่มีโค้ดส่วนนี้ · เพิ่มแหล่งอ้างอิงใน §1.4
 >
 > **v2.4.2 (2026-10-02) — จุดเน้นของผลลัพธ์คือ "ใครต้องได้รับความช่วยเหลือ" ไม่ใช่ "บรรลุเป้าหรือไม่":**
 > เป้าหมายของชั้นคงที่ 100% (ทุกคนผ่าน) **FR-101 ยกเลิก** — ไม่มีการตั้งเป้าราย CLO · เพิ่ม CR-05.1 "กติกาที่ต้นแบบเสนอ รอ migration"
@@ -140,6 +144,15 @@ See also: [[dev]] · [[features-pages]] · [[schema]] · [[usecase]] · [[code-r
 - Figma `Project CLOs` — `https://www.figma.com/design/GLnvjhq5ENaQXy35cZtKII/Project-CLOs`
 - [[usecase]] (อ้างอิงเอกสารอนุมัติหัวข้อ PD01 §5) · [[features-pages]] · [[dev]] · [[design-system]]
 - `docs/pdf/01. หลักสูตร ค.อ.บ. สาขาวิชาเทคโนโลยีคอมพิวเตอร์ (หลักสูตรปรับปรุง พ.ศ. 2567).pdf`
+- **คะแนนมาตรฐาน T (ใช้ใน CR-10)**
+  - McCall, W. A. (1922). *How to Measure in Education*. New York: Macmillan. — ต้นทางของ T-score
+    *(อ้างผ่าน Salkind 2008 ทีมยังไม่ได้เปิดต้นฉบับ)*
+  - Salkind, N. J. (Ed.). (2008). T Scores. ใน *Encyclopedia of Educational Psychology*. SAGE. —
+    ค่าเฉลี่ย 50 · SD 10 · ความต่างระหว่าง linear กับ normalized T
+    `https://sk.sagepub.com/ency/edvol/embed/educationalpsychology/chpt/t-scores`
+  - GraphPad Software. *Computing the SD*. GraphPad Prism Statistics Guide. — ใช้ตัวหาร N เมื่อบรรยายชุดข้อมูลที่มีอยู่
+    โดยไม่อนุมานไปยังกลุ่มที่ใหญ่กว่า ใช้ N − 1 เมื่อข้อมูลเป็นตัวอย่าง
+    `https://graphpad.com/guides/prism/latest/statistics/stat_computing_the_sd.htm`
 
 ---
 
@@ -334,10 +347,28 @@ grade(s) = GradeBand ที่ minValue สูงที่สุด ซึ่ง
 ### CR-10 — ตัดเกรดอิงกลุ่ม (Norm-referenced)
 
 ```
-mean, SD = คำนวณ ณ เวลาที่กดตัดเกรด จากคะแนนรวมของนักศึกษาที่ประเมินครบ
+n    = จำนวนนักศึกษาในกลุ่ม (ดู "นิยามประชากร" ด้านล่าง)
+mean = Σ totalScore(s) / n
+SD   = √( Σ ( totalScore(s) − mean )² / n )        ← SD ประชากร หารด้วย n ไม่ใช่ n − 1
 T(s) = 50 + 10 × ( totalScore(s) − mean ) / SD
 grade(s) = GradeBand ที่ minValue สูงที่สุด ซึ่ง T(s) ≥ GradeBand.minValue
 ```
+
+`mean` และ `SD` คำนวณ ณ เวลาที่กดตัดเกรด จากคะแนนรวมของนักศึกษาที่ประเมินครบ
+
+**ชนิดของ SD และ T (ตัดสิน 2026-10-11)**
+
+- **SD ประชากร (หารด้วย n)** — กลุ่มที่ใช้ตัดเกรดคือนักศึกษา**ทั้งหมด**ของหมู่เรียนนั้น ไม่ใช่ตัวอย่างที่สุ่มมา
+  เพื่อประมาณค่าของกลุ่มที่ใหญ่กว่า จึงเป็นการบรรยายชุดข้อมูลที่มีอยู่ ไม่ใช่การอนุมาน (GraphPad, §1.4)
+  ผลที่ตามมาคือ T ของกลุ่มมีค่าเฉลี่ย 50 และ SD 10 **พอดี** ตามนิยามของ T-score (Salkind 2008, §1.4)
+  ถ้าหารด้วย n − 1 SD ของ T จะเป็น 10 × √((n − 1) / n) ซึ่งต่ำกว่า 10 เสมอ
+- **ห้ามใช้ n − 1** — SD ที่ได้จะใหญ่ขึ้น √(n / (n − 1)) เท่า (n = 10 ต่างกันราว 5.4% · n = 30 ราว 1.7%)
+  T ของทุกคนถูกดึงเข้าหา 50 นักศึกษาที่อยู่ใกล้เส้นแบ่งจึงได้เกรดต่างจากที่ต้นแบบแสดง
+  ระวังค่าตั้งต้นของเครื่องมือ: `STDEV` / `STDEV.S` ของ Excel และ `STDDEV` / `STDDEV_SAMP` ของ PostgreSQL หารด้วย n − 1
+  ตัวที่ตรงกับกติกานี้คือ `STDEV.P` และ `STDDEV_POP`
+- **Linear T-score** — แปลงเชิงเส้นจากคะแนนดิบโดยตรง **ไม่ normalize** ผ่าน percentile rank
+  T-score ต้นฉบับของ McCall (1922) เป็นแบบ normalized รูปการกระจายของ T ในระบบนี้จึงเหมือนคะแนนดิบ
+  ถ้าคะแนนเบ้ T ก็เบ้ตาม · เลือกแบบนี้เพราะอาจารย์ตรวจทานด้วยเครื่องคิดเลขได้ และไม่ต้องใช้ตารางโค้งปกติ
 
 `mean` / `SD` / `T(s)` / `z(s)` **ไม่ถูกเก็บลงฐานข้อมูล** ตั้งแต่ v2.2.0 — คำนวณในหน่วยความจำ
 ตอนกดตัดเกรด แล้วเขียนเฉพาะ `StudentGrade.totalPercent` กับ `StudentGrade.grade` ลงไป
