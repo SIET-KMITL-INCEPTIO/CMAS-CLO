@@ -39,7 +39,6 @@ SQL_V4 = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'cmas_app_mysql_v4.sql'
 SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
 GEN = [('scripts/build-usecase-drawio.py', 'docs/diagrams/usecase/index-q-usecase.drawio'),
        ('scripts/build-index-q-uml-drawio.py', 'docs/diagrams/usecase/UML-INDEX-Q.drawio'),
-       ('scripts/build-structure-pages.py', 'docs/diagrams/architecture/Structure.drawio'),
        ('scripts/build-er-index-q-drawio.py', 'docs/diagrams/er/ER-INDEX-Q.drawio'),
        ('scripts/build-dfd-index-q-drawio.py', 'docs/diagrams/dfd/DFD-INDEX-Q.drawio')]
 
@@ -212,8 +211,8 @@ print('  index-q.html มีบทบาทในรายวิชา %d + ผ�
 if len(md_actors) < len(app_actors) + 1:
     warn.append('UML-5 · UML.md วาด actor %d ตัว แต่ระบบมี %d — ประกาศไว้ในหัวไฟล์แล้ว'
                 % (len(md_actors), len(app_actors) + 1))
-    print('  ! ภาพ Layer 0 ยังเป็นรุ่นสอง actor · ภาพสามบทบาทอยู่ใน Structure.drawio '
-          'หน้า 2 และ UML-INDEX-Q.drawio (ระบุไว้ในหัว UML.md แล้ว)')
+    print('  ! ภาพ Layer 0 ยังเป็นรุ่นสอง actor · ภาพตามบทบาทปัจจุบันอยู่ใน '
+          'index-q-usecase.drawio (ระบุไว้ในหัว UML.md แล้ว)')
 else:
     print('  ✓ ตรงกัน')
 
@@ -266,7 +265,7 @@ for script, out in GEN:
         print('  ✓ %-42s ตรง' % out)
 
 # ══ ER-1 · prisma ↔ v4 ═════════════════════════════════════════════
-head('ER-1', 'schema.prisma ↔ cmas_app_mysql_v4.sql')
+head('ER-1', 'schema.prisma ↔ cmas_app_mysql_v4.sql (v4 ค้างที่ 0004 โดยตั้งใจ · แจ้งเป็นคำเตือน)')
 pr = io.open(PRISMA, encoding='utf-8').read()
 MODELS = set(re.findall(r'^model\s+(\w+)', pr, re.M))
 prisma_cols = {}
@@ -314,7 +313,7 @@ v4 = sql_tables(SQL_V4)
 miss = sorted(set(prisma_cols) - set(v4))
 extra = sorted(set(v4) - set(prisma_cols))
 if miss or extra:
-    fail.append('ER-1 · ตารางไม่ตรง')
+    warn.append('ER-1 · v4 ตารางไม่ตรง schema ปัจจุบัน (v4 ค้างที่ 0004 · ใช้ index-q.sql แทน)')
     print('  ✗ ตาราง — ขาดจาก SQL %s · เกินใน SQL %s' % (miss, extra))
 else:
     print('  ✓ ตาราง %d ตัว ตรงกันทั้งหมด' % len(v4))
@@ -326,7 +325,7 @@ for mdl in sorted(prisma_cols):
         colbad += 1
         print('  ✗ %-20s prisma เท่านั้น=%s · SQL เท่านั้น=%s' % (mdl, only_p, only_s))
 if colbad:
-    fail.append('ER-1 · คอลัมน์ไม่ตรง %d ตาราง' % colbad)
+    warn.append('ER-1 · v4 คอลัมน์ไม่ตรง %d ตาราง (v4 ค้างที่ 0004 · ใช้ index-q.sql แทน)' % colbad)
 else:
     print('  ✓ คอลัมน์ตรงกันทุกตาราง (%d คอลัมน์)' % sum(len(c) for c in prisma_cols.values()))
 

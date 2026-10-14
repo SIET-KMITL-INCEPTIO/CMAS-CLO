@@ -1,33 +1,39 @@
-# diagrams/ — ไดอะแกรมพร้อมส่งต่อ
+# diagrams/ — ไฟล์ทางการ หนึ่งไฟล์ต่อหนึ่งเรื่อง
 
 > **ตรวจล่าสุด:** 2026-10-14 · `python scripts/check-diagrams.py` · เทียบกับ `docs/pages/index-q.html`, `database/schema.prisma` และ `package.json` ของ `app/`
 > เปิดไฟล์ `.drawio` ด้วย [draw.io desktop](https://www.drawio.com/) หรือส่วนขยาย Draw.io Integration ใน VS Code
 
-## พร้อมใช้
+## ฉบับทางการ — ใช้ไฟล์ในตารางนี้เท่านั้นเวลานำเสนอหรือใส่รายงาน
 
-| ไดอะแกรม | ไฟล์ | หน้า | สร้างจาก | ตรวจแล้วว่า |
-|---|---|---|---|---|
-| **DFD** ระดับ 0, 1, 2 | [`dfd/DFD-INDEX-Q.drawio`](dfd/DFD-INDEX-Q.drawio) (v1.3) | 4 หน้า: ระดับ 0 · ระดับ 1 (6 process, 6 data store, 44 flow) · ระดับ 2 ของงาน 4.0 และ 6.0 | `scripts/build-dfd-index-q-drawio.py` | ผ่านกฎ R1–R9 ของสคริปต์ (เส้นไม่ตัดกัน, คำขอและคำตอบเป็นคู่, process ไม่ส่งข้อมูลหา process โดยตรง, ระดับ 1 กับ 2 สมดุล, ครอบคลุมทุกตาราง) · สร้างใหม่แล้วเนื้อหาตรงกับที่เก็บไว้ |
-| **ER diagram** | [`er/ER-INDEX-Q.drawio`](er/ER-INDEX-Q.drawio) · [`.html`](er/ER-INDEX-Q.html) · [`.pdf`](er/ER-INDEX-Q.pdf) | 17 ตาราง = 13 ตารางใน `schema.prisma` + 4 ตารางที่ต้นแบบเสนอเพิ่ม (`AuthEvent`, `UploadReject`, `ScoreChange`, `CourseGroupWeight`) | `scripts/build-er-index-q-drawio.py` | สร้างใหม่แล้วไม่มีอะไรเปลี่ยน · PDF มีครบทั้ง 17 ตาราง |
-| **Flowchart ฟีเจอร์** | [`flowchart/CMAS-Flowcharts_Handwritten.drawio`](flowchart/CMAS-Flowcharts_Handwritten.drawio) | 50 หน้า: สารบัญ + 1 flow ต่อ 1 use case (1.1–9.5) | วาดตามขั้นตอนและข้อความ error ในต้นแบบ | มีครบทั้ง 34 use case ของต้นแบบ และมี flow ของเกรด (8.x) กับบัญชีของตนเอง (9.x) เพิ่ม · ต่างจากต้นแบบแค่การแยกหน้า "แก้ไข / ลบ" เป็น 2 หน้า (3.2/3.5, 4.5/4.6) |
-| **Flowchart tech stack** | [`architecture/CMAS-Architecture_Handwritten.drawio`](architecture/CMAS-Architecture_Handwritten.drawio) | หน้า **0 · Stack + Flow** (ขั้น ①–⑩ จากหน้าเว็บถึงฐานข้อมูล) · หน้า **7 · Tool-level flow** (Fastify → jose → Zod → Prisma → Postgres) | วาดมือ | รุ่นของ library ตรงกับ `package.json` (React 19, Vite 7, Tailwind v4, Fastify 5, Zod 4, Prisma 6) · อายุ token 15 นาที / 7 วัน ตรงกับ `env.schema.ts` · แก้จำนวน trigger เป็น 3 ตัวแล้ว |
-| **Use case** | [`usecase/index-q-usecase.drawio`](usecase/index-q-usecase.drawio) · [`usecase/UML-INDEX-Q.drawio`](usecase/UML-INDEX-Q.drawio) | ภาพรวม · ผู้ดูแลระบบ · ผู้สอน · รายการ use case | `scripts/build-usecase-drawio.py` · `scripts/build-index-q-uml-drawio.py` | สร้างใหม่แล้วตรง |
+| เรื่อง | ไฟล์ทางการ | หน้า | ตรวจแล้วว่า |
+|---|---|---|---|
+| **DFD** ระดับ 0, 1, 2 | [`dfd/DFD-INDEX-Q.drawio`](dfd/DFD-INDEX-Q.drawio) (v1.3) | ระดับ 0 · ระดับ 1 (6 process, 6 data store, 44 flow) · ระดับ 2 ของงาน 4.0 และ 6.0 | ผ่านกฎ R1–R9 ของสคริปต์ (เส้นไม่ตัดกัน, คำขอและคำตอบเป็นคู่, process ไม่ส่งข้อมูลหา process โดยตรง, ระดับ 1 กับ 2 สมดุล, ครอบคลุมทุกตาราง) |
+| **ER diagram** | [`er/ER-INDEX-Q.pdf`](er/ER-INDEX-Q.pdf) (แก้ที่ [`.drawio`](er/ER-INDEX-Q.drawio) · เปิดในเบราว์เซอร์ที่ [`.html`](er/ER-INDEX-Q.html)) | 17 ตาราง = 13 ตารางใน `schema.prisma` + 4 ตารางที่ต้นแบบเสนอเพิ่ม | สร้างใหม่แล้วไม่เปลี่ยน · PDF มีครบ 17 ตาราง |
+| **Use case** | [`usecase/index-q-usecase.drawio`](usecase/index-q-usecase.drawio) | ภาพรวม · ผู้ดูแลระบบ · ผู้สอน · รายการ use case (UML 2.5) | สร้างใหม่แล้วตรง · สิทธิ์อ่านจาก `PERM` ในต้นแบบ |
+| **Flowchart ฟีเจอร์** | [`flowchart/CMAS-Flowcharts_Handwritten.drawio`](flowchart/CMAS-Flowcharts_Handwritten.drawio) | สารบัญ + 1 flow ต่อ 1 use case (1.1–9.5) | ครบทั้ง 34 use case ของต้นแบบ และมี flow เกรด (8.x) กับบัญชีของตนเอง (9.x) |
+| **Flowchart tech stack / สถาปัตยกรรม** | [`architecture/CMAS-Architecture_Handwritten.drawio`](architecture/CMAS-Architecture_Handwritten.drawio) | หน้า **0 · Stack + Flow** (ขั้น ①–⑩) · หน้า **7 · Tool-level flow** | รุ่น library ตรงกับ `package.json` (React 19, Vite 7, Tailwind v4, Fastify 5, Zod 4, Prisma 6) · อายุ token ตรงกับ `env.schema.ts` · trigger 3 ตัว |
 
 ภาพรวมว่าไดอะแกรมแต่ละตัวสกัดอะไรจากต้นแบบ: [`index-q-architecture.md`](index-q-architecture.md)
 
-## ยังไม่ควรใช้
+## ไฟล์ประกอบ — ไม่ใช่ฉบับทางการ
 
-| ไฟล์ | เหตุผล |
+| ไฟล์ | คืออะไร |
 |---|---|
-| `architecture/Structure.drawio` หน้า 2–3 | สคริปต์ยังวาดบทบาทในรายวิชา 3 แบบ (ASSISTANT / CO / LEAD) แต่ต้นแบบรวมเหลือ `INSTRUCTOR` บทบาทเดียวแล้ว สคริปต์จึงไม่ยอมเขียนไฟล์ (กล่องทับกัน) ไฟล์ที่เก็บไว้คือรุ่นก่อนรวมบทบาท |
-| `usecase/UML-Layer1_Handwritten.drawio` · `UML-Layer2_Handwritten.drawio` | ฉบับร่าง เลข use case 11 เลขไม่ตรงกับ `UML.md` และมี 13 ข้อที่ไม่มีเลข · ใช้ `UML-INDEX-Q.drawio` แทน |
-| `threat-model/threat-model.tm7` · `report.htm` | สร้างก่อน DFD v1.3 ต้องวาดใหม่ใน Threat Modeling Tool ตาม DFD ระดับ 1 ก่อนใช้ในรายงาน |
-| `architecture/CMAS-ARCH_Handwritten.drawio` · `CMAS-FE-BE-DB_Handwritten.drawio` | ร่างหัวข้อเดียวกับหน้า 0 ของ `CMAS-Architecture_Handwritten.drawio` ใช้ไฟล์นั้นแทน (รายละเอียดใน [`architecture/README.md`](architecture/README.md)) |
+| `usecase/UML-INDEX-Q.drawio` | ข้อมูลชุดเดียวกับ use case ทางการ ย่อเหลือหน้าเดียวสำหรับสไลด์ |
+| `usecase/UML-Layer1_Handwritten.drawio` · `UML-Layer2_Handwritten.drawio` | ร่างแรก · Layer2 ใช้เลข use case คนละชุดกับต้นแบบ **อย่าฉายคู่กับไฟล์ทางการ** |
+| `usecase/superseded/UML-INDEX-Q_2026-09-14_Handwritten.drawio` | สำเนาวาดมือรุ่น 14 ก.ย. |
+| `architecture/CMAS-ARCH_Handwritten.drawio` · `CMAS-FE-BE-DB_Handwritten.drawio` | ร่างหัวข้อเดียวกับหน้า 0 ของไฟล์สถาปัตยกรรมทางการ |
+| `architecture/Structure.drawio` | วาดมือหน้าเดียว · โครงสร้างผู้สอนแบบบทบาทเดียว |
+| `threat-model/threat-model.tm7` · `report.htm` | Threat Modeling Tool · สร้างก่อน DFD v1.3 ต้องวาดใหม่ก่อนใช้ ([#18](https://github.com/SIET-KMITL-INCEPTIO/CMAS-CLO/issues/18)) |
+| `../reference/db/mysql/index-q_er-diagram.pdf` | ER แบบ MySQL Workbench · ยังเป็น 16 ตาราง ต้อง export ใหม่จาก `index-q.sql` |
+| `../reference/db/mysql/cmas_app_v4*` | ER รุ่น v4 (migration 0004) จาก Workbench · ค้างไว้ตามเดิม |
+
+ไฟล์ที่ทีมวาดเองทุกไฟล์เก็บไว้ครบ ไม่ได้ลบ ส่วนไฟล์ที่สคริปต์สร้างเก็บเฉพาะรุ่นล่าสุด (2026-10-14 ลบหน้า 2–3 ของ `Structure.drawio` ที่ยังวาดบทบาท 3 แบบ และ Excel 2 ไฟล์ที่ค้างที่ v4 ออก ดู [`VERSIONS.md`](../VERSIONS.md) §3.2)
 
 ## กติกาเวลาแก้
 
-1. **ไฟล์ที่มีสคริปต์สร้าง (DFD, ER, use case)** ห้ามแก้ใน draw.io ให้แก้ต้นแบบหรือสคริปต์ แล้วรัน `python scripts/build-<ชื่อ>.py` ใหม่ ถ้าแก้ในไฟล์ตรง ๆ ครั้งถัดไปที่สร้างใหม่ สิ่งที่แก้จะหายหมด
-2. เปิดไฟล์ที่สร้างจากสคริปต์ใน draw.io แล้วกดบันทึกได้ `check-diagrams.py` เทียบตามเนื้อหา ไม่เทียบไบต์ จึงไม่ฟ้องว่าไฟล์เก่า
-3. **ไฟล์ `_Handwritten`** แก้ใน draw.io ได้เลย แต่ต้องเทียบกับต้นแบบเอง เพราะไม่มีสคริปต์ตรวจให้
-4. **ก่อน pull ให้ปิดแท็บ draw.io ทุกแท็บ** ถ้าแท็บที่เปิดค้างไว้เป็นรุ่นเก่าแล้วกดบันทึก จะทับไฟล์ใหม่ (เคยทำ DFD หายมาแล้วหนึ่งครั้ง)
-5. ส่งออกเป็นรูปสำหรับรายงาน: draw.io → File → Export as → PNG (ติ๊ก *All pages*) หรือ PDF
+1. **ไฟล์ที่ชื่อไม่ลงท้าย `_Handwritten`** (DFD, ER, use case) สคริปต์ใน `scripts/` เป็นตัวสร้าง ห้ามแก้ใน draw.io ให้แก้ต้นแบบหรือสคริปต์ แล้วรัน `python scripts/build-<ชื่อ>.py` ใหม่ ไม่อย่างนั้นสิ่งที่แก้จะหายตอนสร้างใหม่
+2. เปิดไฟล์เหล่านั้นใน draw.io แล้วกดบันทึกได้ `check-diagrams.py` เทียบตามเนื้อหา ไม่ใช่ไบต์
+3. **ไฟล์ `_Handwritten`** แก้ใน draw.io ได้เลย แต่ต้องเทียบกับต้นแบบเอง
+4. **ก่อน pull ให้ปิดแท็บ draw.io ทุกแท็บ** แท็บรุ่นเก่าที่กดบันทึกจะทับไฟล์ใหม่ (เคยทำ DFD หายมาแล้วหนึ่งครั้ง)
+5. ส่งออกรูปสำหรับรายงาน: draw.io → File → Export as → PNG (ติ๊ก *All pages*) หรือ PDF
