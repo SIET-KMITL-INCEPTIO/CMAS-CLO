@@ -147,11 +147,11 @@ image build on every PR.
 
 | Document                                                                                                                                                  | Contents                                                        |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [dev.md](docs/markdown/dev/architecture/dev.md)                                                                                                                        | Tech stack, setup, conventions, API standards, review checklist |
-| [features-pages.md](docs/markdown/dev/architecture/features-pages.md)                                                                                                  | Feature and page scope — the scope source of truth              |
+| [dev.md](docs/markdown/dev/architecture/dev.md)                                                                                                           | Tech stack, setup, conventions, API standards, review checklist |
+| [features-pages.md](docs/markdown/dev/architecture/features-pages.md)                                                                                     | Feature and page scope — the scope source of truth              |
 | [tech-stack.md](docs/markdown/graph/tech-stack.md)                                                                                                        | Architecture diagram                                            |
 | [schema.md](docs/markdown/sql/schema.md)                                                                                                                  | Schema summary — `database/schema.prisma` wins on conflict      |
-| [design-system.md](docs/markdown/dev/architecture/design-system.md)                                                                                                    | Design tokens and components                                    |
+| [design-system.md](docs/markdown/dev/architecture/design-system.md)                                                                                       | Design tokens and components                                    |
 | [code-rule.md](docs/markdown/rule/code-rule.md) · [git-rule.md](docs/markdown/rule/git-rule.md) · [security-rule.md](docs/markdown/rule/security-rule.md) | Team rules                                                      |
 
 Rebuild the browsable HTML docs with `npm run docs:build`.
@@ -170,12 +170,16 @@ place; most API endpoints and pages are not implemented yet.
 
 ### Two tracks: the app (CMAS) and the prototype (`index-q.html`)
 
-|  | **CMAS** (`app/`, `database/`) | **`docs/pages/index-q.html`** |
-|---|---|---|
-| What | The real system: React + Fastify + Postgres | A single-file UI prototype (~8,000 lines, Tailwind CDN + SheetJS, data in an in-page `db` object) — opens from `file://` |
-| Covers | Auth, user approval, course list | Every course-level flow, permission matrix `PERM`, all formulas (CR-01…CR-11), grading, Excel import/export |
-| Role | What ships | The behavioural spec the app is built against — it is **ahead of** the app and of `schema.prisma` |
-| Derived docs | `docs/markdown/**`, `database/schema.prisma` | `docs/uml/index-q/*` (ER · UML · use case), `docs/reference/db/mysql/index-q.sql`, `index-q-ux-pass.md`, `mockup-feedback-plan.md`, `scripts/build-*index-q*.py`, `check-perm-matrix.js` · `check-action-caps.js` · `check-auth-events.js` |
+|              | **CMAS** (`app/`, `database/`)                            | **`docs/pages/index-q.html`**                                                                                                                                                                                                           |
+| ------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| What         | The real system: React + Fastify + Postgres               | A single-file UI prototype (~9,500 lines, Tailwind CDN + SheetJS, data in an in-page `db` object) — opens from `file://`                                                                                                                |
+| Covers       | Google sign-in, user approval, course list (heading only) | Every course-level flow, permission matrix `PERM`, all formulas (CR-01…CR-11), grading, Excel import/export                                                                                                                             |
+| Role         | What ships                                                | The behavioural spec the app is built against — it is **ahead of** the app and of `schema.prisma`                                                                                                                                       |
+| Derived docs | `docs/markdown/**`, `database/schema.prisma`              | `docs/diagrams/*` (use case · ER · DFD), `docs/reference/db/mysql/index-q.sql`, `index-q-ux-pass.md`, `mockup-feedback-plan.md`, `scripts/build-*index-q*.py`, `check-perm-matrix.js` · `check-action-caps.js` · `check-auth-events.js` |
+
+**What to take from which:** features, flows and UI from the prototype; security, performance and tech stack from the app;
+and the prototype habits that must not be copied (client-side `can()`, in-browser formulas and Excel parsing) — see
+[`docs/markdown/dev/architecture/prototype-to-app.md`](docs/markdown/dev/architecture/prototype-to-app.md).
 
 `index-q.sql` = Prisma through migration `0007` **plus** what the prototype proposes and Prisma lacks (`AuthEvent`, `UploadReject`,
 `CourseGroupWeight`, `Course.weightMode`, `Activity.passScore`, password-flow columns on `User`, `ScoreUploadLog.kind`) — those are candidates

@@ -1,5 +1,5 @@
 """
-Build docs/excel/CMAS-Score-Import-Template.xlsx — the REAL, blank, protected
+Build docs/excel/import-test/CMAS-Score-Import-Template.xlsx — the REAL, blank, protected
 Excel workbook an instructor fills in by hand: student roster (FR-50/51/52)
 and score entry (FR-60/61/62/66). Unlike the ER-Diagram workbook (which is
 documentation with fictional example data), every input cell here is genuinely
@@ -7,7 +7,7 @@ empty and ready for real numbers — headers and formulas are locked so the
 sheet's structure survives, only the actual data cells are editable.
 
 Run: python scripts/build-score-import-template.py
-Output: docs/excel/CMAS-Score-Import-Template.xlsx
+Output: docs/excel/import-test/CMAS-Score-Import-Template.xlsx
 """
 
 from openpyxl import Workbook
@@ -431,5 +431,5 @@ for row in ws.iter_rows(min_row=1, max_row=note_row + 1, min_col=1, max_col=3 + 
             cell.protection = LOCK
 ws.protection.sheet = True
 
-wb.save("docs/excel/CMAS-Score-Import-Template.xlsx")
-print("Saved docs/excel/CMAS-Score-Import-Template.xlsx")
+wb.save("docs/excel/import-test/CMAS-Score-Import-Template.xlsx")
+print("Saved docs/excel/import-test/CMAS-Score-Import-Template.xlsx")

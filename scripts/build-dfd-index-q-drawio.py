@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """index-q.html as a data flow diagram a non-programmer can read.
 
-   Output: docs/uml/index-q/DFD-INDEX-Q.drawio — four pages
+   Output: docs/diagrams/dfd/DFD-INDEX-Q.drawio — four pages
      1  ระดับ 0 · Context   the whole system as ONE process and who it talks to
      2  ระดับ 1             that process opened into six, with six data stores
      3  ระดับ 2 · งาน 4.0   scores: showing the table / checking and saving
@@ -66,7 +66,7 @@ for _s in (sys.stdout, sys.stderr):
         _s.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'docs' / 'uml' / 'index-q' / 'DFD-INDEX-Q.drawio'
+OUT = ROOT / 'docs' / 'diagrams' / 'dfd' / 'DFD-INDEX-Q.drawio'
 PRISMA = ROOT / 'database' / 'schema.prisma'
 SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
 VERSION = '1.3 · 2026-10-13'

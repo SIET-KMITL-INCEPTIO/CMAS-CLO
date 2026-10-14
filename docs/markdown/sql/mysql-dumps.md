@@ -63,7 +63,7 @@ Thai `_th` columns store correctly.
 > the original case. Field-by-field against the `db` object in
 > `docs/pages/index-q.html` (including runtime writes): every column the
 > prototype stores exists in the SQL. Rendered diagram — no Workbench needed:
-> `docs/uml/index-q/ER-INDEX-Q.pdf` to present, `ER-INDEX-Q.html` to open in a
+> `docs/diagrams/er/ER-INDEX-Q.pdf` to present, `ER-INDEX-Q.html` to open in a
 > browser, `ER-INDEX-Q.drawio` to edit. All three come from
 > `scripts/build-er-index-q-drawio.py` reading this file.
 >

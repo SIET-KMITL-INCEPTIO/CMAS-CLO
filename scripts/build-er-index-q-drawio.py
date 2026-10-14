@@ -2,8 +2,8 @@
 """ER diagram of index-q.html, drawn from docs/reference/db/mysql/index-q.sql.
 
    Outputs — two renderings of ONE parsed model and ONE set of coordinates:
-     docs/uml/index-q/ER-INDEX-Q.drawio   editable, crow's-foot, open in draw.io
-     docs/uml/index-q/ER-INDEX-Q.html     presentation page — opens in any browser,
+     docs/diagrams/er/ER-INDEX-Q.drawio   editable, crow's-foot, open in draw.io
+     docs/diagrams/er/ER-INDEX-Q.html     presentation page — opens in any browser,
                                           prints to a single-page PDF at exact size
 
    WHY THIS EXISTS: the only rendered ER in the repo (cmas_app_v4_er-diagram.pdf)
@@ -51,8 +51,8 @@ for _s in (sys.stdout, sys.stderr):
 
 ROOT = Path(__file__).resolve().parents[1]
 SQL = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
-OUT = ROOT / 'docs' / 'uml' / 'index-q' / 'ER-INDEX-Q.drawio'
-OUT_HTML = ROOT / 'docs' / 'uml' / 'index-q' / 'ER-INDEX-Q.html'
+OUT = ROOT / 'docs' / 'diagrams' / 'er' / 'ER-INDEX-Q.drawio'
+OUT_HTML = ROOT / 'docs' / 'diagrams' / 'er' / 'ER-INDEX-Q.html'
 
 KEYWORDS = {'ON', 'COMMENT', 'DEFAULT', 'CHECK', 'REFERENCES', 'GENERATED', 'PRIMARY',
             'UNIQUE', 'KEY', 'INDEX', 'CONSTRAINT', 'FOREIGN', 'AND', 'OR', 'NOT',

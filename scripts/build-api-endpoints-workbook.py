@@ -1,5 +1,5 @@
 """
-Build docs/excel/CMAS-API-Endpoints.xlsx — every endpoint of the CMAS API on one
+Build docs/excel/api/CMAS-API-Endpoints.xlsx — every endpoint of the CMAS API on one
 filterable sheet, with the rules and security measures beside it.
 
   * Endpoints : one row per endpoint — what it does, who may call it, which
@@ -16,7 +16,7 @@ drifting, the script re-reads api-design.md §3 and fails if a contract row is
 missing here or a "contract" row here is no longer in the contract.
 
 Run: python scripts/build-api-endpoints-workbook.py
-Output: docs/excel/CMAS-API-Endpoints.xlsx
+Output: docs/excel/api/CMAS-API-Endpoints.xlsx
 """
 
 import io
@@ -33,7 +33,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs" / "markdown" / "dev" / "architecture" / "api-design.md"
-OUT = ROOT / "docs" / "excel" / "CMAS-API-Endpoints.xlsx"
+OUT = ROOT / "docs" / "excel" / "api" / "CMAS-API-Endpoints.xlsx"
 PREFIX = "/api/v1"
 
 # ---------------------------------------------------------------------------

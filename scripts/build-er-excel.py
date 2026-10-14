@@ -1,5 +1,5 @@
 """
-Build docs/excel/CMAS-ER-Diagram.xlsx — an Excel workbook that visualizes the
+Build docs/excel/data-model/CMAS-ER-Diagram.xlsx — an Excel workbook that visualizes the
 CMAS / CLO System ER structure (database/schema.prisma, 11 models) with
 simulated sample data for abstraction and presentation purposes.
 
@@ -10,7 +10,7 @@ Sheets:
   3..13. One sheet per entity — column spec (PK/FK/type/constraint) + sample rows
 
 Run: python scripts/build-er-excel.py
-Output: docs/excel/CMAS-ER-Diagram.xlsx
+Output: docs/excel/data-model/CMAS-ER-Diagram.xlsx
 """
 
 from openpyxl import Workbook
@@ -778,5 +778,5 @@ build_entity_sheet(
 )
 
 # ---------------------------------------------------------------------------
-wb.save("docs/excel/CMAS-ER-Diagram.xlsx")
-print("Saved docs/excel/CMAS-ER-Diagram.xlsx")
+wb.save("docs/excel/data-model/CMAS-ER-Diagram.xlsx")
+print("Saved docs/excel/data-model/CMAS-ER-Diagram.xlsx")

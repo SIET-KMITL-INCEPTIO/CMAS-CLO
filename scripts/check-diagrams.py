@@ -31,17 +31,16 @@ for _s in (sys.stdout, sys.stderr):
         _s.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = Path(__file__).resolve().parents[1]
-UML_MD = ROOT / 'docs' / 'uml' / 'CMAS' / 'UML.md'
-LAYER2 = ROOT / 'docs' / 'uml' / 'CMAS' / 'UML-Layer2_Handwritten.drawio'
+UML_MD = ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML.md'
+LAYER2 = ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML-Layer2_Handwritten.drawio'
 APP = ROOT / 'docs' / 'pages' / 'index-q.html'
 PRISMA = ROOT / 'database' / 'schema.prisma'
 SQL_V4 = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'cmas_app_mysql_v4.sql'
 SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
-GEN = [('scripts/build-usecase-drawio.py', 'docs/uml/index-q/index-q-usecase.drawio'),
-       ('scripts/build-index-q-uml-drawio.py', 'docs/uml/index-q/UML-INDEX-Q.drawio'),
-       ('scripts/build-structure-pages.py', 'docs/uml/CMAS/Structure.drawio'),
-       ('scripts/build-er-index-q-drawio.py', 'docs/uml/index-q/ER-INDEX-Q.drawio'),
-       ('scripts/build-dfd-index-q-drawio.py', 'docs/uml/index-q/DFD-INDEX-Q.drawio')]
+GEN = [('scripts/build-usecase-drawio.py', 'docs/diagrams/usecase/index-q-usecase.drawio'),
+       ('scripts/build-index-q-uml-drawio.py', 'docs/diagrams/usecase/UML-INDEX-Q.drawio'),
+       ('scripts/build-er-index-q-drawio.py', 'docs/diagrams/er/ER-INDEX-Q.drawio'),
+       ('scripts/build-dfd-index-q-drawio.py', 'docs/diagrams/dfd/DFD-INDEX-Q.drawio')]
 
 # ตารางที่ index-q.sql เสนอเพิ่มจาก schema.prisma · มีบันทึกเหตุผลไว้ใน coverage GAPS
 # (2569-09-18: ฐานเทียบเปลี่ยนจาก v4 เป็น schema.prisma — migration 0005/0006
@@ -75,7 +74,7 @@ fail, warn = [], []
 # Declared files still get reported in full; they just stop blocking.
 SUPERSEDED = {}
 for _m in re.finditer(r'^STATUS:SUPERSEDED\s+(\S+)\s+(.*)$',
-                      io.open(ROOT / 'docs' / 'uml' / 'CMAS' / 'UML.md',
+                      io.open(ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML.md',
                               encoding='utf-8').read(), re.M):
     SUPERSEDED[_m.group(1)] = _m.group(2).strip()
 
@@ -212,12 +211,37 @@ print('  index-q.html มีบทบาทในรายวิชา %d + ผ�
 if len(md_actors) < len(app_actors) + 1:
     warn.append('UML-5 · UML.md วาด actor %d ตัว แต่ระบบมี %d — ประกาศไว้ในหัวไฟล์แล้ว'
                 % (len(md_actors), len(app_actors) + 1))
-    print('  ! ภาพ Layer 0 ยังเป็นรุ่นสอง actor · ภาพสามบทบาทอยู่ใน Structure.drawio '
-          'หน้า 2 และ UML-INDEX-Q.drawio (ระบุไว้ในหัว UML.md แล้ว)')
+    print('  ! ภาพ Layer 0 ยังเป็นรุ่นสอง actor · ภาพตามบทบาทปัจจุบันอยู่ใน '
+          'index-q-usecase.drawio (ระบุไว้ในหัว UML.md แล้ว)')
 else:
     print('  ✓ ตรงกัน')
 
 # ══ UML-4 · ไฟล์ที่สร้างเอง ยัง fresh ไหม ═════════════════════════
+def drawio_content(data):
+    """What a .drawio says, without how draw.io happened to save it.
+
+    Opening a generated file in draw.io and saving rewrites it: one line becomes
+    ~900 indented lines, <mxfile> gains host/agent/modified, and x="0" / y="0"
+    on a geometry are dropped because 0 is the default. None of that changes the
+    diagram, so comparing bytes flagged every saved file as stale."""
+    try:
+        root = ET.fromstring(data)
+    except ET.ParseError:
+        return data
+    pages = []
+    for d in root.iter('diagram'):
+        cells = []
+        for c in d.iter('mxCell'):
+            g = c.find('mxGeometry')
+            geo = None
+            if g is not None:
+                geo = tuple(sorted((k, v) for k, v in g.attrib.items()
+                                   if not (k in ('x', 'y') and v == '0')))
+                geo += tuple((e.tag, tuple(sorted(e.attrib.items())),
+                              tuple((x.tag, tuple(sorted(x.attrib.items()))) for x in e)) for e in g)
+            cells.append((tuple(sorted(c.attrib.items())), geo))
+        pages.append((d.get('name'), sorted(cells, key=repr)))
+    return pages
 head('UML-4', 'ไฟล์ที่สร้างด้วยสคริปต์ ตรงกับ index-q.html ณ ตอนนี้')
 for script, out in GEN:
     path = ROOT / out
@@ -231,6 +255,9 @@ for script, out in GEN:
     elif before is None:
         fail.append('UML-4 · %s ไม่มีอยู่ก่อนตรวจ' % out)
         print('  ✗ %-42s ไม่มีไฟล์ (เพิ่งสร้าง)' % out)
+    elif before != path.read_bytes() and out.endswith('.drawio')             and drawio_content(before) == drawio_content(path.read_bytes()):
+        path.write_bytes(before)   # same diagram, only saved by draw.io — keep the committed bytes
+        print('  ✓ %-42s ตรง (ต่างแค่รูปแบบการบันทึกของ draw.io)' % out)
     elif before != path.read_bytes():
         fail.append('UML-4 · %s เก่ากว่า index-q.html' % out)
         print('  ✗ %-42s เนื้อหาเปลี่ยนเมื่อสร้างใหม่ — ที่เก็บไว้เก่าแล้ว' % out)
@@ -238,7 +265,7 @@ for script, out in GEN:
         print('  ✓ %-42s ตรง' % out)
 
 # ══ ER-1 · prisma ↔ v4 ═════════════════════════════════════════════
-head('ER-1', 'schema.prisma ↔ cmas_app_mysql_v4.sql')
+head('ER-1', 'schema.prisma ↔ cmas_app_mysql_v4.sql (v4 ค้างที่ 0004 โดยตั้งใจ · แจ้งเป็นคำเตือน)')
 pr = io.open(PRISMA, encoding='utf-8').read()
 MODELS = set(re.findall(r'^model\s+(\w+)', pr, re.M))
 prisma_cols = {}
@@ -286,7 +313,7 @@ v4 = sql_tables(SQL_V4)
 miss = sorted(set(prisma_cols) - set(v4))
 extra = sorted(set(v4) - set(prisma_cols))
 if miss or extra:
-    fail.append('ER-1 · ตารางไม่ตรง')
+    warn.append('ER-1 · v4 ตารางไม่ตรง schema ปัจจุบัน (v4 ค้างที่ 0004 · ใช้ index-q.sql แทน)')
     print('  ✗ ตาราง — ขาดจาก SQL %s · เกินใน SQL %s' % (miss, extra))
 else:
     print('  ✓ ตาราง %d ตัว ตรงกันทั้งหมด' % len(v4))
@@ -298,7 +325,7 @@ for mdl in sorted(prisma_cols):
         colbad += 1
         print('  ✗ %-20s prisma เท่านั้น=%s · SQL เท่านั้น=%s' % (mdl, only_p, only_s))
 if colbad:
-    fail.append('ER-1 · คอลัมน์ไม่ตรง %d ตาราง' % colbad)
+    warn.append('ER-1 · v4 คอลัมน์ไม่ตรง %d ตาราง (v4 ค้างที่ 0004 · ใช้ index-q.sql แทน)' % colbad)
 else:
     print('  ✓ คอลัมน์ตรงกันทุกตาราง (%d คอลัมน์)' % sum(len(c) for c in prisma_cols.values()))
 

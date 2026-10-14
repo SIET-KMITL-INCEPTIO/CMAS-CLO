@@ -1,5 +1,5 @@
 """
-Build docs/excel/CMAS-UI-to-Database.xlsx — a teaching workbook that shows the
+Build docs/excel/data-model/CMAS-UI-to-Database.xlsx — a teaching workbook that shows the
 SAME mock course from two angles:
 
   * UI-1..UI-7 : the screens an instructor actually fills in the running system
@@ -14,7 +14,7 @@ attainment move. Nothing on UI-7 is stored in the database — that is the point
 the sheet is meant to make.
 
 Run: python scripts/build-ui-to-db-workbook.py
-Output: docs/excel/CMAS-UI-to-Database.xlsx
+Output: docs/excel/data-model/CMAS-UI-to-Database.xlsx
 """
 
 from openpyxl import Workbook
@@ -937,8 +937,8 @@ r += 1
 note(ws, r, 2, "แถวสีเขียวคือค่าที่ 'ไม่มีตารางเก็บ' — ระบบคำนวณใหม่ทุกครั้งที่แสดงผล "
                 "ถ้าวันหนึ่งมีคนเสนอให้เก็บลงตารางเพื่อความเร็ว ต้องตอบให้ได้ก่อนว่าจะทำให้ค่าตรงกับคะแนนดิบเสมอได้อย่างไร", span=4)
 
-wb.save("docs/excel/CMAS-UI-to-Database.xlsx")
-print("Saved docs/excel/CMAS-UI-to-Database.xlsx")
+wb.save("docs/excel/data-model/CMAS-UI-to-Database.xlsx")
+print("Saved docs/excel/data-model/CMAS-UI-to-Database.xlsx")
 print(f"  Activities: {N_ACT}  CLOs: {N_CLO}  Students: {N_STU}")
 print(f"  AssessmentCriteria rows: {len(CRITERIA)} (from {N_ACT * N_CLO} matrix cells)")
 print(f"  Score rows: {len(SCORE_ROWS)} (from {N_STU * N_ACT} grid cells)")
