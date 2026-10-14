@@ -80,7 +80,7 @@ BEGIN
 
     IF v_scale = 'PASS_FAIL' AND NEW."grade" NOT IN ('S', 'U') THEN
         RAISE EXCEPTION
-            'วิชาแบบ PASS_FAIL กำหนดเกรดได้เฉพาะ S / U เท่านั้น ไม่ใช่ % (CR-06 / FR-86)';
+            'วิชาแบบ PASS_FAIL กำหนดเกรดได้เฉพาะ S / U เท่านั้น ไม่ใช่ % (CR-06 / FR-86)', NEW."grade";
     END IF;
     RETURN NEW;
 END;
