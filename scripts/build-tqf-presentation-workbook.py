@@ -1,5 +1,5 @@
 """
-Build docs/excel/CMAS-TQF-Data-Entry.xlsx — the presentation copy for the
+Build docs/excel/data-model/CMAS-TQF-Data-Entry.xlsx — the presentation copy for the
 project advisor.
 
 Same idea as the UI-to-Database workbook, but reframed in the documents an
@@ -15,7 +15,7 @@ real curriculum document at docs/pdf/01. หลักสูตร ค.อ.บ. .
 Student names and every score are fabricated.
 
 Run: python scripts/build-tqf-presentation-workbook.py
-Output: docs/excel/CMAS-TQF-Data-Entry.xlsx
+Output: docs/excel/data-model/CMAS-TQF-Data-Entry.xlsx
 """
 
 import sys
@@ -1325,7 +1325,7 @@ note(ws, r, 2, "แถวสีเขียวคือค่าที่ระ�
 # Optional output path: `python scripts/build-tqf-presentation-workbook.py <out.xlsx>`
 # Excel keeps an exclusive lock on the workbook while it is open, so writing to
 # a scratch path is the way to rebuild without closing it first.
-OUT = sys.argv[1] if len(sys.argv) > 1 else "docs/excel/CMAS-TQF-Data-Entry.xlsx"
+OUT = sys.argv[1] if len(sys.argv) > 1 else "docs/excel/data-model/CMAS-TQF-Data-Entry.xlsx"
 wb.save(OUT)
 print(f"Saved {OUT}")
 print(f"  Course: {COURSE['code']} {COURSE['name']} {COURSE['credits']}")

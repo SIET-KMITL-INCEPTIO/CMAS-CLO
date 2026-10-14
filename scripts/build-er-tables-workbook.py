@@ -1,5 +1,5 @@
 """
-Build docs/excel/CMAS-ER-Tables.xlsx — one sheet per table, every column, with
+Build docs/excel/data-model/CMAS-ER-Tables.xlsx — one sheet per table, every column, with
 PK / FK / UNIQUE highlighted.
 
 Layout per sheet keeps the three columns the advisor already reads and adds two:
@@ -14,7 +14,7 @@ from the diagram: if the schema changes and this file is not updated, nothing is
 produced at all.
 
 Run: python scripts/build-er-tables-workbook.py
-Output: docs/excel/CMAS-ER-Tables.xlsx
+Output: docs/excel/data-model/CMAS-ER-Tables.xlsx
 """
 
 import re
@@ -26,7 +26,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
 ROOT = Path(__file__).resolve().parent.parent
 SQL = ROOT / "docs" / "reference" / "db" / "mysql" / "cmas_app_mysql_v4.sql"
-OUT = ROOT / "docs" / "excel" / "CMAS-ER-Tables.xlsx"
+OUT = ROOT / "docs" / "excel" / "data-model" / "CMAS-ER-Tables.xlsx"
 
 # ---------------------------------------------------------------------------
 # Palette — same tokens as the other workbooks in this folder

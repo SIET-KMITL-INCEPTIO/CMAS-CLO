@@ -77,6 +77,6 @@ D-2 และ D-3 อยู่ใน [[api-design-plan]] §1
 | | ต้นแบบ | แอป |
 |---|---|---|
 | หน้า | 10 หน้า ใช้งานได้ครบ | 4 route — หน้าแรก · login (Google) · รออนุมัติบัญชี · รายวิชา (มีแค่หัวข้อ) |
-| Endpoint | — | 3 จาก 74 และ `/health` ([CMAS-API-Endpoints.xlsx](../../../excel/CMAS-API-Endpoints.xlsx)) |
+| Endpoint | — | 3 จาก 74 และ `/health` ([CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx)) |
 | ข้อมูล | 17 ตาราง | 13 ตาราง · ฐานข้อมูลจริงค้างที่ migration `0003` เพราะ `0004` มีบั๊ก |
 | ความปลอดภัย | แสดงพฤติกรรมเท่านั้น | มีโครง แต่มีช่องโหว่ที่ต้องแก้ก่อน (refresh token · log PII) — [[api-design-plan]] §2 |

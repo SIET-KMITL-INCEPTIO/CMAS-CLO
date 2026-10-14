@@ -10,14 +10,15 @@ docs/
 ├── pages/        ← หน้า HTML ที่เขียนมือ ไม่ได้มาจาก markdown
 ├── reference/    ← artifact อ้างอิง (SQL dump, .mwb) ไม่ใช่เอกสาร
 │   └── db/  mysql/ (โมเดลแอป) · enterprise/ (โมเดลสถาบัน — แยกสาย) · migrations/ (ก่อน Prisma)
-├── uml/          ← ไดอะแกรม .drawio
+├── diagrams/     ← ไดอะแกรม แยกตามประเภท: usecase/ · er/ · dfd/ · architecture/ · flowchart/ · threat-model/
 ├── generated/    ← ไฟล์ที่ script สร้าง (gitignored)
-├── excel/  word/  pdf/   ← ไฟล์ส่งมอบ (สร้างจาก scripts/ บางส่วน)
+├── excel/        ← แยกตามการใช้: planning/ · data-model/ · api/ · import-test/
+├── word/  pdf/   ← ไฟล์ส่งมอบ (สร้างจาก scripts/ บางส่วน)
 ├── _generator/   ← ตัว build เอง
 └── VERSIONS.md   ← ไฟล์ไหนเป็นฉบับปัจจุบัน ไฟล์ไหนเป็นรุ่นเก่า และเลขเวอร์ชันแต่ละชุดตรงกันอย่างไร
 ```
 
-> **ก่อนเปิดไฟล์ใน `reference/db/` หรือ `uml/` เพื่อนำเสนอ อ่าน [`VERSIONS.md`](VERSIONS.md) ก่อน**
+> **ก่อนเปิดไฟล์ใน `reference/db/` หรือ `diagrams/` เพื่อนำเสนอ อ่าน [`VERSIONS.md`](VERSIONS.md) ก่อน**
 > ไฟล์ปัจจุบันใช้ชื่อคงที่ ไม่มีวันที่ · ไฟล์ที่ถูกแทนที่ย้ายไป `superseded/` พร้อมวันที่หรือเลขเวอร์ชันต่อท้าย
 > · เลข `v3`/`v4` ในชื่อไฟล์ MySQL **ไม่ใช่** เลขเดียวกับ v2–v5.1 ใน `schema.md` — ใช้เลข migration เป็นหลัก
 
@@ -46,7 +47,7 @@ python -m http.server 8899 --directory docs/html
 | `markdown/` | เอกสารต้นฉบับ **`.md` เท่านั้น** | ✅ แก้ที่นี่ | ✅ |
 | `html/` | เว็บที่ generate ออกมา | ❌ build ทับ | ❌ gitignored |
 | `pages/` | หน้า HTML เขียนมือ — **`index-q.html` = ต้นแบบ UI ทั้งระบบ** (ไฟล์เดียว ใช้เป็นข้อกำหนดเชิงพฤติกรรมของแอปจริง) · evaluation-criteria, tech-stack-review, design-system-preview, database-preview | ✅ | ✅ |
-| `uml/` | ไดอะแกรม `.drawio` — `uml/CMAS/` = แบบจำลองระบบที่จะสร้าง (`uml/CMAS/architecture/` = ร่างสถาปัตยกรรมและ flowchart วาดมือ) · `uml/index-q/` = **สกัดจาก `index-q.html`** (ER · UML · use case) | ✅ | ✅ |
+| `diagrams/` | ไดอะแกรม แยกตามประเภท — `usecase/` (UML use case) · `er/` · `dfd/` · `architecture/` (สถาปัตยกรรมและโครงสร้างสิทธิ์) · `flowchart/` · `threat-model/` (Threat Modeling Tool) · ชื่อที่ลงท้าย `-INDEX-Q` **สกัดจาก `index-q.html`** · ลงท้าย `_Handwritten` วาดมือ · ภาพรวมอยู่ที่ `diagrams/index-q-architecture.md` | ✅ | ✅ |
 | `reference/db/` | SQL dump, `.mwb`, ER PDF — artifact ที่เอกสารอ้างถึง | ✅ | ✅ |
 | `generated/` | `project-plan.csv` จาก `npm run plan:csv` | ❌ script ทับ | ❌ gitignored |
 | `excel/` | workbook ส่งมอบ — บางไฟล์สร้างจาก `scripts/build-*.py` | ⚠️ ดูตาราง | ✅ |
@@ -72,24 +73,24 @@ python -m http.server 8899 --directory docs/html
 | `npm run docs:build` | `docs/html/` ทั้งโฟลเดอร์ |
 | `npm run plan:csv` | `docs/generated/project-plan.csv` |
 | `npm run thesis:ch2` | `docs/word/CMAS-chapter-2-theory.docx` |
-| `python scripts/build-ui-to-db-workbook.py` | `docs/excel/CMAS-UI-to-Database.xlsx` |
-| `python scripts/build-er-excel.py` | `docs/excel/CMAS-ER-Diagram.xlsx` — ⚠ ยังไม่มีไฟล์นี้ใน repo |
-| `python scripts/build-er-tables-workbook.py` | `docs/excel/CMAS-ER-Tables.xlsx` — อ่านจาก `cmas_app_mysql_v4.sql` จึง **ค้างที่ migration 0004** (ดู `VERSIONS.md` §3.2) |
-| `python scripts/build-er-data-entry-workbook.py` | `docs/excel/CMAS-ER-Data-Entry.xlsx` — อ่านจาก v4 เช่นกัน · ข้อมูลสมมติชุดเดียวกับ `CMAS-TQF-Data-Entry.xlsx` |
-| `python scripts/build-score-import-template.py` | `docs/excel/CMAS-Score-Import-Template.xlsx` — ⚠ ยังไม่มีไฟล์นี้ใน repo |
-| `python scripts/build-tqf-presentation-workbook.py` | `docs/excel/CMAS-TQF-Data-Entry.xlsx` |
-| `python scripts/build-usecase-drawio.py` | `docs/uml/index-q/index-q-usecase.drawio` — use case diagram ของ `index-q.html` 6 หน้า สัญกรณ์ UML 2.5 เต็มรูป อ่านสิทธิ์จาก `PERM` ในหน้านั้น |
-| `python scripts/build-index-q-uml-drawio.py` | `docs/uml/index-q/UML-INDEX-Q.drawio` — ข้อมูลชุดเดียวกัน หน้าเดียว วาดด้วยสัญกรณ์เดียวกับ `docs/uml/CMAS/UML-Layer2_Handwritten.drawio` · ใช้โมเดลจากสคริปต์บรรทัดบนโดยตรง ไม่ได้คัดลอกมา |
-| `python scripts/build-structure-pages.py` | `docs/uml/CMAS/Structure.drawio` — **เพิ่มหน้า 2 และ 3** ต่อจากหน้าที่วาดด้วยมือ · หน้า 2 โครงสร้างสิทธิ์ปัจจุบัน หน้า 3 ภาพสมมุติถ้ายุบเหลือผู้สอนคนเดียว · หน้า 1 ไม่ถูกแตะ และรันซ้ำได้ไม่บวมขึ้น |
-| `python scripts/build-er-index-q-drawio.py` | `docs/uml/index-q/ER-INDEX-Q.drawio` (แก้ไขได้) **และ** `ER-INDEX-Q.html` (สำหรับนำเสนอ) — **ER diagram ของ `index-q.html`** 16 ตาราง 19 ความสัมพันธ์ แบบ crow's foot · อ่านจาก `docs/reference/db/mysql/index-q.sql` ทุกคอลัมน์ ทุก FK · ทุกเส้นมีเลนของตัวเอง ไม่ทับกัน · ของที่ต้นแบบเสนอเพิ่ม `[index-q]` พื้นเหลือง · สองไฟล์ใช้พิกัดชุดเดียวกัน · ภาพเดียวที่แสดง `AuthEvent` และ `UploadReject` |
-| `msedge --headless=new --no-pdf-header-footer --print-to-pdf=docs\uml\index-q\ER-INDEX-Q.pdf docs\uml\index-q\ER-INDEX-Q.html` | `docs/uml/index-q/ER-INDEX-Q.pdf` — PDF หน้าเดียวขนาดพอดีภาพ สำหรับฉายหรือแนบรายงาน · **รันใหม่ทุกครั้งหลังรันบรรทัดบน** เพราะ `check-diagrams.py` ตรวจความสดของ `.drawio` เท่านั้น ไม่ได้ตรวจ PDF |
+| `python scripts/build-ui-to-db-workbook.py` | `docs/excel/data-model/CMAS-UI-to-Database.xlsx` |
+| `python scripts/build-er-excel.py` | `docs/excel/data-model/CMAS-ER-Diagram.xlsx` — ⚠ ยังไม่มีไฟล์นี้ใน repo |
+| `python scripts/build-er-tables-workbook.py` | `docs/excel/data-model/CMAS-ER-Tables.xlsx` — อ่านจาก `cmas_app_mysql_v4.sql` จึง **ค้างที่ migration 0004** (ดู `VERSIONS.md` §3.2) |
+| `python scripts/build-er-data-entry-workbook.py` | `docs/excel/data-model/CMAS-ER-Data-Entry.xlsx` — อ่านจาก v4 เช่นกัน · ข้อมูลสมมติชุดเดียวกับ `CMAS-TQF-Data-Entry.xlsx` |
+| `python scripts/build-score-import-template.py` | `docs/excel/import-test/CMAS-Score-Import-Template.xlsx` — ⚠ ยังไม่มีไฟล์นี้ใน repo |
+| `python scripts/build-tqf-presentation-workbook.py` | `docs/excel/data-model/CMAS-TQF-Data-Entry.xlsx` |
+| `python scripts/build-usecase-drawio.py` | `docs/diagrams/usecase/index-q-usecase.drawio` — use case diagram ของ `index-q.html` 6 หน้า สัญกรณ์ UML 2.5 เต็มรูป อ่านสิทธิ์จาก `PERM` ในหน้านั้น |
+| `python scripts/build-index-q-uml-drawio.py` | `docs/diagrams/usecase/UML-INDEX-Q.drawio` — ข้อมูลชุดเดียวกัน หน้าเดียว วาดด้วยสัญกรณ์เดียวกับ `docs/diagrams/usecase/UML-Layer2_Handwritten.drawio` · ใช้โมเดลจากสคริปต์บรรทัดบนโดยตรง ไม่ได้คัดลอกมา |
+| `python scripts/build-structure-pages.py` | `docs/diagrams/architecture/Structure.drawio` — **เพิ่มหน้า 2 และ 3** ต่อจากหน้าที่วาดด้วยมือ · หน้า 2 โครงสร้างสิทธิ์ปัจจุบัน หน้า 3 ภาพสมมุติถ้ายุบเหลือผู้สอนคนเดียว · หน้า 1 ไม่ถูกแตะ และรันซ้ำได้ไม่บวมขึ้น |
+| `python scripts/build-er-index-q-drawio.py` | `docs/diagrams/er/ER-INDEX-Q.drawio` (แก้ไขได้) **และ** `ER-INDEX-Q.html` (สำหรับนำเสนอ) — **ER diagram ของ `index-q.html`** 16 ตาราง 19 ความสัมพันธ์ แบบ crow's foot · อ่านจาก `docs/reference/db/mysql/index-q.sql` ทุกคอลัมน์ ทุก FK · ทุกเส้นมีเลนของตัวเอง ไม่ทับกัน · ของที่ต้นแบบเสนอเพิ่ม `[index-q]` พื้นเหลือง · สองไฟล์ใช้พิกัดชุดเดียวกัน · ภาพเดียวที่แสดง `AuthEvent` และ `UploadReject` |
+| `msedge --headless=new --no-pdf-header-footer --print-to-pdf=docs\diagrams\er\ER-INDEX-Q.pdf docs\diagrams\er\ER-INDEX-Q.html` | `docs/diagrams/er/ER-INDEX-Q.pdf` — PDF หน้าเดียวขนาดพอดีภาพ สำหรับฉายหรือแนบรายงาน · **รันใหม่ทุกครั้งหลังรันบรรทัดบน** เพราะ `check-diagrams.py` ตรวจความสดของ `.drawio` เท่านั้น ไม่ได้ตรวจ PDF |
 | `python scripts/check-diagrams.py` | **ตรวจ** ว่า UML และ ER พร้อมนำเสนอ — เลข use case ตรงกันข้ามไฟล์ · `schema.prisma` ↔ `cmas_app_mysql_v4.sql` ทั้งตารางและคอลัมน์ · ไฟล์ที่สร้างด้วยสคริปต์ยังไม่เก่า · ไฟล์ที่กำกวมบนโต๊ะนำเสนอ · `exit 1` = ยังไม่พร้อม |
 | `node scripts/check-perm-matrix.js` | **ตรวจ** เมทริกซ์ `PERM` ใน `index-q.html` เทียบกับ `can()` จริง — 4 บทบาท × 18 capability ทุกช่อง |
 | `node scripts/check-action-caps.js` | **ตรวจ** ว่าทุก `data-act` map ไปหา capability ที่ถูกต้องผ่าน `capOf()` — SEC-1/SEC-2 |
 | `node scripts/check-auth-events.js` | **ตรวจ** ว่า `FORMS.user.save()` เขียน `AuthEvent` ครบทุกทาง — สร้างบัญชี/เปลี่ยนบทบาท/ระงับผ่านฟอร์มแก้ไข/แก้ชื่อ-อีเมล (UC 1.1/1.2/1.4) · ก่อนแก้ 2569-09-13 ฟังก์ชันนี้ไม่เขียน AuthEvent เลยสักบรรทัด |
-| `python scripts/build-dfd-index-q-drawio.py` | `docs/uml/index-q/DFD-INDEX-Q.drawio` — DFD ระดับ 0–2 ของ `index-q.html` ภาษาธรรมดา · ไม่ยอมเขียนไฟล์ถ้าผิดกฎ DFD (เส้นคู่ขอ-ตอบ · ไม่มีเส้นระหว่าง process · สมดุลระหว่างระดับ) |
+| `python scripts/build-dfd-index-q-drawio.py` | `docs/diagrams/dfd/DFD-INDEX-Q.drawio` — DFD ระดับ 0–2 ของ `index-q.html` ภาษาธรรมดา · ไม่ยอมเขียนไฟล์ถ้าผิดกฎ DFD (เส้นคู่ขอ-ตอบ · ไม่มีเส้นระหว่าง process · สมดุลระหว่างระดับ) |
 | `python scripts/build-index-q-design-system.py` | `docs/pages/index-q-design-system.html` — โทเคนสีและตัวอักษรของ `index-q.html` อ่านจากไฟล์ต้นแบบโดยตรง พร้อมค่า contrast และจำนวนครั้งที่ใช้ |
-| `python scripts/build-api-endpoints-workbook.py` | `docs/excel/CMAS-API-Endpoints.xlsx` — endpoint ทั้งหมด กฎ และความปลอดภัย · ไม่ยอมเขียนไฟล์ถ้าไม่ตรงกับ `api-design.md` §3 |
+| `python scripts/build-api-endpoints-workbook.py` | `docs/excel/api/CMAS-API-Endpoints.xlsx` — endpoint ทั้งหมด กฎ และความปลอดภัย · ไม่ยอมเขียนไฟล์ถ้าไม่ตรงกับ `api-design.md` §3 |
 | `python scripts/build-import-test-workbooks.py` | `docs/excel/import-test/*.xlsx` — ไฟล์ทดสอบตัวนำเข้า Excel |
 
 script ทั้งหมดรันจาก **root ของ repo** ไม่ใช่จาก `scripts/`

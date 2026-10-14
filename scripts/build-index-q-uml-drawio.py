@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """index-q.html as a use case diagram in the TEAM's house style.
 
-   Output: docs/uml/index-q/UML-INDEX-Q.drawio — one page
+   Output: docs/diagrams/usecase/UML-INDEX-Q.drawio — one page
 
    This is the SAME MODEL as build-usecase-drawio.py drawn a second way. That
    script renders strict UML 2.5 for a reviewer: monochrome, uc frames, subject
    boundary, extension-point compartments, six pages. This one renders the
-   notation the team already uses in docs/uml/CMAS/UML-Layer2_Handwritten.drawio, so the new
+   notation the team already uses in docs/diagrams/usecase/UML-Layer2_Handwritten.drawio, so the new
    diagram sits beside the old ones without looking imported from elsewhere:
 
      * one tall page, yellow #FFFFCC system boundary, "System" in 25px bold
@@ -57,7 +57,7 @@ for _s in (sys.stdout, sys.stderr):
         _s.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'docs' / 'uml' / 'index-q' / 'UML-INDEX-Q.drawio'
+OUT = ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML-INDEX-Q.drawio'
 
 # ══ the model, imported ══════════════════════════════════════════════
 PKG_TEXT, NEW, UC_TEXT = m.PKG_TEXT, m.NEW, m.UC_TEXT
@@ -294,7 +294,7 @@ def build():
             'สร้างจาก USE_CASES และเมทริกซ์ PERM ใน <i>docs/pages/index-q.html</i> ด้วย '
             '<i>scripts/build-index-q-uml-drawio.py</i> — แก้ที่ไฟล์ต้นทางแล้วสร้างใหม่ '
             'อย่าแก้ที่ภาพนี้<br><br>'
-            'สัญกรณ์เดียวกับ <i>docs/uml/CMAS/UML-Layer2_Handwritten.drawio</i><br><br>'
+            'สัญกรณ์เดียวกับ <i>docs/diagrams/usecase/UML-Layer2_Handwritten.drawio</i><br><br>'
             '<b>บทบาทในรายวิชามีบทบาทเดียว</b> — ผู้สอนทุกคนของวิชาทำได้เท่ากัน (D1) '
             'ไม่มีผู้ประสานงาน / ผู้สอนร่วม / ผู้ช่วยสอนแล้ว<br><br>'
             '<b>ผู้ดูแลระบบไม่ทำงานในรายวิชา</b> — สร้าง ลบ และผูกผู้สอนเข้ากับรายวิชาเท่านั้น '

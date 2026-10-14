@@ -1,5 +1,5 @@
 """
-Build docs/excel/CMAS-ER-Data-Entry.xlsx — "กรอกอะไร ลงคอลัมน์ไหน".
+Build docs/excel/data-model/CMAS-ER-Data-Entry.xlsx — "กรอกอะไร ลงคอลัมน์ไหน".
 
 Walks the ER diagram (docs/reference/db/mysql/cmas_app_mysql_v4.sql, v4, 13
 tables — mirrored from database/schema.prisma) table by table and renders every
@@ -18,10 +18,10 @@ mistake a deliberate omission for a forgotten field. Orange rows are things
 
 Course facts come from the curriculum document (03376120 ระบบฐานข้อมูล 3(2-2-5));
 CLO, activities, students and every score are fabricated, and are kept identical
-to docs/excel/CMAS-TQF-Data-Entry.xlsx so the two workbooks describe one course.
+to docs/excel/data-model/CMAS-TQF-Data-Entry.xlsx so the two workbooks describe one course.
 
 Run: python scripts/build-er-data-entry-workbook.py
-Output: docs/excel/CMAS-ER-Data-Entry.xlsx
+Output: docs/excel/data-model/CMAS-ER-Data-Entry.xlsx
 """
 
 from pathlib import Path
@@ -29,7 +29,7 @@ from pathlib import Path
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
-OUT = Path(__file__).resolve().parent.parent / "docs" / "excel" / "CMAS-ER-Data-Entry.xlsx"
+OUT = Path(__file__).resolve().parent.parent / "docs" / "excel" / "data-model" / "CMAS-ER-Data-Entry.xlsx"
 
 # ---------------------------------------------------------------------------
 # Palette — same tokens as build-tqf-presentation-workbook.py

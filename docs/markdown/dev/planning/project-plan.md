@@ -351,7 +351,7 @@ CLO 5                                                     ███████�
 ## 4. สรุปภาระงานรายคน
 
 > **แก้ 2026-09-13:** เปลี่ยนจาก "เจ้าของราย sprint" เป็น **เจ้าของราย feature** ตาม 9 package ใน Use Case Diagram
-> (`docs/uml/index-q/index-q-usecase.drawio`) คนละ 3 feature ทำครบตั้งแต่ API ถึงหน้าจอ · ลำดับงานราย sprint อยู่ใน [[sprint-plan-2026]]
+> (`docs/diagrams/usecase/index-q-usecase.drawio`) คนละ 3 feature ทำครบตั้งแต่ API ถึงหน้าจอ · ลำดับงานราย sprint อยู่ใน [[sprint-plan-2026]]
 > ชื่อผู้รับผิดชอบรายงานย่อยในตาราง CLO 4 ด้านบนยังเป็นของการแบ่งเดิม — **ให้ถือตารางนี้เป็นหลัก** จนกว่าจะย้ายวันที่ตาม sprint-plan-2026 §9
 
 | คน | Feature (UML package) | งานฐานที่ถือ | งานเอกสารหลัก |

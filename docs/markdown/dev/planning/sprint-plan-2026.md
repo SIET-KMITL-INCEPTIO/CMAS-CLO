@@ -21,7 +21,7 @@ See also: [[project-plan]] · [[code-rule]] · [[git-rule]] · [[features-pages]
 
 ## 1. แบ่งงาน — 9 feature คนละ 3
 
-ที่มา: 9 package ใน `docs/uml/index-q/index-q-usecase.drawio` (สร้างด้วย `scripts/build-usecase-drawio.py` จากต้นแบบ)
+ที่มา: 9 package ใน `docs/diagrams/usecase/index-q-usecase.drawio` (สร้างด้วย `scripts/build-usecase-drawio.py` จากต้นแบบ)
 
 | คน | Feature 1 | Feature 2 | Feature 3 | งานฐานที่ถือ (ไม่อยู่ใน UML) |
 |---|---|---|---|---|

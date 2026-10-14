@@ -15,7 +15,7 @@ See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
 > ไม่มี `EmailVerificationToken`) — migration `0005`–`0007` ไม่ได้ถูกตามเข้าไป
 > `reference/db/mysql/index-q.sql` ใช้ Prisma ถึง `0007` เป็นฐาน (13 ตาราง) แล้วเติมส่วนที่ต้นแบบ `index-q.html`
 > เสนอเพิ่มอีก 3 ตาราง (`AuthEvent` · `UploadReject` · `CourseGroupWeight`) รวม **16 ตาราง · 19 FK**
-> — ทุกอย่างที่เพิ่มติดป้าย `[index-q]` ใน COMMENT · ภาพ ER ของไฟล์นี้: `docs/uml/index-q/ER-INDEX-Q.*`
+> — ทุกอย่างที่เพิ่มติดป้าย `[index-q]` ใน COMMENT · ภาพ ER ของไฟล์นี้: `docs/diagrams/er/ER-INDEX-Q.*`
 > · แผนภาพ mermaid ด้านล่างเป็นของ **`schema.prisma` ปัจจุบัน** (ไม่รวมส่วนที่ index-q เสนอเพิ่ม)
 
 > **Updated 2026-09-06 — ตารางตัดเกรดเหลือ 2 ตาราง.** ตัด `GradeScheme` และ `GradeRun` ออก

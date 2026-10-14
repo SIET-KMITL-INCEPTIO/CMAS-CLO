@@ -31,17 +31,17 @@ for _s in (sys.stdout, sys.stderr):
         _s.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = Path(__file__).resolve().parents[1]
-UML_MD = ROOT / 'docs' / 'uml' / 'CMAS' / 'UML.md'
-LAYER2 = ROOT / 'docs' / 'uml' / 'CMAS' / 'UML-Layer2_Handwritten.drawio'
+UML_MD = ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML.md'
+LAYER2 = ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML-Layer2_Handwritten.drawio'
 APP = ROOT / 'docs' / 'pages' / 'index-q.html'
 PRISMA = ROOT / 'database' / 'schema.prisma'
 SQL_V4 = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'cmas_app_mysql_v4.sql'
 SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
-GEN = [('scripts/build-usecase-drawio.py', 'docs/uml/index-q/index-q-usecase.drawio'),
-       ('scripts/build-index-q-uml-drawio.py', 'docs/uml/index-q/UML-INDEX-Q.drawio'),
-       ('scripts/build-structure-pages.py', 'docs/uml/CMAS/Structure.drawio'),
-       ('scripts/build-er-index-q-drawio.py', 'docs/uml/index-q/ER-INDEX-Q.drawio'),
-       ('scripts/build-dfd-index-q-drawio.py', 'docs/uml/index-q/DFD-INDEX-Q.drawio')]
+GEN = [('scripts/build-usecase-drawio.py', 'docs/diagrams/usecase/index-q-usecase.drawio'),
+       ('scripts/build-index-q-uml-drawio.py', 'docs/diagrams/usecase/UML-INDEX-Q.drawio'),
+       ('scripts/build-structure-pages.py', 'docs/diagrams/architecture/Structure.drawio'),
+       ('scripts/build-er-index-q-drawio.py', 'docs/diagrams/er/ER-INDEX-Q.drawio'),
+       ('scripts/build-dfd-index-q-drawio.py', 'docs/diagrams/dfd/DFD-INDEX-Q.drawio')]
 
 # ตารางที่ index-q.sql เสนอเพิ่มจาก schema.prisma · มีบันทึกเหตุผลไว้ใน coverage GAPS
 # (2569-09-18: ฐานเทียบเปลี่ยนจาก v4 เป็น schema.prisma — migration 0005/0006
@@ -75,7 +75,7 @@ fail, warn = [], []
 # Declared files still get reported in full; they just stop blocking.
 SUPERSEDED = {}
 for _m in re.finditer(r'^STATUS:SUPERSEDED\s+(\S+)\s+(.*)$',
-                      io.open(ROOT / 'docs' / 'uml' / 'CMAS' / 'UML.md',
+                      io.open(ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML.md',
                               encoding='utf-8').read(), re.M):
     SUPERSEDED[_m.group(1)] = _m.group(2).strip()
 

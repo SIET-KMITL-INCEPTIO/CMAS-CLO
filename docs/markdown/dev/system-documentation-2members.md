@@ -347,7 +347,7 @@ erDiagram
 | `database/schema.prisma` | **แหล่งจริง** ของโครงสร้างข้อมูล (PostgreSQL) |
 | `database/migrations/0001…0007` | ลำดับการเปลี่ยนโครงสร้าง + CHECK constraint + trigger |
 | `docs/reference/db/mysql/index-q.sql` | สำเนาเชิง MySQL สำหรับ reverse-engineer เป็น EER Diagram ใน MySQL Workbench — Prisma ถึง 0007 + ส่วนที่ต้นแบบ index-q เสนอเพิ่ม (16 ตาราง · 19 FK) · `cmas_app_mysql_v4.sql` แช่แข็งที่ 0004 ไม่ตรง schema แล้ว |
-| `docs/uml/index-q/ER-INDEX-Q.drawio` / `.pdf` | ไดอะแกรมสำหรับใส่เล่มและพรีเซนต์ |
+| `docs/diagrams/er/ER-INDEX-Q.drawio` / `.pdf` | ไดอะแกรมสำหรับใส่เล่มและพรีเซนต์ |
 
 ## 2.4 Tech Stack
 
@@ -538,10 +538,10 @@ flowchart LR
 |---|---|
 | ขอบเขต feature / หน้าจอ | `docs/markdown/dev/architecture/features-pages.md` |
 | ข้อกำหนดระบบ (FR / NFR / CR) | `docs/markdown/dev/requirements/srs.md` |
-| Use Case Diagram | `docs/markdown/graph/usecase.md` · `docs/uml/index-q/index-q-usecase.drawio` |
-| ER-Diagram | `database/schema.prisma` · `docs/markdown/sql/mysql-er-diagram.md` · `docs/uml/index-q/ER-INDEX-Q.drawio` |
+| Use Case Diagram | `docs/markdown/graph/usecase.md` · `docs/diagrams/usecase/index-q-usecase.drawio` |
+| ER-Diagram | `database/schema.prisma` · `docs/markdown/sql/mysql-er-diagram.md` · `docs/diagrams/er/ER-INDEX-Q.drawio` |
 | Tech Stack | `docs/markdown/graph/tech-stack.md` · `docs/markdown/dev/architecture/dev.md` §1 |
-| Architecture | `README.md` §Structure · `docs/uml/CMAS/UML.md` · `docs/uml/index-q/index-q-architecture.md` |
+| Architecture | `README.md` §Structure · `docs/diagrams/usecase/UML.md` · `docs/diagrams/index-q-architecture.md` |
 | DFD | `docs/markdown/dev/architecture/dfd.md` (v2.5.0) |
 | Mock-up | `docs/pages/index-q.html` · `docs/pages/design-system-preview.html` |
 | ผลทบทวน mockup | `docs/markdown/dev/planning/mockup-feedback-plan.md` |

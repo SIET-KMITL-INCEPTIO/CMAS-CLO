@@ -11,7 +11,7 @@ This file is the entry point, not a duplicate. Details live in:
 - `docs/markdown/dev/architecture/dev.md`: architecture, structure (§3), naming (§4), patterns
 - `docs/markdown/rule/code-rule.md`: layer rules (Route → Controller → Service → Repository)
 - `docs/markdown/dev/requirements/srs.md`: requirements (FR-xx / NFR-xx IDs cited in code comments)
-- `docs/pages/index-q.html`: single-file UI prototype, **ahead of the app**. `docs/uml/index-q/`, `docs/reference/db/mysql/index-q.sql` and the `build-*index-q*` scripts are derived from it; `index-q.sql` = `schema.prisma` + the prototype's proposed additions (README → "Two tracks")
+- `docs/pages/index-q.html`: single-file UI prototype, **ahead of the app**. `docs/diagrams/`, `docs/reference/db/mysql/index-q.sql` and the `build-*index-q*` scripts are derived from it; `index-q.sql` = `schema.prisma` + the prototype's proposed additions (README → "Two tracks")
 - `docs/markdown/dev/architecture/prototype-to-app.md`: what each page takes from the prototype vs the app, and what never to copy
 - `app/client/src/features/README.md`, `app/server/src/modules/README.md`: per-feature file contract
 
@@ -37,7 +37,7 @@ Ports: client `5173`, server `3001`. Launch configs are in `.claude/launch.json`
 app/client/src/features/<name>/   Page.page.tsx · Component.tsx · useXxx.ts · xxx.api.ts · xxx.types.ts
 app/server/src/modules/<name>/    xxx.route.ts · xxx.controller.ts · xxx.service.ts · model.repository.ts · xxx.validator.ts
 database/                         schema.prisma · migrations/ · seed.ts
-docs/                             markdown/ (source) · pages/ (hand-written HTML) · reference/ · uml/ · excel/ word/ pdf/
+docs/                             markdown/ (source) · pages/ (hand-written HTML) · reference/ · diagrams/ (by type) · excel/ (by purpose) · word/ pdf/
 scripts/                          setup.mjs · build-*.py (diagram/workbook generators) · check-*.{py,js}
 ```
 
