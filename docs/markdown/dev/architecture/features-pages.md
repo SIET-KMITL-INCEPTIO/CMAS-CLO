@@ -1,6 +1,6 @@
 # Feature List & Page Count — CMAS
 
-See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]]
+See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]] · [[prototype-to-app]]
 
 > อ้างอิงจาก `database/schema.prisma` ปัจจุบัน (migration 0001–0007) — **single-tenant, 13 models:** User,
 > EmailVerificationToken, Course, CourseInstructor, CLO, BehavioralObjective, Activity, AssessmentCriteria,

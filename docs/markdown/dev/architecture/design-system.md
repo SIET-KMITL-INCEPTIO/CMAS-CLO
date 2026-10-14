@@ -4,6 +4,9 @@ See also: [[Design System Strategy]] · [[verdure-design-system]] · [[concept-c
 
 **Version 1.4.0** · Production Release · ใช้งานจริง
 
+> **หมายเหตุ 2026-10-14:** ต้นแบบ `docs/pages/index-q.html` ใช้โทเคนอีกชุดหนึ่ง (Nocturnal Atelier v3.2) ไม่ใช่ชุดในเอกสารนี้ ·
+> ดูค่าจริงของต้นแบบที่ `docs/pages/index-q-design-system.html` · การเลือกชุดที่แอปจะใช้ยังรอตัดสิน — [[prototype-to-app]] §5
+
 > **1.4.0 Changelog:** รวม typeface เหลือ **IBM Plex Sans Thai** เพียง family เดียว (เดิม Noto Serif + Plex Mono) · Icons ใช้ **React Icons (Lucide)** เท่านั้น — ห้าม emoji · Google Colors สงวนไว้สำหรับ **status semantic** ไม่ใช้ decorative
 
 > ระบบออกแบบที่สร้างบนรากฐาน Material Design 3 Color System — ใช้ palette สี Cool Neutral Violet ที่มีความ sophisticated, อ่านง่าย และ accessible ในทุก surface layer ผสมผสานกับ typography ที่สมดุลระหว่างมรดกทางวัฒนธรรมและประสิทธิภาพในการใช้งาน

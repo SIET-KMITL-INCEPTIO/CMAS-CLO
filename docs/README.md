@@ -87,6 +87,9 @@ python -m http.server 8899 --directory docs/html
 | `node scripts/check-perm-matrix.js` | **ตรวจ** เมทริกซ์ `PERM` ใน `index-q.html` เทียบกับ `can()` จริง — 4 บทบาท × 18 capability ทุกช่อง |
 | `node scripts/check-action-caps.js` | **ตรวจ** ว่าทุก `data-act` map ไปหา capability ที่ถูกต้องผ่าน `capOf()` — SEC-1/SEC-2 |
 | `node scripts/check-auth-events.js` | **ตรวจ** ว่า `FORMS.user.save()` เขียน `AuthEvent` ครบทุกทาง — สร้างบัญชี/เปลี่ยนบทบาท/ระงับผ่านฟอร์มแก้ไข/แก้ชื่อ-อีเมล (UC 1.1/1.2/1.4) · ก่อนแก้ 2569-09-13 ฟังก์ชันนี้ไม่เขียน AuthEvent เลยสักบรรทัด |
+| `python scripts/build-dfd-index-q-drawio.py` | `docs/uml/index-q/DFD-INDEX-Q.drawio` — DFD ระดับ 0–2 ของ `index-q.html` ภาษาธรรมดา · ไม่ยอมเขียนไฟล์ถ้าผิดกฎ DFD (เส้นคู่ขอ-ตอบ · ไม่มีเส้นระหว่าง process · สมดุลระหว่างระดับ) |
+| `python scripts/build-index-q-design-system.py` | `docs/pages/index-q-design-system.html` — โทเคนสีและตัวอักษรของ `index-q.html` อ่านจากไฟล์ต้นแบบโดยตรง พร้อมค่า contrast และจำนวนครั้งที่ใช้ |
+| `python scripts/build-api-endpoints-workbook.py` | `docs/excel/CMAS-API-Endpoints.xlsx` — endpoint ทั้งหมด กฎ และความปลอดภัย · ไม่ยอมเขียนไฟล์ถ้าไม่ตรงกับ `api-design.md` §3 |
 | `python scripts/build-import-test-workbooks.py` | `docs/excel/import-test/*.xlsx` — ไฟล์ทดสอบตัวนำเข้า Excel |
 
 script ทั้งหมดรันจาก **root ของ repo** ไม่ใช่จาก `scripts/`

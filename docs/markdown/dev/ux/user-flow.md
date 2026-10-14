@@ -1,6 +1,6 @@
 # User Flow & UX Design — CMAS
 
-See also: [[srs]] · [[features-pages]] · [[design-system]] · [[dev]] · [[usecase]]
+See also: [[srs]] · [[features-pages]] · [[design-system]] · [[dev]] · [[usecase]] · [[prototype-to-app]]
 
 > **Version:** 1.2.0 | **Created:** 2026-08-07 | **Updated:** 2026-10-14
 > **Baseline:** [[srs]] v2.4.0 (single-tenant, 13 models) · [[features-pages]] (14 หน้า)

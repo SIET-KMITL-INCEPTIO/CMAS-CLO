@@ -12,6 +12,7 @@ This file is the entry point, not a duplicate. Details live in:
 - `docs/markdown/rule/code-rule.md`: layer rules (Route → Controller → Service → Repository)
 - `docs/markdown/dev/requirements/srs.md`: requirements (FR-xx / NFR-xx IDs cited in code comments)
 - `docs/pages/index-q.html`: single-file UI prototype, **ahead of the app**. `docs/uml/index-q/`, `docs/reference/db/mysql/index-q.sql` and the `build-*index-q*` scripts are derived from it; `index-q.sql` = `schema.prisma` + the prototype's proposed additions (README → "Two tracks")
+- `docs/markdown/dev/architecture/prototype-to-app.md`: what each page takes from the prototype vs the app, and what never to copy
 - `app/client/src/features/README.md`, `app/server/src/modules/README.md`: per-feature file contract
 
 **Source of truth is the current code.** When a doc disagrees with the code, trust the code
