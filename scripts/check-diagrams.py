@@ -218,6 +218,31 @@ else:
     print('  ✓ ตรงกัน')
 
 # ══ UML-4 · ไฟล์ที่สร้างเอง ยัง fresh ไหม ═════════════════════════
+def drawio_content(data):
+    """What a .drawio says, without how draw.io happened to save it.
+
+    Opening a generated file in draw.io and saving rewrites it: one line becomes
+    ~900 indented lines, <mxfile> gains host/agent/modified, and x="0" / y="0"
+    on a geometry are dropped because 0 is the default. None of that changes the
+    diagram, so comparing bytes flagged every saved file as stale."""
+    try:
+        root = ET.fromstring(data)
+    except ET.ParseError:
+        return data
+    pages = []
+    for d in root.iter('diagram'):
+        cells = []
+        for c in d.iter('mxCell'):
+            g = c.find('mxGeometry')
+            geo = None
+            if g is not None:
+                geo = tuple(sorted((k, v) for k, v in g.attrib.items()
+                                   if not (k in ('x', 'y') and v == '0')))
+                geo += tuple((e.tag, tuple(sorted(e.attrib.items())),
+                              tuple((x.tag, tuple(sorted(x.attrib.items()))) for x in e)) for e in g)
+            cells.append((tuple(sorted(c.attrib.items())), geo))
+        pages.append((d.get('name'), sorted(cells, key=repr)))
+    return pages
 head('UML-4', 'ไฟล์ที่สร้างด้วยสคริปต์ ตรงกับ index-q.html ณ ตอนนี้')
 for script, out in GEN:
     path = ROOT / out
@@ -231,6 +256,9 @@ for script, out in GEN:
     elif before is None:
         fail.append('UML-4 · %s ไม่มีอยู่ก่อนตรวจ' % out)
         print('  ✗ %-42s ไม่มีไฟล์ (เพิ่งสร้าง)' % out)
+    elif before != path.read_bytes() and out.endswith('.drawio')             and drawio_content(before) == drawio_content(path.read_bytes()):
+        path.write_bytes(before)   # same diagram, only saved by draw.io — keep the committed bytes
+        print('  ✓ %-42s ตรง (ต่างแค่รูปแบบการบันทึกของ draw.io)' % out)
     elif before != path.read_bytes():
         fail.append('UML-4 · %s เก่ากว่า index-q.html' % out)
         print('  ✗ %-42s เนื้อหาเปลี่ยนเมื่อสร้างใหม่ — ที่เก็บไว้เก่าแล้ว' % out)

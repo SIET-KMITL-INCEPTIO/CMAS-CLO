@@ -171,7 +171,7 @@
                 <mxCell id="arch-0-54" value="Supabase (host)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg;" parent="1" vertex="1">
                     <mxGeometry x="1370" y="650" width="64" height="64" as="geometry"/>
                 </mxCell>
-                <mxCell id="arch-0-55" value="13 ตาราง (schema.prisma)&lt;br&gt;~40 CHECK + 4 triggers&lt;br&gt;prisma migrate เท่านั้น" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
+                <mxCell id="arch-0-55" value="13 ตาราง (schema.prisma)&lt;br&gt;~40 CHECK + 3 triggers&lt;br&gt;prisma migrate เท่านั้น" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fontSize=12;fillColor=#FFFFFF;strokeColor=#999999;" parent="1" vertex="1">
                     <mxGeometry x="1260" y="770" width="180" height="90" as="geometry"/>
                 </mxCell>
                 <mxCell id="arch-0-56" value="Services  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;ภายนอก&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" parent="1" vertex="1">
@@ -472,7 +472,7 @@
                 <mxCell id="arch-1-37" value="&lt;b&gt;error-handler&lt;/b&gt;: Zod→400 · P2002→400 · P2025→404 · อื่น→500" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="670" y="755" width="500" height="34" as="geometry"/>
                 </mxCell>
-                <mxCell id="arch-1-38" value="&lt;b&gt;PostgreSQL&lt;/b&gt; (Supabase)&lt;br&gt;Prisma 6&lt;br&gt;+ ~40 CHECK&lt;br&gt;+ 4 triggers" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                <mxCell id="arch-1-38" value="&lt;b&gt;PostgreSQL&lt;/b&gt; (Supabase)&lt;br&gt;Prisma 6&lt;br&gt;+ ~40 CHECK&lt;br&gt;+ 3 triggers" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
                     <mxGeometry x="1320" y="470" width="200" height="160" as="geometry"/>
                 </mxCell>
                 <mxCell id="arch-1-39" value="Data tier" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;arcSize=6;text;html=1;whiteSpace=wrap;align=center;verticalAlign=top;fontSize=16;fontStyle=1;" parent="1" vertex="1">
