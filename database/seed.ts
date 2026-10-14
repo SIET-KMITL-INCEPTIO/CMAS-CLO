@@ -45,7 +45,11 @@ async function main() {
   // Two instructors on one course, with equal rights — course roles were
   // removed 2026-09-14 (D1), so the pair exists to prove shared editing works.
   const lead = await upsertUser("instructor1@cmas.local", "อาจารย์ผู้สอน 1", Role.INSTRUCTOR)
-  const coInstructor = await upsertUser("instructor2@cmas.local", "อาจารย์ผู้สอน 2", Role.INSTRUCTOR)
+  const coInstructor = await upsertUser(
+    "instructor2@cmas.local",
+    "อาจารย์ผู้สอน 2",
+    Role.INSTRUCTOR,
+  )
   // Teaches the OTHER course only. Every course-scope test needs someone who
   // is a legitimate instructor yet must still be refused course A.
   const outsider = await upsertUser("instructor3@cmas.local", "อาจารย์วิชาอื่น", Role.INSTRUCTOR)
@@ -183,12 +187,36 @@ async function seedCourse(spec: CourseSpec) {
 
   // --- Activities + criteria (weights sum to 100) -----------------------
   const activitySpecs = [
-    { name: "สอบกลางภาค", type: ActivityType.TEST, assessmentMethod: AssessmentMethod.EXAM,
-      criteriaNote: "ข้อสอบอัตนัย", passMark: 50, maxScore: 30, order: 1, weight: 30 },
-    { name: "งานปฏิบัติการ", type: ActivityType.LAB, assessmentMethod: AssessmentMethod.RUBRIC,
-      criteriaNote: "ประเมินชิ้นงานด้วยรูบริก", passMark: 60, maxScore: 30, order: 2, weight: 30 },
-    { name: "สอบปลายภาค", type: ActivityType.TEST, assessmentMethod: AssessmentMethod.EXAM,
-      criteriaNote: "ข้อสอบอัตนัย", passMark: 50, maxScore: 40, order: 3, weight: 40 },
+    {
+      name: "สอบกลางภาค",
+      type: ActivityType.TEST,
+      assessmentMethod: AssessmentMethod.EXAM,
+      criteriaNote: "ข้อสอบอัตนัย",
+      passMark: 50,
+      maxScore: 30,
+      order: 1,
+      weight: 30,
+    },
+    {
+      name: "งานปฏิบัติการ",
+      type: ActivityType.LAB,
+      assessmentMethod: AssessmentMethod.RUBRIC,
+      criteriaNote: "ประเมินชิ้นงานด้วยรูบริก",
+      passMark: 60,
+      maxScore: 30,
+      order: 2,
+      weight: 30,
+    },
+    {
+      name: "สอบปลายภาค",
+      type: ActivityType.TEST,
+      assessmentMethod: AssessmentMethod.EXAM,
+      criteriaNote: "ข้อสอบอัตนัย",
+      passMark: 50,
+      maxScore: 40,
+      order: 3,
+      weight: 40,
+    },
   ]
 
   const activities = []
