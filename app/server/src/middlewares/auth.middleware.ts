@@ -9,7 +9,7 @@
  * (SRS §2.2) is invisible — do not cache it until a profile says otherwise.
  */
 import type { FastifyReply, FastifyRequest } from "fastify"
-import { verifyToken } from "../lib/jwt.js"
+import { verifyAccessToken } from "../lib/jwt.js"
 import { prisma } from "../db/prisma.js"
 import { unauthorized } from "../lib/response.js"
 
@@ -29,7 +29,8 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
 
   let userId: string
   try {
-    const payload = await verifyToken(token)
+    // Access tokens only: a refresh token is rejected here (S-1).
+    const payload = await verifyAccessToken(token)
     userId = payload.sub
   } catch {
     return unauthorized(reply, "Invalid or expired token")
@@ -37,12 +38,13 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { role: true, isActive: true },
+    select: { role: true, isActive: true, status: true },
   })
 
-  // Same reply for "no such user" and "deactivated" — distinguishing them
-  // tells a caller which user ids are real (FR-03).
-  if (!user || !user.isActive) return unauthorized(reply)
+  // Same reply for "no such user", "deactivated" and "not approved yet" —
+  // distinguishing them tells a caller which user ids are real (FR-03). An
+  // account an ADMIN moves back to PENDING loses access on its next request.
+  if (!user || !user.isActive || user.status !== "ACTIVE") return unauthorized(reply)
 
   request.userId = userId
   request.userRole = user.role
