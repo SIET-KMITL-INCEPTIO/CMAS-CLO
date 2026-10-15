@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""ยืนยันว่าโทเคนสีใน index-q.html กับ docs/pages/cmas-pages.css ยังตรงกัน
+"""ยืนยันว่าโทเคนสีใน index-q.html กับ docs/pages/assets/cmas-pages.css ยังตรงกัน
 
    index-q.html เป็นต้นแบบไฟล์เดียวที่ต้องส่งทางอีเมลและเปิดจาก file:// ได้
    จึงถือสำเนาโทเคนของตัวเอง แทนที่จะอ้าง CSS ร่วมเหมือนหน้าเอกสารอีกสี่หน้า
@@ -20,7 +20,7 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = Path(__file__).resolve().parents[1]
-CSS = ROOT / 'docs' / 'pages' / 'cmas-pages.css'
+CSS = ROOT / 'docs' / 'pages' / 'assets' / 'cmas-pages.css'
 APP = ROOT / 'docs' / 'pages' / 'index-q.html'
 # สไตล์ของเว็บเอกสาร docs/html (สร้างจาก Markdown) ใช้โทเคนชุดเดียวกัน
 GEN = ROOT / 'docs' / '_generator' / 'style.css'

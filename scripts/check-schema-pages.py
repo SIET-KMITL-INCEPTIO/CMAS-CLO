@@ -19,7 +19,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / 'database' / 'schema.prisma'
-PAGE = ROOT / 'docs' / 'pages' / 'database-preview.html'
+PAGE = ROOT / 'docs' / 'pages' / 'reports' / 'database-preview.html'
 
 # ตารางที่เคยมีแล้วถูกตัดออก · ถ้ากลับมาโผล่ในหน้าอีกแปลว่าหน้าเก่ากว่ามติ
 RETIRED = {

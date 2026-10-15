@@ -543,7 +543,7 @@ flowchart LR
 | Tech Stack | `docs/markdown/graph/tech-stack.md` · `docs/markdown/dev/architecture/dev.md` §1 |
 | Architecture | `README.md` §Structure · `docs/diagrams/usecase/UML.md` · `docs/diagrams/index-q-architecture.md` |
 | DFD | `docs/markdown/dev/architecture/dfd.md` (v2.5.0) |
-| Mock-up | `docs/pages/index-q.html` · `docs/pages/design-system-preview.html` |
+| Mock-up | `docs/pages/index-q.html` · `docs/pages/archive/design-system-preview.html` |
 | ผลทบทวน mockup | `docs/markdown/dev/planning/mockup-feedback-plan.md` |
 | แผนงาน | `docs/markdown/dev/planning/project-plan.md` (WBS / Gantt) · `docs/markdown/dev/planning/sprint-plan-2026.md` |
 | รายงานความก้าวหน้า | `docs/markdown/dev/progress-report-02.md` |
