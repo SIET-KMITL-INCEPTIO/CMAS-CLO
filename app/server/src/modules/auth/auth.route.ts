@@ -7,5 +7,5 @@ import { UserRepository } from "../users/user.repository.js"
 export async function authRoutes(app: FastifyInstance) {
   const controller = new AuthController(new AuthService(new UserRepository()))
 
-  app.post("/google", controller.loginWithGoogle)
+  app.post("/google", { config: { access: "public" } }, controller.loginWithGoogle)
 }

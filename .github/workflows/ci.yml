@@ -87,6 +87,9 @@ jobs:
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/cmas_test
       DIRECT_URL: postgresql://postgres:postgres@localhost:5432/cmas_test
+      # Turns on course-scope.isolation.test.ts (S-8). Off everywhere else so
+      # nobody's tests write to or depend on a shared database.
+      CMAS_DB_TESTS: "1"
 
     steps:
       - uses: actions/checkout@v4
