@@ -35,7 +35,7 @@ DON'T ใช้ secret เดียวกันระหว่าง dev/staging
 
 ### 2.2 Authorization (RBAC)
 
-- Role มี 2 ระดับ: `ADMIN`, `INSTRUCTOR` — ทุก endpoint ที่แก้ไขข้อมูลต้องระบุ role ที่อนุญาตชัดเจนผ่าน `rbac()` middleware
+- Role มี 2 ระดับ: `ADMIN`, `INSTRUCTOR` — ทุก endpoint ต้องประกาศ `config: { access }` (`"public"` · `"authenticated"` · `{ cap }` จาก `capabilities.ts`) — ไม่ประกาศ เซิร์ฟเวอร์ไม่ยอมเริ่มทำงาน
 - **Authentication ≠ Authorization** — มี token ที่ valid ไม่ได้แปลว่ามีสิทธิ์ทำทุกอย่าง ต้องเช็ค role/ownership ทุกครั้ง (เช่น instructor แก้ได้เฉพาะ course ของตัวเอง)
 - ตรวจสอบ ownership ที่ชั้น Service เสมอ (เช่น `course.instructorId === userId`) ไม่ใช่เชื่อ `courseId` จาก request อย่างเดียว
 
@@ -104,7 +104,7 @@ DON'T render ข้อมูลจาก user ใน HTML โดยไม่ผ�
 ## 7. Security Checklist (เพิ่มใน PR ที่แตะ auth/data/upload)
 
 - [ ] ไม่มี secret หลุดในโค้ดหรือ log
-- [ ] Endpoint ใหม่มี auth + rbac middleware ครบ (ถ้าควรมี)
+- [ ] Endpoint ใหม่ประกาศ `config.access` และใช้ capability ที่ตรงกับงาน
 - [ ] มีการเช็ค ownership ไม่ใช่แค่ role
 - [ ] Input validate ด้วย Zod ครบทุกจุดเข้า (body/param/query/ไฟล์ upload)
 - [ ] Response ไม่มี field sensitive หลุดออกไป

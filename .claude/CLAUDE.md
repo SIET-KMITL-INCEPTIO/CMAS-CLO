@@ -48,9 +48,12 @@ scripts/                          setup.mjs · build-*.py (diagram/workbook gene
 
 ## Rules that matter
 
-1. **Course scope is the only data boundary** (single-tenant since 2026-08-04). Every route with a
-   `:courseId` must call `assertCourseAccess()` from `modules/authorization/authorization.service.ts`.
-   Return **404, never 403**, for a course the caller can't see: a 403 confirms the id exists.
+1. **Course scope is the only data boundary** (single-tenant since 2026-08-04). Every route declares
+   `config: { access }`: `"public"`, `"authenticated"` or `{ cap }` from
+   `modules/authorization/capabilities.ts` (a copy of the prototype's `PERM`, checked by a test).
+   The server refuses to boot if a route declares nothing. `middlewares/access.middleware.ts` then
+   runs `authMiddleware` and `authorize()`, which answers **404, never 403**, for a course the caller
+   can't see: a 403 confirms the id exists. ADMIN sees every course but does no teaching work (D-1).
 2. **`authMiddleware` re-reads the live User row.** Don't "optimize" it into trusting the JWT role claim.
 3. **Services don't call `prisma` directly**; they go through a repository (code-rule §3).
    `authorization.service.ts` predates that rule and still does.

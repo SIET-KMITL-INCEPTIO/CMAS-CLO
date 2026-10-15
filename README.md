@@ -49,7 +49,7 @@ local Node install required — see [dev.md §2.2b](docs/markdown/dev/architectu
 
 |          |                                                               |
 | -------- | ------------------------------------------------------------- |
-| Node.js  | 20 LTS or newer (see `.nvmrc`)                                |
+| Node.js  | 24 LTS or newer (see `.nvmrc`)                                |
 | npm      | 10+ — this repo uses **npm workspaces**, not pnpm             |
 | Database | A PostgreSQL 15+ connection string (Supabase in dev and prod) |
 | Docker   | Optional — only for the containerised workflow                |
@@ -163,7 +163,7 @@ Rebuild the browsable HTML docs with `npm run docs:build`.
 Early development. The database schema and the client/server skeletons are in
 place; most API endpoints and pages are not implemented yet.
 
-- **Working:** `GET /health`, `POST /auth/google`, `GET /users`, `PATCH /users/:id/approve` (FR-08b), and the Home / Login / Users / CourseList pages
+- **Working** (all under `/api/v1`): `GET /health`, `POST /auth/google`, `GET /users`, `PATCH /users/:id/approve` (FR-08b), and the Home / Login / Users / CourseList pages
 - **Not implemented:** everything course-level — CLOs, objectives, activities, criteria, roster, scores, Excel import, dashboard, grading
 - **Database:** 13 Prisma models, migrations `0001`–`0007` (`0002`–`0007` hand-written, not yet replayed against a shadow DB)
 - **Scope:** 14 features / 14 pages — see [features-pages.md](docs/markdown/dev/architecture/features-pages.md)
