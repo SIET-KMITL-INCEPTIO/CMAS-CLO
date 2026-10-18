@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="dfd0" name="ระดับ 0 · Context">
-        <mxGraphModel dx="1689" dy="1437" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="920" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="1699" dy="962" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="920" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -93,7 +93,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="dfd1" name="ระดับ 1">
-        <mxGraphModel dx="2589" dy="1476" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2640" pageHeight="1460" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="2581" dy="1462" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2640" pageHeight="1460" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>

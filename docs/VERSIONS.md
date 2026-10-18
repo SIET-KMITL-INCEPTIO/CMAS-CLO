@@ -166,6 +166,23 @@ later rewrite. The repo does not record which one was submitted.
 
 ---
 
+### 3.9 Threat model: one model, one report
+
+In [`diagrams/threat-model/`](diagrams/threat-model/). Checked 2026-10-18 against
+`diagrams/dfd/DFD-INDEX-Q.drawio` v1.3.
+
+| File | Status |
+|---|---|
+| `threat-model.tm7` | **current**, edited by hand in Microsoft Threat Modeling Tool. Four pages (`Layer0`, `Layer1`, `Layer2-P4`, `Layer2-P6`) that mirror DFD levels 0, 1 and the two level-2 pages |
+| `report.htm` | **current**, exported from the model above: 695 threats. Every threat is still *Not Started* / *High* (the tool's default): not yet assessed |
+| `superseded/` | three older reports and the checklist used to fix the model, see the README there |
+
+The model is **not generated** from the DFD, so `check-diagrams.py` does not compare
+them: when the DFD changes, redraw the model by hand and export a new report.
+Overwrite `threat-model.tm7` and `report.htm` in place; earlier states of both are
+in git history, and an older report that is still worth keeping moves to
+`superseded/` with its date.
+
 ## 4. Document versions (markdown)
 
 Each document keeps its own change notes in its header. This table only
