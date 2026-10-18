@@ -69,6 +69,7 @@ METHOD_TONE = {
     "DELETE": ("FCE8E6", "C5221F"),
 }
 ST_DONE, ST_CONTRACT, ST_NEW, ST_LATER = "ทำแล้ว", "contract", "เสนอใหม่", "หลัง v1"
+CAUTION_TONE = {"สูง": ("FCE8E6", "C5221F"), "กลาง": ("FEF7E0", "8A5A00"), "ต่ำ": ("E6F4EA", "137333")}
 STATUS_TONE = {
     ST_DONE: ("E6F4EA", "137333"),
     ST_CONTRACT: ("EDEBF2", "44405A"),
@@ -177,8 +178,9 @@ E = [
 ]
 
 HEAD = ["#", "กลุ่ม", "Method", "Path", "ทำอะไร", "ใครเรียกได้", "ตรวจสิทธิ์รายวิชา", "Capability",
-        "FR / CR", "สถานะ", "ช่วงงาน", "Issue", "ต้องมี 0008", "หมายเหตุ"]
-WIDTH = [5, 22, 9, 54, 48, 20, 17, 16, 24, 11, 9, 7, 11, 36]
+        "FR / CR", "สถานะ", "ช่วงงาน", "Issue", "ต้องมี 0008", "หมายเหตุ",
+        "ประเภทการทำงาน", "ผลต่อข้อมูล", "ประเภทสิทธิ์", "ระดับความระวัง"]
+WIDTH = [5, 22, 9, 54, 48, 20, 17, 16, 24, 11, 9, 7, 11, 36, 22, 24, 24, 12]
 
 RULES = [
     ("A-1", "Resource เป็นคำนามพหูพจน์ kebab-case ไม่มี verb ใน URL ยกเว้น action ที่ไม่ใช่ CRUD", "api-design §1.1"),
@@ -217,6 +219,112 @@ DECISIONS = [
     ("D-4", "รับ 4 ตารางและ 11 คอลัมน์ที่ต้นแบบเสนอหรือไม่", "รับทั้งหมดใน migration 0008"),
     ("D-5", "v1 มี login ด้วยอีเมลและรหัสผ่านหรือไม่", "ไม่มี ใช้ Google อย่างเดียว"),
 ]
+
+
+# ---------------------------------------------------------------------------
+# Classification — derived from method, path and capability, so a new row is
+# classified the day it is added and the four columns cannot drift from the row.
+# ---------------------------------------------------------------------------
+OPS = [
+    ("ยืนยันตัวตน", "login · refresh · logout"),
+    ("อ่านรายการ", "GET คืนหลายแถว รองรับกรอง/ค้น/แบ่งหน้า"),
+    ("อ่านรายการเดียว", "GET คืนหนึ่งแถวตาม id"),
+    ("อ่านสรุป/คำนวณ", "GET ที่คำนวณจากหลายตาราง (แดชบอร์ด ผลกระทบ ตัดเกรด)"),
+    ("สร้าง", "POST เพิ่มแถวใหม่"),
+    ("แก้ไข", "PATCH เปลี่ยนบางฟิลด์ของแถวเดียว"),
+    ("จัดลำดับ", "PATCH /reorder เปลี่ยนลำดับหลายแถวพร้อมกัน"),
+    ("ตั้งค่าทั้งชุด", "PUT แทนที่ชุดข้อมูลทั้งชุดของรายวิชา"),
+    ("ลบ", "DELETE"),
+    ("คำสั่ง", "POST/PATCH/DELETE ที่เป็นการเปลี่ยนสถานะ ไม่ใช่ CRUD (อนุมัติ ปิดรับ ถอน คัดลอก ตัดเกรด)"),
+    ("นำเข้า", "อัปโหลด Excel: preview ตรวจ · commit บันทึก"),
+    ("ส่งออก", "ดาวน์โหลดไฟล์ Excel หรือ template"),
+]
+EFFECTS = [
+    ("อ่านอย่างเดียว", "ไม่เปลี่ยนข้อมูล"),
+    ("เขียนแถวเดียว", "เปลี่ยน 1 แถว"),
+    ("เขียนหลายแถว (transaction)", "ต้องสำเร็จทั้งหมดหรือไม่สำเร็จเลย (NFR-11)"),
+    ("ลบข้อมูล", "ลบแถว อาจ cascade"),
+]
+ACCESS_KINDS = [
+    ("สาธารณะ", "ไม่ต้องล็อกอิน"),
+    ("ล็อกอินทั่วไป", "ผู้ใช้ที่ล็อกอินทุกคน ข้อมูลกรองตามสิทธิ์ในตัว"),
+    ("ผู้ดูแลระบบ", "จัดการบัญชีผู้ใช้ (user.manage)"),
+    ("จัดการรายวิชา", "สร้าง/ลบรายวิชา จัดการผู้สอน — ADMIN และผู้สอนทำได้"),
+    ("อ่านรายวิชา", "ดูข้อมูลของรายวิชาที่มองเห็น — ADMIN และผู้สอนอ่านได้"),
+    ("งานสอน", "แก้ข้อมูลภายในรายวิชา — ผู้สอนของรายวิชาเท่านั้น ADMIN ทำไม่ได้ (D-1)"),
+]
+CAUTION = [
+    ("สูง", "ลบข้อมูล · ตรึง/ยกเลิกเกรด · นำเข้า commit · จัดการบัญชี · ถอนนักศึกษา"),
+    ("กลาง", "เขียนข้อมูลอื่น ๆ"),
+    ("ต่ำ", "อ่านอย่างเดียว"),
+]
+
+MULTI_ROW = ("/reorder", "/duplicate", "/grading/run", "/import/commit", "/criteria", "/group-weights",
+             "/scores", "/grade-bands")
+ACTIONS = ("/approve", "/close", "/reopen", "/withdraw", "/restore", "/duplicate", "/grading/run")
+SUMMARY_READS = ("/impact", "/grading", "/dashboard/")
+
+
+def classify(method, path, role, cap, status):
+    """(operation, effect, access kind, caution) for one endpoint row."""
+    p = path.split("?")[0]
+    last = p.rsplit("/", 1)[-1]
+    by_id = last.startswith(":")
+
+    if p.startswith("/auth/") and method == "POST":
+        op = "ยืนยันตัวตน"
+    elif method == "GET" and (p.endswith("/template") or p.endswith("/export")):
+        op = "ส่งออก"
+    elif method == "GET" and any(x in p + "/" for x in SUMMARY_READS) and not p.endswith("/errors"):
+        op = "อ่านสรุป/คำนวณ"
+    elif method == "GET":
+        op = "อ่านรายการเดียว" if by_id or p == "/auth/me" else "อ่านรายการ"
+    elif p.endswith("/import/preview") or p.endswith("/import/commit"):
+        op = "นำเข้า"
+    elif p.endswith("/reorder"):
+        op = "จัดลำดับ"
+    elif any(p.endswith(a) for a in ACTIONS) or (method == "DELETE" and p.endswith("/grading")):
+        op = "คำสั่ง"
+    elif method == "PUT" and "grade-override" in p:
+        op = "แก้ไข"
+    elif method == "PUT":
+        op = "ตั้งค่าทั้งชุด"
+    elif method == "DELETE":
+        op = "ลบ"
+    elif method == "PATCH":
+        op = "แก้ไข"
+    else:
+        op = "สร้าง"
+
+    if method == "GET":
+        effect = "อ่านอย่างเดียว"
+    elif method == "DELETE" and op == "ลบ":
+        effect = "ลบข้อมูล"
+    elif op in ("นำเข้า", "จัดลำดับ", "ตั้งค่าทั้งชุด") or any(p.endswith(m) for m in MULTI_ROW) or p == "/courses":
+        effect = "เขียนหลายแถว (transaction)"
+    else:
+        effect = "เขียนแถวเดียว"
+    if p.endswith("/import/preview"):
+        effect = "อ่านอย่างเดียว"  # preview validates, writes nothing (FR-67)
+
+    if role == NONE:
+        access = "สาธารณะ"
+    elif cap == "user.manage":
+        access = "ผู้ดูแลระบบ"
+    elif cap in ("course.create", "course.delete", "staff.write"):
+        access = "จัดการรายวิชา"
+    elif role == LOGGED and cap in (NO, READ):
+        access = "ล็อกอินทั่วไป"
+    elif cap == READ or cap == "course.view":
+        access = "อ่านรายวิชา"
+    else:
+        access = "งานสอน"
+
+    risky = effect == "ลบข้อมูล" or p.endswith("/grading/run") or p.endswith("/import/commit") \
+        or (p.endswith("/grading") and method == "DELETE") or p.endswith("/withdraw") \
+        or (access == "ผู้ดูแลระบบ" and method != "GET")
+    caution = "ต่ำ" if effect == "อ่านอย่างเดียว" else ("สูง" if risky else "กลาง")
+    return op, effect, access, caution
 
 
 # ---------------------------------------------------------------------------
@@ -299,6 +407,8 @@ def sheet_endpoints(wb):
         body_cell(ws, row, 12, issue, center=True, zebra=z)
         body_cell(ws, row, 13, mig, center=True, zebra=z)
         body_cell(ws, row, 14, note, zebra=z)
+        for c, v in enumerate(classify(method, path, role, cap, status), 15):
+            body_cell(ws, row, c, v, center=c == 18, zebra=z, tone=CAUTION_TONE.get(v) if c == 18 else None)
     set_widths(ws, WIDTH)
     ws.freeze_panes = "E2"
     ws.auto_filter.ref = "A1:%s%d" % (get_column_letter(len(HEAD)), len(E) + 1)
@@ -314,6 +424,120 @@ def sheet_table(wb, name, labels, rows, widths):
             body_cell(ws, i + 1, c, v, font=F_BOLD if c == 1 else F_BODY, center=c == 1, zebra=i % 2 == 0)
     set_widths(ws, widths)
     ws.freeze_panes = "B2"
+    return ws
+
+
+DESIGN_HEAD = ["#", "Method", "Path", "Path / Query", "Body (strict)", "สำเร็จ", "ผิดพลาด", "กฎที่ต้องทำตาม", "ตรวจใน"]
+DESIGN_WIDTH = [5, 9, 40, 34, 52, 36, 46, 52, 22]
+# Rows are keyed by (METHOD, path) of an Endpoints row; the number is looked up, never typed.
+DESIGN = [
+    ("GET", "/courses",
+     "year, semester, q (รหัส/ชื่อ ไทย-อังกฤษ), page=1, perPage=20 (≤100), sort=code:asc (code|name|year|semester|createdAt)",
+     "—",
+     "200 · data[] เป็นรายวิชา + counts {clos, activities, students} + instructors [{userId, name}] · meta {total, page, perPage}",
+     "400 query ผิดรูป · 401",
+     "ผู้สอนเห็นเฉพาะวิชาของตน ADMIN เห็นทั้งหมด กรองใน query ไม่กรองทีหลัง (NFR-06) · counts มาจาก query เดียว ไม่มี N+1 (NFR-02)",
+     "ST-COURSE-04"),
+    ("POST", "/courses", "—",
+     "code(1–20) name nameEn? semester(1–3) year(2500–2600 พ.ศ.) section='01' credits(0–30, ได้ 0) lectureHours practiceHours selfStudyHours(≥0, ทศนิยม 1 ตำแหน่ง) gradeScale gradeMethod passCriteria=60 cloPassMark=60 classTarget=100 instructors[{userId}]",
+     "201 · รายวิชาเต็ม (credits เป็น string \"3.0\")",
+     "400 body ผิดรูป/มีฟิลด์เกิน · 409 รหัส+ภาค+ปี+Sec ซ้ำ \"รหัสวิชานี้มีอยู่แล้วในภาคเรียนนี้\" · 422 ไม่มีผู้สอน / ผู้สอนเป็น ADMIN, ถูกปิด, รออนุมัติ / PASS_FAIL ร่วมกับอิงกลุ่ม",
+     "ผู้สอนที่สร้างเป็นผู้สอนของวิชาอัตโนมัติ (FR-22c) · ADMIN ต้องระบุผู้สอนอย่างน้อย 1 คน (D-1, FR-23) · วิชา+ผู้สอนอยู่ใน transaction เดียว (NFR-11)",
+     "ST-COURSE-01…03"),
+    ("GET", "/courses/:courseId", ":courseId = cuid", "—",
+     "200 · รายวิชาเต็ม + counts + instructors",
+     "401 · 404 ไม่มี/ไม่ใช่ของคุณ/id รูปผิด (เหมือนกันทุกไบต์)",
+     "course.view · ADMIN อ่านได้ทุกวิชา",
+     "ST-ACL-01"),
+    ("PATCH", "/courses/:courseId", ":courseId",
+     "ฟิลด์ใดก็ได้ของ POST ยกเว้น instructors · ต้องมีอย่างน้อย 1 ฟิลด์",
+     "200 · รายวิชาที่แก้แล้ว",
+     "400 ว่าง/ฟิลด์เกิน · 403 ADMIN · 404 · 409 ชนรหัสวิชา · 422 PASS_FAIL ร่วมกับอิงกลุ่ม (ตรวจบนค่าที่รวมกับของเดิม)",
+     "course.settings เฉพาะผู้สอน ADMIN ได้ 403 (D-1) · ตรวจแล้ว 404 ก่อน 403 (A-13)",
+     "ST-ACL · ST-COURSE"),
+    ("DELETE", "/courses/:courseId", ":courseId · ?confirm=true", "—",
+     "200 {deleted:true}",
+     "404 · 422 ไม่ส่ง confirm → data = ตัวเลขผลกระทบ (เหมือน /impact) และยังไม่ลบ",
+     "course.delete ADMIN และผู้สอนของวิชาลบได้ · cascade ถึง CLO กิจกรรม นักศึกษา คะแนน (FR-26)",
+     "ST-COURSE-06"),
+    ("GET", "/courses/:courseId/impact", ":courseId", "—",
+     "200 · {clos, objectives, activities, criteria, students, scores, uploadLogs}",
+     "404",
+     "ตัวเลขต้องเท่ากับจำนวนแถวที่หายจริงเมื่อ DELETE (FR-26)",
+     "ST-COURSE-06"),
+    ("GET", "/courses/:courseId/instructors", ":courseId", "—",
+     "200 · [{userId, name, email, assignedAt}]",
+     "404",
+     "ไม่มี role ผู้สอนทุกคนสิทธิ์เท่ากัน (D1)",
+     "ST-COURSE"),
+    ("POST", "/courses/:courseId/instructors", ":courseId", "{userId}",
+     "201 · รายชื่อผู้สอนหลังเพิ่ม",
+     "400 · 404 · 409 อยู่ในวิชาแล้ว · 422 ไม่พบผู้ใช้ / ADMIN / บัญชีถูกปิด / รออนุมัติ \"บัญชีนี้ยังใช้งานไม่ได้\"",
+     "staff.write ADMIN และผู้สอนทำได้ (FR-22) · ข้อความ error ไม่บอก id หรืออีเมลของผู้ใช้",
+     "ST-COURSE-05"),
+    ("DELETE", "/courses/:courseId/instructors/:userId", ":courseId, :userId", "—",
+     "200 {removed:true}",
+     "404 ไม่มีผู้สอนคนนี้ในวิชา · 422 \"รายวิชาต้องมีผู้สอนอย่างน้อย 1 คน\" (FR-23)",
+     "ล็อกแถววิชา (SELECT … FOR UPDATE) ก่อนนับ กันลบพร้อมกันจนเหลือ 0 คน (S-9)",
+     "ST-COURSE-05"),
+    ("POST", "/courses/:courseId/duplicate", ":courseId", "— (ไม่มี body)",
+     "201 · รายวิชาใหม่ (Sec ถัดไปที่ว่าง)",
+     "404 ผู้เรียกมองไม่เห็นวิชาต้นทาง (ตรวจใน service เพราะ course.create ไม่ผูกกับ :courseId) · 422 Sec ครบ 99",
+     "คัดลอก: ค่าตั้งวิชา ช่วงเกรด CLO จุดประสงค์ กิจกรรม การผูกเกณฑ์ ผู้สอนเดิม · ไม่คัดลอก: นักศึกษา คะแนน · ผู้สอนที่กดคัดลอกอยู่ในวิชาใหม่ (P17) · transaction เดียว",
+     "ST-COURSE (ใหม่)"),
+]
+
+
+def sheet_classification(wb):
+    ws = wb.create_sheet("Classification")
+    ws.sheet_view.showGridLines = False
+    set_widths(ws, [3, 30, 70, 10])
+    ws["B2"].value, ws["B2"].font = "จำแนกประเภท endpoint", F_TITLE
+    ws["B3"].value = "นับจากคอลัมน์ O–R ของแผ่น Endpoints (สูตร COUNTIF) · คอลัมน์เหล่านี้สร้างจาก method + path + capability โดยสคริปต์"
+    ws["B3"].font = F_SUB
+    row = 4
+    for title, col, items in [
+        ("1 · ประเภทการทำงาน", "O", OPS),
+        ("2 · ผลต่อข้อมูล", "P", EFFECTS),
+        ("3 · ประเภทสิทธิ์", "Q", ACCESS_KINDS),
+        ("4 · ระดับความระวัง", "R", CAUTION),
+    ]:
+        row += 2
+        ws.cell(row=row, column=2, value=title).font = F_H2
+        row += 1
+        head_row(ws, row, ["", "ประเภท", "ความหมาย", "จำนวน"])
+        ws.cell(row=row, column=1).fill = PatternFill(fill_type=None)
+        ws.cell(row=row, column=1).border = Border()
+        first = row + 1
+        for name, meaning in items:
+            row += 1
+            body_cell(ws, row, 2, name, font=F_BOLD)
+            body_cell(ws, row, 3, meaning)
+            body_cell(ws, row, 4, "=COUNTIF(Endpoints!%s:%s,B%d)" % (col, col, row), center=True)
+        row += 1
+        body_cell(ws, row, 2, "รวม", font=F_BOLD, center=True)
+        body_cell(ws, row, 3, "")
+        body_cell(ws, row, 4, "=SUM(D%d:D%d)" % (first, row - 1), font=F_BOLD, center=True)
+    return ws
+
+
+def sheet_design(wb):
+    ws = wb.create_sheet("Design")
+    head_row(ws, 1, DESIGN_HEAD)
+    number = {(r[1], r[2]): i for i, r in enumerate(E, 1)}
+    for i, (method, path, params, body, ok, err, rules, tests) in enumerate(DESIGN, 1):
+        n = number[(method, path)]
+        z = i % 2 == 0
+        body_cell(ws, i + 1, 1, n, center=True, zebra=z)
+        body_cell(ws, i + 1, 2, method, center=True, tone=METHOD_TONE[method])
+        body_cell(ws, i + 1, 3, PREFIX + path, font=F_MONO, zebra=z)
+        for c, v in enumerate((params, body, ok, err, rules, tests), 4):
+            body_cell(ws, i + 1, c, v, zebra=z)
+        ws.row_dimensions[i + 1].height = 96
+    set_widths(ws, DESIGN_WIDTH)
+    ws.freeze_panes = "D2"
+    n_rows = len(DESIGN) + 3
+    ws.cell(row=n_rows, column=2, value="ออกแบบละเอียดแล้ว %d จาก %d endpoint (กลุ่ม 3 รายวิชา) · กลุ่มอื่นเติมทีละกลุ่มก่อนเขียนโค้ดช่วงงานนั้น" % (len(DESIGN), len(E))).font = F_SUB
     return ws
 
 
@@ -361,6 +585,8 @@ def sheet_readme(wb):
         ("Capability", "สิทธิ์หนึ่งตัวจากตาราง PERM ของต้นแบบ (17 ตัว) · \"อ่าน\" = ไม่เปลี่ยนข้อมูล ใช้แค่การตรวจสิทธิ์รายวิชา"),
         ("ช่วงงาน", "P0 ฐาน · P2 รายวิชา · P3 CLO และเกณฑ์ · P5 นักศึกษาและคะแนน · P6 ตัดเกรดและแดชบอร์ด (ดู api-design-plan.md §6)"),
         ("ต้องมี 0008", "ทำไม่ได้จนกว่า migration 0008 จะเพิ่มตารางหรือคอลัมน์ที่ต้นแบบเสนอ (D-4, D-2)"),
+        ("ประเภท (O–R)", "ประเภทการทำงาน · ผลต่อข้อมูล · ประเภทสิทธิ์ · ระดับความระวัง — ความหมายและจำนวนอยู่แผ่น Classification"),
+        ("แผ่น Design", "ออกแบบละเอียดรายตัว: query, body, คำตอบ, error, กฎ — ใช้เป็นแบบก่อนเขียนโค้ด (เติมทีละกลุ่ม)"),
     ]:
         row += 1
         body_cell(ws, row, 2, label, font=F_BOLD)
@@ -397,6 +623,8 @@ def main():
     wb = Workbook()
     sheet_readme(wb)
     sheet_endpoints(wb)
+    sheet_classification(wb)
+    sheet_design(wb)
     sheet_table(wb, "Rules", ["#", "กฎ", "ที่มา"], RULES, [7, 100, 18])
     sheet_table(wb, "Security", ["#", "มาตรการ", "สถานะ"], SECURITY, [7, 100, 28])
     wb.save(OUT)

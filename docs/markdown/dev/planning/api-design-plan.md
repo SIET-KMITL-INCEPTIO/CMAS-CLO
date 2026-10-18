@@ -17,7 +17,7 @@ See also: [[api-design]] · [[srs]] · [[course-role-permissions]] · [[code-rul
 
 **ตัดสินแล้ว 2026-10-18:** ออกแบบ API ตาม [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) (74 endpoint · สร้างจาก `scripts/build-api-endpoints-workbook.py` ห้ามแก้ Excel ด้วยมือ) ·
 Excel ตอบว่ามี endpoint อะไร ใครเรียกได้ capability ไหน อยู่ช่วงไหน · รูป request/response ยึด Zod validator ในโค้ด · envelope และรหัสสถานะยึด [[api-design]] §2 ·
-P1 จึงไม่ต้องเขียน [[api-design]] §3 ใหม่เป็น v1.2 · การทดสอบเป็น system test แบบ gray box ตาม [[system-test-plan]]
+**ยังไม่เขียนโค้ด endpoint ใหม่ (2026-10-18)** จนกว่าจะออกแบบในแผ่น `Design` ของ Excel ครบกลุ่มนั้น · แผ่น `Classification` จำแนก endpoint 4 มิติ (ประเภทการทำงาน · ผลต่อข้อมูล · ประเภทสิทธิ์ · ระดับความระวัง) · ออกแบบแล้ว: กลุ่ม 3 รายวิชา (10 endpoint) · P1 จึงไม่ต้องเขียน [[api-design]] §3 ใหม่เป็น v1.2 · การทดสอบเป็น system test แบบ gray box ตาม [[system-test-plan]]
 
 | # | คำถาม | ค่าที่ใช้ไปก่อน | เหตุผล · ผลถ้าเลือกตรงข้าม |
 |---|---|---|---|
