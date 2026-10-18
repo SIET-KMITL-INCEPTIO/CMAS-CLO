@@ -1,16 +1,16 @@
 /**
- * Route registration.
+ * Route registration. app.ts mounts everything here under /api/v1 (G-1).
  *
- * EVERY authenticated route runs authMiddleware (verifies the token AND
- * re-reads the live User row), then rbac() where a specific role is required.
- * Any route that takes a :courseId must additionally call assertCourseAccess()
- * from authorization/authorization.service.ts before reading or writing
- * anything — single-tenant means course scope is the only data boundary left,
- * so skipping it exposes a colleague's course rather than merely a
- * colleague's view.
+ * Every route declares `config.access` — "public", "authenticated" or
+ * { cap } from authorization/capabilities.ts — and app.ts refuses to start if
+ * one does not (A-6). The access hook then runs authMiddleware (verifies the
+ * token AND re-reads the live User row) and authorize(). A course capability
+ * reads :courseId from the path and answers 404, never 403, for a course the
+ * caller cannot see — single-tenant means course scope is the only data
+ * boundary left.
  *
  * /health and /auth/* (the login routes themselves) are the only
- * legitimately unauthenticated routes.
+ * legitimately public routes.
  */
 import type { FastifyInstance } from "fastify"
 import { healthRoutes } from "./health/health.route.js"

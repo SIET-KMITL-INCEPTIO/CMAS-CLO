@@ -7,7 +7,7 @@
  * nobody has to invent a 32-character string by hand (the #1 reason the server
  * refuses to boot on a fresh clone).
  *
- * Zero dependencies: runs on a bare Node 20 before `npm install` has finished.
+ * Zero dependencies: runs on a bare Node 24 before `npm install` has finished.
  */
 import { existsSync, readFileSync, writeFileSync, copyFileSync } from "node:fs"
 import { randomBytes } from "node:crypto"
@@ -37,9 +37,9 @@ let hasWarnings = false
 step("1. Checking prerequisites")
 
 const major = Number(process.versions.node.split(".")[0])
-if (major < 20) {
-  fail(`Node ${process.versions.node} — this project requires Node 20 or newer.`)
-  console.log(`\n  Install Node 20 LTS, then re-run. See .nvmrc.\n`)
+if (major < 24) {
+  fail(`Node ${process.versions.node} — this project requires Node 24 or newer.`)
+  console.log(`\n  Install Node 24 LTS, then re-run. See .nvmrc.\n`)
   process.exit(1)
 }
 ok(`Node ${process.versions.node}`)

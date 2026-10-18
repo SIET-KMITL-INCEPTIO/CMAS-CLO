@@ -28,16 +28,18 @@ validator, and the singular model name for the repository. The file exports a
 `index.ts` registers every module's routes. `authorization/` holds no route of its
 own: it is the course-scope guard that every course-scoped service calls.
 
-Shared code stays outside `modules/`: `middlewares/` (auth, RBAC, error handler),
+Shared code stays outside `modules/`: `middlewares/` (auth, route access, error handler),
 `lib/` (env, jwt, response helpers), `db/` (the single `PrismaClient`).
 
 ---
 
 ## route: `<name>.route.ts`
 
-- Paths, prefixes, and `preHandler: [authMiddleware, rbac(...)]` only. No logic.
-- Every authenticated route runs `authMiddleware`. Any route with `:courseId`
-  must reach `assertCourseAccess()` before touching data (see `index.ts`).
+- Paths and `config: { access }` only. No logic, no `preHandler` for auth.
+- `access` is `"public"`, `"authenticated"` or `{ cap: "<capability>" }`. The app
+  will not start if a route leaves it out. A course capability needs `:courseId`
+  in the path; the access hook answers 404 for a course the caller cannot see.
+- Paths are relative: `app.ts` mounts every module under `/api/v1`.
 
 ## controller: `<name>.controller.ts`
 

@@ -17,5 +17,5 @@
   // Tests are excluded because this config EMITS to dist/ — without this,
   // *.test.ts would ship inside the production image. They are still
   // typechecked, via tsconfig.test.json.
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/test/**"]
 }

@@ -27,3 +27,9 @@ export const notFound = (reply: FastifyReply, message = "Not found") =>
 
 export const serverError = (reply: FastifyReply, message = "Internal server error") =>
   reply.status(500).send({ success: false, message } satisfies ApiResponse<null>)
+
+export const conflict = (reply: FastifyReply, message: string) =>
+  reply.status(409).send({ success: false, message } satisfies ApiResponse<null>)
+
+export const unprocessable = (reply: FastifyReply, message: string) =>
+  reply.status(422).send({ success: false, message } satisfies ApiResponse<null>)
