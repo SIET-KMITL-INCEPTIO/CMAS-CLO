@@ -8,6 +8,7 @@ See also: [[srs]] · [[dev]] · [[features-pages]] · [[schema]] · [[dfd]] · [
 > **Baseline:** [[srs]] v2.4.0 (single-tenant) · `database/schema.prisma` (**13 models · migration 0001–0007**) ·
 > `app/server/src/` (Fastify 5 — **implement แล้ว 4 endpoint**: `GET /health` · `POST /auth/google` · `GET /users` · `PATCH /users/:id/approve` · ที่เหลือใน §3 ยังเป็น contract)
 > **สถานะ:** Draft — เป็น **contract** ระหว่าง client กับ server ก่อนเริ่ม implement Sprint 1
+> **2026-10-18:** รายการ endpoint ที่ใช้ออกแบบคือ [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) (74 endpoint) แทนตาราง §3 ซึ่งหยุดที่ 58 · เอกสารนี้ยังใช้สำหรับ convention §1–§2 และรายละเอียด endpoint ที่มีอยู่แล้ว ([[api-design-plan]] §1)
 >
 > **v1.1.0 (2026-09-26) — ตามโมเดลข้อมูลหลัง migration `0005`–`0007`:** ไม่มี `CourseRole` (ผู้สอนสิทธิ์เท่ากัน — D1) ·
 > เกณฑ์ผ่าน CLO อยู่ที่ `Course.cloPassMark` แทน `CLO.threshold` (E1) · `CLO` / `BehavioralObjective` มี `weight` กรอกเองได้ (E2) ·
