@@ -2964,7 +2964,7 @@ function viewActivities(){
     '<div class="card mt-4 px-6 py-4 flex items-center justify-between gap-4 flex-wrap">' +
       '<span class="text-[14px] ' + (d.actWeightSum === 100 ? 'text-ok' : 'text-bad') + '">' +
         'สัดส่วนคะแนนรวม <span class="tnum">' + d.actWeightSum + '%</span>' +
-        (d.actWeightSum === 100 ? ' — ครบแล้ว' : ' — ต้องเท่ากับ 100% (บันทึกได้ แต่ยังคำนวณผลไม่ได้)') + '</span>' +
+        (d.actWeightSum === 100 ? ' — ครบแล้ว' : ' — ต้องเท่ากับ 100% (ยังไม่ครบบันทึกได้แต่ยังคำนวณผลไม่ได้ · เกิน 100% บันทึกไม่ได้)') + '</span>' +
       /* N1 — สลับวิธีกรอกน้ำหนักกิจกรรมของทั้งวิชา · ค่าที่มีอยู่ถูกพาไปเป็นจุดตั้งต้นทั้งสองทาง */
       '<div class="flex items-center gap-1.5 flex-wrap text-[13px]">' +
         '<span class="text-dim">กรอกสัดส่วนคะแนน</span>' +
@@ -5285,11 +5285,19 @@ const FORMS = {
         }
       }
       /* Q4 (2569-10-01) — น้ำหนักและลำดับเคยไม่ถูกตรวจเลย: ช่องว่าง, −20 และ 250 บันทึกได้ทั้งหมด
-         v.weight เป็น undefined เฉพาะโหมดน้ำหนักตามกลุ่ม (ไม่มีช่องให้กรอก) · ผลรวมเกิน 100 ยังบันทึกได้
-         ตาม FR-43 แถบสรุปท้ายตารางและขั้นตอนเป็นผู้บอก */
+         v.weight เป็น undefined เฉพาะโหมดน้ำหนักตามกลุ่ม (ไม่มีช่องให้กรอก) · ผลรวมเกิน 100 บันทึกไม่ได้ (แก้ FR-43
+         2569-10-19) · ยังไม่ครบ 100 บันทึกได้ แถบสรุปท้ายตารางและขั้นตอนเป็นผู้บอก */
       if (v.weight !== undefined && v.weight === null)
         E.add('weight', 'กรอกร้อยละของสัดส่วนคะแนนในวิชาของกิจกรรมนี้ (ดูยอดที่เหลือใต้ช่อง · ใส่ 0 ได้ถ้ายังไม่ให้น้ำหนัก)');
       else if (v.weight !== undefined && !in0100(v.weight)) E.add('weight', 'ร้อยละของสัดส่วนคะแนนต้องเป็นตัวเลขระหว่าง 0–100');
+      /* ผลรวมสัดส่วนกิจกรรมเกิน 100% บันทึกไม่ได้ (คอมเมนต์อาจารย์ 2569-10-19 · แก้ FR-43) — ยังไม่ครบ 100 ยังบันทึกได้ระหว่างกรอก
+         เกิน 100 ไม่มีทางเป็นข้อมูลที่ถูกต้อง จึงกันที่ช่องนี้ ไม่ปล่อยให้ไปเตือนทีหลัง */
+      else if (v.weight !== undefined) {
+        const others = D().acts.reduce(function(t, a){ return t + (r && a.id === r.id ? 0 : a.weight); }, 0);
+        if (others + v.weight > 100 + 1e-9)
+          E.add('weight', 'กิจกรรมอื่นรวม ' + n2(others) + '% แล้ว — ใส่ได้ไม่เกิน ' + n2(Math.max(0, 100 - others)) +
+            '% (รวมทั้งวิชาเกิน 100% ไม่ได้ · ลดสัดส่วนของกิจกรรมอื่นก่อนถ้าต้องการเพิ่มตัวนี้)');
+      }
       if (!isOrdinal(v.order)) E.add('order', 'ลำดับต้องเป็นจำนวนเต็มตั้งแต่ 1');
       else if (uniq(D().acts, function(x){ return x.order === v.order; }, r && r.id))
         E.add('order', 'มีกิจกรรมลำดับ ' + v.order + ' อยู่แล้วในรายวิชานี้ — ใช้ปุ่ม ▲▼ ในตารางเพื่อสลับลำดับ');
@@ -9475,6 +9483,12 @@ document.addEventListener('change', function(e){
     const c = byId(db.course, S.course);
     if (!c) return;
     const gwBefore = Object.assign({}, c.groupWeight || {});
+    /* รวมน้ำหนักกลุ่มเกิน 100% บันทึกไม่ได้ — เหตุผลเดียวกับฟอร์มกิจกรรม (ยังไม่ครบ 100 ยังบันทึกได้) */
+    const gwOthers = Object.keys(gwBefore).reduce(function(sum, k){
+      return sum + (k === t.dataset.groupweight ? 0 : (gwBefore[k] || 0)); }, 0);
+    if (gwOthers + v > 100 + 1e-9) {
+      toast('กลุ่มอื่นรวม ' + n2(gwOthers) + '% แล้ว — กลุ่มนี้ใส่ได้ไม่เกิน ' + n2(Math.max(0, 100 - gwOthers)) + '%', 'bad');
+      render(); return; }
     c.groupWeight = c.groupWeight || {};
     const oldV = c.groupWeight[t.dataset.groupweight] || 0;
     c.groupWeight[t.dataset.groupweight] = v;
