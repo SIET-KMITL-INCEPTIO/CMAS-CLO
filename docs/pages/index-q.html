@@ -1396,10 +1396,23 @@ const scoreWord = function(v){ return v === null || v === undefined ? 'ว่า
    ฝั่ง server: คำนวณและเขียน Activity.weight ใน transaction เดียวกับการเขียนที่ทำให้มันเปลี่ยน —
    เพิ่ม/ลบ/ย้ายลำดับกิจกรรม · แก้ประเภทหรือคะแนนเต็ม · แก้น้ำหนักกลุ่ม · สลับโหมด — ไม่ใช่ตอนอ่าน */
 const CACHE = {};
+/* ความเห็นอาจารย์/ผู้ใช้ (2569-10-19) — เกณฑ์ผ่านรายวิชากับขั้นบันไดเกรดต้องเป็นเรื่องเดียวกัน
+   เกรด A–F อิงเกณฑ์: เกรดต่ำสุดคือ "ไม่ผ่าน" (F) · เกรดถัดขึ้นไปคือขั้นต่ำสุดที่ยังผ่าน (เช่น D) ขอบล่างของมัน = เกณฑ์ผ่านรายวิชา
+   จึงคำนวณ Course.passCriteria จากขั้นบันไดอัตโนมัติ ไม่ให้กรอกสองที่ · ผ่าน/ไม่ผ่าน (S ถูกผูกกับเกณฑ์อยู่แล้ว CR-06)
+   และอิงกลุ่ม (ขั้นบันไดเป็น T-score คนละหน่วยกับร้อยละ) ยังกรอกเกณฑ์เอง */
+const isAutoPass = function(c){ return c.gradeScale === 'LETTER' && c.gradeMethod === 'CRITERION_REFERENCED'; };
+const syncPassFromBands = function(c){
+  if (!isAutoPass(c)) return;
+  const bs = db.gradeBand.filter(function(b){ return b.courseId === c.id; })
+    .sort(function(a, b){ return a.minValue - b.minValue; });
+  if (bs.length >= 2) c.passCriteria = bs[1].minValue;
+};
 const invalidate = function(){
   db.course.forEach(syncGroupWeights);
+  db.course.forEach(syncPassFromBands);
   Object.keys(CACHE).forEach(function(k){ delete CACHE[k]; });
 };
+db.course.forEach(syncPassFromBands);
 db.course.forEach(syncGroupWeights);   /* ข้อมูลตั้งต้นของ c5 เก็บน้ำหนักกิจกรรมเป็น 0 — คำนวณครั้งแรกที่นี่ */
 
 function derive(courseId){
@@ -3464,7 +3477,10 @@ function viewGrading(){
     const range = i === 0
       ? (isNorm ? 'ตั้งแต่ ' + n2(b.minValue) : n2(b.minValue) + ' – 100.00')
       : n2(b.minValue) + ' – ' + n2(Math.max(b.minValue, d.bands[i-1].minValue - 0.01));
-    return '<tr><td><span class="tnum text-[15px] font-medium">' + b.grade + '</span></td>' +
+    const passTag = !isAutoPass(C) ? ''
+      : i === d.bands.length - 1 ? ' <span class="text-[12.5px] text-bad font-normal">ไม่ผ่าน</span>'
+      : i === d.bands.length - 2 ? ' <span class="text-[12.5px] text-ok font-normal">ผ่านขั้นต่ำ</span>' : '';
+    return '<tr><td><span class="tnum text-[15px] font-medium">' + b.grade + '</span>' + passTag + '</td>' +
       '<td class="tnum text-[14px]">' + range + '</td>' +
       '<td style="width:220px"><div class="h-4 bg-wash rounded-sm overflow-hidden">' +
         '<div class="h-full bg-haze" style="width:' + (dist[b.grade]/maxCount*100) + '%"></div></div></td>' +
@@ -3488,7 +3504,8 @@ function viewGrading(){
       '<div class="hair-t mt-5 pt-4 grid grid-cols-2 gap-4">' +
         '<div><div class="over flex items-center gap-1.5">รูปแบบเกรด' + tip(GRADE_HELP[C.gradeScale]) + '</div>' +
           '<div class="text-[14px] mt-1">' + SCALE_TH[C.gradeScale] + '</div></div>' +
-        '<div><div class="over">เกณฑ์ผ่านรายวิชา</div><div class="tnum text-[14px] mt-1">' + n0(C.passCriteria) + '%</div></div>' +
+        '<div><div class="over">เกณฑ์ผ่านรายวิชา</div><div class="tnum text-[14px] mt-1">' + n0(C.passCriteria) + '%</div>' +
+          (isAutoPass(C) ? '<div class="text-[12.5px] text-dim mt-0.5">ตามขั้นบันไดเกรด</div>' : '') + '</div>' +
       '</div>' +
       (isNorm ? '<div class="hair-t mt-4 pt-4">' +
         '<div class="over mb-2 flex items-center gap-1.5">สถิติของกลุ่ม' +
@@ -5359,17 +5376,22 @@ const FORMS = {
     name: function(r){ return r.grade; },
     valueOf: function(r, k){ return r[k]; },
     title: function(r){ return r ? 'แก้ไขระดับเกรด ' + r.grade : 'เพิ่มระดับเกรด'; },
-    note:'ค่าขอบล่างอ่านเป็นร้อยละเมื่อตัดเกรดอิงเกณฑ์ และอ่านเป็น T-score เมื่ออิงกลุ่ม — หน่วยตามมาจากวิธีตัดโดยตรง',
+    note:'หน่วยของคะแนนต่ำสุดตามวิธีตัดเกรด — อิงเกณฑ์ = ร้อยละของคะแนนรวม · อิงกลุ่ม = T-score',
     fields: function(r){
       const pf = D().course.gradeScale === 'PASS_FAIL';
       const norm = D().course.gradeMethod === 'NORM_REFERENCED';
       const isS = pf && r && r.grade === 'S';
+      const cc = D().course, asc = D().bands.slice().sort(function(a, b){ return a.minValue - b.minValue; });
+      const isFailBand = !pf && isAutoPass(cc) && r && asc[0] && asc[0].id === r.id;
+      const isPassFloor = !pf && isAutoPass(cc) && r && asc[1] && asc[1].id === r.id;
       return [
         { id:'grade', label:'ชื่อเกรด', type: pf ? 'select' : 'text', col:2, req:true, def: pf ? 'S' : '',
           options: pf ? [['S','S — ผ่าน'],['U','U — ไม่ผ่าน']] : null, ph:'เช่น A หรือ B+' },
-        { id:'minValue', label: norm ? 'ขอบล่าง (T-score)' : 'ขอบล่าง (% ของคะแนนรวม)', type:'num', col:2, req:true, def:0,
-          hint: isS ? 'ค่านี้คือเกณฑ์ผ่านรายวิชา — บันทึกแล้วเกณฑ์ผ่านรายวิชาเปลี่ยนตาม (ค่าเดียวกับในตั้งค่าการตัดเกรด)'
-                    : 'ได้ตั้งแต่ค่านี้ขึ้นไปจนถึงก่อนขอบล่างของเกรดที่สูงกว่า' }
+        { id:'minValue', label: norm ? 'คะแนน T ต่ำสุดของเกรดนี้' : 'คะแนนต่ำสุดของเกรดนี้ (%)', type:'num', col:2, req:true, def:0,
+          hint: isS ? 'คือเกณฑ์ผ่านรายวิชา — เปลี่ยนที่นี่แล้วเกณฑ์ผ่านเปลี่ยนตาม'
+              : isPassFloor ? 'เกรดนี้คือขั้นต่ำสุดที่ยังผ่าน — ค่านี้คือเกณฑ์ผ่านรายวิชา'
+              : isFailBand ? 'เกรดต่ำสุด (ไม่ผ่าน) ต้องเริ่มที่ 0'
+              : 'คะแนนรวมตั้งแต่ค่านี้ขึ้นไป ได้เกรดนี้ (จนถึงก่อนเกรดที่สูงกว่า)' }
       ];
     },
     errors: function(v, r){
@@ -5379,15 +5401,15 @@ const FORMS = {
         E.add('grade', 'รายวิชาแบบผ่าน/ไม่ผ่านมีได้เฉพาะ S และ U');
       else if (uniq(d.bands, function(x){ return x.grade === v.grade; }, r && r.id))
         E.add('grade', 'มีเกรด ' + v.grade + ' อยู่แล้วในรายวิชานี้');
-      if (v.minValue === null || v.minValue < 0) E.add('minValue', 'ค่าขอบล่างต้องเป็นตัวเลขไม่ติดลบ');
+      if (v.minValue === null || v.minValue < 0) E.add('minValue', 'คะแนนต่ำสุดต้องเป็นตัวเลข 0 ขึ้นไป');
       /* อิงเกณฑ์อ่านขอบล่างเป็นร้อยละของคะแนนรวม — เกิน 100 คือเกรดที่ไม่มีใครได้ · T-score ไม่มีเพดานนี้ */
       else if (d.course.gradeMethod !== 'NORM_REFERENCED' && v.minValue > 100)
-        E.add('minValue', 'ขอบล่างเป็นร้อยละของคะแนนรวม จึงเกิน 100 ไม่ได้');
+        E.add('minValue', 'คะแนนต่ำสุดเป็นร้อยละ จึงเกิน 100 ไม่ได้');
       else if (uniq(d.bands, function(x){ return x.minValue === v.minValue; }, r && r.id))
-        E.add('minValue', 'มีเกรดอื่นใช้ขอบล่าง ' + n2(v.minValue) + ' อยู่แล้ว — สองเกรดใช้เส้นแบ่งเดียวกันไม่ได้');
+        E.add('minValue', 'มีเกรดอื่นเริ่มที่ ' + n2(v.minValue) + ' อยู่แล้ว — ใช้ค่าซ้ำกันไม่ได้');
       /* CR-09 — without a floor at 0 some student falls through with no grade. */
       else if (r && r.minValue === 0 && v.minValue !== 0)
-        E.add('minValue', 'ต้องมีระดับเกรดที่ขอบล่างเป็น 0 เสมอ มิฉะนั้นจะมีนักศึกษาที่ไม่ได้เกรด');
+        E.add('minValue', 'ต้องมีเกรดที่เริ่มที่ 0 เสมอ ไม่เช่นนั้นบางคนจะไม่ได้เกรด');
       return E.list;
     },
     validate: function(v, r){ return firstError(this, v, r); },
@@ -5406,7 +5428,7 @@ const FORMS = {
       if (c && c.gradeScale === 'PASS_FAIL')
         return 'รายวิชาแบบผ่าน/ไม่ผ่านต้องมี S และ U ครบสองระดับ — ลบไม่ได้ (แก้ขอบล่างของ S แทน)';
       return r.minValue === 0
-        ? 'ลบระดับเกรดที่ขอบล่างเป็น 0 ไม่ได้ — ทุกขั้นบันไดต้องมีระดับล่างสุดรองรับ' : null;
+        ? 'ลบเกรดที่เริ่มที่ 0 ไม่ได้ — ต้องมีเกรดล่างสุดรองรับทุกคะแนน' : null;
     },
     impact: function(){ return [['เกรดที่ตรึงไว้แล้ว จะไม่เปลี่ยน', 0]]; },
     delNote:'เกรดที่ออกไปแล้วถูกตรึงไว้ในตาราง StudentGrade จึงไม่เปลี่ยนตามขั้นบันได',
@@ -5856,10 +5878,10 @@ function modalOverride(studentId){
    after CLOs are set, not in the create-course form. Every option therefore
    carries its meaning next to it, and the modal lives on the grading tab. */
 const GRADE_HELP = {
-  LETTER: 'คะแนนรวมรายวิชาถูกเทียบกับขั้นบันไดเกรด A · B+ · B · C+ · C · D+ · D · F — ขอบเขตแต่ละขั้นแก้ได้ในตารางขั้นบันไดเกรด',
-  PASS_FAIL: 'ไม่มีเกรด A–F · คะแนนรวมถึงเกณฑ์ผ่านรายวิชา = ผ่าน (S) ต่ำกว่า = ไม่ผ่าน (U) · เหมาะกับวิชาฝึกปฏิบัติหรือวิชา 0 หน่วยกิต',
-  CRITERION_REFERENCED: 'เทียบกับขอบเขตคงที่ที่ตั้งไว้ล่วงหน้า — ทุกคนที่ถึงเกณฑ์ได้เกรดนั้น ไม่ขึ้นกับคะแนนของเพื่อน',
-  NORM_REFERENCED: 'เทียบกับคะแนนของเพื่อนในกลุ่ม (T-score) — ใช้ได้กับเกรดแบบ A–F เท่านั้น'
+  LETTER: 'ได้เกรด A · B+ · B · C+ · C · D+ · D · F ตามคะแนนรวม — แก้คะแนนต่ำสุดของแต่ละเกรดได้ในตารางขั้นบันไดเกรด',
+  PASS_FAIL: 'ไม่มีเกรด A–F · ถึงเกณฑ์ผ่าน = ผ่าน (S) ต่ำกว่า = ไม่ผ่าน (U) · เหมาะกับวิชาฝึกปฏิบัติหรือ 0 หน่วยกิต',
+  CRITERION_REFERENCED: 'ตัดตามคะแนนที่ตั้งไว้ — ใครถึงเกณฑ์ก็ได้เกรดนั้น ไม่ขึ้นกับคะแนนเพื่อน',
+  NORM_REFERENCED: 'ตัดโดยเทียบกับเพื่อนในกลุ่ม (T-score) — ใช้ได้กับ A–F เท่านั้น'
 };
 
 function modalGrading(){
@@ -5884,10 +5906,14 @@ function modalGrading(){
       opt('รูปแบบเกรด', 'g-scale', ['LETTER','PASS_FAIL'], SCALE_TH, c.gradeScale) +
       opt('วิธีตัดเกรด', 'g-method', ['CRITERION_REFERENCED','NORM_REFERENCED'], METHOD_TH,
           normOff ? 'CRITERION_REFERENCED' : c.gradeMethod) +
-      '<div><label class="text-[14px] text-ink2 block mb-1.5" for="g-pass">เกณฑ์ผ่านรายวิชา (% ของคะแนนรวม)</label>' +
+      '<div id="g-pass-auto"' + (isAutoPass(c) ? '' : ' hidden') + '>' +
+        '<div class="text-[14px] text-ink2 mb-1.5">เกณฑ์ผ่านรายวิชา</div>' +
+        '<div class="px-4 py-3 rounded-lg bg-wash text-[14px] text-ink2 leading-relaxed">ตั้งตามขั้นบันไดเกรดโดยอัตโนมัติ — เกรดต่ำสุดที่ยังผ่านคือเกณฑ์ผ่าน ' +
+          '(ตอนนี้ <b class="tnum">' + n0(c.passCriteria) + '%</b>) แก้ได้ที่ขั้นบันไดเกรด</div></div>' +
+      '<div id="g-pass-box"' + (isAutoPass(c) ? ' hidden' : '') + '><label class="text-[14px] text-ink2 block mb-1.5" for="g-pass">เกณฑ์ผ่านรายวิชา (% ของคะแนนรวม)</label>' +
         '<input class="inp tnum" id="g-pass" value="' + c.passCriteria + '" inputmode="decimal">' +
-        '<div class="text-[12.5px] text-dim mt-1">คะแนนรวมขั้นต่ำเพื่อผ่านรายวิชา — คนละตัวกับเกณฑ์ผ่านของ CLO ซึ่งวัดทีละข้อ</div></div>' +
-      '<div class="text-[13px] text-warn">เปลี่ยนรูปแบบเกรดแล้ว ขั้นบันไดเกรดจะถูกตั้งใหม่เป็นค่าเริ่มต้น</div>' +
+        '<div class="text-[12.5px] text-dim mt-1">คะแนนรวมขั้นต่ำที่ผ่านรายวิชา (ไม่ใช่เกณฑ์ผ่านของ CLO ที่วัดทีละข้อ)</div></div>' +
+      '<div class="text-[13px] text-warn">ถ้าเปลี่ยนรูปแบบเกรด ขั้นบันไดเกรดจะกลับเป็นค่าเริ่มต้น</div>' +
     '</div>',
     btn('ยกเลิก','','data-act="close"') + btn('บันทึก','primary','data-act="save-grading"')));
 }
@@ -9053,9 +9079,10 @@ document.addEventListener('click', function(e){
     if (!can('band.write')) return deny('band.write');
     const pick = function(n){ const x = document.querySelector('input[name="' + n + '"]:checked'); return x ? x.value : null; };
     const scale = pick('g-scale'), method = pick('g-method');
-    const pass = parseFloat(document.getElementById('g-pass').value);
+    const autoPass = scale === 'LETTER' && method === 'CRITERION_REFERENCED';
+    const pass = autoPass ? byId(db.course, S.course).passCriteria : parseFloat(document.getElementById('g-pass').value);
     clearFieldErrors(document.getElementById('modal'));
-    if (isNaN(pass) || pass < 0 || pass > 100) { if (fieldError('g-pass', 'เกณฑ์ผ่านรายวิชาต้องอยู่ระหว่าง 0–100')) return; toast('เกณฑ์ผ่านรายวิชาต้องอยู่ระหว่าง 0–100','bad'); return; }
+    if (!autoPass && (isNaN(pass) || pass < 0 || pass > 100)) { if (fieldError('g-pass', 'เกณฑ์ผ่านรายวิชาต้องอยู่ระหว่าง 0–100')) return; toast('เกณฑ์ผ่านรายวิชาต้องอยู่ระหว่าง 0–100','bad'); return; }
     /* CR-10 — S/U is decided by passCriteria alone, so a curve cannot apply. */
     if (scale === 'PASS_FAIL' && method === 'NORM_REFERENCED') {
       toast('รายวิชาแบบผ่าน/ไม่ผ่าน ตัดเกรดอิงกลุ่มไม่ได้','bad'); return; }
@@ -9074,7 +9101,7 @@ document.addEventListener('click', function(e){
       /* CR-06 — the S band IS the pass mark; two numbers for one rule drift. */
       db.gradeBand.forEach(function(b){ if (b.courseId === c.id && b.grade === 'S') b.minValue = pass; });
     }
-    c.gradeScale = scale; c.gradeMethod = method; c.passCriteria = pass;
+    c.gradeScale = scale; c.gradeMethod = method; c.passCriteria = pass;   /* A–F อิงเกณฑ์: invalidate() คำนวณใหม่จากขั้นบันได */
     closeOverlays(); invalidate(); render();
     toast('บันทึกการตั้งค่าการตัดเกรดแล้ว');
     return;
@@ -9168,6 +9195,7 @@ document.addEventListener('click', function(e){
         : [['A',80],['B+',75],['B',70],['C+',65],['C',60],['D+',55],['D',50],['F',0]])
         .forEach(function(b, i){
           db.gradeBand.push({ id:'gb_' + target.id + '_' + i, courseId:target.id, grade:b[0], minValue:b[1] }); });
+      syncPassFromBands(target);
       S.course = target.id; S.expanded[target.id] = true;
     }
     closeOverlays(); invalidate();
@@ -9291,6 +9319,11 @@ function gradingSync(){
   norm.disabled = pf.checked;
   norm.closest('label').classList.toggle('opacity-50', pf.checked);
   if (pf.checked && norm.checked) crit.checked = true;
+  /* ผ่านอัตโนมัติเมื่อ A–F + อิงเกณฑ์ · นอกนั้นกรอกเอง */
+  const auto = !pf.checked && crit.checked;
+  const a = document.getElementById('g-pass-auto'), b = document.getElementById('g-pass-box');
+  if (a) a.hidden = !auto;
+  if (b) b.hidden = auto;
 }
 
 /* คอมเมนต์อาจารย์ — ตารางตรวจการเชื่อมกับ CLO คำนวณแบบ real-time: พิมพ์แล้วยอดรวมแถว ยอด CLO และยอดรวมขยับทันที
@@ -9336,7 +9369,7 @@ document.addEventListener('change', function(e){
     toast(text ? 'บันทึกแผนพัฒนาผู้เรียนแล้ว' : 'ลบแผนพัฒนาผู้เรียนแล้ว');
     return;
   }
-  if (t.name === 'g-scale') { gradingSync(); return; }
+  if (t.name === 'g-scale' || t.name === 'g-method') { gradingSync(); return; }
   if (t.id === 'imp-prefix' && IMPORT) { IMPORT.withPrefix = t.checked; modalImport(2); return; }   /* V5 */
   /* P2 — ติ๊ก/เอาออก = แบ่งเท่ากันใหม่ในชุดที่ติ๊ก */
   if (t.type === 'checkbox' && t.closest && t.closest('[data-weighted]')) {
