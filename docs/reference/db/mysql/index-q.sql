@@ -706,7 +706,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 --   3. Arrange > Autolayout
 --   4. View > Object Descriptions shows the COMMENTs — the [index-q] tag is how
 --      the four proposed tables and eleven proposed columns identify themselves
---   5. File > Export > Export as Single Page PDF... -> index-q_er-diagram.pdf
+--   5. File > Export > Export as Single Page PDF... -> index-q-er-diagram.pdf
 --      (the copy in this folder is older than this file until that is redone)
 --
 -- Expected diagram shape — count the lines to know the import was complete:

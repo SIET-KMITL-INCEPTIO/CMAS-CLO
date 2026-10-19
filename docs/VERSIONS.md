@@ -14,7 +14,7 @@ Fix this page in the same change.
 
 | Rule | Example |
 |---|---|
-| The **current** file keeps a stable name with no date | `mysql/index-q_er-diagram.pdf` |
+| The **current** file keeps a stable name with no date | `mysql/index-q-er-diagram.pdf` |
 | A replaced file moves to a `superseded/` folder next to it and gets the **date it was made** or its **version** as a suffix | `superseded/index-q_er-diagram_2026-09-13.pdf`, `superseded/cmas_app_mysql_v3.sql` |
 | Every `superseded/` folder has a `README.md` with one row per file: what replaced it and why | [`reference/db/mysql/superseded/`](reference/db/mysql/superseded/README.md), [`diagrams/usecase/superseded/`](diagrams/usecase/superseded/README.md) |
 | A markdown document carries its own version in its header, plus the baseline it was checked against | `> **Version:** 2.4.0 \| **Updated:** 2026-09-26` · `> **Baseline:** [[srs]] v2.4.0 · migration 0001–0007` |
@@ -80,8 +80,8 @@ listed in the header of the SQL file under "PROTOTYPE <-> SQL".
 |---|---|---|
 | `reference/db/mysql/index-q.sql` | hand-written | **source**: edit this |
 | `diagrams/er/ER-INDEX-Q.drawio` | `scripts/build-er-index-q-drawio.py` | edit the layout |
-| `reference/db/mysql/index-q.mwb` | `scripts/build-index-q-workbench.py` (needs MySQL Workbench) | open in Workbench, export the PDF below by hand |
-| `reference/db/mysql/index-q_er-diagram.pdf` | MySQL Workbench export, 2026-09-25 | show the Workbench-style EER (was the untracked `index-q-v2.pdf`) · **behind since 2026-10-02**: 16 tables, no `ScoreChange`, no `Student.status` / `Activity.closedAt` / `Score.status` — re-export from Workbench after importing the current `index-q.sql` (steps 1–5 at the end of that file; Workbench reads it cleanly: 17 tables, 23 relationships) |
+| `reference/db/mysql/index-q-v2.mwb` | `scripts/build-index-q-workbench.py` (needs MySQL Workbench) | Workbench model of `index-q.sql` · 18 tables, 26 relationships |
+| `reference/db/mysql/index-q-er-diagram.pdf` | MySQL Workbench export of the model above, 2026-10-19 | show the Workbench-style EER (replaces `index-q_er-diagram.pdf` of 2026-09-25, which had 16 tables) |
 
 Older version: `reference/db/mysql/superseded/index-q_er-diagram_2026-09-13.pdf`
 (was `index-q.pdf`: 15 tables, no `EmailVerificationToken`).
