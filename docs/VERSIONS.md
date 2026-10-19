@@ -168,7 +168,7 @@ later rewrite. The repo does not record which one was submitted.
 ### 3.9 Threat model: one model, one report
 
 In [`diagrams/threat-model/`](diagrams/threat-model/). Checked 2026-10-18 against
-`diagrams/dfd/DFD-INDEX-Q.drawio` v1.3.
+`diagrams/dfd/DFD-INDEX-Q.drawio` v1.3. DFD v1.4 (2026-10-19) changes labels only — `RemediationPlan` joins D5, "แผนพัฒนาผู้เรียน" and "บันทึกการตั้งค่าตัดเกรด" join existing flows; still 6 processes, 6 stores, 44 flows — so the threat model needs no new element, only the label wording.
 
 | File | Status |
 |---|---|
