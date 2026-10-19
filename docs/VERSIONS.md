@@ -80,8 +80,7 @@ listed in the header of the SQL file under "PROTOTYPE <-> SQL".
 |---|---|---|
 | `reference/db/mysql/index-q.sql` | hand-written | **source**: edit this |
 | `diagrams/er/ER-INDEX-Q.drawio` | `scripts/build-er-index-q-drawio.py` | edit the layout |
-| `diagrams/er/ER-INDEX-Q.html` | same script | open in a browser |
-| `diagrams/er/ER-INDEX-Q.pdf` | Edge headless print of the `.html` | present or attach |
+| `reference/db/mysql/index-q.mwb` | `scripts/build-index-q-workbench.py` (needs MySQL Workbench) | open in Workbench, export the PDF below by hand |
 | `reference/db/mysql/index-q_er-diagram.pdf` | MySQL Workbench export, 2026-09-25 | show the Workbench-style EER (was the untracked `index-q-v2.pdf`) · **behind since 2026-10-02**: 16 tables, no `ScoreChange`, no `Student.status` / `Activity.closedAt` / `Score.status` — re-export from Workbench after importing the current `index-q.sql` (steps 1–5 at the end of that file; Workbench reads it cleanly: 17 tables, 23 relationships) |
 
 Older version: `reference/db/mysql/superseded/index-q_er-diagram_2026-09-13.pdf`
