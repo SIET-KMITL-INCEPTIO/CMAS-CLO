@@ -789,19 +789,27 @@ const METHOD_TH = { CRITERION_REFERENCED:'อิงเกณฑ์', NORM_REFERE
 /* T3 / T11 (2569-09-17) — กิจกรรมมีประเภท และวิธีประเมินแยกจากกัน · คีย์คือค่าที่ลงฐานข้อมูล */
 /* O2 (2569-09-23) — LECTURE แสดงเป็น "นำเสนอ" · คีย์ยังเป็น LECTURE ตาม enum ใน schema จึงไม่ต้อง migrate
    แบบทดสอบย่อยจึงย้ายไปอยู่ประเภท "สอบ" (TEST) เพราะไม่ใช่การนำเสนอ */
-const ACT_TYPE_TH = { LECTURE:'นำเสนอ', LAB:'ปฏิบัติการ (Lab)', TEST:'สอบ', PROJECT:'โครงงาน / ชิ้นงาน' };
+const ACT_TYPE_TH = { LECTURE:'นำเสนอ', LAB:'ปฏิบัติการ (Lab)', TEST:'สอบ', PROJECT:'โครงงาน / ชิ้นงาน',
+                      OTHER:'อื่น ๆ (ผู้สอนกำหนดเอง)' };
 const ASSESS_TH   = { QUIZ:'แบบทดสอบ (Quiz)', EXAM:'ข้อสอบ', RUBRIC:'รูบริก (Rubric)',
-                      WORK:'ตรวจชิ้นงาน / รายงาน', OBSERVATION:'สังเกตพฤติกรรม' };
+                      WORK:'ตรวจชิ้นงาน / รายงาน', OBSERVATION:'สังเกตพฤติกรรม',
+                      OTHER:'อื่น ๆ (ผู้สอนกำหนดเอง)' };
+/* คอมเมนต์อาจารย์ (2569-10-19) — ประเภทและวิธีประเมินพิมพ์เองได้: เลือก OTHER แล้วเก็บชื่อที่พิมพ์ไว้ใน typeLabel / assessmentLabel
+   กลุ่มน้ำหนักยังคีย์ตามประเภท (OTHER เป็นกลุ่มเดียว) ผู้สอนไม่ได้สร้างกลุ่มใหม่อิสระ */
+const actTypeText = function(a){ return (a.type === 'OTHER' && a.typeLabel) ? a.typeLabel : (ACT_TYPE_TH[a.type] || '—'); };
+const planOf = function(studentId, cloId){
+  return db.remediation.find(function(x){ return x.studentId === studentId && x.cloId === cloId; }) || null; };
+const assessText = function(a){ return (a.assessmentMethod === 'OTHER' && a.assessmentLabel) ? a.assessmentLabel : (ASSESS_TH[a.assessmentMethod] || ''); };
 
 /* M2 (2569-09-21) — คะแนนเต็มตั้งต้นตามประเภทกิจกรรม
    ปฏิบัติการและการสอบมีคะแนนเต็มที่เป็นธรรมเนียมของมันอยู่แล้ว การให้พิมพ์ทุกครั้ง
    คือการขอให้คนกรอกเลขเดิมซ้ำ ๆ · ค่านี้เป็น "ค่าตั้งต้น" ไม่ใช่เพดาน — ลดลงได้เสมอ
    ในฟอร์ม แต่ลดต่ำกว่าคะแนนที่กรอกไว้แล้วไม่ได้ — ต้องแก้คะแนนเหล่านั้นก่อน (Q5) ระบบไม่ปัดคะแนนให้ */
-const ACT_DEFAULT_MAX = { LECTURE:20, LAB:50, TEST:100, PROJECT:100 };
+const ACT_DEFAULT_MAX = { LECTURE:20, LAB:50, TEST:100, PROJECT:100, OTHER:100 };
 /* หน่วยของเกณฑ์ — ข้อความสั้นที่ต่อท้ายจำนวน ไม่ใช่ค่าที่ใช้คำนวณ */
 /* N1 (2569-09-21) — วิธีประเมินเดาได้จากประเภทเกือบทุกครั้ง (สอบ→ข้อสอบ ปฏิบัติการ→รูบริก)
    ฟอร์มกิจกรรมจึงเติมให้เองเมื่อเลือกประเภท และยังเปลี่ยนเองได้ */
-const ACT_DEFAULT_ASSESS = { LECTURE:'RUBRIC', LAB:'RUBRIC', TEST:'EXAM', PROJECT:'WORK' };
+const ACT_DEFAULT_ASSESS = { LECTURE:'RUBRIC', LAB:'RUBRIC', TEST:'EXAM', PROJECT:'WORK', OTHER:'OTHER' };
 
 /* M3 — เกณฑ์ผ่านเก็บเป็น % (passMark) เพราะทุกสูตรที่มีอยู่อ่านค่านั้น
    แต่สิ่งที่ผู้สอนกรอกและอ่านคือ "คะแนน" (passScore) · สองค่านี้ต้องไม่หลุดจากกัน
@@ -1026,6 +1034,10 @@ const db = {
 
   student: [],   // built below
   score:   [],   // built below
+
+  /* คอมเมนต์อาจารย์ (2569-10-19) — แผนพัฒนาคุณภาพผู้เรียน: ข้อความที่ครูพิมพ์ ต่อ (นักศึกษา × CLO) เช่น สอบซ่อม งานเพิ่ม ฝึกเพิ่ม
+     หนึ่งแถวต่อคู่ (studentId, cloId) · ไม่เข้าสูตรคะแนนใด ใช้บันทึกว่าจะช่วยเรื่องอะไรเท่านั้น · ลบคนหรือ CLO แล้วแถวนี้ต้องลบตาม */
+  remediation: [],   // { id, studentId, cloId, plan, updatedBy, updatedAt }
 
   gradeBand: [
     { id:'gb1', courseId:'c1', grade:'A',  minValue:80 }, { id:'gb2', courseId:'c1', grade:'B+', minValue:75 },
@@ -2007,12 +2019,12 @@ const verdictChip = function(a){
   return (a.risk
       ? '<button class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[13px] rounded-sm whitespace-nowrap hover:underline underline-offset-2" ' +
         'style="background:' + TONE.warn.bg + ';color:' + TONE.warn.tx + '" data-act="clo-help" data-clo="' + a.clo.id +
-        '" title="ดูรายชื่อนักศึกษาที่ต่ำกว่าเกณฑ์ผ่านของ CLO ' + a.clo.number + '">ต้องช่วย ' + a.risk + ' คน ›</button>'
+        '" title="ดูรายชื่อนักศึกษาที่ต่ำกว่าเกณฑ์ผ่านของ CLO ' + a.clo.number + '">ยังไม่ผ่าน ' + a.risk + ' คน ›</button>'
       : chip('ผ่านทุกคน','ok')) +
     (a.risk * 2 > a.n ? '<div class="text-[12.5px] text-bad mt-1 whitespace-nowrap" title="คนส่วนใหญ่ไม่ผ่านข้อเดียวกัน — ' +
       'เป็นสัญญาณของการสอนหรือการวัดผล มากกว่าของนักศึกษารายคน">เกินครึ่งชั้น</div>' : '') +
     (open ? '<div class="text-[12.5px] text-warn mt-1 whitespace-nowrap" title="คะแนนยังไม่ครบ ' + a.partial +
-      ' คน · ยังไม่มีคะแนน ' + a.pending + ' คน — จำนวนที่ต้องช่วยอาจเปลี่ยนเมื่อคะแนนครบ">ชั่วคราว · รอ ' + open + ' คน</div>' : '');
+      ' คน · ยังไม่มีคะแนน ' + a.pending + ' คน — จำนวนที่ยังไม่ผ่านอาจเปลี่ยนเมื่อคะแนนครบ">ยังรอคะแนน ' + open + ' คน</div>' : '');
 };
 /* สรุปทั้งวิชา: กี่คน ในกี่ข้อ — ใช้เป็นชิปหัวการ์ดและตัวเลขสรุป ทุกหน้าพูดคำเดียวกัน */
 const helpSummary = function(d){
@@ -2023,10 +2035,10 @@ const helpSummary = function(d){
 const helpChip = function(d){
   const h = helpSummary(d);
   if (!h.scored) return '';
-  return h.people ? chip('ต้องช่วย ' + h.people + ' คน ใน ' + h.clos + ' ข้อ', 'warn') : chip('ทุกคนผ่านทุกข้อ', 'ok');
+  return h.people ? chip('ยังไม่ผ่าน ' + h.people + ' คน ใน ' + h.clos + ' CLO', 'warn') : chip('ทุกคนผ่านทุกข้อ', 'ok');
 };
 
-/* รายชื่อที่ต้องช่วยของ CLO หนึ่งข้อ — เรียงจากห่างเกณฑ์มากไปน้อย แยก "ห่างมาก" กับ "ใกล้ผ่าน"
+/* รายชื่อที่ยังไม่ผ่านของ CLO หนึ่งข้อ — เรียงจากห่างเกณฑ์มากไปน้อย แยก "ห่างมาก" กับ "ใกล้ผ่าน"
    และบอกจุดประสงค์ที่อ่อนที่สุดของแต่ละคน เพราะ "ช่วยเรื่องอะไร" คือคำถามถัดไปเสมอ */
 function cloHelpRows(d, c){
   return d.rows.filter(function(r){ const v = r.clo[c.id]; return v.pct !== null && v.pct < d.passMark; })
@@ -2051,9 +2063,11 @@ function modalCloHelp(cloId){
         '<span class="text-[14px]">' + esc(x.r.student.name) + ' <span class="tnum text-[13px] text-dim">' + esc(x.r.student.studentCode) + '</span></span>' +
         '<span class="tnum text-[14px] whitespace-nowrap">' + n2(x.pct) + '%' +
           '<span class="text-dim"> · ห่าง ' + n2x(Math.round(x.gap * 10) / 10) + '</span>' +
-          (x.provisional ? '<span class="text-warn" title="คะแนนของ CLO นี้ยังไม่ครบ ตัดสินชั่วคราว"> *</span>' : '') + '</span></div>' +
+          (x.provisional ? '<span class="text-warn" title="คะแนนของ CLO นี้ยังไม่ครบ — ผลอาจเปลี่ยน"> *</span>' : '') + '</span></div>' +
       (x.weakest ? '<div class="text-[13px] text-dim mt-0.5">อ่อนที่สุดที่จุดประสงค์ ' + d.objLabel(x.weakest) + ' ' +
           esc(x.weakest.description) + ' <span class="tnum">(' + n2(x.weakestPct) + '%)</span></div>' : '') +
+      (function(){ const pl = planOf(x.r.student.id, a.clo.id);
+        return pl ? '<div class="text-[13px] text-ink2 mt-0.5">แผน: ' + esc(pl.plan) + '</div>' : ''; })() +
       (x.r.overdue.length ? '<div class="text-[13px] text-bad mt-0.5">ขาดส่ง ' +
           x.r.overdue.map(function(k){ return esc(k.name); }).join(', ') + '</div>' : '') + '</button>';
   };
@@ -2061,7 +2075,7 @@ function modalCloHelp(cloId){
     return !list.length ? '' : '<div class="mt-4 first:mt-0"><div class="flex items-center gap-2 mb-1">' + chip(title + ' · ' + list.length + ' คน', t) +
       '</div>' + list.map(line).join('') + '</div>';
   };
-  openModal(modalFrame('CLO ' + a.clo.number + ' — ต้องช่วย ' + rows.length + ' คน',
+  openModal(modalFrame('CLO ' + a.clo.number + ' — ยังไม่ผ่าน ' + rows.length + ' คน',
     '<div class="text-[14px] text-ink2 leading-relaxed">' + esc(a.clo.description) + '</div>' +
     '<div class="text-[13px] text-dim mt-2 tnum">ผ่าน ' + a.pass + ' จาก ' + a.n + ' คนที่มีคะแนนแล้ว · เกณฑ์ผ่าน CLO ' + n0(d.passMark) + '%' +
       (a.pending ? ' · ยังไม่มีคะแนน ' + a.pending + ' คน' : '') + '</div>' +
@@ -2229,48 +2243,38 @@ function actStats(d){
   });
 }
 
+/* คอมเมนต์อาจารย์ (2569-10-19) — กราฟเดิมมีตัวแปรซ้อนกัน (เส้นประ คะแนนเฉลี่ย สัดส่วนผู้ถึงเกณฑ์) อ่านยาก
+   สิ่งที่ต้องดูคือ "จำนวนคนที่ผ่านและไม่ผ่านในแต่ละกิจกรรม" จึงเหลือแท่งเดียวต่อกิจกรรม แบ่งสีเขียว/แดง
+   ความยาวแท่ง = คนที่มีคะแนนของกิจกรรมนั้น (ทุกแท่งเต็มความกว้างเท่ากัน อ่านสัดส่วนได้ตรง ๆ)
+   คะแนนเฉลี่ยย้ายไปอยู่ใน tooltip ไม่ปนกับจำนวนคน */
 function chartActivity(d){
   const rows = actStats(d);
   if (!rows.length) return hollow('ยังไม่มีกิจกรรม');
-  const rowH = 40, padL = 132, padR = 56, W = 640, H = rows.length * rowH + 26;
+  const rowH = 34, padL = 132, padR = 118, W = 640, H = rows.length * rowH + 8;
   const plotW = W - padL - padR;
-  const x = function(v){ return padL + plotW * Math.max(0, Math.min(100, v)) / 100; };
-
-  const ticks = [0,25,50,75,100].map(function(v){
-    return '<line x1="' + x(v) + '" y1="12" x2="' + x(v) + '" y2="' + (H - 14) + '" stroke="' + CH.line + '"' +
-      (v ? ' stroke-dasharray="2 4"' : '') + '/>' +
-      '<text x="' + x(v) + '" y="' + (H - 2) + '" text-anchor="middle" font-size="10.5" fill="' + CH.dim + '">' + v + '%</text>';
-  }).join('');
 
   const bars = rows.map(function(r, i){
-    const y = 16 + i * rowH;
+    const y = 6 + i * rowH;
     const nm = r.a.name.length > 17 ? r.a.name.slice(0, 16) + '…' : r.a.name;
-    const one = function(val, yy, col, lbl){
-      if (val === null) return '<text x="' + (padL + 6) + '" y="' + (yy + 9) + '" font-size="11" fill="' + CH.dim +
-        '">ยังไม่มีคะแนน</text>';
-      return '<rect x="' + padL + '" y="' + yy + '" width="' + (x(val) - padL) + '" height="11" rx="2" fill="' + col + '">' +
-        '<title>' + esc(r.a.name) + ' · ' + lbl + ' ' + n2(val) + '%</title></rect>' +
-        '<text x="' + (W - padR + 8) + '" y="' + (yy + 9.5) + '" font-size="11.5" fill="' + CH.ink + '">' + n0(val) + '%</text>';
-    };
-    return '<text x="' + (padL - 9) + '" y="' + (y + 12) + '" text-anchor="end" font-size="12.5" fill="' + CH.ink + '">' +
-        esc(nm) + '<title>' + esc(r.a.name) + ' · น้ำหนัก ' + r.a.weight + '% · เต็ม ' + r.a.maxScore +
-        ' · เกณฑ์ผ่าน ' + n0(r.a.passMark) + '%</title></text>' +
-      /* ขีดเกณฑ์ผ่านของกิจกรรมนี้ — แต่ละแถวมีเกณฑ์ของตัวเอง */
-      '<line x1="' + x(r.a.passMark) + '" y1="' + (y - 3) + '" x2="' + x(r.a.passMark) + '" y2="' + (y + 28) +
-        '" stroke="' + CH.ink + '" stroke-width="1.4" stroke-dasharray="3 2"><title>เกณฑ์ผ่าน ' + n0(r.a.passMark) + '%</title></line>' +
-      one(r.avg, y, PAL.avg, 'คะแนนเฉลี่ย') +
-      one(r.share, y + 14, r.share === null ? CH.pend : (r.share >= 50 ? CH.ok : CH.risk), 'สัดส่วนผู้ถึงเกณฑ์');
+    const label = '<text x="' + (padL - 9) + '" y="' + (y + 15) + '" text-anchor="end" font-size="12.5" fill="' + CH.ink + '">' +
+        esc(nm) + '<title>' + esc(r.a.name) + ' · เต็ม ' + r.a.maxScore + ' · ผ่านที่ ' + n0(r.a.passMark) + '%</title></text>';
+    if (!r.n) return label + '<text x="' + (padL + 6) + '" y="' + (y + 15) + '" font-size="11.5" fill="' + CH.dim +
+      '">ยังไม่มีคะแนน</text>';
+    const fail = r.n - r.pass;
+    const wp = plotW * r.pass / r.n, wf = plotW - wp;
+    const tip = esc(r.a.name) + ' · ผ่าน ' + r.pass + ' คน · ไม่ผ่าน ' + fail + ' คน · คะแนนเฉลี่ย ' + n2(r.avg) + '%';
+    return label +
+      (wp > 0 ? '<rect x="' + padL + '" y="' + y + '" width="' + wp + '" height="20" fill="' + CH.ok + '"><title>' + tip + '</title></rect>' : '') +
+      (wf > 0 ? '<rect x="' + (padL + wp) + '" y="' + y + '" width="' + wf + '" height="20" fill="' + CH.risk + '"><title>' + tip + '</title></rect>' : '') +
+      '<text x="' + (W - padR + 10) + '" y="' + (y + 15) + '" font-size="12" fill="' + CH.ink + '">' +
+        'ผ่าน ' + r.pass + ' · ไม่ผ่าน ' + fail + '</text>';
   }).join('');
 
-
   return '<div class="p-4 pt-3">' +
-    legend([['คะแนนเฉลี่ยของชั้น', PAL.avg],
-            ['สัดส่วนผู้ถึงเกณฑ์', CH.ok],
-            ['เกณฑ์ผ่านของกิจกรรม (เส้นประ)', CH.ink]]) +
+    legend([['ผ่านเกณฑ์ของกิจกรรม (คน)', CH.ok], ['ไม่ผ่าน (คน)', CH.risk]]) +
     '<div class="scroll-x mt-3"><svg viewBox="0 0 ' + W + ' ' + H + '" class="h-auto" ' +
       'style="min-width:560px;width:100%" role="img" ' +
-      'aria-label="คะแนนเฉลี่ยและสัดส่วนผู้ถึงเกณฑ์ของแต่ละกิจกรรม">' +
-      ticks + bars + '</svg></div>' +
+      'aria-label="จำนวนคนที่ผ่านและไม่ผ่านของแต่ละกิจกรรม">' + bars + '</svg></div>' +
     '</div>';
 }
 
@@ -2550,7 +2554,7 @@ function viewOverview(){
        น้ำหนักตามแผนและระดับ Bloom/SOLO เป็นข้อมูลตั้งค่า ดูได้ที่หน้า CLO จึงไม่อยู่ในตารางผล */
     : '<table class="dt"><thead><tr>' +
         '<th style="width:74px">CLO</th><th>คำอธิบาย</th>' +
-        '<th style="width:150px">ผู้ผ่าน</th><th style="width:132px">ต้องช่วย</th>' +
+        '<th style="width:150px">ผู้ผ่าน</th><th style="width:132px">ยังไม่ผ่าน</th>' +
       '</tr></thead><tbody>' + d.attain.map(function(a){
         const seg = function(v, col){
           return v ? '<i style="width:' + (v / (d.roster.length || 1) * 100) + '%;background:' + col + '"></i>' : ''; };
@@ -2605,7 +2609,7 @@ function viewOverview(){
      ที่ย้ายมา: การกระจายคะแนนรวม · ที่ตัด: กราฟแท่งราย CLO (เป็นแถบในตารางแล้ว) วงสถานะการผ่าน (ซ้ำตัวเลขสรุป)
      ตารางตรวจยอดราย CLO (เป็นการตรวจระบบ ไม่ใช่งานของผู้สอน) และการ์ดคะแนนเฉลี่ย (เป็นตัวเลขสรุปแล้ว) */
   const actCard = '<div class="card overflow-hidden">' +
-    chartHead('คะแนนของชั้นในแต่ละกิจกรรม', 'เส้นประ = เกณฑ์ผ่านของกิจกรรม',
+    chartHead('ผ่าน / ไม่ผ่านในแต่ละกิจกรรม', 'นับเป็นจำนวนคน · คะแนนเฉลี่ยของกิจกรรมอยู่ใน tooltip',
       'เกณฑ์ผ่านของกิจกรรมใช้ดูภาพรวมเท่านั้น ไม่มีผลต่อการตัดสิน CLO') +
     chartActivity(d) + '</div>';
   const histCard = '<div class="card overflow-hidden">' +
@@ -2615,7 +2619,7 @@ function viewOverview(){
 
   return sheet({
     title:'ภาพรวมรายวิชา',
-    note:'ผลสรุปของทั้งชั้น · เป้าหมายคือทุกคนผ่านทุก CLO จึงนับจำนวนคนที่ยังต้องช่วย — กดที่จำนวนเพื่อดูรายชื่อ · คะแนนที่ยังไม่มีไม่ถูกนับเป็น 0',
+    note:'ผลสรุปของทั้งชั้น · เป้าหมายคือทุกคนผ่านทุก CLO จึงนับจำนวนคนที่ยังไม่ผ่าน — กดที่จำนวนเพื่อดูรายชื่อ · คะแนนที่ยังไม่มีไม่ถูกนับเป็น 0',
     actions: btn('ตั้งค่ารายวิชา','','data-act="course-settings"'),
     body:
       '<div class="statbar mb-4">' +
@@ -2625,8 +2629,8 @@ function viewOverview(){
              avg === null ? 'ยังไม่มีคะแนนครบ'
                : 'สูงสุด ' + n2(Math.max.apply(null, d.complete.map(function(r){ return r.total.pct; }))) +
                  ' · ต่ำสุด ' + n2(Math.min.apply(null, d.complete.map(function(r){ return r.total.pct; })))) +
-        /* R1 — ไม่นับว่า "บรรลุกี่ข้อ" (ด้วยเป้า 100% คำตอบคือ 0 เกือบเสมอ) แต่นับว่ามีกี่ข้อที่ยังมีคนต้องช่วย และกี่คน */
-        stat('CLO ที่มีคนต้องช่วย', (d.locked || d.clos.length === 0) ? '—' : help.clos + ' / ' + d.clos.length,
+        /* R1 — ไม่นับว่า "บรรลุกี่ข้อ" (ด้วยเป้า 100% คำตอบคือ 0 เกือบเสมอ) แต่นับว่ามีกี่ข้อที่ยังมีคนยังไม่ผ่าน และกี่คน */
+        stat('CLO ที่มีคนยังไม่ผ่าน', (d.locked || d.clos.length === 0) ? '—' : help.clos + ' / ' + d.clos.length,
              d.locked ? 'ล็อกจนกว่าจะตั้งค่าครบ' : help.people ? 'รวม ' + help.people + ' คน' : 'ทุกคนผ่านทุกข้อ',
              (d.locked || d.clos.length === 0) ? 'nil' : (help.clos ? 'warn' : 'ok')) +
         stat('นักศึกษาที่ต้องติดตาม', d.roster.length === 0 ? '—' : (nFail + nClo + nOver) + ' / ' + d.roster.length,
@@ -2640,7 +2644,7 @@ function viewOverview(){
           d.clos.length === 0 ? 'ยังไม่มี CLO'
             : d.locked ? 'ยังคำนวณไม่ได้ — ตั้งค่าให้ครบก่อน' : '',
           'ขอบนอกสุดของเรดาร์ = ผ่านทุกคน\n' +
-          'นักศึกษาถูกตัดสินทันทีที่มีคะแนนของ CLO ข้อนั้น — “ชั่วคราว” คือยังรอคะแนนของบางคน',
+          'นักศึกษาถูกตัดสินทันทีที่มีคะแนนของ CLO ข้อนั้น — “ยังรอคะแนน” คือคะแนนของบางคนยังไม่ครบ',
           (d.locked || d.clos.length === 0) ? '' : helpChip(d),
           true) +
         '<div class="split2"><div class="min-w-0">' + cloChart + '</div>' +
@@ -2857,8 +2861,8 @@ function viewActivities(){
         /* W1 — คะแนนเต็มกับคะแนนผ่านอยู่ในคอลัมน์ขวาแล้ว บรรทัดนี้เหลือเฉพาะหมายเหตุเกณฑ์ที่ผู้สอนพิมพ์เอง */
         (a.criteriaNote ? '<div class="text-[13px] text-dim clip">' + esc(a.criteriaNote) + '</div>' : '') +
         (a.closedAt ? '<div class="text-[12.5px] text-dim">ปิดรับคะแนนแล้ว · <span class="tnum">' + esc(a.closedAt) + '</span></div>' : '') + '</td>' +
-      '<td><div class="text-[14px]">' + esc(ACT_TYPE_TH[a.type] || '—') + '</div>' +
-        '<div class="text-[13px] text-dim">' + esc(ASSESS_TH[a.assessmentMethod] || '—') + '</div></td>' +
+      '<td><div class="text-[14px]">' + esc(actTypeText(a)) + '</div>' +
+        '<div class="text-[13px] text-dim">' + esc(assessText(a) || '—') + '</div></td>' +
       '<td class="num tnum text-[14px]">' + n2x(a.maxScore) + '</td>' +
       '<td class="num tnum text-[14px]">' + n2x(passScoreOf(a)) +
         '<span class="block text-[12.5px] text-dim">' + n2x(a.passMark) + '%</span></td>' +
@@ -2968,7 +2972,7 @@ function viewActivities(){
         return x ? d.objLabel(o) + ' = ' + n2x(x.weight) + '%' : null; }).filter(Boolean);
       return '<td class="num" style="background:' + bg + '">' +
         '<input class="cellinp' + (cr ? '' : ' empty') + '" data-crit="' + a.id + '|' + g.c.id +
-        '" value="' + (cr ? w : '') + '" placeholder="–" inputmode="decimal" ' +
+        '" data-aw="' + a.weight + '" value="' + (cr ? w : '') + '" placeholder="–" inputmode="decimal" ' +
         'title="' + esc(a.name) + ' → CLO ' + g.c.number +
           (split.length ? ' · จุดประสงค์ ' + split.join(' · ') + ' · แก้ค่า = ปรับยอดรวมโดยคงสัดส่วนนี้'
                         : ' · กรอก % เพื่อผูก (แบ่งให้ทุกจุดประสงค์ตามน้ำหนัก)') + ' · ล้างช่องเพื่อเลิกผูก" ' +
@@ -2976,10 +2980,10 @@ function viewActivities(){
     }).join('');
     return '<tr>' +
       '<td class="who sticky left-0 bg-white z-10"><span class="nm block !max-w-[240px]">' + esc(a.name) + '</span>' +
-        '<span class="code">' + esc(ASSESS_TH[a.assessmentMethod] || '') + ' · ' + a.weight + '% ของวิชา</span></td>' +
+        '<span class="code">' + esc(assessText(a)) + ' · ' + a.weight + '% ของวิชา</span></td>' +
       cells +
-      '<td class="num tnum text-[14px] ' + (rs === 100 ? 'text-dim' : 'text-bad font-medium') + '">' +
-        rs + '%' + (rs === 100 ? ' ✓' : '') +
+      '<td class="num tnum text-[14px] ' + (rs === 100 ? 'text-dim' : 'text-bad font-medium') + '" data-rowsum>' +
+        '<span data-rowsum-v>' + rs + '%' + (rs === 100 ? ' ✓' : '') + '</span>' +
         (rs === 100 || rs === 0 ? '' :
           '<button class="block ml-auto mt-1 text-[12.5px] text-dim underline underline-offset-2 no-print" ' +
           'data-act="crit-even" data-id="' + a.id + '">แบ่งเท่ากัน</button>') +
@@ -3003,10 +3007,10 @@ function viewActivities(){
     cloGroups.map(function(g){
       const calc = d.cloWeight(g.c.id), set = g.c.weight || 0, bad = Math.abs(calc - set) >= 0.5;
       return '<td class="num tnum">' +
-        '<span class="text-[14px] font-medium' + (bad ? ' text-warn' : '') + '">' + n2(calc) + '%</span>' +
-        '<span class="text-[13px] text-dim"> / ' + n2(set) + '%</span>' + (bad ? ' <span class="text-warn">≠</span>' : ' ✓') + '</td>';
+        '<span data-clocalc="' + g.c.id + '" data-set="' + (set || 0) + '"><span class="text-[14px] font-medium' + (bad ? ' text-warn' : '') + '">' + n2(calc) + '%</span>' +
+        '<span class="text-[13px] text-dim"> / ' + n2(set) + '%</span>' + (bad ? ' <span class="text-warn">≠</span>' : ' ✓') + '</span></td>';
     }).join('') +
-    '<td class="num tnum text-[14px] font-medium">' + n2(d.clos.reduce(function(t,c){ return t + d.cloWeight(c.id); },0)) + '%</td></tr>';
+    '<td class="num tnum text-[14px] font-medium" data-clototal>' + n2(d.clos.reduce(function(t,c){ return t + d.cloWeight(c.id); },0)) + '%</td></tr>';
 
   const problems = [];
   if (d.unlinkedActs.length) problems.push('ยังไม่ผูก CLO: ' + d.unlinkedActs.map(function(a){ return esc(a.name); }).join(' · '));
@@ -3885,12 +3889,14 @@ const ER_MODELS = [
    'Course (N:1) · BehavioralObjective (1:N)', 'clos'],
   ['BehavioralObjective','จุดประสงค์เชิงพฤติกรรมใต้ CLO · weight รวม 100 ต่อ CLO', function(){ return db.behavioralObjective.length; },
    'CLO (N:1) · AssessmentCriteria (1:N)', 'objectives'],
-  ['Activity','กิจกรรม · type · assessmentMethod · maxScore · passScore (passMark คำนวณจากคู่นี้) · weight (แบ่งจาก Course.groupWeight ตามคะแนนเต็มเมื่อ Course.weightMode = GROUP)', function(){ return db.activity.length; },
+  ['Activity','กิจกรรม · type (+ typeLabel เมื่อ OTHER) · assessmentMethod (+ assessmentLabel เมื่อ OTHER) · maxScore · passScore (passMark คำนวณจากคู่นี้) · weight (แบ่งจาก Course.groupWeight ตามคะแนนเต็มเมื่อ Course.weightMode = GROUP)', function(){ return db.activity.length; },
    'Course (N:1) · AssessmentCriteria (1:N) · Score (1:N)', 'activities'],
   ['AssessmentCriteria','ตารางเชื่อม Activity × BehavioralObjective ที่ถือ weight ของคู่ (รวม 100 ต่อกิจกรรม)', function(){ return db.assessmentCriteria.length; },
    'Activity (N:1) · BehavioralObjective (N:1)', 'activities'],
   ['Student','การลงทะเบียน ไม่ใช่ตัวบุคคล (ASM-01)', function(){ return db.student.length; },
-   'Course (N:1) · Score (1:N) · StudentGrade (1:1)', 'roster'],
+   'Course (N:1) · Score (1:N) · StudentGrade (1:1) · RemediationPlan (1:N)', 'roster'],
+  ['RemediationPlan','แผนพัฒนาผู้เรียนรายคน × CLO — ครูพิมพ์เอง (สอบซ่อม งานเพิ่ม ฝึกเพิ่ม) ไม่เข้าสูตรคะแนน', function(){ return db.remediation.length; },
+   'Student (N:1) · CLO (N:1) · User (N:1)', 'roster'],
   ['Score','ข้อเท็จจริงว่าใครได้เท่าไร — ไม่มีแถว = ยังไม่ประเมิน', function(){ return db.score.length; },
    'Student (N:1) · Activity (N:1)', 'roster'],
   ['ScoreUploadLog','บันทึกการนำเข้า อยู่นอกเส้นทางคำนวณ', function(){ return db.scoreUploadLog.length; },
@@ -4373,7 +4379,7 @@ function modalPwReset(uid, done){
 /* ══════════════════════════════════════════════════════════════════
    5 · DRAWER — รายงานรายบุคคล (feature 15 / UC 5.4)
    ══════════════════════════════════════════════════════════════════ */
-/* U11 — back = { label, from, id } เมื่อเปิดมาจากรายการที่ต้องกลับไป (เช่น รายชื่อ “ต้องช่วย” ของ CLO)
+/* U11 — back = { label, from, id } เมื่อเปิดมาจากรายการที่ต้องกลับไป (เช่น รายชื่อ “ยังไม่ผ่าน” ของ CLO)
    เดิมเปิดรายงานรายบุคคลแล้วรายชื่อเดิมหายไป ต้องกดเปิดใหม่ทุกคน — ไล่ช่วยทีละคนจึงช้ามาก */
 let DRAWER_BACK = null;
 function studentDrawer(sid, back){
@@ -4390,7 +4396,7 @@ function studentDrawer(sid, back){
       '<div class="flex items-baseline justify-between gap-3 mb-2">' +
         '<span class="text-[14px]">CLO ' + c.number + ' <span class="text-dim">· เกณฑ์ ' + n0(d.passMark) + '% · น้ำหนักตามแผน ' + n2(c.weight || 0) + '%</span></span>' +
         '<span class="tnum text-[14px] font-medium" style="color:' + TONE[t].tx + '">' +
-          (v.pct === null ? 'ยังไม่มีคะแนน' : n2(v.pct) + '%' + (v.complete ? '' : ' · ชั่วคราว')) + '</span></div>' +
+          (v.pct === null ? 'ยังไม่มีคะแนน' : n2(v.pct) + '%' + (v.complete ? '' : ' · คะแนนยังไม่ครบ')) + '</span></div>' +
       /* M5 — คะแนนดิบอยู่ใต้ % เสมอ ไม่ใช่คนละหน้า: เวลาคุยกับนักศึกษาต้องใช้พร้อมกัน */
       (function(){
         const rw = r.cloRaw[c.id];
@@ -4411,6 +4417,16 @@ function studentDrawer(sid, back){
           '<span class="tnum shrink-0">' + (ov.pct === null ? '<span class="text-dim">—</span>' : n2(ov.pct)) + '</span></div>';
       }).join('') + '</div>' : '') +
       (v.missing ? '<div class="text-[13px] text-warn mt-1">ขาดคะแนน ' + v.missing + ' จาก ' + v.linked + ' กิจกรรมที่วัด CLO นี้</div>' : '') +
+      /* แผนพัฒนาผู้เรียน — แสดงเมื่อ CLO นี้ต่ำกว่าเกณฑ์ หรือเคยบันทึกแผนไว้แล้ว */
+      (function(){
+        const pl = planOf(s.id, c.id);
+        if (!pl && !(v.pct !== null && v.pct < d.passMark)) return '';
+        return '<div class="mt-3"><label class="text-[13px] text-ink2 block mb-1" for="plan-' + c.id + '">แผนพัฒนาผู้เรียน · CLO ' + c.number + '</label>' +
+          '<textarea class="inp" id="plan-' + c.id + '" rows="2" data-plan="' + s.id + '|' + c.id + '" ' +
+            'placeholder="แนวทางช่วยเหลือ เช่น สอบซ่อม งานเพิ่ม ฝึกปฏิบัติเพิ่ม"' + (can('student.write') ? '' : ' disabled') + '>' +
+            esc(pl ? pl.plan : '') + '</textarea>' +
+          '<div class="text-[12px] text-dim mt-1">บันทึกเมื่อออกจากช่อง' + (pl ? ' · แก้ล่าสุด ' + esc(pl.updatedAt) : '') + '</div></div>';
+      })() +
     '</div>';
   }).join('');
 
@@ -4420,7 +4436,7 @@ function studentDrawer(sid, back){
     const late = stt === 'blank' && d.isClosed(a) && a.weight > 0;
     return '<div class="flex items-center justify-between gap-3 py-2.5 hair last:border-0">' +
       '<span class="text-[14px] min-w-0 flex-1">' + esc(a.name) +
-        '<span class="text-dim text-[13px]"> · ' + esc(ASSESS_TH[a.assessmentMethod] || '') + ' · น้ำหนัก ' + a.weight + '%' +
+        '<span class="text-dim text-[13px]"> · ' + esc(assessText(a)) + ' · น้ำหนัก ' + a.weight + '%' +
           (d.isClosed(a) ? ' · ปิดรับคะแนนแล้ว' : '') + '</span></span>' +
       '<span class="tnum text-[14px] shrink-0 flex items-center gap-2">' + (stt === 'excused'
         ? (excuseReasonOf(s.id, a.id) ? '<span class="text-[13px] text-dim max-w-[200px] truncate" title="' +
@@ -4498,7 +4514,7 @@ function studentDrawer(sid, back){
    generated from that. Adding an entity is a descriptor, not another modal. */
 
 const FIELD = function(f, v){
-  const w = 'col-span-' + (f.col || 4);
+  const w = 'col-span-' + (f.col || 4) + (f.hidden ? ' hidden' : '');
   const lab = '<label class="text-[14px] text-ink2 block mb-1.5" for="ff-' + f.id + '">' + f.label +
     (f.req ? ' <span style="color:' + TONE.bad.tx + '">*</span>' : '') + '</label>';
   const hint = f.hint ? '<div class="text-[12.5px] text-dim mt-1">' + f.hint + '</div>' : '';
@@ -4990,6 +5006,7 @@ const FORMS = {
       db.score = db.score.filter(function(x){ return stuIds.indexOf(x.studentId) < 0; });
       db.studentGrade = db.studentGrade.filter(function(x){ return stuIds.indexOf(x.studentId) < 0; });
       stuIds.forEach(function(sid){ delete db.override[sid]; });
+      db.remediation = db.remediation.filter(function(x){ const st = byId(db.student, x.studentId); return !st || st.courseId !== id; });
       db.student = db.student.filter(function(x){ return x.courseId !== id; });
       db.assessmentCriteria = db.assessmentCriteria.filter(function(x){ return actIds.indexOf(x.activityId) < 0; });
       db.behavioralObjective = db.behavioralObjective.filter(function(x){ return cloIds.indexOf(x.cloId) < 0; });
@@ -5074,6 +5091,7 @@ const FORMS = {
       const objIds = where(db.behavioralObjective, 'cloId', r.id).map(function(o){ return o.id; });
       db.assessmentCriteria = db.assessmentCriteria.filter(function(c){ return objIds.indexOf(c.objectiveId) < 0; });
       db.behavioralObjective = db.behavioralObjective.filter(function(o){ return o.cloId !== r.id; });
+      db.remediation = db.remediation.filter(function(x){ return x.cloId !== r.id; });
       db.clo = db.clo.filter(function(c){ return c.id !== r.id; });
     }
   },
@@ -5161,16 +5179,20 @@ const FORMS = {
         { id:'order', label:'ลำดับ', type:'num', col:1, req:true, def:next },
         { id:'type', label:'ประเภทกิจกรรม', type:'select', col:2, def:'TEST',
           options: Object.keys(ACT_TYPE_TH).map(function(k){ return [k, ACT_TYPE_TH[k]]; }) },
+        { id:'typeLabel', label:'ชื่อประเภทกิจกรรม', type:'text', col:2, def:'', ph:'เช่น กรณีศึกษา',
+          hidden: (((FORM_PREFILL && FORM_PREFILL.type) || (r && r.type)) !== 'OTHER') },
         { id:'assessmentMethod', label:'วิธีประเมิน', type:'select', col:2, def:'EXAM',
           options: Object.keys(ASSESS_TH).map(function(k){ return [k, ASSESS_TH[k]]; }) },
+        { id:'assessmentLabel', label:'ชื่อวิธีประเมิน', type:'text', col:2, def:'', ph:'เช่น สัมภาษณ์',
+          hidden: (((FORM_PREFILL && FORM_PREFILL.assessmentMethod) || (r && r.assessmentMethod)) !== 'OTHER') },
         /* O1 (2569-09-21) — ประเภทกิจกรรมกับกลุ่มกิจกรรมถูกมองเป็นสิ่งเดียวกัน จึงเหลือช่องเดียวในฟอร์ม
            กลุ่มที่ผู้สอนตั้งเองย้ายไปกำหนดที่คอลัมน์ “กลุ่ม” ในตารางกิจกรรมแทน
            เกณฑ์การประเมินเหลือสองตัวเลข: คะแนนเต็ม กับ คะแนนที่ถือว่าผ่าน — พอสำหรับประเมิน ไม่ต้องกรอกซ้ำ */
         d.course.weightMode === 'GROUP'
-          ? { id:'weight', label:'น้ำหนักในวิชา (%)', type:'info', col:4,
+          ? { id:'weight', label:'ร้อยละของสัดส่วนคะแนนในวิชา', type:'info', col:4,
               value: r ? n2x(r.weight) + '% (จากน้ำหนักกลุ่ม)' : 'จากน้ำหนักกลุ่ม',
               hint:'น้ำหนักของกลุ่มประเภทนี้ แบ่งให้กิจกรรมในกลุ่มตามสัดส่วนคะแนนเต็ม · ตั้งน้ำหนักกลุ่มที่หัวกลุ่มในตารางกิจกรรม' }
-          : { id:'weight', label:'น้ำหนักในวิชา (%)', type:'num', col:4, req:true, def:'', ph:'เหลือ ' + n2x(Math.max(0, left)),
+          : { id:'weight', label:'ร้อยละของสัดส่วนคะแนนในวิชา', type:'num', col:4, req:true, def:'', ph:'เหลือ ' + n2x(Math.max(0, left)),
               hint: 'กิจกรรมอื่นรวม ' + n2(others) + '% · ' + (left > 0 ? 'ใส่ได้ไม่เกิน ' + n2(left) + '%' : 'ครบ 100% แล้ว') },
         { id:'maxScore', label:'คะแนนเต็ม', type:'num', col:2, req:true,
           def: r ? r.maxScore : ACT_DEFAULT_MAX.TEST,
@@ -5194,6 +5216,8 @@ const FORMS = {
     errors: function(v, r){
       const E = fieldErrors();
       if (!v.name) E.add('name', 'กรอกชื่อกิจกรรมก่อน');
+      if (v.type === 'OTHER' && !(v.typeLabel || '').trim()) E.add('typeLabel', 'พิมพ์ชื่อประเภทกิจกรรม');
+      if (v.assessmentMethod === 'OTHER' && !(v.assessmentLabel || '').trim()) E.add('assessmentLabel', 'พิมพ์ชื่อวิธีประเมิน');
       const maxOk = v.maxScore !== null && v.maxScore > 0;
       if (!maxOk) E.add('maxScore', 'คะแนนเต็มต้องมากกว่า 0');
       /* U2 — ว่างได้ (ใช้ 50%) · ถ้ากรอกต้องเป็นตัวเลขที่ถูกต้อง */
@@ -5216,8 +5240,8 @@ const FORMS = {
          v.weight เป็น undefined เฉพาะโหมดน้ำหนักตามกลุ่ม (ไม่มีช่องให้กรอก) · ผลรวมเกิน 100 ยังบันทึกได้
          ตาม FR-43 แถบสรุปท้ายตารางและขั้นตอนเป็นผู้บอก */
       if (v.weight !== undefined && v.weight === null)
-        E.add('weight', 'กรอกน้ำหนักในวิชาของกิจกรรมนี้ (ดูยอดที่เหลือใต้ช่อง · ใส่ 0 ได้ถ้ายังไม่ให้น้ำหนัก)');
-      else if (v.weight !== undefined && !in0100(v.weight)) E.add('weight', 'น้ำหนักในวิชาต้องเป็นตัวเลขระหว่าง 0–100');
+        E.add('weight', 'กรอกร้อยละของสัดส่วนคะแนนในวิชาของกิจกรรมนี้ (ดูยอดที่เหลือใต้ช่อง · ใส่ 0 ได้ถ้ายังไม่ให้น้ำหนัก)');
+      else if (v.weight !== undefined && !in0100(v.weight)) E.add('weight', 'ร้อยละของสัดส่วนคะแนนต้องเป็นตัวเลขระหว่าง 0–100');
       if (!isOrdinal(v.order)) E.add('order', 'ลำดับต้องเป็นจำนวนเต็มตั้งแต่ 1');
       else if (uniq(D().acts, function(x){ return x.order === v.order; }, r && r.id))
         E.add('order', 'มีกิจกรรมลำดับ ' + v.order + ' อยู่แล้วในรายวิชานี้ — ใช้ปุ่ม ▲▼ ในตารางเพื่อสลับลำดับ');
@@ -5242,6 +5266,8 @@ const FORMS = {
       const t = r || { id:'a_' + Date.now(), courseId:S.course };
       if (!r) db.activity.push(t);
       t.name = v.name; t.type = v.type || 'TEST'; t.assessmentMethod = v.assessmentMethod || 'EXAM';
+      t.typeLabel = t.type === 'OTHER' ? (v.typeLabel || '').trim() : '';
+      t.assessmentLabel = t.assessmentMethod === 'OTHER' ? (v.assessmentLabel || '').trim() : '';
       /* ฟอร์มไม่มีช่องหมายเหตุเกณฑ์ (v.criteriaNote เป็น undefined) — เดิมบรรทัดนี้ล้างหมายเหตุทิ้งทุกครั้งที่กดบันทึก
          แก้ไข: คงค่าเดิมไว้ · กิจกรรมใหม่รับจากต้นฉบับเมื่อเป็นการทำสำเนา (Q11) */
       if (v.criteriaNote !== undefined) t.criteriaNote = v.criteriaNote || '';
@@ -5326,6 +5352,7 @@ const FORMS = {
       db.score = db.score.filter(function(x){ return x.studentId !== r.id; });
       db.scoreChange = db.scoreChange.filter(function(x){ return x.studentId !== r.id; });
       db.studentGrade = db.studentGrade.filter(function(x){ return x.studentId !== r.id; });
+      db.remediation = db.remediation.filter(function(x){ return x.studentId !== r.id; });
       db.student = db.student.filter(function(x){ return x.id !== r.id; });
     }
   },
@@ -6307,9 +6334,9 @@ async function exportResults(){
   const sr = first + body.length;
   sign.forEach(function(row, i){ if (row.length) styles[cellRef(sr + i, 0)] = XF.label; });
 
-  /* U12 — แผ่นสรุปราย CLO: ผ่านกี่คน ต้องช่วยกี่คน (แยกห่างมาก/ใกล้ผ่าน) ยังไม่มีคะแนนกี่คน — ตัวเลขชุดเดียวกับหน้าภาพรวม */
-  const sumHead = ['CLO','คำอธิบาย','น้ำหนักตามแผน (%)','นักศึกษาที่ยังลงทะเบียน','ผ่าน','ต้องช่วย','ห่างมาก','ใกล้ผ่าน',
-                   'ยังไม่มีคะแนน','ผลยังชั่วคราว','ผ่าน (%)','คะแนน CLO เฉลี่ย (%)'];
+  /* U12 — แผ่นสรุปราย CLO: ผ่านกี่คน ยังไม่ผ่านกี่คน (แยกห่างมาก/ใกล้ผ่าน) ยังไม่มีคะแนนกี่คน — ตัวเลขชุดเดียวกับหน้าภาพรวม */
+  const sumHead = ['CLO','คำอธิบาย','น้ำหนักตามแผน (%)','นักศึกษาที่ยังลงทะเบียน','ผ่าน','ยังไม่ผ่าน','ห่างมาก','ใกล้ผ่าน',
+                   'ยังไม่มีคะแนน','คะแนนยังไม่ครบ','ผ่าน (%)','คะแนน CLO เฉลี่ย (%)'];
   const sumBody = d.attain.map(function(a){
     const hr = cloHelpRows(d, a.clo);
     const far = hr.filter(function(x){ return x.gap > NEAR_GAP; }).length;
@@ -6324,35 +6351,36 @@ async function exportResults(){
   const sStyles = {};
   sumHead.forEach(function(_, c){ sStyles[cellRef(0, c)] = XF.head; });
 
-  /* R1 — แผ่นที่สาม: รายชื่อที่ต้องช่วยราย CLO เรียงจากห่างเกณฑ์มากไปน้อย · คนที่ขาดส่งงานอยู่ท้ายแผ่น */
-  const helpHead = ['CLO','รหัสนักศึกษา','ชื่อ-นามสกุล','คะแนน CLO (%)','ห่างจากเกณฑ์','กลุ่ม','สถานะคะแนน','จุดประสงค์ที่อ่อนที่สุด'];
+  /* R1 — แผ่นที่สาม: รายชื่อที่ยังไม่ผ่านราย CLO เรียงจากห่างเกณฑ์มากไปน้อย · คนที่ขาดส่งงานอยู่ท้ายแผ่น */
+  const helpHead = ['CLO','รหัสนักศึกษา','ชื่อ-นามสกุล','คะแนน CLO (%)','ห่างจากเกณฑ์','กลุ่ม','สถานะคะแนน','จุดประสงค์ที่อ่อนที่สุด','แผนพัฒนาผู้เรียน'];
   const helpBody = [];
   d.attain.forEach(function(a){
     cloHelpRows(d, a.clo).forEach(function(x){
       helpBody.push(['CLO ' + a.clo.number, x.r.student.studentCode, x.r.student.name,
         Math.round(x.pct * 100) / 100, Math.round(x.gap * 100) / 100,
-        x.gap > NEAR_GAP ? 'ห่างมาก' : 'ใกล้ผ่าน', x.provisional ? 'ยังไม่ครบ (ชั่วคราว)' : 'ครบ',
-        x.weakest ? d.objLabel(x.weakest) + ' ' + x.weakest.description : '']); });
+        x.gap > NEAR_GAP ? 'ห่างมาก' : 'ใกล้ผ่าน', x.provisional ? 'คะแนนยังไม่ครบ' : 'ครบ',
+        x.weakest ? d.objLabel(x.weakest) + ' ' + x.weakest.description : '',
+        (planOf(x.r.student.id, a.clo.id) || { plan:'' }).plan]); });
   });
   d.rows.filter(function(r){ return r.overdue.length; }).forEach(function(r){
     helpBody.push(['ขาดส่งงาน', r.student.studentCode, r.student.name, '', '', '', '',
       r.overdue.map(function(k){ return k.name; }).join(', ')]); });
-  const wh = XLSX.utils.aoa_to_sheet([helpHead].concat(helpBody.length ? helpBody : [['ไม่มีนักศึกษาที่ต้องช่วย']]));
-  wh['!cols'] = [{wch:12},{wch:16},{wch:28},{wch:15},{wch:14},{wch:12},{wch:20},{wch:48}];
+  const wh = XLSX.utils.aoa_to_sheet([helpHead].concat(helpBody.length ? helpBody : [['ไม่มีนักศึกษาที่ยังไม่ผ่าน']]));
+  wh['!cols'] = [{wch:12},{wch:16},{wch:28},{wch:15},{wch:14},{wch:12},{wch:20},{wch:48},{wch:40}];
   const hStyles = {};
   helpHead.forEach(function(_, c){ hStyles[cellRef(0, c)] = XF.head; });
 
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'ผลการเรียน');
   XLSX.utils.book_append_sheet(wb, wsum, 'สรุปราย CLO');
-  XLSX.utils.book_append_sheet(wb, wh, 'ต้องช่วยราย CLO');
+  XLSX.utils.book_append_sheet(wb, wh, 'ยังไม่ผ่านราย CLO');
   wb.Props = { Title:'ผลการเรียน ' + C.code + ' Sec ' + C.section, Subject:C.name,
                Author:me().name, Company:ORG.institute + ' · ' + ORG.faculty,
                Keywords: docId('results', C) };
   const nm = C.code + '-' + C.section + '-results-' + stamp() + '.xlsx';
   saveBytes(await finishWorkbook(wb, { freeze: cellRef(first, 2), styles: styles,
     sheets: [{ freeze:'A2', styles: sStyles }, { freeze:'A2', styles: hStyles }] }), nm);
-  toast('ส่งออกผลการเรียนแล้ว · ' + nm + ' · มีแผ่น “สรุปราย CLO” และ “ต้องช่วยราย CLO”');
+  toast('ส่งออกผลการเรียนแล้ว · ' + nm + ' · มีแผ่น “สรุปราย CLO” และ “ยังไม่ผ่านราย CLO”');
 }
 
 /* รายชื่อนักศึกษา — the sheet an instructor receives from the ทะเบียน and the
@@ -8894,6 +8922,7 @@ document.addEventListener('click', function(e){
     openForm('activity', null, {
       title:'ทำสำเนากิจกรรม — ' + esc(a.name),
       name:a.name + ' (สำเนา)', type:a.type, assessmentMethod:a.assessmentMethod,
+      typeLabel:a.typeLabel || '', assessmentLabel:a.assessmentLabel || '',
       maxScore:a.maxScore, passScore:passScoreOf(a), criteriaNote:a.criteriaNote || '',
       objectives:links.map(function(c){ return c.objectiveId; }),
       objectivesWeights:links.reduce(function(m, c){ m[c.objectiveId] = c.weight; return m; }, {})
@@ -9269,8 +9298,49 @@ function gradingSync(){
   if (pf.checked && norm.checked) crit.checked = true;
 }
 
+/* คอมเมนต์อาจารย์ — ตารางตรวจการเชื่อมกับ CLO คำนวณแบบ real-time: พิมพ์แล้วยอดรวมแถว ยอด CLO และยอดรวมขยับทันที
+   ไม่ re-render (ไม่ให้เสียโฟกัสช่อง) · ค่าจริงยังบันทึกตอน change ตามเดิม ตัวนี้แค่แสดงผลระหว่างพิมพ์ */
+document.addEventListener('input', function(e){
+  const t = e.target;
+  if (!t || !t.dataset || !t.dataset.crit) return;
+  const num = function(el){ const v = parseFloat(el.value); return isNaN(v) || v < 0 ? 0 : v; };
+  const row = t.closest('tr'), tbl = t.closest('table');
+  if (!row || !tbl) return;
+  const sum = Math.round([].slice.call(row.querySelectorAll('input[data-crit]'))
+    .reduce(function(a, el){ return a + num(el); }, 0) * 100) / 100;
+  const cell = row.querySelector('[data-rowsum]'), val = row.querySelector('[data-rowsum-v]');
+  if (cell && val) {
+    val.textContent = sum + '%' + (sum === 100 ? ' ✓' : '');
+    cell.classList.toggle('text-dim', sum === 100);
+    cell.classList.toggle('text-bad', sum !== 100);
+    cell.classList.toggle('font-medium', sum !== 100);
+  }
+  let total = 0;
+  [].slice.call(tbl.querySelectorAll('[data-clocalc]')).forEach(function(span){
+    const id = span.dataset.clocalc, set = parseFloat(span.dataset.set) || 0;
+    const calc = Math.round([].slice.call(tbl.querySelectorAll('input[data-crit$="|' + id + '"]'))
+      .reduce(function(a, el){ return a + (parseFloat(el.dataset.aw) || 0) * num(el) / 100; }, 0) * 100) / 100;
+    total += calc;
+    const bad = Math.abs(calc - set) >= 0.5;
+    span.innerHTML = '<span class="text-[14px] font-medium' + (bad ? ' text-warn' : '') + '">' + n2(calc) + '%</span>' +
+      '<span class="text-[13px] text-dim"> / ' + n2(set) + '%</span>' + (bad ? ' <span class="text-warn">≠</span>' : ' ✓');
+  });
+  const tot = tbl.querySelector('[data-clototal]');
+  if (tot) tot.textContent = n2(total) + '%';
+});
+
 document.addEventListener('change', function(e){
   const t = e.target;
+  if (t.dataset && t.dataset.plan) {
+    if (!can('student.write')) { deny('student.write'); return; }
+    const parts = t.dataset.plan.split('|'), text = t.value.trim(), cur = planOf(parts[0], parts[1]);
+    if (!text && !cur) return;
+    if (!text) db.remediation = db.remediation.filter(function(x){ return x !== cur; });
+    else if (cur) { cur.plan = text; cur.updatedBy = me().id; cur.updatedAt = PROTO_NOW; }
+    else db.remediation.push({ id:'rm_' + Date.now(), studentId:parts[0], cloId:parts[1], plan:text, updatedBy:me().id, updatedAt:PROTO_NOW });
+    toast(text ? 'บันทึกแผนพัฒนาผู้เรียนแล้ว' : 'ลบแผนพัฒนาผู้เรียนแล้ว');
+    return;
+  }
   if (t.name === 'g-scale') { gradingSync(); return; }
   if (t.id === 'imp-prefix' && IMPORT) { IMPORT.withPrefix = t.checked; modalImport(2); return; }   /* V5 */
   /* P2 — ติ๊ก/เอาออก = แบ่งเท่ากันใหม่ในชุดที่ติ๊ก */
@@ -9408,6 +9478,9 @@ function actFormSync(changed){
     setVal('ff-maxScore', mx);
     setVal('ff-passScore', '');       /* U2 — ว่าง = 50% ตามคะแนนเต็มใหม่ ไม่ล็อกค่าเก่าของประเภทเดิมไว้ */
   }
+  const showIf = function(id, on){ const el = document.getElementById(id); if (el && el.parentElement) el.parentElement.classList.toggle('hidden', !on); };
+  showIf('ff-typeLabel', (document.getElementById('ff-type') || {}).value === 'OTHER');
+  showIf('ff-assessmentLabel', (document.getElementById('ff-assessmentMethod') || {}).value === 'OTHER');
   const max = readNum('ff-maxScore');
   let pass = readNum('ff-passScore');
   if (max !== null && pass !== null && pass > max) { pass = max; setVal('ff-passScore', max); }
