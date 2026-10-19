@@ -790,26 +790,46 @@ const METHOD_TH = { CRITERION_REFERENCED:'อิงเกณฑ์', NORM_REFERE
 /* O2 (2569-09-23) — LECTURE แสดงเป็น "นำเสนอ" · คีย์ยังเป็น LECTURE ตาม enum ใน schema จึงไม่ต้อง migrate
    แบบทดสอบย่อยจึงย้ายไปอยู่ประเภท "สอบ" (TEST) เพราะไม่ใช่การนำเสนอ */
 const ACT_TYPE_TH = { LECTURE:'นำเสนอ', LAB:'ปฏิบัติการ (Lab)', TEST:'สอบ', PROJECT:'โครงงาน / ชิ้นงาน',
-                      OTHER:'อื่น ๆ (ผู้สอนกำหนดเอง)' };
+                      OTHER:'อื่น ๆ' };
 const ASSESS_TH   = { QUIZ:'แบบทดสอบ (Quiz)', EXAM:'ข้อสอบ', RUBRIC:'รูบริก (Rubric)',
                       WORK:'ตรวจชิ้นงาน / รายงาน', OBSERVATION:'สังเกตพฤติกรรม',
-                      OTHER:'อื่น ๆ (ผู้สอนกำหนดเอง)' };
-/* คอมเมนต์อาจารย์ (2569-10-19) — ประเภทและวิธีประเมินพิมพ์เองได้: เลือก OTHER แล้วเก็บชื่อที่พิมพ์ไว้ใน typeLabel / assessmentLabel
-   กลุ่มน้ำหนักยังคีย์ตามประเภท (OTHER เป็นกลุ่มเดียว) ผู้สอนไม่ได้สร้างกลุ่มใหม่อิสระ */
-const actTypeText = function(a){ return (a.type === 'OTHER' && a.typeLabel) ? a.typeLabel : (ACT_TYPE_TH[a.type] || '—'); };
+                      OTHER:'อื่น ๆ' };
+/* คอมเมนต์อาจารย์ (2569-10-19) — "อื่น ๆ" กับ "กำหนดเอง" ต่างกัน:
+     อื่น ๆ   (OTHER)  = ไม่ตรงกับตัวเลือกใดเลย · ไม่ต้องตั้งชื่อ
+     กำหนดเอง (CUSTOM) = ผู้สอนเพิ่มตัวเลือกใหม่เข้า dropdown เอง · เก็บชื่อใน typeLabel / assessmentLabel
+   ชื่อที่เคยกำหนดไว้ในรายวิชาจะกลับมาเป็นตัวเลือกใน dropdown ครั้งต่อไป (ค่า 'CUSTOM:ชื่อ') และ '+' = เพิ่มชื่อใหม่
+   กลุ่มน้ำหนัก: ประเภทกำหนดเองแต่ละชื่อเป็นกลุ่มของตัวเอง (คีย์ 'CUSTOM:ชื่อ') */
+const actTypeText = function(a){ return a.type === 'CUSTOM' ? (a.typeLabel || 'กำหนดเอง') : (ACT_TYPE_TH[a.type] || '—'); };
+const assessText = function(a){ return a.assessmentMethod === 'CUSTOM' ? (a.assessmentLabel || 'กำหนดเอง') : (ASSESS_TH[a.assessmentMethod] || ''); };
+const actGroupKey = function(a){ return a.type === 'CUSTOM' ? 'CUSTOM:' + (a.typeLabel || '') : (a.type || ''); };
+const actGroupLabel = function(k){ k = k || ''; return k.indexOf('CUSTOM:') === 0 ? (k.slice(7) || 'กำหนดเอง') : (ACT_TYPE_TH[k] || 'ไม่ระบุประเภท'); };
+/* ชื่อที่ผู้สอนเคยกำหนดเองในรายวิชานี้ — ใช้เป็นตัวเลือกใน dropdown */
+const customLabels = function(courseId, field, kind){
+  const seen = {}, out = [];
+  db.activity.forEach(function(a){
+    if (a.courseId !== courseId || a[kind] !== 'CUSTOM' || !a[field] || seen[a[field]]) return;
+    seen[a[field]] = 1; out.push(a[field]); });
+  return out.sort();
+};
+/* ค่าใน dropdown -> { key, label } : '+' = ชื่อใหม่จากช่องพิมพ์ · 'CUSTOM:x' = ชื่อเดิม · อื่นคือคีย์ปกติ */
+const readChoice = function(val, typed){
+  val = val || '';
+  if (val === '+') return { key:'CUSTOM', label:(typed || '').trim() };
+  if (val.indexOf('CUSTOM:') === 0) return { key:'CUSTOM', label:val.slice(7) };
+  return { key:val, label:'' };
+};
 const planOf = function(studentId, cloId){
   return db.remediation.find(function(x){ return x.studentId === studentId && x.cloId === cloId; }) || null; };
-const assessText = function(a){ return (a.assessmentMethod === 'OTHER' && a.assessmentLabel) ? a.assessmentLabel : (ASSESS_TH[a.assessmentMethod] || ''); };
 
 /* M2 (2569-09-21) — คะแนนเต็มตั้งต้นตามประเภทกิจกรรม
    ปฏิบัติการและการสอบมีคะแนนเต็มที่เป็นธรรมเนียมของมันอยู่แล้ว การให้พิมพ์ทุกครั้ง
    คือการขอให้คนกรอกเลขเดิมซ้ำ ๆ · ค่านี้เป็น "ค่าตั้งต้น" ไม่ใช่เพดาน — ลดลงได้เสมอ
    ในฟอร์ม แต่ลดต่ำกว่าคะแนนที่กรอกไว้แล้วไม่ได้ — ต้องแก้คะแนนเหล่านั้นก่อน (Q5) ระบบไม่ปัดคะแนนให้ */
-const ACT_DEFAULT_MAX = { LECTURE:20, LAB:50, TEST:100, PROJECT:100, OTHER:100 };
+const ACT_DEFAULT_MAX = { LECTURE:20, LAB:50, TEST:100, PROJECT:100, OTHER:100, CUSTOM:100 };
 /* หน่วยของเกณฑ์ — ข้อความสั้นที่ต่อท้ายจำนวน ไม่ใช่ค่าที่ใช้คำนวณ */
 /* N1 (2569-09-21) — วิธีประเมินเดาได้จากประเภทเกือบทุกครั้ง (สอบ→ข้อสอบ ปฏิบัติการ→รูบริก)
    ฟอร์มกิจกรรมจึงเติมให้เองเมื่อเลือกประเภท และยังเปลี่ยนเองได้ */
-const ACT_DEFAULT_ASSESS = { LECTURE:'RUBRIC', LAB:'RUBRIC', TEST:'EXAM', PROJECT:'WORK', OTHER:'OTHER' };
+const ACT_DEFAULT_ASSESS = { LECTURE:'RUBRIC', LAB:'RUBRIC', TEST:'EXAM', PROJECT:'WORK' };
 
 /* M3 — เกณฑ์ผ่านเก็บเป็น % (passMark) เพราะทุกสูตรที่มีอยู่อ่านค่านั้น
    แต่สิ่งที่ผู้สอนกรอกและอ่านคือ "คะแนน" (passScore) · สองค่านี้ต้องไม่หลุดจากกัน
@@ -1294,8 +1314,8 @@ const splitCents = function(raw, total){
 const actTypeGroups = function(acts){
   const out = [], seen = {};
   acts.forEach(function(a){
-    const k = a.type || '';
-    if (!seen[k]) { seen[k] = { type:k, label:ACT_TYPE_TH[k] || 'ไม่ระบุประเภท', items:[] }; out.push(seen[k]); }
+    const k = actGroupKey(a);
+    if (!seen[k]) { seen[k] = { type:k, label:actGroupLabel(k), items:[] }; out.push(seen[k]); }
     seen[k].items.push(a);
   });
   return out;
@@ -1892,8 +1912,8 @@ const sheet = function(o){
    `of` คืนคีย์ของกลุ่ม · `head` คืนชื่อที่แสดง · null = "ยังไม่จัดกลุ่ม" ซึ่งต้องอยู่ท้ายเสมอ */
 /* W1 (2569-10-03) — เหลือแบบเดียว: ตามประเภทกิจกรรม · ตารางคะแนนและตารางตรวจการเชื่อมจัดตามประเภทอยู่แล้ว
    และน้ำหนักต่อกลุ่มกรอกได้เฉพาะตอนจัดตามประเภท — ตัวเลือกอีกสามแบบจึงซ่อนช่องนั้นไปเฉย ๆ */
-const ACT_GROUPBY = { id:'type', of:function(a){ return a.type; },
-  head:function(k){ return ACT_TYPE_TH[k] || 'ไม่ระบุประเภท'; } };
+const ACT_GROUPBY = { id:'type', of:function(a){ return actGroupKey(a); },
+  head:function(k){ return actGroupLabel(k); } };
 
 /* Sub-views inside one section — the Teams "Posts | Files | Wiki" row. */
 const SUBTABS = {
@@ -3901,7 +3921,7 @@ const ER_MODELS = [
    'Course (N:1) · BehavioralObjective (1:N)', 'clos'],
   ['BehavioralObjective','จุดประสงค์เชิงพฤติกรรมใต้ CLO · weight รวม 100 ต่อ CLO', function(){ return db.behavioralObjective.length; },
    'CLO (N:1) · AssessmentCriteria (1:N)', 'objectives'],
-  ['Activity','กิจกรรม · type (+ typeLabel เมื่อ OTHER) · assessmentMethod (+ assessmentLabel เมื่อ OTHER) · maxScore · passScore (passMark คำนวณจากคู่นี้) · weight (แบ่งจาก Course.groupWeight ตามคะแนนเต็มเมื่อ Course.weightMode = GROUP)', function(){ return db.activity.length; },
+  ['Activity','กิจกรรม · type (+ typeLabel เมื่อ CUSTOM) · assessmentMethod (+ assessmentLabel เมื่อ CUSTOM) · maxScore · passScore (passMark คำนวณจากคู่นี้) · weight (แบ่งจาก Course.groupWeight ตามคะแนนเต็มเมื่อ Course.weightMode = GROUP)', function(){ return db.activity.length; },
    'Course (N:1) · AssessmentCriteria (1:N) · Score (1:N)', 'activities'],
   ['AssessmentCriteria','ตารางเชื่อม Activity × BehavioralObjective ที่ถือ weight ของคู่ (รวม 100 ต่อกิจกรรม)', function(){ return db.assessmentCriteria.length; },
    'Activity (N:1) · BehavioralObjective (N:1)', 'activities'],
@@ -4633,6 +4653,7 @@ function lastAdmin(r){
 }
 
 let FORM_KIND = null, FORM_ID = null;
+let ACT_ASSESS_TOUCHED = false;   /* ผู้สอนเลือกวิธีประเมินเองแล้ว = เลิกเลือกให้ตามประเภท */
 
 function readForm(fields){
   const v = {};
@@ -4783,7 +4804,7 @@ function openForm(kind, id, prefill){
   if (!can(capF)) return deny(capF);
   const F = FORMS[kind];
   const rec = id ? F.read(id) : null;
-  FORM_KIND = kind; FORM_ID = id || null;
+  FORM_KIND = kind; FORM_ID = id || null; ACT_ASSESS_TOUCHED = false;
   FORM_PREFILL = rec ? null : (prefill || null);
   const pre = FORM_PREFILL || {};
   const fields = F.fields(rec);
@@ -5170,6 +5191,8 @@ const FORMS = {
     read: function(id){ return byId(db.activity, id); },
     name: function(r){ return r.name; },
     valueOf: function(r, k){
+      if (k === 'type' && r.type === 'CUSTOM') return 'CUSTOM:' + r.typeLabel;
+      if (k === 'assessmentMethod' && r.assessmentMethod === 'CUSTOM') return 'CUSTOM:' + r.assessmentLabel;
       if (k === 'objectives') return db.assessmentCriteria.filter(function(c){ return c.activityId === r.id; })
         .map(function(c){ return c.objectiveId; });
       return r[k];
@@ -5189,14 +5212,18 @@ const FORMS = {
       return [
         { id:'name', label:'ชื่อกิจกรรม', type:'text', col:3, req:true, def:'', ph:'เช่น สอบปลายภาค' },
         { id:'order', label:'ลำดับ', type:'num', col:1, req:true, def:next },
+        /* "อื่น ๆ" = ไม่ตรงตัวเลือกไหน · "+ กำหนดเอง" = เพิ่มตัวเลือกใหม่เข้ารายการ (ชื่อที่เคยเพิ่มในรายวิชานี้กลับมาเป็นตัวเลือก) */
         { id:'type', label:'ประเภทกิจกรรม', type:'select', col:2, def:'TEST',
-          options: Object.keys(ACT_TYPE_TH).map(function(k){ return [k, ACT_TYPE_TH[k]]; }) },
-        { id:'typeLabel', label:'ชื่อประเภทกิจกรรม', type:'text', col:2, def:'', ph:'เช่น กรณีศึกษา',
-          hidden: (((FORM_PREFILL && FORM_PREFILL.type) || (r && r.type)) !== 'OTHER') },
+          options: Object.keys(ACT_TYPE_TH).map(function(k){ return [k, ACT_TYPE_TH[k]]; })
+            .concat(customLabels(d.course.id, 'typeLabel', 'type').map(function(l){ return ['CUSTOM:' + l, l]; }))
+            .concat([['+', '+ กำหนดเอง…']]) },
+        { id:'typeLabel', label:'ชื่อประเภทใหม่', type:'text', col:2, def:'', ph:'เช่น กรณีศึกษา', hidden:true },
         { id:'assessmentMethod', label:'วิธีประเมิน', type:'select', col:2, def:'EXAM',
-          options: Object.keys(ASSESS_TH).map(function(k){ return [k, ASSESS_TH[k]]; }) },
-        { id:'assessmentLabel', label:'ชื่อวิธีประเมิน', type:'text', col:2, def:'', ph:'เช่น สัมภาษณ์',
-          hidden: (((FORM_PREFILL && FORM_PREFILL.assessmentMethod) || (r && r.assessmentMethod)) !== 'OTHER') },
+          hint:'ระบบเลือกให้ตามประเภท · เปลี่ยนเองได้',
+          options: Object.keys(ASSESS_TH).map(function(k){ return [k, ASSESS_TH[k]]; })
+            .concat(customLabels(d.course.id, 'assessmentLabel', 'assessmentMethod').map(function(l){ return ['CUSTOM:' + l, l]; }))
+            .concat([['+', '+ กำหนดเอง…']]) },
+        { id:'assessmentLabel', label:'ชื่อวิธีประเมินใหม่', type:'text', col:2, def:'', ph:'เช่น สัมภาษณ์', hidden:true },
         /* O1 (2569-09-21) — ประเภทกิจกรรมกับกลุ่มกิจกรรมถูกมองเป็นสิ่งเดียวกัน จึงเหลือช่องเดียวในฟอร์ม
            กลุ่มที่ผู้สอนตั้งเองย้ายไปกำหนดที่คอลัมน์ “กลุ่ม” ในตารางกิจกรรมแทน
            เกณฑ์การประเมินเหลือสองตัวเลข: คะแนนเต็ม กับ คะแนนที่ถือว่าผ่าน — พอสำหรับประเมิน ไม่ต้องกรอกซ้ำ */
@@ -5228,8 +5255,8 @@ const FORMS = {
     errors: function(v, r){
       const E = fieldErrors();
       if (!v.name) E.add('name', 'กรอกชื่อกิจกรรมก่อน');
-      if (v.type === 'OTHER' && !(v.typeLabel || '').trim()) E.add('typeLabel', 'พิมพ์ชื่อประเภทกิจกรรม');
-      if (v.assessmentMethod === 'OTHER' && !(v.assessmentLabel || '').trim()) E.add('assessmentLabel', 'พิมพ์ชื่อวิธีประเมิน');
+      if (v.type === '+' && !(v.typeLabel || '').trim()) E.add('typeLabel', 'พิมพ์ชื่อประเภทใหม่');
+      if (v.assessmentMethod === '+' && !(v.assessmentLabel || '').trim()) E.add('assessmentLabel', 'พิมพ์ชื่อวิธีประเมินใหม่');
       const maxOk = v.maxScore !== null && v.maxScore > 0;
       if (!maxOk) E.add('maxScore', 'คะแนนเต็มต้องมากกว่า 0');
       /* U2 — ว่างได้ (ใช้ 50%) · ถ้ากรอกต้องเป็นตัวเลขที่ถูกต้อง */
@@ -5277,9 +5304,9 @@ const FORMS = {
     save: function(v, r){
       const t = r || { id:'a_' + Date.now(), courseId:S.course };
       if (!r) db.activity.push(t);
-      t.name = v.name; t.type = v.type || 'TEST'; t.assessmentMethod = v.assessmentMethod || 'EXAM';
-      t.typeLabel = t.type === 'OTHER' ? (v.typeLabel || '').trim() : '';
-      t.assessmentLabel = t.assessmentMethod === 'OTHER' ? (v.assessmentLabel || '').trim() : '';
+      const ty = readChoice(v.type || 'TEST', v.typeLabel), me2 = readChoice(v.assessmentMethod || 'EXAM', v.assessmentLabel);
+      t.name = v.name; t.type = ty.key; t.typeLabel = ty.label;
+      t.assessmentMethod = me2.key; t.assessmentLabel = me2.label;
       /* ฟอร์มไม่มีช่องหมายเหตุเกณฑ์ (v.criteriaNote เป็น undefined) — เดิมบรรทัดนี้ล้างหมายเหตุทิ้งทุกครั้งที่กดบันทึก
          แก้ไข: คงค่าเดิมไว้ · กิจกรรมใหม่รับจากต้นฉบับเมื่อเป็นการทำสำเนา (Q11) */
       if (v.criteriaNote !== undefined) t.criteriaNote = v.criteriaNote || '';
@@ -8942,8 +8969,10 @@ document.addEventListener('click', function(e){
     const links = db.assessmentCriteria.filter(function(c){ return c.activityId === a.id; });
     openForm('activity', null, {
       title:'ทำสำเนากิจกรรม — ' + esc(a.name),
-      name:a.name + ' (สำเนา)', type:a.type, assessmentMethod:a.assessmentMethod,
-      typeLabel:a.typeLabel || '', assessmentLabel:a.assessmentLabel || '',
+      name:a.name + ' (สำเนา)',
+      type:a.type === 'CUSTOM' ? 'CUSTOM:' + a.typeLabel : a.type,
+      assessmentMethod:a.assessmentMethod === 'CUSTOM' ? 'CUSTOM:' + a.assessmentLabel : a.assessmentMethod,
+      
       maxScore:a.maxScore, passScore:passScoreOf(a), criteriaNote:a.criteriaNote || '',
       objectives:links.map(function(c){ return c.objectiveId; }),
       objectivesWeights:links.reduce(function(m, c){ m[c.objectiveId] = c.weight; return m; }, {})
@@ -9440,9 +9469,9 @@ document.addEventListener('change', function(e){
     c.groupWeight = c.groupWeight || {};
     const oldV = c.groupWeight[t.dataset.groupweight] || 0;
     c.groupWeight[t.dataset.groupweight] = v;
-    setUndo('น้ำหนักกลุ่ม' + (ACT_TYPE_TH[t.dataset.groupweight] || ''), 'activity.write', function(){ c.groupWeight = gwBefore; });
+    setUndo('น้ำหนักกลุ่ม' + actGroupLabel(t.dataset.groupweight), 'activity.write', function(){ c.groupWeight = gwBefore; });
     invalidate(); render();
-    toast('น้ำหนักกลุ่ม' + (ACT_TYPE_TH[t.dataset.groupweight] || '') + ' : ' + n2x(oldV) + ' → ' + n2x(v) + '%', undefined, UNDO_ACTION);
+    toast('น้ำหนักกลุ่ม' + actGroupLabel(t.dataset.groupweight) + ' : ' + n2x(oldV) + ' → ' + n2x(v) + '%', undefined, UNDO_ACTION);
     return;
   }
 
@@ -9499,16 +9528,21 @@ const setVal = function(id, v){ const el = document.getElementById(id); if (el) 
 
 function actFormSync(changed){
   const isNew = !FORM_ID;
+  if (changed === 'ff-assessmentMethod') ACT_ASSESS_TOUCHED = true;
+  if (changed === 'ff-type') {
+    const t = (document.getElementById('ff-type') || {}).value;
+    /* วิธีประเมินเลือกให้อัตโนมัติตามประเภท — ทั้งตอนเพิ่มและตอนแก้ · หยุดเมื่อผู้สอนเลือกวิธีประเมินเอง */
+    if (!ACT_ASSESS_TOUCHED && ACT_DEFAULT_ASSESS[t]) setVal('ff-assessmentMethod', ACT_DEFAULT_ASSESS[t]);
+  }
   if (changed === 'ff-type' && isNew) {
     const t = (document.getElementById('ff-type') || {}).value;
     const mx = ACT_DEFAULT_MAX[t] || 100;
-    setVal('ff-assessmentMethod', ACT_DEFAULT_ASSESS[t] || 'EXAM');
     setVal('ff-maxScore', mx);
     setVal('ff-passScore', '');       /* U2 — ว่าง = 50% ตามคะแนนเต็มใหม่ ไม่ล็อกค่าเก่าของประเภทเดิมไว้ */
   }
   const showIf = function(id, on){ const el = document.getElementById(id); if (el && el.parentElement) el.parentElement.classList.toggle('hidden', !on); };
-  showIf('ff-typeLabel', (document.getElementById('ff-type') || {}).value === 'OTHER');
-  showIf('ff-assessmentLabel', (document.getElementById('ff-assessmentMethod') || {}).value === 'OTHER');
+  showIf('ff-typeLabel', (document.getElementById('ff-type') || {}).value === '+');
+  showIf('ff-assessmentLabel', (document.getElementById('ff-assessmentMethod') || {}).value === '+');
   const max = readNum('ff-maxScore');
   let pass = readNum('ff-passScore');
   if (max !== null && pass !== null && pass > max) { pass = max; setVal('ff-passScore', max); }

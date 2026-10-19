@@ -54,8 +54,9 @@
 --   13 columns
 --   User           +3   mustChangePassword · pwResetAt · pwChangedAt (UC 1.5)
 --   Course         +1   weightMode — MANUAL (per activity) or GROUP (per type)
---   Activity       +4   2569-10-19 type / assessmentMethod gain 'OTHER' · typeLabel and
---                       assessmentLabel hold the name the instructor typed for it
+--   Activity       +4   2569-10-19 type / assessmentMethod gain 'OTHER' (none of the above)
+--                       and 'CUSTOM' (option the instructor added) · typeLabel and
+--                       assessmentLabel hold the custom name
 --                       passScore — the pass mark as a SCORE; passMark (%) is
 --                       derived from passScore / maxScore (M3)
 --                       R3 closedAt — NULL = still collecting scores. After it
@@ -356,17 +357,18 @@ CREATE TABLE Activity (
     name     VARCHAR(255) NOT NULL,
     -- T3 / T11: the free-text `method` split into what the activity IS and how
     -- it is marked; the old text survives as the start of criteriaNote.
-    -- [index-q] 2569-10-19: OTHER = the instructor names the type / method
-    -- herself (typeLabel / assessmentLabel). Weight groups stay keyed by type, so
-    -- all OTHER activities share one group weight.
-    type     ENUM('LECTURE','LAB','TEST','PROJECT','OTHER') NOT NULL DEFAULT 'TEST'
-                          COMMENT 'บรรยาย · ปฏิบัติการ · สอบ · โครงงาน/ชิ้นงาน · อื่น ๆ',
+    -- [index-q] 2569-10-19: OTHER = "none of the above" (no name needed).
+    -- CUSTOM = an option the instructor added to the dropdown herself; its name is
+    -- typeLabel / assessmentLabel, and names used in a course come back as options.
+    -- Each CUSTOM type name is its own weight group (see CourseGroupWeight.type).
+    type     ENUM('LECTURE','LAB','TEST','PROJECT','OTHER','CUSTOM') NOT NULL DEFAULT 'TEST'
+                          COMMENT 'บรรยาย · ปฏิบัติการ · สอบ · โครงงาน/ชิ้นงาน · อื่น ๆ · กำหนดเอง',
     typeLabel VARCHAR(100) NOT NULL DEFAULT ''
-                          COMMENT '[index-q] ชื่อประเภทที่ผู้สอนพิมพ์เอง — ใช้เมื่อ type = OTHER',
-    assessmentMethod ENUM('QUIZ','EXAM','RUBRIC','WORK','OBSERVATION','OTHER') NOT NULL DEFAULT 'EXAM'
+                          COMMENT '[index-q] ชื่อประเภทที่ผู้สอนกำหนดเอง — ใช้เมื่อ type = CUSTOM',
+    assessmentMethod ENUM('QUIZ','EXAM','RUBRIC','WORK','OBSERVATION','OTHER','CUSTOM') NOT NULL DEFAULT 'EXAM'
                           COMMENT 'วิธีประเมิน',
     assessmentLabel VARCHAR(100) NOT NULL DEFAULT ''
-                          COMMENT '[index-q] ชื่อวิธีประเมินที่ผู้สอนพิมพ์เอง — ใช้เมื่อ assessmentMethod = OTHER',
+                          COMMENT '[index-q] ชื่อวิธีประเมินที่ผู้สอนกำหนดเอง — ใช้เมื่อ assessmentMethod = CUSTOM',
     criteriaNote VARCHAR(1000) NOT NULL DEFAULT '' COMMENT 'เกณฑ์การประเมิน / รูบริก — ข้อความอิสระ',
     passMark DOUBLE       NOT NULL DEFAULT 50
                           COMMENT '% of maxScore that passes THIS activity — reported, never decides a CLO (E1)',
@@ -397,7 +399,7 @@ CREATE TABLE Activity (
 CREATE TABLE CourseGroupWeight (
     id       VARCHAR(30) NOT NULL,
     courseId VARCHAR(30) NOT NULL,
-    type     ENUM('LECTURE','LAB','TEST','PROJECT') NOT NULL COMMENT 'ประเภทกิจกรรม — same values as Activity.type',
+    type     VARCHAR(110) NOT NULL COMMENT 'ประเภทกิจกรรม — Activity.type, or CUSTOM:<typeLabel> (one group per custom name)',
     weight   DOUBLE      NOT NULL COMMENT '% of course total for ALL activities of this type',
     PRIMARY KEY (id),
     UNIQUE KEY uq_groupweight_course_type (courseId, type),
