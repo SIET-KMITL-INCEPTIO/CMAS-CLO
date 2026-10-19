@@ -142,7 +142,7 @@ was superseded):
 | `CMAS-Architecture_Handwritten.drawio` | 8 pages, code at commit `ff6ed7c` |
 | `CMAS-FE-BE-DB_Handwritten.drawio` | 1 page, one request walked ①–⑩ |
 | `CMAS-ARCH_Handwritten.drawio` | 1 page, stack in columns. Same subject as the file above |
-| `CMAS-Flowcharts_Handwritten.drawio` | 49 flowcharts, one per use case |
+| `CMAS-Flowcharts_Handwritten.drawio` | 50 flowcharts, one per use case (5.7 added 2026-10-19; 4.2 · 5.4 · 8.1 updated to the prototype) |
 
 ### 3.7 Progress reports: one report, two variants
 
