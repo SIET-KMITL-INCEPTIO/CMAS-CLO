@@ -3461,13 +3461,22 @@ function viewDashboard(){
 
   return sheet({
     title:'ผลรายนักศึกษา',
-    note:'คะแนน CLO ของนักศึกษาแต่ละคน · กดแถวเพื่อดูรายบุคคล · ผลสรุปของทั้งชั้นอยู่ที่หน้าภาพรวม',
+    /* ความหมายของสีอยู่ในปุ่ม ? — ตารางเหลือประโยคเดียว (ผู้ใช้ถามว่าแดงกับส้มต่างกันอย่างไร) */
+    note:'คะแนน CLO ของนักศึกษาแต่ละคน · กดแถวเพื่อดูรายบุคคล · ผลสรุปของทั้งชั้นอยู่ที่หน้าภาพรวม' +
+      (subOf('dashboard') === 'raw' ? '' :
+        '<div class="mt-3 space-y-1.5 text-[13px]">' +
+          '<div class="over !mb-1">สีของช่อง (เกณฑ์ผ่าน CLO ' + n0(PM) + '%)</div>' +
+          '<div class="flex items-start gap-2"><span class="mt-1 w-3.5 h-3.5 rounded-sm shrink-0" style="background:' + TONE.warn.bg + '"></span>' +
+            '<span><b class="font-medium">ส้ม</b> — ต่ำกว่าเกณฑ์ แต่ห่างไม่เกิน ' + NEAR_GAP + ' คะแนน (ใกล้ผ่าน)</span></div>' +
+          '<div class="flex items-start gap-2"><span class="mt-1 w-3.5 h-3.5 rounded-sm shrink-0" style="background:' + TONE.bad.bg + '"></span>' +
+            '<span><b class="font-medium">แดง</b> — ต่ำกว่าเกณฑ์เกิน ' + NEAR_GAP + ' คะแนน (ห่างมาก)</span></div>' +
+          '<div><span class="text-warn">*</span> คะแนนยังไม่ครบ · — ยังไม่มีคะแนน</div></div>'),
     actions: filterBox(subOf('dashboard') === 'raw' ? rawKey : key,'ค้นหานักศึกษา') +
              btn('ส่งออกผลการเรียน','','data-act="export" data-what="results"'),
     body: subOf('dashboard') === 'raw' ? rawTab : (
       '<div class="card overflow-hidden">' +
         chartHead('คะแนน CLO รายคน (%)',
-          'สีแดง = ต่ำกว่าเกณฑ์ผ่าน CLO ' + n0(PM) + '% · <span class="text-warn">*</span> = คะแนนยังไม่ครบ',
+          'แดง/ส้ม = ต่ำกว่าเกณฑ์ผ่าน CLO ' + n0(PM) + '% (ต่างกันอย่างไร ดูที่ปุ่ม ?) · <span class="text-warn">*</span> = คะแนนยังไม่ครบ',
           '', chip('ต่ำกว่าเกณฑ์ ' + atRisk.length + ' คน', atRisk.length ? 'bad' : 'ok'), true) +
         (shown.length === 0
           ? hollow('ไม่พบนักศึกษาที่ตรงกับคำค้น')
