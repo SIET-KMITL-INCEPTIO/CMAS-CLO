@@ -35,10 +35,13 @@
 --             the instructor picked · MANUAL = both picked by hand. The verb
 --             analysis of E3 is gone; only the column's meaning changed.
 --
--- WHAT index-q.html ADDS ON TOP — 17 tables · 23 FKs
---   = 13 tables of schema.prisma + 4 proposed tables · 11 proposed columns
+-- WHAT index-q.html ADDS ON TOP — 18 tables · 26 FKs
+--   = 13 tables of schema.prisma + 5 proposed tables · 13 proposed columns
 -- ----------------------------------------------------------------------------
---   4 tables
+--   5 tables
+--   RemediationPlan   NEW  2569-10-19 teacher feedback — the instructor's free-text plan to
+--                          help one student reach one CLO (retake · extra work · more
+--                          practice). One row per (Student, CLO); never enters a formula
 --   UploadReject      NEW  one row per refused cell of an Excel import (FR-65)
 --   AuthEvent         NEW  account history incl. refused actions (UC 1.6, FR-22b)
 --                          and the self-registration trail (REGISTER, VERIFY, LOGIN*)
@@ -48,10 +51,12 @@
 --                          when, from what to what, by which path (typed in the
 --                          grid · pasted · import · fill · closing an activity
 --                          · undo)
---   11 columns
+--   13 columns
 --   User           +3   mustChangePassword · pwResetAt · pwChangedAt (UC 1.5)
 --   Course         +1   weightMode — MANUAL (per activity) or GROUP (per type)
---   Activity       +2   passScore — the pass mark as a SCORE; passMark (%) is
+--   Activity       +4   2569-10-19 type / assessmentMethod gain 'OTHER' · typeLabel and
+--                       assessmentLabel hold the name the instructor typed for it
+--                       passScore — the pass mark as a SCORE; passMark (%) is
 --                       derived from passScore / maxScore (M3)
 --                       R3 closedAt — NULL = still collecting scores. After it
 --                       is set, a missing Score row means "did not submit",
@@ -351,10 +356,17 @@ CREATE TABLE Activity (
     name     VARCHAR(255) NOT NULL,
     -- T3 / T11: the free-text `method` split into what the activity IS and how
     -- it is marked; the old text survives as the start of criteriaNote.
-    type     ENUM('LECTURE','LAB','TEST','PROJECT') NOT NULL DEFAULT 'TEST'
-                          COMMENT 'บรรยาย · ปฏิบัติการ · สอบ · โครงงาน/ชิ้นงาน',
-    assessmentMethod ENUM('QUIZ','EXAM','RUBRIC','WORK','OBSERVATION') NOT NULL DEFAULT 'EXAM'
+    -- [index-q] 2569-10-19: OTHER = the instructor names the type / method
+    -- herself (typeLabel / assessmentLabel). Weight groups stay keyed by type, so
+    -- all OTHER activities share one group weight.
+    type     ENUM('LECTURE','LAB','TEST','PROJECT','OTHER') NOT NULL DEFAULT 'TEST'
+                          COMMENT 'บรรยาย · ปฏิบัติการ · สอบ · โครงงาน/ชิ้นงาน · อื่น ๆ',
+    typeLabel VARCHAR(100) NOT NULL DEFAULT ''
+                          COMMENT '[index-q] ชื่อประเภทที่ผู้สอนพิมพ์เอง — ใช้เมื่อ type = OTHER',
+    assessmentMethod ENUM('QUIZ','EXAM','RUBRIC','WORK','OBSERVATION','OTHER') NOT NULL DEFAULT 'EXAM'
                           COMMENT 'วิธีประเมิน',
+    assessmentLabel VARCHAR(100) NOT NULL DEFAULT ''
+                          COMMENT '[index-q] ชื่อวิธีประเมินที่ผู้สอนพิมพ์เอง — ใช้เมื่อ assessmentMethod = OTHER',
     criteriaNote VARCHAR(1000) NOT NULL DEFAULT '' COMMENT 'เกณฑ์การประเมิน / รูบริก — ข้อความอิสระ',
     passMark DOUBLE       NOT NULL DEFAULT 50
                           COMMENT '% of maxScore that passes THIS activity — reported, never decides a CLO (E1)',
@@ -581,6 +593,31 @@ CREATE TABLE UploadReject (
         FOREIGN KEY (logId) REFERENCES ScoreUploadLog (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='[index-q] แถวที่ถูกปฏิเสธตอนนำเข้า — ทำให้รายงานข้อผิดพลาด FR-65 สร้างได้จริง';
+
+-- [index-q] 2569-10-19 (teacher feedback) — db.remediation in index-q.html.
+-- The instructor's plan for one student on one CLO: what will be done so the
+-- student can still pass it (retake · extra assignment · more practice).
+-- Free text; it is never read by a score or grade formula. One row per
+-- (Student, CLO) — saving an empty text deletes the row. Rows die with the
+-- Student or the CLO (ON DELETE CASCADE).
+CREATE TABLE RemediationPlan (
+    id        VARCHAR(30)  NOT NULL,
+    studentId VARCHAR(30)  NOT NULL,
+    cloId     VARCHAR(30)  NOT NULL,
+    plan      VARCHAR(1000) NOT NULL COMMENT 'แนวทางช่วยเหลือ — ข้อความอิสระ',
+    updatedBy VARCHAR(30)  NOT NULL,
+    updatedAt DATETIME     NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_remediation_student_clo (studentId, cloId),
+    KEY idx_remediation_clo (cloId),
+    CONSTRAINT fk_remediation_student
+        FOREIGN KEY (studentId) REFERENCES Student (id) ON DELETE CASCADE,
+    CONSTRAINT fk_remediation_clo
+        FOREIGN KEY (cloId) REFERENCES CLO (id) ON DELETE CASCADE,
+    CONSTRAINT fk_remediation_user
+        FOREIGN KEY (updatedBy) REFERENCES `User` (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='[index-q] แผนพัฒนาคุณภาพผู้เรียนรายคน × CLO — ครูพิมพ์เอง ไม่เข้าสูตรคะแนน';
 
 -- [index-q] R5 — db.scoreChange in index-q.html. Every score write goes
 -- through one function (writeScore), and that function appends here. Without

@@ -98,7 +98,7 @@ STORES = [
     ('D3', 'CLO กิจกรรม และเกณฑ์', ['CLO', 'BehavioralObjective', 'Activity', 'AssessmentCriteria',
                                     'CourseGroupWeight']),
     ('D4', 'คะแนน', ['Score', 'ScoreChange', 'ScoreUploadLog', 'UploadReject']),
-    ('D5', 'นักศึกษา', ['Student']),
+    ('D5', 'นักศึกษา', ['Student', 'RemediationPlan']),
     ('D6', 'เกรด', ['GradeBand', 'StudentGrade']),
 ]
 PROCS = [

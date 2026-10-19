@@ -108,7 +108,7 @@ COLUMNS = [
     # ScoreChange under Course's column: Student/Activity are one gap to the
     # right, ScoreUploadLog one gap to the left. Only User is far (bus route).
     ['Course', 'GradeBand', 'CourseGroupWeight', 'ScoreChange'],
-    ['CLO', 'Activity', 'Student'],
+    ['CLO', 'Activity', 'Student', 'RemediationPlan'],
     # AssessmentCriteria directly under BehavioralObjective: the objective ->
     # criteria FK loops on the right inside one column, and Activity -> criteria
     # crosses a single gap. One column further right and it would cross two.
