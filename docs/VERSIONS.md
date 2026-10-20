@@ -167,14 +167,14 @@ later rewrite. The repo does not record which one was submitted.
 
 ### 3.9 Threat model: one model, one report
 
-In [`diagrams/threat-model/`](diagrams/threat-model/). Checked 2026-10-18 against
-`diagrams/dfd/DFD-INDEX-Q.drawio` v1.3. DFD v1.4 (2026-10-19) changes labels only — `RemediationPlan` joins D5, "แผนพัฒนาผู้เรียน" and "บันทึกการตั้งค่าตัดเกรด" join existing flows; still 6 processes, 6 stores, 44 flows — so the threat model needs no new element, only the label wording.
+In [`diagrams/threat-model/`](diagrams/threat-model/). Checked 2026-10-20 against
+`diagrams/dfd/DFD-INDEX-Q.drawio` v1.4. DFD v1.4 (2026-10-19) changes labels only — `RemediationPlan` joins D5, "แผนพัฒนาผู้เรียน" and "บันทึกการตั้งค่าตัดเกรด" join existing flows; still 6 processes, 6 stores, 44 flows — so the threat model needs no new element, only the label wording. The model was relabelled on 2026-10-19 (the 6.0 ↔ D2 grading flows and ผู้สอน → 6.0 carry the new words); **still old wording:** the 6.0 ↔ D5 and 6.1 ↔ D5 flows, which do not yet mention แผนพัฒนาผู้เรียน.
 
 | File | Status |
 |---|---|
 | `threat-model.tm7` | **current**, edited by hand in Microsoft Threat Modeling Tool. Four pages (`Layer0`, `Layer1`, `Layer2-P4`, `Layer2-P6`) that mirror DFD levels 0, 1 and the two level-2 pages |
 | `report.htm` | **current**, exported from the model above: 695 threats. Every threat is still *Not Started* / *High* (the tool's default): not yet assessed |
-| `superseded/` | three older reports and the checklist used to fix the model, see the README there |
+| `superseded/` | four older reports and the checklist used to fix the model, see the README there |
 
 The model is **not generated** from the DFD, so `check-diagrams.py` does not compare
 them: when the DFD changes, redraw the model by hand and export a new report.

@@ -14,6 +14,7 @@ history.
 | `report_2026-10-14.htm` | `../report.htm` | First report. 66 threats, all from `Layer1` (`Layer0` produced none). Drawn before DFD v1.3 was matched, and without trust boundaries, so the report has no Repudiation threats |
 | `report_2026-10-15.htm` | `../report.htm` | 172 threats, but `Layer2` was a copy of `Layer1`, so every threat was counted twice. Layer0 had 0 threats because the system was drawn as an External Interactor. No trust boundaries, so no Repudiation |
 | `report_2026-10-17_v3-6.htm` | `../report.htm` | Same model as the current report apart from copy-and-paste of two pages: 44 mentions in the threats of `Layer2-p4` and `Layer2-p6` still named the stores by their old numbers (`D4 นักศึกษา`, `D5 คะแนน`) after the boxes were renamed to `D4 คะแนน` and `D5 นักศึกษา` |
+| `report_2026-10-18.htm` | `../report.htm` | Same model and the same 695 threats, drawn to DFD v1.3 wording. Replaced on 2026-10-19 when the flow labels were updated to DFD v1.4 (saving the grading settings, the learner plan) |
 | `tm7-fix-checklist_2026-10-17.md` | `../report.htm` | Work list for bringing the `.tm7` in line with DFD v1.3. Done; kept for how each difference was found |
 
 `report-version3` to `3-5` and `report-version4` were intermediate exports during the
