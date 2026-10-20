@@ -11,7 +11,7 @@ The full lineage is in [`docs/VERSIONS.md`](../../../../VERSIONS.md).
 
 | File | Superseded by | Why |
 |---|---|---|
-| `index-q_er-diagram_2026-09-13.pdf` | `../index-q_er-diagram.pdf` (Workbench export 2026-09-25) | Was `index-q.pdf`. Drawn when `index-q.sql` had 15 tables. It lacks `EmailVerificationToken` (migration 0005), which the 2026-09-25 export has |
+| `index-q_er-diagram_2026-09-13.pdf` | `../index-q-er-diagram.pdf` (Workbench export 2026-10-19) | Was `index-q.pdf`. Drawn when `index-q.sql` had 15 tables. It lacks `EmailVerificationToken` (migration 0005), which the 2026-09-25 export has |
 | `cmas_app_v4_er-diagram_2026-08-23-stale.pdf` | `../cmas_app_v4_er-diagram.pdf` | Still shows `GradeScheme` / `GradeRun`, removed from the schema 2026-09-06 |
 | `cmas_app_v4_2026-08-23-stale.mwb` | `../cmas_app_v4.mwb` | Same reason — the Workbench model behind the PDF above |
 | `cmas_app_v3_er-diagram.pdf` | `../cmas_app_mysql_v4.sql` (re-import to regenerate) | The v3 (11-table, no grading) design — see `docs/markdown/sql/mysql-dumps.md` version history |

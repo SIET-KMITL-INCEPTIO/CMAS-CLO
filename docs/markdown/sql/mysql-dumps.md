@@ -62,10 +62,10 @@ Thai `_th` columns store correctly.
 > Workbench's *Reverse Engineer MySQL Create Script* reads the file and keeps
 > the original case. Field-by-field against the `db` object in
 > `docs/pages/index-q.html` (including runtime writes): every column the
-> prototype stores exists in the SQL. Rendered diagram — no Workbench needed:
-> `docs/diagrams/er/ER-INDEX-Q.pdf` to present, `ER-INDEX-Q.html` to open in a
-> browser, `ER-INDEX-Q.drawio` to edit. All three come from
-> `scripts/build-er-index-q-drawio.py` reading this file.
+> prototype stores exists in the SQL. Rendered diagrams:
+> `docs/diagrams/er/ER-INDEX-Q.drawio` (from `scripts/build-er-index-q-drawio.py`) and
+> `docs/reference/db/mysql/index-q-v2.mwb` (from `scripts/build-index-q-workbench.py`),
+> both reading this file.
 >
 > The earlier row for v4 said "15 tables · 21 FKs" — that count predates the
 > 2026-09-06 removal of `GradeScheme` and `GradeRun`. `cmas_app_production_v3.sql`
