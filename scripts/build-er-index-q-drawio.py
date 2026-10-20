@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 """ER diagram of index-q.html, drawn from docs/reference/db/mysql/index-q.sql.
 
-   Outputs — two renderings of ONE parsed model and ONE set of coordinates:
+   Output:
      docs/diagrams/er/ER-INDEX-Q.drawio   editable, crow's-foot, open in draw.io
-     docs/diagrams/er/ER-INDEX-Q.html     presentation page — opens in any browser,
-                                          prints to a single-page PDF at exact size
+   (2569-10-19: the HTML page and its PDF print were removed on request — the
+   .drawio is the only ER picture this script makes. The Workbench EER comes from
+   scripts/build-index-q-workbench.py.)
 
    WHY THIS EXISTS: the only rendered ER in the repo (cmas_app_v4_er-diagram.pdf)
    is the 13-table v4 schema. index-q.html runs on 15 tables — AuthEvent and
    UploadReject existed nowhere as a picture.
 
-   WHY TWO OUTPUTS: the .drawio cannot be rendered on the build machine (no
-   draw.io), so the HTML is what gets inspected. Both are drawn from the same
-   layout variables and the same edge waypoints, so the inspected picture and
-   the editable file cannot disagree about where a line runs.
+   CHECKING THE PICTURE: draw.io does not run on the build machine, so the
+   rules below (no overlaps, every FK drawn once, lanes kept apart) are what
+   stand in for looking at it. Open the .drawio in draw.io to see it.
 
    FAR RELATIONSHIPS: a table whose parents sit more than one column apart
    (ScoreChange: User on the far left, Student/Activity on the right) cannot be
@@ -52,7 +52,6 @@ for _s in (sys.stdout, sys.stderr):
 ROOT = Path(__file__).resolve().parents[1]
 SQL = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
 OUT = ROOT / 'docs' / 'diagrams' / 'er' / 'ER-INDEX-Q.drawio'
-OUT_HTML = ROOT / 'docs' / 'diagrams' / 'er' / 'ER-INDEX-Q.html'
 
 KEYWORDS = {'ON', 'COMMENT', 'DEFAULT', 'CHECK', 'REFERENCES', 'GENERATED', 'PRIMARY',
             'UNIQUE', 'KEY', 'INDEX', 'CONSTRAINT', 'FOREIGN', 'AND', 'OR', 'NOT',
@@ -108,7 +107,7 @@ COLUMNS = [
     # ScoreChange under Course's column: Student/Activity are one gap to the
     # right, ScoreUploadLog one gap to the left. Only User is far (bus route).
     ['Course', 'GradeBand', 'CourseGroupWeight', 'ScoreChange'],
-    ['CLO', 'Activity', 'Student'],
+    ['CLO', 'Activity', 'Student', 'RemediationPlan'],
     # AssessmentCriteria directly under BehavioralObjective: the objective ->
     # criteria FK loops on the right inside one column, and Activity -> criteria
     # crosses a single gap. One column further right and it would cross two.
@@ -338,87 +337,7 @@ io.open(OUT, 'w', encoding='utf-8', newline='\n').write(
     '<mxCell id="1" parent="0"/>%s</root></mxGraphModel></diagram></mxfile>\n'
     % (PAGE_W, PAGE_H, ''.join(cells)))
 
-# ══ rendering 2 · presentation HTML — same coordinates, same lanes ═══
-
-
-def marker(x, y, kind, d):
-    """Crow's-foot glyph drawn outward from a table edge; d=+1 rightward."""
-    stroke = 'stroke="%s" fill="none" stroke-width="1.3"' % INK
-    ring = ('<circle cx="%g" cy="%g" r="4" stroke="%s" fill="#fff" stroke-width="1.3"/>'
-            % (x + d * 19, y, INK))
-    if kind == 'ERmandOne':
-        return '<path d="M%g %gV%gM%g %gV%g" %s/>' % (
-            x + d * 8, y - 6, y + 6, x + d * 14, y - 6, y + 6, stroke)
-    if kind == 'ERzeroToOne':
-        return '<path d="M%g %gV%g" %s/>%s' % (x + d * 9, y - 6, y + 6, stroke, ring)
-    return ('<path d="M%g %gL%g %gM%g %gL%g %gM%g %gL%g %g" %s/>%s' % (
-        x, y - 7, x + d * 12, y, x, y + 7, x + d * 12, y, x, y, x + d * 12, y, stroke, ring))
-
-
-svg = []
-for r in RELS:
-    if r.get('far'):
-        svg.append('<path d="M%g %gH%gV%gH%gV%gH%g" stroke="%s" fill="none" stroke-width="1.3"/>'
-                   % (r['ax'], r['ay'], r['lane'], r['bus'], r['lane2'], r['by'], r['bx'], INK))
-    else:
-        svg.append('<path d="M%g %gH%gV%gH%g" stroke="%s" fill="none" stroke-width="1.3"/>'
-                   % (r['ax'], r['ay'], r['lane'], r['by'], r['bx'], INK))
-    svg.append(marker(r['ax'], r['ay'], r['start'], r['da']))
-    svg.append(marker(r['bx'], r['by'], r['end'], r['db']))
-
-html_tables = []
-for tname, (x, y, w, h) in GEO.items():
-    t = TABLES[tname]
-    rows = ''.join('<div class="r%s" style="height:%dpx">%s</div>'
-                   % (' iq' if col['iq'] else '', ROW, row_html(t, col)) for col in t['cols'])
-    html_tables.append('<div class="t%s" style="left:%gpx;top:%gpx;width:%gpx;height:%gpx">'
-                       '<div class="h" style="height:%dpx">%s%s</div>%s</div>'
-                       % (' iq' if t['iq'] else '', x, y, w, h, HEAD, escape(tname),
-                          ' <span class="tag">[index-q]</span>' if t['iq'] else '', rows))
-html_notes = ''.join('<div class="%s" style="left:%gpx;top:%gpx;width:%gpx;min-height:%gpx">%s</div>'
-                     % ('lg' if text is NOTE_TINT else 'n', x, y, w, h, text)
-                     for text, x, y, w, h in NOTES)
-
-io.open(OUT_HTML, 'w', encoding='utf-8', newline='\n').write('''<!doctype html>
-<html lang="th"><head><meta charset="utf-8">
-<title>ER · index-q.html</title>
-<style>
-  /* One page at the diagram's exact size: printing to PDF needs no scaling
-     and cannot split a table across two sheets. */
-  @page { size: %(pw)dpx %(ph)dpx; margin: 0; }
-  html, body { margin: 0; background: #fff; }
-  body { font-family: "Segoe UI", Tahoma, "Noto Sans Thai", sans-serif; color: %(ink)s;
-         -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .page { position: relative; width: %(pw)dpx; height: %(ph)dpx; overflow: hidden; }
-  .ttl { position: absolute; left: %(x0)dpx; top: 26px; font-size: 22px; font-weight: 600; }
-  .sub { position: absolute; left: %(x0)dpx; top: 64px; font-size: 12.5px; color: %(muted)s; width: 1700px; }
-  svg { position: absolute; left: 0; top: 0; }
-  .t { position: absolute; box-sizing: border-box; border: 1.3px solid %(ink)s; background: #fff; }
-  .t.iq { border-color: %(ts)s; }
-  .h { box-sizing: border-box; background: %(hf)s; border-bottom: 1px solid %(ink)s;
-       font-size: 13.5px; font-weight: 600; padding: 6px 8px; }
-  .t.iq .h { background: %(tint)s; border-bottom-color: %(ts)s; }
-  .tag { font-weight: 400; font-size: 11px; color: %(ts)s; }
-  .r { box-sizing: border-box; font-size: 11.5px; padding: 0 8px; display: flex; align-items: center;
-       white-space: nowrap; overflow: hidden; }
-  .r.iq { background: %(tint)s; }
-  .n { position: absolute; box-sizing: border-box; border: 1px solid %(muted)s; padding: 12px;
-       font-size: 12px; line-height: 1.6; background: #fff; }
-  .lg { position: absolute; font-size: 12px; line-height: 1.5; color: %(muted)s; }
-  .sw { position: absolute; background: %(tint)s; border: 1px solid %(ts)s; }
-</style></head><body><div class="page">
-<div class="ttl">%(title)s</div><div class="sub">%(subtitle)s</div>
-<svg width="%(pw)d" height="%(ph)d" viewBox="0 0 %(pw)d %(ph)d">%(svg)s</svg>
-%(tables)s%(notes)s
-<div class="sw" style="left:%(swx)gpx;top:%(swy)gpx;width:%(sww)gpx;height:%(swh)gpx"></div>
-</div></body></html>
-''' % {'ink': INK, 'muted': MUTED, 'tint': TINT, 'ts': TINT_STROKE, 'hf': HEADFILL,
-       'pw': PAGE_W, 'ph': PAGE_H, 'x0': X0, 'title': escape(TITLE), 'subtitle': escape(SUBTITLE),
-       'svg': ''.join(svg), 'tables': ''.join(html_tables), 'notes': html_notes,
-       'swx': SWATCH[0], 'swy': SWATCH[1], 'sww': SWATCH[2], 'swh': SWATCH[3]})
-
 print('wrote', OUT.relative_to(ROOT))
-print('wrote', OUT_HTML.relative_to(ROOT), '· หน้า %dx%d px' % (PAGE_W, PAGE_H))
 print('  %d ตาราง · %d ความสัมพันธ์ (FK ใน SQL %d) · [index-q] %d ตาราง %d คอลัมน์'
       % (len(TABLES), len(RELS), sql_fks, sum(t['iq'] for t in TABLES.values()),
          sum(c['iq'] for t in TABLES.values() for c in t['cols'])))

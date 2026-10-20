@@ -61,8 +61,8 @@
                 <mxCell id="uc-toc-19" value="&lt;b&gt;4 · วัตถุประสงค์เชิงพฤติกรรม&lt;/b&gt;&lt;br&gt;• 4.1 เพิ่มวัตถุประสงค์เชิงพฤติกรรม&lt;br&gt;• 4.2 เพิ่มวิธีการประเมิน&lt;br&gt;• 4.3 เพิ่มเกณฑ์การประเมิน&lt;br&gt;• 4.4 จับคู่วัตถุประสงค์กับ CLO&lt;br&gt;• 4.5 แก้ไขวัตถุประสงค์&lt;br&gt;• 4.6 ลบวัตถุประสงค์" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
                     <mxGeometry x="840" y="396" width="380" height="156" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-toc-20" value="&lt;b&gt;5 · วิเคราะห์และสรุป CLO&lt;/b&gt;&lt;br&gt;• 5.1 วิเคราะห์และสรุปข้อมูล CLO&lt;br&gt;• 5.2 คำนวณคะแนนตาม CLO&lt;br&gt;• 5.3 แสดงผลสรุประดับรายวิชา&lt;br&gt;• 5.4 ติดตามผู้เรียนรายบุคคล&lt;br&gt;• 5.5 ส่งออกรายงาน&lt;br&gt;• 5.6 ระบุนักศึกษาที่ต้องติดตาม" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
-                    <mxGeometry x="40" y="436" width="380" height="156" as="geometry"/>
+                <mxCell id="uc-toc-20" value="&lt;b&gt;5 · วิเคราะห์และสรุป CLO&lt;/b&gt;&lt;br&gt;• 5.1 วิเคราะห์และสรุปข้อมูล CLO&lt;br&gt;• 5.2 คำนวณคะแนนตาม CLO&lt;br&gt;• 5.3 แสดงผลสรุประดับรายวิชา&lt;br&gt;• 5.4 ติดตามผู้เรียนรายบุคคล&lt;br&gt;• 5.5 ส่งออกรายงาน&lt;br&gt;• 5.6 ระบุนักศึกษาที่ต้องติดตาม&lt;br&gt;• 5.7 บันทึกแผนพัฒนาผู้เรียนรายคน" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="436" width="380" height="176" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-toc-21" value="&lt;b&gt;6 · นำเข้า-ส่งออกคะแนน&lt;/b&gt;&lt;br&gt;• 6.1 นำเข้าคะแนนกิจกรรม&lt;br&gt;• 6.2 ดาวน์โหลดเทมเพลตคะแนน&lt;br&gt;• 6.3 ตรวจสอบความถูกต้องของข้อมูล&lt;br&gt;• 6.4 ส่งออกคะแนนกิจกรรม&lt;br&gt;• 6.5 แสดงรายงานข้อผิดพลาดการนำเข้า&lt;br&gt;• 6.6 แก้ไขคะแนนบนหน้าเว็บ" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
                     <mxGeometry x="440" y="456" width="380" height="156" as="geometry"/>
@@ -71,7 +71,7 @@
                     <mxGeometry x="840" y="572" width="380" height="156" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-toc-23" value="&lt;b&gt;8 · ตัดเกรด&lt;/b&gt;&lt;br&gt;• 8.1 กำหนดขอบเขตเกรด&lt;br&gt;• 8.2 ประมวลผลและตรึงเกรด&lt;br&gt;• 8.3 ปรับเกรดรายบุคคล" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
-                    <mxGeometry x="40" y="612" width="380" height="96" as="geometry"/>
+                    <mxGeometry x="40" y="632" width="380" height="96" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-toc-24" value="&lt;b&gt;9 · บัญชีของฉัน&lt;/b&gt;&lt;br&gt;• 9.1 แก้ไขชื่อและอีเมลของตนเอง&lt;br&gt;• 9.2 เปลี่ยนรหัสผ่านของตนเอง&lt;br&gt;• 9.3 ลงทะเบียนด้วยอีเมลคณะ&lt;br&gt;• 9.4 ยืนยันอีเมล&lt;br&gt;• 9.5 ลงทะเบียนด้วยบัญชี Google คณะ" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
                     <mxGeometry x="440" y="632" width="380" height="136" as="geometry"/>
@@ -3286,7 +3286,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="uc-4-2" name="4.2 เพิ่มวิธีการประเมิน">
-        <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1994" math="0" shadow="0">
+        <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="2262" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -3299,7 +3299,7 @@
                 <mxCell id="uc-4-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · openForm(&#39;activity&#39;) · FORMS.activity · actFormSync()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="40" y="84" width="900" height="22" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-2-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; วิธีประเมินเป็นช่องหนึ่งของกิจกรรม: แบบทดสอบ · ข้อสอบ · รูบริก · ตรวจชิ้นงาน · สังเกตพฤติกรรม" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="uc-4-2-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; วิธีประเมินเป็นช่องหนึ่งของกิจกรรม: แบบทดสอบ · ข้อสอบ · รูบริก · ตรวจชิ้นงาน · สังเกตพฤติกรรม · อื่น ๆ · ชื่อที่ผู้สอนกำหนดเอง" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="40" y="106" width="900" height="22" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-5" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=12;" parent="1" vertex="1">
@@ -3362,19 +3362,19 @@
                 <mxCell id="uc-4-2-24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-21" target="uc-4-2-23" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-2-25" value="เลือกประเภทกิจกรรม (นำเสนอ · ปฏิบัติการ · สอบ · โครงงาน)" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="370" width="320" height="58" as="geometry"/>
+                <mxCell id="uc-4-2-25" value="เลือกประเภทกิจกรรม: นำเสนอ · ปฏิบัติการ · สอบ · โครงงาน · อื่น ๆ&lt;br&gt;· ชื่อที่เคยกำหนดเอง · “+ กำหนดเอง…”" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="370" width="320" height="76" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-26" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-19" target="uc-4-2-25" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-2-27" value="เติมค่าตั้งต้นตามประเภท: คะแนนเต็ม และวิธีประเมิน&lt;br&gt;(เช่น สอบ → ข้อสอบ 100 · ปฏิบัติการ → รูบริก 50)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="466" width="320" height="94" as="geometry"/>
+                <mxCell id="uc-4-2-27" value="วิธีประเมิน: ระบบเลือกให้ตามประเภท ทั้งตอนเพิ่มและแก้ (หยุดเมื่อผู้สอนเลือกเอง)&lt;br&gt;คะแนนเต็ม: เติมตามประเภทตอนเพิ่ม (สอบ → 100 · ปฏิบัติการ → 50)&lt;br&gt;“+ กำหนดเอง…” → เปิดช่องพิมพ์ชื่อใหม่" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="466" width="320" height="112" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-25" target="uc-4-2-27" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-2-29" value="เลือกวิธีประเมิน · กรอกชื่อ · น้ำหนักในวิชา · คะแนนเต็ม&lt;br&gt;· คะแนนผ่าน · ติ๊กจุดประสงค์ที่วัด แล้วกด “เพิ่ม”" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="uc-4-2-29" value="เลือก/เปลี่ยนวิธีประเมิน · กรอกชื่อ · ร้อยละของสัดส่วนคะแนนในวิชา&lt;br&gt;· คะแนนเต็ม · คะแนนผ่าน · ติ๊กจุดประสงค์ที่วัด แล้วกด “เพิ่ม”" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="60" y="598" width="320" height="94" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-30" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-27" target="uc-4-2-29" edge="1">
@@ -3461,13 +3461,13 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="uc-4-2-51" value="ติ๊กจุดประสงค์ ≥ 1 ข้อ&lt;br&gt;(เมื่อรายวิชามีจุดประสงค์)?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="1270" width="320" height="120" as="geometry"/>
+                    <mxGeometry x="60" y="1538" width="320" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-2-52" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-46" target="uc-4-2-51" edge="1">
+                <mxCell id="uc-4-2-52" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-46" target="uc-4-2-69" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-53" value="“เลือกจุดประสงค์ที่กิจกรรมนี้วัดอย่างน้อย 1 ข้อ”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="460" y="1301" width="300" height="58" as="geometry"/>
+                    <mxGeometry x="460" y="1569" width="300" height="58" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-54" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-51" target="uc-4-2-53" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -3475,19 +3475,19 @@
                 <mxCell id="uc-4-2-55" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" parent="1" source="uc-4-2-53" target="uc-4-2-29" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
-                            <mxPoint x="1110" y="1330"/>
-                            <mxPoint x="1110" y="645"/>
+                            <mxPoint x="1170" y="1598"/>
+                            <mxPoint x="1170" y="645"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="uc-4-2-56" value="สัดส่วนแต่ละข้อ 0–100&lt;br&gt;และรวมได้ 100%?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="1428" width="320" height="100" as="geometry"/>
+                    <mxGeometry x="60" y="1696" width="320" height="100" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-57" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-51" target="uc-4-2-56" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-58" value="“สัดส่วนของจุดประสงค์ต้องรวมได้ 100%”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="460" y="1454" width="300" height="48" as="geometry"/>
+                    <mxGeometry x="460" y="1722" width="300" height="48" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-59" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-56" target="uc-4-2-58" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -3495,33 +3495,73 @@
                 <mxCell id="uc-4-2-60" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" parent="1" source="uc-4-2-58" target="uc-4-2-29" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
-                            <mxPoint x="1140" y="1478"/>
-                            <mxPoint x="1140" y="645"/>
+                            <mxPoint x="1200" y="1746"/>
+                            <mxPoint x="1200" y="645"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="uc-4-2-61" value="บันทึก Activity: name · type · assessmentMethod · maxScore&lt;br&gt;· passScore · passMark (%) · weight · order" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="1566" width="320" height="94" as="geometry"/>
+                <mxCell id="uc-4-2-61" value="บันทึก Activity: name · type (+ typeLabel ถ้ากำหนดเอง) · assessmentMethod&lt;br&gt;(+ assessmentLabel) · maxScore · passScore · passMark (%) · weight · order" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="1834" width="320" height="94" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-62" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-56" target="uc-4-2-61" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-63" value="แทนที่ AssessmentCriteria ของกิจกรรม (จุดประสงค์ + %)" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="1698" width="320" height="58" as="geometry"/>
+                    <mxGeometry x="60" y="1966" width="320" height="58" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-64" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-61" target="uc-4-2-63" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-65" value="แจ้ง “เพิ่มกิจกรรมแล้ว” / “บันทึกการแก้ไขแล้ว”" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="1794" width="320" height="58" as="geometry"/>
+                    <mxGeometry x="60" y="2062" width="320" height="58" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-66" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-63" target="uc-4-2-65" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-67" value="จบ" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#666666;fontStyle=1;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="1890" width="320" height="44" as="geometry"/>
+                    <mxGeometry x="60" y="2158" width="320" height="44" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-68" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-65" target="uc-4-2-67" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-4-2-69" value="ชื่อที่กำหนดเองไม่ว่าง&lt;br&gt;(เมื่อเลือก “+ กำหนดเอง…”)?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="1270" width="320" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-4-2-70" value="“พิมพ์ชื่อประเภทใหม่” /&lt;br&gt;“พิมพ์ชื่อวิธีประเมินใหม่”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="1291" width="300" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-4-2-71" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-69" target="uc-4-2-70" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-4-2-72" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-70" target="uc-4-2-29" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1110" y="1320"/>
+                            <mxPoint x="1110" y="645"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="uc-4-2-73" value="สัดส่วนกิจกรรมนี้ + กิจกรรมอื่น&lt;br&gt;รวมไม่เกิน 100%?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="1404" width="320" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-4-2-74" value="“กิจกรรมอื่นรวม x% แล้ว —&lt;br&gt;ใส่ได้ไม่เกิน y%”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="1425" width="300" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-4-2-75" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-69" target="uc-4-2-73" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-4-2-76" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-73" target="uc-4-2-74" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-4-2-77" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-74" target="uc-4-2-29" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1140" y="1454"/>
+                            <mxPoint x="1140" y="645"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="uc-4-2-78" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-4-2-73" target="uc-4-2-51" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
             </root>
@@ -4918,14 +4958,14 @@
                 <mxCell id="uc-5-4-25" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-4-22" target="uc-5-4-24" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-5-4-26" value="ป้าย “ไม่อยู่ในกลุ่มเสี่ยง”" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="uc-5-4-26" value="ป้าย “ผ่านทุก CLO”" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="460" y="570" width="300" height="48" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-5-4-27" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-5-4-24" target="uc-5-4-26" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-5-4-28" value="ป้าย “at-risk · ไม่ผ่าน n CLO”" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="680" width="320" height="48" as="geometry"/>
+                <mxCell id="uc-5-4-28" value="ป้าย “ยังไม่ผ่าน n CLO”&lt;br&gt;+ ช่องแผนพัฒนาผู้เรียนใต้ CLO ที่ต่ำกว่าเกณฑ์ (→ 5.7)" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="680" width="320" height="64" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-5-4-29" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-4-24" target="uc-5-4-28" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -5183,6 +5223,145 @@
                 </mxCell>
                 <mxCell id="uc-5-6-36" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-6-33" target="uc-5-6-35" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="uc-5-7" name="5.7 บันทึกแผนพัฒนาผู้เรียนรายคน">
+        <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="964" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="uc-5-7-1" value="5.7 บันทึกแผนพัฒนาผู้เรียนรายคน" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=22;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="900" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="62" width="900" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · studentDrawer(sid) · textarea[data-plan] · planOf() · db.remediation (RemediationPlan)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="84" width="900" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="20" width="330" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-5" value="" style="whiteSpace=wrap;html=1;rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="48" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-6" value="เริ่ม / จบ" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1030" y="48" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-7" value="" style="whiteSpace=wrap;html=1;shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="1150" y="48" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-8" value="รับข้อมูล / แสดงผล" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1200" y="48" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-9" value="" style="whiteSpace=wrap;html=1;rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="82" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-10" value="ประมวลผล" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1030" y="82" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-11" value="" style="whiteSpace=wrap;html=1;rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;" parent="1" vertex="1">
+                    <mxGeometry x="1150" y="82" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-12" value="เงื่อนไข" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1200" y="82" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-13" value="" style="whiteSpace=wrap;html=1;shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="116" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-14" value="อ่าน/เขียนฐานข้อมูล" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1030" y="116" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-15" value="" style="whiteSpace=wrap;html=1;rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;" parent="1" vertex="1">
+                    <mxGeometry x="1150" y="116" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-16" value="แจ้งข้อผิดพลาด" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1200" y="116" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-17" value="ใน 5.4 (รายงานรายบุคคล): พิมพ์ในช่อง “แผนพัฒนาผู้เรียน · CLO n”&lt;br&gt;แล้วออกจากช่อง" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontStyle=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="150" width="320" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-18" value="มีสิทธิ์ &lt;b&gt;student.write&lt;/b&gt; ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="252" width="320" height="96" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-17" target="uc-5-7-18" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-20" value="แจ้ง “สิทธิ์ไม่พอ …”&lt;br&gt;+ บันทึก AuthEvent DENY" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="271" width="300" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-21" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-18" target="uc-5-7-20" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-22" value="จบ" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#666666;fontStyle=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="278" width="150" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-20" target="uc-5-7-22" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-24" value="ข้อความว่าง?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="386" width="320" height="96" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-25" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-18" target="uc-5-7-24" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-26" value="มีแผนเดิมของ (นักศึกษา, CLO) นี้?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="386" width="300" height="96" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-27" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-24" target="uc-5-7-26" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-28" value="จบ (ไม่มีอะไรเปลี่ยน)" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#666666;fontStyle=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="412" width="170" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-29" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-26" target="uc-5-7-28" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-30" value="ลบ RemediationPlan ของคู่นี้" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="520" width="300" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-31" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-26" target="uc-5-7-30" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-32" value="แจ้ง “ลบแผนพัฒนาผู้เรียนแล้ว”" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="616" width="300" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-33" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-30" target="uc-5-7-32" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-34" value="มีแผนเดิม → แก้ข้อความ&lt;br&gt;ไม่มี → สร้างแถวใหม่ (หนึ่งแถวต่อนักศึกษา × CLO)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="520" width="320" height="76" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-35" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-24" target="uc-5-7-34" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-36" value="บันทึก RemediationPlan: studentId · cloId · plan&lt;br&gt;· updatedBy · updatedAt" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="634" width="320" height="76" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-37" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-34" target="uc-5-7-36" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-38" value="แจ้ง “บันทึกแผนพัฒนาผู้เรียนแล้ว”&lt;br&gt;แผนแสดงในรายชื่อที่ยังไม่ผ่านของ CLO นั้น (5.6) และในไฟล์ Excel (5.5)" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="748" width="320" height="94" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-39" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-36" target="uc-5-7-38" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-40" value="จบ" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#666666;fontStyle=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="880" width="320" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-41" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-38" target="uc-5-7-40" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-5-7-42" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-5-7-32" target="uc-5-7-40" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="800" y="640"/>
+                            <mxPoint x="800" y="902"/>
+                        </Array>
+                    </mxGeometry>
                 </mxCell>
             </root>
         </mxGraphModel>
@@ -7199,13 +7378,13 @@
                 <mxCell id="uc-8-1-24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-21" target="uc-8-1-23" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-1-25" value="เลือกรูปแบบเกรด (A–F / ผ่าน-ไม่ผ่าน) · วิธีตัด (อิงเกณฑ์ / อิงกลุ่ม)&lt;br&gt;· เกณฑ์ผ่านรายวิชา % แล้วกด “บันทึก”" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="406" width="320" height="76" as="geometry"/>
+                <mxCell id="uc-8-1-25" value="เลือกรูปแบบเกรด (A–F / ผ่าน-ไม่ผ่าน) · วิธีตัด (อิงเกณฑ์ / อิงกลุ่ม)&lt;br&gt;· เกณฑ์ผ่านรายวิชา % แล้วกด “บันทึก”&lt;br&gt;(A–F อิงเกณฑ์: ไม่ต้องกรอก ระบบใช้ขอบล่างของเกรดต่ำสุดที่ยังผ่าน)" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="406" width="320" height="94" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-26" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-19" target="uc-8-1-25" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-1-27" value="เกณฑ์ผ่าน 0–100?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="uc-8-1-27" value="เกณฑ์ผ่าน 0–100?&lt;br&gt;(เฉพาะเมื่อต้องกรอกเอง)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="60" y="520" width="320" height="96" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-25" target="uc-8-1-27" edge="1">
@@ -7281,8 +7460,8 @@
                 <mxCell id="uc-8-1-48" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-41" target="uc-8-1-47" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-1-49" value="แก้ Course.gradeScale · gradeMethod · passCriteria" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="1156" width="320" height="58" as="geometry"/>
+                <mxCell id="uc-8-1-49" value="แก้ Course.gradeScale · gradeMethod · passCriteria&lt;br&gt;(A–F อิงเกณฑ์: passCriteria = ขอบล่างของเกรดต่ำสุดที่ยังผ่าน)" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="1156" width="320" height="76" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-50" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-47" target="uc-8-1-49" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -7331,7 +7510,7 @@
                 <mxCell id="uc-8-1-63" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-60" target="uc-8-1-62" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-1-64" value="กรอกชื่อเกรด · ขอบล่าง (% หรือ T-score ตามวิธีตัด)" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="uc-8-1-64" value="กรอกชื่อเกรด · คะแนนต่ำสุดของเกรดนี้ (% หรือ T-score ตามวิธีตัด)" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="1180" y="406" width="320" height="58" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-65" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-58" target="uc-8-1-64" edge="1">
@@ -7357,14 +7536,14 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="uc-8-1-71" value="ขอบล่าง ≥ 0?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="uc-8-1-71" value="คะแนนต่ำสุด ≥ 0&lt;br&gt;(อิงเกณฑ์: ≤ 100)?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="1180" y="636" width="320" height="96" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-72" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-66" target="uc-8-1-71" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-1-73" value="“ค่าขอบล่างต้องเป็นตัวเลขไม่ติดลบ”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="1580" y="660" width="300" height="48" as="geometry"/>
+                <mxCell id="uc-8-1-73" value="“คะแนนต่ำสุดต้องเป็นตัวเลข 0 ขึ้นไป” /&lt;br&gt;“คะแนนต่ำสุดเป็นร้อยละ จึงเกิน 100 ไม่ได้”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1580" y="655" width="300" height="58" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-74" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-71" target="uc-8-1-73" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -7397,13 +7576,13 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="uc-8-1-81" value="ชื่อเกรด และขอบล่าง&lt;br&gt;ไม่ซ้ำขั้นอื่น?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="uc-8-1-81" value="ชื่อเกรด และคะแนนต่ำสุด&lt;br&gt;ไม่ซ้ำขั้นอื่น?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="1180" y="908" width="320" height="100" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-82" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-76" target="uc-8-1-81" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-1-83" value="“มีเกรด … อยู่แล้ว” หรือ&lt;br&gt;“สองเกรดใช้เส้นแบ่งเดียวกันไม่ได้”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="uc-8-1-83" value="“มีเกรด … อยู่แล้ว” หรือ&lt;br&gt;“มีเกรดอื่นเริ่มที่ … อยู่แล้ว”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="1580" y="929" width="300" height="58" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-84" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-81" target="uc-8-1-83" edge="1">
@@ -7417,13 +7596,13 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="uc-8-1-86" value="ไม่ได้ย้ายขั้นที่ขอบล่าง = 0?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="uc-8-1-86" value="ไม่ได้ย้ายเกรดที่เริ่มที่ 0?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="1180" y="1046" width="320" height="100" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-87" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-81" target="uc-8-1-86" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-1-88" value="“ต้องมีระดับเกรดที่ขอบล่างเป็น 0 เสมอ”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="uc-8-1-88" value="“ต้องมีเกรดที่เริ่มที่ 0 เสมอ”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="1580" y="1072" width="300" height="48" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-89" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-86" target="uc-8-1-88" edge="1">
@@ -7437,14 +7616,14 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="uc-8-1-91" value="บันทึก GradeBand (grade, minValue)" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="1180" y="1184" width="320" height="48" as="geometry"/>
+                <mxCell id="uc-8-1-91" value="บันทึก GradeBand (grade, minValue)&lt;br&gt;A–F อิงเกณฑ์: คำนวณเกณฑ์ผ่านรายวิชาใหม่จากขั้นบันได" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1180" y="1176" width="320" height="76" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-92" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-86" target="uc-8-1-91" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-1-93" value="แจ้ง “บันทึกแล้ว” · ขั้นบันไดเรียงใหม่" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
-                    <mxGeometry x="1180" y="1270" width="320" height="48" as="geometry"/>
+                <mxCell id="uc-8-1-93" value="แจ้ง “บันทึกแล้ว” · ขั้นบันไดเรียงใหม่&lt;br&gt;· ป้าย “ผ่านขั้นต่ำ” / “ไม่ผ่าน”" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1180" y="1270" width="320" height="58" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-94" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-8-1-91" target="uc-8-1-93" edge="1">
                     <mxGeometry relative="1" as="geometry"/>

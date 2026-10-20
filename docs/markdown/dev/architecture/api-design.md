@@ -527,7 +527,7 @@ DELETE /objectives/:objectiveId                                            → 2
   "data": [{ "id": "cla1", "name": "สอบกลางภาค", "type": "TEST", "assessmentMethod": "EXAM", "criteriaNote": "",
              "passMark": 50, "maxScore": 100, "order": 1, "weight": 30,
              "scoredCount": 38, "studentCount": 42 }],     // FR-64
-  "meta": { "totalWeight": 95, "isWeightComplete": false } // FR-43 — เตือน ไม่บล็อก
+  "meta": { "totalWeight": 95, "isWeightComplete": false } // FR-43 — < 100 เตือน ไม่บล็อก · > 100 ปฏิเสธ 422
 }
 ```
 

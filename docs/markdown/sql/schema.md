@@ -239,7 +239,7 @@ erDiagram
 
 **ทำไม `maxScore > 0` เป็น CHECK ที่ห้ามหาย:** **ทุกสูตรใน SRS §3 หารด้วยค่านี้** `maxScore = 0` ทำให้ทุกรายงานพังด้วย division-by-zero
 
-**ทำไม `weight` รวม = 100 ไม่เป็น constraint:** จริงเฉพาะตอน**กรอกเสร็จแล้ว** ระหว่างกรอกยังไม่ครบเป็นเรื่องปกติ → เตือนที่ UI แทน (FR-43) · ⚠ view `v_activity_weight_audit` อยู่เฉพาะในไฟล์ MySQL production v3 ยัง **ไม่มีใน migration ของ Postgres**
+**ทำไม `weight` รวม = 100 ไม่เป็น constraint:** จริงเฉพาะตอน**กรอกเสร็จแล้ว** ระหว่างกรอกยังไม่ครบเป็นเรื่องปกติ → เตือนที่ UI แทน และปฏิเสธที่ service เมื่อรวมเกิน 100 (FR-43) · ⚠ view `v_activity_weight_audit` อยู่เฉพาะในไฟล์ MySQL production v3 ยัง **ไม่มีใน migration ของ Postgres**
 
 **ทำไมไม่มี `@@unique([courseId, order])`:** drag-reorder เขียนสถานะกลางทางที่ order ชนกันชั่วคราว
 
