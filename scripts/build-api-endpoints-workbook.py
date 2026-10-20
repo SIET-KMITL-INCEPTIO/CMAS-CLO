@@ -1040,7 +1040,8 @@ def write_json():
             "enumFields": ENUM_FIELDS.get((method, path)),
         })
     JSON_OUT.write_text(json.dumps({"prefix": PREFIX, "endpoints": rows}, ensure_ascii=False, indent=1) + chr(10),
-                        encoding="utf-8")
+                        encoding="utf-8", newline="
+")  # LF on every OS, so CI sees no diff
 
 
 def main():
