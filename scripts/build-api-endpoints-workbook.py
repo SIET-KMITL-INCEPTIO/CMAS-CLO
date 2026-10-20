@@ -616,7 +616,7 @@ DESIGN = [
      "name(1–200) type(LECTURE|LAB|TEST|PROJECT|OTHER|CUSTOM) typeLabel?(1–100 ต้องมีเมื่อ CUSTOM) assessmentMethod?(QUIZ|EXAM|RUBRIC|WORK|OBSERVATION|OTHER|CUSTOM · ไม่ส่ง = ตามประเภท) assessmentLabel?(ต้องมีเมื่อ CUSTOM) criteriaNote?(≤1000) maxScore(>0) passScore?(0–maxScore · ไม่ส่ง = 50%) weight(0–100 · โหมด GROUP ห้ามส่ง) order?(ไม่ส่ง = ต่อท้าย)",
      "201 · กิจกรรมใหม่ · meta.totalWeight",
      "400 · 403 ADMIN · 404 · 409 order ซ้ำ · 422 สัดส่วนรวมทุกกิจกรรมเกิน 100% \"กิจกรรมอื่นรวม x% แล้ว — ใส่ได้ไม่เกิน y%\" / CUSTOM ไม่มีชื่อ / ส่ง weight ในโหมด GROUP",
-     "activity.write · รวมต่ำกว่า 100 บันทึกได้และเตือน (FR-43 แก้ 2569-10-19) · วิธีประเมินตั้งต้นตามประเภท TEST→EXAM · LAB, LECTURE→RUBRIC · PROJECT→WORK · passMark ไม่รับจาก body (A-10)",
+     "activity.write · รวมต่ำกว่า 100 บันทึกได้และเตือน (FR-43 แก้ 2569-10-19) · วิธีประเมินตั้งต้นตามประเภท TEST→EXAM · LAB, LECTURE→RUBRIC · PROJECT→WORK · OTHER และ CUSTOM ชื่อใหม่→OTHER · CUSTOM ชื่อเดิมคงค่าที่บันทึกไว้ · passMark ไม่รับจาก body (A-10)",
      "ST-ACT-01, 02"),
     ("PATCH", "/courses/:courseId/activities/reorder", ":courseId",
      "order: [activityId…] ครบทุกกิจกรรมของวิชา ไม่ซ้ำ",
