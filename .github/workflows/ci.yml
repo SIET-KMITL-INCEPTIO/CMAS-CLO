@@ -123,25 +123,3 @@ jobs:
 
       - name: Course-scope isolation tests
         run: npm run test -w app/server
-
-  docker:
-    name: Docker images build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build server image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: app/server/Dockerfile.prod
-          push: false
-          tags: cmas-server:ci
-
-      - name: Build client image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: app/client/Dockerfile.prod
-          push: false
-          tags: cmas-client:ci

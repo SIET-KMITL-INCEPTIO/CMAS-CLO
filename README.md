@@ -138,8 +138,10 @@ installs only that workspace and the two apps can ship on independent
 schedules. `docker-compose.prod.yml` runs the production images locally if you
 want to check an image before pushing it.
 
-CI (`.github/workflows/ci.yml`) runs the full `verify` pipeline plus a Docker
-image build on every PR.
+CI runs on every PR to `main`: `.github/workflows/ci.yml` runs the full `verify`
+pipeline and the migration/isolation suite, and
+`.github/workflows/docker-build.yml` builds all four Dockerfiles (one check per
+image, e.g. "Docker build (server)").
 
 ---
 
