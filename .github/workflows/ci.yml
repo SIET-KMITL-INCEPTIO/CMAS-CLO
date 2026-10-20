@@ -54,6 +54,12 @@ jobs:
       - name: Test
         run: npm run test
 
+      # The API design (docs/excel/api/api-endpoints.json) against the schema, the
+      # capability table, the test plan and the routes in app/server. Its runtime
+      # twin, app/server/src/api-contract.test.ts, ran in the step above.
+      - name: API design matches the system
+        run: python3 scripts/check-api-design.py
+
       - name: Build
         run: npm run build
 

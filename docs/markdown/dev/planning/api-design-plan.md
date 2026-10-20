@@ -17,7 +17,7 @@ See also: [[api-design]] · [[srs]] · [[course-role-permissions]] · [[code-rul
 
 **ตัดสินแล้ว 2026-10-18:** ออกแบบ API ตาม [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) (74 endpoint · สร้างจาก `scripts/build-api-endpoints-workbook.py` ห้ามแก้ Excel ด้วยมือ) ·
 Excel ตอบว่ามี endpoint อะไร ใครเรียกได้ capability ไหน อยู่ช่วงไหน · รูป request/response ยึด Zod validator ในโค้ด · envelope และรหัสสถานะยึด [[api-design]] §2 ·
-P1 จึงไม่ต้องเขียน [[api-design]] §3 ใหม่เป็น v1.2 · การทดสอบเป็น system test แบบ gray box ตาม [[system-test-plan]]
+**ยังไม่เขียนโค้ด endpoint ใหม่ (2026-10-18)** จนกว่าจะออกแบบในแผ่น `Design` ของ Excel ครบกลุ่มนั้น · แผ่น `Classification` จำแนก endpoint 4 มิติ (ประเภทการทำงาน · ผลต่อข้อมูล · ประเภทสิทธิ์ · ระดับความระวัง) · **ออกแบบครบแล้ว (2026-10-20): 76 endpoint** — ในขอบเขต 72 · เลื่อนไปหลัง v1 4 ตัว (D-5) · ตรวจกับระบบจริงทุกครั้งที่ CI รันด้วย `scripts/check-api-design.py` (schema · capabilities.ts · แผนทดสอบ · route ในโค้ด) และ `app/server/src/api-contract.test.ts` (บูต Fastify ลงทะเบียน endpoint ที่ออกแบบทุกตัวด้วยสิทธิ์ตามแบบ) · P1 จึงไม่ต้องเขียน [[api-design]] §3 ใหม่เป็น v1.2 · การทดสอบเป็น system test แบบ gray box ตาม [[system-test-plan]]
 
 | # | คำถาม | ค่าที่ใช้ไปก่อน | เหตุผล · ผลถ้าเลือกตรงข้าม |
 |---|---|---|---|
@@ -41,6 +41,7 @@ P1 จึงไม่ต้องเขียน [[api-design]] §3 ใหม่
 | **F-6** | จำนวน endpoint ไม่ตรงกันในเอกสารเดียว: §3 เขียน "รวม 57" · นับแถวได้ 58 · G-8 เขียน 68 | [[api-design]] §3, §12 | เอกสาร |
 | **F-7** | rate limit มีแต่ระดับทั้งระบบ (100 ครั้ง/นาที) ไม่มีระดับ route สำหรับ login และ import | `index.ts` | ยังไม่ทำ |
 | **F-8** | baseline ของ [[api-design]] เป็น SRS v2.4.0 · ปัจจุบัน v2.4.3 (CR-05.1 และ CR-10 เปลี่ยน) | [[api-design]] ส่วนหัว | เอกสาร |
+| **F-9** | `access.middleware.ts` รับ capability ระดับรายวิชาเฉพาะ path ที่มี `:courseId` จึง**ยังลงทะเบียน endpoint ที่ใช้ leaf id ไม่ได้ 20 ตัว** (`/clos/:cloId` · `/objectives/:objectiveId` · `/activities/:activityId` · `/students/:studentId` · `/uploads/:uploadId`) ต้องเพิ่มตัว resolve courseId จาก leaf id ตาม A-3 ก่อนเริ่ม P3 · พบจาก `api-contract.test.ts` (2026-10-20) ซึ่งเก็บ 20 ตัวนี้ไว้เป็น `it.fails` | `access.middleware.ts` | ต้องทำก่อน P3 |
 
 G-1 (ไม่มี prefix `/api/v1`) และ G-2 ใน [[api-design]] §12 ยังเปิดอยู่ ตรวจซ้ำแล้วเป็นจริง
 
@@ -103,6 +104,7 @@ A-1…A-5 ใน [[api-design]] §1.1 ใช้ต่อ · เพิ่มอ�
 | | `GET /courses/:courseId/score-changes` | (อ่าน) | NFR-16 | ✅ |
 | รายวิชา | `POST /courses/:courseId/duplicate` | `course.create` | ต้นแบบ | |
 | บัญชี | `GET /users/:userId/auth-events` | `user.manage` | UC 1.6 | ✅ |
+| นักศึกษา | `PUT` · `DELETE /students/:studentId/remediation-plans/:cloId` — แผนพัฒนาผู้เรียนรายคน × CLO | `student.write` | ต้นแบบ 5.7 (2569-10-19) | ✅ |
 
 "เลิกทำ" ของต้นแบบไม่ต้องมี endpoint — client ยิงคำสั่งย้อนกลับด้วยสิทธิ์เดียวกับการแก้เดิม
 

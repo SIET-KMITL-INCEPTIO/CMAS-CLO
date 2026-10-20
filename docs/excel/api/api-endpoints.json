@@ -1,0 +1,2544 @@
+{
+ "prefix": "/api/v1",
+ "endpoints": [
+  {
+   "n": 1,
+   "group": "1 เข้าสู่ระบบ",
+   "method": "POST",
+   "path": "/auth/google",
+   "fullPath": "/api/v1/auth/google",
+   "what": "เข้าสู่ระบบด้วย Google ตรวจ ID token ที่เซิร์ฟเวอร์",
+   "role": "ไม่ต้องล็อกอิน",
+   "courseScope": "—",
+   "capability": "—",
+   "fr": "FR-01, FR-08",
+   "status": "done",
+   "phase": "—",
+   "needs0008": false,
+   "classification": {
+    "operation": "ยืนยันตัวตน",
+    "effect": "เขียนแถวเดียว",
+    "access": "สาธารณะ",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": "—",
+    "body": "idToken (string ≥ 1) — ID token จาก Google Sign-In",
+    "success": "200 · ACTIVE → {status:'ACTIVE', user{id, email, name, role}, accessToken, refreshToken} · PENDING → {status:'PENDING', message}",
+    "errors": "400 body ผิดรูป · 401 token ปลอม / aud ผิด / email_verified=false / บัญชีถูกปิด (ข้อความเดียวกันทุกกรณี) · 429",
+    "rules": "ตรวจ ID token ที่เซิร์ฟเวอร์ (FR-08) · อีเมลนอกโดเมนคณะ → สร้างบัญชี PENDING · บัญชีใหม่เป็น INSTRUCTOR เสมอ · หลัง D-2 refreshToken ย้ายไปเป็น cookie httpOnly (S-2) ไม่อยู่ใน body",
+    "tests": "ST-AUTH-01, 02, 04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 2,
+   "group": "1 เข้าสู่ระบบ",
+   "method": "POST",
+   "path": "/auth/login",
+   "fullPath": "/api/v1/auth/login",
+   "what": "เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน",
+   "role": "ไม่ต้องล็อกอิน",
+   "courseScope": "—",
+   "capability": "—",
+   "fr": "FR-01, FR-03, FR-04",
+   "status": "later",
+   "phase": "—",
+   "needs0008": false,
+   "classification": {
+    "operation": "ยืนยันตัวตน",
+    "effect": "เขียนแถวเดียว",
+    "access": "สาธารณะ",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "ไม่ทำใน v1",
+    "errors": "—",
+    "rules": "D-5: v1 เข้าสู่ระบบด้วย Google อย่างเดียว · ถ้าเปิดใช้ภายหลังให้ออกแบบตาม api-design §4",
+    "tests": "—"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 3,
+   "group": "1 เข้าสู่ระบบ",
+   "method": "POST",
+   "path": "/auth/refresh",
+   "fullPath": "/api/v1/auth/refresh",
+   "what": "ขอ access token ใหม่ด้วย refresh token",
+   "role": "ไม่ต้องล็อกอิน",
+   "courseScope": "—",
+   "capability": "—",
+   "fr": "FR-01",
+   "status": "contract",
+   "phase": "P0",
+   "needs0008": true,
+   "classification": {
+    "operation": "ยืนยันตัวตน",
+    "effect": "เขียนแถวเดียว",
+    "access": "สาธารณะ",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": "— (อ่าน cookie cmas_rt)",
+    "body": "— (ไม่มี body)",
+    "success": "200 · {accessToken} + Set-Cookie refresh token ใบใหม่ (หมุนทุกครั้ง)",
+    "errors": "401 ไม่มี / หมดอายุ / ปลอม / ถูกเพิกถอน / บัญชีถูกปิด · 401 ใช้ token ที่หมุนไปแล้ว → เพิกถอนทั้งสาย (S-2) · 403 Origin ไม่อยู่ใน allowlist (S-11)",
+    "rules": "รับเฉพาะ token typ=refresh (S-1) · อ่านแถว User สดทุกครั้ง (NFR-19) · ตาราง RefreshToken (D-2, 0008)",
+    "tests": "ST-AUTH-05 · ST-ACL-05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 4,
+   "group": "1 เข้าสู่ระบบ",
+   "method": "POST",
+   "path": "/auth/logout",
+   "fullPath": "/api/v1/auth/logout",
+   "what": "ออกจากระบบและเพิกถอน refresh token",
+   "role": "ผู้ใช้ที่ล็อกอิน",
+   "courseScope": "—",
+   "capability": "—",
+   "fr": "FR-01",
+   "status": "contract",
+   "phase": "P0",
+   "needs0008": true,
+   "classification": {
+    "operation": "ยืนยันตัวตน",
+    "effect": "เขียนแถวเดียว",
+    "access": "ล็อกอินทั่วไป",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": "—",
+    "body": "— (ไม่มี body)",
+    "success": "200 · {loggedOut:true} + ล้าง cookie",
+    "errors": "401",
+    "rules": "เพิกถอน refresh token ปัจจุบันในตาราง RefreshToken · access token ที่ออกไปแล้วหมดอายุเองใน 15 นาที — เขียนตามจริง ห้ามอ้างว่าเพิกถอนทันที",
+    "tests": "ST-AUTH-05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 5,
+   "group": "1 เข้าสู่ระบบ",
+   "method": "GET",
+   "path": "/auth/me",
+   "fullPath": "/api/v1/auth/me",
+   "what": "ข้อมูลและบทบาทของผู้ใช้ที่ล็อกอินอยู่",
+   "role": "ผู้ใช้ที่ล็อกอิน",
+   "courseScope": "—",
+   "capability": "อ่าน",
+   "fr": "NFR-19",
+   "status": "contract",
+   "phase": "P0",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการเดียว",
+    "effect": "อ่านอย่างเดียว",
+    "access": "ล็อกอินทั่วไป",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "200 · {id, email, name, role, status, courseCount}",
+    "errors": "401 token หมดอายุ / บัญชีถูกปิดหลังออก token",
+    "rules": "อ่านแถว User สด ไม่ใช้ claim ใน token (NFR-19) · ไม่ส่ง passwordHash, googleSub (A-9)",
+    "tests": "ST-ACL-03 · ST-AUTH-07"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 6,
+   "group": "1 เข้าสู่ระบบ",
+   "method": "PATCH",
+   "path": "/auth/password",
+   "fullPath": "/api/v1/auth/password",
+   "what": "เปลี่ยนรหัสผ่านของตัวเอง",
+   "role": "ผู้ใช้ที่ล็อกอิน",
+   "courseScope": "—",
+   "capability": "—",
+   "fr": "FR-09",
+   "status": "later",
+   "phase": "—",
+   "needs0008": false,
+   "classification": {
+    "operation": "แก้ไข",
+    "effect": "เขียนแถวเดียว",
+    "access": "ล็อกอินทั่วไป",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "ไม่ทำใน v1",
+    "errors": "—",
+    "rules": "D-5: v1 เข้าสู่ระบบด้วย Google อย่างเดียว · ถ้าเปิดใช้ภายหลังให้ออกแบบตาม api-design §4",
+    "tests": "—"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 7,
+   "group": "2 บัญชีผู้ใช้",
+   "method": "GET",
+   "path": "/users",
+   "fullPath": "/api/v1/users",
+   "what": "รายการบัญชี กรองด้วย ?status=PENDING หรือ ACTIVE",
+   "role": "ADMIN",
+   "courseScope": "—",
+   "capability": "user.manage",
+   "fr": "FR-05, FR-08b",
+   "status": "done",
+   "phase": "—",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "ผู้ดูแลระบบ",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "status=PENDING|ACTIVE (มีแล้ว) · ต่อไป: q (ชื่อ/อีเมล), role, isActive, page=1, perPage=20 (≤100)",
+    "body": "—",
+    "success": "200 · [{id, email, name, role, status, createdAt}] · เมื่อเพิ่ม page: meta {total, page, perPage}",
+    "errors": "400 status ผิดค่า · 401 · 403 ไม่ใช่ ADMIN",
+    "rules": "user.manage · select เฉพาะฟิลด์ใน DTO (A-9) · ตอนนี้ยังไม่แบ่งหน้า — เพิ่มตาม api-design §2.4 ก่อนจำนวนบัญชีเกิน 100",
+    "tests": "ST-AUTH-06"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 8,
+   "group": "2 บัญชีผู้ใช้",
+   "method": "PATCH",
+   "path": "/users/:id/approve",
+   "fullPath": "/api/v1/users/:id/approve",
+   "what": "อนุมัติบัญชีที่รออนุมัติ",
+   "role": "ADMIN",
+   "courseScope": "—",
+   "capability": "user.manage",
+   "fr": "FR-08b",
+   "status": "done",
+   "phase": "—",
+   "needs0008": false,
+   "classification": {
+    "operation": "คำสั่ง",
+    "effect": "เขียนแถวเดียว",
+    "access": "ผู้ดูแลระบบ",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":id (โค้ดใช้ :id · contract ใช้ :userId)",
+    "body": "— (ไม่มี body)",
+    "success": "200 · ผู้ใช้หลังอนุมัติ status = ACTIVE",
+    "errors": "401 · 403 · 404 \"ไม่พบผู้ใช้งานนี้\"",
+    "rules": "เปลี่ยนเฉพาะ status ไม่แตะ isActive (ST-AUTH-03) · บันทึก AuthEvent APPROVE เมื่อมีตาราง (S-10, 0008)",
+    "tests": "ST-AUTH-03"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 9,
+   "group": "2 บัญชีผู้ใช้",
+   "method": "POST",
+   "path": "/users",
+   "fullPath": "/api/v1/users",
+   "what": "สร้างบัญชีผู้ใช้",
+   "role": "ADMIN",
+   "courseScope": "—",
+   "capability": "user.manage",
+   "fr": "FR-05",
+   "status": "later",
+   "phase": "—",
+   "needs0008": false,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนแถวเดียว",
+    "access": "ผู้ดูแลระบบ",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "ไม่ทำใน v1",
+    "errors": "—",
+    "rules": "D-5: v1 เข้าสู่ระบบด้วย Google อย่างเดียว · ถ้าเปิดใช้ภายหลังให้ออกแบบตาม api-design §4",
+    "tests": "—"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 10,
+   "group": "2 บัญชีผู้ใช้",
+   "method": "GET",
+   "path": "/users/:userId",
+   "fullPath": "/api/v1/users/:userId",
+   "what": "รายละเอียดบัญชีหนึ่งคน",
+   "role": "ADMIN",
+   "courseScope": "—",
+   "capability": "user.manage",
+   "fr": "FR-05",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการเดียว",
+    "effect": "อ่านอย่างเดียว",
+    "access": "ผู้ดูแลระบบ",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":userId",
+    "body": "—",
+    "success": "200 · {id, email, name, role, status, isActive, authProvider, createdAt, courses[{courseId, code, section, semester, year}], uploadCount}",
+    "errors": "401 · 403 · 404",
+    "rules": "ไม่ส่ง passwordHash, googleSub (A-9) · courses ใช้ตอบว่า \"ลบได้ไหม\" (FR-06)",
+    "tests": "ST-AUTH-07"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 11,
+   "group": "2 บัญชีผู้ใช้",
+   "method": "PATCH",
+   "path": "/users/:userId",
+   "fullPath": "/api/v1/users/:userId",
+   "what": "แก้ชื่อหรือบทบาทของบัญชี",
+   "role": "ADMIN",
+   "courseScope": "—",
+   "capability": "user.manage",
+   "fr": "FR-05",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "แก้ไข",
+    "effect": "เขียนแถวเดียว",
+    "access": "ผู้ดูแลระบบ",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":userId",
+    "body": "name? (1–100) · role? (ADMIN|INSTRUCTOR) · ต้องมีอย่างน้อย 1 ฟิลด์",
+    "success": "200 · ผู้ใช้หลังแก้",
+    "errors": "400 ว่าง/ฟิลด์เกิน · 403 · 404 · 422 แก้บทบาทของตัวเอง / ลดบทบาทผู้ดูแลที่ใช้งานอยู่คนสุดท้าย / ตั้ง ADMIN ให้คนที่ยังเป็นผู้สอนในรายวิชา (D-1)",
+    "rules": "user.manage · endpoint เดียวที่รับ role จาก body (ข้อยกเว้นของ A-8) · บันทึก AuthEvent ROLE_CHANGE",
+    "tests": "ST-AUTH-06"
+   },
+   "bodyFields": [
+    "User",
+    [
+     "name",
+     "role"
+    ]
+   ],
+   "enumFields": {
+    "role": [
+     "ADMIN",
+     "INSTRUCTOR"
+    ]
+   }
+  },
+  {
+   "n": 12,
+   "group": "2 บัญชีผู้ใช้",
+   "method": "PATCH",
+   "path": "/users/:userId/status",
+   "fullPath": "/api/v1/users/:userId/status",
+   "what": "เปิดหรือปิดการใช้งานบัญชี",
+   "role": "ADMIN",
+   "courseScope": "—",
+   "capability": "user.manage",
+   "fr": "FR-03, FR-06",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "แก้ไข",
+    "effect": "เขียนแถวเดียว",
+    "access": "ผู้ดูแลระบบ",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":userId",
+    "body": "isActive (boolean)",
+    "success": "200 · ผู้ใช้หลังเปลี่ยนสถานะ",
+    "errors": "400 · 403 · 404 · 422 ปิดบัญชีตัวเอง / ปิดผู้ดูแลที่ใช้งานอยู่คนสุดท้าย",
+    "rules": "ไม่มี DELETE /users โดยเจตนา (FR-06) · มีผลใน request ถัดไปทันที เพราะ authMiddleware อ่าน User สด · AuthEvent SUSPEND / ACTIVATE",
+    "tests": "ST-ACL-03"
+   },
+   "bodyFields": [
+    "User",
+    [
+     "isActive"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 13,
+   "group": "2 บัญชีผู้ใช้",
+   "method": "POST",
+   "path": "/users/:userId/reset-password",
+   "fullPath": "/api/v1/users/:userId/reset-password",
+   "what": "รีเซ็ตรหัสผ่านให้ผู้ใช้",
+   "role": "ADMIN",
+   "courseScope": "—",
+   "capability": "user.manage",
+   "fr": "FR-07",
+   "status": "later",
+   "phase": "—",
+   "needs0008": false,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนแถวเดียว",
+    "access": "ผู้ดูแลระบบ",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "ไม่ทำใน v1",
+    "errors": "—",
+    "rules": "D-5: v1 เข้าสู่ระบบด้วย Google อย่างเดียว · ถ้าเปิดใช้ภายหลังให้ออกแบบตาม api-design §4",
+    "tests": "—"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 14,
+   "group": "2 บัญชีผู้ใช้",
+   "method": "GET",
+   "path": "/users/:userId/auth-events",
+   "fullPath": "/api/v1/users/:userId/auth-events",
+   "what": "ประวัติบัญชี รวมการถูกปฏิเสธสิทธิ์",
+   "role": "ADMIN",
+   "courseScope": "—",
+   "capability": "user.manage",
+   "fr": "FR-22b, UC 1.6",
+   "status": "new",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "ผู้ดูแลระบบ",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":userId · action?, page=1, perPage=20 (≤100)",
+    "body": "—",
+    "success": "200 · [{id, action, actorId, actorName, at, detail}] · meta {total, page, perPage}",
+    "errors": "400 · 401 · 403 · 404",
+    "rules": "ตาราง AuthEvent (0008) · รวมการถูกปฏิเสธสิทธิ์พร้อม capability (S-10) · detail ไม่มีข้อมูลนักศึกษา (S-4) · เรียงใหม่สุดก่อน",
+    "tests": "ST-AUTH-06"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 15,
+   "group": "3 รายวิชา",
+   "method": "GET",
+   "path": "/courses",
+   "fullPath": "/api/v1/courses",
+   "what": "รายวิชาที่ผู้เรียกมองเห็น",
+   "role": "ผู้ใช้ที่ล็อกอิน",
+   "courseScope": "กรองในตัว",
+   "capability": "อ่าน",
+   "fr": "FR-24, FR-25",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "ล็อกอินทั่วไป",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "year, semester, q (รหัส/ชื่อ ไทย-อังกฤษ), page=1, perPage=20 (≤100), sort=code:asc (code|name|year|semester|createdAt)",
+    "body": "—",
+    "success": "200 · data[] เป็นรายวิชา + counts {clos, activities, students} + instructors [{userId, name}] · meta {total, page, perPage}",
+    "errors": "400 query ผิดรูป · 401",
+    "rules": "ผู้สอนเห็นเฉพาะวิชาของตน ADMIN เห็นทั้งหมด กรองใน query ไม่กรองทีหลัง (NFR-06) · counts มาจาก query เดียว ไม่มี N+1 (NFR-02)",
+    "tests": "ST-COURSE-04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 16,
+   "group": "3 รายวิชา",
+   "method": "POST",
+   "path": "/courses",
+   "fullPath": "/api/v1/courses",
+   "what": "สร้างรายวิชา ผู้สร้างเป็นผู้สอนใน transaction เดียวกัน",
+   "role": "ADMIN · ผู้สอน",
+   "courseScope": "—",
+   "capability": "course.create",
+   "fr": "FR-20, FR-21, FR-22c, FR-27, FR-28",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "จัดการรายวิชา",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": "—",
+    "body": "code(1–20) name nameEn? semester(1–3) year(2500–2600 พ.ศ.) section='01' credits(0–30, ได้ 0) lectureHours practiceHours selfStudyHours(≥0, ทศนิยม 1 ตำแหน่ง) gradeScale gradeMethod passCriteria? (เฉพาะ PASS_FAIL หรืออิงกลุ่ม) cloPassMark=60 classTarget=100 instructors[{userId}]",
+    "success": "201 · รายวิชาเต็ม (credits เป็น string \"3.0\") · ขั้นบันไดเกรดค่าเริ่มต้น",
+    "errors": "400 body ผิดรูป/มีฟิลด์เกิน · 409 รหัส+ภาค+ปี+Sec ซ้ำ \"รหัสวิชานี้มีอยู่แล้วในภาคเรียนนี้\" · 422 ไม่มีผู้สอน / ผู้สอนเป็น ADMIN, ถูกปิด, รออนุมัติ / PASS_FAIL ร่วมกับอิงกลุ่ม / ส่ง passCriteria มากับ A–F อิงเกณฑ์",
+    "rules": "ผู้สอนที่สร้างเป็นผู้สอนของวิชาอัตโนมัติ (FR-22c) · ADMIN ต้องระบุผู้สอนอย่างน้อย 1 คน (D-1, FR-23) · วิชา+ผู้สอน+ขั้นบันไดเกรดอยู่ใน transaction เดียว (NFR-11) · A–F อิงเกณฑ์: passCriteria = ขอบล่างของเกรดต่ำสุดที่ยังผ่าน (D = 50)",
+    "tests": "ST-COURSE-01…03"
+   },
+   "bodyFields": [
+    "Course",
+    [
+     "code",
+     "name",
+     "nameEn",
+     "semester",
+     "year",
+     "section",
+     "credits",
+     "lectureHours",
+     "practiceHours",
+     "selfStudyHours",
+     "gradeScale",
+     "gradeMethod",
+     "passCriteria",
+     "cloPassMark",
+     "classTarget"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 17,
+   "group": "3 รายวิชา",
+   "method": "GET",
+   "path": "/courses/:courseId",
+   "fullPath": "/api/v1/courses/:courseId",
+   "what": "รายละเอียดรายวิชา",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-25",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการเดียว",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId = cuid",
+    "body": "—",
+    "success": "200 · รายวิชาเต็ม + counts + instructors",
+    "errors": "401 · 404 ไม่มี/ไม่ใช่ของคุณ/id รูปผิด (เหมือนกันทุกไบต์)",
+    "rules": "course.view · ADMIN อ่านได้ทุกวิชา",
+    "tests": "ST-ACL-01"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 18,
+   "group": "3 รายวิชา",
+   "method": "PATCH",
+   "path": "/courses/:courseId",
+   "fullPath": "/api/v1/courses/:courseId",
+   "what": "แก้ข้อมูลและการตั้งค่ารายวิชา (เกณฑ์ผ่าน วิธีตัดเกรด)",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "course.settings",
+   "fr": "FR-20, FR-47, FR-90",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "แก้ไข",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "ฟิลด์ใดก็ได้ของ POST ยกเว้น instructors · ต้องมีอย่างน้อย 1 ฟิลด์",
+    "success": "200 · รายวิชาที่แก้แล้ว",
+    "errors": "400 ว่าง/ฟิลด์เกิน · 403 ADMIN · 404 · 409 ชนรหัสวิชา · 422 PASS_FAIL ร่วมกับอิงกลุ่ม / ส่ง passCriteria มากับ A–F อิงเกณฑ์ (ตรวจบนค่าที่รวมกับของเดิม)",
+    "rules": "course.settings เฉพาะผู้สอน ADMIN ได้ 403 (D-1) · ตรวจแล้ว 404 ก่อน 403 (A-13) · เปลี่ยนรูปแบบเกรดใช้ PUT /grade-bands ไม่ใช่ที่นี่",
+    "tests": "ST-ACL-01 · ST-COURSE-02"
+   },
+   "bodyFields": [
+    "Course",
+    [
+     "code",
+     "name",
+     "nameEn",
+     "semester",
+     "year",
+     "section",
+     "credits",
+     "gradeScale",
+     "gradeMethod",
+     "passCriteria",
+     "cloPassMark",
+     "classTarget"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 19,
+   "group": "3 รายวิชา",
+   "method": "DELETE",
+   "path": "/courses/:courseId",
+   "fullPath": "/api/v1/courses/:courseId",
+   "what": "ลบรายวิชา ต้องส่ง ?confirm=true",
+   "role": "ADMIN · ผู้สอน",
+   "courseScope": "จาก URL",
+   "capability": "course.delete",
+   "fr": "FR-26",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "ลบ",
+    "effect": "ลบข้อมูล",
+    "access": "จัดการรายวิชา",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":courseId · ?confirm=true",
+    "body": "—",
+    "success": "200 {deleted:true}",
+    "errors": "404 · 422 ไม่ส่ง confirm → data = ตัวเลขผลกระทบ (เหมือน /impact) และยังไม่ลบ",
+    "rules": "course.delete ADMIN และผู้สอนของวิชาลบได้ · cascade ถึง CLO กิจกรรม นักศึกษา คะแนน แผนพัฒนาผู้เรียน (FR-26)",
+    "tests": "ST-COURSE-06"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 20,
+   "group": "3 รายวิชา",
+   "method": "GET",
+   "path": "/courses/:courseId/impact",
+   "fullPath": "/api/v1/courses/:courseId/impact",
+   "what": "จำนวนข้อมูลที่จะหายถ้าลบรายวิชา",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-26",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านสรุป/คำนวณ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · {clos, objectives, activities, criteria, students, scores, uploadLogs, remediationPlans}",
+    "errors": "404",
+    "rules": "ตัวเลขต้องเท่ากับจำนวนแถวที่หายจริงเมื่อ DELETE (FR-26)",
+    "tests": "ST-COURSE-06"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 21,
+   "group": "3 รายวิชา",
+   "method": "GET",
+   "path": "/courses/:courseId/instructors",
+   "fullPath": "/api/v1/courses/:courseId/instructors",
+   "what": "รายชื่อผู้สอนของรายวิชา",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-22",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · [{userId, name, email, assignedAt}]",
+    "errors": "404",
+    "rules": "ไม่มี role ผู้สอนทุกคนสิทธิ์เท่ากัน (D1)",
+    "tests": "ST-COURSE-05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 22,
+   "group": "3 รายวิชา",
+   "method": "POST",
+   "path": "/courses/:courseId/instructors",
+   "fullPath": "/api/v1/courses/:courseId/instructors",
+   "what": "เพิ่มผู้สอนเข้ารายวิชา",
+   "role": "ADMIN · ผู้สอน",
+   "courseScope": "จาก URL",
+   "capability": "staff.write",
+   "fr": "FR-22, FR-23",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนแถวเดียว",
+    "access": "จัดการรายวิชา",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "userId",
+    "success": "201 · รายชื่อผู้สอนหลังเพิ่ม",
+    "errors": "400 · 404 · 409 อยู่ในวิชาแล้ว · 422 ไม่พบผู้ใช้ / ADMIN / บัญชีถูกปิด / รออนุมัติ \"บัญชีนี้ยังใช้งานไม่ได้\"",
+    "rules": "staff.write ADMIN และผู้สอนทำได้ (FR-22) · ข้อความ error ไม่บอก id หรืออีเมลของผู้ใช้",
+    "tests": "ST-COURSE-05"
+   },
+   "bodyFields": [
+    "CourseInstructor",
+    [
+     "userId"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 23,
+   "group": "3 รายวิชา",
+   "method": "DELETE",
+   "path": "/courses/:courseId/instructors/:userId",
+   "fullPath": "/api/v1/courses/:courseId/instructors/:userId",
+   "what": "เอาผู้สอนออก คนสุดท้ายเอาออกไม่ได้ (422)",
+   "role": "ADMIN · ผู้สอน",
+   "courseScope": "จาก URL",
+   "capability": "staff.write",
+   "fr": "FR-23",
+   "status": "contract",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "ลบ",
+    "effect": "ลบข้อมูล",
+    "access": "จัดการรายวิชา",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":courseId, :userId",
+    "body": "—",
+    "success": "200 {removed:true}",
+    "errors": "404 ไม่มีผู้สอนคนนี้ในวิชา · 422 \"รายวิชาต้องมีผู้สอนอย่างน้อย 1 คน\" (FR-23)",
+    "rules": "ล็อกแถววิชา (SELECT … FOR UPDATE) ก่อนนับ กันลบพร้อมกันจนเหลือ 0 คน (S-9) · แก้แถวของตัวเองไม่ได้ (S-9)",
+    "tests": "ST-COURSE-05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 24,
+   "group": "3 รายวิชา",
+   "method": "POST",
+   "path": "/courses/:courseId/duplicate",
+   "fullPath": "/api/v1/courses/:courseId/duplicate",
+   "what": "คัดลอกรายวิชาเป็นรายวิชาใหม่",
+   "role": "ADMIN · ผู้สอน",
+   "courseScope": "จาก URL",
+   "capability": "course.create",
+   "fr": "ต้นแบบ",
+   "status": "new",
+   "phase": "P2",
+   "needs0008": false,
+   "classification": {
+    "operation": "คำสั่ง",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "จัดการรายวิชา",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "— (ไม่มี body)",
+    "success": "201 · รายวิชาใหม่ (Sec ถัดไปที่ว่าง)",
+    "errors": "404 ผู้เรียกมองไม่เห็นวิชาต้นทาง (ตรวจใน service เพราะ course.create ไม่ผูกกับ :courseId) · 422 Sec ครบ 99",
+    "rules": "คัดลอก: ค่าตั้งวิชา ช่วงเกรด CLO จุดประสงค์ กิจกรรม (รวมชื่อประเภทที่กำหนดเอง) การผูกเกณฑ์ น้ำหนักกลุ่ม ผู้สอนเดิม · ไม่คัดลอก: นักศึกษา คะแนน แผนพัฒนาผู้เรียน · ผู้สอนที่กดคัดลอกอยู่ในวิชาใหม่ (P17) · transaction เดียว",
+    "tests": "ST-COURSE-03"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 25,
+   "group": "4 CLO และจุดประสงค์",
+   "method": "GET",
+   "path": "/courses/:courseId/clos",
+   "fullPath": "/api/v1/courses/:courseId/clos",
+   "what": "รายการ CLO พร้อมจุดประสงค์",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-30, FR-32",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · [{id, number, description, weight, computedWeight, bloomLevel, soloLevel, levelSource, objectiveCount, isMeasured}] · meta {weightSum, weightWarnings[{cloId, entered, computed}], cloPassMark}",
+    "errors": "401 · 404",
+    "rules": "course.view · computedWeight อ่านอย่างเดียว (CR-02) · เรียงตาม number",
+    "tests": "ST-CLO-03 · ST-ACL-01"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 26,
+   "group": "4 CLO และจุดประสงค์",
+   "method": "POST",
+   "path": "/courses/:courseId/clos",
+   "fullPath": "/api/v1/courses/:courseId/clos",
+   "what": "เพิ่ม CLO ต้องเลือกระดับ Bloom เอง ไม่มีค่าตั้งต้น",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "clo.write",
+   "fr": "FR-30, FR-31, FR-99, FR-100",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "number(≥1) description(1–1000) weight?(0–100 หรือ null) bloomLevel (บังคับ ไม่มีค่าตั้งต้น) levelSource=AUTO|MANUAL soloLevel? (ต้องมีเมื่อ MANUAL · AUTO ห้ามส่ง)",
+    "success": "201 · CLO ใหม่ (AUTO: soloLevel คำนวณจาก Bloom) · meta.weightWarnings",
+    "errors": "400 ไม่ส่ง bloomLevel / ส่ง computedWeight / soloLevel มากับ AUTO · 403 ADMIN (D-1) · 404 · 409 number ซ้ำในวิชา",
+    "rules": "clo.write · น้ำหนักตามแผนรวม ≠ 100 → 201 + คำเตือน ไม่บล็อก (FR-32, E2) · ไม่มีเกณฑ์ผ่านราย CLO (ใช้ Course.cloPassMark)",
+    "tests": "ST-CLO-01, 02, 03"
+   },
+   "bodyFields": [
+    "CLO",
+    [
+     "number",
+     "description",
+     "weight",
+     "bloomLevel",
+     "levelSource",
+     "soloLevel"
+    ]
+   ],
+   "enumFields": {
+    "levelSource": [
+     "AUTO",
+     "MANUAL"
+    ]
+   }
+  },
+  {
+   "n": 27,
+   "group": "4 CLO และจุดประสงค์",
+   "method": "PATCH",
+   "path": "/courses/:courseId/clos/reorder",
+   "fullPath": "/api/v1/courses/:courseId/clos/reorder",
+   "what": "เรียงลำดับ CLO ใหม่",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "clo.write",
+   "fr": "FR-31",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "จัดลำดับ",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "order: [cloId…] ครบทุก CLO ของวิชา ไม่ซ้ำ",
+    "success": "200 · CLO ทั้งหมด number = ลำดับใหม่",
+    "errors": "400 ไม่ครบ / ซ้ำ / มี id ของวิชาอื่น · 403 · 404",
+    "rules": "transaction เดียว เขียนสองเฟส (ค่าลบชั่วคราว → ค่าจริง) กัน unique (courseId, number) ชนกลางทาง · ล้มกลางทาง ลำดับเดิมคงอยู่",
+    "tests": "ST-CLO-02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 28,
+   "group": "4 CLO และจุดประสงค์",
+   "method": "PATCH",
+   "path": "/clos/:cloId",
+   "fullPath": "/api/v1/clos/:cloId",
+   "what": "แก้ CLO",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "clo.write",
+   "fr": "FR-30, FR-99, FR-100",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "แก้ไข",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":cloId",
+    "body": "ฟิลด์ใดก็ได้ของ POST · ต้องมีอย่างน้อย 1 ฟิลด์",
+    "success": "200 · CLO หลังแก้ + meta.weightWarnings",
+    "errors": "400 ว่าง / ส่ง computedWeight · 403 · 404 (resolve courseId จาก cloId ก่อน A-3) · 409 number ซ้ำ",
+    "rules": "clo.write · เปลี่ยน bloomLevel ขณะ AUTO → คำนวณ soloLevel ใหม่ (O3)",
+    "tests": "ST-ACL-02"
+   },
+   "bodyFields": [
+    "CLO",
+    [
+     "number",
+     "description",
+     "weight",
+     "bloomLevel",
+     "levelSource",
+     "soloLevel"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 29,
+   "group": "4 CLO และจุดประสงค์",
+   "method": "DELETE",
+   "path": "/clos/:cloId",
+   "fullPath": "/api/v1/clos/:cloId",
+   "what": "ลบ CLO เตือนถ้ามีคะแนนอ้างอิง",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "clo.write",
+   "fr": "FR-36",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "ลบ",
+    "effect": "ลบข้อมูล",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":cloId · ?confirm=true",
+    "body": "—",
+    "success": "200 {deleted:true}",
+    "errors": "403 · 404 · 422 มีกิจกรรมวัดอยู่แต่ไม่ส่ง confirm → errors {objectives, criteria, activities}",
+    "rules": "cascade: จุดประสงค์ → AssessmentCriteria · RemediationPlan ของ CLO นี้ · ผลการประเมินเปลี่ยนต้องแจ้งก่อน (FR-36)",
+    "tests": "ST-ACT-04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 30,
+   "group": "4 CLO และจุดประสงค์",
+   "method": "GET",
+   "path": "/clos/:cloId/objectives",
+   "fullPath": "/api/v1/clos/:cloId/objectives",
+   "what": "จุดประสงค์เชิงพฤติกรรมของ CLO",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "อ่าน",
+   "fr": "FR-33",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":cloId",
+    "body": "—",
+    "success": "200 · [{id, number, label '1.2', description, weight, activityCount}] · meta {weightSum, warnings}",
+    "errors": "401 · 404",
+    "rules": "น้ำหนักจุดประสงค์รวมต่อ CLO ≠ 100 → meta.warnings และล็อกผลการประเมิน (CR-01)",
+    "tests": "ST-ACT-05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 31,
+   "group": "4 CLO และจุดประสงค์",
+   "method": "POST",
+   "path": "/clos/:cloId/objectives",
+   "fullPath": "/api/v1/clos/:cloId/objectives",
+   "what": "เพิ่มจุดประสงค์",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "clo.write",
+   "fr": "FR-33",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":cloId",
+    "body": "number(≥1) description(1–1000) weight?(>0–100)",
+    "success": "201 · จุดประสงค์ใหม่ + meta.warnings",
+    "errors": "400 · 403 · 404 · 409 number ซ้ำใน CLO",
+    "rules": "clo.write · ผลรวม ≠ 100 เตือน ไม่บล็อก",
+    "tests": "ST-ACT-05"
+   },
+   "bodyFields": [
+    "BehavioralObjective",
+    [
+     "number",
+     "description",
+     "weight"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 32,
+   "group": "4 CLO และจุดประสงค์",
+   "method": "PATCH",
+   "path": "/objectives/:objectiveId",
+   "fullPath": "/api/v1/objectives/:objectiveId",
+   "what": "แก้จุดประสงค์",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "clo.write",
+   "fr": "FR-33",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "แก้ไข",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":objectiveId",
+    "body": "number? description? weight? · ต้องมีอย่างน้อย 1 ฟิลด์",
+    "success": "200 · จุดประสงค์หลังแก้ + meta.warnings",
+    "errors": "400 · 403 · 404 · 409 number ซ้ำใน CLO",
+    "rules": "resolve courseId ผ่าน objective → CLO → course (A-3)",
+    "tests": "ST-ACL-02"
+   },
+   "bodyFields": [
+    "BehavioralObjective",
+    [
+     "number",
+     "description",
+     "weight"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 33,
+   "group": "4 CLO และจุดประสงค์",
+   "method": "DELETE",
+   "path": "/objectives/:objectiveId",
+   "fullPath": "/api/v1/objectives/:objectiveId",
+   "what": "ลบจุดประสงค์",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "clo.write",
+   "fr": "FR-33",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "ลบ",
+    "effect": "ลบข้อมูล",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":objectiveId · ?confirm=true",
+    "body": "—",
+    "success": "200 {deleted:true}",
+    "errors": "403 · 404 · 422 มีกิจกรรมวัดอยู่แต่ไม่ส่ง confirm → errors {criteria}",
+    "rules": "cascade AssessmentCriteria · กิจกรรมที่สัดส่วนเหลือไม่ครบ 100 ถูกเตือนใน GET /criteria",
+    "tests": "ST-ACT-04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 34,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "GET",
+   "path": "/courses/:courseId/activities",
+   "fullPath": "/api/v1/courses/:courseId/activities",
+   "what": "รายการกิจกรรมประเมิน",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-40, FR-43",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": true,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · [{id, order, name, type, typeLabel, assessmentMethod, assessmentLabel, criteriaNote, maxScore, passScore, passMark, weight, closedAt, scoredCount, studentCount}] · meta {totalWeight, isWeightComplete, weightMode, customTypes[], customMethods[]}",
+    "errors": "401 · 404",
+    "rules": "customTypes / customMethods = ชื่อที่เคยกำหนดเองในวิชานี้ ใช้เป็นตัวเลือกใน dropdown (ต้นแบบ 4.2) · passMark คำนวณจาก passScore ÷ maxScore",
+    "tests": "ST-ACT-02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 35,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "POST",
+   "path": "/courses/:courseId/activities",
+   "fullPath": "/api/v1/courses/:courseId/activities",
+   "what": "เพิ่มกิจกรรม",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "activity.write",
+   "fr": "FR-40, FR-41",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": true,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "name(1–200) type(LECTURE|LAB|TEST|PROJECT|OTHER|CUSTOM) typeLabel?(1–100 ต้องมีเมื่อ CUSTOM) assessmentMethod?(QUIZ|EXAM|RUBRIC|WORK|OBSERVATION|OTHER|CUSTOM · ไม่ส่ง = ตามประเภท) assessmentLabel?(ต้องมีเมื่อ CUSTOM) criteriaNote?(≤1000) maxScore(>0) passScore?(0–maxScore · ไม่ส่ง = 50%) weight(0–100 · โหมด GROUP ห้ามส่ง) order?(ไม่ส่ง = ต่อท้าย)",
+    "success": "201 · กิจกรรมใหม่ · meta.totalWeight",
+    "errors": "400 · 403 ADMIN · 404 · 409 order ซ้ำ · 422 สัดส่วนรวมทุกกิจกรรมเกิน 100% \"กิจกรรมอื่นรวม x% แล้ว — ใส่ได้ไม่เกิน y%\" / CUSTOM ไม่มีชื่อ / ส่ง weight ในโหมด GROUP",
+    "rules": "activity.write · รวมต่ำกว่า 100 บันทึกได้และเตือน (FR-43 แก้ 2569-10-19) · วิธีประเมินตั้งต้นตามประเภท TEST→EXAM · LAB, LECTURE→RUBRIC · PROJECT→WORK · OTHER และ CUSTOM ชื่อใหม่→OTHER · CUSTOM ชื่อเดิมคงค่าที่บันทึกไว้ · passMark ไม่รับจาก body (A-10)",
+    "tests": "ST-ACT-01, 02"
+   },
+   "bodyFields": [
+    "Activity",
+    [
+     "name",
+     "type",
+     "typeLabel",
+     "assessmentMethod",
+     "assessmentLabel",
+     "criteriaNote",
+     "maxScore",
+     "passScore",
+     "weight",
+     "order"
+    ]
+   ],
+   "enumFields": {
+    "type": [
+     "LECTURE",
+     "LAB",
+     "TEST",
+     "PROJECT",
+     "OTHER",
+     "CUSTOM"
+    ],
+    "assessmentMethod": [
+     "QUIZ",
+     "EXAM",
+     "RUBRIC",
+     "WORK",
+     "OBSERVATION",
+     "OTHER",
+     "CUSTOM"
+    ]
+   }
+  },
+  {
+   "n": 36,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "PATCH",
+   "path": "/courses/:courseId/activities/reorder",
+   "fullPath": "/api/v1/courses/:courseId/activities/reorder",
+   "what": "เรียงลำดับกิจกรรมใหม่",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "activity.write",
+   "fr": "FR-42",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "จัดลำดับ",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "order: [activityId…] ครบทุกกิจกรรมของวิชา ไม่ซ้ำ",
+    "success": "200 · กิจกรรมทั้งหมดเรียงใหม่",
+    "errors": "400 ไม่ครบ / ซ้ำ / มี id ของวิชาอื่น · 403 · 404",
+    "rules": "transaction เดียว · คะแนนและน้ำหนักไม่เปลี่ยน",
+    "tests": "ST-ACT-02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 37,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "PATCH",
+   "path": "/activities/:activityId",
+   "fullPath": "/api/v1/activities/:activityId",
+   "what": "แก้กิจกรรม (ชื่อ คะแนนเต็ม น้ำหนัก)",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "activity.write",
+   "fr": "FR-40, FR-41",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": true,
+   "classification": {
+    "operation": "แก้ไข",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":activityId",
+    "body": "ฟิลด์ใดก็ได้ของ POST · ต้องมีอย่างน้อย 1 ฟิลด์",
+    "success": "200 · กิจกรรมหลังแก้ · meta.totalWeight",
+    "errors": "400 · 403 · 404 · 422 maxScore ต่ำกว่าคะแนนที่บันทึกแล้ว → errors {conflictingScores, maxExistingScore} / สัดส่วนรวมเกิน 100% / passScore > maxScore",
+    "rules": "ตรวจที่ API ก่อน trigger score ≤ maxScore (NFR-12) · ไม่ปัดคะแนนให้ (Q5) · เปลี่ยน type ไม่ทับ assessmentMethod ที่ส่งมาด้วย",
+    "tests": "ST-ACT-01, 02 · ST-ACL-02"
+   },
+   "bodyFields": [
+    "Activity",
+    [
+     "name",
+     "type",
+     "typeLabel",
+     "assessmentMethod",
+     "assessmentLabel",
+     "criteriaNote",
+     "maxScore",
+     "passScore",
+     "weight",
+     "order"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 38,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "DELETE",
+   "path": "/activities/:activityId",
+   "fullPath": "/api/v1/activities/:activityId",
+   "what": "ลบกิจกรรม",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "activity.delete",
+   "fr": "FR-40",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "ลบ",
+    "effect": "ลบข้อมูล",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":activityId · ?confirm=true",
+    "body": "—",
+    "success": "200 {deleted:true} · meta.totalWeight",
+    "errors": "403 (activity.delete) · 404 · 422 มีคะแนนแล้วแต่ไม่ส่ง confirm → errors {scores}",
+    "rules": "cascade Score · AssessmentCriteria · ScoreChange",
+    "tests": "ST-ACT-02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 39,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "GET",
+   "path": "/courses/:courseId/criteria",
+   "fullPath": "/api/v1/courses/:courseId/criteria",
+   "what": "เมทริกซ์ กิจกรรม × จุดประสงค์ พร้อมคำเตือน",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-44, FR-45, FR-48, FR-102",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · {objectives[{id, cloId, label, weight}], activities[{id, name, weight}], cells[{activityId, objectiveId, weight}]} · meta {activityWeightSums, cloShares, cloWeights{cloId:{computed, planned}}, unlinkedActivityIds, unmeasuredObjectiveIds, objectiveWeightSums, isReadyForDashboard}",
+    "errors": "401 · 404",
+    "rules": "เมทริกซ์ทั้งใบใน request เดียว (หน้าตรวจการเชื่อม) · cloWeights.computed = Σ น้ำหนักกิจกรรม × สัดส่วน (CR-02)",
+    "tests": "ST-ACT-04, 05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 40,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "PUT",
+   "path": "/courses/:courseId/criteria",
+   "fullPath": "/api/v1/courses/:courseId/criteria",
+   "what": "บันทึกเมทริกซ์ทั้งชุด น้ำหนักไม่ครบ 100 ตอบ 422",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "activity.write",
+   "fr": "FR-34, FR-44…FR-46",
+   "status": "contract",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "ตั้งค่าทั้งชุด",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "cells: [{activityId, objectiveId, weight(>0–100)}] แทนที่ทั้งใบ",
+    "success": "200 · เมทริกซ์ใหม่ + meta.warnings (รวมต่อกิจกรรม ≠ 100)",
+    "errors": "400 weight ≤ 0 / > 100 / คู่ซ้ำ · 403 · 404 · 422 กิจกรรมหรือจุดประสงค์ไม่ใช่ของวิชานี้",
+    "rules": "transaction เดียว ช่องที่หายไป = ลบ (FR-44) · ตรวจข้ามวิชาที่ API ก่อน trigger (FR-46) · รวม ≠ 100 เตือนตอนบันทึก บล็อกที่แดชบอร์ด (FR-45)",
+    "tests": "ST-ACT-03, 04"
+   },
+   "bodyFields": [
+    "AssessmentCriteria",
+    [
+     "activityId",
+     "objectiveId",
+     "weight"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 41,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "POST",
+   "path": "/activities/:activityId/duplicate",
+   "fullPath": "/api/v1/activities/:activityId/duplicate",
+   "what": "คัดลอกกิจกรรม",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "activity.write",
+   "fr": "ต้นแบบ",
+   "status": "new",
+   "phase": "P3",
+   "needs0008": false,
+   "classification": {
+    "operation": "คำสั่ง",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":activityId",
+    "body": "— (ไม่มี body)",
+    "success": "201 · กิจกรรมใหม่ ชื่อ \"… (สำเนา)\" ต่อท้าย weight = 0",
+    "errors": "403 · 404",
+    "rules": "คัดลอก type, typeLabel, assessmentMethod, assessmentLabel, maxScore, passScore, criteriaNote และการผูกจุดประสงค์ · ไม่คัดลอกคะแนน · weight เริ่ม 0 เพื่อไม่ให้รวมเกิน 100",
+    "tests": "ST-ACT-02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 42,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "PUT",
+   "path": "/courses/:courseId/group-weights",
+   "fullPath": "/api/v1/courses/:courseId/group-weights",
+   "what": "น้ำหนักรายกลุ่มของกิจกรรม",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "activity.write",
+   "fr": "ต้นแบบ N1/N2",
+   "status": "new",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "ตั้งค่าทั้งชุด",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "mode (MANUAL|GROUP) · weights {LAB: 25, TEST: 75, \"CUSTOM:ชื่อ\": 10} (เฉพาะ GROUP)",
+    "success": "200 · {mode, weights, activities[{id, weight}]}",
+    "errors": "400 · 403 · 404 · 422 รวมเกิน 100% / มีคีย์ประเภทที่ไม่มีกิจกรรม",
+    "rules": "transaction เดียว: บันทึก CourseGroupWeight แล้วแบ่งน้ำหนักให้กิจกรรมตามคะแนนเต็ม · สลับเป็น MANUAL เก็บน้ำหนักของกิจกรรมไว้ · คีย์ CUSTOM:ชื่อ = กลุ่มของประเภทกำหนดเอง",
+    "tests": "ST-ACT-02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 43,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "POST",
+   "path": "/activities/:activityId/close",
+   "fullPath": "/api/v1/activities/:activityId/close",
+   "what": "ปิดรับคะแนน ช่องว่างหลังปิดคือ \"ขาดส่ง\"",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "score.edit",
+   "fr": "CR-05.1",
+   "status": "new",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "คำสั่ง",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":activityId",
+    "body": "blank? (ZERO|EXCUSED|LATER = วิธีจัดการช่องว่าง) · reason? (ต้องมีเมื่อ EXCUSED)",
+    "success": "200 · {closedAt, zeroed, excused, pending}",
+    "errors": "400 · 403 · 404 · 422 ปิดแล้ว",
+    "rules": "score.edit · ทุกช่องที่เปลี่ยนเขียน ScoreChange (A-12) ใน transaction เดียว · หลังปิด ช่องว่าง = ขาดส่ง (R3)",
+    "tests": "ST-STU-04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 44,
+   "group": "5 กิจกรรมและเกณฑ์",
+   "method": "POST",
+   "path": "/activities/:activityId/reopen",
+   "fullPath": "/api/v1/activities/:activityId/reopen",
+   "what": "เปิดรับคะแนนอีกครั้ง",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "score.edit",
+   "fr": "CR-05.1",
+   "status": "new",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "คำสั่ง",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":activityId",
+    "body": "— (ไม่มี body)",
+    "success": "200 · {closedAt:null}",
+    "errors": "403 · 404 · 422 ยังไม่ได้ปิด",
+    "rules": "ไม่ลบค่า 0 หรือยกเว้นที่ตั้งไว้ตอนปิด",
+    "tests": "ST-STU-04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 45,
+   "group": "6 นักศึกษา",
+   "method": "GET",
+   "path": "/courses/:courseId/students",
+   "fullPath": "/api/v1/courses/:courseId/students",
+   "what": "รายชื่อนักศึกษา รวมผู้ที่ถอนรายวิชา",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-50",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "q (รหัสหรือชื่อ), status=ALL|ENROLLED|WITHDRAWN, page=1, perPage=20 (≤100), sort=studentCode:asc",
+    "body": "—",
+    "success": "200 · [{id, studentCode, name, status, withdrawnAt, scoredCount, activityCount}] · meta {total, page, perPage}",
+    "errors": "400 · 401 · 404",
+    "rules": "ไม่มีอีเมล ชั้นปี สาขา (FR-54) · ผู้ถอนยังอยู่ในรายการ แค่ออกจากตัวหาร",
+    "tests": "ST-STU-05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 46,
+   "group": "6 นักศึกษา",
+   "method": "POST",
+   "path": "/courses/:courseId/students",
+   "fullPath": "/api/v1/courses/:courseId/students",
+   "what": "เพิ่มนักศึกษา รหัสซ้ำในวิชาตอบ 409",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "student.write",
+   "fr": "FR-50, FR-51",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "studentCode(1–20) name(1–200)",
+    "success": "201 · นักศึกษาใหม่ status = ENROLLED",
+    "errors": "400 · 403 ADMIN · 404 · 409 รหัสซ้ำในวิชา",
+    "rules": "รหัสซ้ำข้ามวิชาได้ (ASM-01, FR-51) · status ไม่รับจาก body (A-8)",
+    "tests": "ST-STU-05"
+   },
+   "bodyFields": [
+    "Student",
+    [
+     "studentCode",
+     "name"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 47,
+   "group": "6 นักศึกษา",
+   "method": "PATCH",
+   "path": "/students/:studentId",
+   "fullPath": "/api/v1/students/:studentId",
+   "what": "แก้ข้อมูลนักศึกษา",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "student.write",
+   "fr": "FR-50",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "แก้ไข",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":studentId",
+    "body": "studentCode? name? · ต้องมีอย่างน้อย 1 ฟิลด์",
+    "success": "200 · นักศึกษาหลังแก้",
+    "errors": "400 · 403 · 404 · 409 รหัสซ้ำในวิชา",
+    "rules": "แก้รหัสไม่กระทบคะแนน (ผูกด้วย id)",
+    "tests": "ST-ACL-02"
+   },
+   "bodyFields": [
+    "Student",
+    [
+     "studentCode",
+     "name"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 48,
+   "group": "6 นักศึกษา",
+   "method": "DELETE",
+   "path": "/students/:studentId",
+   "fullPath": "/api/v1/students/:studentId",
+   "what": "ลบนักศึกษาและคะแนนทั้งหมด",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "student.delete",
+   "fr": "FR-53",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "ลบ",
+    "effect": "ลบข้อมูล",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":studentId · ?confirm=true",
+    "body": "—",
+    "success": "200 {deleted:true}",
+    "errors": "403 (student.delete) · 404 · 422 มีคะแนนแต่ไม่ส่ง confirm → errors {scores, grades}",
+    "rules": "cascade Score · StudentGrade · ScoreChange · RemediationPlan · การลงทะเบียนในวิชาอื่นของรหัสเดียวกันไม่ถูกแตะ",
+    "tests": "ST-STU-05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 49,
+   "group": "6 นักศึกษา",
+   "method": "GET",
+   "path": "/courses/:courseId/students/template",
+   "fullPath": "/api/v1/courses/:courseId/students/template",
+   "what": "ดาวน์โหลดแบบฟอร์มรายชื่อ",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "score.export",
+   "fr": "FR-52",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "ส่งออก",
+    "effect": "อ่านอย่างเดียว",
+    "access": "งานสอน",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · xlsx: หัวเอกสาร + คอลัมน์ รหัสนักศึกษา | ชื่อ-นามสกุล",
+    "errors": "403 ADMIN (score.export) · 404",
+    "rules": "คอลัมน์รหัสเป็นข้อความ · S-7",
+    "tests": "ST-IMP-03"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 50,
+   "group": "6 นักศึกษา",
+   "method": "POST",
+   "path": "/courses/:courseId/students/import/preview",
+   "fullPath": "/api/v1/courses/:courseId/students/import/preview",
+   "what": "ตรวจไฟล์รายชื่อ ยังไม่บันทึก",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "student.write",
+   "fr": "FR-52, FR-67",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "นำเข้า",
+    "effect": "อ่านอย่างเดียว",
+    "access": "งานสอน",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "multipart: file (.xlsx ≤ 10 MB)",
+    "success": "200 · {previewToken (15 นาที ผูกวิชา+ผู้ใช้), summary {total, add, failed}, rows[{row, studentCode, name, status, errorCode, message}]}",
+    "errors": "400 ไม่ใช่ xlsx (magic bytes) / เกิน 10 MB / เกิน 2,000 แถว / มีสูตร · 403 · 404 · 429",
+    "rules": "S-6 · ไม่บันทึกอะไร · ชื่อเดิมของรหัสที่มีอยู่ไม่ถูกทับ · ไม่เก็บไฟล์",
+    "tests": "ST-IMP-03, 05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 51,
+   "group": "6 นักศึกษา",
+   "method": "POST",
+   "path": "/courses/:courseId/students/import/commit",
+   "fullPath": "/api/v1/courses/:courseId/students/import/commit",
+   "what": "บันทึกรายชื่อที่ตรวจผ่าน",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "student.write",
+   "fr": "FR-52, FR-68",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "นำเข้า",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "previewToken",
+    "success": "200 · {uploadLogId, recordsOk, recordsFail}",
+    "errors": "403 · 404 · 422 token หมดอายุ / ไม่ใช่ของวิชานี้ / ไม่ใช่ของผู้ใช้นี้",
+    "rules": "บันทึกเฉพาะแถวที่ผ่านใน transaction เดียว (ข้อยกเว้นของ A-5) · ScoreUploadLog kind=ROSTER ทุกครั้ง · UploadReject รายแถว",
+    "tests": "ST-IMP-03 · ST-NFR-06"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 52,
+   "group": "6 นักศึกษา",
+   "method": "POST",
+   "path": "/students/:studentId/withdraw",
+   "fullPath": "/api/v1/students/:studentId/withdraw",
+   "what": "ถอนรายวิชา ออกจากตัวหารทุกตัว คะแนนยังเก็บไว้",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "student.write",
+   "fr": "CR-05.1, CR-10",
+   "status": "new",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "คำสั่ง",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":studentId",
+    "body": "— (ไม่มี body)",
+    "success": "200 · {status:'WITHDRAWN', withdrawnAt}",
+    "errors": "403 · 404 · 422 ถอนแล้ว / เกรดถูกตรึง",
+    "rules": "ออกจากตัวหารทุกตัว คะแนนเดิมยังเก็บ (R2) · แก้คะแนนของผู้ถอนไม่ได้ (A-11)",
+    "tests": "ST-STU-04 · ST-GRADE-04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 53,
+   "group": "6 นักศึกษา",
+   "method": "POST",
+   "path": "/students/:studentId/restore",
+   "fullPath": "/api/v1/students/:studentId/restore",
+   "what": "คืนสถานะนักศึกษาที่ถอน",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "student.write",
+   "fr": "CR-05.1",
+   "status": "new",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "คำสั่ง",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":studentId",
+    "body": "— (ไม่มี body)",
+    "success": "200 · {status:'ENROLLED', withdrawnAt:null}",
+    "errors": "403 · 404 · 422 ยังไม่ได้ถอน",
+    "rules": "คะแนนเดิมกลับเข้าการคำนวณ",
+    "tests": "ST-STU-04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 54,
+   "group": "6 นักศึกษา",
+   "method": "PUT",
+   "path": "/students/:studentId/remediation-plans/:cloId",
+   "fullPath": "/api/v1/students/:studentId/remediation-plans/:cloId",
+   "what": "บันทึกแผนพัฒนาผู้เรียนของนักศึกษาหนึ่งคนใน CLO หนึ่งข้อ",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "student.write",
+   "fr": "ต้นแบบ 5.7 (ความเห็นอาจารย์ 2569-10-19)",
+   "status": "new",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "แก้ไข",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":studentId, :cloId (CLO ต้องอยู่วิชาเดียวกับนักศึกษา)",
+    "body": "plan (1–1000)",
+    "success": "200 · {studentId, cloId, plan, updatedBy{id, name}, updatedAt}",
+    "errors": "400 ว่าง / ยาวเกิน · 403 ADMIN · 404 นักศึกษาหรือ CLO ไม่ใช่ของวิชานี้",
+    "rules": "student.write · upsert หนึ่งแถวต่อ (นักศึกษา, CLO) · updatedBy มาจาก token ไม่รับจาก body (A-8) · ไม่เข้าสูตรคะแนนใด",
+    "tests": "ST-STU-05"
+   },
+   "bodyFields": [
+    "RemediationPlan",
+    [
+     "plan"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 55,
+   "group": "6 นักศึกษา",
+   "method": "DELETE",
+   "path": "/students/:studentId/remediation-plans/:cloId",
+   "fullPath": "/api/v1/students/:studentId/remediation-plans/:cloId",
+   "what": "ลบแผนพัฒนาผู้เรียน",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "student.write",
+   "fr": "ต้นแบบ 5.7",
+   "status": "new",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "ลบ",
+    "effect": "ลบข้อมูล",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":studentId, :cloId",
+    "body": "—",
+    "success": "200 {deleted:true}",
+    "errors": "403 · 404 ไม่มีแผนของคู่นี้",
+    "rules": "ต้นแบบลบแผนเมื่อบันทึกข้อความว่าง → client เรียก DELETE แทนการส่ง plan ว่าง",
+    "tests": "ST-STU-05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 56,
+   "group": "7 คะแนนและ Excel",
+   "method": "GET",
+   "path": "/courses/:courseId/scores",
+   "fullPath": "/api/v1/courses/:courseId/scores",
+   "what": "ตารางคะแนน ยังไม่ประเมิน = null ไม่ใช่ 0",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-60, FR-62, FR-64",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "status=ALL|ENROLLED, page=1, perPage=50 (≤200)",
+    "body": "—",
+    "success": "200 · {activities[{id, name, maxScore, passScore, closedAt}], students[{id, studentCode, name, status, scores{activityId: number|null|'EXCUSED'}}]} · meta {progress{activityId:{scored, total}}}",
+    "errors": "400 · 401 · 404",
+    "rules": "null = ยังไม่ประเมิน ห้ามเป็น 0 (FR-62) · EXCUSED แยกจาก null",
+    "tests": "ST-STU-01 · ST-NFR-01"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 57,
+   "group": "7 คะแนนและ Excel",
+   "method": "PUT",
+   "path": "/courses/:courseId/scores",
+   "fullPath": "/api/v1/courses/:courseId/scores",
+   "what": "บันทึกคะแนนหลายช่อง รับตัวเลข null หรือ EXCUSED",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "score.edit",
+   "fr": "FR-61…FR-63, CR-05.1",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "ตั้งค่าทั้งชุด",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "scores: [{studentId, activityId, score: number|null|'EXCUSED', reason? (เมื่อ EXCUSED), from: number|null|'EXCUSED'}] ≤ 2,000 ช่อง",
+    "success": "200 · {written, unchanged}",
+    "errors": "400 · 403 ADMIN · 404 · 409 from ไม่ตรงกับค่าในฐานข้อมูล (D-3) → errors {cells[]} · 422 คะแนน < 0 หรือ > maxScore / กิจกรรมปิดแล้ว / นักศึกษาถอน / เกรดตรึง → errors {rows[]}",
+    "rules": "transaction เดียว ผิด 1 ช่อง = ไม่บันทึกเลย (FR-63) · null = ลบแถว · ScoreChange ทุกช่องที่เปลี่ยน source = MANUAL|PASTE (A-12) · ห้าม log body (NFR-08)",
+    "tests": "ST-STU-01, 02, 03, 04"
+   },
+   "bodyFields": [
+    "Score",
+    [
+     "studentId",
+     "activityId",
+     "score"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 58,
+   "group": "7 คะแนนและ Excel",
+   "method": "GET",
+   "path": "/courses/:courseId/scores/template",
+   "fullPath": "/api/v1/courses/:courseId/scores/template",
+   "what": "ดาวน์โหลดแบบฟอร์มคะแนน",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "score.export",
+   "fr": "FR-66",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "ส่งออก",
+    "effect": "อ่านอย่างเดียว",
+    "access": "งานสอน",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · xlsx เติมรหัสและชื่อ คอลัมน์ละกิจกรรม \"<ชื่อ> (เต็ม N)\" + data validation ≤ maxScore",
+    "errors": "403 · 404",
+    "rules": "S-7 · คอลัมน์รหัสเป็นข้อความ",
+    "tests": "ST-IMP-01"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 59,
+   "group": "7 คะแนนและ Excel",
+   "method": "POST",
+   "path": "/courses/:courseId/scores/import/preview",
+   "fullPath": "/api/v1/courses/:courseId/scores/import/preview",
+   "what": "ตรวจไฟล์คะแนนรายแถว ยังไม่บันทึก",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "score.import",
+   "fr": "FR-67, FR-69",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "นำเข้า",
+    "effect": "อ่านอย่างเดียว",
+    "access": "งานสอน",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "multipart: file (.xlsx ≤ 10 MB)",
+    "success": "200 · {previewToken, fileName, summary {total, ok, failed}, columns[{header, activityId, matched}], rows[{row, studentCode, status, values, errorCode, message}]}",
+    "errors": "400 ไฟล์ไม่ผ่าน S-6 · 403 · 404 · 429",
+    "rules": "errorCode ครบ 6 ตัว (FR-69) · คำว่า \"ยกเว้น\" = EXCUSED · ช่องว่างไม่เขียนทับคะแนนเดิม · ไม่บันทึกอะไร",
+    "tests": "ST-IMP-01, 02, 04, 05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 60,
+   "group": "7 คะแนนและ Excel",
+   "method": "POST",
+   "path": "/courses/:courseId/scores/import/commit",
+   "fullPath": "/api/v1/courses/:courseId/scores/import/commit",
+   "what": "บันทึกเฉพาะแถวที่ผ่าน เขียน log การนำเข้า",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "score.import",
+   "fr": "FR-68, FR-71",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "นำเข้า",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "previewToken",
+    "success": "200 · {uploadLogId, recordsOk, recordsFail}",
+    "errors": "403 · 404 · 422 token หมดอายุ / ไม่ใช่ของวิชานี้ / ไม่ใช่ของผู้ใช้นี้",
+    "rules": "เฉพาะแถวที่ผ่าน · ScoreUploadLog ทุกครั้ง แม้ 0 แถว (FR-71) · UploadReject รายแถว · ScoreChange source = IMPORT (A-12)",
+    "tests": "ST-IMP-01, 02 · ST-NFR-03, 06"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 61,
+   "group": "7 คะแนนและ Excel",
+   "method": "GET",
+   "path": "/courses/:courseId/scores/export",
+   "fullPath": "/api/v1/courses/:courseId/scores/export",
+   "what": "ส่งออกคะแนนเป็น Excel",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "score.export",
+   "fr": "FR-70",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "ส่งออก",
+    "effect": "อ่านอย่างเดียว",
+    "access": "งานสอน",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId · type=raw|clo|both (default both)",
+    "body": "—",
+    "success": "200 · xlsx",
+    "errors": "400 type ผิดค่า · 403 ADMIN · 404",
+    "rules": "ใช้ attainment service เดียวกับแดชบอร์ด (FR-88) · S-7",
+    "tests": "ST-IMP-06 · ST-CALC-04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 62,
+   "group": "7 คะแนนและ Excel",
+   "method": "GET",
+   "path": "/courses/:courseId/uploads",
+   "fullPath": "/api/v1/courses/:courseId/uploads",
+   "what": "ประวัติการนำเข้าไฟล์",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-71, FR-72",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId · kind=SCORES|ROSTER, page, perPage",
+    "body": "—",
+    "success": "200 · [{id, kind, fileName, uploadedBy{id, name}, recordsOk, recordsFail, createdAt}] · meta",
+    "errors": "400 · 401 · 404",
+    "rules": "เรียงใหม่สุดก่อน · ตัวนับแยกคอลัมน์ (FR-72)",
+    "tests": "ST-IMP-02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 63,
+   "group": "7 คะแนนและ Excel",
+   "method": "GET",
+   "path": "/uploads/:uploadId/errors",
+   "fullPath": "/api/v1/uploads/:uploadId/errors",
+   "what": "แถวที่นำเข้าไม่ผ่านของการนำเข้าหนึ่งครั้ง",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "อ่าน",
+   "fr": "FR-68, FR-72",
+   "status": "contract",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":uploadId · format=json|xlsx",
+    "body": "—",
+    "success": "200 · [{row, studentCode, field, value, reason}] หรือ xlsx",
+    "errors": "401 · 404 (resolve courseId จาก upload ก่อน)",
+    "rules": "ตาราง UploadReject (0008) · เลขแถวตรงกับใน Excel",
+    "tests": "ST-IMP-02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 64,
+   "group": "7 คะแนนและ Excel",
+   "method": "GET",
+   "path": "/courses/:courseId/score-changes",
+   "fullPath": "/api/v1/courses/:courseId/score-changes",
+   "what": "ประวัติการแก้คะแนน ใคร เมื่อไร จากอะไรเป็นอะไร",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "NFR-16",
+   "status": "new",
+   "phase": "P5",
+   "needs0008": true,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId · studentId?, activityId?, page=1, perPage=20 (≤100)",
+    "body": "—",
+    "success": "200 · [{id, studentId, studentCode, activityId, activityName, from, to, source, changedBy{id, name}, changedAt, note}] · meta",
+    "errors": "400 · 401 · 404",
+    "rules": "อ่านอย่างเดียว เรียงใหม่สุดก่อน · ไม่มี endpoint แก้หรือลบประวัติ (NFR-16)",
+    "tests": "ST-STU-03"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 65,
+   "group": "8 ตัดเกรด",
+   "method": "GET",
+   "path": "/courses/:courseId/grading",
+   "fullPath": "/api/v1/courses/:courseId/grading",
+   "what": "ช่วงเกรด ผลเกรดสด สถิติ และคำเตือน",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-90, FR-97",
+   "status": "new",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านสรุป/คำนวณ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · {gradeScale, gradeMethod, passCriteria, passCriteriaSource: LADDER|MANUAL, bands[{grade, minValue, maxValue, count, isPassFloor, isFail}], frozen, students[{studentId, totalPercent, derivedGrade, issuedGrade, overrideReason}], stats {mean, sd, n}} · meta.warnings",
+    "errors": "401 · 404",
+    "rules": "A–F อิงเกณฑ์: passCriteria = ขอบล่างของเกรดต่ำสุดที่ยังผ่าน (2569-10-19) · คะแนนไม่ครบ = ไม่ออกเกรด ไม่แทนด้วย F · คำนวณจาก service เดียว (FR-88)",
+    "tests": "ST-GRADE-02, 03"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 66,
+   "group": "8 ตัดเกรด",
+   "method": "PUT",
+   "path": "/courses/:courseId/grade-bands",
+   "fullPath": "/api/v1/courses/:courseId/grade-bands",
+   "what": "บันทึกช่วงเกรดทั้งชุด เส้นแบ่งห้ามซ้ำ",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "band.write",
+   "fr": "FR-91, FR-92",
+   "status": "new",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "ตั้งค่าทั้งชุด",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "gradeScale? gradeMethod? passCriteria? (เฉพาะ PASS_FAIL หรืออิงกลุ่ม) bands: [{grade(1–4), minValue(≥0 · อิงเกณฑ์ ≤ 100)}]",
+    "success": "200 · ผลเหมือน GET /grading",
+    "errors": "400 · 403 · 404 · 422 ไม่มีเกรดที่เริ่มที่ 0 / ชื่อหรือค่าเริ่มซ้ำ / PASS_FAIL ต้องมี S และ U / PASS_FAIL กับอิงกลุ่ม / เปลี่ยนรูปแบบเกรดขณะมีเกรดตรึง / ส่ง passCriteria มากับ A–F อิงเกณฑ์",
+    "rules": "band.write · แทนที่ทั้งชุดใน transaction เดียว · คำนวณ Course.passCriteria ใหม่จากขั้นบันได (A–F อิงเกณฑ์) · PASS_FAIL: ขั้น S = passCriteria (CR-06)",
+    "tests": "ST-GRADE-02"
+   },
+   "bodyFields": [
+    "GradeBand",
+    [
+     "grade",
+     "minValue"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 67,
+   "group": "8 ตัดเกรด",
+   "method": "POST",
+   "path": "/courses/:courseId/grading/run",
+   "fullPath": "/api/v1/courses/:courseId/grading/run",
+   "what": "คำนวณและตรึงเกรด ปฏิเสธเมื่อ SD = 0 หรือ n < 2",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "grading.run",
+   "fr": "FR-94, FR-96, CR-10, CR-11",
+   "status": "new",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "คำสั่ง",
+    "effect": "เขียนหลายแถว (transaction)",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "— (ไม่มี body)",
+    "success": "200 · {frozenAt, issued, skipped}",
+    "errors": "403 · 404 · 422 อิงกลุ่ม n < 2 หรือ SD = 0 / สัดส่วนกิจกรรมรวมไม่ครบ 100",
+    "rules": "grading.run · ตรึงลง StudentGrade ใน transaction เดียว · การปรับเกรดที่มีอยู่คงไว้ · ผู้ถอนไม่นับ (CR-10)",
+    "tests": "ST-GRADE-01, 03, 04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 68,
+   "group": "8 ตัดเกรด",
+   "method": "DELETE",
+   "path": "/courses/:courseId/grading",
+   "fullPath": "/api/v1/courses/:courseId/grading",
+   "what": "ยกเลิกการตรึงเกรด",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "grading.run",
+   "fr": "CR-11",
+   "status": "new",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "คำสั่ง",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":courseId · ?confirm=true",
+    "body": "—",
+    "success": "200 · {unfrozen}",
+    "errors": "403 · 404 · 422 ยังไม่ได้ตรึง / ไม่ส่ง confirm",
+    "rules": "ลบ StudentGrade ทั้งวิชารวมการปรับเกรด จึงต้องยืนยัน",
+    "tests": "ST-GRADE-03"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 69,
+   "group": "8 ตัดเกรด",
+   "method": "PUT",
+   "path": "/students/:studentId/grade-override",
+   "fullPath": "/api/v1/students/:studentId/grade-override",
+   "what": "ปรับเกรดรายบุคคล ต้องระบุเหตุผล",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "grade.override",
+   "fr": "FR-95",
+   "status": "new",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "แก้ไข",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":studentId",
+    "body": "grade (ต้องมีในขั้นบันได) · reason (1–500)",
+    "success": "200 · {studentId, derivedGrade, issuedGrade, overrideReason}",
+    "errors": "400 ไม่มีเหตุผล · 403 · 404 · 422 ยังไม่ได้ตรึงเกรด / เกรดไม่อยู่ในขั้นบันได / นักศึกษาถอน",
+    "rules": "grade.override · totalPercent และ grade ที่คำนวณไม่รับจาก body (A-10)",
+    "tests": "ST-GRADE-03, 05"
+   },
+   "bodyFields": [
+    "StudentGrade",
+    [
+     "grade"
+    ]
+   ],
+   "enumFields": null
+  },
+  {
+   "n": 70,
+   "group": "8 ตัดเกรด",
+   "method": "DELETE",
+   "path": "/students/:studentId/grade-override",
+   "fullPath": "/api/v1/students/:studentId/grade-override",
+   "what": "ยกเลิกการปรับเกรด",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "resolve จาก id",
+   "capability": "grade.override",
+   "fr": "FR-95",
+   "status": "new",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "ลบ",
+    "effect": "ลบข้อมูล",
+    "access": "งานสอน",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":studentId",
+    "body": "—",
+    "success": "200 · เกรดกลับเป็นตามคะแนน",
+    "errors": "403 · 404 ไม่มีการปรับ",
+    "rules": "ลบเฉพาะ overrideReason และเกรดที่ปรับ ไม่ยกเลิกการตรึงทั้งวิชา",
+    "tests": "ST-GRADE-03"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 71,
+   "group": "8 ตัดเกรด",
+   "method": "GET",
+   "path": "/courses/:courseId/grades/export",
+   "fullPath": "/api/v1/courses/:courseId/grades/export",
+   "what": "ส่งออกผลการเรียนเป็น Excel",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "results.export",
+   "fr": "FR-87",
+   "status": "new",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "ส่งออก",
+    "effect": "อ่านอย่างเดียว",
+    "access": "งานสอน",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · xlsx: สรุปราย CLO · ยังไม่ผ่านราย CLO (พร้อมแผนพัฒนาผู้เรียน) · เกรด",
+    "errors": "403 ADMIN · 404",
+    "rules": "S-7 · ตัวเลขตรงกับแดชบอร์ด (FR-88)",
+    "tests": "ST-CALC-04 · ST-IMP-06"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 72,
+   "group": "9 แดชบอร์ด",
+   "method": "GET",
+   "path": "/dashboard/overview",
+   "fullPath": "/api/v1/dashboard/overview",
+   "what": "ภาพรวมทุกรายวิชาของผู้เรียก",
+   "role": "ผู้ใช้ที่ล็อกอิน",
+   "courseScope": "กรองในตัว",
+   "capability": "อ่าน",
+   "fr": "FR-80",
+   "status": "contract",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านสรุป/คำนวณ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "ล็อกอินทั่วไป",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "200 · {courseCount, studentCount, cloCompleted, cloTotal, scoreProgress {scored, expected}}",
+    "errors": "401",
+    "rules": "ผู้สอนเห็นเฉพาะวิชาตน ADMIN เห็นทั้งหมด กรองใน query (NFR-06)",
+    "tests": "ST-COURSE-04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 73,
+   "group": "9 แดชบอร์ด",
+   "method": "GET",
+   "path": "/courses/:courseId/dashboard/attainment",
+   "fullPath": "/api/v1/courses/:courseId/dashboard/attainment",
+   "what": "สัดส่วนผู้ผ่านราย CLO",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-81, FR-82, FR-84",
+   "status": "contract",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านสรุป/คำนวณ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · {classTarget, cloPassMark, helpCount, clos[{cloId, number, description, attainment, status, passedCount, evaluableCount, notEvaluatedCount, provisionalCount}]} · meta {computable, blockers[]}",
+    "errors": "401 · 404",
+    "rules": "ข้อมูลไม่พอ → attainment = null + blockers ห้ามส่ง 0 (FR-84) · helpCount = คนที่ยังไม่ผ่านอย่างน้อย 1 CLO",
+    "tests": "ST-CALC-01, 03"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 74,
+   "group": "9 แดชบอร์ด",
+   "method": "GET",
+   "path": "/courses/:courseId/dashboard/at-risk",
+   "fullPath": "/api/v1/courses/:courseId/dashboard/at-risk",
+   "what": "นักศึกษาที่ต้องได้รับความช่วยเหลือ",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-83",
+   "status": "contract",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านสรุป/คำนวณ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · [{studentId, studentCode, name, level (COURSE_FAIL|CLO_BELOW|OVERDUE), failedClos[{cloId, number, score, gap, near, provisional, hasPlan}], overdue[], totalScore, coursePassed}] · meta {atRiskCount, notEvaluatedCount, evaluatedCount}",
+    "errors": "401 · 404",
+    "rules": "ยังไม่มีคะแนนเลย ≠ at-risk (CR-03.1) · near = ห่างจากเกณฑ์ไม่เกิน 10 คะแนน (NEAR_GAP) · hasPlan บอกว่ามีแผนพัฒนาแล้ว",
+    "tests": "ST-CALC-02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 75,
+   "group": "9 แดชบอร์ด",
+   "method": "GET",
+   "path": "/courses/:courseId/dashboard/students/:studentId",
+   "fullPath": "/api/v1/courses/:courseId/dashboard/students/:studentId",
+   "what": "รายงานรายบุคคล",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-85, FR-86",
+   "status": "contract",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านสรุป/คำนวณ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId, :studentId",
+    "body": "—",
+    "success": "200 · {student, gradeScale, clos[{cloId, number, score, passMark, status, objectives[]}], activities[], totalScore, coursePassed, passFailResult, remediationPlans[{cloId, plan, updatedAt}]}",
+    "errors": "401 · 404 นักศึกษาไม่ใช่ของวิชานี้",
+    "rules": "PASS_FAIL ไม่ส่งเกรดตัวอักษร (CR-06) · คะแนนดิบอยู่คู่กับ % เสมอ (M5)",
+    "tests": "ST-CALC-01 · ST-GRADE-02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 76,
+   "group": "9 แดชบอร์ด",
+   "method": "GET",
+   "path": "/courses/:courseId/dashboard/export",
+   "fullPath": "/api/v1/courses/:courseId/dashboard/export",
+   "what": "ส่งออกรายงานผลสัมฤทธิ์",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "results.export",
+   "fr": "FR-87",
+   "status": "contract",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "ส่งออก",
+    "effect": "อ่านอย่างเดียว",
+    "access": "งานสอน",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId · scope=course|student, studentId?, format=xlsx",
+    "body": "—",
+    "success": "200 · xlsx",
+    "errors": "400 scope=student แต่ไม่มี studentId · 403 ADMIN · 404",
+    "rules": "service เดียวกับ attainment / at-risk / รายงานรายบุคคล (FR-88) · S-7 · PDF หลัง v1",
+    "tests": "ST-CALC-04"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  }
+ ]
+}
