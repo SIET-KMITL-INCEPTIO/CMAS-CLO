@@ -929,7 +929,7 @@ const db = {
       semester:1, year:2569, section:'01',
       credits:3, lectureHours:2, practiceHours:2, selfStudyHours:5,
       gradeScale:'LETTER', gradeMethod:'CRITERION_REFERENCED', passCriteria:50, cloPassMark:60, classTarget:100,
-      weightMode:'GROUP', groupWeight:{ OTHER:10, LAB:30, PROJECT:20, TEST:40 } }
+      weightMode:'GROUP', groupWeight:{ 'CUSTOM:การเข้าร่วมชั้นเรียน':10, LAB:30, PROJECT:20, TEST:40 } }
   ],
 
   courseInstructor: [
@@ -1379,7 +1379,10 @@ const db = {
   let k = 0;
   acts.forEach(function(a, i){
     const aid = 'a6_' + (i + 1);
-    db.activity.push({ id:aid, courseId:'c6', order:i + 1, name:a[0], type:a[1], assessmentMethod:a[2],
+    /* การเข้าเรียนเป็นประเภทที่ผู้สอนตั้งเอง (P4) — หัวกลุ่มในตารางจึงอ่านว่า "การเข้าร่วมชั้นเรียน" ไม่ใช่ "อื่น ๆ" */
+    const custom = a[1] === 'OTHER';
+    db.activity.push({ id:aid, courseId:'c6', order:i + 1, name:a[0], type:custom ? 'CUSTOM' : a[1],
+      typeLabel:custom ? 'การเข้าร่วมชั้นเรียน' : undefined, assessmentMethod:a[2],
       maxScore:a[3], passScore:a[4], passMark:pctOfScore(a[4], a[3]), criteriaNote:'', weight:0 });
     Object.keys(a[5]).forEach(function(lbl){
       db.assessmentCriteria.push({ id:'ac6_' + (++k), activityId:aid,
@@ -1980,7 +1983,7 @@ const tone = function(pct, threshold){
    แปลว่าต้อง re-render ทุกตัวอักษร ซึ่งทำให้ caret กระโดด — บทเรียนเดียวกับช่องค้นหา */
 const S = { course:'c1', route:'overview', tab:{}, sub:{}, sort:{}, filter:{}, newStu:false,
             role:'INSTRUCTOR', meId:null, density:'normal', longtext:'clip', listw:296, scale:'normal',
-            area:'courses', expanded:{ c1:true } };
+            area:'courses', expanded:{} };   /* boot เปิดรายวิชาปัจจุบันให้เอง — ค่าตายตัว c1 เคยค้างกางอยู่ขณะเปิดวิชาอื่น */
 
 /* Principle 6 — layout state outlives the session. localStorage throws in a
    data: URL host, so every access is guarded and the app runs without it. */
@@ -2118,7 +2121,7 @@ function layoutPanelHtml(){
           '<span class="lytick">' + (cur === k ? '●' : '○') + '</span>' +
           '<span class="min-w-0 flex-1">' +
             '<span class="block text-[14px] text-ink">' + TH[k] + '</span>' +
-            '<span class="block text-[13px] text-dim leading-snug mt-0.5">' + SUB[k] + '</span>' +
+            '<span class="block text-[13px] text-soft leading-snug mt-0.5">' + SUB[k] + '</span>' +
           '</span></button>';
       }).join('');
   };
@@ -8530,7 +8533,7 @@ class AuthScreen {
     const head = function(t, sub){
       return '<div><div class="text-[13px] text-dim tracking-wide mb-3">&lt;/&gt; CMAS</div>' +
         '<h1 class="text-[24px] font-light leading-tight">' + t + '</h1>' +
-        (sub ? '<p class="text-[14px] text-dim mt-1.5 leading-relaxed">' + sub + '</p>' : '') + '</div>';
+        (sub ? '<p class="text-[14px] text-soft mt-1.5 leading-relaxed">' + sub + '</p>' : '') + '</div>';
     };
     const field = function(id, label, type, val, attrs){
       return '<div><label class="text-[14px] text-ink2 block mb-1.5" for="' + id + '">' + label + '</label>' +
@@ -8600,7 +8603,7 @@ class AuthScreen {
         'อีเมลนี้ไม่ใช่อีเมลของคณะ (@' + emails.domain + ') จึงต้องได้รับอนุมัติก่อนเข้าใช้งาน') +
       '<div class="authdemo flex items-center gap-2 flex-wrap">' + GLOGO + '<span class="tnum">' + esc(this.gEmail) + '</span>' +
         chip('รออนุมัติ','warn') + '</div>' +
-      '<p class="text-[14px] text-dim leading-relaxed">ได้รับอนุมัติแล้ว กลับมากด “ดำเนินการต่อด้วย Google” อีกครั้ง</p>' +
+      '<p class="text-[14px] text-soft leading-relaxed">ได้รับอนุมัติแล้ว กลับมากด “ดำเนินการต่อด้วย Google” อีกครั้ง</p>' +
       '<button class="btn btn-primary w-full justify-center !py-2.5" data-act="auth-google" data-auth-submit>ใช้บัญชีอื่น (บัญชีของคณะ)</button>' +
       '<div class="text-center text-[14px] text-dim">' + link('กลับไปหน้าเข้าสู่ระบบ', 'login') + '</div>';
 
@@ -9882,6 +9885,7 @@ window.addEventListener('hashchange', function(){
   clampCourse();          /* a persisted S.course may be out of scope now */
   const h = readHash();
   courseFromHash(h.course);
+  if (S.course) S.expanded[S.course] = true;   /* วิชาที่จำไว้จากครั้งก่อนไม่ผ่าน courseFromHash จึงต้องกางที่นี่ */
   if (byId(ROUTES, h.route)) S.route = h.route;
   if (!byId(ROUTES, S.route)) S.route = 'overview';
   render();
