@@ -260,6 +260,9 @@ kbd{ font-family:'Inter',sans-serif; font-size:12px; padding:2px 6px; border-rad
   background:#C8CDEB; border-radius:0 3px 3px 0;
 }
 .arl svg{ width:20px; height:20px; }
+/* FR-08b — มีบัญชีรออนุมัติ · จุดเดียว ไม่ซ้ำตัวเลขที่อยู่ในกลุ่ม "รออนุมัติ" */
+.arl .arl-dot{ position:absolute; top:7px; right:calc(50% - 15px); width:8px; height:8px; border-radius:50%;
+  background:#F5A524; box-shadow:0 0 0 2px var(--rail, #2B2F4A); }
 
 .listpane{
   grid-row:2; background:#F7F7FB; border-right:1px solid var(--edge);
@@ -488,6 +491,10 @@ body.resizing{ cursor:col-resize; user-select:none; }
 .rsz{ position:absolute; right:-3px; top:0; bottom:0; z-index:20; }
 .listpane{ position:relative; }
 
+/* ขนาดตัวอักษร (2569-10-22) — ต้นแบบเขียนขนาดเป็น px ตายตัวราว 400 จุด ปรับฐาน rem ไม่มีผล จึงขยายทั้งหน้าด้วย zoom
+   แอปจริงใช้ rem (Tailwind v4) → เปลี่ยน html{font-size} ที่เดียวแทน · ไม่มีระดับเล็กกว่าปกติ เพราะตัวอักษร 12px จะเหลือ ~11px */
+html[data-scale="large"]  { zoom:1.125; }
+html[data-scale="xlarge"] { zoom:1.25;  }
 html[data-density="compact"]     { --row-py:5px;  }
 html[data-density="normal"]      { --row-py:10px; }
 html[data-density="comfortable"] { --row-py:15px; }
@@ -737,7 +744,7 @@ body[data-auth="out"] #toasts{ z-index:90; }
 <div id="modal" class="sheetbox modalbox no-print" role="dialog" aria-modal="true" hidden></div>
 <div id="drawer" class="sheetbox drawerbox no-print" role="dialog" aria-modal="true" hidden></div>
 <div id="pop" class="no-print" role="tooltip" hidden></div>
-<div id="lyPop" class="lypop no-print" role="dialog" aria-label="เลย์เอาต์ของตาราง" hidden></div>
+<div id="lyPop" class="lypop no-print" role="dialog" aria-label="การแสดงผล" hidden></div>
 <div id="auth" class="authscreen no-print" role="region" aria-label="เข้าสู่ระบบ" hidden></div>
 <div id="toasts" class="no-print" aria-live="polite"></div>
 <div id="tipbox" role="tooltip" hidden></div>
@@ -753,7 +760,7 @@ body[data-auth="out"] #toasts{ z-index:90; }
    StudentGrade.overrideReason on freezing.
    Scope stops at the course: CLO → objective → activity. No PLO, no YLO.
 
-   Five courses, chosen so that every branch the schema and the SRS
+   Six courses, chosen so that every branch the schema and the SRS
    actually name has a live row behind it rather than a promise:
 
      c1  LETTER   · CRITERION_REFERENCED · the ordinary case, two scores missing
@@ -761,6 +768,8 @@ body[data-auth="out"] #toasts{ z-index:90; }
      c3  LETTER   · NORM_REFERENCED      · T-score bands (CR-10), results locked
      c4  LETTER   · CRITERION_REFERENCED · same code as c1, section 02, EMPTY
      c5  LETTER   · CRITERION_REFERENCED · weightMode GROUP, 5 CLO × 3 objectives
+     c6  LETTER   · CRITERION_REFERENCED · a real syllabus (03376133 Mobile Dev, 1/2569),
+                                           16 activities in 4 groups, project + final not scored yet
 
    Deliberate data cases: a real 0 beside a missing row · a CLO with no
    bloomLevel · a CLO with no objective · a course with two instructors ·
@@ -867,7 +876,11 @@ const db = {
     { id:'u3', email:'admin@kmitl.ac.th',   name:'admin',                role:'ADMIN',      isActive:true  },
     // 2569-09-17 — the mockup keeps three accounts only (admin, one named
     // instructor, user_th). user_th co-teaches c2 and alone teaches c4.
-    { id:'u6', email:'user_th@kmitl.ac.th', name:'user_th',              role:'INSTRUCTOR', isActive:true  }
+    { id:'u6', email:'user_th@kmitl.ac.th', name:'user_th',              role:'INSTRUCTOR', isActive:true  },
+    /* FR-08 / FR-08b (2569-10-22) — สมัครด้วย Google นอกโดเมนคณะ จึงรอผู้ดูแลระบบอนุมัติ
+       status ไม่มีในแถวอื่น = ACTIVE (ค่าตั้งต้นของ User.status ใน migration 0007) */
+    { id:'u7', email:'somchai.home@gmail.com', name:'สมชาย ใจดี', role:'INSTRUCTOR', isActive:true,
+      status:'PENDING', authProvider:'GOOGLE', emailVerified:true }
   ],
 
   course: [
@@ -907,7 +920,16 @@ const db = {
       semester:1, year:2568, section:'01',
       credits:3, lectureHours:2, practiceHours:2, selfStudyHours:5,
       gradeScale:'LETTER', gradeMethod:'CRITERION_REFERENCED', passCriteria:50, cloPassMark:60, classTarget:100,
-      weightMode:'GROUP', groupWeight:{ LAB:25, TEST:75 } }   /* เลขคูณ 5 ไว้ให้ตัวอย่างสาธิตดูง่าย ไม่ใช่กติกาบังคับ */
+      weightMode:'GROUP', groupWeight:{ LAB:25, TEST:75 } },  /* เลขคูณ 5 ไว้ให้ตัวอย่างสาธิตดูง่าย ไม่ใช่กติกาบังคับ */
+
+    /* 2569-10-22 — วิชาจริงจาก Course-Syllabus.pdf (03376133, July 2026) · น้ำหนักกลุ่มตามตาราง "การประเมินผล" ของ syllabus
+       ชื่อไทยแปลจากชื่ออังกฤษ (syllabus มีแต่ชื่ออังกฤษ) · ข้อมูลทั้งหมดของวิชานี้สร้างใน seedMobileCourse() */
+    { id:'c6', code:'03376133', name:'การพัฒนาซอฟต์แวร์สำหรับอุปกรณ์เคลื่อนที่',
+      nameEn:'Mobile Devices Software Development',
+      semester:1, year:2569, section:'01',
+      credits:3, lectureHours:2, practiceHours:2, selfStudyHours:5,
+      gradeScale:'LETTER', gradeMethod:'CRITERION_REFERENCED', passCriteria:50, cloPassMark:60, classTarget:100,
+      weightMode:'GROUP', groupWeight:{ OTHER:10, LAB:30, PROJECT:20, TEST:40 } }
   ],
 
   courseInstructor: [
@@ -916,7 +938,8 @@ const db = {
     { id:'ci4', courseId:'c2', userId:'u6', role:'INSTRUCTOR', assignedAt:'2568-05-14' },
     { id:'ci6', courseId:'c3', userId:'u1', role:'INSTRUCTOR', assignedAt:'2568-05-09' },
     { id:'ci7', courseId:'c4', userId:'u6', role:'INSTRUCTOR', assignedAt:'2568-06-01' },
-    { id:'ci8', courseId:'c5', userId:'u1', role:'INSTRUCTOR', assignedAt:'2568-05-12' }
+    { id:'ci8', courseId:'c5', userId:'u1', role:'INSTRUCTOR', assignedAt:'2568-05-12' },
+    { id:'ci9', courseId:'c6', userId:'u1', role:'INSTRUCTOR', assignedAt:'2569-06-15' }
   ],
 
   /* T1/T7 (2569-09-17) — `threshold` ถูกลบ: ผ่าน CLO ตัดสินที่ Course.cloPassMark ค่าเดียวทั้งวิชา (E1)
@@ -1266,12 +1289,140 @@ const db = {
     recordsOk:15, recordsFail:0, kind:'SCORE', createdAt:'2568-08-16 13:20' });
 })();
 
+/* 2569-10-22 — 03376133 Mobile Devices Software Development จาก Course-Syllabus.pdf
+   จาก syllabus ตรงตัว: รหัส · หน่วยกิต 3 (2-2-5) · CLO 5 ข้อ · หัวข้อ W1–W15 · น้ำหนักการประเมิน
+   (เข้าเรียน 10 · Lab W1–14 30 · โครงงานกลุ่ม 20 · กลางภาค 20 · ปลายภาค 20) · ขั้นบันไดเกรด A 80 … F 0
+   syllabus ไม่ได้ระบุ จึงสร้างให้อัตโนมัติ (ตรวจกับผู้สอนก่อนใช้จริง):
+     · จุดประสงค์เชิงพฤติกรรมของแต่ละ CLO — แตกจากหัวข้อรายสัปดาห์และแนวทางโครงงานกลุ่ม
+     · กิจกรรมแต่ละตัวประเมินจุดประสงค์ใด — Lab สัปดาห์ไหนตามหัวข้อสัปดาห์นั้น · สอบตามช่วงสัปดาห์ที่ออก
+     · น้ำหนัก CLO — คำนวณจากการเชื่อมกิจกรรม จึงตรงกับค่าที่ระบบคำนวณเอง
+     · คะแนนเต็ม/เกณฑ์ผ่านของกิจกรรม · เกณฑ์ผ่าน CLO 60% (ค่าตั้งต้นของระบบ)
+     · การเข้าเรียนไม่ได้วัด CLO ใดโดยตรง แต่ระบบบังคับให้ทุกกิจกรรมวัดอย่างน้อย 1 ข้อ (ไม่งั้นแดชบอร์ดคำนวณไม่ได้)
+       จึงแบ่งให้จุดประสงค์ข้อแรกของทุก CLO ข้อละ 20% — ต้องตัดสินใจกับผู้สอนว่าควรทำแบบนี้หรือยกเว้นกิจกรรมแบบนี้
+     · รายชื่อ 20 คนและคะแนน (สูตรตายตัว ไม่สุ่ม) · โครงงานและปลายภาคยังไม่มีคะแนน */
+(function seedMobileCourse(){
+  const clos = [
+    ['CREATE','TRANSFER', 'ออกแบบและพัฒนา UI/UX ของโมบายแอปพลิเคชันได้ถูกต้องตามหลักการออกแบบ', [
+      [40, 'ออกแบบหน้าจอตามหลัก Material Design 3 และ Cupertino'],
+      [30, 'วิเคราะห์ User Journey และตรวจการเข้าถึง (Accessibility) บนมือถือ'],
+      [30, 'จัด Layout แบบ Responsive/Adaptive และการนำทางระหว่างหน้าจอ']]],
+    ['APPLY','DEEP', 'พัฒนาโมบายแอปพลิเคชันด้วย Flutter เชื่อมต่อ API และฐานข้อมูลได้ถูกต้องตามหลักความปลอดภัยในการพัฒนาซอฟต์แวร์', [
+      [15, 'เขียนโปรแกรมภาษา Dart และสร้าง Widget แบบ Stateless/Stateful'],
+      [15, 'จัดการ State ด้วย setState และ Riverpod'],
+      [20, 'เชื่อมต่อ REST API แปลง JSON และจัดการข้อผิดพลาด'],
+      [20, 'จัดเก็บข้อมูลในเครื่องด้วย SQLite/Drift หรือ Isar'],
+      [15, 'ใช้ Firebase (Firestore · Authentication · Storage) อย่างปลอดภัย'],
+      [15, 'ใช้ความสามารถของอุปกรณ์ Push Notification และการขอสิทธิ์']]],
+    ['APPLY','DEEP', 'ทดสอบแบบ Unit, Widget, Integration และ Security สำหรับโมบายแอปพลิเคชันได้', [
+      [40, 'เขียน Unit test และ Widget test'],
+      [30, 'เขียน Integration test โดยใช้ Mock และ Dependency Injection'],
+      [30, 'ทดสอบความปลอดภัยและวัด Code Coverage ไม่ต่ำกว่า 70%']]],
+    ['APPLY','DEEP', 'ตั้งค่าและใช้งาน CI/CD Pipeline สำหรับโมบายแอปพลิเคชันได้', [
+      [50, 'ตั้งค่า GitHub Actions ให้ Build และ Run Test อัตโนมัติเมื่อ Push/PR'],
+      [25, 'ใช้ Git Flow · Code Review และ Pull Request'],
+      [25, 'ลงนามแอปและเตรียมเผยแพร่บน Play Store / App Store']]],
+    ['APPLY','DEEP', 'ประยุกต์ใช้ AI เพื่อช่วยในการพัฒนาโมบายแอปพลิเคชันในแต่ละขั้นตอนได้', [
+      [50, 'เรียกใช้ Gemini API (Text · Vision · Multimodal) ในแอป'],
+      [25, 'เขียน Prompt สำหรับงานบนมือถือ'],
+      [25, 'ใช้ AI อย่างปลอดภัยและมีความรับผิดชอบ']]]
+  ];
+
+  /* [ชื่อ, ประเภท, วิธีประเมิน, คะแนนเต็ม, ผ่านที่, { จุดประสงค์ 'CLO.ข้อ' : % ของกิจกรรม }] */
+  const acts = [
+    ['การเข้าร่วมชั้นเรียนและการมีส่วนร่วม', 'OTHER', 'OBSERVATION', 10, 6,
+      { '1.1':20, '2.1':20, '3.1':20, '4.1':20, '5.1':20 }],
+    ['Lab 1 · ติดตั้ง Flutter และสร้างแอปแรก',            'LAB', 'RUBRIC', 10, 6, { '2.1':100 }],
+    ['Lab 2 · Dart: Variables, Functions, OOP',          'LAB', 'RUBRIC', 10, 6, { '2.1':100 }],
+    ['Lab 3 · Widget Tree · Stateless vs Stateful',      'LAB', 'RUBRIC', 10, 6, { '2.1':100 }],
+    ['Lab 4 · ออกแบบ UI ตาม Material Design 3',          'LAB', 'RUBRIC', 10, 6, { '1.1':60, '1.2':40 }],
+    ['Lab 5 · Layout และ Navigation',                    'LAB', 'RUBRIC', 10, 6, { '1.3':100 }],
+    ['Lab 6 · State Management ด้วย Riverpod',           'LAB', 'RUBRIC', 10, 6, { '2.2':100 }],
+    ['Lab 7 · REST API และ JSON',                        'LAB', 'RUBRIC', 10, 6, { '2.3':100 }],
+    ['Lab 8 · Gemini API ผ่าน Google AI Studio',         'LAB', 'RUBRIC', 10, 6, { '5.1':70, '5.2':30 }],
+    ['Lab 9 · SQLite/Drift และ Isar',                    'LAB', 'RUBRIC', 10, 6, { '2.4':100 }],
+    ['Lab 10 · Firebase: Firestore และ Authentication',  'LAB', 'RUBRIC', 10, 6, { '2.5':100 }],
+    ['Lab 11 · Unit test และ Widget test',               'LAB', 'RUBRIC', 10, 6, { '3.1':60, '3.2':40 }],
+    ['Lab 12 · Device Features และ Push Notification',   'LAB', 'RUBRIC', 10, 6, { '2.6':100 }],
+    ['Lab 13 · CI/CD ด้วย GitHub Actions',               'LAB', 'RUBRIC', 10, 6, { '4.1':70, '4.2':30 }],
+    ['Lab 14 · App Signing และเตรียมเผยแพร่',             'LAB', 'RUBRIC', 10, 6, { '4.3':100 }],
+    ['โครงงานกลุ่ม (Group Project)', 'PROJECT', 'RUBRIC', 100, 50,
+      { '1.1':15, '1.2':5, '2.3':10, '2.4':10, '2.5':10, '5.1':10, '3.1':10, '3.2':5, '3.3':10, '4.1':15 }],
+    ['สอบกลางภาค (Midterm)', 'TEST', 'EXAM', 100, 50,
+      { '1.1':15, '1.2':10, '1.3':15, '2.1':25, '2.2':15, '2.3':20 }],
+    ['สอบปลายภาค (Final)', 'TEST', 'EXAM', 100, 50,
+      { '2.4':15, '2.5':15, '2.6':10, '3.1':15, '3.2':10, '3.3':10, '4.1':10, '4.2':5, '4.3':5, '5.3':5 }]
+  ];
+
+  /* น้ำหนัก CLO จากการเชื่อม: น้ำหนักกิจกรรม (แบ่งน้ำหนักกลุ่มตามคะแนนเต็ม) × % ที่กิจกรรมให้จุดประสงค์ รวมขึ้นไปที่ CLO
+     จึงตรงกับค่าที่ระบบคำนวณเองจากกิจกรรม · ปัดทศนิยม 2 ตำแหน่ง แล้วเก็บเศษไว้ที่ CLO 1 ให้รวมได้ 100 */
+  const gw = { OTHER:10, LAB:30, PROJECT:20, TEST:40 };
+  const groupMax = {};
+  acts.forEach(function(a){ groupMax[a[1]] = (groupMax[a[1]] || 0) + a[3]; });
+  const raw = clos.map(function(){ return 0; });
+  acts.forEach(function(a){
+    const w = gw[a[1]] * a[3] / groupMax[a[1]];
+    Object.keys(a[5]).forEach(function(lbl){ raw[+lbl.split('.')[0] - 1] += w * a[5][lbl] / 100; });
+  });
+  const mapped = raw.reduce(function(t, v){ return t + v; }, 0);
+  const cloWeights = raw.map(function(v){ return Math.round(v / mapped * 10000) / 100; });
+  cloWeights[0] = Math.round((100 - cloWeights.slice(1).reduce(function(t, v){ return t + v; }, 0)) * 100) / 100;
+
+  clos.forEach(function(c, i){
+    const cid = 'clo6' + (i + 1);
+    db.clo.push({ id:cid, courseId:'c6', number:i + 1, weight:cloWeights[i], levelSource:'AUTO',
+      bloomLevel:c[0], soloLevel:c[1], classTarget:null, description:c[2] });
+    c[3].forEach(function(o, j){
+      db.behavioralObjective.push({ id:'bo6_' + (i + 1) + '_' + (j + 1), cloId:cid, number:j + 1,
+        weight:o[0], description:o[1] }); });
+  });
+
+  let k = 0;
+  acts.forEach(function(a, i){
+    const aid = 'a6_' + (i + 1);
+    db.activity.push({ id:aid, courseId:'c6', order:i + 1, name:a[0], type:a[1], assessmentMethod:a[2],
+      maxScore:a[3], passScore:a[4], passMark:pctOfScore(a[4], a[3]), criteriaNote:'', weight:0 });
+    Object.keys(a[5]).forEach(function(lbl){
+      db.assessmentCriteria.push({ id:'ac6_' + (++k), activityId:aid,
+        objectiveId:'bo6_' + lbl.replace('.', '_'), weight:a[5][lbl] }); });
+  });
+
+  [['A',80],['B+',75],['B',70],['C+',65],['C',60],['D+',55],['D',50],['F',0]].forEach(function(b, i){
+    db.gradeBand.push({ id:'gb6_' + i, courseId:'c6', grade:b[0], minValue:b[1] }); });
+
+  const roster = [['6703101001','ณัฐวุฒิ ศรีสวัสดิ์'],['6703101002','พิมพ์ชนก อินทร์ทอง'],['6703101003','ธนกร วงศ์ใหญ่'],
+    ['6703101004','ชนิดา แก้วประเสริฐ'],['6703101005','กิตติพัฒน์ บุญมา'],['6703101006','ปวีณา สายทอง'],
+    ['6703101007','ศิวกร ทองคำ'],['6703101008','อภิญญา จันทร์หอม'],['6703101009','พงศกร ศรีสุข'],
+    ['6703101010','วรรณิศา ใจงาม'],['6703101011','ภาณุวัฒน์ เรืองศรี'],['6703101012','สุชานันท์ พึ่งบุญ'],
+    ['6703101013','จิรายุ ชัยมงคล'],['6703101014','กัญญาณัฐ มณีรัตน์'],['6703101015','ธีรภัทร สมบูรณ์'],
+    ['6703101016','อรอุมา พรมดี'],['6703101017','วชิรวิทย์ คงสวัสดิ์'],['6703101018','ณิชาภัทร ประเสริฐสุข'],
+    ['6703101019','ปฏิภาณ ทรัพย์มาก'],['6703101020','เบญจมาศ ลือชา']];
+  const ability = [0.93, 0.88, 0.84, 0.80, 0.77, 0.74, 0.71, 0.69, 0.66, 0.63,
+                   0.60, 0.58, 0.55, 0.52, 0.49, 0.45, 0.41, 0.37, 0.82, 0.67];
+  const offset = { OTHER:0.08, LAB:0.05, TEST:-0.04 };
+  roster.forEach(function(r, i){
+    const sid = 's6_' + (i + 1);
+    db.student.push({ id:sid, courseId:'c6', studentCode:r[0], name:r[1] });
+    acts.forEach(function(a, j){
+      if (a[1] === 'PROJECT' || j === acts.length - 1) return;   // โครงงานส่ง W15 · ปลายภาค W16 = ยังไม่ประเมิน
+      const jit = (((i * 7 + j * 13) % 11) - 5) / 100;
+      const p = Math.min(1, Math.max(0, ability[i] + (offset[a[1]] || 0) + jit));
+      db.score.push({ id:'sc6_' + i + '_' + j, studentId:sid, activityId:'a6_' + (j + 1),
+        score:Math.round(a[3] * p), uploadedAt:'2569-09-25' });
+    });
+  });
+  db.scoreUploadLog.push({ id:'l8', courseId:'c6', uploadedBy:'u1', fileName:'mobile-midterm.xlsx',
+    recordsOk:20, recordsFail:0, kind:'SCORE', createdAt:'2569-09-25 10:05' });
+})();
+
 /* ══════════════════════════════════════════════════════════════════
    2 · DERIVATION — CR-01…CR-11 from docs/markdown/dev/requirements/srs.md.
    Everything on screen comes from here. Nothing is typed in twice.
    ══════════════════════════════════════════════════════════════════ */
 const byId  = function(arr, id){ return arr.find(function(x){ return x.id === id; }); };
 const where = function(arr, k, v){ return arr.filter(function(x){ return x[k] === v; }); };
+/* FR-08 — บัญชีที่ยังรออนุมัติ: เข้าระบบไม่ได้ จึงไม่ถูกเลือกเป็นผู้สอนหรือ "เข้าใช้งานเป็น" */
+const isPending = function(u){ return !!u && u.status === 'PENDING'; };
+const pendingUsers = function(){ return db.user.filter(isPending); };
 
 /* CR-07 — full float precision all the way through; round only to display. */
 const n2 = function(v){ return (v === null || v === undefined || isNaN(v)) ? '—' : v.toFixed(2); };
@@ -1828,7 +1979,7 @@ const tone = function(pct, threshold){
    ไม่ใช่ใน state เพราะ render() เขียน innerHTML ทั้งก้อน การเก็บค่าไว้ใน state
    แปลว่าต้อง re-render ทุกตัวอักษร ซึ่งทำให้ caret กระโดด — บทเรียนเดียวกับช่องค้นหา */
 const S = { course:'c1', route:'overview', tab:{}, sub:{}, sort:{}, filter:{}, newStu:false,
-            role:'INSTRUCTOR', meId:null, density:'normal', longtext:'clip', listw:296,
+            role:'INSTRUCTOR', meId:null, density:'normal', longtext:'clip', listw:296, scale:'normal',
             area:'courses', expanded:{ c1:true } };
 
 /* Principle 6 — layout state outlives the session. localStorage throws in a
@@ -1844,6 +1995,7 @@ function loadLayout(){
     const v = JSON.parse(raw);
     if (DENSITY.indexOf(v.density) >= 0) S.density = v.density;
     if (LONGTEXT.indexOf(v.longtext) >= 0) S.longtext = v.longtext;
+    if (FONT_SCALE.indexOf(v.scale) >= 0) S.scale = v.scale;
     if (v.listw >= 220 && v.listw <= 460) S.listw = v.listw;
     if (v.course && db.course.some(function(c){ return c.id === v.course; })) S.course = v.course;
     if (v.route) S.route = v.route;
@@ -1854,13 +2006,14 @@ function loadLayout(){
 function saveLayout(){
   try {
     localStorage.setItem(LS_KEY, JSON.stringify(
-      { density:S.density, longtext:S.longtext, listw:S.listw, course:S.course, route:S.route,
+      { density:S.density, longtext:S.longtext, listw:S.listw, scale:S.scale, course:S.course, route:S.route,
         role:S.role, meId:S.meId }));
   } catch (e) {}
 }
 function applyLayout(){
   document.documentElement.dataset.density = S.density;
   document.documentElement.dataset.longtext = S.longtext;
+  document.documentElement.dataset.scale = S.scale;
   document.documentElement.style.setProperty('--listw', S.listw + 'px');
 }
 const D = function(){ return derive(S.course); };
@@ -1946,6 +2099,9 @@ const DENSITY_TH = { compact:'แน่น', normal:'ปกติ', comfortable:
 const DENSITY_SUB = { compact:'แถวถี่ เห็นข้อมูลได้มากที่สุดในหน้าจอเดียว',
                       normal:'ค่าตั้งต้น',
                       comfortable:'เว้นช่องไฟมาก อ่านทีละแถวได้สบายตา' };
+const FONT_SCALE = ['normal','large','xlarge'];
+const FONT_SCALE_TH = { normal:'ปกติ', large:'ใหญ่', xlarge:'ใหญ่มาก' };
+const FONT_SCALE_SUB = { normal:'ค่าตั้งต้น', large:'อ่านง่ายขึ้น', xlarge:'สำหรับจอใหญ่หรือฉายขึ้นจอ' };
 const LONGTEXT = ['clip','full'];
 const LONGTEXT_TH = { clip:'ตัดเป็นบรรทัดเดียว', full:'แสดงเต็มทุกบรรทัด' };
 const LONGTEXT_SUB = { clip:'ทุกแถวสูงเท่ากัน · คลิกที่ข้อความเพื่อกางดูเต็ม',
@@ -1966,14 +2122,28 @@ function layoutPanelHtml(){
           '</span></button>';
       }).join('');
   };
-  return group('ความหนาแน่นของแถว', DENSITY, S.density, 'density', DENSITY_TH, DENSITY_SUB) +
+  return group('ขนาดตัวอักษร', FONT_SCALE, S.scale, 'scale', FONT_SCALE_TH, FONT_SCALE_SUB) +
     '<div class="hair-t mt-1.5 pt-0.5">' +
+      group('ความหนาแน่นของแถว', DENSITY, S.density, 'density', DENSITY_TH, DENSITY_SUB) +
+    '</div><div class="hair-t mt-1.5 pt-0.5">' +
       group('ข้อความยาวในตาราง', LONGTEXT, S.longtext, 'longtext', LONGTEXT_TH, LONGTEXT_SUB) +
-    '</div>';
+    '</div><div class="hair-t mt-1.5 pt-1.5 pb-0.5 px-2.5 text-right">' +
+      '<button class="authlink text-[13px]" data-act="layout-reset">คืนค่าเริ่มต้น</button></div>';
 }
 
 /* W1 (2569-10-03) — เปิดจากเมนูบัญชี (ที่เดียว) แทนปุ่ม "มุมมองตาราง" บนแถบเครื่องมือของหกหน้า:
    เป็นค่าที่ตั้งครั้งเดียวและใช้กับทุกตาราง จึงไม่ควรกินที่ข้างปุ่มงานของแต่ละหน้า · แผงยึดใต้ปุ่มบัญชี */
+/* ขนาดตัวอักษร = zoom บน <html> · getBoundingClientRect / clientX / innerWidth / scrollY เป็นพิกเซลบนจอ
+   แต่ style.left / top ถูกขยายด้วย zoom อีกรอบ — แผงที่วางตำแหน่งเองต้องหารด้วย zoom ก่อน ไม่งั้นหลุดขอบขวา */
+const pageZoom = function(){ return parseFloat(getComputedStyle(document.documentElement).zoom) || 1; };
+const cssRect = function(el){
+  const z = pageZoom(), r = el.getBoundingClientRect();
+  return { left:r.left / z, right:r.right / z, top:r.top / z, bottom:r.bottom / z, width:r.width / z, height:r.height / z };
+};
+const view = function(){
+  const z = pageZoom();
+  return { w:window.innerWidth / z, h:window.innerHeight / z, x:window.scrollX / z, y:window.scrollY / z };
+};
 function layoutPop(force){
   const pop = document.getElementById('lyPop');
   const btn = document.getElementById('acctBtn');
@@ -1986,10 +2156,12 @@ function layoutPop(force){
   pop.innerHTML = layoutPanelHtml();
   pop.hidden = false;
   if (btn) {
-    const r = btn.getBoundingClientRect();
-    pop.style.top = (window.scrollY + r.bottom + 8) + 'px';
-    pop.style.left = Math.max(12, Math.min(window.scrollX + r.right - 268,
-                              window.scrollX + window.innerWidth - 268 - 16)) + 'px';
+    const r = cssRect(btn), v = view();
+    pop.style.top = (v.y + r.bottom + 8) + 'px';
+    pop.style.left = Math.max(12, Math.min(v.x + r.right - 268, v.x + v.w - 268 - 16)) + 'px';
+    /* ตัวอักษร "ใหญ่มาก" ทำให้แผงสูงเกินจอ — เลื่อนในแผงได้ "คืนค่าเริ่มต้น" ท้ายแผงจึงยังกดถึง */
+    pop.style.maxHeight = Math.max(160, v.h - r.bottom - 16) + 'px';
+    pop.style.overflowY = 'auto';
   }
   requestAnimationFrame(function(){ pop.classList.add('on'); });
 }
@@ -2458,11 +2630,11 @@ function showHelp(anchor){
   if (!pop.hidden) { hideHelp(); return; }
   pop.innerHTML = '<div class="over">เกี่ยวกับหน้านี้</div>' + HELP;
   pop.hidden = false;
-  const r = anchor.getBoundingClientRect();
-  const w = Math.min(420, window.innerWidth - 32);
+  const r = cssRect(anchor), v = view();
+  const w = Math.min(420, v.w - 32);
   pop.style.width = w + 'px';
-  pop.style.top = (window.scrollY + r.bottom + 9) + 'px';
-  pop.style.left = Math.max(12, Math.min(window.scrollX + r.left - 8, window.scrollX + window.innerWidth - w - 16)) + 'px';
+  pop.style.top = (v.y + r.bottom + 9) + 'px';
+  pop.style.left = Math.max(12, Math.min(v.x + r.left - 8, v.x + v.w - w - 16)) + 'px';
   requestAnimationFrame(function(){ pop.classList.add('on'); });
 }
 function hideHelp(){
@@ -3832,8 +4004,10 @@ function viewCourses(){
 /* ── 08 · ผู้ใช้งาน ───────────────────────────────────────────────── */
 function viewUsers(){
   const key = 'users';
+  if (S.sub.users === 'PENDING' && !pendingUsers().length) S.sub.users = 'all';
   const grp = S.sub.users || 'all';
   const list = sortRows(key, db.user.filter(function(u){
+    if (grp === 'PENDING' && !isPending(u)) return false;
     if (grp === 'INSTRUCTOR' && u.role !== 'INSTRUCTOR') return false;
     if (grp === 'ADMIN' && u.role !== 'ADMIN') return false;
     if (grp === 'off' && u.isActive) return false;
@@ -3851,14 +4025,17 @@ function viewUsers(){
       '<td>' + pill(u.role) + '</td>' +
       '<td class="num tnum">' + asg.length + '</td>' +
       '<td class="num tnum">' + uploads + '</td>' +
-      '<td><div class="flex gap-1 flex-wrap">' + chip(u.isActive ? 'ใช้งานอยู่' : 'ระงับการใช้งาน', u.isActive ? 'ok' : 'nil') +
+      '<td><div class="flex gap-1 flex-wrap">' + (isPending(u) && u.isActive ? chip('รออนุมัติ','warn')
+        : chip(u.isActive ? 'ใช้งานอยู่' : 'ระงับการใช้งาน', u.isActive ? 'ok' : 'nil')) +
         /* D6 — self-registered accounts: not yet verified, or signed up through Google */
         (u.emailVerified === false ? chip('รอยืนยันอีเมล','warn') : '') +
         (u.authProvider === 'GOOGLE' ? pill('Google') : '') + '</div></td>' +
       '<td class="no-print"><div class="flex gap-1 justify-end flex-wrap">' +
+        (isPending(u) && u.isActive ? btn('อนุมัติ','primary','data-act="approve-user" data-id="' + u.id + '"') : '') +
         btn('ตรวจสอบ','quiet','data-act="user-detail" data-id="' + u.id + '"') +
-        btn('แก้ไข','quiet','data-act="crud-edit" data-kind="user" data-id="' + u.id + '"') +
-        btn('รีเซ็ตรหัสผ่าน','quiet','data-act="pw-reset" data-id="' + u.id + '"') +
+        /* รออนุมัติ: เหลือ อนุมัติ · ตรวจสอบ · ลบบัญชี (= ปฏิเสธ) — บัญชี Google ไม่มีรหัสผ่านให้รีเซ็ต */
+        (isPending(u) ? '' : btn('แก้ไข','quiet','data-act="crud-edit" data-kind="user" data-id="' + u.id + '"') +
+          btn('รีเซ็ตรหัสผ่าน','quiet','data-act="pw-reset" data-id="' + u.id + '"')) +
         ((locked || u.role === 'ADMIN')
           ? btn(u.isActive ? 'ระงับการใช้งาน' : 'เปิดใช้งาน','quiet','data-act="toggle-user" data-id="' + u.id + '"')
           : '<button data-act="crud-delete" data-kind="user" data-id="' + u.id +
@@ -4137,7 +4314,7 @@ function acctMenu(force){
        only way to show that two instructors see two different course lists. */
     '<div class="hair-t mt-1.5 pt-1.5">' +
       '<div class="over px-3 pt-1 pb-1.5">เข้าใช้งานเป็น (ตัวอย่าง)</div>' +
-      db.user.filter(function(x){ return (x.role === 'ADMIN') === (S.role === 'ADMIN'); })
+      db.user.filter(function(x){ return !isPending(x) && (x.role === 'ADMIN') === (S.role === 'ADMIN'); })
         .map(function(x){
           const n = where(db.courseInstructor, 'userId', x.id).length;
           return '<button class="acctitem" data-act="be" data-id="' + x.id + '">' +
@@ -4151,7 +4328,7 @@ function acctMenu(force){
     '<div class="hair-t mt-1.5 pt-1.5">' +
       '<button class="acctitem" data-act="role" data-val="' + (S.role === 'ADMIN' ? 'INSTRUCTOR' : 'ADMIN') + '">' +
         icon('people','w-4 h-4') + 'สลับเป็น' + (S.role === 'ADMIN' ? 'ผู้สอน' : 'ผู้ดูแลระบบ') + '</button>' +
-      '<button class="acctitem" data-act="layout">' + icon('grid','w-4 h-4') + 'มุมมองตาราง</button>' +
+      '<button class="acctitem" data-act="layout">' + icon('grid','w-4 h-4') + 'การแสดงผล</button>' +
       '<button class="acctitem" data-act="shortcuts">' + icon('search','w-4 h-4') + 'แป้นพิมพ์ลัด</button>' +
       '<button class="acctitem" data-act="auth-logout">' + icon('ext','w-4 h-4') + 'ออกจากระบบ</button>' +
     '</div>';
@@ -4265,7 +4442,7 @@ const AUTH_ACTION_TH = { SUSPEND:'ระงับการใช้งาน', A
   LOGIN:'เข้าสู่ระบบด้วยอีเมล', LOGIN_GOOGLE:'เข้าสู่ระบบด้วย Google', LOGOUT:'ออกจากระบบ',
   REGISTER:'ลงทะเบียน', VERIFY:'ยืนยันอีเมล',
   PW_RESET:'รีเซ็ตรหัสผ่าน', PW_CHANGE:'เปลี่ยนรหัสผ่านเอง', ROLE_SET:'กำหนดบทบาท',
-  CREATE:'สร้างบัญชี', EDIT:'แก้ไขบัญชี' };
+  CREATE:'สร้างบัญชี', EDIT:'แก้ไขบัญชี', APPROVE:'อนุมัติบัญชี' };
 
 function authLog(userId, action, detail){
   db.authEvent.unshift({ id:'ae' + Date.now(), userId:userId, actorId:me().id,
@@ -5613,11 +5790,12 @@ function openMenu(at, title, items){
       '<span>' + esc(it.label) + '</span>' + (it.hint ? '<span class="ctxhint">' + esc(it.hint) + '</span>' : '') + '</button>';
   }).join('');
   el.hidden = false;
-  const r = at.getBoundingClientRect ? at.getBoundingClientRect() : { left:at.x, right:at.x, top:at.y, bottom:at.y };
+  const z = pageZoom(), v = view();
+  const r = at.getBoundingClientRect ? cssRect(at) : { left:at.x / z, right:at.x / z, top:at.y / z, bottom:at.y / z };
   const w = el.offsetWidth, h = el.offsetHeight;
   let x = at.getBoundingClientRect ? r.right - w : r.left, y = r.bottom + 4;
-  x = Math.max(8, Math.min(x, window.innerWidth - w - 8));
-  if (y + h > window.innerHeight - 8) y = Math.max(8, r.top - h - 4);
+  x = Math.max(8, Math.min(x, v.w - w - 8));
+  if (y + h > v.h - 8) y = Math.max(8, r.top - h - 4);
   el.style.left = x + 'px'; el.style.top = y + 'px';
   MENU.open = true; MENU.anchor = at.getBoundingClientRect ? at : null;
   if (MENU.anchor) MENU.anchor.setAttribute('aria-expanded', 'true');
@@ -6004,7 +6182,7 @@ function paintStaffHits(){
   if (!host) return;
   if (!q) { host.innerHTML = ''; return; }
   const hits = db.user.filter(function(u){
-    return u.role === 'INSTRUCTOR' && !CSTAFF.some(function(x){ return x.userId === u.id; }) &&
+    return u.role === 'INSTRUCTOR' && !isPending(u) && !CSTAFF.some(function(x){ return x.userId === u.id; }) &&
       (u.name.toLowerCase().indexOf(q) >= 0 || u.email.toLowerCase().indexOf(q) >= 0);
   }).slice(0, 6);
   host.innerHTML = hits.length === 0
@@ -7525,6 +7703,7 @@ const COVER_SECTIONS = [
   { id:'gaps',  label:'สิ่งที่ยังไม่รองรับ' }
 ];
 const USER_GROUPS = [
+  { id:'PENDING',    label:'รออนุมัติ' },     /* แสดงเฉพาะเมื่อมีอย่างน้อย 1 บัญชี */
   { id:'all',        label:'ผู้ใช้ทั้งหมด' },
   { id:'INSTRUCTOR', label:'ผู้สอน' },
   { id:'ADMIN',      label:'ผู้ดูแลระบบ' },
@@ -7540,7 +7719,9 @@ function paintApprail(){
         : 'data-act="area" data-val="' + a.id + '"';
       return '<button class="arl" ' + go + ' title="' + esc(a.label) + '"' +
         (now === a.id ? ' aria-current="page"' : '') + '>' +
-        icon(a.ic, '') + '<span>' + a.label + '</span></button>';
+        icon(a.ic, '') + '<span>' + a.label + '</span>' +
+        (a.id === 'users' && pendingUsers().length ? '<span class="arl-dot" aria-label="มีบัญชีรออนุมัติ"></span>' : '') +
+        '</button>';
     }).join('') +
     '<div class="mt-auto">' +
       '<button class="arl" data-act="role" data-val="' +
@@ -7565,7 +7746,8 @@ function paintList(){
   if (S.area === 'users') {
     host.innerHTML = USER_GROUPS.map(function(g){
       const n = db.user.filter(function(u){
-        return g.id === 'all' ? true : g.id === 'off' ? !u.isActive : u.role === g.id; }).length;
+        return g.id === 'all' ? true : g.id === 'off' ? !u.isActive : g.id === 'PENDING' ? isPending(u) : u.role === g.id; }).length;
+      if (g.id === 'PENDING' && !n) return '';
       return '<button class="chan !ml-0" data-act="subnav" data-route="users" data-val="' + g.id + '"' +
         ((S.sub.users || 'all') === g.id ? ' aria-current="page"' : '') + '>' +
         g.label + '<span class="n">' + n + '</span></button>';
@@ -7682,7 +7864,7 @@ function me(){
 }
 function defaultMe(){
   const want = S.role === 'ADMIN' ? 'ADMIN' : 'INSTRUCTOR';
-  return db.user.find(function(u){ return u.role === want && u.isActive; })
+  return db.user.find(function(u){ return u.role === want && u.isActive && !isPending(u); })
       || db.user.find(function(u){ return u.role === want; })
       || db.user[0];
 }
@@ -7803,7 +7985,7 @@ function render(){
   if (curStp) {
     const sp = curStp.parentElement;
     if (sp.scrollWidth > sp.clientWidth) {
-      const a = curStp.getBoundingClientRect(), b = sp.getBoundingClientRect();
+      const a = cssRect(curStp), b = cssRect(sp);
       sp.scrollLeft += a.left - b.left - (sp.clientWidth - a.width) / 2;
     }
   }
@@ -8035,7 +8217,7 @@ function deny(cap, courseId){
    READ_ACTS คือรายการ *ปิด* ของสิ่งที่ไม่เปลี่ยนข้อมูล ทุกอย่างนอกรายการนี้
    ต้องมี capability และถ้าไม่มีในตาราง CAP_OF จะตกลงมาที่ course.settings
    ซึ่งเป็นสิทธิ์สูงสุดที่ไม่ใช่ ADMIN — นั่นคือ SEC-2 ในรูปของโค้ด */
-const READ_ACTS = ['acct','area','be','clear-filter','roster-page','close','copy-link','density','longtext','layout','goto','help',
+const READ_ACTS = ['acct','area','be','clear-filter','roster-page','close','copy-link','density','longtext','scale','layout-reset','layout','goto','help',
   'open-section','pal-go','pane-close','pane-toggle','pick-course','profile','profile-save',
   'pw-change','pw-change-save','role','shortcuts','step','student','subnav',
   'toggle-team','user-detail','err-report','errreport','need-bloom','course-group','course-view',
@@ -8098,7 +8280,7 @@ function capOf(act, el){
     case 'staff-add': case 'staff-del': case 'staff-pick': return 'staff.write';
     case 'add-course': case 'dup-course': return 'course.create';
     case 'weight-mode':                 return 'activity.write';
-    case 'toggle-user': case 'pw-reset': case 'pw-reset-do': return 'user.manage';
+    case 'toggle-user': case 'approve-user': case 'pw-reset': case 'pw-reset-do': return 'user.manage';
     default:                            return 'course.settings';   // SEC-2
   }
 }
@@ -8270,14 +8452,25 @@ class AccountService {
   google(email){
     const e = this.emails.normalize(email);
     if (!this.emails.isWellFormed(e)) return { error:'รูปแบบอีเมลไม่ถูกต้อง' };
-    if (!this.emails.isAllowed(e))
-      return { error:'ใช้ได้เฉพาะบัญชี Google ของคณะ (@' + this.emails.domain + ') — บัญชีส่วนตัวเข้าระบบนี้ไม่ได้' };
     const u = this.find(e);
-    if (!u) return { isNew:true, email:e };
-    /* Google has already proven who this is, so naming the suspension leaks nothing. */
-    if (u.isActive === false) return { error:'บัญชีนี้ถูกระงับการใช้งาน — ติดต่อผู้ดูแลระบบ' };
-    if (u.emailVerified === false) u.emailVerified = true;   /* Google proved the mailbox */
-    return { user:u };
+    if (u) {
+      /* Google has already proven who this is, so naming the suspension or the
+         pending state leaks nothing (same reasoning as auth.service.ts). */
+      if (u.isActive === false) return { error:'บัญชีนี้ถูกระงับการใช้งาน — ติดต่อผู้ดูแลระบบ' };
+      if (isPending(u)) return { pending:true, email:e };
+      if (u.emailVerified === false) u.emailVerified = true;   /* Google proved the mailbox */
+      return { user:u };
+    }
+    /* FR-08 (แก้ 2026-09-23) — นอกโดเมนคณะไม่ปฏิเสธ แต่สร้างบัญชีผู้สอนที่รอผู้ดูแลระบบอนุมัติ
+       ระบบจริงใช้ชื่อจาก Google ID token · ต้นแบบไม่มี token จึงใช้ส่วนหน้าของอีเมลแทน */
+    if (!this.emails.isAllowed(e)) {
+      const p = { id:'u_' + Date.now(), email:e, name:e.split('@')[0], role:'INSTRUCTOR', isActive:true,
+                  status:'PENDING', emailVerified:true, authProvider:'GOOGLE' };
+      db.user.push(p);
+      this.log(p.id, 'REGISTER', 'ลงทะเบียนด้วย Google นอกโดเมนคณะ · รอผู้ดูแลระบบอนุมัติ');
+      return { pending:true, email:e };
+    }
+    return { isNew:true, email:e };
   }
   createFromGoogle(email, name){
     if (!name) return { error:'กรอกชื่อ-สกุลก่อน' };
@@ -8321,7 +8514,7 @@ class AuthScreen {
     if (!host) return;
     const sid = this.session.get();
     const su = sid ? byId(db.user, sid) : null;
-    const out = !su || su.isActive === false;
+    const out = !su || su.isActive === false || isPending(su);
     document.body.dataset.auth = out ? 'out' : 'in';
     host.hidden = !out;
     if (!out) { host.innerHTML = ''; return; }
@@ -8382,11 +8575,11 @@ class AuthScreen {
       '<button class="btn btn-primary w-full justify-center !py-2.5" data-act="auth-go" data-view="login" data-auth-submit>ไปหน้าเข้าสู่ระบบ</button>';
 
     if (this.view === 'google') {
-      const picks = db.user.slice(0, 4).map(function(u){ return [u.email, u.name]; })
+      const picks = db.user.filter(function(u){ return !isPending(u); }).slice(0, 4).map(function(u){ return [u.email, u.name]; })
         .concat([['somchai.home@gmail.com', 'บัญชีส่วนตัว (ตัวอย่างนอกโดเมน)']]);
       return '<div class="flex items-center gap-2 text-[14px] text-ink2">' + GLOGO + 'ลงชื่อเข้าใช้ด้วย Google</div>' +
         '<div><h1 class="text-[24px] font-light leading-tight">เลือกบัญชี</h1>' +
-          '<p class="text-[14px] text-dim mt-1.5">เพื่อไปยัง CMAS · ใช้ได้เฉพาะบัญชีของคณะ (@' + emails.domain + ')</p></div>' +
+          '<p class="text-[14px] text-dim mt-1.5">เพื่อไปยัง CMAS · บัญชีที่ไม่ใช่ @' + emails.domain + ' ต้องรอผู้ดูแลระบบอนุมัติ</p></div>' +
         err +
         '<div class="space-y-2">' + picks.map(function(p){
           const initial = p[1].replace(/^[^\s]*\s/, '').slice(0, 1) || p[1].slice(0, 1);
@@ -8401,6 +8594,15 @@ class AuthScreen {
         '<div class="authdemo">ต้นแบบ — หน้านี้แทนหน้าต่างของ Google · ระบบจริงเปิด Google Sign-In แล้วตรวจ ID token ที่เซิร์ฟเวอร์</div>' +
         '<div class="text-center text-[14px] text-dim">' + link('ยกเลิก', 'login') + '</div>';
     }
+
+    /* FR-08 — ถ้อยคำใช้ได้ทั้งครั้งแรกและทุกครั้งที่ล็อกอินซ้ำก่อนได้อนุมัติ · ไม่สัญญาว่าจะแจ้งเตือน เพราะระบบไม่ส่งอีเมล */
+    if (this.view === 'pending') return head('รอผู้ดูแลระบบอนุมัติ',
+        'อีเมลนี้ไม่ใช่อีเมลของคณะ (@' + emails.domain + ') จึงต้องได้รับอนุมัติก่อนเข้าใช้งาน') +
+      '<div class="authdemo flex items-center gap-2 flex-wrap">' + GLOGO + '<span class="tnum">' + esc(this.gEmail) + '</span>' +
+        chip('รออนุมัติ','warn') + '</div>' +
+      '<p class="text-[14px] text-dim leading-relaxed">ได้รับอนุมัติแล้ว กลับมากด “ดำเนินการต่อด้วย Google” อีกครั้ง</p>' +
+      '<button class="btn btn-primary w-full justify-center !py-2.5" data-act="auth-google" data-auth-submit>ใช้บัญชีอื่น (บัญชีของคณะ)</button>' +
+      '<div class="text-center text-[14px] text-dim">' + link('กลับไปหน้าเข้าสู่ระบบ', 'login') + '</div>';
 
     if (this.view === 'google-new') return head('สร้างบัญชีผู้สอนจาก Google',
         'ยังไม่มีบัญชี CMAS สำหรับอีเมลนี้ · Google ยืนยันอีเมลให้แล้ว จึงไม่ต้องตั้งรหัสผ่านและไม่ต้องรอลิงก์ยืนยัน') +
@@ -8461,6 +8663,7 @@ class AuthScreen {
     const r = this.accounts.google(email);
     if (r.error) return this.fail(r.error);
     if (r.isNew) { this.gEmail = r.email; return this.show('google-new'); }
+    if (r.pending) { this.gEmail = r.email; return this.show('pending'); }
     this.enter(r.user, 'LOGIN_GOOGLE');
   }
   createFromGoogle(){
@@ -8684,6 +8887,12 @@ document.addEventListener('click', function(e){
   if (act === 'layout')       { acctMenu(false); layoutPop(); return; }
   if (act === 'density')      { S.density  = el.dataset.val; applyLayout(); saveLayout(); render(); return; }
   if (act === 'longtext')     { S.longtext = el.dataset.val; applyLayout(); saveLayout(); render(); return; }
+  if (act === 'scale')        { S.scale    = el.dataset.val; applyLayout(); saveLayout(); render(); layoutPop(true); return; }
+  if (act === 'layout-reset') {   /* ค่าตั้งต้นเดียวกับครั้งแรกที่เปิด — มือถือได้ความหนาแน่น "แน่น" */
+    S.scale = 'normal'; S.longtext = 'clip'; S.listw = 296;
+    S.density = window.matchMedia('(max-width: 767px)').matches ? 'compact' : 'normal';
+    applyLayout(); saveLayout(); render(); layoutPop(true); return;
+  }
   if (act === 'close')        { closeOverlays(); return; }
   if (act === 'goto')         { closeOverlays(); go(el.dataset.route); return; }
   if (act === 'pick-course')  { closeOverlays(); setCourse(el.dataset.id); return; }
@@ -9085,6 +9294,15 @@ document.addEventListener('click', function(e){
     toast('ตรึงเกรดแล้ว ' + n + ' คน · เขียนลง StudentGrade'); return;
   }
 
+  if (act === 'approve-user') {   /* FR-08b — PENDING → ACTIVE เท่านั้น ไม่ย้อนกลับ (แยกจาก isActive) */
+    const u = byId(db.user, el.dataset.id);
+    if (!isPending(u)) return;
+    u.status = 'ACTIVE';
+    authLog(u.id, 'APPROVE', 'อนุมัติบัญชีที่สมัครด้วย Google นอกโดเมนคณะ');
+    invalidate(); render();
+    toast('อนุมัติ ' + u.name + ' แล้ว — เข้าสู่ระบบด้วย Google ได้ทันที'); return;
+  }
+
   if (act === 'toggle-user') {
     const u = byId(db.user, el.dataset.id);
     if (u.isActive && lastAdmin(u)) {
@@ -9164,7 +9382,7 @@ document.addEventListener('click', function(e){
   }
   if (act === 'staff-add') {
     const free = db.user.filter(function(u){
-      return u.role === 'INSTRUCTOR' && !CSTAFF.some(function(x){ return x.userId === u.id; }); });
+      return u.role === 'INSTRUCTOR' && !isPending(u) && !CSTAFF.some(function(x){ return x.userId === u.id; }); });
     if (!free.length) { toast('ไม่มีผู้สอนที่ยังไม่ถูกมอบหมายแล้ว','bad'); return; }
     CSTAFF.push({ userId:free[0].id, role:'INSTRUCTOR' });   /* D1 — one role, no choice to make */
     repaintStaff();
@@ -9306,11 +9524,11 @@ function tipShow(el){
   box.textContent = el.dataset.tip;
   box.hidden = false;
   el.setAttribute('aria-expanded', 'true');
-  const r = el.getBoundingClientRect(), bw = box.offsetWidth, bh = box.offsetHeight, m = 8;
+  const r = cssRect(el), v = view(), bw = box.offsetWidth, bh = box.offsetHeight, m = 8;
   let left = r.left + r.width / 2 - bw / 2;
-  left = Math.max(m, Math.min(left, window.innerWidth - bw - m));
+  left = Math.max(m, Math.min(left, v.w - bw - m));
   let top = r.bottom + 8;
-  if (top + bh > window.innerHeight - m) top = Math.max(m, r.top - bh - 8);
+  if (top + bh > v.h - m) top = Math.max(m, r.top - bh - 8);
   box.style.left = left + 'px'; box.style.top = top + 'px';
 }
 function tipHide(force){
@@ -9658,7 +9876,7 @@ window.addEventListener('hashchange', function(){
   applyLayout();
   /* D6 — a sign-in survives a reload (sessionStorage), not closing the tab. */
   const sid = SESSION.get(), su = sid ? byId(db.user, sid) : null;
-  if (su && su.isActive !== false) { S.meId = su.id; S.role = su.role === 'ADMIN' ? 'ADMIN' : 'INSTRUCTOR'; }
+  if (su && su.isActive !== false && !isPending(su)) { S.meId = su.id; S.role = su.role === 'ADMIN' ? 'ADMIN' : 'INSTRUCTOR'; }
   else SESSION.set(null);
   clampMe();              /* pin the signed-in account before anything reads it */
   clampCourse();          /* a persisted S.course may be out of scope now */

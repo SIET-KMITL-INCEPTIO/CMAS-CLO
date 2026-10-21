@@ -80,7 +80,7 @@ for _role, _units in pages.items():
 NON_COURSE = {
     '1': [('1.1', 'ADMIN', [('1.4', 'include', '1.1')]),
           ('1.2', 'ADMIN', []), ('1.3', 'ADMIN', []),
-          ('1.5', 'ADMIN', []), ('1.6', 'ADMIN', [])],
+          ('1.5', 'ADMIN', []), ('1.6', 'ADMIN', []), ('1.7', 'ADMIN', [])],
     '2': [('2.1', 'ADMIN', [('2.4', 'include', '2.1')]), ('2.3', 'ADMIN', [])],
     '9': [('9.1', 'EVERY', []), ('9.2', 'EVERY', []),
           ('9.3', 'GUEST', [('9.4', 'include', '9.3')]), ('9.5', 'GUEST', [])],
@@ -398,7 +398,7 @@ def main():
     io.open(OUT, 'w', encoding='utf-8', newline='\n').write(xml)
     print('wrote', OUT.relative_to(ROOT))
     print('%d use case · %d แพ็กเกจ · สัญกรณ์ตาม UML-Layer2' % (len(ids), len(PKG_ORDER)))
-    print('  %-22s %s' % (ROLE_TH['ADMIN'], '1.1 1.2 1.3 1.4 1.5 1.6 2.1 2.3 2.4'))
+    print('  %-22s %s' % (ROLE_TH['ADMIN'], '1.1 1.2 1.3 1.4 1.5 1.6 1.7 2.1 2.3 2.4'))
     for r in reversed(CHAIN):
         print('  %-22s %s' % (ROLE_TH[r],
                               ' '.join(sorted(k for k, v in placed.items() if v == r))))
