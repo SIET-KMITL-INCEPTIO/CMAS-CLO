@@ -20,6 +20,18 @@ export const envSchema = z.object({
   // Course scope aside, this is the institution boundary — everyone outside
   // it lands PENDING for an ADMIN to approve by hand.
   INSTITUTION_EMAIL_DOMAIN: z.string().min(1).default("kmitl.ac.th"),
+  // FR-05a: comma-separated emails that become ADMIN on Google sign-in. The
+  // only way to get the first ADMIN without editing the database by hand —
+  // kept in the environment so no personal email lives in the repo.
+  ADMIN_EMAILS: z
+    .string()
+    .default("")
+    .transform((value) =>
+      value
+        .split(",")
+        .map((email) => email.trim().toLowerCase())
+        .filter((email) => email.length > 0),
+    ),
   RATE_LIMIT_MAX: z.coerce.number().default(100),
   RATE_LIMIT_WINDOW: z.string().default("1 minute"),
 })
