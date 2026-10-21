@@ -4,7 +4,7 @@
  * the User model has one owner, this module, rather than two repositories
  * drifting apart on the same table.
  */
-import type { AccountStatus, User } from "@prisma/client"
+import type { AccountStatus, Role, User } from "@prisma/client"
 import { prisma } from "../../db/prisma.js"
 
 export class UserRepository {
@@ -21,14 +21,15 @@ export class UserRepository {
   }
 
   /**
-   * First-ever Google sign-in for this email (FR-08). Always created as
-   * INSTRUCTOR — self-registration, by Google or by email, never grants
-   * ADMIN (FR-05 reserves that to an existing admin).
+   * First-ever Google sign-in for this email (FR-08). The service decides the
+   * role: INSTRUCTOR, or ADMIN only for an address in ADMIN_EMAILS (FR-05a).
+   * Self-registration never grants ADMIN on its own.
    */
   createFromGoogle(data: {
     email: string
     name: string
     googleSub: string
+    role: Role
     status: AccountStatus
   }): Promise<User> {
     return prisma.user.create({
@@ -37,7 +38,7 @@ export class UserRepository {
         name: data.name,
         googleSub: data.googleSub,
         authProvider: "GOOGLE",
-        role: "INSTRUCTOR",
+        role: data.role,
         status: data.status,
         emailVerifiedAt: new Date(), // Google already verified it (email_verified)
       },
@@ -68,5 +69,10 @@ export class UserRepository {
 
   approve(id: string): Promise<User> {
     return prisma.user.update({ where: { id }, data: { status: "ACTIVE" } })
+  }
+
+  /** FR-05a: an existing account whose email is in ADMIN_EMAILS. */
+  grantAdmin(id: string): Promise<User> {
+    return prisma.user.update({ where: { id }, data: { role: "ADMIN", status: "ACTIVE" } })
   }
 }

@@ -1,7 +1,8 @@
 import type { User } from "@prisma/client"
+import { env } from "../../lib/env.js"
 import { isInstitutionDomain, verifyGoogleIdToken } from "../../lib/google.js"
 import { signAccessToken, signRefreshToken } from "../../lib/jwt.js"
-import { UserRepository } from "../users/user.repository.js"
+import type { UserRepository } from "../users/user.repository.js"
 
 export type PublicUser = Pick<User, "id" | "email" | "name" | "role" | "isActive" | "status">
 
@@ -32,8 +33,17 @@ function toPublicUser(user: User): PublicUser {
   }
 }
 
+type AuthUsers = Pick<
+  UserRepository,
+  "findByGoogleSub" | "findByEmail" | "linkGoogleSub" | "createFromGoogle" | "grantAdmin"
+>
+
 export class AuthService {
-  constructor(private readonly users: UserRepository) {}
+  constructor(
+    private readonly users: AuthUsers,
+    // Lower-cased, from env.ADMIN_EMAILS (FR-05a). A parameter so tests can pass their own.
+    private readonly adminEmails: readonly string[] = env.ADMIN_EMAILS,
+  ) {}
 
   async loginWithGoogle(idToken: string): Promise<GoogleLoginResult> {
     let payload
@@ -43,6 +53,9 @@ export class AuthService {
       return { outcome: "invalid" }
     }
     if (!payload.emailVerified) return { outcome: "invalid" }
+
+    // Safe to trust the email here: Google signed it and email_verified is true.
+    const listedAdmin = this.adminEmails.includes(payload.email.toLowerCase())
 
     let user = await this.users.findByGoogleSub(payload.sub)
 
@@ -54,8 +67,16 @@ export class AuthService {
             email: payload.email,
             name: payload.name ?? payload.email,
             googleSub: payload.sub,
-            status: isInstitutionDomain(payload) ? "ACTIVE" : "PENDING",
+            role: listedAdmin ? "ADMIN" : "INSTRUCTOR",
+            status: listedAdmin || isInstitutionDomain(payload) ? "ACTIVE" : "PENDING",
           })
+    }
+
+    // FR-05a: promote an existing listed account, but never one an ADMIN has
+    // switched off (FR-03 wins), and never demote — taking an email off the
+    // list leaves the role to be changed by hand.
+    if (listedAdmin && user.isActive && (user.role !== "ADMIN" || user.status !== "ACTIVE")) {
+      user = await this.users.grantAdmin(user.id)
     }
 
     if (!user.isActive) return { outcome: "denied" }

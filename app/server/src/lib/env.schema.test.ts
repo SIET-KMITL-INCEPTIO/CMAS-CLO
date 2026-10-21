@@ -19,6 +19,13 @@ describe("envSchema", () => {
     expect(env.RATE_LIMIT_MAX).toBe(100)
     expect(env.RATE_LIMIT_WINDOW).toBe("1 minute")
     expect(env.INSTITUTION_EMAIL_DOMAIN).toBe("kmitl.ac.th")
+    expect(env.ADMIN_EMAILS).toEqual([])
+  })
+
+  it("splits ADMIN_EMAILS into trimmed, lower-case addresses", () => {
+    const env = envSchema.parse({ ...valid, ADMIN_EMAILS: " A@Gmail.com, ,b@kmitl.ac.th " })
+
+    expect(env.ADMIN_EMAILS).toEqual(["a@gmail.com", "b@kmitl.ac.th"])
   })
 
   it("requires GOOGLE_CLIENT_ID", () => {
