@@ -22,10 +22,8 @@
 |---|---|
 | `usecase/UML-INDEX-Q.drawio` | ข้อมูลชุดเดียวกับ use case ทางการ ย่อเหลือหน้าเดียวสำหรับสไลด์ |
 | `usecase/UML-Layer1_Handwritten.drawio` · `UML-Layer2_Handwritten.drawio` | ร่างแรก · Layer2 ใช้เลข use case คนละชุดกับต้นแบบ **อย่าฉายคู่กับไฟล์ทางการ** |
-| `usecase/superseded/UML-INDEX-Q_2026-09-14_Handwritten.drawio` | สำเนาวาดมือรุ่น 14 ก.ย. |
 | `architecture/CMAS-ARCH_Handwritten.drawio` · `CMAS-FE-BE-DB_Handwritten.drawio` | ร่างหัวข้อเดียวกับหน้า 0 ของไฟล์สถาปัตยกรรมทางการ |
 | `architecture/Structure.drawio` | วาดมือหน้าเดียว · โครงสร้างผู้สอนแบบบทบาทเดียว |
-| `threat-model/superseded/` | รายงาน threat model รุ่นเก่า 3 ฉบับและ checklist ที่ใช้แก้ (ดู README ในโฟลเดอร์) |
 | `../reference/db/mysql/index-q-v2.mwb` · `index-q-er-diagram.pdf` | ER แบบ MySQL Workbench 18 ตาราง · โมเดลสร้างจาก `index-q.sql` ด้วย `python scripts/build-index-q-workbench.py` · PDF export ด้วยมือ: File → Export → Export as Single Page PDF |
 | `../reference/db/mysql/cmas_app_v4*` | ER รุ่น v4 (migration 0004) จาก Workbench · ค้างไว้ตามเดิม |
 

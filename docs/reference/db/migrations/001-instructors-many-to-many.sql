@@ -1,9 +1,9 @@
 -- ============================================================================
 -- MIGRATION 001 — Course instructors: 1:M  ->  M:N
 --
--- Applies to a database that ALREADY HAS DATA. For a fresh install just run
--- docs/reference/db/mysql/superseded/cmas_app_production_v3.sql instead; it already contains
--- the final shape.
+-- Applies to a database that ALREADY HAS DATA. For a fresh install use
+-- database/migrations/ instead (this is the old v3 MySQL design; its
+-- cmas_app_production_v3.sql was deleted 2026-10-21 and is in git history).
 --
 -- WHAT THIS DOES
 --   1. Adds Course.section          — takes over the section-discriminator job
@@ -30,7 +30,7 @@
 
 -- ############################################################################
 -- ###  SECTION A — MySQL 8.0.16+                                            ###
--- ###  (matches docs/reference/db/mysql/superseded/cmas_app_production_v3.sql)            ###
+-- ###  (matched the deleted cmas_app_production_v3.sql, see git history)     ###
 -- ############################################################################
 
 -- ---------------------------------------------------------------------------
