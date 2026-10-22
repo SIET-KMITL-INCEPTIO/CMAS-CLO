@@ -99,30 +99,30 @@ E = [
     # ── 1 เข้าสู่ระบบ ───────────────────────────────────────────────────────
     (G_AUTH, "POST", "/auth/google", "เข้าสู่ระบบด้วย Google ตรวจ ID token ที่เซิร์ฟเวอร์", NONE, NO, NO, "FR-01, FR-08", ST_DONE, "—", "", "", ""),
     (G_AUTH, "POST", "/auth/login", "เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน", NONE, NO, NO, "FR-01, FR-03, FR-04", ST_LATER, "—", "", "", "รอ D-5"),
-    (G_AUTH, "POST", "/auth/refresh", "ขอ access token ใหม่ด้วย refresh token", NONE, NO, NO, "FR-01", ST_CONTRACT, "P0", "", "✓", "ตาราง RefreshToken ตาม D-2"),
-    (G_AUTH, "POST", "/auth/logout", "ออกจากระบบและเพิกถอน refresh token", LOGGED, NO, NO, "FR-01", ST_CONTRACT, "P0", "", "✓", "ตาราง RefreshToken ตาม D-2"),
-    (G_AUTH, "GET", "/auth/me", "ข้อมูลและบทบาทของผู้ใช้ที่ล็อกอินอยู่", LOGGED, NO, READ, "NFR-19", ST_CONTRACT, "P0", "", "", ""),
+    (G_AUTH, "POST", "/auth/refresh", "ขอ access token ใหม่ด้วย refresh token", NONE, NO, NO, "FR-01", ST_DONE, "P0", "", "✓", "ตาราง RefreshToken ตาม D-2"),
+    (G_AUTH, "POST", "/auth/logout", "ออกจากระบบและเพิกถอน refresh token", LOGGED, NO, NO, "FR-01", ST_DONE, "P0", "", "✓", "ตาราง RefreshToken ตาม D-2"),
+    (G_AUTH, "GET", "/auth/me", "ข้อมูลและบทบาทของผู้ใช้ที่ล็อกอินอยู่", LOGGED, NO, READ, "NFR-19", ST_DONE, "P0", "", "", ""),
     (G_AUTH, "PATCH", "/auth/password", "เปลี่ยนรหัสผ่านของตัวเอง", LOGGED, NO, NO, "FR-09", ST_LATER, "—", "", "", "รอ D-5"),
     # ── 2 บัญชีผู้ใช้ ────────────────────────────────────────────────────────
     (G_USER, "GET", "/users", "รายการบัญชี กรองด้วย ?status=PENDING หรือ ACTIVE", ADMIN, NO, "user.manage", "FR-05, FR-08b", ST_DONE, "—", "", "", ""),
     (G_USER, "PATCH", "/users/:id/approve", "อนุมัติบัญชีที่รออนุมัติ", ADMIN, NO, "user.manage", "FR-08b", ST_DONE, "—", "", "", "โค้ดใช้ :id ไม่ใช่ :userId"),
     (G_USER, "POST", "/users", "สร้างบัญชีผู้ใช้", ADMIN, NO, "user.manage", "FR-05", ST_LATER, "—", "", "", "รอ D-5"),
-    (G_USER, "GET", "/users/:userId", "รายละเอียดบัญชีหนึ่งคน", ADMIN, NO, "user.manage", "FR-05", ST_CONTRACT, "P2", "", "", ""),
-    (G_USER, "PATCH", "/users/:userId", "แก้ชื่อหรือบทบาทของบัญชี", ADMIN, NO, "user.manage", "FR-05", ST_CONTRACT, "P2", "", "", ""),
-    (G_USER, "PATCH", "/users/:userId/status", "เปิดหรือปิดการใช้งานบัญชี", ADMIN, NO, "user.manage", "FR-03, FR-06", ST_CONTRACT, "P2", "", "", ""),
+    (G_USER, "GET", "/users/:userId", "รายละเอียดบัญชีหนึ่งคน", ADMIN, NO, "user.manage", "FR-05", ST_DONE, "P2", "", "", ""),
+    (G_USER, "PATCH", "/users/:userId", "แก้ชื่อหรือบทบาทของบัญชี", ADMIN, NO, "user.manage", "FR-05", ST_DONE, "P2", "", "", ""),
+    (G_USER, "PATCH", "/users/:userId/status", "เปิดหรือปิดการใช้งานบัญชี", ADMIN, NO, "user.manage", "FR-03, FR-06", ST_DONE, "P2", "", "", ""),
     (G_USER, "POST", "/users/:userId/reset-password", "รีเซ็ตรหัสผ่านให้ผู้ใช้", ADMIN, NO, "user.manage", "FR-07", ST_LATER, "—", "", "", "รอ D-5 · ต้องมี mustChangePassword (G-4)"),
-    (G_USER, "GET", "/users/:userId/auth-events", "ประวัติบัญชี รวมการถูกปฏิเสธสิทธิ์", ADMIN, NO, "user.manage", "FR-22b, UC 1.6", ST_NEW, "P5", "", "✓", ""),
+    (G_USER, "GET", "/users/:userId/auth-events", "ประวัติบัญชี รวมการถูกปฏิเสธสิทธิ์", ADMIN, NO, "user.manage", "FR-22b, UC 1.6", ST_DONE, "P5", "", "✓", ""),
     # ── 3 รายวิชา ───────────────────────────────────────────────────────────
-    (G_COURSE, "GET", "/courses", "รายวิชาที่ผู้เรียกมองเห็น", LOGGED, FILTER, READ, "FR-24, FR-25", ST_CONTRACT, "P2", "#6", "", ""),
-    (G_COURSE, "POST", "/courses", "สร้างรายวิชา ผู้สร้างเป็นผู้สอนใน transaction เดียวกัน", BOTH, NO, "course.create", "FR-20, FR-21, FR-22c, FR-27, FR-28", ST_CONTRACT, "P2", "#6", "", ""),
-    (G_COURSE, "GET", "/courses/:courseId", "รายละเอียดรายวิชา", ANY, URL, READ, "FR-25", ST_CONTRACT, "P2", "#6", "", ""),
-    (G_COURSE, "PATCH", "/courses/:courseId", "แก้ข้อมูลและการตั้งค่ารายวิชา (เกณฑ์ผ่าน วิธีตัดเกรด)", ANY, URL, "course.settings", "FR-20, FR-47, FR-90", ST_CONTRACT, "P2", "#6", "", ""),
-    (G_COURSE, "DELETE", "/courses/:courseId", "ลบรายวิชา ต้องส่ง ?confirm=true", BOTH, URL, "course.delete", "FR-26", ST_CONTRACT, "P2", "#6", "", ""),
-    (G_COURSE, "GET", "/courses/:courseId/impact", "จำนวนข้อมูลที่จะหายถ้าลบรายวิชา", ANY, URL, READ, "FR-26", ST_CONTRACT, "P2", "#6", "", ""),
-    (G_COURSE, "GET", "/courses/:courseId/instructors", "รายชื่อผู้สอนของรายวิชา", ANY, URL, READ, "FR-22", ST_CONTRACT, "P2", "#6", "", ""),
-    (G_COURSE, "POST", "/courses/:courseId/instructors", "เพิ่มผู้สอนเข้ารายวิชา", BOTH, URL, "staff.write", "FR-22, FR-23", ST_CONTRACT, "P2", "#6", "", ""),
-    (G_COURSE, "DELETE", "/courses/:courseId/instructors/:userId", "เอาผู้สอนออก คนสุดท้ายเอาออกไม่ได้ (422)", BOTH, URL, "staff.write", "FR-23", ST_CONTRACT, "P2", "#6", "", "S-9"),
-    (G_COURSE, "POST", "/courses/:courseId/duplicate", "คัดลอกรายวิชาเป็นรายวิชาใหม่", BOTH, URL, "course.create", "ต้นแบบ", ST_NEW, "P2", "", "", ""),
+    (G_COURSE, "GET", "/courses", "รายวิชาที่ผู้เรียกมองเห็น", LOGGED, FILTER, READ, "FR-24, FR-25", ST_DONE, "P2", "#6", "", ""),
+    (G_COURSE, "POST", "/courses", "สร้างรายวิชา ผู้สร้างเป็นผู้สอนใน transaction เดียวกัน", BOTH, NO, "course.create", "FR-20, FR-21, FR-22c, FR-27, FR-28", ST_DONE, "P2", "#6", "", ""),
+    (G_COURSE, "GET", "/courses/:courseId", "รายละเอียดรายวิชา", ANY, URL, READ, "FR-25", ST_DONE, "P2", "#6", "", ""),
+    (G_COURSE, "PATCH", "/courses/:courseId", "แก้ข้อมูลและการตั้งค่ารายวิชา (เกณฑ์ผ่าน วิธีตัดเกรด)", ANY, URL, "course.settings", "FR-20, FR-47, FR-90", ST_DONE, "P2", "#6", "", ""),
+    (G_COURSE, "DELETE", "/courses/:courseId", "ลบรายวิชา ต้องส่ง ?confirm=true", BOTH, URL, "course.delete", "FR-26", ST_DONE, "P2", "#6", "", ""),
+    (G_COURSE, "GET", "/courses/:courseId/impact", "จำนวนข้อมูลที่จะหายถ้าลบรายวิชา", ANY, URL, READ, "FR-26", ST_DONE, "P2", "#6", "", ""),
+    (G_COURSE, "GET", "/courses/:courseId/instructors", "รายชื่อผู้สอนของรายวิชา", ANY, URL, READ, "FR-22", ST_DONE, "P2", "#6", "", ""),
+    (G_COURSE, "POST", "/courses/:courseId/instructors", "เพิ่มผู้สอนเข้ารายวิชา", BOTH, URL, "staff.write", "FR-22, FR-23", ST_DONE, "P2", "#6", "", ""),
+    (G_COURSE, "DELETE", "/courses/:courseId/instructors/:userId", "เอาผู้สอนออก คนสุดท้ายเอาออกไม่ได้ (422)", BOTH, URL, "staff.write", "FR-23", ST_DONE, "P2", "#6", "", "S-9"),
+    (G_COURSE, "POST", "/courses/:courseId/duplicate", "คัดลอกรายวิชาเป็นรายวิชาใหม่", BOTH, URL, "course.create", "ต้นแบบ", ST_DONE, "P2", "", "", ""),
     # ── 4 CLO และจุดประสงค์ ─────────────────────────────────────────────────
     (G_CLO, "GET", "/courses/:courseId/clos", "รายการ CLO พร้อมจุดประสงค์", ANY, URL, READ, "FR-30, FR-32", ST_CONTRACT, "P3", "#7", "", ""),
     (G_CLO, "POST", "/courses/:courseId/clos", "เพิ่ม CLO ต้องเลือกระดับ Bloom เอง ไม่มีค่าตั้งต้น", ANY, URL, "clo.write", "FR-30, FR-31, FR-99, FR-100", ST_CONTRACT, "P3", "#7", "", ""),
@@ -443,7 +443,7 @@ DESIGN = [
     # ── 1 เข้าสู่ระบบ ───────────────────────────────────────────────────────
     ("POST", "/auth/google", "—",
      "idToken (string ≥ 1) — ID token จาก Google Sign-In",
-     "200 · ACTIVE → {status:'ACTIVE', user{id, email, name, role}, accessToken, refreshToken} · PENDING → {status:'PENDING', message}",
+     "200 · ACTIVE → {status:'ACTIVE', user{id, email, name, role}, accessToken} + Set-Cookie cmas_rt (refresh token, httpOnly) · PENDING → {status:'PENDING', message}",
      "400 body ผิดรูป · 401 token ปลอม / aud ผิด / email_verified=false / บัญชีถูกปิด (ข้อความเดียวกันทุกกรณี) · 429",
      "ตรวจ ID token ที่เซิร์ฟเวอร์ (FR-08) · อีเมลนอกโดเมนคณะ → สร้างบัญชี PENDING · บัญชีใหม่เป็น INSTRUCTOR เสมอ · หลัง D-2 refreshToken ย้ายไปเป็น cookie httpOnly (S-2) ไม่อยู่ใน body",
      "ST-AUTH-01, 02, 04"),
@@ -843,6 +843,16 @@ DESIGN = [
      "400 scope=student แต่ไม่มี studentId · 403 ADMIN · 404",
      "service เดียวกับ attainment / at-risk / รายงานรายบุคคล (FR-88) · S-7 · PDF หลัง v1",
      "ST-CALC-04"),
+]
+
+# A-6: every route behind a login answers 401 to a caller with no token, before
+# anything else runs. Rows written before that rule list only their own errors;
+# say 401 on each of them rather than leave it implied.
+_PUBLIC = {(r[1], r[2]) for r in E if r[4] == NONE}
+DESIGN = [
+    d if (d[0], d[1]) in _PUBLIC or d[5] == "—" or "401" in d[5]
+    else d[:5] + ("401 ไม่มี token · " + d[5],) + d[6:]
+    for d in DESIGN
 ]
 
 # Body fields that are columns, per Design row: (model, [field, …]). check-api-design.py

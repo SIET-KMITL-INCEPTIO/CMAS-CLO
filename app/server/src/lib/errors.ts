@@ -8,7 +8,7 @@
  */
 export class AppError extends Error {
   constructor(
-    readonly statusCode: 403 | 409 | 422,
+    readonly statusCode: 403 | 404 | 409 | 422,
     message: string,
   ) {
     super(message)
@@ -20,6 +20,17 @@ export class AppError extends Error {
 export class ForbiddenError extends AppError {
   constructor(message = "คุณไม่มีสิทธิ์ทำรายการนี้") {
     super(403, message)
+  }
+}
+
+/**
+ * A row inside a course the caller can see does not exist (an instructor not
+ * on the course, a CLO of another course named in a body). Not for the course
+ * itself: that is CourseNotFoundError, whose body must match "not yours".
+ */
+export class NotFoundError extends AppError {
+  constructor(message = "ไม่พบข้อมูลที่ระบุ") {
+    super(404, message)
   }
 }
 

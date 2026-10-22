@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto"
 import { SignJWT, jwtVerify } from "jose"
 import { env } from "./env.js"
 
@@ -24,11 +25,16 @@ export type JwtPayload = {
 type TokenType = "access" | "refresh"
 
 function sign(payload: JwtPayload, typ: TokenType, expiresIn: string) {
-  return new SignJWT({ ...payload, typ })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime(expiresIn)
-    .sign(secret)
+  return (
+    new SignJWT({ ...payload, typ })
+      .setProtectedHeader({ alg: "HS256" })
+      // Two tokens for one user in the same second would otherwise be identical,
+      // and RefreshToken.tokenHash is unique.
+      .setJti(randomUUID())
+      .setIssuedAt()
+      .setExpirationTime(expiresIn)
+      .sign(secret)
+  )
 }
 
 async function verify(token: string, typ: TokenType): Promise<JwtPayload> {
