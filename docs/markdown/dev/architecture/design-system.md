@@ -4,8 +4,9 @@ See also: [[Design System Strategy]] · [[verdure-design-system]] · [[concept-c
 
 **Version 1.4.0** · Production Release · ใช้งานจริง
 
-> **หมายเหตุ 2026-10-14:** ต้นแบบ `docs/pages/index-q.html` ใช้โทเคนอีกชุดหนึ่ง (Nocturnal Atelier v3.2) ไม่ใช่ชุดในเอกสารนี้ ·
-> ดูค่าจริงของต้นแบบที่ `docs/pages/index-q-design-system.html` · การเลือกชุดที่แอปจะใช้ยังรอตัดสิน — [[prototype-to-app]] §5
+> **เลิกใช้กับแอปแล้ว (2026-10-22):** ตามมติ DS ใน [[prototype-to-app]] §5 แอป React ใช้ **Nocturnal Atelier v3.2** ของต้นแบบ
+> `docs/pages/index-q.html` แทน — โทเคนอยู่ที่ `app/client/src/styles/tokens.css` และคลาสอยู่ที่ `styles/atelier.css` ·
+> ดูค่าและตัวอย่างที่ `docs/pages/index-q-design-system.html` · เอกสารนี้เก็บไว้เป็นประวัติของรอบออกแบบก่อนหน้า
 
 > **1.4.0 Changelog:** รวม typeface เหลือ **IBM Plex Sans Thai** เพียง family เดียว (เดิม Noto Serif + Plex Mono) · Icons ใช้ **React Icons (Lucide)** เท่านั้น — ห้าม emoji · Google Colors สงวนไว้สำหรับ **status semantic** ไม่ใช้ decorative
 

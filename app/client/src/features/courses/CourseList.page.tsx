@@ -1,8 +1,13 @@
+import { NextStep } from "../../components/page/NextStep.tsx"
+import { PageHeader } from "../../components/page/PageHeader.tsx"
+
 export default function CourseList() {
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-medium">รายวิชา</h1>
-      {/* TODO: 5.2.1 — list courses, "New Course" button */}
-    </div>
+    <>
+      <PageHeader title="จัดการรายวิชา" sub="ระดับระบบ" />
+      <div className="cbody">
+        <NextStep step="F1" what="รายวิชาทั้งหมดแบบการ์ดหรือตาราง · สร้าง · ทำสำเนา · ลบ" />
+      </div>
+    </>
   )
 }

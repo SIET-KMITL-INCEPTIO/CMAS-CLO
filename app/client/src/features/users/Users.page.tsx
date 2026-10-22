@@ -1,4 +1,6 @@
 import { toast } from "sonner"
+import { NextStep } from "../../components/page/NextStep.tsx"
+import { PageHeader } from "../../components/page/PageHeader.tsx"
 import { useApproveUser, usePendingUsers } from "./useUsers.ts"
 
 export default function Users() {
@@ -6,44 +8,51 @@ export default function Users() {
   const approve = useApproveUser()
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-medium">จัดการผู้ใช้งาน</h1>
-
-      <section className="mt-6">
-        <h2 className="mb-2 text-sm font-medium text-gray-600">
-          รออนุมัติ (สมัครด้วย Google นอกโดเมนคณะ)
-        </h2>
-
-        {isLoading && <p className="text-sm text-gray-500">กำลังโหลด...</p>}
-        {!isLoading && pending?.length === 0 && (
-          <p className="text-sm text-gray-500">ไม่มีบัญชีที่รออนุมัติ</p>
-        )}
-
-        <ul className="divide-y rounded-lg border">
-          {pending?.map((user) => (
-            <li key={user.id} className="flex items-center justify-between p-3">
-              <div>
-                <p className="font-medium">{user.name}</p>
-                <p className="text-sm text-gray-500">{user.email}</p>
-              </div>
-              <button
-                type="button"
-                className="rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50"
-                disabled={approve.isPending}
-                onClick={() =>
-                  approve.mutate(user.id, {
-                    onSuccess: () => toast.success(`อนุมัติ ${user.name} แล้ว`),
-                  })
-                }
-              >
-                อนุมัติ
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* TODO: 5.1.1 — full user list, toggle role/active via useQuery + apiClient */}
-    </div>
+    <>
+      <PageHeader title="จัดการผู้ใช้งาน" sub="ระดับระบบ" />
+      <div className="cbody">
+        <section className="card overflow-hidden">
+          <div className="chart-head">
+            <div>
+              <div className="chart-title">รออนุมัติ</div>
+              <div className="chart-sub">สมัครด้วย Google นอกโดเมนคณะ</div>
+            </div>
+          </div>
+          {isLoading && <p className="px-4 py-6 text-[14px] text-dim">กำลังโหลด…</p>}
+          {!isLoading && pending?.length === 0 && (
+            <p className="px-4 py-6 text-[14px] text-dim">ไม่มีบัญชีที่รออนุมัติ</p>
+          )}
+          {!!pending?.length && (
+            <table className="dt">
+              <tbody>
+                {pending.map((user) => (
+                  <tr key={user.id}>
+                    <td>
+                      <div className="text-ink">{user.name}</div>
+                      <div className="text-[13px] text-dim">{user.email}</div>
+                    </td>
+                    <td className="num">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        disabled={approve.isPending}
+                        onClick={() =>
+                          approve.mutate(user.id, {
+                            onSuccess: () => toast.success(`อนุมัติ ${user.name} แล้ว`),
+                          })
+                        }
+                      >
+                        อนุมัติ
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </section>
+        <NextStep step="F7" what="ผู้ใช้ทั้งหมด · ผู้สอน · ผู้ดูแลระบบ · ระงับ · ประวัติบัญชี" />
+      </div>
+    </>
   )
 }
