@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "../../features/auth/useAuthStore.ts"
+import { loadPicture } from "../../lib/avatar.ts"
 import { endSession } from "../../lib/session.ts"
 import { Icon } from "../Icon.tsx"
 import { CommandPalette } from "./CommandPalette.tsx"
@@ -17,6 +18,33 @@ const ROLE_TH = { ADMIN: "ผู้ดูแลระบบ", INSTRUCTOR: "ผ�
 /** "ผศ.ดร. สมชาย ใจดี" → "สม": the first name, past any title (index-q paintShell). */
 const initials = (name: string) =>
   name.replace(/^[^\s]*\s?/, "").slice(0, 2) || name.slice(0, 2) || "CM"
+
+/** The Google picture when this browser has one, else the initials (index-q paintShell). */
+function Avatar({ id, name }: { id: string; name: string }) {
+  const [url, setUrl] = useState(() => loadPicture(id))
+  const box = "grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full"
+  if (url)
+    return (
+      <span className={box}>
+        {/* no-referrer: Google's image host refuses some requests that carry one. */}
+        <img
+          src={url}
+          alt=""
+          className="h-full w-full object-cover"
+          referrerPolicy="no-referrer"
+          onError={() => setUrl(null)}
+        />
+      </span>
+    )
+  return (
+    <span
+      className={`${box} text-[12.5px] text-white`}
+      style={{ background: "linear-gradient(135deg,#8A90C0,#3C456A)" }}
+    >
+      {initials(name)}
+    </span>
+  )
+}
 
 export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
   const me = useAuthStore((s) => s.me)
@@ -92,12 +120,7 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
               {me ? ROLE_TH[me.role] : ""}
             </span>
           </span>
-          <span
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-[12.5px] text-white"
-            style={{ background: "linear-gradient(135deg,#8A90C0,#3C456A)" }}
-          >
-            {me ? initials(me.name) : ""}
-          </span>
+          {me && <Avatar id={me.id} name={me.name} />}
         </button>
         {menuOpen && me && (
           <div className="acctmenu no-print" role="menu">

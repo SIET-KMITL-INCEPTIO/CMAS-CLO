@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { Navigate, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { apiClient, ApiError } from "../../lib/apiClient.ts"
+import { pictureFromCredential, savePicture } from "../../lib/avatar.ts"
 import { GOOGLE_CLIENT_ID } from "../../lib/app.constants.ts"
 import { startSession } from "../../lib/session.ts"
 import { useAuthStore } from "./useAuthStore.ts"
@@ -48,6 +49,7 @@ export default function Login() {
           setPendingEmail(emailFromCredential(response.credential))
           return
         }
+        savePicture(result.user.id, pictureFromCredential(response.credential))
         await startSession(result.accessToken)
         navigate("/", { replace: true })
       } catch (err) {
