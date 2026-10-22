@@ -7,8 +7,7 @@ import type { User } from "../../types/user.types.ts"
 
 // Mirrors AuthController.loginWithGoogle's two 200 shapes (auth.controller.ts).
 type GoogleLoginResponse =
-  | { status: "PENDING"; message: string }
-  | { status: "ACTIVE"; user: User; accessToken: string; refreshToken: string }
+  { status: "PENDING"; message: string } | { status: "ACTIVE"; user: User; accessToken: string } // refresh token: httpOnly cookie (S-2)
 
 /**
  * The email in a Google ID token, for display on the pending screen only. The
