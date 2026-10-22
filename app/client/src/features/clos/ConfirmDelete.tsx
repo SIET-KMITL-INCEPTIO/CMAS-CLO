@@ -14,9 +14,20 @@ type Props = {
   onConfirm: () => void
   onClose: () => void
   label: string
+  /** The red line on top; the default is the delete wording. */
+  warning?: string
 }
 
-export function ConfirmDelete({ title, rows, note, pending, onConfirm, onClose, label }: Props) {
+export function ConfirmDelete({
+  title,
+  rows,
+  note,
+  pending,
+  onConfirm,
+  onClose,
+  label,
+  warning,
+}: Props) {
   const any = rows.some(([, n]) => n > 0)
   return (
     <Modal
@@ -43,9 +54,10 @@ export function ConfirmDelete({ title, rows, note, pending, onConfirm, onClose, 
         className="mb-4 rounded-lg px-4 py-3 text-[14px]"
         style={{ background: TONE.bad.bg, color: TONE.bad.tx }}
       >
-        {any
-          ? "การลบนี้ย้อนกลับไม่ได้ และข้อมูลที่ผูกอยู่จะถูกลบตามไปด้วย"
-          : "การลบนี้ย้อนกลับไม่ได้ — ยังไม่มีข้อมูลอื่นผูกอยู่"}
+        {warning ??
+          (any
+            ? "การลบนี้ย้อนกลับไม่ได้ และข้อมูลที่ผูกอยู่จะถูกลบตามไปด้วย"
+            : "การลบนี้ย้อนกลับไม่ได้ — ยังไม่มีข้อมูลอื่นผูกอยู่")}
       </div>
       {rows.length > 0 && (
         <table className="dt">
