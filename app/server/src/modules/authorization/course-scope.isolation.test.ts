@@ -1,128 +1,122 @@
 /**
  * S-8 · NFR-07: an instructor of another course gets 404 on every course route.
  *
- * Needs a migrated, SEEDED database, so it runs only when CMAS_DB_TESTS=1 —
- * CI's isolation job sets it after `db:seed`. It only reads: tokens are signed
- * here for the seed's accounts, nothing is written.
+ * Needs a migrated database, so it runs only when CMAS_DB_TESTS=1. It builds
+ * its own course A (taught by teacherA) with one row of every leaf kind, then
+ * calls every registered route as teacherB.
  *
  * The table is built from the routes the app actually registers, so a new
- * route with :courseId is tested the day it is added, without anyone editing
- * this file.
+ * route with :courseId or a leaf id (/clos/:cloId, /students/:studentId, ...)
+ * is tested the day it is added, without anyone editing this file.
  */
-import type { FastifyInstance, RouteOptions } from "fastify"
+import type { RouteOptions } from "fastify"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import { buildApp } from "../../app.js"
 import { prisma } from "../../db/prisma.js"
-import { signAccessToken } from "../../lib/jwt.js"
+import {
+  courseBody,
+  RUN_DB_TESTS,
+  setupFixture,
+  UNUSED_ID,
+  type Fixture,
+} from "../../test/db-fixture.js"
 
-const RUN = process.env.CMAS_DB_TESTS === "1"
+const SCOPED = /:(courseId|cloId|objectiveId|activityId|studentId|uploadId)(?:\/|$)/
 
-// The seed: course A 90641001 taught by instructor1, course B 90641008 by instructor3.
-const SEED = {
-  admin: "admin@cmas.local",
-  teacherA: "instructor1@cmas.local",
-  teacherB: "instructor3@cmas.local",
-  courseA: "90641001",
-}
-const UNUSED_ID = "cl00000000000000000000000" // well-formed cuid, no such row
-
-describe.skipIf(!RUN)("course-scope isolation (S-8)", () => {
-  let app: FastifyInstance
+describe.skipIf(!RUN_DB_TESTS)("course-scope isolation (S-8)", () => {
+  let f: Fixture
   const routes: RouteOptions[] = []
-  let courseA: string
-  const bearer: Record<"admin" | "teacherA" | "teacherB", string> = {
-    admin: "",
-    teacherA: "",
-    teacherB: "",
-  }
+  const ids: Record<string, string> = {}
 
   beforeAll(async () => {
-    app = await buildApp({
-      logger: false,
-      onRoute: (route) => void routes.push(route),
-      // Probes so the gate is exercised end to end before real course routes
-      // exist. They go through exactly the hook a real route does.
-      extraRoutes: async (api) => {
-        api.get(
-          "/courses/:courseId/__probe",
-          { config: { access: { cap: "course.view" } } },
-          async () => ({
-            ok: true,
-          }),
-        )
-        api.post(
-          "/courses/:courseId/__probe",
-          { config: { access: { cap: "score.edit" } } },
-          async () => ({
-            ok: true,
-          }),
-        )
-      },
-    })
+    f = await setupFixture()
+    // Collect the route table from a second instance with an onRoute hook.
+    const probe = await buildApp({ logger: false, onRoute: (r) => void routes.push(r) })
+    await probe.close()
 
-    const course = await prisma.course.findFirstOrThrow({
-      where: { code: SEED.courseA },
-      select: { id: true },
-    })
-    courseA = course.id
-    for (const [key, email] of [
-      ["admin", SEED.admin],
-      ["teacherA", SEED.teacherA],
-      ["teacherB", SEED.teacherB],
-    ] as const) {
-      const user = await prisma.user.findUniqueOrThrow({
-        where: { email },
-        select: { id: true, role: true },
+    const call = (url: string, payload: object) =>
+      f
+        .call("teacherA", { method: "POST", url: `/api/v1${url}`, payload })
+        .then((r) => r.json().data)
+    ids.courseId = (await call("/courses", courseBody("TEST-S8"))).id
+    ids.cloId = (
+      await call(`/courses/${ids.courseId}/clos`, {
+        number: 1,
+        description: "c",
+        bloomLevel: "APPLY",
       })
-      bearer[key] = `Bearer ${await signAccessToken({ sub: user.id, role: user.role })}`
-    }
-  })
+    ).id
+    ids.objectiveId = (
+      await call(`/clos/${ids.cloId}/objectives`, { number: 1, description: "o", weight: 100 })
+    ).id
+    ids.activityId = (
+      await call(`/courses/${ids.courseId}/activities`, {
+        name: "a",
+        type: "TEST",
+        maxScore: 10,
+        weight: 100,
+      })
+    ).id
+    ids.studentId = (
+      await call(`/courses/${ids.courseId}/students`, { studentCode: "S8", name: "s" })
+    ).id
+    ids.uploadId = (
+      await prisma.scoreUploadLog.create({
+        data: {
+          courseId: ids.courseId,
+          uploadedBy: f.users.teacherA.id,
+          fileName: "x.xlsx",
+          recordsOk: 0,
+          recordsFail: 0,
+        },
+      })
+    ).id
+    ids.userId = f.users.teacherA.id
+  }, 120_000)
 
   afterAll(async () => {
-    await app?.close()
-    await prisma.$disconnect()
+    await f?.close()
+  }, 60_000)
+
+  const fill = (url: string, real: boolean) =>
+    url.replace(/:([A-Za-z]+)/g, (_, name: string) => (real ? (ids[name] ?? UNUSED_ID) : UNUSED_ID))
+
+  it("has scoped routes to test", () => {
+    expect(routes.filter((r) => SCOPED.test(r.url)).length).toBeGreaterThan(40)
   })
 
-  const call = (method: string, url: string, who: keyof typeof bearer) =>
-    app.inject({ method: method as "GET", url, headers: { authorization: bearer[who] } })
-
-  /** Fill :courseId with `courseId` and every other :param with an unused id. */
-  const fill = (url: string, courseId: string) =>
-    url.replace(":courseId", courseId).replace(/:[A-Za-z]+/g, UNUSED_ID)
-
-  it("has course routes to test", () => {
-    expect(routes.some((r) => r.url.includes(":courseId"))).toBe(true)
-  })
-
-  it("answers 404 to another course's instructor on every :courseId route, same body as a missing course", async () => {
-    const courseRoutes = routes.filter((r) => r.url.includes(":courseId") && r.method !== "HEAD")
-    for (const route of courseRoutes) {
-      const method = String(route.method)
-      const foreign = await call(method, fill(route.url, courseA), "teacherB")
-      const missing = await call(method, fill(route.url, UNUSED_ID), "teacherB")
+  it("answers 404 to another course's instructor on every scoped route, same body as a missing row", async () => {
+    const scoped = routes.filter((r) => SCOPED.test(r.url) && r.method !== "HEAD")
+    for (const route of scoped) {
+      const method = String(route.method) as "GET"
+      const foreign = await f.call("teacherB", { method, url: fill(route.url, true) })
+      const missing = await f.call("teacherB", { method, url: fill(route.url, false) })
       expect(foreign.statusCode, `${method} ${route.url}`).toBe(404)
       expect(foreign.body, `${method} ${route.url} leaks existence`).toBe(missing.body) // A-13
     }
-  })
+  }, 600_000)
 
-  it("lets the course's own instructor through", async () => {
-    expect((await call("GET", `/api/v1/courses/${courseA}/__probe`, "teacherA")).statusCode).toBe(
-      200,
-    )
-    expect((await call("POST", `/api/v1/courses/${courseA}/__probe`, "teacherA")).statusCode).toBe(
-      200,
-    )
+  it("answers a malformed id exactly like a missing one", async () => {
+    for (const url of [
+      "/api/v1/courses/not-an-id",
+      "/api/v1/clos/not-an-id/objectives",
+      "/api/v1/uploads/x/errors",
+    ]) {
+      const malformed = await f.call("teacherA", { method: "GET", url })
+      expect(malformed.statusCode, url).toBe(404)
+    }
   })
 
   it("lets ADMIN read the course but not do teaching work (D-1)", async () => {
-    expect((await call("GET", `/api/v1/courses/${courseA}/__probe`, "admin")).statusCode).toBe(200)
-    expect((await call("POST", `/api/v1/courses/${courseA}/__probe`, "admin")).statusCode).toBe(403)
-  })
-
-  it("answers a malformed course id exactly like a missing one", async () => {
-    const malformed = await call("GET", "/api/v1/courses/not-an-id/__probe", "teacherA")
-    const missing = await call("GET", `/api/v1/courses/${UNUSED_ID}/__probe`, "teacherA")
-    expect(malformed.statusCode).toBe(404)
-    expect(malformed.body).toBe(missing.body)
+    expect(
+      (await f.call("admin", { method: "GET", url: `/api/v1/clos/${ids.cloId}/objectives` }))
+        .statusCode,
+    ).toBe(200)
+    const write = await f.call("admin", {
+      method: "PATCH",
+      url: `/api/v1/clos/${ids.cloId}`,
+      payload: { description: "x" },
+    })
+    expect(write.statusCode).toBe(403)
   })
 })

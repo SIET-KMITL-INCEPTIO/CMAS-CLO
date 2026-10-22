@@ -120,11 +120,13 @@ export class CourseRepository {
   update(id: string, data: Partial<CourseData>, bands: Band[] | null): Promise<CourseRow> {
     return uniqueCourse(
       prisma.$transaction(async (tx) => {
+        // Course before bands: the 0004 trigger checks a new band against the stored scale.
+        if (bands) await tx.gradeBand.deleteMany({ where: { courseId: id } })
+        const course = await tx.course.update({ where: { id }, data, select: COURSE_SELECT })
         if (bands) {
-          await tx.gradeBand.deleteMany({ where: { courseId: id } })
           await tx.gradeBand.createMany({ data: bands.map((b) => ({ ...b, courseId: id })) })
         }
-        return tx.course.update({ where: { id }, data, select: COURSE_SELECT })
+        return course
       }),
     )
   }

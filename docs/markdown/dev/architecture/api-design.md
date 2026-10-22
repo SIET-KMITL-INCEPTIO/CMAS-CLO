@@ -280,6 +280,13 @@ Authorization: Bearer <accessToken>
 | PUT | `/students/:studentId/remediation-plans/:cloId` | any | ✅ (resolve) | ต้นแบบ 5.7 |
 | DELETE | `/students/:studentId/remediation-plans/:cloId` | any | ✅ (resolve) | ต้นแบบ 5.7 |
 | GET | `/courses/:courseId/score-changes` | any | ✅ | NFR-16 |
+| GET | `/courses/:courseId/grading` | any | ✅ | FR-90, FR-97 |
+| PUT | `/courses/:courseId/grade-bands` | any | ✅ | FR-91, FR-92 |
+| POST | `/courses/:courseId/grading/run` | any | ✅ | FR-94, FR-96 |
+| DELETE | `/courses/:courseId/grading` | any | ✅ | CR-11 |
+| PUT | `/students/:studentId/grade-override` | any | ✅ (resolve) | FR-95 |
+| DELETE | `/students/:studentId/grade-override` | any | ✅ (resolve) | FR-95 |
+| GET | `/courses/:courseId/grades/export` | any | ✅ | FR-87 |
 
 **รวม 57 endpoints** ใน §3.1–§3.7 (+ `/health` ที่มีแล้ว) · §3.8 นับแยก
 

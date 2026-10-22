@@ -113,10 +113,10 @@ describe("routes the server registers = the design's done rows", () => {
 
 // A leaf route (/clos/:cloId) finds its course through the A-3 resolver in
 // access.middleware.ts, so every designed endpoint registers with its access.
+// Once all are built the list is empty; a new design row makes it non-empty again.
 describe("every designed endpoint can be built on this server", () => {
-  it.each(toBuild.map((e) => [`${e.method} ${e.path}`, e] as const))(
-    "%s registers with its access",
-    async (_name, e) => {
+  it("has no in-scope endpoint left unbuilt, or each one registers", async () => {
+    for (const e of toBuild) {
       const probe = await buildApp({
         logger: false,
         extraRoutes: async (api) =>
@@ -128,8 +128,9 @@ describe("every designed endpoint can be built on this server", () => {
           }),
       })
       await probe.close()
-    },
-  )
+    }
+    expect(done.length + toBuild.length).toBe(inScope.length)
+  })
 })
 
 describe("implemented endpoints answer as designed", () => {
