@@ -21,7 +21,8 @@ import { closRoutes } from "./clos/clos.route.js"
 import { activitiesRoutes } from "./activities/activities.route.js"
 import { studentsRoutes } from "./students/students.route.js"
 import { scoresRoutes } from "./scores/scores.route.js"
-// import { dashboardRoutes } from "./dashboard/dashboard.route.js"
+import { gradingRoutes } from "./grading/grading.route.js"
+import { dashboardRoutes } from "./dashboard/dashboard.route.js"
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(healthRoutes)
@@ -32,5 +33,6 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(activitiesRoutes)
   await app.register(studentsRoutes)
   await app.register(scoresRoutes)
-  // await app.register(dashboardRoutes, { prefix: "/dashboard" })
+  await app.register(gradingRoutes)
+  await app.register(dashboardRoutes)
 }

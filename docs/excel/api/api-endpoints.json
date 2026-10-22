@@ -2044,7 +2044,7 @@
    "courseScope": "จาก URL",
    "capability": "score.export",
    "fr": "FR-70",
-   "status": "contract",
+   "status": "done",
    "phase": "P5",
    "needs0008": false,
    "classification": {
@@ -2168,7 +2168,7 @@
    "courseScope": "จาก URL",
    "capability": "อ่าน",
    "fr": "FR-90, FR-97",
-   "status": "new",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2199,7 +2199,7 @@
    "courseScope": "จาก URL",
    "capability": "band.write",
    "fr": "FR-91, FR-92",
-   "status": "new",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2236,7 +2236,7 @@
    "courseScope": "จาก URL",
    "capability": "grading.run",
    "fr": "FR-94, FR-96, CR-10, CR-11",
-   "status": "new",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2267,7 +2267,7 @@
    "courseScope": "จาก URL",
    "capability": "grading.run",
    "fr": "CR-11",
-   "status": "new",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2298,7 +2298,7 @@
    "courseScope": "resolve จาก id",
    "capability": "grade.override",
    "fr": "FR-95",
-   "status": "new",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2334,7 +2334,7 @@
    "courseScope": "resolve จาก id",
    "capability": "grade.override",
    "fr": "FR-95",
-   "status": "new",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2365,7 +2365,7 @@
    "courseScope": "จาก URL",
    "capability": "results.export",
    "fr": "FR-87",
-   "status": "new",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2396,7 +2396,7 @@
    "courseScope": "กรองในตัว",
    "capability": "อ่าน",
    "fr": "FR-80",
-   "status": "contract",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2427,7 +2427,7 @@
    "courseScope": "จาก URL",
    "capability": "อ่าน",
    "fr": "FR-81, FR-82, FR-84",
-   "status": "contract",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2458,7 +2458,7 @@
    "courseScope": "จาก URL",
    "capability": "อ่าน",
    "fr": "FR-83",
-   "status": "contract",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2489,7 +2489,7 @@
    "courseScope": "จาก URL",
    "capability": "อ่าน",
    "fr": "FR-85, FR-86",
-   "status": "contract",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
@@ -2520,7 +2520,7 @@
    "courseScope": "จาก URL",
    "capability": "results.export",
    "fr": "FR-87",
-   "status": "contract",
+   "status": "done",
    "phase": "P6",
    "needs0008": false,
    "classification": {
