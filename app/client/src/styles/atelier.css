@@ -1329,3 +1329,74 @@ html[data-density="comfortable"] {
     animation: none !important;
   }
 }
+
+/* Matrix and score tables (index-q .cellinp, td.who, .ghead, .gstart) */
+.cellinp {
+  width: 52px;
+  background: #fff;
+  border: 1px solid var(--edge2);
+  border-radius: 6px;
+  padding: 2px 5px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  color: inherit;
+}
+/* An empty cell is the one the user has to find: a dashed outline says "type here". */
+.cellinp.empty {
+  border-style: dashed;
+  border-color: #c9cde2;
+  background: #fcfcfe;
+}
+.cellinp::placeholder {
+  color: #b4b9d2;
+}
+.cellinp:hover,
+.cellinp:focus {
+  outline: none;
+  border-color: #a8aecd;
+  background: #fff;
+}
+.cellinp:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+  border-color: var(--focus);
+}
+.cellinp[aria-invalid="true"] {
+  border-color: var(--color-bad);
+}
+td.who,
+th.who {
+  min-width: 198px;
+}
+td.who .code {
+  font-variant-numeric: tabular-nums;
+  font-size: 12.5px;
+  color: var(--dim);
+  white-space: nowrap;
+}
+td.who .nm {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 230px;
+}
+table.dt thead tr.ghead th.who {
+  text-align: left;
+  border-left: 0;
+}
+table.dt thead tr.ghead + tr th {
+  top: 33px;
+}
+table.dt th.gstart,
+table.dt td.gstart {
+  border-left: 1px solid var(--edge);
+}
+table.dt tbody tr:hover > td.who.bg-white {
+  background: var(--tint);
+}
+td.scorecell {
+  white-space: nowrap;
+  position: relative;
+}

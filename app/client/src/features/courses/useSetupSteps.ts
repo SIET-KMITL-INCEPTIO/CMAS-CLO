@@ -12,7 +12,7 @@ export function useSetupSteps(course: Course) {
   return stepStates({
     clos: clos.data.clos,
     criteria: criteria.data,
-    activities: activities.data,
+    activities: activities.data.activities,
     students: course.counts.students,
   })
 }
