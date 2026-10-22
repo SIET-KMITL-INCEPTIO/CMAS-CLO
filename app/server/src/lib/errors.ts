@@ -10,6 +10,8 @@ export class AppError extends Error {
   constructor(
     readonly statusCode: 403 | 404 | 409 | 422,
     message: string,
+    /** What the caller needs to fix it, e.g. which scores are above a new maxScore. */
+    readonly errors?: unknown,
   ) {
     super(message)
     this.name = new.target.name
@@ -43,7 +45,7 @@ export class ConflictError extends AppError {
 
 /** A business rule refused the write (A-11). The message says how to fix it. */
 export class BusinessRuleError extends AppError {
-  constructor(message: string) {
-    super(422, message)
+  constructor(message: string, errors?: unknown) {
+    super(422, message, errors)
   }
 }
