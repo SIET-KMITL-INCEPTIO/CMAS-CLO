@@ -138,6 +138,9 @@ def code_routes():
         consts = dict(re.findall(r'const (\w+)\s*=\s*(\{[^}]*\}|"[^"]*")', src))
         for m in re.finditer(r'app\.(get|post|put|patch|delete)\(\s*"([^"]*)"\s*,\s*\{\s*config:\s*\{\s*access(?::\s*([^}]+?))?\s*\}', src):
             raw = (m.group(3) or 'access').strip().rstrip(',')
+            # `access: "public", rateLimit: X` — keep only the access value itself
+            if not raw.startswith('{'):
+                raw = raw.split(',', 1)[0].strip()
             raw = consts.get(raw, raw)
             cap = re.search(r'cap:\s*"([^"]+)"', raw)
             access = cap.group(1) if cap else raw.strip('"\' ')
@@ -265,7 +268,14 @@ for method, path, access in routes:
     if e is None:
         fail('CODE', 'โค้ดมี %s %s แต่ในตารางไม่ได้เป็น "ทำแล้ว"' % (method, path))
         continue
-    want = {ROLE_PUBLIC: 'public'}.get(e['role'], e['capability'])
+    # Same mapping as accessOf() in api-contract.test.ts: a read of course data is
+    # guarded by course.view, a read with no course by any signed-in account.
+    if e['role'] == ROLE_PUBLIC:
+        want = 'public'
+    elif e['capability'] in ('อ่าน', '—'):
+        want = 'authenticated' if e['role'] == 'ผู้ใช้ที่ล็อกอิน' else 'course.view'
+    else:
+        want = e['capability']
     if access != want:
         fail('CODE', '%s %s ประกาศ access "%s" แต่ตารางระบุ "%s"' % (method, path, access, want))
 for k, e in done.items():

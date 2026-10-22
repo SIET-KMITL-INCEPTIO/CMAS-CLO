@@ -262,7 +262,17 @@ Authorization: Bearer <accessToken>
 | GET | `/courses/:courseId/dashboard/students/:studentId` | any | ✅ | FR-85, FR-86 |
 | GET | `/courses/:courseId/dashboard/export` | any | ✅ | FR-87 |
 
-**รวม 57 endpoints** (+ `/health` ที่มีแล้ว)
+### 3.8 Endpoint ที่เพิ่มหลัง v1.1 และทำแล้ว (2026-10-22)
+
+> มาจาก [api-design-plan](../planning/api-design-plan.md) §5 · รายละเอียด request/response อยู่ในแผ่น `Design` ของ
+> [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) · ย้ายแถวเข้าตารางนี้เมื่อโค้ดลงแล้วเท่านั้น
+
+| Method | Path | Role | Scope | FR |
+|---|---|---|---|---|
+| GET | `/users/:userId/auth-events` | ADMIN | — | FR-22b, UC 1.6 |
+| POST | `/courses/:courseId/duplicate` | ADMIN · INSTRUCTOR | ✅ (ตรวจใน service) | ต้นแบบ |
+
+**รวม 57 endpoints** ใน §3.1–§3.7 (+ `/health` ที่มีแล้ว) · §3.8 นับแยก
 
 ---
 
