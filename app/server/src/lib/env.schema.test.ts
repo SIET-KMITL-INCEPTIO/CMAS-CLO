@@ -61,4 +61,19 @@ describe("envSchema", () => {
   it("rejects an unknown NODE_ENV", () => {
     expect(envSchema.safeParse({ ...valid, NODE_ENV: "staging" }).success).toBe(false)
   })
+
+  it("refuses an unencrypted database or browser origin in production", () => {
+    const prod = { ...valid, NODE_ENV: "production", CORS_ORIGIN: "https://cmas.example.ac.th" }
+    expect(() => envSchema.parse(prod)).toThrow(/sslmode=require/)
+    expect(() =>
+      envSchema.parse({
+        ...prod,
+        DATABASE_URL: `${valid.DATABASE_URL}?sslmode=require`,
+        CORS_ORIGIN: "http://x",
+      }),
+    ).toThrow(/https/)
+    expect(
+      envSchema.parse({ ...prod, DATABASE_URL: `${valid.DATABASE_URL}?sslmode=require` }).NODE_ENV,
+    ).toBe("production")
+  })
 })

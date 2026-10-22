@@ -21,10 +21,12 @@ export const UNUSED_ID = "cl00000000000000000000000"
 
 type Who = "admin" | "teacherA" | "teacherB" | "teacherC"
 
+type InjectResponse = Awaited<ReturnType<FastifyInstance["inject"]>>
+
 export type Fixture = {
   app: FastifyInstance
   users: Record<Who, { id: string; bearer: string }>
-  call: (who: Who | null, opts: InjectOptions) => ReturnType<FastifyInstance["inject"]>
+  call: (who: Who | null, opts: InjectOptions) => Promise<InjectResponse>
   close: () => Promise<void>
 }
 
