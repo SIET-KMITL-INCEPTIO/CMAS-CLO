@@ -12,8 +12,8 @@ React 19 SPA · Fastify 5 API · Prisma 6 · PostgreSQL (Supabase)
 ## Quick start
 
 ```bash
-git clone https://github.com/<org>/clo-system.git
-cd CMAS
+git clone https://github.com/SIET-KMITL-INCEPTIO/CMAS-CLO.git
+cd CMAS-CLO
 npm run setup
 ```
 
@@ -22,17 +22,21 @@ their examples, **generates a valid `JWT_SECRET`**, installs dependencies, and
 generates the Prisma client. It is safe to re-run — it never overwrites an
 existing `.env`.
 
-Then point it at a database and go:
+Then fill in the `.env` files and go:
 
 ```bash
-# paste your Supabase connection string into database/.env and app/server/.env
+# database/.env + app/server/.env:  DATABASE_URL / DIRECT_URL (Supabase)
+# app/server/.env:                  GOOGLE_CLIENT_ID, ADMIN_EMAILS=you@example.com
+# app/client/.env:                  VITE_GOOGLE_CLIENT_ID (same OAuth client)
 npm run db:migrate:dev    # apply the schema
 npm run db:seed           # sample course, CLOs, students and scores
 npm run dev               # client :5173 + server :3001
 ```
 
-Sign in with `admin@cmas.local` / `ChangeMe!2026` (override with
-`SEED_PASSWORD=… npm run db:seed`).
+Sign-in is **Google only**. An email listed in `ADMIN_EMAILS` becomes ADMIN on
+its first Google sign-in (FR-05a); that is how the first admin is made. Emails
+on `INSTITUTION_EMAIL_DOMAIN` are approved as INSTRUCTOR automatically, and
+everyone else waits for an admin to approve them under **Users**.
 
 ### With Docker instead
 
@@ -165,7 +169,7 @@ Rebuild the browsable HTML docs with `npm run docs:build`.
 Early development. The database schema and the client/server skeletons are in
 place; most API endpoints and pages are not implemented yet.
 
-- **Working** (all under `/api/v1`): `GET /health`, `POST /auth/google`, `GET /users`, `PATCH /users/:id/approve` (FR-08b), and the Home / Login / Users / CourseList pages
+- **Working** (all under `/api/v1`): `GET /health`, `POST /auth/google` (with `ADMIN_EMAILS` admin bootstrap, FR-05a), `GET /users`, `PATCH /users/:id/approve` (FR-08b), and the Home / Login / Users / CourseList pages
 - **Not implemented:** everything course-level — CLOs, objectives, activities, criteria, roster, scores, Excel import, dashboard, grading
 - **Database:** 13 Prisma models, migrations `0001`–`0007` (`0002`–`0007` hand-written, not yet replayed against a shadow DB)
 - **Scope:** 14 features / 14 pages — see [features-pages.md](docs/markdown/dev/architecture/features-pages.md)
