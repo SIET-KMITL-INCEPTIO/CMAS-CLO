@@ -50,6 +50,6 @@ export const file = (reply: FastifyReply, buffer: Buffer, fileName: string, type
     .header("Content-Type", type)
     .header(
       "Content-Disposition",
-      `attachment; filename="${fileName.replace(/[^ -~]|"/g, "_")}"; filename*=UTF-8''${encodeURIComponent(fileName)}`,
+      `attachment; filename="${fileName.replace(/[^\x20-\x7e]|"/g, "_")}"; filename*=UTF-8''${encodeURIComponent(fileName)}`,
     )
     .send(buffer)
