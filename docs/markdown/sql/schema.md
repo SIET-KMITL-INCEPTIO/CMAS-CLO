@@ -8,7 +8,7 @@ See also: [[dev]] · [[srs]] · [[Summary Project]] · [[concept-clo MOC]]
 >
 > DDL ที่รันได้: `database/migrations/` (Postgres — ของจริง) ·
 > [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) (MySQL — สำหรับทำ ER
-> ใน MySQL Workbench · ไฟล์ `*_v3.sql` เดิมย้ายไป `superseded/` แล้ว)
+> ใน MySQL Workbench)
 >
 > **ฉบับปัจจุบัน (2026-09-26): 13 ตาราง · migration `0001`–`0007`** — ตรวจกับ `schema.prisma` แล้ว
 >
@@ -20,8 +20,7 @@ See also: [[dev]] · [[srs]] · [[Summary Project]] · [[concept-clo MOC]]
 > | **v5** | **2026-09-17** | **13** | migration `0006` — **ตัด `ObjectiveAssessment`** ยุบเข้า `AssessmentCriteria` (ผูก Activity ↔ จุดประสงค์ ไม่ใช่ CLO) · ตัด `CLO.threshold` → `Course.cloPassMark` · เพิ่ม `CLO.weight` / `BehavioralObjective.weight` / `Activity.type` · `assessmentMethod` · `criteriaNote` · `passMark` |
 > | v5.1 | 2026-09-23 | 13 | migration `0007` — `User.status` (`PENDING` / `ACTIVE`) รอผู้ดูแลอนุมัติ Google นอกโดเมน (FR-08) · `CLO.levelSource` เปลี่ยนความหมายเป็น AUTO/MANUAL ของ SOLO (O3) |
 >
-> ⚠️ เลขเวอร์ชันในตารางนี้ **ไม่ตรงกับเลขในชื่อไฟล์ MySQL** — `cmas_app_mysql_v3.sql` คือ v2 ของตารางนี้
-> และ `cmas_app_mysql_v4.sql` คือ v3 · ตารางเทียบเลขทั้งสองชุดกับเลข migration อยู่ที่ [`docs/VERSIONS.md`](../../VERSIONS.md)
+> ⚠️ เลขเวอร์ชันในตารางนี้ **ไม่ตรงกับเลขในชื่อไฟล์ MySQL** — `cmas_app_mysql_v4.sql` คือ v3 ของตารางนี้ · ตารางเทียบเลขทั้งสองชุดกับเลข migration อยู่ที่ [`docs/VERSIONS.md`](../../VERSIONS.md)
 >
 > DDL ที่รันได้: `database/migrations/` (Postgres — ของจริง) ·
 > [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) (MySQL — เท่ากับ `schema.prisma` ถึง `0007` + ส่วนที่ต้นแบบ

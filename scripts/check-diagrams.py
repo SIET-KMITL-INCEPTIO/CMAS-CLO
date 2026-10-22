@@ -364,14 +364,13 @@ if not dropped and not unexpected and not iq_colbad:
 head('PRES', 'ไฟล์ที่กำกวมเมื่อวางเรียงกัน')
 refdir = ROOT / 'docs' / 'reference' / 'db'
 mysqldir = refdir / 'mysql'
-# ambiguous/outdated exports move to superseded/ rather than being deleted —
-# a diagram once shown in a meeting should still open, but never BY MISTAKE
-# for a current one. This checks the move actually happened and stuck.
+# a replaced export is deleted (git history keeps it), so two exports of the
+# same version can never sit side by side and be opened BY MISTAKE.
 pdfs = sorted(p.name for p in mysqldir.glob('*.pdf'))
 v4pdfs = [p for p in pdfs if 'v4' in p.lower()]
 if len(v4pdfs) > 1:
     fail.append('PRES · มี ER PDF รุ่น v4 มากกว่าหนึ่งไฟล์ที่ระดับบนสุด')
-    print('  ✗ ER PDF ที่ขึ้นต้นว่า v4 มี %d ไฟล์ — ย้ายไฟล์เก่าไป superseded/' % len(v4pdfs))
+    print('  ✗ ER PDF ที่ขึ้นต้นว่า v4 มี %d ไฟล์ — ลบไฟล์เก่า (ฉบับเก่าอยู่ใน git history)' % len(v4pdfs))
     for p in v4pdfs:
         print('      ' + p)
 else:
@@ -395,15 +394,6 @@ except ImportError:
     warn.append('PRES · ข้ามการตรวจเนื้อหา PDF — ไม่มี pypdf (pip install pypdf)')
     print('  ! ไม่มี pypdf ติดตั้ง — ข้ามการตรวจว่า PDF มีตารางที่ถูกยุบแล้วหรือไม่')
 
-olds = sorted(p.name for p in mysqldir.glob('*v3*'))
-if olds:
-    warn.append('PRES · ไฟล์รุ่น v3 วางอยู่ในโฟลเดอร์เดียวกับ v4')
-    print('  ! รุ่น v3 อยู่ปนกับ v4 %d ไฟล์ — %s ระบุไว้แล้วว่าไฟล์ไหนคือปัจจุบัน '
-          '(cmas_app_production_v3.sql) แต่ตัวไฟล์นั้นเองมี 11 ตาราง ขาด GradeBand/StudentGrade '
-          'เทียบกับ schema.prisma ที่มี 13 — ยังไม่ได้อัปเดตตาม §เกรด'
-          % (len(olds), 'mysql-dumps.md'))
-    for p in olds:
-        print('      ' + p)
 alt = refdir / 'schema.sql'
 if alt.exists():
     ntab = len(sql_tables(alt))
@@ -411,11 +401,6 @@ if alt.exists():
         warn.append('PRES · docs/reference/db/schema.sql เป็นสคีมาคนละชุด')
         print('  ! schema.sql มี %d ตาราง (v4 มี %d) — เป็นแบบ enterprise ที่ไม่ได้ใช้' % (ntab, len(v4)))
         print('      ชื่อไฟล์อ่านเหมือนเป็นสคีมาหลัก · เปิดผิดแล้วอธิบายผิดทั้งการนำเสนอ')
-
-superseded = mysqldir / 'superseded'
-if superseded.is_dir():
-    kept = sorted(p.name for p in superseded.iterdir() if p.is_file() and p.suffix != '.md')
-    print('  ✓ %d ไฟล์เก่าเก็บแยกไว้ที่ superseded/ พร้อม README อธิบายเหตุผล' % len(kept))
 
 # ══ สรุป ═══════════════════════════════════════════════════════════
 print('\n' + '═' * 76)

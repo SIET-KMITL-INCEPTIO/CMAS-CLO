@@ -11,8 +11,6 @@ filenames below are relative to that folder.
 |---|---|---|---|
 | [`cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql) | **v4 — frozen at migration 0004 (2026-09-06)**; superseded by `index-q.sql` | 13 tables · 16 FKs | Diagramming only. **No longer matches `schema.prisma`**: still has `ObjectiveAssessment`, `CourseInstructor.role`, `CLO.threshold`, and lacks `EmailVerificationToken`, `User.status` and everything from migrations 0005–0007. Kept as the grading-era snapshot |
 | [`index-q.sql`](../../reference/db/mysql/index-q.sql) | **`schema.prisma` (through migration 0007) + what the UI prototype `docs/pages/index-q.html` adds** | 16 tables · 19 FKs | The 13 Prisma tables including `User.status` (0007), plus the proposed `AuthEvent` (UC 1.6), `UploadReject` (FR-65) and `CourseGroupWeight` (N1 group weights), three password-flow columns on `User`, `Course.weightMode`, `Activity.passScore`, and `ScoreUploadLog.kind` (`SCORE` / `ROSTER`). Every addition is tagged `[index-q]` in its COMMENT, so the EER diagram shows what is proposed. Import this — it is the only MySQL file that matches the current Prisma schema, and it shows the prototype's data model. **Last loaded 2026-09-25** into a throwaway MySQL 8.0 (16 tables · 19 FKs by `information_schema`, also with `FOREIGN_KEY_CHECKS = 1`) |
-| [`superseded/cmas_app_mysql_v3.sql`](../../reference/db/mysql/superseded/cmas_app_mysql_v3.sql) | ~~v3~~ — **superseded**, no grading tables | 11 tables · 14 FKs | Kept for history only |
-| [`superseded/cmas_app_production_v3.sql`](../../reference/db/mysql/superseded/cmas_app_production_v3.sql) | ~~v3~~ — **superseded.** Same tables as the file above, hardened | 11 tables · 28 CHECKs · 6 triggers · 6 views | The only MySQL file with CHECKs, triggers and views. Kept as the reference for how to harden a later version; its tables are two generations behind `schema.prisma` |
 | [`../enterprise/schema.mysql.sql`](../../reference/db/enterprise/schema.mysql.sql) | Full institutional design (curriculum versioning, PLO/CLO mapping, sections, enrollments, PLO attainment, audit) | 36 tables + 4 views | Reference only — **not** what the app implements. A separate model, not a version of the app schema; lives in `reference/db/enterprise/` with its PostgreSQL original |
 
 Version labels here (`v3`, `v4`) are **not** the same numbers as the ones in
@@ -37,7 +35,7 @@ committed and are gone from the repo entirely.
 > is the reference model for the `plos` / `clo_plo_map` shape — but adding them
 > to the app schema means creating a `Program` table and **backfilling**
 > `Course.programId`, which is not a purely additive migration. This is recorded
-> as known technical debt in the header of `superseded/cmas_app_production_v3.sql`.
+> as known technical debt.
 
 **Requires MySQL 8.0.16+** — uses `CHECK` constraints, expression column
 defaults (`DEFAULT (CURRENT_DATE)`), and a `STORED` generated column
@@ -68,8 +66,7 @@ Thai `_th` columns store correctly.
 > both reading this file.
 >
 > The earlier row for v4 said "15 tables · 21 FKs" — that count predates the
-> 2026-09-06 removal of `GradeScheme` and `GradeRun`. `cmas_app_production_v3.sql`
-> has **not** been run against a server; confirm on MySQL 8.0.16+ before relying on it.
+> 2026-09-06 removal of `GradeScheme` and `GradeRun`.
 >
 > Loading into a server verifies the DDL, not Workbench's own parser. Workbench
 > reverse-engineers the script itself, so open it there once before handing it in.
@@ -81,9 +78,7 @@ Thai `_th` columns store correctly.
 Best for just getting the diagram.
 
 1. MySQL Workbench → **File ▸ Import ▸ Reverse Engineer MySQL Create Script…**
-2. **Browse** to `index-q.sql` (current: Prisma 0007 + prototype deltas; `cmas_app_mysql_v4.sql` is frozen at 0004) — never
-   `superseded/cmas_app_production_v3.sql`: Workbench warns on that file's `DELIMITER`
-   lines and skips its triggers and views.
+2. **Browse** to `index-q.sql` (current: Prisma 0007 + prototype deltas; `cmas_app_mysql_v4.sql` is frozen at 0004).
 3. Tick **"Place imported objects on a diagram"** → **Execute** → **Finish**.
 4. An EER diagram opens with every table and all foreign-key relationship lines.
 5. Tidy layout: **Arrange ▸ Autolayout**, then drag clusters apart.

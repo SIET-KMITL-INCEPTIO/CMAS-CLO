@@ -15,15 +15,14 @@ Fix this page in the same change.
 | Rule | Example |
 |---|---|
 | The **current** file keeps a stable name with no date | `mysql/index-q-er-diagram.pdf` |
-| A replaced file moves to a `superseded/` folder next to it and gets the **date it was made** or its **version** as a suffix | `superseded/index-q_er-diagram_2026-09-13.pdf`, `superseded/cmas_app_mysql_v3.sql` |
-| Every `superseded/` folder has a `README.md` with one row per file: what replaced it and why | [`reference/db/mysql/superseded/`](reference/db/mysql/superseded/README.md), [`diagrams/usecase/superseded/`](diagrams/usecase/superseded/README.md) |
+| A replaced file is **deleted** in the commit that adds its replacement. Git history keeps it, so there is no `superseded/` folder to open by mistake | `git log --follow -- docs/diagrams/threat-model/report.htm` |
 | A markdown document carries its own version in its header, plus the baseline it was checked against | `> **Version:** 2.4.0 \| **Updated:** 2026-09-26` · `> **Baseline:** [[srs]] v2.4.0 · migration 0001–0007` |
 | A generated file is never versioned by hand. Its version is the version of its input | `ER-INDEX-Q.*` ← `index-q.sql` |
 | A `.drawio` in `diagrams/` drawn by hand (no script under `scripts/` writes it) ends in **`_Handwritten`**. A name without it means a script regenerates the file, so hand edits there will be overwritten. The one exception is `Structure.drawio`: hand-drawn, kept under its original name (its generated pages 2–3 were removed 2026-10-14) | `CMAS-FE-BE-DB_Handwritten.drawio` · `UML-INDEX-Q.drawio` (script) |
 
-Nothing is deleted just because it is old. Older files move to `superseded/` so a
-diagram shown in a past meeting still opens. v1/v2 of the MySQL schema are the
-exception: they were deleted 2026-08-03 and live only in git history.
+Older files used to move to `superseded/` folders so a diagram shown in a past
+meeting still opened. All four folders were deleted 2026-10-21 as unused, together
+with v1/v2 of the MySQL schema (deleted 2026-08-03). Every older file lives only in git history.
 
 ---
 
@@ -44,8 +43,8 @@ that cannot drift, because Prisma records it in the database.
 |---|---|---:|---|---|---|---|
 | (before Prisma) | ≤ 2026-08-03 | 13 | — | v1 | deleted | git history only |
 | (before Prisma) | ≤ 2026-08-03 | 15 | — | v2 (multi-tenant) | deleted | git history only |
-| `0001`–`0002` | 2026-08-04 | 11 | v2 | **v3** | `superseded/cmas_app_mysql_v3.sql` · `superseded/cmas_app_production_v3.sql` + `.mwb` · `superseded/cmas_app_v3_er-diagram.pdf` | superseded |
-| `0003`–`0004` | 2026-08-23, trimmed 2026-09-06 | 13 | v3 | **v4** | `cmas_app_mysql_v4.sql` · `cmas_app_v4.mwb` · `cmas_app_v4_er-diagram.pdf` (older 08-23 export in `superseded/`) | **frozen**: kept at top level as the Workbench model; `check-diagrams.py` ER-1 compares it and only warns |
+| `0001`–`0002` | 2026-08-04 | 11 | v2 | **v3** | deleted 2026-10-21 (`cmas_app_mysql_v3.sql`, `cmas_app_production_v3.sql` + `.mwb`, `cmas_app_v3_er-diagram.pdf`) | git history only |
+| `0003`–`0004` | 2026-08-23, trimmed 2026-09-06 | 13 | v3 | **v4** | `cmas_app_mysql_v4.sql` · `cmas_app_v4.mwb` · `cmas_app_v4_er-diagram.pdf` | **frozen**: kept at top level as the Workbench model; `check-diagrams.py` ER-1 compares it and only warns |
 | `0005` | 2026-09-14 | 14 | v4 | — | no MySQL mirror | — |
 | `0006` | 2026-09-17 | 13 | v5 | — | no MySQL mirror | — |
 | `0007` | 2026-09-23 | 13 | **v5.1** | **`index-q`** | `index-q.sql` (13 Prisma tables + 4 proposed by the prototype = 17) · `index-q_er-diagram.pdf` | **current** |
@@ -82,9 +81,6 @@ listed in the header of the SQL file under "PROTOTYPE <-> SQL".
 | `diagrams/er/ER-INDEX-Q.drawio` | `scripts/build-er-index-q-drawio.py` | edit the layout |
 | `reference/db/mysql/index-q-v2.mwb` | `scripts/build-index-q-workbench.py` (needs MySQL Workbench) | Workbench model of `index-q.sql` · 18 tables, 26 relationships |
 | `reference/db/mysql/index-q-er-diagram.pdf` | MySQL Workbench export of the model above, 2026-10-19 | show the Workbench-style EER (replaces `index-q_er-diagram.pdf` of 2026-09-25, which had 16 tables) |
-
-Older version: `reference/db/mysql/superseded/index-q_er-diagram_2026-09-13.pdf`
-(was `index-q.pdf`: 15 tables, no `EmailVerificationToken`).
 
 ### 3.2 Frozen-at-v4 derivatives: versions that fall behind together
 
@@ -127,7 +123,6 @@ Kept for the reasoning in the comments. Not to be run.
 |---|---|
 | `diagrams/usecase/index-q-usecase.drawio` | **official** use case diagram (UML 2.5, from `PERM`), `scripts/build-usecase-drawio.py` |
 | `diagrams/usecase/UML-INDEX-Q.drawio` | current one-page summary of the same model, `scripts/build-index-q-uml-drawio.py` |
-| `diagrams/usecase/superseded/UML-INDEX-Q_2026-09-14_Handwritten.drawio` | older hand-made copy, **not yet compared** for hand edits |
 | `diagrams/usecase/UML-Layer2_Handwritten.drawio` | use case numbering declared superseded by index-q (`STATUS:SUPERSEDED` line in `diagrams/usecase/UML.md`) |
 | `diagrams/usecase/UML-Layer1_Handwritten.drawio`, `Structure.drawio` | current. Layer 1/2 are **levels of detail**, not versions |
 
@@ -174,13 +169,11 @@ In [`diagrams/threat-model/`](diagrams/threat-model/). Checked 2026-10-20 agains
 |---|---|
 | `threat-model.tm7` | **current**, edited by hand in Microsoft Threat Modeling Tool. Four pages (`Layer0`, `Layer1`, `Layer2-P4`, `Layer2-P6`) that mirror DFD levels 0, 1 and the two level-2 pages |
 | `report.htm` | **current**, exported from the model above: 695 threats. Every threat is still *Not Started* / *High* (the tool's default): not yet assessed |
-| `superseded/` | four older reports and the checklist used to fix the model, see the README there |
 
 The model is **not generated** from the DFD, so `check-diagrams.py` does not compare
 them: when the DFD changes, redraw the model by hand and export a new report.
 Overwrite `threat-model.tm7` and `report.htm` in place; earlier states of both are
-in git history, and an older report that is still worth keeping moves to
-`superseded/` with its date.
+in git history.
 
 ## 4. Document versions (markdown)
 
@@ -206,10 +199,9 @@ Documents not listed have no version header.
 ## 5. Open questions (decide, then update this page)
 
 1. ~~**Architecture drafts.**~~ Done 2026-09-28: moved to `uml/CMAS/architecture/`.
-2. **`UML-INDEX-Q_2026-09-14_Handwritten.drawio`.** Compare it with the generated file. Then
-   either carry its hand edits into the generator or delete it.
+2. ~~**`UML-INDEX-Q_2026-09-14_Handwritten.drawio`.**~~ Deleted 2026-10-21 without comparing it with the generated file; any hand edits in it live only in git history.
 3. **Progress report 2.** Which of `-02` / `-02-qa` was submitted? Keep that one
-   under the plain name and move the other to `progress/superseded/`.
+   under the plain name and delete the other.
 4. **v4 Excel workbooks** (§3.2). Regenerate them from `index-q.sql`, or label
    them "frozen at 0004" inside the workbook.
 5. **Two workbooks listed but not in the repo:** `excel/data-model/CMAS-ER-Diagram.xlsx`

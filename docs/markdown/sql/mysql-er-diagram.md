@@ -42,8 +42,6 @@ See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
 | [`reference/db/enterprise/schema.mysql.sql`](../../reference/db/enterprise/schema.mysql.sql) | Full institutional design — **reference only** | 36 tables, 4 views, 59 FKs | `enterprise/schema.pg.sql` (PostgreSQL 14+) |
 | [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) | **Prisma through migration 0007 + what `index-q.html` proposes. USE THIS ONE** | 16 tables, 19 FKs | `database/schema.prisma` + prototype deltas |
 | [`reference/db/mysql/cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql) | ~~Diagramming mirror~~ — **frozen at migration 0004**, stale since 0005 (still has `ObjectiveAssessment`, `CourseRole`, `CLO.threshold`) | 13 tables, 16 FKs | `database/schema.prisma` as of 2026-09-06 |
-| [`reference/db/mysql/superseded/cmas_app_mysql_v3.sql`](../../reference/db/mysql/superseded/cmas_app_mysql_v3.sql) | ~~Diagramming mirror~~ — **superseded by v4**, kept for history | 11 tables, 14 FKs | — |
-| [`reference/db/mysql/superseded/cmas_app_production_v3.sql`](../../reference/db/mysql/superseded/cmas_app_production_v3.sql) | ~~Executable, hardened~~ — **superseded**, the v3 tables with CHECKs, triggers and views. Not the live schema: the app runs PostgreSQL from `database/migrations/` | 11 tables, CHECKs, triggers, views | `database/migrations/` 0001–0002 |
 | [`mysql-dumps.md`](./mysql-dumps.md) | How-to | — | Workbench steps + translation table |
 
 **Requires MySQL 8.0.16+** (for `CHECK`, expression defaults, and the stored
@@ -281,11 +279,6 @@ Course 1─N ScoreUploadLog N─1 User
 No self-referencing relationship survives in v3: `Curriculum.clonedFrom` was the
 only one, and it went with the table.
 
-> **Two files, two purposes** (both now in `superseded/`). [`cmas_app_mysql_v3.sql`](../../reference/db/mysql/superseded/cmas_app_mysql_v3.sql)
-> is the diagramming mirror — tables and FKs only, so Workbench imports cleanly.
-> [`cmas_app_production_v3.sql`](../../reference/db/mysql/superseded/cmas_app_production_v3.sql) is the
-> executable one: cascade rules, CHECK constraints, the LEAD generated column,
-> triggers and reporting views. Both are 11 tables and both are single-tenant.
 
 ---
 

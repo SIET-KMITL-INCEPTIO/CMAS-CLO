@@ -39,7 +39,7 @@
 -- implements. Adding these levels back is NOT purely additive any more: it
 -- means creating the parent tables and BACKFILLING a program key onto every
 -- existing Course row. Recorded as known technical debt in
--- ../mysql/superseded/cmas_app_production_v3.sql.
+-- the v3 MySQL file (cmas_app_production_v3.sql, deleted 2026-10-21, in git history).
 -- ============================================================================
 --
 -- Design notes:
