@@ -1,0 +1,31 @@
+# client <-> server check, 2026-10-22 13:30
+# server :3001 (Fastify)   client :5173 (Vite)
+
+$ curl http://localhost:3001/api/v1/health
+HTTP 200
+access-control-allow-origin: http://localhost:5173
+{"success":true,"data":{"status":"ok","timestamp":"2026-10-22T06:30:16.368Z"}}
+
+$ curl http://localhost:3001/api/v1/users
+HTTP 401
+access-control-allow-origin: http://localhost:5173
+{"success":false,"message":"Unauthorized"}
+
+$ curl http://localhost:3001/api/v1/courses
+HTTP 404
+access-control-allow-origin: http://localhost:5173
+{"message":"Route GET:/api/v1/courses not found","error":"Not Found","statusCode":404}
+
+$ curl http://localhost:5173/
+HTTP 200
+Access-Control-Allow-Origin: http://localhost:5173
+<!doctype html>
+<html lang="th">
+  <head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+<scr

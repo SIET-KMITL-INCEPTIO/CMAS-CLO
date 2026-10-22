@@ -1,0 +1,36 @@
+
+> @clo/client@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.7 E:/ApexCore/ApexDev/CMAS/app/client
+
+ ✓ |client| src/lib/utils.test.ts (6 tests) 23ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  13:30:03
+   Duration  951ms (transform 48ms, setup 0ms, collect 89ms, tests 23ms, environment 389ms, prepare 104ms)
+
+
+> @clo/server@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.7 E:/ApexCore/ApexDev/CMAS/app/server
+
+ ✓ |server| src/lib/response.test.ts (9 tests) 10ms
+ ✓ |server| src/modules/authorization/capabilities.test.ts (3 tests) 6ms
+ ✓ |server| src/modules/authorization/authorization.service.test.ts (7 tests) 10ms
+ ✓ |server| src/lib/env.schema.test.ts (8 tests) 14ms
+ ✓ |server| src/lib/jwt.test.ts (5 tests) 18ms
+ ✓ |server| src/modules/auth/auth.service.test.ts (10 tests) 25ms
+ ↓ |server| src/modules/authorization/course-scope.isolation.test.ts (5 tests | 5 skipped)
+ ✓ |server| src/app.test.ts (14 tests) 255ms
+ ✓ |server| src/api-contract.test.ts (78 tests) 397ms
+
+ Test Files  8 passed | 1 skipped (9)
+      Tests  134 passed | 5 skipped (139)
+   Start at  13:30:04
+   Duration  1.50s (transform 453ms, setup 113ms, collect 2.72s, tests 734ms, environment 2ms, prepare 1.57s)
+
