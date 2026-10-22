@@ -114,6 +114,7 @@ def lowest(cap):
 
 # ══ use cases index-q.html adds (not in UML.md / USE_CASES) ══════════
 NEW = {
+    '1.7': 'อนุมัติบัญชีที่รออนุมัติ',   # 2569-10-22 FR-08b — Google นอกโดเมนคณะ PENDING → ACTIVE
     '2.6': 'เพิ่ม / ถอดผู้สอนในรายวิชา',
     '5.6': 'ระบุนักศึกษาที่ต้องติดตาม',
     '5.7': 'บันทึกแผนพัฒนาผู้เรียนรายคน',   # 2569-10-19 ความเห็นอาจารย์ — ครูพิมพ์แผนช่วยเหลือต่อ (นักศึกษา × CLO)
@@ -128,7 +129,7 @@ NEW = {
     # so these are the only use cases no role in PERM performs (GUEST below).
     '9.3': 'ลงทะเบียนด้วยอีเมลคณะ',
     '9.4': 'ยืนยันอีเมล',
-    '9.5': 'ลงทะเบียนด้วยบัญชี Google คณะ',
+    '9.5': 'ลงทะเบียนด้วยบัญชี Google',   # 2569-10-22 — นอกโดเมนคณะก็ลงทะเบียนได้ แต่รออนุมัติ (1.7)
 }
 GUEST_UC = ['9.3', '9.4', '9.5']
 GUEST_TH = 'ผู้ยังไม่มีบัญชี'
@@ -565,7 +566,7 @@ def dep(pg, ids, kid, rel, frm, cond_role=None, notes=None):
 def page_admin():
     pg = Page('CMAS · ผู้ดูแลระบบ')
     ncol, x0 = 2, 470
-    g1 = [['1.1', '1.4'], ['1.2'], ['1.3'], ['1.5'], ['1.6']]
+    g1 = [['1.1', '1.4'], ['1.2'], ['1.3'], ['1.5'], ['1.6'], ['1.7']]
     g2 = [['2.1', '2.4'], ['2.3']]
     # measure first, then draw — the frame and subject are sized from content
     probe = Page('probe')
@@ -577,7 +578,7 @@ def page_admin():
     i1, _ = package(pg, '1', '1 · ' + PKG_TEXT['1'], x0, 100, g1, ncol, {})
     i2, _ = package(pg, '2', '2 · ' + PKG_TEXT['2'], x0, 100 + h1 + 24, g2, ncol, {})
     admin = pg.vertex(role_label('ADMIN'), S_ACTOR, 180, 60 + (body + 60) // 2 - 40, 34, 64, role='actor')
-    for c in ('1.1', '1.2', '1.3', '1.5', '1.6'):
+    for c in ('1.1', '1.2', '1.3', '1.5', '1.6', '1.7'):
         pg.edge(admin, i1[c], S_ASSOC, kind='assoc')
     for c in ('2.1', '2.3'):
         pg.edge(admin, i2[c], S_ASSOC, kind='assoc')
@@ -590,6 +591,7 @@ def page_admin():
               '· บัญชีผู้ดูแลระบบลบไม่ได้ ต้องลดบทบาทก่อน<br>'
               '· 1.5 — ตั้ง mustChangePassword และบันทึก AuthEvent (FR-07)<br>'
               '· 1.6 — อ่านจาก AuthEvent ซึ่งเสนอไว้ใน index-q.sql<br>'
+              '· 1.7 — User.status PENDING → ACTIVE ทางเดียว แยกจาก isActive (FR-08b)<br>'
               '· 2.4 — ผู้สอนของวิชาก็เพิ่มผู้สอนได้เอง (2.6 · P14)<br>'
               '· 2.1 สร้าง · 2.3 ลบรายวิชา — ผู้สอนทำได้เหมือนกัน (P17 · P16)<br>'
               '· ผู้ดูแลระบบ<b>ไม่ทำงานในรายวิชา</b> — 2.2 และ 2.5 '
