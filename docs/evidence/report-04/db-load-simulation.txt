@@ -1,0 +1,43 @@
+# Database load simulation, 2026-10-22 16:28 — Supabase ap-northeast-1, PostgreSQL 17
+# 2 sections x 60 students x 15 activities = 1,800 cells; 10 rounds of every cell edited; then a concurrent burst through the app.
+# Test data TEST-SIM / @cmas.test, deleted at the end. Analysis: docs/markdown/dev/architecture/db-capacity.md
+
+## Run 2 (reported)
+0 before                       db 12.0 MB | Score 32 KB live 0 dead 0 | ScoreChange 32 KB live 0 dead 0
+phase 1: 1800 cells entered in 2456 ms
+1 after first entry            db 13.1 MB | Score 512 KB live 1800 dead 0 | ScoreChange 616 KB live 1800 dead 0
+2 after edit round 5           db 16.6 MB | Score 1464 KB live 1800 dead 8912 | ScoreChange 3232 KB live 10800 dead 0
+2 after edit round 10          db 20.0 MB | Score 2344 KB live 1800 dead 17564 | ScoreChange 5832 KB live 19800 dead 0
+phase 2: 10 rounds x 1800 cells in 22733 ms
+phase 3: burst — 2 PUTs of 900 cells + 3 dashboards at the same moment
+  GET dashboard/attainment section 01            200  4132 ms
+  PUT scores section 01 (900 cells)              200  4593 ms
+  GET grading section 01                         200  4609 ms
+  GET dashboard/at-risk section 02               200  4656 ms
+  PUT scores section 02 (900 cells)              200  4963 ms
+  whole burst 4989 ms
+  ScoreChange rows written by the burst: 1800
+3 after burst                  db 20.8 MB | Score 2552 KB live 1800 dead 19271 | ScoreChange 6472 KB live 21600 dead 0
+phase 4: VACUUM (ANALYZE) both tables in 1108 ms — reads and writes keep running
+4 after VACUUM                 db 20.8 MB | Score 2560 KB live 1800 dead 0 | ScoreChange 6480 KB live 21600 dead 0
+         VACUUM FULL "Score" in 211 ms — the table is locked while it runs
+4 after VACUUM FULL Score      db 18.7 MB | Score 408 KB live 1800 dead 0 | ScoreChange 6480 KB live 21600 dead 0
+5 after cleanup                db 11.7 MB | Score 32 KB live 0 dead 0 | ScoreChange 32 KB live 0 dead 0
+
+## Run 1 (ids not cuid-shaped, so the API answered 404 by design; VACUUM refused through pgbouncer) — kept for the autovacuum timestamps
+0 before                           db 12.2 MB | Score 128 KB live 0 dead 0 (autovacuum 09:13:25) | ScoreChange 136 KB live 0 dead 0 (autovacuum 09:13:25)
+phase 1: 1800 cells entered in 2113 ms
+1 after first entry                db 13.1 MB | Score 520 KB live 1800 dead 0 (autovacuum 09:13:25) | ScoreChange 616 KB live 1800 dead 0 (autovacuum 09:13:25)
+2 after edit round 1               db 13.6 MB | Score 704 KB live 1800 dead 1800 (autovacuum 09:13:25) | ScoreChange 984 KB live 3600 dead 0 (autovacuum 09:13:25)
+2 after edit round 5               db 16.0 MB | Score 1280 KB live 1800 dead 8840 (autovacuum 09:13:25) | ScoreChange 2840 KB live 10800 dead 0 (autovacuum 09:13:25)
+2 after edit round 10              db 18.9 MB | Score 1896 KB live 1800 dead 1732 (autovacuum 09:24:26) | ScoreChange 5176 KB live 21600 dead 0 (autovacuum 09:24:26)
+phase 2: 10 rounds x 1800 cells in 29752 ms
+  GET /courses/simc1/dashboard/attainment      404  910 ms
+  GET /courses/simc2/dashboard/at-risk         404  1615 ms
+  PUT /courses/simc2/scores (900 cells)        404  1652 ms
+  PUT /courses/simc1/scores (900 cells)        404  1655 ms
+  GET /courses/simc1/grading                   404  1656 ms
+  whole burst 1713 ms
+3 after burst                      db 18.9 MB | Score 1896 KB live 1800 dead 1594 (autovacuum 09:24:26) | ScoreChange 5176 KB live 21600 dead 0 (autovacuum 09:24:26)
+SIM ERROR PrismaClientKnownRequestError: 
+Raw query failed. Code: `25001`. Message: `ERROR: VACUUM cannot run inside a transaction block`
