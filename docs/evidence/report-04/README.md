@@ -21,6 +21,13 @@
 
 หมายเหตุ: แต่ละภาพ log เป็นการรัน `npm run dev` คนละรอบ จึงมี `reqId: req-1` ซ้ำกัน
 
+## ยิง API จริงครบทุก endpoint (branch `feature/api-endpoints`)
+- `api-smoke-output.txt` — HTTP จริง 78 ครั้งครอบคลุม 72 endpoint ในขอบเขต กับฐานข้อมูล Supabase จริง ผ่าน 78/78 ทั้งสองรอบ
+  - รอบ A ใช้ `.env` ปัจจุบัน (transaction pooler :6543 + `pgbouncer=true`) — 2–12 วินาทีต่อ request
+  - รอบ B ใช้ session pooler :5432 — เร็วขึ้นราว 2–3 เท่า
+- `api-smoke-server-log.txt` — log ฝั่ง server ของรอบ B: `incoming request` → `db query` → `request completed` ทุก request (ไม่มี token ไม่มีค่าของ query)
+- ข้อมูลทดสอบ (`@cmas.test`, `TEST-`) ถูกลบหลังจบทุกรอบ
+
 ## ผลทดสอบอัตโนมัติ
 - `unit-test-output.txt` — `npm run test` ทั้ง client และ server: server 134 ผ่าน / 5 ข้าม, client 6 ผ่าน
 - `client-server-test-output.txt` — เรียก API จริง (`/health` 200, `/users` 401 เมื่อไม่มี token, `/courses` 404 เพราะยังไม่ทำ) พร้อมตรวจ CORS ของ client :5173
