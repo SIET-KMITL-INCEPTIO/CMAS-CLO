@@ -8,13 +8,20 @@
  */
 export class AppError extends Error {
   constructor(
-    readonly statusCode: 403 | 404 | 409 | 422,
+    readonly statusCode: 400 | 403 | 404 | 409 | 422,
     message: string,
     /** What the caller needs to fix it, e.g. which scores are above a new maxScore. */
     readonly errors?: unknown,
   ) {
     super(message)
     this.name = new.target.name
+  }
+}
+
+/** A request a schema cannot express as wrong, e.g. an upload that is not an .xlsx (S-6). */
+export class BadRequestError extends AppError {
+  constructor(message: string) {
+    super(400, message)
   }
 }
 
@@ -38,8 +45,11 @@ export class NotFoundError extends AppError {
 
 /** Two writers raced, or a unique key already exists (D-3, P2002). */
 export class ConflictError extends AppError {
-  constructor(message = "ข้อมูลนี้มีอยู่แล้วหรือถูกแก้ไขไปก่อนหน้า กรุณาโหลดใหม่") {
-    super(409, message)
+  constructor(
+    message = "ข้อมูลนี้มีอยู่แล้วหรือถูกแก้ไขไปก่อนหน้า กรุณาโหลดใหม่",
+    errors?: unknown,
+  ) {
+    super(409, message, errors)
   }
 }
 
