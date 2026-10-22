@@ -812,7 +812,7 @@
    "courseScope": "จาก URL",
    "capability": "อ่าน",
    "fr": "FR-30, FR-32",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -843,7 +843,7 @@
    "courseScope": "จาก URL",
    "capability": "clo.write",
    "fr": "FR-30, FR-31, FR-99, FR-100",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -889,7 +889,7 @@
    "courseScope": "จาก URL",
    "capability": "clo.write",
    "fr": "FR-31",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -920,7 +920,7 @@
    "courseScope": "resolve จาก id",
    "capability": "clo.write",
    "fr": "FR-30, FR-99, FR-100",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -961,7 +961,7 @@
    "courseScope": "resolve จาก id",
    "capability": "clo.write",
    "fr": "FR-36",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -992,7 +992,7 @@
    "courseScope": "resolve จาก id",
    "capability": "อ่าน",
    "fr": "FR-33",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -1023,7 +1023,7 @@
    "courseScope": "resolve จาก id",
    "capability": "clo.write",
    "fr": "FR-33",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -1061,7 +1061,7 @@
    "courseScope": "resolve จาก id",
    "capability": "clo.write",
    "fr": "FR-33",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -1099,7 +1099,7 @@
    "courseScope": "resolve จาก id",
    "capability": "clo.write",
    "fr": "FR-33",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -1130,7 +1130,7 @@
    "courseScope": "จาก URL",
    "capability": "อ่าน",
    "fr": "FR-40, FR-43",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": true,
    "classification": {
@@ -1161,7 +1161,7 @@
    "courseScope": "จาก URL",
    "capability": "activity.write",
    "fr": "FR-40, FR-41",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": true,
    "classification": {
@@ -1224,7 +1224,7 @@
    "courseScope": "จาก URL",
    "capability": "activity.write",
    "fr": "FR-42",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -1255,7 +1255,7 @@
    "courseScope": "resolve จาก id",
    "capability": "activity.write",
    "fr": "FR-40, FR-41",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": true,
    "classification": {
@@ -1300,7 +1300,7 @@
    "courseScope": "resolve จาก id",
    "capability": "activity.delete",
    "fr": "FR-40",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -1331,7 +1331,7 @@
    "courseScope": "จาก URL",
    "capability": "อ่าน",
    "fr": "FR-44, FR-45, FR-48, FR-102",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -1362,7 +1362,7 @@
    "courseScope": "จาก URL",
    "capability": "activity.write",
    "fr": "FR-34, FR-44…FR-46",
-   "status": "contract",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -1400,7 +1400,7 @@
    "courseScope": "resolve จาก id",
    "capability": "activity.write",
    "fr": "ต้นแบบ",
-   "status": "new",
+   "status": "done",
    "phase": "P3",
    "needs0008": false,
    "classification": {
@@ -1431,7 +1431,7 @@
    "courseScope": "จาก URL",
    "capability": "activity.write",
    "fr": "ต้นแบบ N1/N2",
-   "status": "new",
+   "status": "done",
    "phase": "P5",
    "needs0008": true,
    "classification": {
@@ -1462,7 +1462,7 @@
    "courseScope": "resolve จาก id",
    "capability": "score.edit",
    "fr": "CR-05.1",
-   "status": "new",
+   "status": "done",
    "phase": "P5",
    "needs0008": true,
    "classification": {
@@ -1493,7 +1493,7 @@
    "courseScope": "resolve จาก id",
    "capability": "score.edit",
    "fr": "CR-05.1",
-   "status": "new",
+   "status": "done",
    "phase": "P5",
    "needs0008": true,
    "classification": {

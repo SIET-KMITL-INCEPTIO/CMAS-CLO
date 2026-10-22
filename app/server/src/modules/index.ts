@@ -17,7 +17,8 @@ import { healthRoutes } from "./health/health.route.js"
 import { authRoutes } from "./auth/auth.route.js"
 import { usersRoutes } from "./users/users.route.js"
 import { coursesRoutes } from "./courses/courses.route.js"
-// import { closRoutes } from "./clos/clos.route.js"
+import { closRoutes } from "./clos/clos.route.js"
+import { activitiesRoutes } from "./activities/activities.route.js"
 // import { excelRoutes } from "./excel/excel.route.js"
 // import { dashboardRoutes } from "./dashboard/dashboard.route.js"
 
@@ -26,7 +27,8 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(authRoutes, { prefix: "/auth" })
   await app.register(usersRoutes, { prefix: "/users" })
   await app.register(coursesRoutes, { prefix: "/courses" })
-  // await app.register(closRoutes, { prefix: "/clos" })
+  await app.register(closRoutes)
+  await app.register(activitiesRoutes)
   // await app.register(excelRoutes, { prefix: "/excel" })
   // await app.register(dashboardRoutes, { prefix: "/dashboard" })
 }

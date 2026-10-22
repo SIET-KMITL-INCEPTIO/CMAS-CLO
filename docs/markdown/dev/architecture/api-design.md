@@ -271,6 +271,10 @@ Authorization: Bearer <accessToken>
 |---|---|---|---|---|
 | GET | `/users/:userId/auth-events` | ADMIN | — | FR-22b, UC 1.6 |
 | POST | `/courses/:courseId/duplicate` | ADMIN · INSTRUCTOR | ✅ (ตรวจใน service) | ต้นแบบ |
+| POST | `/activities/:activityId/duplicate` | any | ✅ (resolve) | ต้นแบบ |
+| PUT | `/courses/:courseId/group-weights` | any | ✅ | ต้นแบบ N1/N2 |
+| POST | `/activities/:activityId/close` | any | ✅ (resolve) | CR-05.1 |
+| POST | `/activities/:activityId/reopen` | any | ✅ (resolve) | CR-05.1 |
 
 **รวม 57 endpoints** ใน §3.1–§3.7 (+ `/health` ที่มีแล้ว) · §3.8 นับแยก
 
