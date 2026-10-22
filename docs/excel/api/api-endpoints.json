@@ -314,6 +314,37 @@
   {
    "n": 11,
    "group": "2 บัญชีผู้ใช้",
+   "method": "GET",
+   "path": "/users/instructors",
+   "fullPath": "/api/v1/users/instructors",
+   "what": "ค้นหาผู้สอนที่มอบหมายเข้ารายวิชาได้ ด้วยชื่อหรืออีเมล",
+   "role": "ADMIN · ผู้สอน",
+   "courseScope": "—",
+   "capability": "course.create",
+   "fr": "FR-22",
+   "status": "done",
+   "phase": "F1",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "จัดการรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "q (ชื่อหรืออีเมล 1–100 ตัว) · limit=8 (≤ 10)",
+    "body": "—",
+    "success": "200 · [{id, name, email}] เฉพาะบัญชีผู้สอนที่ใช้งานได้ (ACTIVE และไม่ถูกปิด)",
+    "errors": "401 ไม่มี token · 400 ไม่ส่ง q",
+    "rules": "course.create — ผู้สร้างรายวิชาและผู้ดูแลเลือกผู้สอนได้โดยไม่ต้องมีสิทธิ์ user.manage · ไม่ส่งข้อมูลอื่นของบัญชี (A-9) · ไม่คืน ADMIN หรือบัญชีรออนุมัติ (D-1)",
+    "tests": "ST-COURSE-05"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 12,
+   "group": "2 บัญชีผู้ใช้",
    "method": "PATCH",
    "path": "/users/:userId",
    "fullPath": "/api/v1/users/:userId",
@@ -354,7 +385,7 @@
    }
   },
   {
-   "n": 12,
+   "n": 13,
    "group": "2 บัญชีผู้ใช้",
    "method": "PATCH",
    "path": "/users/:userId/status",
@@ -390,7 +421,7 @@
    "enumFields": null
   },
   {
-   "n": 13,
+   "n": 14,
    "group": "2 บัญชีผู้ใช้",
    "method": "POST",
    "path": "/users/:userId/reset-password",
@@ -421,7 +452,7 @@
    "enumFields": null
   },
   {
-   "n": 14,
+   "n": 15,
    "group": "2 บัญชีผู้ใช้",
    "method": "GET",
    "path": "/users/:userId/auth-events",
@@ -452,7 +483,7 @@
    "enumFields": null
   },
   {
-   "n": 15,
+   "n": 16,
    "group": "3 รายวิชา",
    "method": "GET",
    "path": "/courses",
@@ -474,7 +505,7 @@
    "design": {
     "params": "year, semester, q (รหัส/ชื่อ ไทย-อังกฤษ), page=1, perPage=20 (≤100), sort=code:asc (code|name|year|semester|createdAt)",
     "body": "—",
-    "success": "200 · data[] เป็นรายวิชา + counts {clos, activities, students} + instructors [{userId, name}] · meta {total, page, perPage}",
+    "success": "200 · data[] เป็นรายวิชา + counts {clos, activities, students} + instructors [{userId, name}] + readiness {blockers[]} · meta {total, page, perPage}",
     "errors": "400 query ผิดรูป · 401",
     "rules": "ผู้สอนเห็นเฉพาะวิชาของตน ADMIN เห็นทั้งหมด กรองใน query ไม่กรองทีหลัง (NFR-06) · counts มาจาก query เดียว ไม่มี N+1 (NFR-02)",
     "tests": "ST-COURSE-04"
@@ -483,7 +514,7 @@
    "enumFields": null
   },
   {
-   "n": 16,
+   "n": 17,
    "group": "3 รายวิชา",
    "method": "POST",
    "path": "/courses",
@@ -533,7 +564,7 @@
    "enumFields": null
   },
   {
-   "n": 17,
+   "n": 18,
    "group": "3 รายวิชา",
    "method": "GET",
    "path": "/courses/:courseId",
@@ -564,7 +595,7 @@
    "enumFields": null
   },
   {
-   "n": 18,
+   "n": 19,
    "group": "3 รายวิชา",
    "method": "PATCH",
    "path": "/courses/:courseId",
@@ -611,7 +642,7 @@
    "enumFields": null
   },
   {
-   "n": 19,
+   "n": 20,
    "group": "3 รายวิชา",
    "method": "DELETE",
    "path": "/courses/:courseId",
@@ -642,7 +673,7 @@
    "enumFields": null
   },
   {
-   "n": 20,
+   "n": 21,
    "group": "3 รายวิชา",
    "method": "GET",
    "path": "/courses/:courseId/impact",
@@ -673,7 +704,7 @@
    "enumFields": null
   },
   {
-   "n": 21,
+   "n": 22,
    "group": "3 รายวิชา",
    "method": "GET",
    "path": "/courses/:courseId/instructors",
@@ -704,7 +735,7 @@
    "enumFields": null
   },
   {
-   "n": 22,
+   "n": 23,
    "group": "3 รายวิชา",
    "method": "POST",
    "path": "/courses/:courseId/instructors",
@@ -740,7 +771,7 @@
    "enumFields": null
   },
   {
-   "n": 23,
+   "n": 24,
    "group": "3 รายวิชา",
    "method": "DELETE",
    "path": "/courses/:courseId/instructors/:userId",
@@ -771,7 +802,7 @@
    "enumFields": null
   },
   {
-   "n": 24,
+   "n": 25,
    "group": "3 รายวิชา",
    "method": "POST",
    "path": "/courses/:courseId/duplicate",
@@ -802,7 +833,7 @@
    "enumFields": null
   },
   {
-   "n": 25,
+   "n": 26,
    "group": "4 CLO และจุดประสงค์",
    "method": "GET",
    "path": "/courses/:courseId/clos",
@@ -833,7 +864,7 @@
    "enumFields": null
   },
   {
-   "n": 26,
+   "n": 27,
    "group": "4 CLO และจุดประสงค์",
    "method": "POST",
    "path": "/courses/:courseId/clos",
@@ -879,7 +910,7 @@
    }
   },
   {
-   "n": 27,
+   "n": 28,
    "group": "4 CLO และจุดประสงค์",
    "method": "PATCH",
    "path": "/courses/:courseId/clos/reorder",
@@ -910,7 +941,7 @@
    "enumFields": null
   },
   {
-   "n": 28,
+   "n": 29,
    "group": "4 CLO และจุดประสงค์",
    "method": "PATCH",
    "path": "/clos/:cloId",
@@ -951,7 +982,7 @@
    "enumFields": null
   },
   {
-   "n": 29,
+   "n": 30,
    "group": "4 CLO และจุดประสงค์",
    "method": "DELETE",
    "path": "/clos/:cloId",
@@ -982,7 +1013,7 @@
    "enumFields": null
   },
   {
-   "n": 30,
+   "n": 31,
    "group": "4 CLO และจุดประสงค์",
    "method": "GET",
    "path": "/clos/:cloId/objectives",
@@ -1013,7 +1044,7 @@
    "enumFields": null
   },
   {
-   "n": 31,
+   "n": 32,
    "group": "4 CLO และจุดประสงค์",
    "method": "POST",
    "path": "/clos/:cloId/objectives",
@@ -1051,7 +1082,7 @@
    "enumFields": null
   },
   {
-   "n": 32,
+   "n": 33,
    "group": "4 CLO และจุดประสงค์",
    "method": "PATCH",
    "path": "/objectives/:objectiveId",
@@ -1089,7 +1120,7 @@
    "enumFields": null
   },
   {
-   "n": 33,
+   "n": 34,
    "group": "4 CLO และจุดประสงค์",
    "method": "DELETE",
    "path": "/objectives/:objectiveId",
@@ -1120,7 +1151,7 @@
    "enumFields": null
   },
   {
-   "n": 34,
+   "n": 35,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "GET",
    "path": "/courses/:courseId/activities",
@@ -1151,7 +1182,7 @@
    "enumFields": null
   },
   {
-   "n": 35,
+   "n": 36,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "POST",
    "path": "/courses/:courseId/activities",
@@ -1214,7 +1245,7 @@
    }
   },
   {
-   "n": 36,
+   "n": 37,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "PATCH",
    "path": "/courses/:courseId/activities/reorder",
@@ -1245,7 +1276,7 @@
    "enumFields": null
   },
   {
-   "n": 37,
+   "n": 38,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "PATCH",
    "path": "/activities/:activityId",
@@ -1290,7 +1321,7 @@
    "enumFields": null
   },
   {
-   "n": 38,
+   "n": 39,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "DELETE",
    "path": "/activities/:activityId",
@@ -1321,7 +1352,7 @@
    "enumFields": null
   },
   {
-   "n": 39,
+   "n": 40,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "GET",
    "path": "/courses/:courseId/criteria",
@@ -1352,7 +1383,7 @@
    "enumFields": null
   },
   {
-   "n": 40,
+   "n": 41,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "PUT",
    "path": "/courses/:courseId/criteria",
@@ -1390,7 +1421,7 @@
    "enumFields": null
   },
   {
-   "n": 41,
+   "n": 42,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "POST",
    "path": "/activities/:activityId/duplicate",
@@ -1421,7 +1452,7 @@
    "enumFields": null
   },
   {
-   "n": 42,
+   "n": 43,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "PUT",
    "path": "/courses/:courseId/group-weights",
@@ -1452,7 +1483,7 @@
    "enumFields": null
   },
   {
-   "n": 43,
+   "n": 44,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "POST",
    "path": "/activities/:activityId/close",
@@ -1483,7 +1514,7 @@
    "enumFields": null
   },
   {
-   "n": 44,
+   "n": 45,
    "group": "5 กิจกรรมและเกณฑ์",
    "method": "POST",
    "path": "/activities/:activityId/reopen",
@@ -1514,7 +1545,7 @@
    "enumFields": null
   },
   {
-   "n": 45,
+   "n": 46,
    "group": "6 นักศึกษา",
    "method": "GET",
    "path": "/courses/:courseId/students",
@@ -1545,7 +1576,7 @@
    "enumFields": null
   },
   {
-   "n": 46,
+   "n": 47,
    "group": "6 นักศึกษา",
    "method": "POST",
    "path": "/courses/:courseId/students",
@@ -1582,7 +1613,7 @@
    "enumFields": null
   },
   {
-   "n": 47,
+   "n": 48,
    "group": "6 นักศึกษา",
    "method": "PATCH",
    "path": "/students/:studentId",
@@ -1619,7 +1650,7 @@
    "enumFields": null
   },
   {
-   "n": 48,
+   "n": 49,
    "group": "6 นักศึกษา",
    "method": "DELETE",
    "path": "/students/:studentId",
@@ -1650,7 +1681,7 @@
    "enumFields": null
   },
   {
-   "n": 49,
+   "n": 50,
    "group": "6 นักศึกษา",
    "method": "GET",
    "path": "/courses/:courseId/students/template",
@@ -1681,7 +1712,7 @@
    "enumFields": null
   },
   {
-   "n": 50,
+   "n": 51,
    "group": "6 นักศึกษา",
    "method": "POST",
    "path": "/courses/:courseId/students/import/preview",
@@ -1712,7 +1743,7 @@
    "enumFields": null
   },
   {
-   "n": 51,
+   "n": 52,
    "group": "6 นักศึกษา",
    "method": "POST",
    "path": "/courses/:courseId/students/import/commit",
@@ -1743,7 +1774,7 @@
    "enumFields": null
   },
   {
-   "n": 52,
+   "n": 53,
    "group": "6 นักศึกษา",
    "method": "POST",
    "path": "/students/:studentId/withdraw",
@@ -1774,7 +1805,7 @@
    "enumFields": null
   },
   {
-   "n": 53,
+   "n": 54,
    "group": "6 นักศึกษา",
    "method": "POST",
    "path": "/students/:studentId/restore",
@@ -1805,7 +1836,7 @@
    "enumFields": null
   },
   {
-   "n": 54,
+   "n": 55,
    "group": "6 นักศึกษา",
    "method": "PUT",
    "path": "/students/:studentId/remediation-plans/:cloId",
@@ -1841,7 +1872,7 @@
    "enumFields": null
   },
   {
-   "n": 55,
+   "n": 56,
    "group": "6 นักศึกษา",
    "method": "DELETE",
    "path": "/students/:studentId/remediation-plans/:cloId",
@@ -1872,7 +1903,7 @@
    "enumFields": null
   },
   {
-   "n": 56,
+   "n": 57,
    "group": "7 คะแนนและ Excel",
    "method": "GET",
    "path": "/courses/:courseId/scores",
@@ -1903,7 +1934,7 @@
    "enumFields": null
   },
   {
-   "n": 57,
+   "n": 58,
    "group": "7 คะแนนและ Excel",
    "method": "PUT",
    "path": "/courses/:courseId/scores",
@@ -1941,7 +1972,7 @@
    "enumFields": null
   },
   {
-   "n": 58,
+   "n": 59,
    "group": "7 คะแนนและ Excel",
    "method": "GET",
    "path": "/courses/:courseId/scores/template",
@@ -1972,7 +2003,7 @@
    "enumFields": null
   },
   {
-   "n": 59,
+   "n": 60,
    "group": "7 คะแนนและ Excel",
    "method": "POST",
    "path": "/courses/:courseId/scores/import/preview",
@@ -2003,7 +2034,7 @@
    "enumFields": null
   },
   {
-   "n": 60,
+   "n": 61,
    "group": "7 คะแนนและ Excel",
    "method": "POST",
    "path": "/courses/:courseId/scores/import/commit",
@@ -2034,7 +2065,7 @@
    "enumFields": null
   },
   {
-   "n": 61,
+   "n": 62,
    "group": "7 คะแนนและ Excel",
    "method": "GET",
    "path": "/courses/:courseId/scores/export",
@@ -2065,7 +2096,7 @@
    "enumFields": null
   },
   {
-   "n": 62,
+   "n": 63,
    "group": "7 คะแนนและ Excel",
    "method": "GET",
    "path": "/courses/:courseId/uploads",
@@ -2096,7 +2127,7 @@
    "enumFields": null
   },
   {
-   "n": 63,
+   "n": 64,
    "group": "7 คะแนนและ Excel",
    "method": "GET",
    "path": "/uploads/:uploadId/errors",
@@ -2127,7 +2158,7 @@
    "enumFields": null
   },
   {
-   "n": 64,
+   "n": 65,
    "group": "7 คะแนนและ Excel",
    "method": "GET",
    "path": "/courses/:courseId/score-changes",
@@ -2158,7 +2189,7 @@
    "enumFields": null
   },
   {
-   "n": 65,
+   "n": 66,
    "group": "8 ตัดเกรด",
    "method": "GET",
    "path": "/courses/:courseId/grading",
@@ -2189,7 +2220,7 @@
    "enumFields": null
   },
   {
-   "n": 66,
+   "n": 67,
    "group": "8 ตัดเกรด",
    "method": "PUT",
    "path": "/courses/:courseId/grade-bands",
@@ -2226,7 +2257,7 @@
    "enumFields": null
   },
   {
-   "n": 67,
+   "n": 68,
    "group": "8 ตัดเกรด",
    "method": "POST",
    "path": "/courses/:courseId/grading/run",
@@ -2257,7 +2288,7 @@
    "enumFields": null
   },
   {
-   "n": 68,
+   "n": 69,
    "group": "8 ตัดเกรด",
    "method": "DELETE",
    "path": "/courses/:courseId/grading",
@@ -2288,7 +2319,7 @@
    "enumFields": null
   },
   {
-   "n": 69,
+   "n": 70,
    "group": "8 ตัดเกรด",
    "method": "PUT",
    "path": "/students/:studentId/grade-override",
@@ -2324,7 +2355,7 @@
    "enumFields": null
   },
   {
-   "n": 70,
+   "n": 71,
    "group": "8 ตัดเกรด",
    "method": "DELETE",
    "path": "/students/:studentId/grade-override",
@@ -2355,7 +2386,7 @@
    "enumFields": null
   },
   {
-   "n": 71,
+   "n": 72,
    "group": "8 ตัดเกรด",
    "method": "GET",
    "path": "/courses/:courseId/grades/export",
@@ -2386,7 +2417,7 @@
    "enumFields": null
   },
   {
-   "n": 72,
+   "n": 73,
    "group": "9 แดชบอร์ด",
    "method": "GET",
    "path": "/dashboard/overview",
@@ -2417,7 +2448,7 @@
    "enumFields": null
   },
   {
-   "n": 73,
+   "n": 74,
    "group": "9 แดชบอร์ด",
    "method": "GET",
    "path": "/courses/:courseId/dashboard/attainment",
@@ -2448,7 +2479,7 @@
    "enumFields": null
   },
   {
-   "n": 74,
+   "n": 75,
    "group": "9 แดชบอร์ด",
    "method": "GET",
    "path": "/courses/:courseId/dashboard/at-risk",
@@ -2479,7 +2510,7 @@
    "enumFields": null
   },
   {
-   "n": 75,
+   "n": 76,
    "group": "9 แดชบอร์ด",
    "method": "GET",
    "path": "/courses/:courseId/dashboard/students/:studentId",
@@ -2510,7 +2541,7 @@
    "enumFields": null
   },
   {
-   "n": 76,
+   "n": 77,
    "group": "9 แดชบอร์ด",
    "method": "GET",
    "path": "/courses/:courseId/dashboard/export",

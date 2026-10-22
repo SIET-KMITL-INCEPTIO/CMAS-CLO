@@ -68,7 +68,7 @@ See also: [[prototype-to-app]] · [[features-pages]] · [[user-flow]] · [[api-d
 | หน้า / ส่วนในต้นแบบ | endpoint ที่ใช้ | ช่องว่างของ API |
 |---|---|---|
 | **จัดการรายวิชา** (`viewCourses`) การ์ด/ตาราง จัดกลุ่มตามภาค ค้นหา | `GET /courses` | — |
-| `modalCourse` สร้าง · แก้ · ตั้งค่า · ผู้สอน | `POST`/`PATCH /courses/:id` · `GET`/`POST`/`DELETE …/instructors` · `GET /users` (ADMIN เลือกผู้สอน) | ผู้สอนเลือกเพื่อนร่วมสอนไม่ได้ เพราะ `GET /users` เป็นของ ADMIN — **G1** |
+| `modalCourse` สร้าง · แก้ · ตั้งค่า · ผู้สอน | `POST`/`PATCH /courses/:id` · `GET`/`POST`/`DELETE …/instructors` · `GET /users` (ADMIN เลือกผู้สอน) | ~~ผู้สอนเลือกเพื่อนร่วมสอนไม่ได้ เพราะ `GET /users` เป็นของ ADMIN~~ — **G1** ✅ ใช้ `GET /users/instructors?q=` |
 | ทำสำเนา · ลบพร้อมผลกระทบ | `POST …/duplicate` · `GET …/impact` · `DELETE …?confirm=true` | — |
 | **ภาพรวม** (`viewOverview`) การ์ดผ่านวิชา · เรดาร์ผู้ผ่านราย CLO · ผ่าน/ไม่ผ่านรายกิจกรรม · การกระจายคะแนนรวม · ขั้นถัดไป | `GET …/dashboard/attainment` · `GET …/dashboard/at-risk` · `GET …/criteria` (ความพร้อม) | การกระจายคะแนนรวม และผ่าน/ไม่ผ่านรายกิจกรรม ยังไม่มี — **G2** · ขั้นถัดไป คำนวณจาก meta ของ endpoint ที่มี (ไม่ใช่สูตรคะแนน) |
 | **CLO** (`viewClos`) ลาก เรียง Bloom/SOLO น้ำหนักแผน vs คำนวณ | `GET`/`POST /courses/:id/clos` · `PATCH …/reorder` · `PATCH`/`DELETE /clos/:id` | — |
@@ -91,7 +91,7 @@ See also: [[prototype-to-app]] · [[features-pages]] · [[user-flow]] · [[api-d
 
 | # | เพิ่มอะไร | ใช้ที่หน้า | หมายเหตุ |
 |---|---|---|---|
-| **G1** | `GET /users/instructors?q=` — รายชื่อผู้สอนที่ใช้งานได้ (id · ชื่อ · อีเมล) สิทธิ์ `staff.write` ของรายวิชา หรือ `authenticated` | ตั้งค่ารายวิชา › ผู้สอน | ไม่ส่งข้อมูลอื่นของบัญชี (A-9) |
+| **G1** ✅ | `GET /users/instructors?q=` — ผู้สอนที่ใช้งานได้ (INSTRUCTOR · เปิดใช้ · ACTIVE) คืนแค่ id · ชื่อ · อีเมล สูงสุด 10 คน · สิทธิ์ `course.create` (ADMIN และผู้สอน) | ตั้งค่ารายวิชา › ผู้สอน | ไม่ส่งข้อมูลอื่นของบัญชี (A-9) |
 | **G2** | เพิ่มใน `GET …/dashboard/attainment`: `activities[{id, passed, failed, pending}]` และ `distribution[{from, to, count}]` | ภาพรวม | คำนวณใน `lib/attainment.ts` ตัวเดียว (FR-88) |
 | **G3** | `GET /courses/:courseId/dashboard/students` — ทุกคนในชั้น: คะแนนร้อยละและคะแนนดิบราย CLO · ผ่านกี่ CLO · คะแนนรวม · สถานะ | ผลรายนักศึกษา | ต้องนิยาม "คะแนนดิบราย CLO" จากต้นแบบ (`cloRaw`) ลง SRS ก่อน |
 | **G4** | `GET /dashboard/overview` โหลดทุกวิชาในชุด query เดียว | หน้าแรกหลังล็อกอิน | ตอนนี้ราว 5 วินาทีต่อวิชา |
@@ -105,7 +105,7 @@ See also: [[prototype-to-app]] · [[features-pages]] · [[user-flow]] · [[api-d
 | ขั้น | งาน | ต้องเสร็จก่อนเพราะ | ผ่านเมื่อ |
 |---|---|---|---|
 | **F0 ฐาน** ✅ | tokens Nocturnal Atelier · ฟอนต์ · shell (แถบบน · rail · รายการรายวิชา) · overlay · `apiClient` ใหม่ + refresh · `useCan` · route ใหม่ใน `pages.config.ts` · ค้นหา Ctrl K · การแสดงผล · ~~seed 4 รายวิชาจากต้นแบบ~~ ย้ายไป F1 | ทุกหน้าใช้ | ล็อกอินแล้วเห็น shell เหมือนต้นแบบ · token หมดอายุแล้วต่ออายุเองไม่เด้งออก |
-| **F1 รายวิชา** | จัดการรายวิชา · `modalCourse` · ทำสำเนา · ลบ · **G1** | ทุกหน้าในรายวิชาต้องมีรายวิชา | สร้าง–แก้–ทำสำเนา–ลบได้ครบจากหน้าจอ · ADMIN ไม่เห็นปุ่มงานสอน |
+| **F1 รายวิชา** ✅ | จัดการรายวิชา (การ์ด/ตาราง · จัดกลุ่ม 5 แบบ · ค้นหา) · `modalCourse` (`?new=1`) · ทำสำเนา · ลบพร้อมผลกระทบและวลียืนยัน · **G1** · `readiness.blockers` ใน `GET /courses` · seed 4 รายวิชาจากต้นแบบ (`database/seed-prototype.ts`) · แก้ CORS ให้ส่ง PATCH/PUT/DELETE ได้ | ทุกหน้าในรายวิชาต้องมีรายวิชา | สร้าง–แก้–ทำสำเนา–ลบได้ครบจากหน้าจอ · ADMIN ไม่เห็นปุ่มงานสอน |
 | **F2 CLO และจุดประสงค์** | หน้า CLO · จุดประสงค์ · แถบขั้นตอน 6 ขั้น | กิจกรรมต้องผูกกับจุดประสงค์ | น้ำหนักแผนกับค่าคำนวณเตือนตรงกับต้นแบบ |
 | **F3 กิจกรรม** | รายการตามประเภท · น้ำหนักรายกลุ่ม · เมทริกซ์ตรวจการเชื่อม | คะแนนต้องมีกิจกรรม | เมทริกซ์ครบ 100% → ขั้นที่ 5 ผ่าน เหมือนต้นแบบ |
 | **F4 นักศึกษาและคะแนน** | ตารางคะแนน (คีย์บอร์ด · วาง · เติม · เลิกทำ · ยกเว้น · ปิดรับ) · รายชื่อ · นำเข้า/ส่งออก Excel · ประวัติ · `studentDrawer` | ผลและเกรดอ่านคะแนน | 409 แสดงช่องที่ชนและโหลดใหม่ได้ · ช่องว่างไม่กลายเป็น 0 (FR-62) |

@@ -116,4 +116,22 @@ export class UserRepository {
   countCourses(id: string) {
     return prisma.courseInstructor.count({ where: { userId: id } })
   }
+
+  /** Accounts that can teach (D-1): INSTRUCTOR, approved and switched on. Three columns only (A-9). */
+  searchInstructors(q: string, take: number) {
+    return prisma.user.findMany({
+      where: {
+        role: "INSTRUCTOR",
+        isActive: true,
+        status: "ACTIVE",
+        OR: [
+          { name: { contains: q, mode: "insensitive" } },
+          { email: { contains: q, mode: "insensitive" } },
+        ],
+      },
+      orderBy: { name: "asc" },
+      take,
+      select: { id: true, name: true, email: true },
+    })
+  }
 }
