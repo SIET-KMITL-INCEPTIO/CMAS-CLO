@@ -275,6 +275,11 @@ Authorization: Bearer <accessToken>
 | PUT | `/courses/:courseId/group-weights` | any | ✅ | ต้นแบบ N1/N2 |
 | POST | `/activities/:activityId/close` | any | ✅ (resolve) | CR-05.1 |
 | POST | `/activities/:activityId/reopen` | any | ✅ (resolve) | CR-05.1 |
+| POST | `/students/:studentId/withdraw` | any | ✅ (resolve) | CR-05.1 |
+| POST | `/students/:studentId/restore` | any | ✅ (resolve) | CR-05.1 |
+| PUT | `/students/:studentId/remediation-plans/:cloId` | any | ✅ (resolve) | ต้นแบบ 5.7 |
+| DELETE | `/students/:studentId/remediation-plans/:cloId` | any | ✅ (resolve) | ต้นแบบ 5.7 |
+| GET | `/courses/:courseId/score-changes` | any | ✅ | NFR-16 |
 
 **รวม 57 endpoints** ใน §3.1–§3.7 (+ `/health` ที่มีแล้ว) · §3.8 นับแยก
 

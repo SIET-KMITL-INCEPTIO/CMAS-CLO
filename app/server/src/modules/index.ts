@@ -19,7 +19,8 @@ import { usersRoutes } from "./users/users.route.js"
 import { coursesRoutes } from "./courses/courses.route.js"
 import { closRoutes } from "./clos/clos.route.js"
 import { activitiesRoutes } from "./activities/activities.route.js"
-// import { excelRoutes } from "./excel/excel.route.js"
+import { studentsRoutes } from "./students/students.route.js"
+import { scoresRoutes } from "./scores/scores.route.js"
 // import { dashboardRoutes } from "./dashboard/dashboard.route.js"
 
 export async function registerRoutes(app: FastifyInstance) {
@@ -29,6 +30,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(coursesRoutes, { prefix: "/courses" })
   await app.register(closRoutes)
   await app.register(activitiesRoutes)
-  // await app.register(excelRoutes, { prefix: "/excel" })
+  await app.register(studentsRoutes)
+  await app.register(scoresRoutes)
   // await app.register(dashboardRoutes, { prefix: "/dashboard" })
 }
