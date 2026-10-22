@@ -24,7 +24,30 @@ export type ScoreImportPreview = {
   }[]
 }
 
+export type ScoreChange = {
+  id: string
+  studentId: string
+  studentCode: string
+  activityId: string
+  activityName: string
+  from: number | "EXCUSED" | null
+  to: number | "EXCUSED" | null
+  source: string
+  changedBy: { id: string; name: string } | null
+  changedAt: string
+  note: string | null
+}
+
 export const scoresApi = {
+  changes: async (courseId: string, page: number) => {
+    const query = new URLSearchParams({ perPage: "30", page: String(page) })
+    const { data, meta } = await apiClient.getWithMeta<ScoreChange[]>(
+      `/courses/${courseId}/score-changes?${query}`,
+    )
+    return { changes: data, total: (meta as { total: number }).total }
+  },
+  uploadErrors: (uploadId: string) =>
+    apiClient.download(`/uploads/${uploadId}/errors?format=xlsx`, "upload-errors.xlsx"),
   /** 200 per page is the server's ceiling; one Sec almost always fits. */
   grid: async (courseId: string, page: number): Promise<Grid> => {
     const query = new URLSearchParams({ perPage: "200", page: String(page) })
