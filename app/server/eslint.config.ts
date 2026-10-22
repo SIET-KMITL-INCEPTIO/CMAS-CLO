@@ -7,7 +7,11 @@ export default tseslint.config(
   {
     files: ["**/*.ts"],
     rules: {
-      "@typescript-eslint/no-unused-vars": "warn",
+      // `const { id: _id, ...rest } = row` drops a field on purpose (A-9 DTOs, copies).
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { varsIgnorePattern: "^_", argsIgnorePattern: "^_", ignoreRestSiblings: true },
+      ],
     },
   },
   {
