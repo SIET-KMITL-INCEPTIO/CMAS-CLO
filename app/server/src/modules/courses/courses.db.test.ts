@@ -116,6 +116,32 @@ describe.skipIf(!RUN_DB_TESTS)("courses and accounts against the database", () =
     it("lets ADMIN read any course", async () => {
       expect((await get("admin", `/courses/${courseId}`)).statusCode).toBe(200)
     })
+
+    it("says what still blocks a course, on the list and on the course (FR-84)", async () => {
+      const one = (await get("teacherA", `/courses/${courseId}`)).json().data
+      expect(one.readiness.blockers.length).toBeGreaterThan(0) // no CLO, activity or student yet
+      const list = (await get("teacherA", "/courses?q=TEST-001")).json().data
+      expect(list.find((c: { id: string }) => c.id === courseId).readiness).toEqual(one.readiness)
+    })
+  })
+
+  describe("GET /users/instructors (G1)", () => {
+    it("finds active instructors by name or email, and nothing more than id, name and email", async () => {
+      const res = await get("teacherA", "/users/instructors?q=TEST%20teacher")
+      expect(res.statusCode).toBe(200)
+      const hits: Record<string, unknown>[] = res.json().data
+      const ids = hits.map((h) => h.id)
+      expect(ids).toEqual(expect.arrayContaining([f.users.teacherB.id, f.users.teacherC.id]))
+      expect(ids).not.toContain(f.users.admin.id) // ADMIN does not teach (D-1)
+      for (const h of hits) expect(Object.keys(h).sort()).toEqual(["email", "id", "name"])
+      const byEmail = (await get("teacherA", `/users/instructors?q=teacherb`)).json().data
+      expect(byEmail.map((h: { id: string }) => h.id)).toContain(f.users.teacherB.id)
+    })
+
+    it("needs a search term and a signed-in caller", async () => {
+      expect((await get("teacherA", "/users/instructors")).statusCode).toBe(400)
+      expect((await get(null, "/users/instructors?q=TEST")).statusCode).toBe(401)
+    })
   })
 
   describe("PATCH /courses/:courseId", () => {

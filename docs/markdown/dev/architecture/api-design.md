@@ -270,6 +270,7 @@ Authorization: Bearer <accessToken>
 | Method | Path | Role | Scope | FR |
 |---|---|---|---|---|
 | GET | `/users/:userId/auth-events` | ADMIN | — | FR-22b, UC 1.6 |
+| GET | `/users/instructors` | ADMIN · INSTRUCTOR | — | FR-22 (G1, [[frontend-plan]]) |
 | POST | `/courses/:courseId/duplicate` | ADMIN · INSTRUCTOR | ✅ (ตรวจใน service) | ต้นแบบ |
 | POST | `/activities/:activityId/duplicate` | any | ✅ (resolve) | ต้นแบบ |
 | PUT | `/courses/:courseId/group-weights` | any | ✅ | ต้นแบบ N1/N2 |

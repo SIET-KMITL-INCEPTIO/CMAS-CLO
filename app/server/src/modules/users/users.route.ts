@@ -14,6 +14,8 @@ export async function usersRoutes(app: FastifyInstance) {
 
   app.get("/", { config: { access } }, controller.list)
   app.patch("/:id/approve", { config: { access } }, controller.approve)
+  // G1: whoever may create a course may pick its instructors — no user.manage needed.
+  app.get("/instructors", { config: { access: { cap: "course.create" } } }, controller.instructors)
   app.get("/:userId", { config: { access } }, controller.get)
   app.patch("/:userId", { config: { access } }, controller.update)
   app.patch("/:userId/status", { config: { access } }, controller.setStatus)

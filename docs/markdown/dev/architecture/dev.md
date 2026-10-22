@@ -225,7 +225,8 @@ CMAS/
 │   ├── schema.prisma      # single source of truth, shared by all tooling
 │   ├── .env.example
 │   ├── migrations/        # สร้างโดย Prisma — ห้ามเปลี่ยนชื่อโฟลเดอร์
-│   └── seed.ts
+│   ├── seed.ts
+│   └── seed-prototype.ts  # 4 รายวิชาตัวอย่างจาก index-q.html
 ├── docs/                  # ดู docs/README.md — markdown/ คือต้นฉบับ
 ├── scripts/               # setup.mjs + ตัวสร้าง/ตรวจ diagram, workbook
 ├── .gitignore
@@ -324,6 +325,7 @@ database/
 │                     # GradeBand, StudentGrade — Curriculum/Institution ถูกตัดแล้ว (2026-08-04)
 ├── migrations/      # 0001_init … 0007_google_domain_account_status (0002–0007 เขียนมือทั้งหมด — ยังไม่ได้ตรวจกับ shadow DB ดูหัวแต่ละไฟล์)
 ├── seed.ts
+├── seed-prototype.ts # 4 รายวิชาตัวอย่างจาก index-q.html (c1–c4)
 └── .env.example
 ```
 

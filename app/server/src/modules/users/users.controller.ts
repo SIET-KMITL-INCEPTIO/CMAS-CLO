@@ -2,6 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify"
 import { UsersService } from "./users.service.js"
 import {
   authEventsQuerySchema,
+  instructorSearchSchema,
   listUsersQuerySchema,
   updateUserSchema,
   userIdParamsSchema,
@@ -24,6 +25,11 @@ export class UsersController {
     const user = await this.service.approve(id, callerOf(req).userId)
     if (!user) return notFound(reply, "ไม่พบผู้ใช้งานนี้")
     return ok(reply, user)
+  }
+
+  instructors = async (req: FastifyRequest, reply: FastifyReply) => {
+    const { q, limit } = instructorSearchSchema.parse(req.query)
+    return ok(reply, await this.service.searchInstructors(q, limit))
   }
 
   get = async (req: FastifyRequest, reply: FastifyReply) => {

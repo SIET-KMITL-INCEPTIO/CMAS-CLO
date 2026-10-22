@@ -82,6 +82,54 @@ export class CourseRepository {
     return { total, rows }
   }
 
+  /**
+   * What lib/attainment `blockers()` reads, for many courses in four queries
+   * (NFR-02: no query per course).
+   */
+  async readinessInputs(courseIds: string[]) {
+    const where = { courseId: { in: courseIds } }
+    // In parallel, not in a transaction: through the pooler a transaction adds a
+    // BEGIN and a COMMIT round trip to every course read, and a hint that is one
+    // edit stale is harmless — the dashboard recomputes from its own snapshot.
+    const [activities, cells, clos, objectives] = await Promise.all([
+      prisma.activity.findMany({
+        where,
+        select: {
+          id: true,
+          courseId: true,
+          name: true,
+          weight: true,
+          maxScore: true,
+          closedAt: true,
+        },
+      }),
+      prisma.assessmentCriteria.findMany({
+        where: { activity: where },
+        select: {
+          activityId: true,
+          objectiveId: true,
+          weight: true,
+          activity: { select: { courseId: true } },
+        },
+      }),
+      prisma.cLO.findMany({
+        where,
+        select: { id: true, courseId: true, number: true, description: true, classTarget: true },
+      }),
+      prisma.behavioralObjective.findMany({
+        where: { clo: where },
+        select: {
+          id: true,
+          cloId: true,
+          number: true,
+          weight: true,
+          clo: { select: { courseId: true } },
+        },
+      }),
+    ])
+    return { activities, cells, clos, objectives }
+  }
+
   findById(id: string): Promise<CourseRow | null> {
     return prisma.course.findUnique({ where: { id }, select: COURSE_SELECT })
   }

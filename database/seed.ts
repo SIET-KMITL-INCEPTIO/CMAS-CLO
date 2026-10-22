@@ -11,12 +11,14 @@
  *
  * Single-tenant (2026-08-04): the Institution/Curriculum layer is gone, and
  * with it the SEED_MULTI_TENANT adversarial second institution. The remaining
- * boundary is the course, so the seed creates TWO courses with DIFFERENT
+ * boundary is the course, so the seed creates courses with DIFFERENT
  * instructors — that is what the FR-25 / NFR-07 access tests need: an
- * instructor assigned to course A must get 404 on course B.
+ * instructor assigned to course A must get 404 on the others. The other
+ * courses are the prototype's demo data (seed-prototype.ts).
  */
 import { PrismaClient, Role, GradeScale, ActivityType, AssessmentMethod } from "@prisma/client"
 import argon2 from "argon2"
+import { seedPrototype } from "./seed-prototype.js"
 
 const prisma = new PrismaClient()
 
@@ -73,32 +75,23 @@ async function main() {
     })
   }
 
-  // --- Course B: PASS_FAIL, different instructor, zero credits -----------
-  // 90641008 is the real 0 (0-0-45) prerequisite that FR-14 exists for, and
-  // it is graded ผ่าน/ไม่ผ่าน — so CR-06 has something to run against.
-  const otherCourse = await seedCourse({
-    code: "90641008",
-    name: "การเตรียมความพร้อมสหกิจศึกษา",
-    nameEn: "Cooperative Education Preparation",
-    gradeScale: GradeScale.PASS_FAIL,
-    credits: 0,
-    lectureHours: 0,
-    practiceHours: 0,
-    selfStudyHours: 45,
-  })
-
-  await prisma.courseInstructor.upsert({
-    where: { courseId_userId: { courseId: otherCourse.id, userId: outsider.id } },
-    update: {},
-    create: { courseId: otherCourse.id, userId: outsider.id },
+  // --- The prototype's four courses (index-q.html c1–c4) -----------------
+  // c2 is 90641008, the real 0 (0-0-45) PASS_FAIL prerequisite FR-14 exists
+  // for; instructor3 teaches it and not course A, which the access tests need.
+  await upsertUser("somchai@cmas.local", "ผศ.ดร. สมชาย ใจดี", Role.INSTRUCTOR)
+  await upsertUser("user_th@cmas.local", "user_th", Role.INSTRUCTOR)
+  const prototype = await seedPrototype(prisma, async (email) => {
+    const user = await prisma.user.findUniqueOrThrow({ where: { email } })
+    return user.id
   })
 
   console.log("Seed complete:")
   console.table({
-    users: 4,
-    courses: 2,
+    users: 6,
+    courses: 1 + prototype.length,
     "course A (LETTER)": `90641001 — ${lead.email}, ${coInstructor.email}`,
-    "course B (PASS_FAIL)": `90641008 — ${outsider.email}`,
+    prototype: prototype.join(" · "),
+    "teaches 90641008 only": outsider.email,
   })
   console.log(`\nSign in as ${admin.email} — password: ${SEED_PASSWORD}`)
   console.log("Override the password with SEED_PASSWORD=... npm run db:seed\n")

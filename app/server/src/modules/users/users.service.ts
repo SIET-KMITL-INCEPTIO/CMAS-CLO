@@ -33,6 +33,11 @@ export class UsersService {
     return approved
   }
 
+  /** G1: the course form's instructor picker. */
+  searchInstructors(q: string, limit: number) {
+    return this.users.searchInstructors(q, limit)
+  }
+
   /** Design #10. `courses` answers "can this account be removed" (FR-06). */
   async get(userId: string) {
     const user = await this.users.findProfile(userId)
