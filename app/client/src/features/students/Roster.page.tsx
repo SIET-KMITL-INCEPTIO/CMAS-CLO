@@ -8,14 +8,19 @@
  */
 import { useState } from "react"
 import { toast } from "sonner"
+import { Modal } from "../../components/overlay/Sheet.tsx"
 import { useCan } from "../../hooks/useCan.ts"
 import { ConfirmDelete } from "../clos/ConfirmDelete.tsx"
 import { CoursePage } from "../courses/CoursePage.tsx"
 import { useCourseContext } from "../courses/useCourseContext.ts"
 import type { GridStudent } from "../scores/score.types.ts"
+import { ChangesDrawer } from "../scores/ChangesDrawer.tsx"
+import { ImportExcel } from "../scores/ImportExcel.tsx"
+import { scoresApi } from "../scores/scores.api.ts"
 import { ScoreGrid } from "../scores/ScoreGrid.tsx"
 import { useScoreGrid } from "../scores/useScores.ts"
 import { StudentForm } from "./StudentForm.tsx"
+import { studentsApi } from "./students.api.ts"
 import { useDeleteStudent, useRestoreStudent, useWithdrawStudent } from "./useStudents.ts"
 
 const TITLE = "นักศึกษาและคะแนน"
@@ -27,6 +32,9 @@ export default function Roster() {
   const grid = useScoreGrid(course.id, page)
   const [form, setForm] = useState<GridStudent | "new" | null>(null)
   const [deleting, setDeleting] = useState<GridStudent | null>(null)
+  const [excel, setExcel] = useState(false)
+  const [importing, setImporting] = useState<"roster" | "scores" | null>(null)
+  const [history, setHistory] = useState(false)
   const withdraw = useWithdrawStudent()
   const restore = useRestoreStudent()
   const remove = useDeleteStudent()
@@ -37,10 +45,22 @@ export default function Roster() {
   const total = data?.meta.total ?? 0
   const pages = Math.max(1, Math.ceil(total / (data?.meta.perPage ?? 200)))
 
-  const addButton = canManage && (
-    <button type="button" className="btn btn-primary" onClick={() => setForm("new")}>
-      เพิ่มนักศึกษา
-    </button>
+  const addButton = (
+    <>
+      {canManage && (
+        <button type="button" className="btn btn-primary" onClick={() => setForm("new")}>
+          เพิ่มนักศึกษา
+        </button>
+      )}
+      {(can("score.import") || can("score.export") || canManage) && (
+        <button type="button" className="btn" onClick={() => setExcel(true)}>
+          Excel
+        </button>
+      )}
+      <button type="button" className="btn" onClick={() => setHistory(true)}>
+        ประวัติการแก้
+      </button>
+    </>
   )
   const help = (
     <>
@@ -128,6 +148,63 @@ export default function Roster() {
   return (
     <CoursePage title={TITLE} tools={addButton} help={help}>
       {body}
+      {excel && (
+        <Modal
+          open
+          onClose={() => setExcel(false)}
+          title="นำเข้า / ส่งออก Excel"
+          sub="ตรวจไฟล์ก่อนบันทึกเสมอ — ยังไม่เขียนอะไรจนกว่าจะยืนยัน"
+        >
+          <div className="grid gap-2 sm:grid-cols-2">
+            {can("score.export") && (
+              <>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => studentsApi.template(course.id).catch(failed)}
+                >
+                  ดาวน์โหลดเทมเพลตรายชื่อ
+                </button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => scoresApi.template(course.id).catch(failed)}
+                >
+                  ดาวน์โหลดเทมเพลตคะแนน
+                </button>
+              </>
+            )}
+            {canManage && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => {
+                  setExcel(false)
+                  setImporting("roster")
+                }}
+              >
+                นำเข้ารายชื่อ
+              </button>
+            )}
+            {can("score.import") && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => {
+                  setExcel(false)
+                  setImporting("scores")
+                }}
+              >
+                นำเข้าคะแนน
+              </button>
+            )}
+          </div>
+        </Modal>
+      )}
+      {importing && (
+        <ImportExcel kind={importing} courseId={course.id} onClose={() => setImporting(null)} />
+      )}
+      {history && <ChangesDrawer courseId={course.id} onClose={() => setHistory(false)} />}
       {form && (
         <StudentForm
           courseId={course.id}
