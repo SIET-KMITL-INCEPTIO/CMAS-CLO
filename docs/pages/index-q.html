@@ -638,15 +638,28 @@ html[data-density="compact"] table.dt td{ font-size:14px; }
 
 /* Account menu — anchored under the avatar, not a full overlay: it is a
    shortcut list, and dimming the page for it would overstate it. */
+.avatar{ position:relative; display:grid; place-items:center; flex:none; border-radius:999px;
+         color:#fff; font-size:12.5px; background:linear-gradient(135deg,#8A90C0,#3C456A); }
+.avdot{ position:absolute; right:-1px; bottom:-1px; width:11px; height:11px; border-radius:999px;
+        background:#6E9C87; box-shadow:0 0 0 2px #465078; }
+.avbtn{ position:relative; width:34px; height:34px; border-radius:999px; }
+.avbtn .avatar{ width:100%; height:100%; box-shadow:0 0 0 2px rgba(255,255,255,.28); transition:box-shadow .15s; }
+.avbtn:hover .avatar, .avbtn[aria-expanded="true"] .avatar{ box-shadow:0 0 0 2px rgba(255,255,255,.6); }
 .acctmenu{
-  position:fixed; top:44px; right:10px; z-index:60; width:262px; padding:6px;
-  background:var(--card); border:1px solid var(--edge); border-radius:12px;
-  box-shadow:var(--shadow-pop); opacity:0; transform:translateY(-4px);
+  position:fixed; top:48px; right:10px; z-index:60; width:300px; padding:8px;
+  background:var(--card); border:1px solid var(--edge); border-radius:16px;
+  box-shadow:var(--shadow-pop); opacity:0; transform:translateY(-6px) scale(.98); transform-origin:top right;
   transition:opacity .14s, transform .14s;
 }
-.acctmenu.on{ opacity:1; transform:translateY(0); }
-.acctitem{ width:100%; display:flex; align-items:center; gap:9px; padding:8px 10px;
-           border-radius:8px; font-size:14px; color:var(--ink); text-align:left; }
+.acctmenu.on{ opacity:1; transform:none; }
+.accthead{ position:relative; display:flex; gap:12px; align-items:center; padding:10px 10px 14px; margin-bottom:4px;
+           border-bottom:1px solid var(--edge2); }
+.accthead .avatar{ width:52px; height:52px; font-size:17px; }
+.accthead .avdot{ width:13px; height:13px; box-shadow:0 0 0 2px var(--card); }
+.acctout{ position:absolute; top:6px; right:8px; font-size:13px; color:var(--dim); padding:2px 6px; border-radius:6px; }
+.acctout:hover{ background:var(--wash); color:var(--ink); }
+.acctitem{ width:100%; display:flex; align-items:center; gap:10px; padding:9px 10px;
+           border-radius:10px; font-size:14px; color:var(--ink); text-align:left; }
 .acctitem:hover{ background:var(--wash); }
 @media (max-width: 639px){ .acctmenu{ top:auto; bottom:64px; left:10px; right:10px; width:auto; } }
 
@@ -692,14 +705,9 @@ body[data-auth="out"] #toasts{ z-index:90; }
     <div class="cmdright">
       <button data-act="shortcuts" class="w-7 h-7 rounded-md grid place-items-center text-[14px]
               text-white/80 hover:bg-white/15" title="แป้นพิมพ์ลัด (?)">?</button>
-      <button id="acctBtn" data-act="acct" class="flex items-center gap-2 rounded-md pl-2 pr-1 py-1 hover:bg-white/12"
-              aria-haspopup="menu" aria-expanded="false">
-        <span class="text-right hidden md:block">
-          <span class="block text-[14px] text-white leading-tight" id="hd-user"></span>
-          <span class="block text-[12px] text-white/70 leading-tight" id="hd-role"></span>
-        </span>
-        <span class="w-7 h-7 rounded-full grid place-items-center text-[12.5px] text-white shrink-0"
-              style="background:linear-gradient(135deg,#8A90C0,#3C456A)" id="hd-initials"></span>
+      <button id="acctBtn" data-act="acct" class="avbtn" aria-haspopup="menu" aria-expanded="false">
+        <span class="sr-only"><span id="hd-user"></span> · <span id="hd-role"></span></span>
+        <span class="avatar" id="hd-initials"></span><span class="avdot"></span>
       </button>
     </div>
   </header>
@@ -4306,11 +4314,14 @@ function acctMenu(force){
   }
   const u = me();
   el.innerHTML =
-    '<div class="px-3 pt-2.5 pb-3 hair-b mb-1.5">' +
-      '<div class="text-[14px]">' + esc(u.name) + '</div>' +
-      '<div class="tnum text-[13px] text-dim">' + esc(u.email) + '</div>' +
-      '<div class="mt-2 flex gap-2 flex-wrap">' + pill(u.role) +
-        (u.mustChangePassword ? chip('ต้องตั้งรหัสผ่านใหม่','warn') : '') + '</div></div>' +
+    '<div class="accthead">' +
+      '<button class="acctout" data-act="auth-logout">ออกจากระบบ</button>' +
+      '<span class="avatar">' + esc(acctInitials(u.name)) + '<span class="avdot"></span></span>' +
+      '<div class="min-w-0 pt-3">' +
+        '<div class="text-[15px] truncate">' + esc(u.name) + '</div>' +
+        '<div class="tnum text-[13px] text-dim truncate">' + esc(u.email) + '</div>' +
+        '<div class="mt-1.5 flex gap-2 flex-wrap">' + pill(u.role) +
+          (u.mustChangePassword ? chip('ต้องตั้งรหัสผ่านใหม่','warn') : '') + '</div></div></div>' +
     '<button class="acctitem" data-act="profile">' + icon('user','w-4 h-4') + 'แก้ไขบัญชีของฉัน</button>' +
     '<button class="acctitem" data-act="pw-change">' + icon('lock','w-4 h-4') + 'เปลี่ยนรหัสผ่าน</button>' +
     /* Prototype-only. Real systems get this from the session; here it is the
@@ -4333,7 +4344,6 @@ function acctMenu(force){
         icon('people','w-4 h-4') + 'สลับเป็น' + (S.role === 'ADMIN' ? 'ผู้สอน' : 'ผู้ดูแลระบบ') + '</button>' +
       '<button class="acctitem" data-act="layout">' + icon('grid','w-4 h-4') + 'การแสดงผล</button>' +
       '<button class="acctitem" data-act="shortcuts">' + icon('search','w-4 h-4') + 'แป้นพิมพ์ลัด</button>' +
-      '<button class="acctitem" data-act="auth-logout">' + icon('ext','w-4 h-4') + 'ออกจากระบบ</button>' +
     '</div>';
   el.hidden = false;
   requestAnimationFrame(function(){ el.classList.add('on'); });
@@ -7879,12 +7889,15 @@ function clampMe(){
   return S.meId !== before;
 }
 
+function acctInitials(name){
+  return name.replace(/^[^\s]*\s?/, '').slice(0, 2) || 'CM';
+}
+
 function paintShell(){
   const me = window.me();
   document.getElementById('hd-user').textContent = me.name;
   document.getElementById('hd-role').textContent = S.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'ผู้สอน';
-  document.getElementById('hd-initials').textContent =
-    me.name.replace(/^[^\s]*\s?/, '').slice(0, 2) || 'CM';
+  document.getElementById('hd-initials').textContent = acctInitials(me.name);
 }
 
 /* Committing a cell re-renders the table, which destroys the focused input.
