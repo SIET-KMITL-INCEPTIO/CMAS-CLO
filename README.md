@@ -29,7 +29,7 @@ Then fill in the `.env` files and go:
 # app/server/.env:                  GOOGLE_CLIENT_ID, ADMIN_EMAILS=you@example.com
 # app/client/.env:                  VITE_GOOGLE_CLIENT_ID (same OAuth client)
 npm run db:migrate:dev    # apply the schema
-npm run db:seed           # sample course, CLOs, students and scores
+npm run db:seed           # sample course + the 4 demo courses of index-q.html
 npm run dev               # client :5173 + server :3001
 ```
 
@@ -79,7 +79,7 @@ CMAS/
 │           ├── middlewares/  auth, RBAC, error handler
 │           ├── db/           the single PrismaClient
 │           └── lib/          env, jwt, response helpers
-├── database/            schema.prisma (source of truth), migrations/, seed.ts
+├── database/            schema.prisma (source of truth), migrations/, seed.ts, seed-prototype.ts
 ├── scripts/             setup.mjs + diagram / workbook generators and checkers
 └── docs/                standards, diagrams, SQL reference — see docs/README.md
 ```

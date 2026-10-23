@@ -262,7 +262,35 @@ Authorization: Bearer <accessToken>
 | GET | `/courses/:courseId/dashboard/students/:studentId` | any | ✅ | FR-85, FR-86 |
 | GET | `/courses/:courseId/dashboard/export` | any | ✅ | FR-87 |
 
-**รวม 57 endpoints** (+ `/health` ที่มีแล้ว)
+### 3.8 Endpoint ที่เพิ่มหลัง v1.1 และทำแล้ว (2026-10-22)
+
+> มาจาก [api-design-plan](../planning/api-design-plan.md) §5 · รายละเอียด request/response อยู่ในแผ่น `Design` ของ
+> [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) · ย้ายแถวเข้าตารางนี้เมื่อโค้ดลงแล้วเท่านั้น
+
+| Method | Path | Role | Scope | FR |
+|---|---|---|---|---|
+| GET | `/users/:userId/auth-events` | ADMIN | — | FR-22b, UC 1.6 |
+| GET | `/users/instructors` | ADMIN · INSTRUCTOR | — | FR-22 (G1, [[frontend-plan]]) |
+| POST | `/courses/:courseId/duplicate` | ADMIN · INSTRUCTOR | ✅ (ตรวจใน service) | ต้นแบบ |
+| POST | `/activities/:activityId/duplicate` | any | ✅ (resolve) | ต้นแบบ |
+| PUT | `/courses/:courseId/group-weights` | any | ✅ | ต้นแบบ N1/N2 |
+| POST | `/activities/:activityId/close` | any | ✅ (resolve) | CR-05.1 |
+| POST | `/activities/:activityId/reopen` | any | ✅ (resolve) | CR-05.1 |
+| POST | `/students/:studentId/withdraw` | any | ✅ (resolve) | CR-05.1 |
+| POST | `/students/:studentId/restore` | any | ✅ (resolve) | CR-05.1 |
+| PUT | `/students/:studentId/remediation-plans/:cloId` | any | ✅ (resolve) | ต้นแบบ 5.7 |
+| DELETE | `/students/:studentId/remediation-plans/:cloId` | any | ✅ (resolve) | ต้นแบบ 5.7 |
+| GET | `/courses/:courseId/score-changes` | any | ✅ | NFR-16 |
+| GET | `/courses/:courseId/grading` | any | ✅ | FR-90, FR-97 |
+| PUT | `/courses/:courseId/grade-bands` | any | ✅ | FR-91, FR-92 |
+| POST | `/courses/:courseId/grading/run` | any | ✅ | FR-94, FR-96 |
+| DELETE | `/courses/:courseId/grading` | any | ✅ | CR-11 |
+| PUT | `/students/:studentId/grade-override` | any | ✅ (resolve) | FR-95 |
+| DELETE | `/students/:studentId/grade-override` | any | ✅ (resolve) | FR-95 |
+| GET | `/courses/:courseId/grades/export` | any | ✅ | FR-87 |
+| GET | `/events` | any | filter ต่อผู้ฟัง (ส่งแค่ `courseId`) | อัปเดตสด (2026-10-23) |
+
+**รวม 57 endpoints** ใน §3.1–§3.7 (+ `/health` ที่มีแล้ว) · §3.8 นับแยก
 
 ---
 

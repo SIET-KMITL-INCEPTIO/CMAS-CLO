@@ -1,0 +1,185 @@
+# Live API smoke run, 2026-10-22 15:46 — branch feature/api-endpoints
+# Real HTTP to a server on :3002, real Supabase database (ap-northeast-1). Test accounts @cmas.test and course TEST-SMOKE, deleted at the end.
+# Run A: DATABASE_URL = transaction pooler :6543 with pgbouncer=true (the current .env)
+
+== 1-2 auth & accounts
+ 1 PASS  GET    /auth/me                                                   200  2593 ms
+ 2 PASS  POST   /auth/refresh                                              403  19 ms
+ 3 PASS  POST   /auth/logout                                               200  1988 ms
+ 4 PASS  GET    /users                                                     200  2800 ms
+ 5 PASS  GET    /users/:id                                                 200  2136 ms
+ 6 PASS  PATCH  /users/:id                                                 200  4701 ms
+ 7 PASS  PATCH  /users/:id/status                                          200  1857 ms
+ 8 PASS  GET    /users/:id/auth-events                                     200  3450 ms
+ 9 PASS  GET    /users                                                     403  1905 ms
+== 3 courses
+10 PASS  POST   /courses                                                   201  4853 ms
+11 PASS  GET    /courses?q=TEST-                                           200  2864 ms
+12 PASS  GET    /courses/:id                                               200  3484 ms
+13 PASS  GET    /courses/:id                                               404  1726 ms
+14 PASS  PATCH  /courses/:id                                               200  4530 ms
+15 PASS  GET    /courses/:id/impact                                        200  3748 ms
+16 PASS  GET    /courses/:id/instructors                                   200  3711 ms
+17 PASS  POST   /courses/:id/instructors                                   201  5839 ms
+18 PASS  DELETE /courses/:id/instructors/:id                               200  3377 ms
+19 PASS  POST   /courses/:id/duplicate                                     201  9785 ms
+== 4 CLOs & objectives
+20 PASS  POST   /courses/:id/clos                                          201  5367 ms
+21 PASS  POST   /courses/:id/clos                                          201  5539 ms
+22 PASS  GET    /courses/:id/clos                                          200  3590 ms
+23 PASS  PATCH  /courses/:id/clos/reorder                                  200  5323 ms
+24 PASS  PATCH  /clos/:id                                                  200  7822 ms
+25 PASS  POST   /clos/:id/objectives                                       201  3612 ms
+26 PASS  GET    /clos/:id/objectives                                       200  2789 ms
+27 PASS  PATCH  /objectives/:id                                            200  6252 ms
+28 PASS  POST   /clos/:id/objectives                                       201  5624 ms
+29 PASS  DELETE /objectives/:id                                            200  4246 ms
+30 PASS  DELETE /clos/:id                                                  200  4350 ms
+== 5 activities & criteria
+31 PASS  POST   /courses/:id/activities                                    201  8017 ms
+32 PASS  POST   /courses/:id/activities                                    201  6151 ms
+33 PASS  GET    /courses/:id/activities                                    200  2445 ms
+34 PASS  PATCH  /courses/:id/activities/reorder                            200  6323 ms
+35 PASS  PATCH  /activities/:id                                            200  8343 ms
+36 PASS  POST   /activities/:id/duplicate                                  201  6505 ms
+37 PASS  DELETE /activities/:id                                            200  4128 ms
+38 PASS  PUT    /courses/:id/criteria                                      200  6848 ms
+39 PASS  GET    /courses/:id/criteria                                      200  2497 ms
+40 PASS  PUT    /courses/:id/group-weights                                 200  1763 ms
+== 6 students
+41 PASS  POST   /courses/:id/students                                      201  1550 ms
+42 PASS  POST   /courses/:id/students                                      201  2008 ms
+43 PASS  GET    /courses/:id/students                                      200  3110 ms
+44 PASS  PATCH  /students/:id                                              200  2358 ms
+45 PASS  GET    /courses/:id/students/template                             200  4513 ms  (xlsx)
+46 PASS  POST   /courses/:id/students/import/preview                       200  1853 ms
+47 PASS  POST   /courses/:id/students/import/commit                        200  2018 ms
+48 PASS  PUT    /students/:id/remediation-plans/:id                        200  3460 ms
+49 PASS  DELETE /students/:id/remediation-plans/:id                        200  3258 ms
+50 PASS  POST   /students/:id/withdraw                                     200  4115 ms
+51 PASS  POST   /students/:id/restore                                      200  4182 ms
+== 7 scores & Excel
+52 PASS  PUT    /courses/:id/scores                                        200  3386 ms
+53 PASS  PUT    /courses/:id/scores                                        409  2773 ms
+54 PASS  GET    /courses/:id/scores                                        200  3241 ms
+55 PASS  GET    /courses/:id/scores/template                               200  2848 ms  (xlsx)
+56 PASS  POST   /courses/:id/scores/import/preview                         200  2387 ms
+57 PASS  POST   /courses/:id/scores/import/commit                          200  3645 ms
+58 PASS  GET    /courses/:id/uploads                                       200  3319 ms
+59 PASS  GET    /uploads/:id/errors                                        200  3483 ms
+60 PASS  GET    /courses/:id/score-changes                                 200  2746 ms
+61 PASS  POST   /activities/:id/close                                      200  4312 ms
+62 PASS  POST   /activities/:id/reopen                                     200  3385 ms
+63 PASS  GET    /courses/:id/scores/export                                 200  5541 ms  (xlsx)
+== 8 grading
+64 PASS  GET    /courses/:id/grading                                       200  5420 ms
+65 PASS  PUT    /courses/:id/grade-bands                                   200  11728 ms
+66 PASS  POST   /courses/:id/grading/run                                   200  6668 ms
+67 PASS  PUT    /students/:id/grade-override                               200  5479 ms
+68 PASS  DELETE /students/:id/grade-override                               200  5507 ms
+69 PASS  GET    /courses/:id/grades/export                                 200  4292 ms  (xlsx)
+70 PASS  DELETE /courses/:id/grading?confirm=true                          200  2633 ms
+== 9 dashboard
+71 PASS  GET    /dashboard/overview                                        200  6323 ms
+72 PASS  GET    /courses/:id/dashboard/attainment                          200  5031 ms
+73 PASS  GET    /courses/:id/dashboard/at-risk                             200  4427 ms
+74 PASS  GET    /courses/:id/dashboard/students/:id                        200  4218 ms
+75 PASS  GET    /courses/:id/dashboard/export                              200  3863 ms  (xlsx)
+== cleanup
+76 PASS  DELETE /students/:id?confirm=true                                 200  4026 ms
+77 PASS  DELETE /courses/:id?confirm=true                                  200  2252 ms
+78 PASS  DELETE /courses/:id?confirm=true                                  200  2546 ms
+
+78 calls · 0 failed
+
+# Run B: DATABASE_URL = session pooler :5432 (environment override, .env unchanged)
+
+== 1-2 auth & accounts
+ 1 PASS  GET    /auth/me                                                   200  986 ms
+ 2 PASS  POST   /auth/refresh                                              403  10 ms
+ 3 PASS  POST   /auth/logout                                               200  466 ms
+ 4 PASS  GET    /users                                                     200  516 ms
+ 5 PASS  GET    /users/:id                                                 200  493 ms
+ 6 PASS  PATCH  /users/:id                                                 200  1424 ms
+ 7 PASS  PATCH  /users/:id/status                                          200  514 ms
+ 8 PASS  GET    /users/:id/auth-events                                     200  1731 ms
+ 9 PASS  GET    /users                                                     403  374 ms
+== 3 courses
+10 PASS  POST   /courses                                                   201  2910 ms
+11 PASS  GET    /courses?q=TEST-                                           200  2045 ms
+12 PASS  GET    /courses/:id                                               200  1040 ms
+13 PASS  GET    /courses/:id                                               404  278 ms
+14 PASS  PATCH  /courses/:id                                               200  2027 ms
+15 PASS  GET    /courses/:id/impact                                        200  2429 ms
+16 PASS  GET    /courses/:id/instructors                                   200  631 ms
+17 PASS  POST   /courses/:id/instructors                                   201  963 ms
+18 PASS  DELETE /courses/:id/instructors/:id                               200  1771 ms
+19 PASS  POST   /courses/:id/duplicate                                     201  4329 ms
+== 4 CLOs & objectives
+20 PASS  POST   /courses/:id/clos                                          201  4344 ms
+21 PASS  POST   /courses/:id/clos                                          201  4293 ms
+22 PASS  GET    /courses/:id/clos                                          200  1241 ms
+23 PASS  PATCH  /courses/:id/clos/reorder                                  200  3270 ms
+24 PASS  PATCH  /clos/:id                                                  200  3482 ms
+25 PASS  POST   /clos/:id/objectives                                       201  2749 ms
+26 PASS  GET    /clos/:id/objectives                                       200  1022 ms
+27 PASS  PATCH  /objectives/:id                                            200  2480 ms
+28 PASS  POST   /clos/:id/objectives                                       201  2025 ms
+29 PASS  DELETE /objectives/:id                                            200  1308 ms
+30 PASS  DELETE /clos/:id                                                  200  2133 ms
+== 5 activities & criteria
+31 PASS  POST   /courses/:id/activities                                    201  3611 ms
+32 PASS  POST   /courses/:id/activities                                    201  2248 ms
+33 PASS  GET    /courses/:id/activities                                    200  2306 ms
+34 PASS  PATCH  /courses/:id/activities/reorder                            200  2846 ms
+35 PASS  PATCH  /activities/:id                                            200  2410 ms
+36 PASS  POST   /activities/:id/duplicate                                  201  1685 ms
+37 PASS  DELETE /activities/:id                                            200  1862 ms
+38 PASS  PUT    /courses/:id/criteria                                      200  5104 ms
+39 PASS  GET    /courses/:id/criteria                                      200  1431 ms
+40 PASS  PUT    /courses/:id/group-weights                                 200  1638 ms
+== 6 students
+41 PASS  POST   /courses/:id/students                                      201  633 ms
+42 PASS  POST   /courses/:id/students                                      201  594 ms
+43 PASS  GET    /courses/:id/students                                      200  1150 ms
+44 PASS  PATCH  /students/:id                                              200  1471 ms
+45 PASS  GET    /courses/:id/students/template                             200  1277 ms  (xlsx)
+46 PASS  POST   /courses/:id/students/import/preview                       200  744 ms
+47 PASS  POST   /courses/:id/students/import/commit                        200  1698 ms
+48 PASS  PUT    /students/:id/remediation-plans/:id                        200  3192 ms
+49 PASS  DELETE /students/:id/remediation-plans/:id                        200  1315 ms
+50 PASS  POST   /students/:id/withdraw                                     200  1435 ms
+51 PASS  POST   /students/:id/restore                                      200  678 ms
+== 7 scores & Excel
+52 PASS  PUT    /courses/:id/scores                                        200  2149 ms
+53 PASS  PUT    /courses/:id/scores                                        409  2693 ms
+54 PASS  GET    /courses/:id/scores                                        200  2450 ms
+55 PASS  GET    /courses/:id/scores/template                               200  2258 ms  (xlsx)
+56 PASS  POST   /courses/:id/scores/import/preview                         200  1200 ms
+57 PASS  POST   /courses/:id/scores/import/commit                          200  2882 ms
+58 PASS  GET    /courses/:id/uploads                                       200  1845 ms
+59 PASS  GET    /uploads/:id/errors                                        200  1561 ms
+60 PASS  GET    /courses/:id/score-changes                                 200  1352 ms
+61 PASS  POST   /activities/:id/close                                      200  1695 ms
+62 PASS  POST   /activities/:id/reopen                                     200  1026 ms
+63 PASS  GET    /courses/:id/scores/export                                 200  4106 ms  (xlsx)
+== 8 grading
+64 PASS  GET    /courses/:id/grading                                       200  2957 ms
+65 PASS  PUT    /courses/:id/grade-bands                                   200  6013 ms
+66 PASS  POST   /courses/:id/grading/run                                   200  2995 ms
+67 PASS  PUT    /students/:id/grade-override                               200  4362 ms
+68 PASS  DELETE /students/:id/grade-override                               200  1776 ms
+69 PASS  GET    /courses/:id/grades/export                                 200  2674 ms  (xlsx)
+70 PASS  DELETE /courses/:id/grading?confirm=true                          200  812 ms
+== 9 dashboard
+71 PASS  GET    /dashboard/overview                                        200  4923 ms
+72 PASS  GET    /courses/:id/dashboard/attainment                          200  2450 ms
+73 PASS  GET    /courses/:id/dashboard/at-risk                             200  2868 ms
+74 PASS  GET    /courses/:id/dashboard/students/:id                        200  2809 ms
+75 PASS  GET    /courses/:id/dashboard/export                              200  2485 ms  (xlsx)
+== cleanup
+76 PASS  DELETE /students/:id?confirm=true                                 200  2186 ms
+77 PASS  DELETE /courses/:id?confirm=true                                  200  1020 ms
+78 PASS  DELETE /courses/:id?confirm=true                                  200  713 ms
+
+78 calls · 0 failed

@@ -14,6 +14,7 @@ import multipart from "@fastify/multipart"
 import { env } from "./lib/env.js"
 import { errorHandler } from "./middlewares/error-handler.middleware.js"
 import { accessHook, assertRouteDeclaresAccess } from "./middlewares/access.middleware.js"
+import { captureCreatedCourse, publishCourseChange } from "./middlewares/live-updates.middleware.js"
 import { registerRoutes } from "./modules/index.js"
 
 /** SRS §5.2 · G-1: every route lives under this prefix, including /health. */
@@ -47,12 +48,20 @@ export async function buildApp(options: BuildOptions = {}) {
   if (options.onRoute) app.addHook("onRoute", options.onRoute)
 
   await app.register(helmet)
-  await app.register(cors, { origin: env.CORS_ORIGIN, credentials: true })
+  // @fastify/cors allows only GET, HEAD and POST unless told otherwise; the
+  // browser then refuses every PATCH, PUT and DELETE at the preflight.
+  await app.register(cors, {
+    origin: env.CORS_ORIGIN,
+    credentials: true,
+    methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+  })
   await app.register(rateLimit, { max: env.RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW })
   await app.register(multipart, { limits: { fileSize: 10 * 1024 * 1024 } }) // 10MB cap for Excel uploads
 
   app.setErrorHandler(errorHandler)
   app.addHook("preHandler", accessHook)
+  app.addHook("onSend", captureCreatedCourse)
+  app.addHook("onResponse", publishCourseChange)
 
   await app.register(
     async (api) => {

@@ -1,16 +1,11 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   VERDURE DESIGN SYSTEM — entry stylesheet
-   Imported once in main.tsx. Order matters:
+   Entry stylesheet — imported once in main.tsx.
      1. Tailwind v4 core
-     2. Design tokens (defines @theme + :root + Tailwind utility bridge)
-     3. Base document styles
-     4. Components
-     5. Animations
-   Font (IBM Plex Sans Thai) is loaded via <link> in index.html.
+     2. Nocturnal Atelier tokens (@theme colours + :root variables)
+     3. Nocturnal Atelier base and component classes (ported from index-q.html)
+   Fonts (Inter + IBM Plex Sans Thai, 300–600) load via <link> in index.html.
    ═══════════════════════════════════════════════════════════════════════ */
 @import "tailwindcss";
 
 @import "./styles/tokens.css";
-@import "./styles/base.css";
-@import "./styles/components.css";
-@import "./styles/animations.css";
+@import "./styles/atelier.css";
