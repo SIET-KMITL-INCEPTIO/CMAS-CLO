@@ -2570,6 +2570,37 @@
    },
    "bodyFields": null,
    "enumFields": null
+  },
+  {
+   "n": 78,
+   "group": "9 แดชบอร์ด",
+   "method": "GET",
+   "path": "/events",
+   "fullPath": "/api/v1/events",
+   "what": "แจ้งหน้าจออื่นเมื่อรายวิชาถูกแก้ (SSE) ให้โหลดใหม่เอง",
+   "role": "ผู้ใช้ที่ล็อกอิน",
+   "courseScope": "กรองในตัว",
+   "capability": "อ่าน",
+   "fr": "—",
+   "status": "done",
+   "phase": "F7",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "ล็อกอินทั่วไป",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "200 · text/event-stream · ทุกครั้งที่เขียนสำเร็จ: data: {courseId, origin?} · ping ทุก 25 วินาที · server ปิด stream ทุก 10 นาที",
+    "errors": "401",
+    "rules": "ส่งเฉพาะ courseId ให้ผู้สอนของวิชานั้นและ ADMIN (A-13) · ข้อมูลจริงยังอ่านผ่าน GET ที่ตรวจสิทธิ์ · token ส่งใน header ไม่ใช่ URL · origin คือ X-Client-Id ของแท็บที่เขียน",
+    "tests": "ST-ACL-06"
+   },
+   "bodyFields": null,
+   "enumFields": null
   }
  ]
 }

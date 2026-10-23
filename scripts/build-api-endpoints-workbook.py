@@ -182,6 +182,7 @@ E = [
     (G_DASH, "GET", "/courses/:courseId/dashboard/at-risk", "นักศึกษาที่ต้องได้รับความช่วยเหลือ", ANY, URL, READ, "FR-83", ST_DONE, "P6", "#9", "", ""),
     (G_DASH, "GET", "/courses/:courseId/dashboard/students/:studentId", "รายงานรายบุคคล", ANY, URL, READ, "FR-85, FR-86", ST_DONE, "P6", "#9", "", ""),
     (G_DASH, "GET", "/courses/:courseId/dashboard/export", "ส่งออกรายงานผลสัมฤทธิ์", ANY, URL, "results.export", "FR-87", ST_DONE, "P6", "#9", "", "S-7"),
+    (G_DASH, "GET", "/events", "แจ้งหน้าจออื่นเมื่อรายวิชาถูกแก้ (SSE) ให้โหลดใหม่เอง", LOGGED, FILTER, READ, "—", ST_DONE, "F7", "", "", "ส่งเฉพาะ courseId"),
 ]
 
 HEAD = ["#", "กลุ่ม", "Method", "Path", "ทำอะไร", "ใครเรียกได้", "ตรวจสิทธิ์รายวิชา", "Capability",
@@ -829,6 +830,11 @@ DESIGN = [
      "401",
      "ผู้สอนเห็นเฉพาะวิชาตน ADMIN เห็นทั้งหมด กรองใน query (NFR-06)",
      "ST-COURSE-04"),
+    ("GET", "/events", "—", "—",
+     "200 · text/event-stream · ทุกครั้งที่เขียนสำเร็จ: data: {courseId, origin?} · ping ทุก 25 วินาที · server ปิด stream ทุก 10 นาที",
+     "401",
+     "ส่งเฉพาะ courseId ให้ผู้สอนของวิชานั้นและ ADMIN (A-13) · ข้อมูลจริงยังอ่านผ่าน GET ที่ตรวจสิทธิ์ · token ส่งใน header ไม่ใช่ URL · origin คือ X-Client-Id ของแท็บที่เขียน",
+     "ST-ACL-06"),
     ("GET", "/courses/:courseId/dashboard/attainment", ":courseId", "—",
      "200 · {classTarget, cloPassMark, helpCount, clos[{cloId, number, description, attainment, status, passedCount, evaluableCount, notEvaluatedCount, provisionalCount}]} · meta {computable, blockers[]}",
      "401 · 404",
