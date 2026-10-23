@@ -4,6 +4,7 @@ import { Toaster } from "sonner"
 import { AppShell } from "./components/shell/AppShell.tsx"
 import { useAuthStore } from "./features/auth/useAuthStore.ts"
 import { CourseLayout } from "./features/courses/CourseLayout.tsx"
+import { useLiveUpdates } from "./features/events/useLiveUpdates.ts"
 import { resumeSession } from "./lib/session.ts"
 import { appRoutes, courseRoutes, publicRoutes } from "./pages.config.ts"
 
@@ -15,6 +16,7 @@ const Loading = () => (
 function RequireSession() {
   const status = useAuthStore((s) => s.status)
   const location = useLocation()
+  useLiveUpdates()
   if (status === "checking") return <Loading />
   if (status === "out")
     return <Navigate to="/auth/login" replace state={{ from: location.pathname }} />

@@ -30,6 +30,12 @@ export type Envelope<T> = { data: T; meta?: Record<string, unknown> }
 type Body = BodyInit | object | undefined
 type Options = { method?: string; body?: Body; retried?: boolean }
 
+/**
+ * This tab, sent as X-Client-Id on every request. The server echoes it in the
+ * live "course changed" event, so the tab that wrote does not refetch twice.
+ */
+export const TAB_ID = crypto.randomUUID()
+
 let refreshing: Promise<boolean> | null = null
 
 /** Single-flight: ten requests that 401 together cause one refresh. */
@@ -58,7 +64,7 @@ const isBodyInit = (b: Body): b is BodyInit =>
 
 async function send(path: string, { method = "GET", body, retried }: Options): Promise<Response> {
   const token = useAuthStore.getState().accessToken
-  const headers: Record<string, string> = {}
+  const headers: Record<string, string> = { "X-Client-Id": TAB_ID }
   if (token) headers.Authorization = `Bearer ${token}`
   if (body !== undefined && !isBodyInit(body)) headers["Content-Type"] = "application/json"
 

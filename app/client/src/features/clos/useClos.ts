@@ -2,7 +2,7 @@ import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/rea
 import { apiClient } from "../../lib/apiClient.ts"
 import { courseKeys } from "../courses/useCourses.ts"
 import { closApi } from "./clos.api.ts"
-import type { Bloom, CloInput, ObjectiveInput, Solo } from "./clo.types.ts"
+import type { Bloom, CloInput, Objective, ObjectiveInput, Solo } from "./clo.types.ts"
 
 export const cloKeys = {
   list: (courseId: string) => [...courseKeys.one(courseId), "clos"] as const,
@@ -37,10 +37,33 @@ function useCourseWrite<A, R>(fn: (args: A) => Promise<R>) {
   })
 }
 
-export const useSaveClo = (courseId: string) =>
-  useCourseWrite((a: { cloId: string | null; body: CloInput }) =>
-    a.cloId ? closApi.update(a.cloId, a.body) : closApi.create(courseId, a.body),
-  )
+type CloList = Awaited<ReturnType<typeof closApi.list>>
+
+/**
+ * The saved CLO goes into the list from the server's own answer (the same row
+ * the list returns), so it shows the moment the write returns instead of
+ * after the refetch below — a round trip to Supabase is seconds, not ms.
+ */
+export function useSaveClo(courseId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (a: { cloId: string | null; body: CloInput }) =>
+      a.cloId ? closApi.update(a.cloId, a.body) : closApi.create(courseId, a.body),
+    meta: { silent: true },
+    onSuccess: (saved) =>
+      queryClient.setQueryData<CloList>(
+        cloKeys.list(courseId),
+        (old) =>
+          old && {
+            ...old,
+            clos: [...old.clos.filter((c) => c.id !== saved.id), saved].sort(
+              (a, b) => a.number - b.number,
+            ),
+          },
+      ),
+    onSettled: () => void queryClient.invalidateQueries({ queryKey: courseKeys.all }),
+  })
+}
 
 /** One field at a time, from the inline boxes on the page. */
 export const usePatchClo = () =>
@@ -74,7 +97,23 @@ export function useReorderClos(courseId: string) {
   })
 }
 
-export const useDeleteClo = () => useCourseWrite((cloId: string) => closApi.remove(cloId))
+/**
+ * Deletes leave the list at once; the confirm dialog has already been
+ * answered. A refused delete comes back with the refetch in onSettled.
+ */
+export function useDeleteClo() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (cloId: string) => closApi.remove(cloId),
+    meta: { silent: true },
+    onMutate: (cloId) =>
+      queryClient.setQueriesData<CloList>(
+        { predicate: (q) => q.queryKey[0] === courseKeys.all[0] && q.queryKey[2] === "clos" },
+        (old) => old && { ...old, clos: old.clos.filter((c) => c.id !== cloId) },
+      ),
+    onSettled: () => void queryClient.invalidateQueries({ queryKey: courseKeys.all }),
+  })
+}
 
 export const useSaveObjective = () =>
   useCourseWrite((a: { objectiveId: string | null; cloId: string; body: ObjectiveInput }) =>
@@ -88,8 +127,20 @@ export const useSetObjectiveWeights = () =>
     for (const r of rows) await closApi.updateObjective(r.objectiveId, { weight: r.weight })
   })
 
-export const useDeleteObjective = () =>
-  useCourseWrite((objectiveId: string) => closApi.removeObjective(objectiveId))
+/** Same as useDeleteClo: gone from every cached objectives list at once. */
+export function useDeleteObjective() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (objectiveId: string) => closApi.removeObjective(objectiveId),
+    meta: { silent: true },
+    onMutate: (objectiveId) =>
+      queryClient.setQueriesData<Objective[]>(
+        { predicate: (q) => q.queryKey[0] === courseKeys.all[0] && q.queryKey[2] === "objectives" },
+        (old) => old?.filter((o) => o.id !== objectiveId),
+      ),
+    onSettled: () => void queryClient.invalidateQueries({ queryKey: courseKeys.all }),
+  })
+}
 
 /** The course's one CLO pass mark (E1) — a course setting, so course.settings decides. */
 export const useSetCloPassMark = (courseId: string) =>

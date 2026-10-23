@@ -14,6 +14,7 @@ import multipart from "@fastify/multipart"
 import { env } from "./lib/env.js"
 import { errorHandler } from "./middlewares/error-handler.middleware.js"
 import { accessHook, assertRouteDeclaresAccess } from "./middlewares/access.middleware.js"
+import { captureCreatedCourse, publishCourseChange } from "./middlewares/live-updates.middleware.js"
 import { registerRoutes } from "./modules/index.js"
 
 /** SRS §5.2 · G-1: every route lives under this prefix, including /health. */
@@ -59,6 +60,8 @@ export async function buildApp(options: BuildOptions = {}) {
 
   app.setErrorHandler(errorHandler)
   app.addHook("preHandler", accessHook)
+  app.addHook("onSend", captureCreatedCourse)
+  app.addHook("onResponse", publishCourseChange)
 
   await app.register(
     async (api) => {
