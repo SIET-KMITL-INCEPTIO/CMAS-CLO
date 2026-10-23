@@ -8,6 +8,9 @@ export default defineConfig({
     setupFiles: ["src/test/setup-env.ts"],
     // The *.db.test.ts files talk to a remote Supabase database: one request is
     // several round trips of 0.2–1 s, so 5 s is too tight for a multi-request case.
+    // The *.db.test.ts files share one database and each clears the @cmas.test
+    // accounts it made — in parallel they delete each other's users (401/404).
+    fileParallelism: process.env.CMAS_DB_TESTS !== "1",
     testTimeout: process.env.CMAS_DB_TESTS === "1" ? 30_000 : 5_000,
     coverage: {
       provider: "v8",
