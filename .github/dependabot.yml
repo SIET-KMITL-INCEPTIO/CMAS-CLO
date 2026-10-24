@@ -2,6 +2,10 @@
 # (once "Dependabot security updates" is on in repo settings); these entries
 # add the routine weekly version bumps on top.
 #
+# `cooldown` waits 7 days before proposing a release, so a hijacked publish is
+# usually caught and yanked before it reaches us (the 2025 npm worm, the
+# tj-actions tag rewrite). Security updates ignore the cooldown.
+#
 # Minor and patch bumps are grouped into one PR per ecosystem so the team
 # reviews one PR a week instead of twenty. Majors stay one PR each because
 # they are the ones that break things.
@@ -17,6 +21,8 @@ updates:
       interval: weekly
       day: monday
       timezone: Asia/Bangkok
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
     commit-message:
       prefix: "chore(deps)"
@@ -30,6 +36,8 @@ updates:
       interval: weekly
       day: monday
       timezone: Asia/Bangkok
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "ci(deps)"
     groups:
@@ -45,6 +53,8 @@ updates:
       interval: weekly
       day: monday
       timezone: Asia/Bangkok
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "build(deps)"
     groups:
