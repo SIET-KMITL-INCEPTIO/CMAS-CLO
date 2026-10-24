@@ -30,6 +30,22 @@ test("CORS allows only the configured client origin", async ({ request }) => {
   }
 })
 
+test("the CORS preflight allows the methods the client sends", async ({ request }) => {
+  // The default (GET, HEAD, POST) made the browser refuse PATCH /users/:id/approve.
+  for (const method of ["PATCH", "PUT", "DELETE"]) {
+    const res = await request.fetch(`${API}/users/x/approve`, {
+      method: "OPTIONS",
+      headers: {
+        Origin: "http://localhost:5173",
+        "Access-Control-Request-Method": method,
+        "Access-Control-Request-Headers": "authorization,content-type",
+      },
+    })
+    expect(res.status()).toBe(204)
+    expect(res.headers()["access-control-allow-methods"]).toContain(method)
+  }
+})
+
 test.describe("GET /users (cap user.manage, ADMIN only)", () => {
   test("no token → 401", async ({ request }) => {
     expect((await request.get(`${API}/users`)).status()).toBe(401)
