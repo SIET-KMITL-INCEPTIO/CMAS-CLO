@@ -80,6 +80,7 @@ CMAS/
 │           ├── db/           the single PrismaClient
 │           └── lib/          env, jwt, response helpers
 ├── database/            schema.prisma (source of truth), migrations/, seed.ts
+├── e2e/                 Playwright smoke against the production build
 ├── scripts/             setup.mjs + diagram / workbook generators and checkers
 └── docs/                standards, diagrams, SQL reference — see docs/README.md
 ```
@@ -102,6 +103,8 @@ Each app deploys independently. They share nothing but the API contract and
 | `npm run build`                     | Build both apps                                                |
 | `npm test`                          | Run all tests (Vitest)                                         |
 | `npm run test:coverage`             | Tests with coverage report                                     |
+| `npm run test:unit`                 | Unit tests with enforced coverage (CI `unit` job)              |
+| `npm run test:e2e`                  | Playwright smoke; `npm run build` first, disposable DB         |
 | `npm run lint` / `lint:fix`         | ESLint across both workspaces                                  |
 | `npm run typecheck`                 | TypeScript, including test files                               |
 | `npm run format` / `format:check`   | Prettier (code only — `docs/` is excluded)                     |

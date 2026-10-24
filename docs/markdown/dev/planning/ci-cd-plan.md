@@ -2,7 +2,7 @@
 
 See also: [[system-test-plan]] · [[dev]] · [[code-rule]] · [[srs]] · [[sprint-plan-2026]]
 
-> **สร้าง:** 2026-10-24 · **สถานะ:** P1 กำลังทำบน branch `ci/harden` · P2–P6 ยังเป็นแผน
+> **สร้าง:** 2026-10-24 · **สถานะ:** P1–P4 และ P6 ลงโค้ดแล้วใน PR เดียวบน branch `ci/harden` (ทีมเลือกรวม 2026-10-24) · **P5 เลื่อน** จนกว่าจะเลือกที่ deploy · ตาราง §1 คือสถานะก่อนเริ่ม ส่วน §9 คือสิ่งที่ทำจริง
 > **ตรวจกับ:** `.github/workflows/ci.yml` · `docker-build.yml` · `vitest.config.ts` (server) · `Dockerfile.prod` · การตั้งค่า repo `SIET-KMITL-INCEPTIO/CMAS-CLO` ผ่าน `gh api` ณ วันที่สร้าง
 
 ---
@@ -12,7 +12,7 @@ See also: [[system-test-plan]] · [[dev]] · [[code-rule]] · [[srs]] · [[sprin
 CI ตอนนี้**เร็วพอแล้ว** (≈ 70 วินาทีต่อ PR) ปัญหาหลักคือ**ความปลอดภัยของตัว pipeline และของ repo** ไม่ใช่ความเร็ว
 repo เป็น public แต่ `main` ไม่มีการป้องกัน และ secret scanning ปิดอยู่ ทั้งสองข้อแก้ได้ในหนึ่งวัน และควรทำก่อนอย่างอื่น
 
-ลำดับ: **P1 ป้องกัน repo และ pipeline → P2 แยกงานให้ขนาน → P3 สแกนความปลอดภัย → P4 E2E → P5 CD → P6 nightly**
+ลำดับ: **P1 ป้องกัน repo และ pipeline → P2 แยกงานให้ขนาน → P3 สแกนความปลอดภัย → P4 E2E → P5 CD → P6 nightly** (P5 เลื่อน · §8)
 
 ---
 
@@ -49,7 +49,7 @@ repo เป็น public แต่ `main` ไม่มีการป้อง�
 | ความน่าเชื่อถือ | flaky test **< 1%** ของรอบ · ไม่มี retry อัตโนมัติซ่อนปัญหา | นับรอบที่ re-run แล้วผ่าน |
 | ความปลอดภัย | **ไม่มีทาง merge เข้า `main` โดยไม่ผ่าน check** | ruleset + required checks |
 | ความปลอดภัย | action ทุกตัว pin ด้วย SHA · ทุก job มี `permissions` ขั้นต่ำ และ `timeout-minutes` | `zizmor` / `actionlint` ใน CI ให้ผล 0 |
-| ความปลอดภัย | ช่องโหว่ระดับ critical/high ใน dependency และ image **แก้ภายใน 7 วัน** | Dependabot alerts + Trivy |
+| ความปลอดภัย | ช่องโหว่ระดับ critical/high ใน dependency และ image **แก้ภายใน 7 วัน** | Dependabot alerts + Grype |
 | ความปลอดภัย | secret ระบบจริงเข้าถึงได้เฉพาะ job deploy ที่มีคนอนุมัติ ไม่มี job test ไหนเห็น | environment secrets |
 | ส่งมอบ | image ที่ทดสอบ = image ที่ขึ้น production (digest เดียวกัน) | provenance attestation |
 
@@ -74,8 +74,9 @@ PR ─► changes (paths-filter) ─┬─► static      format · lint · type
                               ├─► db          Postgres 16 · migrate deploy · drift check · seed×2 · *.db.test + isolation
                               ├─► build       client + server
                               ├─► security    dependency-review · gitleaks · CodeQL
-                              ├─► docker      build 4 image · Trivy scan · SBOM
-                              └─► e2e (P4)    docker compose stack · Playwright smoke
+                              ├─► docker      build 4 image · Grype scan (image prod)
+                              ├─► e2e         production build + Postgres · Playwright smoke
+                              ├─► codeql · dependency-review · gitleaks · zizmor
                                       │
                                       ▼
                               gate  (job เดียวที่ตั้งเป็น required check: ผ่านเมื่อทุก job ผ่านหรือถูกข้ามโดยตั้งใจ)
@@ -83,7 +84,7 @@ PR ─► changes (paths-filter) ─┬─► static      format · lint · type
 main ─► CI ทั้งหมดอีกรอบ ─► build + push GHCR (by digest) ─► attest provenance + SBOM
      ─► deploy staging (migrate deploy → deploy → smoke) ─► [อนุมัติด้วยคน] ─► production (digest เดิม)
 
-nightly ─► coverage เต็ม · CodeQL extended · Trivy บน image ล่าสุด · check-diagrams · Stryker (lib/ คำนวณ)
+nightly ─► coverage เต็ม · CodeQL extended · Grype บน image ล่าสุด · check-diagrams · Stryker (lib/ คำนวณ)
 ```
 
 **ทำไมต้องมี job `gate`:** ถ้าตั้ง required check ทีละ job แล้วใช้ path filter ข้าม job นั้นใน PR docs-only, GitHub จะรอ check ที่ไม่มีวันมาและ PR ค้าง
@@ -109,7 +110,7 @@ job `gate` ใช้ `if: always()` ตรวจ `needs.*.result` ว่าไ�
 - ใช้ `step-security/harden-runner` โหมด `audit` ก่อน แล้วค่อยเป็น `block` พร้อม allowlist ปลายทาง (registry.npmjs.org, cdn.sheetjs.com, binaries.prisma.sh, ghcr.io …) เพื่อจับ dependency ที่แอบส่งข้อมูลออก
 - ตรวจ workflow เองด้วย `actionlint` และ `zizmor` (หา template injection, สิทธิ์เกิน, `pull_request_target` อันตราย)
 - **Dockerfile.prod:** `npm ci` · `COPY package-lock.json` (ไม่มี `*`) · `npm ci --omit=dev` ในชั้น runtime · pin `node:24-alpine@sha256:…` ให้ Dependabot ecosystem `docker` อัปเดต · คง non-root user ไว้
-- **`xlsx` จาก CDN:** lockfile มี integrity hash อยู่แล้วจึงปลอดภัยจากการแก้ไฟล์กลางทาง แต่ไม่มีใครแจ้งช่องโหว่ → เพิ่ม job nightly เทียบเวอร์ชันกับหน้า release ของ SheetJS และให้ Trivy สแกน `node_modules/xlsx`
+- **`xlsx` จาก CDN:** lockfile มี integrity hash อยู่แล้วจึงปลอดภัยจากการแก้ไฟล์กลางทาง แต่ไม่มีใครแจ้งช่องโหว่ → เพิ่ม job nightly เทียบเวอร์ชันกับหน้า release ของ SheetJS และให้ Grype สแกน `node_modules/xlsx` ใน image
 
 ### 5.3 ทำให้ test เร็วและเชื่อถือได้
 
@@ -133,7 +134,7 @@ job `gate` ใช้ `if: always()` ตรวจ `needs.*.result` ว่าไ�
 | `actions/dependency-review-action` | dependency ใหม่ใน PR ที่มีช่องโหว่หรือ license ต้องห้าม | ทุก PR | high ขึ้นไป |
 | `gitleaks` | secret ที่หลุดเข้า commit (เสริม push protection ที่จับเฉพาะ pattern ของผู้ให้บริการ) | ทุก PR + nightly ทั้ง history | พบ |
 | CodeQL (`javascript-typescript`) | injection, path traversal, prototype pollution ฯลฯ | ทุก PR (default) · nightly (`security-extended`) | high ขึ้นไป |
-| Trivy | ช่องโหว่ OS + npm ใน image · misconfig ใน Dockerfile | ทุก PR ใน job docker · nightly บน image ล่าสุด | critical (เริ่ม) → high (หลัง 1 เดือน) |
+| Grype (`anchore/scan-action`) | ช่องโหว่ OS + npm ใน image prod | ทุก PR ใน job docker (critical) · nightly บน image ที่ build ใหม่ (high) | critical ที่มีทางแก้ (PR) · high ที่มีทางแก้ (nightly) |
 | `npm audit signatures` | แพ็กเกจที่ provenance/signature ไม่ตรง | ทุก PR | พบ |
 | SBOM (`anchore/sbom-action`, SPDX) | บัญชีของที่อยู่ใน image | release | — |
 | OWASP ZAP baseline | header, cookie, การเปิดเผยข้อมูลบน HTTP | nightly กับ staging (P5) | high |
@@ -157,7 +158,7 @@ job `gate` ใช้ `if: always()` ตรวจ `needs.*.result` ว่าไ�
 
 ### 5.7 Nightly (P6)
 
-`schedule` 02:00 Asia/Bangkok: coverage เต็ม · CodeQL extended · Trivy บน image `main` ล่าสุด (ช่องโหว่ใหม่เกิดได้โดยโค้ดไม่เปลี่ยน) · gitleaks ทั้ง history · `python scripts/check-diagrams.py` (รายงานอย่างเดียว เพราะตอนนี้ exit 1 จาก warning ที่รู้อยู่แล้ว) · Stryker mutation test เฉพาะ `app/server/src/lib/` (attainment, weights) เพราะเป็นสูตรที่ผิดแล้วตัวเลขเพี้ยนแต่ยังดูถูก · ล้มเมื่อไรเปิด issue อัตโนมัติ
+`schedule` 02:00 Asia/Bangkok: coverage เต็ม · CodeQL extended · Grype บน image `main` ล่าสุด (ช่องโหว่ใหม่เกิดได้โดยโค้ดไม่เปลี่ยน) · gitleaks ทั้ง history · `python scripts/check-diagrams.py` (รายงานอย่างเดียว เพราะตอนนี้ exit 1 จาก warning ที่รู้อยู่แล้ว) · Stryker mutation test เฉพาะ `app/server/src/lib/` (attainment, weights) เพราะเป็นสูตรที่ผิดแล้วตัวเลขเพี้ยนแต่ยังดูถูก · ล้มเมื่อไรเปิด issue อัตโนมัติ
 
 ---
 
@@ -169,7 +170,7 @@ job `gate` ใช้ `if: always()` ตรวจ `needs.*.result` ว่าไ�
 |---|---|---|---|---|
 | **P1** ป้องกัน | `ci/harden` | §5.1 ทั้งหมด · §5.2: `permissions` · SHA pin · timeout · `persist-credentials` · `dependabot.yml` (npm, github-actions, docker) · CODEOWNERS · แก้ `Dockerfile.prod` | push ตรงเข้า `main` ถูกปฏิเสธ · PR ที่ CI แดง merge ไม่ได้ · commit ทดสอบที่มี secret ปลอมถูก push protection บล็อก · `zizmor` = 0 | 1 วัน |
 | **P2** ขนาน | `ci/parallel` | แยก job ตาม §4 · `gate` · path filter · แยก Vitest project unit/db · coverage บังคับ · drift check · junit annotation | PR docs-only จบ ≤ 1 นาที · server test ไม่รันซ้ำ · PR ที่แก้ schema โดยไม่มี migration ล้ม · ลด coverage ใต้ threshold แล้วล้ม | 1–2 วัน |
-| **P3** สแกน | `ci/security-scans` | §5.4 (ยกเว้น ZAP) · harden-runner audit | PR ที่เพิ่มแพ็กเกจมีช่องโหว่รู้แล้วล้ม · ผล CodeQL/Trivy ขึ้นแท็บ Security | 1 วัน |
+| **P3** สแกน | `ci/security-scans` | §5.4 (ยกเว้น ZAP) · harden-runner audit | PR ที่เพิ่มแพ็กเกจมีช่องโหว่รู้แล้วล้ม · ผล CodeQL ขึ้นแท็บ Security | 1 วัน |
 | **P4** E2E | `ci/e2e` | §5.5 · เริ่มเมื่อหน้าจอ React ของเส้นทางหลักนิ่ง | smoke ผ่านบน compose · ทำให้ปุ่มหนึ่งพังแล้ว smoke ล้ม | 2–3 วัน |
 | **P5** CD | `cd/release` | §5.6 | deploy staging อัตโนมัติ · production รอคนอนุมัติ · rollback ทดลองแล้วใช้ได้ | 2–3 วัน |
 | **P6** Nightly | `ci/nightly` | §5.7 · ZAP กับ staging · harden-runner เป็น `block` | รันครบ 7 คืนติด · ล้มแล้วมี issue เปิดเอง | 1 วัน |
@@ -195,3 +196,16 @@ P1 → P2 ต้องเรียงกัน (P2 แก้ไฟล์ workflo
 | ที่ deploy: Railway หรือ Fly.io | ยังไม่ทำ P5 จนกว่าจะเลือก |
 | มี Supabase project แยกสำหรับ staging หรือไม่ (มีค่าใช้จ่าย/โควตา) | ใช้ Supabase branch ถ้า plan รองรับ · ไม่งั้นข้าม staging แล้วให้ production ต้องอนุมัติเสมอ |
 | ใครอนุมัติ deploy production | หัวหน้าทีม 1 คน |
+
+---
+
+## 9. สิ่งที่ทำจริง (2026-10-24 · PR [#38](https://github.com/SIET-KMITL-INCEPTIO/CMAS-CLO/pull/38))
+
+| เฟส | ทำแล้ว | ต่างจากแผน และเหตุผล |
+|---|---|---|
+| P1 | pin action ทุกตัวด้วย SHA · `permissions: {}` · timeout · `persist-credentials: false` · zizmor · `dependabot.yml` (cooldown 7 วัน) · CODEOWNERS · `npm ci` + digest ใน `Dockerfile.prod` · `.dockerignore` กัน `.env` ทุกระดับ | ขึ้น action เป็น major ล่าสุด (Node 24) เพราะ major เดิมรันบน Node 20 ที่ GitHub เลิกรองรับ · การตั้งค่า GitHub (ruleset, secret scanning) ต้องให้ admin ทำ |
+| P2 | `docker-build.yml` รวมเข้า `ci.yml` · job ขนาน 11 ตัว + `CI gate` · แยก `test:unit` / `test:db` ไม่รันซ้ำ · coverage บังคับใน job `unit` · `prisma migrate diff` ตรวจ drift · ข้าม job แอปเมื่อ PR แก้แค่ docs | path filter อ่านจาก GitHub API แทน action ภายนอก (ลด dependency ที่เข้าถึง repo ได้) · ยังไม่ทำ sharding / DB ต่อ worker (ยังไม่ถึงเกณฑ์ 3 นาที) |
+| P3 | CodeQL · dependency-review (high) · gitleaks (เฉพาะ commit ใหม่, `--redact`) · Grype บน image prod · `npm audit signatures` · harden-runner `audit` | Grype แทน Trivy · gitleaks รันจาก image ที่ pin digest แทน `gitleaks-action` ซึ่งต้องมี licence สำหรับ repo ของ organization · ZAP เลื่อนไปพร้อม P5 เพราะต้องมี staging |
+| P4 | Playwright บน **production build** (`dist` + `vite preview`) กับ Postgres ชั่วคราว: health · helmet · CORS · 401/403 ของ `/users` (token ปลอม, refresh token, role claim ที่ไม่ตรงแถวจริง) · หน้า shell/login ไม่มี console error · ADMIN อนุมัติบัญชี Google ที่รออนุมัติผ่านเบราว์เซอร์ | หน้าจอรายวิชา/นำเข้า Excel ยังไม่อยู่บน `main` (อยู่ใน `feature/frontend-index-q`) จึงยังไม่มีใน smoke · ใช้ token ที่ test สร้างเอง (secret สุ่มต่อรอบ) ไม่เพิ่ม route ทดสอบใน server เพื่อไม่ให้มีทางเข้าลับในโค้ด production |
+| P5 | — | **เลื่อน**: ยังไม่เลือกที่ deploy (§8) |
+| P6 | `nightly.yml` 02:00: gitleaks ทั้ง history · CodeQL `security-extended` · Grype (high) บน image ที่ build ใหม่ · `xlsx` เทียบ `xlsx-latest` ของ SheetJS · Stryker บน `src/lib` · `check-diagrams.py` (รายงานอย่างเดียว) · ล้มแล้วเปิด/อัปเดต issue | harden-runner โหมด `block` ยังไม่เปิด ต้องเก็บรายการปลายทางจากโหมด `audit` ก่อนอย่างน้อย 1–2 สัปดาห์ |
