@@ -1,0 +1,52 @@
+# Dependency updates. Security fixes arrive as soon as an advisory is published
+# (once "Dependabot security updates" is on in repo settings); these entries
+# add the routine weekly version bumps on top.
+#
+# Minor and patch bumps are grouped into one PR per ecosystem so the team
+# reviews one PR a week instead of twenty. Majors stay one PR each because
+# they are the ones that break things.
+#
+# `xlsx` comes from a cdn.sheetjs.com tarball, which Dependabot can't track.
+# Its updates stay manual (docs/markdown/dev/planning/ci-cd-plan.md §5.2).
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Bangkok
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      npm-minor-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Bangkok
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      actions-minor-patch:
+        update-types: [minor, patch]
+
+  # Base images in the Dockerfiles are pinned by digest; this keeps the digests fresh.
+  - package-ecosystem: docker
+    directories:
+      - /app/server
+      - /app/client
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Bangkok
+    commit-message:
+      prefix: "build(deps)"
+    groups:
+      docker-images:
+        patterns: ["*"]
