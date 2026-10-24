@@ -3,17 +3,18 @@
 # Usage: docker build -f app/client/Dockerfile.prod -t cmas-client:latest .
 
 # Stage 1: Build
-FROM node:24-alpine AS builder
+# Base images are pinned by digest; Dependabot (docker) proposes new digests.
+FROM node:24-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 AS builder
 
 WORKDIR /app
 
 # Copy workspace manifests
-COPY package.json package-lock.json* ./
+COPY package.json package-lock.json ./
 COPY app/client/package.json app/client/package.json
 COPY app/server/package.json app/server/package.json
 
-# Install dependencies
-RUN npm install --production=false
+# Install exactly what package-lock.json records; fails if it is out of sync
+RUN npm ci
 
 # Copy source
 COPY app/client ./app/client
@@ -22,7 +23,7 @@ COPY app/client ./app/client
 RUN npm run build -w app/client
 
 # Stage 2: Serve via lightweight nginx
-FROM nginx:1.27-alpine
+FROM nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
 
 # Copy built assets from builder
 COPY --from=builder /app/app/client/dist /usr/share/nginx/html
