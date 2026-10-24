@@ -23,7 +23,9 @@ COPY app/client ./app/client
 RUN npm run build -w app/client
 
 # Stage 2: Serve via lightweight nginx
-FROM nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+# 1.30 is nginx's stable line; 1.27 stopped getting Alpine rebuilds and carried
+# OpenSSL 3.3.3 with CRITICAL CVEs (Grype, PR #38).
+FROM nginx:1.30-alpine@sha256:47928bf67eb62a1863cb08d9ecb52d3e704304ba614eaee17884204677702951
 
 # Copy built assets from builder
 COPY --from=builder /app/app/client/dist /usr/share/nginx/html
