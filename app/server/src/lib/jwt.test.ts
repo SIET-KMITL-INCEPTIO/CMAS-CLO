@@ -34,4 +34,43 @@ describe("token kinds (S-1)", () => {
       .sign(new TextEncoder().encode("x".repeat(40)))
     await expect(verifyAccessToken(forged)).rejects.toThrow()
   })
+
+  it("accepts a refresh token as a refresh token", async () => {
+    await expect(verifyRefreshToken(await signRefreshToken(payload))).resolves.toEqual(payload)
+  })
+})
+
+// Each case below was a mutant that survived Stryker (ci-cd-plan.md §5.7):
+// the check could be deleted and every test still passed.
+describe("claims a validly signed token must still carry", () => {
+  const secret = new TextEncoder().encode(env.JWT_SECRET)
+  const signWith = (claims: Record<string, unknown>, alg = "HS256") =>
+    new SignJWT({ typ: "access", ...claims })
+      .setProtectedHeader({ alg })
+      .setExpirationTime("15m")
+      .sign(secret)
+
+  it("rejects a token with no subject", async () => {
+    await expect(verifyAccessToken(await signWith({ role: "ADMIN" }))).rejects.toThrow(
+      "Token has no subject",
+    )
+  })
+
+  it.each(["ADMIN", "INSTRUCTOR"])("accepts the role claim %s", async (role) => {
+    await expect(verifyAccessToken(await signWith({ sub: "u", role }))).resolves.toEqual({
+      sub: "u",
+      role,
+    })
+  })
+
+  it.each(["", "SUPERADMIN", undefined])("rejects the role claim %s", async (role) => {
+    await expect(verifyAccessToken(await signWith({ sub: "u", role }))).rejects.toThrow(
+      "Bad role claim",
+    )
+  })
+
+  it("rejects HS512 even with the right secret: only HS256 is allowed", async () => {
+    const other = await signWith({ sub: "u", role: "ADMIN" }, "HS512")
+    await expect(verifyAccessToken(other)).rejects.toThrow()
+  })
 })
