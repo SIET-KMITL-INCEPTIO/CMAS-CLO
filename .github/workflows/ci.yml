@@ -12,10 +12,16 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# No token scopes by default; each job asks for exactly what it needs.
+permissions: {}
+
 jobs:
   verify:
     name: Format, lint, typecheck, test, build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
 
     env:
       # `prisma generate` and the server typecheck resolve env() in
@@ -25,10 +31,12 @@ jobs:
       DIRECT_URL: postgresql://postgres:postgres@localhost:5432/postgres
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -66,6 +74,9 @@ jobs:
   isolation:
     name: Migration replay + course-scope isolation
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
 
     # The `verify` job runs the isolation suite too, but with no reachable
     # database it SKIPS every case — and a skipped isolation test proves
@@ -98,10 +109,12 @@ jobs:
       CMAS_DB_TESTS: "1"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -129,3 +142,23 @@ jobs:
 
       - name: Course-scope isolation tests
         run: npm run test -w app/server
+
+  workflow-lint:
+    name: Workflow security lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+
+    # zizmor audits the workflows themselves: unpinned actions, excessive
+    # token scopes, template injection, dangerous triggers. Findings fail the
+    # job here instead of going to the Security tab (that comes with P3).
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b # v0.8.0
+        with:
+          advanced-security: false
