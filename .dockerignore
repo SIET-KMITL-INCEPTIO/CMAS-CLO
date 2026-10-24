@@ -18,10 +18,12 @@ docs
 .gitignore
 .github
 
-# Environment files (use env_file or -e in compose instead)
-.env
-.env.local
-.env.*.local
+# Environment files (use env_file or -e in compose instead). `**/` matters:
+# a bare `.env` only matches the repo root, and `COPY app/server` would carry
+# app/server/.env (JWT secret, DB password) into the build cache.
+**/.env
+**/.env.*
+!**/.env.example
 
 # OS
 .DS_Store

@@ -37,6 +37,7 @@ Ports: client `5173`, server `3001`. Launch configs are in `.claude/launch.json`
 app/client/src/features/<name>/   Page.page.tsx · Component.tsx · useXxx.ts · xxx.api.ts · xxx.types.ts
 app/server/src/modules/<name>/    xxx.route.ts · xxx.controller.ts · xxx.service.ts · model.repository.ts · xxx.validator.ts
 database/                         schema.prisma · migrations/ · seed.ts
+e2e/                              Playwright smoke on the production build (needs a throwaway Postgres)
 docs/                             markdown/ (source) · pages/ (hand-written HTML) · reference/ · diagrams/ (by type) · excel/ (by purpose) · word/ pdf/
 scripts/                          setup.mjs · build-*.py (diagram/workbook generators) · check-*.{py,js}
 ```
@@ -73,7 +74,17 @@ scripts/                          setup.mjs · build-*.py (diagram/workbook gene
 npm run setup            # idempotent: .env files, JWT secret, install, prisma generate
 npm run dev              # client + server
 npm run verify           # format:check + lint + typecheck + test + build (run before push)
+npm run test:unit        # unit tests with enforced coverage (what CI's `unit` job runs)
+npm run test:e2e         # Playwright smoke; run `npm run build` first, DATABASE_URL must be disposable
 npm run db:migrate:dev   # create + apply migration (pass --name snake_case_verb_noun)
 npm run db:seed
 npm run docs:build       # docs/markdown → docs/html
 ```
+
+## CI
+
+`.github/workflows/ci.yml` runs every job in parallel and ends in **`CI gate`**, the only check the
+`main` ruleset requires. `nightly.yml` runs the slower scans at 02:00. Action `uses:` are pinned by
+full SHA (zizmor fails the build otherwise); in-repo actions use `$/…`. Coverage and Stryker
+thresholds are a ratchet: raise them, never lower them without a reason in the PR.
+Plan and status: `docs/markdown/dev/planning/ci-cd-plan.md`.

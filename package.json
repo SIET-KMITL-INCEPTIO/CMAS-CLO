@@ -17,7 +17,7 @@
     "start": "npm run start -w app/server",
     "lint": "npm run lint -w app/client && npm run lint -w app/server",
     "lint:fix": "npm run lint -w app/client -- --fix && npm run lint -w app/server -- --fix",
-    "typecheck": "npm run typecheck -w app/client && npm run typecheck -w app/server",
+    "typecheck": "npm run typecheck -w app/client && npm run typecheck -w app/server && tsc -p e2e/tsconfig.json",
     "test": "npm run test -w app/client && npm run test -w app/server",
     "test:watch": "npm run test:watch -w app/server",
     "test:coverage": "npm run test:coverage -w app/client && npm run test:coverage -w app/server",
@@ -38,15 +38,20 @@
     "docker:build": "docker compose up --build",
     "docker:down": "docker compose down",
     "docs:build": "npm --prefix docs/_generator run build",
-    "setup": "node scripts/setup.mjs"
+    "setup": "node scripts/setup.mjs",
+    "test:unit": "npm run test:coverage -w app/client && npm run test:unit -w app/server -- --coverage",
+    "test:e2e": "playwright test -c e2e/playwright.config.ts"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5",
     "concurrently": "^10.0.3",
     "docx": "^9.7.1",
     "prettier": "^3.4.2",
     "prisma": "^6.19.3",
     "rimraf": "^6.0.1",
-    "tsx": "^4.23.0"
+    "tsx": "^4.23.0",
+    "typescript": "~5.9.3"
   },
   "engines": {
     "node": ">=24.0.0",

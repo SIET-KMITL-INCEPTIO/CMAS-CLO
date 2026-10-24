@@ -1,0 +1,23 @@
+# Paths where a mistake costs security or data, not just a bug.
+# Once the main ruleset has "Require review from Code Owners" on, a PR touching
+# these needs an approval from one of the listed people (any one is enough;
+# GitHub never counts the PR author's own approval).
+# Plan: docs/markdown/dev/planning/ci-cd-plan.md §5.1
+
+# CI/CD itself: a workflow change can leak secrets or skip every check.
+/.github/                                    @tp-job @Natjama-ma @Limerreen
+
+# Prisma records migration names in the database; 0002 and 0009 are hand-written SQL.
+/database/migrations/                        @tp-job @Natjama-ma @Limerreen
+/database/schema.prisma                      @tp-job @Natjama-ma @Limerreen
+
+# The course-scope boundary (CLAUDE.md rule 1) and the auth path in front of it.
+/app/server/src/modules/authorization/       @tp-job @Natjama-ma @Limerreen
+/app/server/src/middlewares/                 @tp-job @Natjama-ma @Limerreen
+/app/server/src/modules/auth/                @tp-job @Natjama-ma @Limerreen
+/app/server/src/lib/jwt.ts                   @tp-job @Natjama-ma @Limerreen
+
+# What ships to production.
+/app/server/Dockerfile.prod                  @tp-job @Natjama-ma @Limerreen
+/app/client/Dockerfile.prod                  @tp-job @Natjama-ma @Limerreen
+/docker-compose.prod.yml                     @tp-job @Natjama-ma @Limerreen

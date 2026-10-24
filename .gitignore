@@ -10,6 +10,14 @@ build/
 app/client/dist/
 app/server/dist/
 
+# Test output (Vitest coverage, Playwright, Stryker). A pattern with a slash in
+# the middle is anchored to the repo root, hence **/ for the per-workspace ones.
+coverage/
+e2e/test-results/
+e2e/playwright-report/
+**/reports/mutation/
+.stryker-tmp/
+
 # Environment
 .env
 .env.local

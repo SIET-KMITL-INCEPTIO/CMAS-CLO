@@ -1,10 +1,16 @@
 name: CI
 
+# Plan: docs/markdown/dev/planning/ci-cd-plan.md §4. Every job below feeds the
+# single `CI gate` job at the bottom; that is the only check the main ruleset
+# needs to require, so adding or skipping a job never strands a PR.
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  # Lets a maintainer run the full suite on any branch from the Actions tab.
+  workflow_dispatch:
 
 # Cancel superseded runs on the same branch instead of burning minutes on
 # commits nobody is waiting for.
@@ -12,32 +18,70 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# No token scopes by default; each job asks for exactly what it needs.
+permissions: {}
+
+env:
+  # `prisma generate` and the server typecheck resolve env() in schema.prisma,
+  # so these must exist. Jobs without a Postgres service never connect.
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/cmas_test
+  DIRECT_URL: postgresql://postgres:postgres@localhost:5432/cmas_test
+
 jobs:
-  verify:
-    name: Format, lint, typecheck, test, build
+  changes:
+    name: Detect changed areas
     runs-on: ubuntu-latest
-
-    env:
-      # `prisma generate` and the server typecheck resolve env() in
-      # schema.prisma, so these must be present. They are never connected to —
-      # no job in this workflow touches a real database.
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
-      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/postgres
-
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
         with:
-          node-version-file: .nvmrc
-          cache: npm
+          egress-policy: audit
 
-      - name: Install dependencies
-        run: npm ci
+      # A PR that only touches docs/ or Markdown skips the app jobs. Anything
+      # else (and every push, dispatch) runs everything. Read from the API, not
+      # a third-party filter action: one less dependency with repo access.
+      - name: Classify changed files
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ "$EVENT" != "pull_request" ]; then
+            echo "app=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/$REPO/pulls/$PR/files" --paginate \
+            --jq '.[] | .filename, (.previous_filename // empty)')
+          printf '%s\n' "$files"
+          if printf '%s\n' "$files" | grep -Evq '^docs/|\.md$'; then app=true; else app=false; fi
+          echo "app=$app" | tee -a "$GITHUB_OUTPUT"
 
-      - name: Generate Prisma client
-        run: npm run db:generate
+  static:
+    name: Format, lint, typecheck, API design
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: $/.github/actions/setup
+
+      # Every registry package's signature and provenance matches what npm
+      # published. `xlsx` (a cdn.sheetjs.com tarball) is outside the registry
+      # and is checked by the nightly workflow instead.
+      - name: Verify package signatures
+        run: npm audit signatures
 
       - name: Validate Prisma schema
         run: npm run db:validate
@@ -51,33 +95,54 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Test
-        run: npm run test
-
-      # The API design (docs/excel/api/api-endpoints.json) against the schema, the
-      # capability table, the test plan and the routes in app/server. Its runtime
-      # twin, app/server/src/api-contract.test.ts, ran in the step above.
+      # The API design (docs/excel/api/api-endpoints.json) against the schema,
+      # the capability table, the test plan and the routes in app/server. Its
+      # runtime twin is app/server/src/api-contract.test.ts in the unit job.
       - name: API design matches the system
         run: python3 scripts/check-api-design.py
 
-      - name: Build
-        run: npm run build
-
-  isolation:
-    name: Migration replay + course-scope isolation
+  unit:
+    name: Unit tests + coverage
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: $/.github/actions/setup
 
-    # The `verify` job runs the isolation suite too, but with no reachable
-    # database it SKIPS every case — and a skipped isolation test proves
-    # nothing. This job is the one that actually enforces SRS NFR-07.
-    #
-    # Single-tenant since 2026-08-04: the boundary is the COURSE, not the
-    # institution. The seed creates two courses with different instructors so
-    # "instructor of course A must get 404 on course B" has real data to run
-    # against.
+      # Client and server, without the *.db.test.ts / isolation files (those
+      # run once, for real, in the db job). Coverage thresholds live in each
+      # vitest.config.ts and fail this step when missed.
+      - name: Test with coverage
+        run: npm run test:unit
+
+      - name: Coverage summary
+        if: always()
+        run: node scripts/coverage-summary.mjs >> "$GITHUB_STEP_SUMMARY"
+
+  db:
+    name: Migrations, drift, seed, DB + isolation tests
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    # Single-tenant since 2026-08-04: the boundary is the COURSE. The seed
+    # creates two courses with different instructors so "instructor of course
+    # A must get 404 on course B" has real data to run against (SRS NFR-07).
     services:
       postgres:
-        image: postgres:16
+        image: postgres:16@sha256:9e2cf6287f25c3151f4c9421ccce2b17f3e60061c111a29165e0d2cdd9ff0a97
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -91,34 +156,33 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/cmas_test
-      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/cmas_test
-      # Turns on course-scope.isolation.test.ts (S-8). Off everywhere else so
-      # nobody's tests write to or depend on a shared database.
+      # Turns on the *.db.test.ts files and course-scope.isolation.test.ts.
+      # Only ever set in a job that owns a throwaway database.
       CMAS_DB_TESTS: "1"
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
         with:
-          node-version-file: .nvmrc
-          cache: npm
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: $/.github/actions/setup
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Generate Prisma client
-        run: npm run db:generate
-
-      # Replays 0001_init and the HAND-WRITTEN 0002_constraints_and_triggers
-      # from empty. This is what proves the hand-written migration survives the
-      # command developers run most often — and it is the only thing that
-      # catches someone running `prisma db push` and silently dropping the
-      # CHECK/trigger layer.
+      # Replays every migration from empty, including the HAND-WRITTEN 0002
+      # (CHECKs, triggers) and 0009 (RLS). The only thing that catches someone
+      # running `prisma db push` and silently dropping that layer.
       - name: Apply migrations
         run: npm run db:migrate:deploy
+
+      # schema.prisma edited without a migration: the migrated database and the
+      # schema disagree, and `migrate diff` prints the SQL that is missing.
+      - name: Schema matches migrations
+        run: >-
+          npx prisma migrate diff
+          --from-url "$DATABASE_URL"
+          --to-schema-datamodel database/schema.prisma
+          --exit-code
 
       - name: Seed
         run: npm run db:seed
@@ -127,5 +191,304 @@ jobs:
       - name: Seed again — must be idempotent
         run: npm run db:seed
 
-      - name: Course-scope isolation tests
-        run: npm run test -w app/server
+      - name: DB + course-scope isolation tests
+        run: npm run test:db -w app/server
+
+  build:
+    name: Build
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: $/.github/actions/setup
+      - run: npm run build
+
+  e2e:
+    name: E2E smoke (production build)
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    services:
+      postgres:
+        image: postgres:16@sha256:9e2cf6287f25c3151f4c9421ccce2b17f3e60061c111a29165e0d2cdd9ff0a97
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cmas_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      # Placeholder: Google is never called; tests mint their own tokens.
+      GOOGLE_CLIENT_ID: e2e.apps.googleusercontent.com
+      CORS_ORIGIN: http://localhost:5173
+      RATE_LIMIT_MAX: "1000"
+
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: $/.github/actions/setup
+
+      # Made fresh per run so no signing key lives in the repository. Masked
+      # before it reaches the environment so it never shows in a log.
+      - name: Generate a throwaway JWT secret
+        run: |
+          secret=$(openssl rand -hex 32)
+          echo "::add-mask::$secret"
+          echo "JWT_SECRET=$secret" >> "$GITHUB_ENV"
+
+      - name: Apply migrations
+        run: npm run db:migrate:deploy
+
+      - name: Seed
+        run: npm run db:seed
+
+      - name: Build
+        run: npm run build
+
+      - name: Read Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E smoke
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-report
+          path: |
+            e2e/playwright-report
+            e2e/test-results
+          retention-days: 7
+
+  docker:
+    # Reads as "Docker build (server)" etc. on the PR.
+    name: Docker build (${{ matrix.image }})
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    # Every Dockerfile in the repo: the prod pair that docker-compose.prod.yml
+    # and the deploy targets use, and the dev pair behind docker-compose.yml.
+    # A broken one fails its own check instead of hiding behind another's.
+    # Only the prod pair is scanned: the dev images never leave a laptop.
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: server
+            file: app/server/Dockerfile.prod
+            scan: true
+          - image: client
+            file: app/client/Dockerfile.prod
+            scan: true
+          - image: server-dev
+            file: app/server/Dockerfile.dev
+            scan: false
+          - image: client-dev
+            file: app/client/Dockerfile.dev
+            scan: false
+
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # Build only; nothing is pushed. Each image keeps its own cache scope so
+      # the four builds don't evict each other's layers. `load` hands the image
+      # to the scanner below.
+      - name: Build ${{ matrix.file }}
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ${{ matrix.file }}
+          push: false
+          load: ${{ matrix.scan }}
+          tags: cmas-${{ matrix.image }}:ci
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}
+
+      # OS packages and node_modules in the image. Fails on a CRITICAL that
+      # already has a fix; the nightly run reports HIGH as well.
+      - name: Scan image for vulnerabilities
+        if: matrix.scan
+        uses: anchore/scan-action@27805bf3b4e84b4a5c980df22ed233c00390a439 # v7.4.2
+        with:
+          image: cmas-${{ matrix.image }}:ci
+          fail-build: true
+          severity-cutoff: critical
+          only-fixed: true
+          output-format: table
+
+  codeql:
+    name: CodeQL
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          languages: javascript-typescript
+          build-mode: none
+      # Results go to the Security tab and onto the PR diff. Blocking a merge
+      # on them is a ruleset setting ("Require code scanning results").
+      - uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          category: /language:javascript-typescript
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      # A dependency this PR adds or bumps with a known HIGH/CRITICAL advisory.
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+
+  secrets:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # Only the commits this PR (or push) adds; the nightly run scans all of
+      # history. The gitleaks binary, not gitleaks-action: the action needs a
+      # paid licence for organisation repositories. `--redact` keeps any secret
+      # it finds out of this public log.
+      - name: Scan new commits
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            range="$HEAD~1..$HEAD"
+          else
+            range="$BASE..$HEAD"
+          fi
+          echo "Scanning $range"
+          docker run --rm -v "$PWD:/repo" \
+            -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0='*' \
+            ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f \
+            git /repo --log-opts="$range" --redact --no-banner --exit-code 1
+
+  workflow-lint:
+    name: Workflow security lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+
+    # zizmor audits the workflows and dependabot.yml themselves: unpinned
+    # actions, excessive token scopes, template injection, dangerous triggers.
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b # v0.8.0
+        with:
+          advanced-security: false
+
+  gate:
+    name: CI gate
+    if: always()
+    needs:
+      [
+        changes,
+        static,
+        unit,
+        db,
+        build,
+        e2e,
+        docker,
+        codeql,
+        dependency-review,
+        secrets,
+        workflow-lint,
+      ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions: {}
+    steps:
+      # Passes when every job passed or was skipped on purpose (docs-only PR,
+      # dependency review outside a PR). Fails on any failure or cancellation.
+      - name: Check job results
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          echo "$RESULTS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          if echo "$RESULTS" | jq -e '[.[].result] | any(. == "failure" or . == "cancelled")' > /dev/null; then
+            echo "::error::One or more CI jobs failed"
+            exit 1
+          fi

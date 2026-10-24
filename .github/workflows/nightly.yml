@@ -1,0 +1,204 @@
+name: Nightly
+
+# What a PR run can't see: vulnerabilities published since the last merge,
+# secrets anywhere in history, deeper CodeQL queries, and whether the tests on
+# the tests on src/lib would notice a wrong line. Any failure opens (or
+# comments on) one "Nightly CI failed" issue.
+# Plan: docs/markdown/dev/planning/ci-cd-plan.md §5.7
+
+on:
+  schedule:
+    - cron: "0 19 * * *" # 02:00 Asia/Bangkok
+  workflow_dispatch:
+
+concurrency:
+  group: nightly
+  cancel-in-progress: false
+
+permissions: {}
+
+env:
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/cmas_test
+  DIRECT_URL: postgresql://postgres:postgres@localhost:5432/cmas_test
+
+jobs:
+  history-secrets:
+    name: Secret scan, full history
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Scan every commit
+        run: |
+          docker run --rm -v "$PWD:/repo" \
+            -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0='*' \
+            ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f \
+            git /repo --redact --no-banner --exit-code 1
+
+  codeql-extended:
+    name: CodeQL (security-extended)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          languages: javascript-typescript
+          build-mode: none
+          queries: security-extended
+      - uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          category: /language:javascript-typescript/nightly
+
+  image-scan:
+    name: Image scan (${{ matrix.image }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: server
+            file: app/server/Dockerfile.prod
+          - image: client
+            file: app/client/Dockerfile.prod
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      # No cache: the point is a fresh install against today's registry.
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ${{ matrix.file }}
+          push: false
+          load: true
+          tags: cmas-${{ matrix.image }}:nightly
+      # Stricter than the PR gate (critical): HIGH with a fix available fails.
+      - uses: anchore/scan-action@27805bf3b4e84b4a5c980df22ed233c00390a439 # v7.4.2
+        with:
+          image: cmas-${{ matrix.image }}:nightly
+          fail-build: true
+          severity-cutoff: high
+          only-fixed: true
+          output-format: table
+
+  sheetjs:
+    name: xlsx is the latest SheetJS release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    # xlsx installs from a cdn.sheetjs.com tarball, so neither npm audit nor
+    # Dependabot sees its advisories. SheetJS ships security fixes as new
+    # releases; being behind the latest one is the signal to upgrade.
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Compare the locked version with xlsx-latest
+        run: |
+          locked=$(jq -r '.packages["node_modules/xlsx"].version' package-lock.json)
+          latest=$(curl -fsSL https://cdn.sheetjs.com/xlsx-latest/package/package.json | jq -r .version)
+          echo "locked $locked · latest $latest"
+          if [ "$locked" != "$latest" ]; then
+            echo "::error::xlsx $locked is behind SheetJS $latest. Update the tarball URL in app/client and app/server package.json."
+            exit 1
+          fi
+
+  mutation:
+    name: Mutation test (server src/lib)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    # A suite that still passes when `!==` becomes `===` in a token check (or,
+    # once it lands here, `>=` becomes `>` in the CLO formula) is not
+    # protecting anything. Stryker makes those changes and fails below the
+    # break score in app/server/stryker.config.json.
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: $/.github/actions/setup
+      - name: Run Stryker on app/server/src/lib
+        run: npm run test:mutation -w app/server
+      - name: Upload mutation report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: mutation-report
+          path: app/server/reports/mutation
+          retention-days: 14
+
+  diagrams:
+    name: Diagrams match the prototype (report only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    # Exits 1 today on known presentation warnings (CLAUDE.md rule 6), so it
+    # reports without failing the night. Read the log before a presentation.
+    continue-on-error: true
+    steps:
+      - uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: python3 scripts/check-diagrams.py
+
+  report:
+    name: Open an issue on failure
+    needs: [history-secrets, codeql-extended, image-scan, sheetjs, mutation, diagrams]
+    if: failure()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update the nightly issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          title="Nightly CI failed"
+          failed=$(echo "$RESULTS" | jq -r 'to_entries[] | select(.value.result == "failure") | "- \(.key)"')
+          body=$(printf 'Run: %s\n\nFailed jobs:\n%s\n' "$RUN_URL" "$failed")
+          existing=$(gh issue list -R "$REPO" --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" -R "$REPO" --body "$body"
+          else
+            gh issue create -R "$REPO" --title "$title" --body "$body"
+          fi
