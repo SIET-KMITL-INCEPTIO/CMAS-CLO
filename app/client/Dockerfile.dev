@@ -1,6 +1,6 @@
 # Dev-only image: Vite dev server with hot reload, source mounted as a volume
 # by docker-compose.
-FROM node:24-alpine
+FROM node:25-alpine
 
 WORKDIR /app
 
