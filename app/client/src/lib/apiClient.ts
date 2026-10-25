@@ -16,7 +16,9 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
         ? (options.body as BodyInit)
         : JSON.stringify(options.body),
     headers: {
-      ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      // Fastify answers 400 to "Content-Type: application/json" with no body, which
+      // broke every bodiless PATCH/POST (the approve button).
+      ...(isFormData || options.body === undefined ? {} : { "Content-Type": "application/json" }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
