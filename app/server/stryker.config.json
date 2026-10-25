@@ -1,0 +1,12 @@
+{
+  "$schema": "../../node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": "Mutation test for src/lib: Stryker changes the code (>= to >, true to false, …) and checks a test notices. Run nightly (ci-cd-plan.md §5.7). Break threshold = what main measured, ratchet only.",
+  "testRunner": "vitest",
+  "vitest": { "configFile": "vitest.config.ts" },
+  "mutate": ["src/lib/**/*.ts", "!src/lib/**/*.test.ts"],
+  "coverageAnalysis": "perTest",
+  "reporters": ["clear-text", "progress", "html"],
+  "htmlReporter": { "fileName": "reports/mutation/index.html" },
+  "tempDirName": ".stryker-tmp",
+  "thresholds": { "high": 90, "low": 75, "break": 76 }
+}

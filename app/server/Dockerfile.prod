@@ -3,17 +3,18 @@
 # Usage: docker build -f app/server/Dockerfile.prod -t cmas-server:latest .
 
 # Stage 1: Build
-FROM node:24-alpine AS builder
+# Base images are pinned by digest; Dependabot (docker) proposes new digests.
+FROM node:24-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 AS builder
 
 WORKDIR /app
 
 # Copy workspace manifests
-COPY package.json package-lock.json* ./
+COPY package.json package-lock.json ./
 COPY app/server/package.json app/server/package.json
 COPY app/client/package.json app/client/package.json
 
-# Install dependencies
-RUN npm install --production=false
+# Install exactly what package-lock.json records; fails if it is out of sync
+RUN npm ci
 
 # Copy source and schema
 COPY database ./database
@@ -26,17 +27,17 @@ RUN npx prisma generate --schema=database/schema.prisma
 RUN npm run build -w app/server
 
 # Stage 2: Runtime
-FROM node:24-alpine
+FROM node:24-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53
 
 WORKDIR /app
 
 # Copy only workspace manifests
-COPY package.json package-lock.json* ./
+COPY package.json package-lock.json ./
 COPY app/server/package.json app/server/package.json
 COPY app/client/package.json app/client/package.json
 
-# Install production dependencies only
-RUN npm install --production=true
+# Install production dependencies only, exactly as locked
+RUN npm ci --omit=dev
 
 # Copy Prisma schema and generated client from builder
 COPY --from=builder /app/database ./database
