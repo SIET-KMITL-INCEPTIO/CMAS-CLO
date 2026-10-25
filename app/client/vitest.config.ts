@@ -26,10 +26,10 @@ export default defineConfig({
       reporter: ["text", "html", "json-summary"],
       include: ["src/**/*.{ts,tsx}"],
       exclude: ["src/main.tsx", "src/vite-env.d.ts", "src/**/*.test.{ts,tsx}"],
-      // Ratchet: what main measured on 2026-10-24 (one test file so far), only
+      // Ratchet: what main measured on 2026-10-24 (one test file), 9/22/70 with F0–F6 merged, only
       // ever raised, toward dev.md §11.1 (client hooks 70%). Enforced by the
       // CI `unit` job. Lowering one needs a reason in the PR.
-      thresholds: { lines: 2, statements: 2, functions: 20, branches: 20 },
+      thresholds: { lines: 9, statements: 9, functions: 22, branches: 70 },
     },
   },
 })

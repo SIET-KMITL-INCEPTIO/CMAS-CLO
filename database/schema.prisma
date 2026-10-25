@@ -32,6 +32,10 @@
 
 generator client {
   provider = "prisma-client-js"
+  // One SQL query per `include` (LATERAL JOIN) instead of one per relation.
+  // Through Supabase every query is a 0.1–0.4 s round trip, so GET /courses/:id
+  // went from 9 queries to a few. Schema-only: no migration.
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -114,6 +118,8 @@ enum ActivityType {
   LAB // ปฏิบัติการ (Lab)
   TEST // สอบ
   PROJECT // โครงงาน / ชิ้นงาน
+  OTHER // อื่น ๆ — none of the above, no name needed (0008)
+  CUSTOM // a name the instructor added; Activity.typeLabel holds it (0008)
 }
 
 // How an activity is assessed (T3/T11). Replaces the free-text Activity.method.
@@ -123,6 +129,8 @@ enum AssessmentMethod {
   RUBRIC // รูบริก
   WORK // ตรวจชิ้นงาน / รายงาน
   OBSERVATION // สังเกตพฤติกรรม
+  OTHER // อื่น ๆ (0008)
+  CUSTOM // Activity.assessmentLabel holds the name (0008)
 }
 
 // How an account was first created (D6). Informational: an EMAIL account can
@@ -141,6 +149,65 @@ enum AuthProvider {
 enum AccountStatus {
   PENDING
   ACTIVE
+}
+
+// ---------------------------------------------------------------------------
+// 0008 (D-4, 2026-10-22): the enums of the tables and columns index-q.html
+// added on top of 0007. Source: docs/reference/db/mysql/index-q.sql [index-q].
+// ---------------------------------------------------------------------------
+
+// N1: activity weights are entered one per activity (MANUAL) or one per
+// activity type and split by maxScore (GROUP, CourseGroupWeight).
+enum WeightMode {
+  MANUAL
+  GROUP
+}
+
+// Both Excel imports are logged in ScoreUploadLog; this says which (UC 6.1 / 7.1).
+enum UploadKind {
+  SCORE
+  ROSTER
+}
+
+// R2: WITHDRAWN leaves every denominator; its scores stay so restoring is lossless.
+enum EnrollmentStatus {
+  ENROLLED
+  WITHDRAWN
+}
+
+// R3: EXCUSED = this activity does not count for this student (score is NULL).
+enum ScoreStatus {
+  SCORED
+  EXCUSED
+}
+
+// R5: by which path a score cell changed.
+enum ScoreChangeSource {
+  MANUAL // typed in the grid
+  IMPORT // Excel import
+  FILL // เริ่มจากคะแนนเต็ม
+  FILL_UNDO
+  CLOSE // ปิดรับคะแนน decided the missing cells
+  PASTE // pasted from a spreadsheet
+  NOTE // only the excuse reason changed
+  UNDO
+}
+
+// UC 1.6 account history. DENY records a refused action (FR-22b, S-10).
+enum AuthEventAction {
+  CREATE
+  EDIT
+  ROLE_SET
+  SUSPEND
+  ACTIVATE
+  PW_RESET
+  PW_CHANGE
+  DENY
+  REGISTER
+  VERIFY
+  LOGIN
+  LOGIN_GOOGLE
+  LOGOUT
 }
 
 // ---------------------------------------------------------------------------
@@ -171,6 +238,11 @@ model User {
   googleSub       String?      @unique
   emailVerifiedAt DateTime?
 
+  // 0008 (UC 1.5) — only meaningful for EMAIL accounts, which are after v1 (D-5).
+  mustChangePassword Boolean   @default(false)
+  pwResetAt          DateTime?
+  pwChangedAt        DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -179,6 +251,11 @@ model User {
   courseAssignments  CourseInstructor[]
   uploadLogs         ScoreUploadLog[]
   verificationTokens EmailVerificationToken[]
+  refreshTokens      RefreshToken[]
+  scoreChanges       ScoreChange[]
+  remediationPlans   RemediationPlan[]
+  authEvents         AuthEvent[]              @relation("AuthEventUser")
+  authEventsActed    AuthEvent[]              @relation("AuthEventActor")
 
   @@index([role, isActive])
   @@index([status]) // Admin's pending-approval list (FR-08)
@@ -248,12 +325,17 @@ model Course {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  instructors CourseInstructor[]
-  clos        CLO[]
-  activities  Activity[]
-  students    Student[]
-  uploadLogs  ScoreUploadLog[]
-  gradeBands  GradeBand[]
+  // 0008 N1: MANUAL = Activity.weight entered per activity · GROUP = one weight
+  // per activity type in CourseGroupWeight, split by maxScore.
+  weightMode WeightMode @default(MANUAL)
+
+  instructors  CourseInstructor[]
+  clos         CLO[]
+  activities   Activity[]
+  students     Student[]
+  uploadLogs   ScoreUploadLog[]
+  gradeBands   GradeBand[]
+  groupWeights CourseGroupWeight[]
 
   // FR-21. One faculty, so the code alone is meaningful — the error message is
   // "รหัสวิชานี้มีอยู่แล้ว" with no institution qualifier.
@@ -313,7 +395,8 @@ model CLO {
   // one course-wide number cannot express that (CR-04).
   classTarget Float?
 
-  objectives BehavioralObjective[]
+  objectives       BehavioralObjective[]
+  remediationPlans RemediationPlan[]
 
   // CLO numbering must be unique inside a course — two "CLO 1" in one course
   // silently corrupts every attainment report.
@@ -352,8 +435,19 @@ model Activity {
   order            Int
   weight           Float // % of the course total; all activities in a course sum to 100
 
-  criteria AssessmentCriteria[]
-  scores   Score[]
+  // 0008. typeLabel / assessmentLabel name a CUSTOM option (empty otherwise).
+  typeLabel       String    @default("")
+  assessmentLabel String    @default("")
+  // M3: the pass mark the instructor enters, as a score. passMark (%) is kept
+  // equal to passScore / maxScore * 100 by the service. NULL = not entered.
+  passScore       Float?
+  // R3: NULL = still collecting scores. Once set, a missing Score row means
+  // "did not submit" and must be decided (0 or EXCUSED).
+  closedAt        DateTime? @db.Date
+
+  criteria     AssessmentCriteria[]
+  scores       Score[]
+  scoreChanges ScoreChange[]
 
   @@index([courseId, order])
 }
@@ -399,8 +493,14 @@ model Student {
   courseId    String
   course      Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  scores Score[]
-  grade  StudentGrade?
+  // 0008 R2: WITHDRAWN leaves every denominator; scores are kept.
+  status      EnrollmentStatus @default(ENROLLED)
+  withdrawnAt DateTime?        @db.Date
+
+  scores           Score[]
+  grade            StudentGrade?
+  remediationPlans RemediationPlan[]
+  scoreChanges     ScoreChange[]
 
   // FR-51: unique inside a course. The same code in two courses is two
   // enrolments of one person, which is correct and must stay legal.
@@ -421,8 +521,11 @@ model Score {
   // NOT NULLABLE, and no row means "ยังไม่ประเมิน" (FR-62). A 0 here is a real
   // zero the student earned; the absence of the row is the missing value.
   // Never insert 0 to mean "not yet graded".
-  score      Float
-  uploadedAt DateTime @default(now())
+  // 0008 R3: NULL only when status = EXCUSED (CHECK in 0008).
+  score        Float?
+  status       ScoreStatus @default(SCORED)
+  excuseReason String?
+  uploadedAt   DateTime    @default(now())
 
   // Triggers also enforce: score <= Activity.maxScore, and that the Student
   // and the Activity belong to the same Course.
@@ -435,15 +538,19 @@ model Score {
 // ---------------------------------------------------------------------------
 
 model ScoreUploadLog {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   courseId    String
-  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course      Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
   uploadedBy  String
-  uploader    User     @relation(fields: [uploadedBy], references: [id], onDelete: Restrict)
+  uploader    User       @relation(fields: [uploadedBy], references: [id], onDelete: Restrict)
   fileName    String
   recordsOk   Int
   recordsFail Int
-  createdAt   DateTime @default(now())
+  kind        UploadKind @default(SCORE) // 0008
+  createdAt   DateTime   @default(now())
+
+  rejects      UploadReject[]
+  scoreChanges ScoreChange[]
 
   @@index([courseId])
   @@index([createdAt])
@@ -541,4 +648,112 @@ model StudentGrade {
   // Without a legal way to do this, instructors edit raw scores instead, which
   // corrupts every CLO number downstream: the expensive failure mode.
   overrideReason String?
+}
+
+// ---------------------------------------------------------------------------
+// 0008 TABLES (D-4 · D-2) — none of them is read by a score or grade formula
+// except CourseGroupWeight, which Activity.weight is derived from.
+// ---------------------------------------------------------------------------
+
+// N1/N2: one weight per activity type when Course.weightMode = GROUP. `type` is
+// an ActivityType, or "CUSTOM:<typeLabel>" — each custom name is its own group.
+// Rows are kept when the course switches back to MANUAL.
+model CourseGroupWeight {
+  id       String @id @default(cuid())
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  type     String
+  weight   Float // % of the course total for ALL activities of this type
+
+  @@unique([courseId, type])
+}
+
+// FR-65: one row per refused cell of an Excel import. `row` is the row number
+// as the instructor sees it in Excel.
+model UploadReject {
+  id          String         @id @default(cuid())
+  logId       String
+  log         ScoreUploadLog @relation(fields: [logId], references: [id], onDelete: Cascade)
+  row         Int
+  studentCode String
+  field       String
+  value       String
+  reason      String
+
+  @@index([logId])
+}
+
+// 2569-10-19 teacher feedback: the instructor's free-text plan to help one
+// student reach one CLO. Never enters a formula. One row per (Student, CLO).
+model RemediationPlan {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  cloId     String
+  clo       CLO      @relation(fields: [cloId], references: [id], onDelete: Cascade)
+  plan      String
+  updatedBy String
+  editor    User     @relation(fields: [updatedBy], references: [id], onDelete: Restrict)
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, cloId])
+  @@index([cloId])
+}
+
+// R5 · A-12: every score write appends one row in the same transaction.
+// The excused flags keep "ยกเว้น" apart from an empty cell (NULL score).
+model ScoreChange {
+  id          String            @id @default(cuid())
+  studentId   String
+  student     Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  activityId  String
+  activity    Activity          @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  fromScore   Float?
+  fromExcused Boolean           @default(false)
+  toScore     Float?
+  toExcused   Boolean           @default(false)
+  source      ScoreChangeSource
+  note        String?
+  changedBy   String
+  changer     User              @relation(fields: [changedBy], references: [id], onDelete: Restrict)
+  logId       String?
+  log         ScoreUploadLog?   @relation(fields: [logId], references: [id], onDelete: SetNull)
+  changedAt   DateTime          @default(now())
+
+  @@index([studentId, activityId, changedAt])
+  @@index([activityId])
+}
+
+// UC 1.6: userId is whom the event happened TO, actorId who DID it.
+model AuthEvent {
+  id      String          @id @default(cuid())
+  userId  String
+  user    User            @relation("AuthEventUser", fields: [userId], references: [id], onDelete: Cascade)
+  actorId String
+  actor   User            @relation("AuthEventActor", fields: [actorId], references: [id], onDelete: Cascade)
+  action  AuthEventAction
+  detail  String?
+  at      DateTime        @default(now())
+
+  @@index([userId, at])
+  @@index([actorId])
+}
+
+// D-2 · S-2: refresh tokens are revocable. Only the SHA-256 of the token is
+// stored. Each use rotates: the old row is revoked and names its replacement;
+// presenting a revoked token revokes the whole family, because reuse means
+// the token was stolen.
+model RefreshToken {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique
+  familyId   String
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  replacedBy String?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([familyId])
 }

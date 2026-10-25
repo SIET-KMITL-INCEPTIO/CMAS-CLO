@@ -65,6 +65,37 @@ export async function authorize(
   if (!(rule.roles as readonly Role[]).includes(caller.role)) throw new ForbiddenError()
 }
 
+/**
+ * A-3: the path params a course can be found from when a route has no
+ * :courseId (/clos/:cloId, /students/:studentId, ...). Listed in the order the
+ * access hook tries them, so /students/:studentId/remediation-plans/:cloId is
+ * scoped by the student and the service checks the CLO belongs to the same course.
+ */
+export const LEAF_PARAMS = ["studentId", "activityId", "objectiveId", "cloId", "uploadId"] as const
+export type LeafParam = (typeof LEAF_PARAMS)[number]
+
+/** The course a leaf row belongs to, or null when there is no such row. */
+export async function resolveCourseId(param: LeafParam, id: string): Promise<string | null> {
+  const select = { courseId: true } as const
+  switch (param) {
+    case "cloId":
+      return (await prisma.cLO.findUnique({ where: { id }, select }))?.courseId ?? null
+    case "activityId":
+      return (await prisma.activity.findUnique({ where: { id }, select }))?.courseId ?? null
+    case "studentId":
+      return (await prisma.student.findUnique({ where: { id }, select }))?.courseId ?? null
+    case "uploadId":
+      return (await prisma.scoreUploadLog.findUnique({ where: { id }, select }))?.courseId ?? null
+    case "objectiveId": {
+      const row = await prisma.behavioralObjective.findUnique({
+        where: { id },
+        select: { clo: { select } },
+      })
+      return row?.clo.courseId ?? null
+    }
+  }
+}
+
 /** Read access to one course. Kept under this name because docs and CLAUDE.md cite it. */
 export async function assertCourseAccess(courseId: string, caller: Caller): Promise<void> {
   await authorize("course.view", courseId, caller)

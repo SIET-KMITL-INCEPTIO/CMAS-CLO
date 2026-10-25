@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto"
+import { createHash, createHmac } from "node:crypto"
 import { PrismaClient } from "@prisma/client"
 import type { Page } from "@playwright/test"
 
@@ -36,11 +36,38 @@ export async function seededUser(email: string) {
   })
 }
 
-/** Signs `email` in the way Login.page.tsx does: the persisted zustand store. */
+/**
+ * Signs `email` in the way a real browser holds a session (D-2, S-2): a signed
+ * refresh token in the httpOnly `cmas_rt` cookie, and its SHA-256 in the
+ * RefreshToken table. The app then trades it for an access token through
+ * POST /auth/refresh, exactly as it does after a page reload.
+ */
 export async function signInAs(page: Page, email: string) {
   const user = await seededUser(email)
-  const accessToken = signToken(user.id, user.role)
-  const stored = JSON.stringify({ state: { user, accessToken }, version: 0 })
-  await page.addInitScript((value) => window.localStorage.setItem("clo-auth", value), stored)
+  const token = signToken(user.id, user.role, { typ: "refresh" })
+  const tokenHash = createHash("sha256").update(token).digest("hex")
+
+  const row = await prisma.refreshToken.create({
+    data: {
+      userId: user.id,
+      tokenHash,
+      familyId: "",
+      expiresAt: new Date(Date.now() + 600_000),
+    },
+  })
+  // A new sign-in starts its own family, named after its first token.
+  await prisma.refreshToken.update({ where: { id: row.id }, data: { familyId: row.id } })
+
+  await page.context().addCookies([
+    {
+      name: "cmas_rt",
+      value: encodeURIComponent(token),
+      domain: "localhost",
+      path: "/api/v1/auth",
+      httpOnly: true,
+      sameSite: "Strict",
+      expires: Math.floor(Date.now() / 1000) + 600,
+    },
+  ])
   return user
 }
