@@ -145,10 +145,16 @@ installs only that workspace and the two apps can ship on independent
 schedules. `docker-compose.prod.yml` runs the production images locally if you
 want to check an image before pushing it.
 
-CI runs on every PR to `main`: `.github/workflows/ci.yml` runs the full `verify`
-pipeline and the migration/isolation suite, and
-`.github/workflows/docker-build.yml` builds all four Dockerfiles (one check per
-image, e.g. "Docker build (server)").
+CI runs on every PR to `dev` or `main` and on every push to them:
+`.github/workflows/ci.yml` runs its jobs in parallel (format, lint, typecheck,
+unit tests with coverage, migrations + DB/isolation tests, build, E2E smoke, one
+Docker build per image, CodeQL, dependency review, secret scan) and ends in a
+single required check, **`CI gate`**. `nightly.yml` runs the slower scans at
+02:00. Plan and status: `docs/markdown/dev/planning/ci-cd-plan.md`.
+
+**Branching (Git Flow):** cut every branch from `dev` and open the PR into `dev`.
+`main` only receives `release/*` and `hotfix/*`, both back-merged into `dev`.
+Rules and commands: [git-rule.md](docs/markdown/rule/git-rule.md).
 
 ---
 
