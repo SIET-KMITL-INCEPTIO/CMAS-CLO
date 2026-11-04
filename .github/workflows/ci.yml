@@ -6,9 +6,9 @@ name: CI
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, develop]
   pull_request:
-    branches: [main, dev]
+    branches: [main, develop]
   # Lets a maintainer run the full suite on any branch from the Actions tab.
   workflow_dispatch:
 
@@ -468,7 +468,7 @@ jobs:
     permissions: {}
     steps:
       # Git Flow (docs/markdown/rule/git-rule.md §1): main only ever receives a
-      # release or a hotfix. Everything else goes into dev. A ruleset can't
+      # release or a hotfix. Everything else goes into develop. A ruleset can't
       # filter by source branch, so this job does, and `CI gate` requires it.
       - name: Check the source branch against the target
         env:
@@ -486,9 +486,9 @@ jobs:
             exit 1
           fi
           case "$HEAD_REF" in
-            dev | release/* | hotfix/*) ;;
+            develop | release/* | hotfix/*) ;;
             *)
-              echo "::error::'$HEAD_REF' cannot go into main. Open the PR into dev. Only dev, release/* and hotfix/* may target main."
+              echo "::error::'$HEAD_REF' cannot go into main. Open the PR into develop. Only develop, release/* and hotfix/* may target main."
               exit 1
               ;;
           esac

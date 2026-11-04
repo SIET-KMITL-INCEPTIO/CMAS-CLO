@@ -91,7 +91,7 @@ Plan and status: `docs/markdown/dev/planning/ci-cd-plan.md`.
 
 ## Git
 
-Git Flow: **every branch is cut from and merged into `dev`**, never `main`. `main` takes only
-`release/*` and `hotfix/*` (a CI job rejects anything else), and both are back-merged into `dev`.
-`dev` is the default branch. Merge with merge commits, never squash or rebase. Both branches need a
+Git Flow: **every branch is cut from and merged into `develop`**, never `main`. `main` takes only
+`release/*` and `hotfix/*` (a CI job rejects anything else), and both are back-merged into `develop`.
+`develop` is the default branch. Merge with merge commits, never squash or rebase. Both branches need a
 PR, one approval and `CI gate`. Details: `docs/markdown/rule/git-rule.md`.

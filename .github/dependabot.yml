@@ -10,7 +10,7 @@
 # reviews one PR a week instead of twenty. Majors stay one PR each because
 # they are the ones that break things.
 #
-# Git Flow: every update PR targets `dev`, never `main` (git-rule.md §1).
+# Git Flow: every update PR targets `develop`, never `main` (git-rule.md §1).
 #
 # `xlsx` comes from a cdn.sheetjs.com tarball, which Dependabot can't track.
 # Its updates stay manual (docs/markdown/dev/planning/ci-cd-plan.md §5.2).
@@ -19,7 +19,7 @@ version: 2
 updates:
   - package-ecosystem: npm
     directory: /
-    target-branch: dev
+    target-branch: develop
     schedule:
       interval: weekly
       day: monday
@@ -35,7 +35,7 @@ updates:
 
   - package-ecosystem: github-actions
     directory: /
-    target-branch: dev
+    target-branch: develop
     schedule:
       interval: weekly
       day: monday
@@ -53,7 +53,7 @@ updates:
     directories:
       - /app/server
       - /app/client
-    target-branch: dev
+    target-branch: develop
     schedule:
       interval: weekly
       day: monday

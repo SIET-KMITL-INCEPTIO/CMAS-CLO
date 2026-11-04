@@ -492,28 +492,28 @@ FEAT(CLO): ...                  # uppercase type
 ### 5.3 Pull Request Workflow
 
 ```bash
-# 1. สร้าง branch จาก dev
-git checkout dev
-git pull origin dev
+# 1. สร้าง branch จาก develop
+git checkout develop
+git pull origin develop
 git checkout -b feature/42-excel-upload
 
 # 2. พัฒนา + commit แบบ selective
 git add -p
 git commit -m "feat(excel): เพิ่ม endpoint upload คะแนน"
 
-# 3. Push แล้วเปิด PR เข้า dev
+# 3. Push แล้วเปิด PR เข้า develop
 git push origin feature/42-excel-upload
 
-# 4. ก่อน merge — ดึง dev ล่าสุดเข้า branch ตัวเอง (merge ไม่ใช่ rebase
+# 4. ก่อน merge — ดึง develop ล่าสุดเข้า branch ตัวเอง (merge ไม่ใช่ rebase
 #    เพราะ branch ที่เปิด PR แล้วต้อง force push ถ้า rebase)
 git fetch origin
-git merge origin/dev
+git merge origin/develop
 git push origin feature/42-excel-upload
 ```
 
 **PR Requirements:**
 
-- ปลายทางเป็น `dev` (ยกเว้น release/* และ hotfix/* ที่เข้า `main`) ระบบตรวจให้ในเช็ก `Git Flow branch rule`
+- ปลายทางเป็น `develop` (ยกเว้น release/* และ hotfix/* ที่เข้า `main`) ระบบตรวจให้ในเช็ก `Git Flow branch rule`
 - Title ต้องเป็น Conventional Commit format
 - ผ่าน `CI gate` (ตั้งค่าแล้ว ดู §12)
 - Reviewer อย่างน้อย 1 คน approve
@@ -1016,8 +1016,8 @@ Integration tests (Fastify `inject()`) และ E2E (Playwright) ยังไ�
 | Environment | Branch | URL |
 | --- | --- | --- |
 | Development | local | `localhost:5173` + `localhost:3001` |
-| Preview | `feature/*` (PR เข้า `dev`) | Auto-deploy Vercel Preview |
-| Staging | `dev` | TBD (ยังไม่เลือกที่ deploy) |
+| Preview | `feature/*` (PR เข้า `develop`) | Auto-deploy Vercel Preview |
+| Staging | `develop` | TBD (ยังไม่เลือกที่ deploy) |
 | Production | `main` | TBD |
 
 ---
