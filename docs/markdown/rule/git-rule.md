@@ -6,23 +6,33 @@
 
 ## 1. โครงสร้าง Branch หลัก
 
-ทีมนี้ใช้แนวคิดจาก **GitFlow แบบย่อ** (เหมาะกับทีมเล็ก 3 คน ไม่ซับซ้อนเกินไป):
+ทีมนี้ใช้ **Git Flow** (ปรับให้เหมาะกับทีม 3 คน): **ทุก branch ต้อง merge เข้า `develop` ก่อนเสมอ** ส่วน `main` รับได้เฉพาะ release และ hotfix
 
-|Branch|บทบาท|ใครแตะได้|
-|---|---|---|
-|`main`|โค้ด Production-ready / เสถียรที่สุด **ห้าม commit ตรงๆ**|Merge ผ่าน PR เท่านั้น|
-|`develop`|Branch หลักสำหรับรวมฟีเจอร์ใหม่ระหว่างพัฒนา|Merge ผ่าน PR เท่านั้น|
-|`feature/<ชื่อฟีเจอร์>`|พัฒนาฟีเจอร์ใหม่ 1 เรื่อง ต่อ 1 branch|เจ้าของฟีเจอร์|
-|`hotfix/<ชื่อบั๊ก>`|แก้บั๊กด่วนบน production|ผู้แก้ไข + ต้องแจ้งทีม แต่ **ยังต้องผ่าน PR** (ดูข้อ 2.1)|
+|Branch|แตกจาก|merge เข้า|บทบาท|
+|---|---|---|---|
+|`main`|-|-|โค้ดที่ปล่อยแล้ว เสถียรที่สุด ทุก commit บน `main` มี tag เวอร์ชัน **ห้าม commit ตรงๆ**|
+|`develop`|`main`|-|เส้นทางรวมงานพัฒนา เป็น default branch ของ repo **ห้าม commit ตรงๆ**|
+|`feature/<ชื่อ>` `fix/<ชื่อ>` `chore/<ชื่อ>` `docs/<ชื่อ>` `ci/<ชื่อ>` `test/<ชื่อ>`|`develop`|`develop`|งาน 1 เรื่องต่อ 1 branch|
+|`release/<x.y.z>`|`develop`|`main` แล้ว back-merge เข้า `develop`|เตรียมออกเวอร์ชัน แก้ได้เฉพาะบั๊กที่เจอตอนเตรียม ห้ามเพิ่มฟีเจอร์|
+|`hotfix/<ชื่อบั๊ก>`|`main`|`main` แล้ว back-merge เข้า `develop`|แก้บั๊กด่วนบนของที่ปล่อยแล้ว|
+|`dependabot/*`|`develop`|`develop`|Dependabot เปิดให้เอง (ตั้ง `target-branch: develop`)|
 
-> ทีม 3 คนไม่จำเป็นต้องใช้ `release/*` แบบ GitFlow เต็มรูปแบบ ยกเว้นมีรอบ Release ชัดเจน ถ้าจำเป็นค่อยเพิ่ม `release/<version>` แตกจาก `develop` ตอนเตรียมออกเวอร์ชัน
+### กฎที่ระบบบังคับให้ (ไม่ต้องพึ่งความจำ)
+
+- `main` และ `develop` มี ruleset เหมือนกัน: ต้องผ่าน PR · ต้องมี approval 1 คน (เจ้าของ PR approve เองไม่ได้ · ไฟล์ใน `.github/CODEOWNERS` ต้องให้เจ้าของไฟล์อนุมัติ) · ต้องผ่าน check **`CI gate`** · ห้าม force push · ห้ามลบ branch
+- job `Git Flow branch rule` ใน `ci.yml` (เป็นส่วนของ `CI gate`) ปฏิเสธ PR เข้า `main` ที่ branch ต้นทางไม่ใช่ `develop`, `release/*` หรือ `hotfix/*` ruleset กรองตามชื่อ branch ต้นทางเองไม่ได้ จึงใช้ job นี้แทน
+- PR ที่เปิดเข้า `main` ผิด สามารถเปลี่ยนปลายทางเป็น `develop` ได้โดยไม่ต้องปิด (ปุ่ม Edit ข้างชื่อ PR)
+
+### วิธี merge
+
+- **ใช้ merge commit เสมอ** (ไม่ใช่ squash หรือ rebase) เพื่อให้ประวัติจริงของ branch ไม่หาย และ `develop` กับ `main` ไม่แตกประวัติจากกัน
+- **ห้าม squash PR ที่เข้า `main`** (release, hotfix) และ PR ที่ back-merge เข้า `develop` ไม่งั้น `main` กับ `develop` จะมีประวัติคนละสาย แล้ว PR ถัดไปจะ conflict ซ้ำของเดิม
 
 ### กติกาการตั้งชื่อ Branch
 
-- `feature/login-page`
-- `feature/export-pdf`
-- `hotfix/fix-payment-bug`
+- `feature/login-page` · `fix/score-upload-crash` · `release/1.2.0` · `hotfix/jwt-expiry-null-check`
 - ใช้ตัวพิมพ์เล็ก คั่นด้วย `-` ห้ามเว้นวรรค ห้ามใช้ภาษาไทยในชื่อ branch
+- `release/*` ใช้เลขเวอร์ชัน `x.y.z` ตรงกับ tag ที่จะติด
 
 ---
 
@@ -33,14 +43,14 @@
 git checkout develop
 git pull origin develop
 
-# 2. แตก branch ใหม่จาก develop
+# 2. แตก branch ใหม่จากdevelop
 git checkout -b feature/ชื่อฟีเจอร์
 
 # 3. ทำงาน แก้ไขไฟล์ แล้ว add + commit เป็นระยะ (commit เล็กๆ ดีกว่า commit ใหญ่ก้อนเดียว)
 git add .
 git commit -m "feat: เพิ่มฟอร์มเข้าสู่ระบบ"
 
-# 4. ก่อน push ให้ดึง develop ล่าสุดมา merge/rebase ป้องกัน conflict บานปลาย
+# 4. ก่อน push ให้ดึง develop ล่าสุดมา merge เข้า branch ตัวเอง (ไม่ rebase branch ที่เปิด PR แล้ว เพราะต้อง force push)
 git checkout develop
 git pull origin develop
 git checkout feature/ชื่อฟีเจอร์
@@ -49,20 +59,20 @@ git merge develop
 # 5. push ขึ้น remote
 git push origin feature/ชื่อฟีเจอร์
 
-# 6. เปิด Pull Request (PR) จาก feature/ชื่อฟีเจอร์ -> develop
+# 6. เปิด Pull Request (PR) จาก feature/ชื่อฟีเจอร์ -> develop (ต้องเป็น develop ไม่ใช่ main)
 #    ให้เพื่อนอีก 1 คนใน 2 คนที่เหลือ Review ก่อน Merge เสมอ
 ```
 
-**กติกาสำคัญ:** ห้าม push ตรงเข้า `main` หรือ `develop` เด็ดขาด (รวมถึง hotfix ด้วย — ดูข้อ 2.1) ทุกอย่างต้องผ่าน Pull Request และต้องมีคน **Review อย่างน้อย 1 คน** (จากทีม 3 คน จะเหลือคน Review 2 คน เลือกใครก็ได้ 1 คน) ก่อน Merge เท่านั้น
+**กติกาสำคัญ:** ห้าม push ตรงเข้า `main` หรือ `develop` เด็ดขาด (รวมถึง hotfix และ release — ดูข้อ 2.1, 2.2) ทุกอย่างต้องผ่าน Pull Request และต้องมีคน **Review อย่างน้อย 1 คน** (จากทีม 3 คน จะเหลือคน Review 2 คน เลือกใครก็ได้ 1 คน) ก่อน Merge เท่านั้น
 
 ---
 
 ## 2.1 Workflow เมื่อต้องแก้บั๊กด่วน (Hotfix)
 
-Hotfix ต่างจาก feature ตรงที่แตกออกจาก `main` (ไม่ใช่ `develop`) เพราะต้องแก้ของที่ใช้งานจริงอยู่ แต่ **ยังต้องผ่าน PR เหมือนเดิม** เพียงแค่ขอให้ทีม Review แบบเร่งด่วนเป็นกรณีพิเศษ:
+Hotfix ต่างจาก feature ตรงที่แตกออกจาก `main` (ไม่ใช่ `develop`) และ PR เข้า `main` ก่อน แล้วค่อย back-merge เข้า `develop` เพราะต้องแก้ของที่ใช้งานจริงอยู่ แต่ **ยังต้องผ่าน PR เหมือนเดิม** เพียงแค่ขอให้ทีม Review แบบเร่งด่วนเป็นกรณีพิเศษ:
 
 ```bash
-# 1. แตก branch จาก main (ไม่ใช่ develop)
+# 1. แตก branch จาก main (ไม่ใช่develop)
 git checkout main
 git pull origin main
 git checkout -b hotfix/ชื่อบั๊ก
@@ -81,12 +91,39 @@ git pull origin main
 git tag v1.0.1
 git push origin v1.0.1
 
-# 5. สำคัญมาก: ต้องเอา fix เดียวกันนี้ไป merge เข้า develop ด้วย
-#    ไม่งั้น develop จะไม่มี fix ตัวนี้ และบั๊กจะกลับมาใหม่ในรอบถัดไป
+# 5. สำคัญมาก: เอา fix เดียวกันนี้เข้าdevelop ด้วย ผ่าน PR (develop ห้าม push ตรง)
+#    ไม่งั้น develop จะไม่มี fix ตัวนี้ และบั๊กจะกลับมาในรอบถัดไป
 git checkout develop
 git pull origin develop
+git checkout -b chore/backmerge-v1.0.1
 git merge main
-git push origin develop
+git push origin chore/backmerge-v1.0.1
+#    เปิด PR: chore/backmerge-v1.0.1 -> develop (merge commit ห้าม squash)
+```
+
+---
+
+## 2.2 Workflow เมื่อออกเวอร์ชัน (Release)
+
+```bash
+# 1. แตก release จากdevelop เมื่อฟีเจอร์ของรอบนี้ครบแล้ว
+git checkout develop
+git pull origin develop
+git checkout -b release/1.2.0
+git push origin release/1.2.0
+
+# 2. บนนี้แก้ได้เฉพาะบั๊กที่เจอตอนเตรียม (fix: ...) ห้ามเพิ่มฟีเจอร์
+#    งานใหม่ที่ไม่ใช่บั๊กให้ไปเข้าdevelop ตามปกติ รอรอบหน้า
+
+# 3. เปิด PR: release/1.2.0 -> main  (merge commit ห้าม squash) เมื่อ CI ผ่านและมี approval
+# 4. หลัง merge ติด tag บน main
+git checkout main
+git pull origin main
+git tag v1.2.0
+git push origin v1.2.0
+
+# 5. back-merge เข้าdevelop ผ่าน PR: release/1.2.0 -> develop (merge commit ห้าม squash)
+#    เพื่อให้ develop มีบั๊กที่แก้ระหว่างเตรียมและมี main อยู่ในประวัติ
 ```
 
 ---

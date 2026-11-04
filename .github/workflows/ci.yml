@@ -6,9 +6,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   # Lets a maintainer run the full suite on any branch from the Actions tab.
   workflow_dispatch:
 
@@ -460,6 +460,39 @@ jobs:
         with:
           advanced-security: false
 
+  branch-flow:
+    name: Git Flow branch rule
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions: {}
+    steps:
+      # Git Flow (docs/markdown/rule/git-rule.md §1): main only ever receives a
+      # release or a hotfix. Everything else goes into develop. A ruleset can't
+      # filter by source branch, so this job does, and `CI gate` requires it.
+      - name: Check the source branch against the target
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+        run: |
+          echo "$HEAD_REF -> $BASE_REF"
+          if [ "$BASE_REF" != "main" ]; then
+            exit 0
+          fi
+          if [ "$HEAD_REPO" != "$BASE_REPO" ]; then
+            echo "::error::A PR into main must come from a branch in this repository, not a fork."
+            exit 1
+          fi
+          case "$HEAD_REF" in
+            develop | release/* | hotfix/*) ;;
+            *)
+              echo "::error::'$HEAD_REF' cannot go into main. Open the PR into develop. Only develop, release/* and hotfix/* may target main."
+              exit 1
+              ;;
+          esac
+
   gate:
     name: CI gate
     if: always()
@@ -476,6 +509,7 @@ jobs:
         dependency-review,
         secrets,
         workflow-lint,
+        branch-flow,
       ]
     runs-on: ubuntu-latest
     timeout-minutes: 2
