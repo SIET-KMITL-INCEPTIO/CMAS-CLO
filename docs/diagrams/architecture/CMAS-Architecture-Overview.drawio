@@ -1,0 +1,344 @@
+<mxfile host="65bd71144e">
+    <diagram id="simple" name="Overview (simple)">
+        <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1560" pageHeight="740" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="s-title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=28;" value="ภาพรวมระบบ CMAS" vertex="1">
+                    <mxGeometry height="40" width="1480" x="40" y="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-b-t" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" value="เว็บเบราว์เซอร์ (Chrome / Edge)" vertex="1">
+                    <mxGeometry height="34" width="330" x="120" y="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-react" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg;" value="React" vertex="1">
+                    <mxGeometry height="64" width="64" x="152" y="285" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-ts" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" value="TypeScript" vertex="1">
+                    <mxGeometry height="64" width="64" x="242" y="285" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-tw" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg;" value="Tailwind" vertex="1">
+                    <mxGeometry height="64" width="64" x="332" y="285" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-b-l" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=16;" value="เว็บแอป CMAS&lt;br&gt;หน้าจอ · กราฟ · อัปโหลด Excel" vertex="1">
+                    <mxGeometry height="55" width="310" x="130" y="405" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-l1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" value="HTTPS" vertex="1">
+                    <mxGeometry height="30" width="130" x="485" y="305" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-l2" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" value="REST API" vertex="1">
+                    <mxGeometry height="30" width="130" x="490" y="360" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-a2" edge="1" parent="1" style="endArrow=block;endFill=1;startArrow=block;startFill=1;html=1;strokeWidth=3;strokeColor=#000000;">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="465" y="347" as="sourcePoint"/>
+                        <mxPoint x="645" y="347" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="s-server" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=3;fontSize=22;fontStyle=1;verticalAlign=top;align=center;spacingTop=10;" value="เซิร์ฟเวอร์ (BACKEND)" vertex="1">
+                    <mxGeometry height="540" width="780" x="660" y="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-mid" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=18;fontStyle=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;" value="ตรวจสิทธิ์ · ประมวลผล" vertex="1">
+                    <mxGeometry height="400" width="340" x="700" y="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-core" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;spacingTop=8;" value="Node.js · TypeScript" vertex="1">
+                    <mxGeometry height="270" width="260" x="740" y="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-fastify" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" value="Fastify" vertex="1">
+                    <mxGeometry height="64" width="64" x="765" y="350" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-prisma" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" value="Prisma" vertex="1">
+                    <mxGeometry height="64" width="64" x="905" y="350" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-core-t" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;" value="ตรวจข้อมูล (Zod)&lt;br&gt;ตรวจสิทธิ์ (JWT)" vertex="1">
+                    <mxGeometry height="60" width="240" x="750" y="475" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-fr-g" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=18;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" value="Google Auth (บริการภายนอก)" vertex="1">
+                    <mxGeometry height="180" width="280" x="1130" y="195" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-fr-d" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=18;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" value="ฐานข้อมูล (Database)" vertex="1">
+                    <mxGeometry height="190" width="280" x="1130" y="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-google" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg;" value="Google Sign-In &#xa;(ยืนยันตัวตน)" vertex="1">
+                    <mxGeometry height="80" width="80" x="1230" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-db" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg;" value="PostgreSQL" vertex="1">
+                    <mxGeometry height="80" width="80" x="1155" y="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-sb" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg;" value="Supabase" vertex="1">
+                    <mxGeometry height="80" width="80" x="1300" y="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-e1" edge="1" parent="1" source="s-mid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=3;strokeColor=#000000;endArrow=block;endFill=1;fontSize=18;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.15;entryX=0;entryY=0.5;" target="s-google" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="s-e2" edge="1" parent="1" source="s-mid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=3;strokeColor=#000000;endArrow=block;endFill=1;fontSize=18;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.675;entryX=0;entryY=0.5;" target="s-db" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cc4obgj8cq0UvenYhsAU-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;spacingTop=8;" value="Node.js · TypeScript" vertex="1">
+                    <mxGeometry height="270" width="310" x="130" y="220" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="detail" name="Detailed architecture">
+        <mxGraphModel dx="1915" dy="2360" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="RjkY1Peh214BUfLKnp08-66" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="CMAS — Architecture Overview &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Course Monitoring and Assessment System · single-tenant · React → Fastify → PostgreSQL&lt;/span&gt;" vertex="1">
+                    <mxGeometry height="850" width="1880" x="1010" y="-1130" as="geometry"/>
+                </mxCell>
+                <mxCell id="actors" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Users" vertex="1">
+                    <mxGeometry height="380" width="170" x="1030" y="-1030" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor-inst" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Instructor&lt;br&gt;สอน · นำเข้าคะแนน&lt;br&gt;เห็นเฉพาะวิชาของตน" vertex="1">
+                    <mxGeometry height="120" width="140" x="1045" y="-985" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor-admin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="ADMIN&lt;br&gt;อนุมัติผู้ใช้ · เห็นทุกวิชา&lt;br&gt;ไม่ทำงานสอน (D-1)" vertex="1">
+                    <mxGeometry height="120" width="140" x="1045" y="-850" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Frontend  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Browser · Vite dev :5173 · app/client&lt;/span&gt;" vertex="1">
+                    <mxGeometry height="380" width="410" x="1275" y="-1030" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-3" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg;" value="React 19" vertex="1">
+                    <mxGeometry height="56" width="56" x="1357" y="-985" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-4" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" value="TypeScript" vertex="1">
+                    <mxGeometry height="56" width="56" x="1452" y="-985" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-5" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg;" value="Vite 7" vertex="1">
+                    <mxGeometry height="56" width="56" x="1547" y="-985" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe-c0a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="React Router 7 · route table" vertex="1">
+                    <mxGeometry height="44" width="180" x="1295" y="-895" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe-c0b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="TanStack Query · server state" vertex="1">
+                    <mxGeometry height="44" width="180" x="1485" y="-895" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe-c1a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Zustand · auth เท่านั้น" vertex="1">
+                    <mxGeometry height="44" width="180" x="1295" y="-845" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe-c1b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="shadcn/ui · Tailwind v4" vertex="1">
+                    <mxGeometry height="44" width="180" x="1485" y="-845" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe-c2a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="recharts · sonner" vertex="1">
+                    <mxGeometry height="44" width="180" x="1295" y="-795" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe-c2b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="xlsx · อ่านไฟล์ Excel" vertex="1">
+                    <mxGeometry height="44" width="180" x="1485" y="-795" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe-c3a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="features/* page → hook → api" vertex="1">
+                    <mxGeometry height="44" width="180" x="1295" y="-745" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe-c3b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="apiClient · refresh token อัตโนมัติ" vertex="1">
+                    <mxGeometry height="44" width="180" x="1485" y="-745" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe-build" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Build: Vite → static bundle (dist/)" vertex="1">
+                    <mxGeometry height="32" width="370" x="1295" y="-695" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-26" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Backend  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Node.js · Fastify 5 :3001 · app/server&lt;/span&gt;" vertex="1">
+                    <mxGeometry height="380" width="560" x="1900" y="-1030" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-27" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg;" value="Node.js" vertex="1">
+                    <mxGeometry height="56" width="56" x="1930" y="-985" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-28" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" value="TypeScript" vertex="1">
+                    <mxGeometry height="56" width="56" x="2025" y="-985" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-29" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" value="Fastify 5" vertex="1">
+                    <mxGeometry height="56" width="56" x="2120" y="-985" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-31" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" value="Prisma 6" vertex="1">
+                    <mxGeometry height="56" width="56" x="2215" y="-985" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-r1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Helmet (CSP) · CORS (origin เดียว) · Rate limit · Multipart 10 MB (Excel)" vertex="1">
+                    <mxGeometry height="40" width="520" x="1920" y="-895" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-r2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="access.middleware → authMiddleware (อ่าน User row สด) → authorize() · 404 ไม่ใช่ 403" vertex="1">
+                    <mxGeometry height="40" width="520" x="1920" y="-847" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-l0" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;" value="Route" vertex="1">
+                    <mxGeometry height="44" width="118" x="1920" y="-797" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-l1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;" value="Controller" vertex="1">
+                    <mxGeometry height="44" width="118" x="2054" y="-797" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-l2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;" value="Service" vertex="1">
+                    <mxGeometry height="44" width="118" x="2188" y="-797" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-l3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;" value="Repository" vertex="1">
+                    <mxGeometry height="44" width="118" x="2322" y="-797" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-r4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Zod validation · jose JWT · argon2 · Server-Sent Events (live updates)" vertex="1">
+                    <mxGeometry height="40" width="520" x="1920" y="-743" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-r5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="modules: auth · authorization · users · courses · clos · activities · scores · students · dashboard · health" vertex="1">
+                    <mxGeometry height="40" width="520" x="1920" y="-695" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-le0" edge="1" parent="1" source="be-l0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;strokeWidth=1.5;" target="be-l1" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-le1" edge="1" parent="1" source="be-l1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;strokeWidth=1.5;" target="be-l2" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="be-le2" edge="1" parent="1" source="be-l2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;strokeWidth=1.5;" target="be-l3" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-51" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Databases" vertex="1">
+                    <mxGeometry height="380" width="220" x="2580" y="-1030" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-52" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg;" value="PostgreSQL" vertex="1">
+                    <mxGeometry height="64" width="64" x="2600" y="-985" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-53" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg;" value="Supabase (host)" vertex="1">
+                    <mxGeometry height="64" width="64" x="2710" y="-985" as="geometry"/>
+                </mxCell>
+                <mxCell id="db-c0" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Prisma schema + migrations 0001–0009" vertex="1">
+                    <mxGeometry height="46" width="190" x="2595" y="-885" as="geometry"/>
+                </mxCell>
+                <mxCell id="db-c1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="RLS เปิด · ปิด Supabase Data API (0009)" vertex="1">
+                    <mxGeometry height="46" width="190" x="2595" y="-833" as="geometry"/>
+                </mxCell>
+                <mxCell id="db-c2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Session pooler :5432 · sslmode=require" vertex="1">
+                    <mxGeometry height="46" width="190" x="2595" y="-781" as="geometry"/>
+                </mxCell>
+                <mxCell id="db-c3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="ตาราง: User · RefreshToken · Course · CLO · Activity · Score …" vertex="1">
+                    <mxGeometry height="46" width="190" x="2595" y="-729" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-55" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Services  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;ภายนอก&lt;/span&gt;" vertex="1">
+                    <mxGeometry height="170" width="330" x="1560" y="-570" as="geometry"/>
+                </mxCell>
+                <mxCell id="RjkY1Peh214BUfLKnp08-56" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg;" value="Google Identity" vertex="1">
+                    <mxGeometry height="64" width="64" x="1580" y="-520" as="geometry"/>
+                </mxCell>
+                <mxCell id="svc-g" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFF2CC;strokeColor=#B38F00;strokeWidth=1;fontSize=11;spacing=4;align=left;" value="Google Sign-In (OIDC)&lt;br&gt;ID token → server ตรวจ aud · iss · exp ด้วย JWKS" vertex="1">
+                    <mxGeometry height="80" width="210" x="1665" y="-525" as="geometry"/>
+                </mxCell>
+                <mxCell id="sec" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Security &amp; trust boundary" vertex="1">
+                    <mxGeometry height="170" width="470" x="1990" y="-570" as="geometry"/>
+                </mxCell>
+                <mxCell id="sec-t" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;spacing=2;" value="• refresh token = httpOnly cookie (7 วัน) · access token 15 นาที&lt;br&gt;• ตรวจ Origin ตอน refresh (S-11) · rate limit /auth&lt;br&gt;• ไม่เห็นวิชา → 404 ไม่ใช่ 403 · ADMIN ไม่ทำงานสอน&lt;br&gt;• Production: TLS ทุก hop · Data API ของ Supabase ถูกปิด" vertex="1">
+                    <mxGeometry height="120" width="445" x="2005" y="-530" as="geometry"/>
+                </mxCell>
+                <mxCell id="dev" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Delivery &amp; tooling" vertex="1">
+                    <mxGeometry height="170" width="500" x="1030" y="-570" as="geometry"/>
+                </mxCell>
+                <mxCell id="dev-i1" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg;" value="GitHub Actions" vertex="1">
+                    <mxGeometry height="48" width="48" x="1050" y="-530" as="geometry"/>
+                </mxCell>
+                <mxCell id="dev-i2" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitest/vitest-original.svg;" value="Vitest" vertex="1">
+                    <mxGeometry height="48" width="48" x="1160" y="-530" as="geometry"/>
+                </mxCell>
+                <mxCell id="dev-i3" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/playwright/playwright-original.svg;" value="Playwright" vertex="1">
+                    <mxGeometry height="48" width="48" x="1255" y="-530" as="geometry"/>
+                </mxCell>
+                <mxCell id="dev-i4" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/eslint/eslint-original.svg;" value="ESLint" vertex="1">
+                    <mxGeometry height="48" width="48" x="1355" y="-530" as="geometry"/>
+                </mxCell>
+                <mxCell id="dev-t" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;spacing=2;" value="npm workspaces · CI gate (unit · e2e · scans) · Git Flow: ทุก branch → develop, main รับแค่ release/hotfix" vertex="1">
+                    <mxGeometry height="44" width="470" x="1045" y="-450" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;fontColor=#666666;" value="ลูกศรทึบ = request / response · ลูกศรประ = auth / event ที่ไหลย้อน&lt;br&gt;ที่มา: app/client · app/server · database/schema.prisma · ไอคอนโหลดจาก jsDelivr CDN (ต้องมีเน็ตจึงแสดง)" vertex="1">
+                    <mxGeometry height="50" width="1000" x="1030" y="-380" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1" edge="1" parent="1" source="actors" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" target="RjkY1Peh214BUfLKnp08-2" value="① HTTPS">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e2" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.3;entryX=0;entryY=0.3;" target="RjkY1Peh214BUfLKnp08-26" value="② REST/JSON&lt;br&gt;Bearer JWT · cookie">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e3" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.7;entryX=1;entryY=0.7;dashed=1;" target="RjkY1Peh214BUfLKnp08-2" value="SSE live updates">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e4" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;startArrow=block;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="RjkY1Peh214BUfLKnp08-51" value="③ Prisma · SQL">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e5" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;dashed=1;exitX=0.85;exitY=1;entryX=0.2;entryY=0;" target="RjkY1Peh214BUfLKnp08-55" value="④ Sign-In → ID token">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e6" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;dashed=1;exitX=0.1;exitY=1;entryX=1;entryY=0.5;" target="RjkY1Peh214BUfLKnp08-55" value="⑤ ตรวจ ID token">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="EeWJgNewjUyuPUT4_XFM" name="Page-3">
+        <mxGraphModel dx="2813" dy="1750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="CTA3IsWa0nQyAEcL1GyA-0"/>
+                <mxCell id="CTA3IsWa0nQyAEcL1GyA-1" parent="CTA3IsWa0nQyAEcL1GyA-0"/>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-0" parent="CTA3IsWa0nQyAEcL1GyA-1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=28;" value="ภาพรวมระบบ CMAS" vertex="1">
+                    <mxGeometry height="40" width="1480" x="100" y="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-1" parent="CTA3IsWa0nQyAEcL1GyA-1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" value="เว็บเบราว์เซอร์ (Chrome / Edge)" vertex="1">
+                    <mxGeometry height="34" width="330" x="180" y="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-2" parent="CTA3IsWa0nQyAEcL1GyA-1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg;" value="React" vertex="1">
+                    <mxGeometry height="64" width="64" x="212" y="285" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-3" parent="CTA3IsWa0nQyAEcL1GyA-1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" value="TypeScript" vertex="1">
+                    <mxGeometry height="64" width="64" x="302" y="285" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-4" parent="CTA3IsWa0nQyAEcL1GyA-1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg;" value="Tailwind" vertex="1">
+                    <mxGeometry height="64" width="64" x="392" y="285" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-5" parent="CTA3IsWa0nQyAEcL1GyA-1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=16;" value="เว็บแอป CMAS&lt;br&gt;หน้าจอ · กราฟ · อัปโหลด Excel" vertex="1">
+                    <mxGeometry height="55" width="310" x="190" y="405" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-6" parent="CTA3IsWa0nQyAEcL1GyA-1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" value="HTTPS" vertex="1">
+                    <mxGeometry height="30" width="130" x="545" y="305" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-7" parent="CTA3IsWa0nQyAEcL1GyA-1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" value="REST API" vertex="1">
+                    <mxGeometry height="30" width="130" x="550" y="360" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-8" edge="1" parent="CTA3IsWa0nQyAEcL1GyA-1" style="endArrow=block;endFill=1;startArrow=block;startFill=1;html=1;strokeWidth=3;strokeColor=#000000;">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="525" y="347" as="sourcePoint"/>
+                        <mxPoint x="705" y="347" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-9" parent="CTA3IsWa0nQyAEcL1GyA-1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=3;fontSize=22;fontStyle=1;verticalAlign=top;align=center;spacingTop=10;" value="เซิร์ฟเวอร์ (BACKEND)" vertex="1">
+                    <mxGeometry height="540" width="780" x="720" y="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-10" parent="CTA3IsWa0nQyAEcL1GyA-1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=18;fontStyle=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;" value="ตรวจสิทธิ์ · ประมวลผล" vertex="1">
+                    <mxGeometry height="400" width="340" x="760" y="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-11" parent="CTA3IsWa0nQyAEcL1GyA-1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;spacingTop=8;" value="Node.js · TypeScript" vertex="1">
+                    <mxGeometry height="270" width="260" x="800" y="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-12" parent="CTA3IsWa0nQyAEcL1GyA-1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" value="Fastify" vertex="1">
+                    <mxGeometry height="64" width="64" x="825" y="350" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-13" parent="CTA3IsWa0nQyAEcL1GyA-1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" value="Prisma" vertex="1">
+                    <mxGeometry height="64" width="64" x="965" y="350" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-14" parent="CTA3IsWa0nQyAEcL1GyA-1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;" value="ตรวจข้อมูล (Zod)&lt;br&gt;ตรวจสิทธิ์ (JWT)" vertex="1">
+                    <mxGeometry height="60" width="240" x="810" y="475" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-15" parent="CTA3IsWa0nQyAEcL1GyA-1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=18;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" value="Google Auth (บริการภายนอก)" vertex="1">
+                    <mxGeometry height="180" width="280" x="1190" y="195" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-16" parent="CTA3IsWa0nQyAEcL1GyA-1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=18;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" value="ฐานข้อมูล (Database)" vertex="1">
+                    <mxGeometry height="190" width="280" x="1190" y="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-17" parent="CTA3IsWa0nQyAEcL1GyA-1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg;" value="Google Sign-In &#xa;(ยืนยันตัวตน)" vertex="1">
+                    <mxGeometry height="80" width="80" x="1290" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-18" parent="CTA3IsWa0nQyAEcL1GyA-1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg;" value="PostgreSQL" vertex="1">
+                    <mxGeometry height="80" width="80" x="1215" y="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-19" parent="CTA3IsWa0nQyAEcL1GyA-1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=15;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg;" value="Supabase" vertex="1">
+                    <mxGeometry height="80" width="80" x="1360" y="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-20" edge="1" parent="CTA3IsWa0nQyAEcL1GyA-1" source="c4ZzrucYmqoLIBOWDPHC-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=3;strokeColor=#000000;endArrow=block;endFill=1;fontSize=18;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.15;entryX=0;entryY=0.5;" target="c4ZzrucYmqoLIBOWDPHC-17" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-21" edge="1" parent="CTA3IsWa0nQyAEcL1GyA-1" source="c4ZzrucYmqoLIBOWDPHC-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=3;strokeColor=#000000;endArrow=block;endFill=1;fontSize=18;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.675;entryX=0;entryY=0.5;" target="c4ZzrucYmqoLIBOWDPHC-18" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c4ZzrucYmqoLIBOWDPHC-22" parent="CTA3IsWa0nQyAEcL1GyA-1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;spacingTop=8;" value="Node.js · TypeScript" vertex="1">
+                    <mxGeometry height="270" width="310" x="190" y="220" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
