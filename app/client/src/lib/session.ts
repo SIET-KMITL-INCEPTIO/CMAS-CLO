@@ -8,14 +8,22 @@ import { apiClient, refreshSession } from "./apiClient.ts"
 import { useAuthStore } from "../features/auth/useAuthStore.ts"
 import type { Me } from "../types/user.types.ts"
 
-export async function resumeSession() {
-  const store = useAuthStore.getState()
-  if (!(await refreshSession())) return store.signedOut()
-  try {
-    store.signedIn(await apiClient.get<Me>("/auth/me"))
-  } catch {
-    store.signedOut()
-  }
+let resuming: Promise<void> | null = null
+
+/** One run at a time: StrictMode mounts twice in dev and would read /auth/me twice. */
+export function resumeSession(): Promise<void> {
+  resuming ??= (async () => {
+    const store = useAuthStore.getState()
+    if (!(await refreshSession())) return store.signedOut()
+    try {
+      store.signedIn(await apiClient.get<Me>("/auth/me"))
+    } catch {
+      store.signedOut()
+    }
+  })().finally(() => {
+    resuming = null
+  })
+  return resuming
 }
 
 /** After POST /auth/google returned a token. */

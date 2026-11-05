@@ -68,7 +68,7 @@ export class CourseRepository {
     skip: number,
     take: number,
   ) {
-    const [total, rows] = await prisma.$transaction([
+    const [total, rows] = await Promise.all([
       prisma.course.count({ where }),
       // _count is a correlated subquery in the same statement: no N+1 (NFR-02).
       prisma.course.findMany({

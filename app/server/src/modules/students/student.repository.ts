@@ -33,7 +33,7 @@ export class StudentRepository {
     skip: number,
     take: number,
   ) {
-    const [total, rows] = await prisma.$transaction([
+    const [total, rows] = await Promise.all([
       prisma.student.count({ where }),
       prisma.student.findMany({
         where,
@@ -72,7 +72,7 @@ export class StudentRepository {
   }
 
   async deleteImpact(id: string) {
-    const [scores, grades] = await prisma.$transaction([
+    const [scores, grades] = await Promise.all([
       prisma.score.count({ where: { studentId: id } }),
       prisma.studentGrade.count({ where: { studentId: id } }),
     ])

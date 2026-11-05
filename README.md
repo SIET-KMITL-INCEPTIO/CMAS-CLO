@@ -7,6 +7,13 @@ students on a dashboard.
 
 React 19 SPA · Fastify 5 API · Prisma 6 · PostgreSQL (Supabase)
 
+[![CMAS: 90-second walkthrough (click to play)](docs/pages/video/cmas-film-90s.png)](https://htmlpreview.github.io/?https://github.com/SIET-KMITL-INCEPTIO/CMAS-CLO/blob/main/docs/pages/video/cmas-film-90s.html)
+
+**90-second walkthrough.** Click the image to play it in the browser with sound,
+or open [`docs/pages/video/cmas-film-90s.html`](docs/pages/video/cmas-film-90s.html)
+locally. The film is a single HTML file with nothing to install. Keys: Space to
+play or pause, ← → to seek, F for fullscreen, M to mute.
+
 ---
 
 ## Quick start

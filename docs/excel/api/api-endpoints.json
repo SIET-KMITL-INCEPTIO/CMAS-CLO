@@ -2513,6 +2513,68 @@
    "n": 76,
    "group": "9 แดชบอร์ด",
    "method": "GET",
+   "path": "/courses/:courseId/dashboard/summary",
+   "fullPath": "/api/v1/courses/:courseId/dashboard/summary",
+   "what": "หน้าภาพรวมรายวิชาในคำขอเดียว: ผู้ผ่านราย CLO นักศึกษาที่ต้องติดตาม คะแนนรวม และผลรายกิจกรรม",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-81…FR-84",
+   "status": "done",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านสรุป/คำนวณ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · {attainment {data, meta}, atRisk {data, meta}, course {passCriteria, enrolledCount, completeCount, passedCount, totals[]}, activities[{activityId, name, passMark, passCount, failCount, missingCount, averagePercent}]}",
+    "errors": "401 · 404",
+    "rules": "รูปเดียวกับ attainment และ at-risk (FR-88) · totals เฉพาะคนที่คะแนนครบ คะแนนที่ขาดไม่ใช่ 0 (FR-84) · passMark ของกิจกรรมใช้รายงานเท่านั้น",
+    "tests": "ST-CALC-01, 02"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 77,
+   "group": "9 แดชบอร์ด",
+   "method": "GET",
+   "path": "/courses/:courseId/dashboard/students",
+   "fullPath": "/api/v1/courses/:courseId/dashboard/students",
+   "what": "คะแนน CLO ของนักศึกษาทุกคนในรายวิชา",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-85",
+   "status": "done",
+   "phase": "P6",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านสรุป/คำนวณ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · [{studentId, studentCode, name, clos[{cloId, score, status, provisional}], totalScore}]",
+    "errors": "401 · 404",
+    "rules": "เฉพาะนักศึกษาที่ลงทะเบียนอยู่ · ค่าเดียวกับรายงานรายบุคคล (FR-88)",
+    "tests": "ST-CALC-01"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 78,
+   "group": "9 แดชบอร์ด",
+   "method": "GET",
    "path": "/courses/:courseId/dashboard/students/:studentId",
    "fullPath": "/api/v1/courses/:courseId/dashboard/students/:studentId",
    "what": "รายงานรายบุคคล",
@@ -2541,7 +2603,7 @@
    "enumFields": null
   },
   {
-   "n": 77,
+   "n": 79,
    "group": "9 แดชบอร์ด",
    "method": "GET",
    "path": "/courses/:courseId/dashboard/export",
@@ -2572,7 +2634,7 @@
    "enumFields": null
   },
   {
-   "n": 78,
+   "n": 80,
    "group": "9 แดชบอร์ด",
    "method": "GET",
    "path": "/events",

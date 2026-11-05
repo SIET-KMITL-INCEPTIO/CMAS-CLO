@@ -59,7 +59,9 @@ scripts/                          setup.mjs · build-*.py (diagram/workbook gene
 3. **Services don't call `prisma` directly**; they go through a repository (code-rule §3).
    `authorization.service.ts` predates that rule and still does.
 4. **Never rename or hand-edit a folder in `database/migrations/`.** Prisma records the names in
-   the database. `0002_constraints_and_triggers` is hand-written SQL (CHECKs and triggers).
+   the database. `0002_constraints_and_triggers` is hand-written SQL (CHECKs and triggers), and so is
+   `0009_lock_down_supabase_data_api` (RLS on, no grants for Supabase's `anon`/`authenticated`: the
+   app never uses the Data API, so a new table needs no policy, only the owner role).
    `prisma db push` silently drops it; always use `migrate`.
 5. **Never edit `docs/html/`.** `npm run docs:build` deletes and regenerates it.
 6. **`python scripts/check-diagrams.py` re-runs the generator scripts** and compares output (step

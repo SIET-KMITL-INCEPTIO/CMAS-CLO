@@ -7,7 +7,7 @@ See also: [[srs]] · [[api-design-plan]] · [[prototype-to-app]] · [[objectives
 > (1) ออกแบบ API ตาม [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx)
 > (2) หน้าจอของแอปจริงใช้ตาม mock-up [`index-q.html`](../../../pages/index-q.html)
 > (3) วางแผนทดสอบเป็น **system test แบบ gray box**
-> **ตรวจกับ:** `srs.md` v2.4.3 · Excel API 74 endpoint · `capabilities.ts` · `schema.prisma` (migration 0001–0007) · ไฟล์ทดสอบใน `docs/excel/import-test/`
+> **ตรวจกับ:** `srs.md` v2.4.3 · Excel API 76 endpoint · `capabilities.ts` · `schema.prisma` (migration 0001–0007) · ไฟล์ทดสอบใน `docs/excel/import-test/`
 
 ---
 
@@ -209,7 +209,7 @@ Unit test ที่มีอยู่ (`*.test.ts` ข้างไฟล์โ�
 
 | เกณฑ์ | ค่า |
 |---|---|
-| Endpoint ในขอบเขต (Excel) | 74 / 74 มีกรณีบวกอย่างน้อย 1 และกรณีลบอย่างน้อย 1 |
+| Endpoint ในขอบเขต (Excel) | 76 / 76 มีกรณีบวกอย่างน้อย 1 และกรณีลบอย่างน้อย 1 |
 | ตารางสิทธิ์ §5.2 | ทุกช่อง × ทุก endpoint ที่มี `:courseId` หรือ leaf id |
 | ชนิดกรณีทดสอบตามประเภทใน Excel | endpoint ที่ "ระดับความระวัง" = สูง (ลบ · ตัดเกรด · นำเข้า commit · จัดการบัญชี) ต้องมีกรณีลบ/ซ้ำ/ไม่มีสิทธิ์ครบ · "ผลต่อข้อมูล" = transaction ต้องมีกรณีล้มกลางทางแล้วไม่มีแถวค้าง · "ประเภทสิทธิ์" = งานสอน ต้องมีกรณี ADMIN ได้ 403 |
 | FR ระดับ MUST | ทุกข้อมีกรณีทดสอบอย่างน้อย 1 · ตารางย้อนรอยอยู่ใน §9 |
