@@ -16,9 +16,9 @@ body {
   font-family: var(--font-sans);
   font-weight: 400;
   background:
-    radial-gradient(1100px 620px at 10% -12%, #ffffff 0%, rgba(255, 255, 255, 0) 62%),
-    radial-gradient(900px 700px at 100% 8%, #f2f1f8 0%, rgba(242, 241, 248, 0) 58%),
-    linear-gradient(158deg, #f3f3f9 0%, #e9eaf4 46%, #e3e5f0 100%);
+    radial-gradient(1100px 620px at 10% -12%, var(--bg-glow) 0%, transparent 62%),
+    radial-gradient(900px 700px at 100% 8%, var(--bg-glow2) 0%, transparent 58%),
+    linear-gradient(158deg, var(--bg-a) 0%, var(--bg-b) 46%, var(--bg-c) 100%);
   background-attachment: fixed;
   min-height: 100vh;
 }
@@ -60,7 +60,7 @@ button {
   color: var(--dim);
 }
 .card {
-  background: #fff;
+  background: var(--card);
   border-radius: 12px;
   box-shadow: var(--shadow-soft);
 }
@@ -174,7 +174,7 @@ html[data-density="compact"] table.dt td {
 /* ── inputs and buttons ───────────────────────────────────────────────── */
 .inp {
   width: 100%;
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--edge);
   border-radius: 10px;
   padding: 9px 12px;
@@ -188,9 +188,12 @@ html[data-density="compact"] table.dt td {
   outline: none;
   border-color: #a8aecd;
 }
-.inp:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 1px;
+/* One focus mark: the border itself changes colour. No outline and no ring —
+   anything drawn outside the border read as a second border. */
+.inp:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
   border-color: var(--focus);
 }
 .inp::placeholder {
@@ -214,7 +217,7 @@ select[aria-invalid="true"] {
   font-size: 14px;
   border-radius: 9px;
   white-space: nowrap;
-  background: #fff;
+  background: var(--card);
   color: var(--ink2);
   border: 1px solid var(--edge);
   transition: 0.14s;
@@ -272,7 +275,7 @@ select[aria-invalid="true"] {
   padding: 3px 10px;
   border-radius: 99px;
   border: 1px solid var(--edge);
-  background: #fff;
+  background: var(--card);
   color: var(--ink-soft);
   font-size: 13px;
   line-height: 1.5;
@@ -366,7 +369,7 @@ select[aria-invalid="true"] {
 .sheetbox {
   position: fixed;
   z-index: 61;
-  background: #fff;
+  background: var(--card);
   box-shadow: var(--shadow-pop);
   display: flex;
   flex-direction: column;
@@ -790,7 +793,7 @@ body.resizing {
   gap: 10px;
   padding: 14px 18px 12px;
   border-bottom: 1px solid var(--edge);
-  background: #fff;
+  background: var(--card);
 }
 .ctools {
   display: flex;
@@ -822,7 +825,7 @@ body.resizing {
   display: flex;
   gap: 2px;
   padding: 0 18px;
-  background: #fff;
+  background: var(--card);
   border-bottom: 1px solid var(--edge);
 }
 .stab {
@@ -846,7 +849,7 @@ body.resizing {
 
 /* the workflow spine, doubling as the course navigation bar */
 .stepbar {
-  background: #fff;
+  background: var(--card);
   border-bottom: 1px solid var(--edge);
 }
 .stepper {
@@ -932,7 +935,7 @@ body.resizing {
 .statbar {
   display: flex;
   flex-wrap: wrap;
-  background: #fff;
+  background: var(--card);
   border-radius: 12px;
   box-shadow: var(--shadow-soft);
 }
@@ -976,7 +979,7 @@ body.resizing {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 268px), 1fr));
 }
 .ccard {
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--edge);
   border-radius: 12px;
   overflow: hidden;
@@ -1087,13 +1090,13 @@ table.dt tbody tr.cgrouphead:hover td {
   display: grid;
   place-items: center;
   background:
-    radial-gradient(1100px 560px at 15% -10%, #c8cdeb 0%, transparent 62%),
-    linear-gradient(180deg, #eeeff8, #f4f5fa);
+    radial-gradient(1100px 560px at 15% -10%, var(--bg-auth) 0%, transparent 62%),
+    linear-gradient(180deg, var(--bg-a), var(--bg-c));
 }
 .authcard {
   width: 100%;
   max-width: 420px;
-  background: #fff;
+  background: var(--card);
   border-radius: 18px;
   box-shadow: var(--shadow-card);
   padding: 28px 24px;
@@ -1320,7 +1323,7 @@ html[data-density="comfortable"] {
     display: none;
   }
   body {
-    background: #fff;
+    background: var(--card);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1333,7 +1336,7 @@ html[data-density="comfortable"] {
 /* Matrix and score tables (index-q .cellinp, td.who, .ghead, .gstart) */
 .cellinp {
   width: 52px;
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--edge2);
   border-radius: 6px;
   padding: 2px 5px;
@@ -1355,11 +1358,10 @@ html[data-density="comfortable"] {
 .cellinp:focus {
   outline: none;
   border-color: #a8aecd;
-  background: #fff;
+  background: var(--card);
 }
 .cellinp:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 1px;
+  outline: none;
   border-color: var(--focus);
 }
 .cellinp[aria-invalid="true"] {
@@ -1393,7 +1395,7 @@ table.dt th.gstart,
 table.dt td.gstart {
   border-left: 1px solid var(--edge);
 }
-table.dt tbody tr:hover > td.who.bg-white {
+table.dt tbody tr:hover > td.who.bg-card {
   background: var(--tint);
 }
 td.scorecell {

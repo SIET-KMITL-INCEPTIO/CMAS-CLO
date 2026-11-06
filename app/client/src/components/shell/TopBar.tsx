@@ -10,8 +10,7 @@ import { loadPicture } from "../../lib/avatar.ts"
 import { endSession } from "../../lib/session.ts"
 import { Icon } from "../Icon.tsx"
 import { CommandPalette } from "./CommandPalette.tsx"
-import { DENSITIES, SCALES, useDisplay } from "./display.ts"
-import { Modal } from "../overlay/Sheet.tsx"
+import { SettingsModal } from "./SettingsModal.tsx"
 
 const ROLE_TH = { ADMIN: "ผู้ดูแลระบบ", INSTRUCTOR: "ผู้สอน" } as const
 
@@ -50,11 +49,10 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
   const me = useAuthStore((s) => s.me)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [displayOpen, setDisplayOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const display = useDisplay()
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -135,10 +133,10 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
               className="acctitem"
               onClick={() => {
                 setMenuOpen(false)
-                setDisplayOpen(true)
+                setSettingsOpen(true)
               }}
             >
-              การแสดงผล
+              ตั้งค่า
             </button>
             <button type="button" role="menuitem" className="acctitem" onClick={signOut}>
               ออกจากระบบ
@@ -148,42 +146,7 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
       </div>
 
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
-      <Modal open={displayOpen} onClose={() => setDisplayOpen(false)} title="การแสดงผล">
-        <div className="grid gap-5">
-          <fieldset>
-            <legend className="mb-2 text-[14px] text-ink">ขนาดตัวอักษร</legend>
-            <div className="flex flex-wrap gap-2">
-              {SCALES.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  className="chipbtn"
-                  aria-current={display.scale === s.id}
-                  onClick={() => display.set({ scale: s.id })}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend className="mb-2 text-[14px] text-ink">ความหนาแน่นของแถวในตาราง</legend>
-            <div className="flex flex-wrap gap-2">
-              {DENSITIES.map((d) => (
-                <button
-                  key={d.id}
-                  type="button"
-                  className="chipbtn"
-                  aria-current={display.density === d.id}
-                  onClick={() => display.set({ density: d.id })}
-                >
-                  {d.label}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-        </div>
-      </Modal>
+      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </header>
   )
 }

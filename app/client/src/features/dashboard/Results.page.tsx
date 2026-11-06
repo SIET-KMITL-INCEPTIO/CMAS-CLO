@@ -204,7 +204,7 @@ export default function Results() {
                       onKeyDown={(e) => e.key === "Enter" && setStudent(r.studentId)}
                       style={atRisk ? { boxShadow: `inset 3px 0 0 ${TONE.bad.bar}` } : undefined}
                     >
-                      <td className="who sticky left-0 z-10 bg-white">
+                      <td className="who sticky left-0 z-10 bg-card">
                         <span className="code">{r.studentCode}</span>
                         <span className="nm block">{r.name}</span>
                       </td>
@@ -288,7 +288,7 @@ export default function Results() {
                     onClick={() => setStudent(s.id)}
                     onKeyDown={(e) => e.key === "Enter" && setStudent(s.id)}
                   >
-                    <td className="who sticky left-0 z-10 bg-white">
+                    <td className="who sticky left-0 z-10 bg-card">
                       <span className="code">{s.studentCode}</span>
                       <span className="nm block">{s.name}</span>
                     </td>

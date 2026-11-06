@@ -53,6 +53,7 @@ function fakeUsers() {
       return Promise.resolve({ ...row })
     },
     grantAdmin: vi.fn((id: string) => update(id, { role: "ADMIN", status: "ACTIVE" })),
+    update: vi.fn((id: string, data: Partial<User>) => update(id, data)),
   }
 }
 
@@ -144,5 +145,16 @@ describe("Google sign-in — ADMIN_EMAILS (FR-05a)", () => {
     const result = await service.loginWithGoogle(signIn("somchai@kmitl.ac.th"))
 
     expect(result).toMatchObject({ user: { role: "INSTRUCTOR" } })
+  })
+})
+
+describe("rename (PATCH /auth/me)", () => {
+  it("changes only the name, never the role or status", async () => {
+    users.add("somchai@kmitl.ac.th", "INSTRUCTOR", "ACTIVE")
+
+    await service.rename("u1", "สมชาย ใจดี")
+
+    expect(users.update).toHaveBeenCalledWith("u1", { name: "สมชาย ใจดี" })
+    expect(users.rows[0]).toMatchObject({ role: "INSTRUCTOR", status: "ACTIVE" })
   })
 })

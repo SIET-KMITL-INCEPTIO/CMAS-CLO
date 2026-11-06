@@ -234,7 +234,7 @@ export function ScoreGrid({
         <table className="dt">
           <thead>
             <tr>
-              <th className="who sticky left-0 z-10 bg-white">รหัส · ชื่อ-สกุล</th>
+              <th className="who sticky left-0 z-10 bg-card">รหัส · ชื่อ-สกุล</th>
               {activities.map((a) => {
                 const pr = meta.progress[a.id]
                 return (
@@ -294,7 +294,7 @@ export function ScoreGrid({
               const blanks = enrolledBlanks(s)
               return (
                 <tr key={s.id} className={withdrawn ? "text-dim" : undefined}>
-                  <td className="who sticky left-0 z-10 bg-white">
+                  <td className="who sticky left-0 z-10 bg-card">
                     <span className="nm block">{s.name}</span>
                     <span className="code">{s.studentCode}</span>
                   </td>

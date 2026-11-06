@@ -2,7 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify"
 import { AuthService } from "./auth.service.js"
 import type { SessionService } from "./session.service.js"
 import { REFRESH_TTL_MS } from "./session.service.js"
-import { googleLoginSchema } from "./auth.validator.js"
+import { googleLoginSchema, updateMeSchema } from "./auth.validator.js"
 import { env } from "../../lib/env.js"
 import {
   clearRefreshCookie,
@@ -65,6 +65,13 @@ export class AuthController {
 
   me = async (req: FastifyRequest, reply: FastifyReply) => {
     const me = await this.service.me(callerOf(req).userId)
+    if (!me) return notFound(reply)
+    return ok(reply, me)
+  }
+
+  updateMe = async (req: FastifyRequest, reply: FastifyReply) => {
+    const { name } = updateMeSchema.parse(req.body)
+    const me = await this.service.rename(callerOf(req).userId, name)
     if (!me) return notFound(reply)
     return ok(reply, me)
   }

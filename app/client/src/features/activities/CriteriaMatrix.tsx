@@ -168,7 +168,7 @@ export function CriteriaMatrix({
         <table className="dt">
           <thead>
             <tr>
-              <th className="sticky left-0 z-10 bg-white">กิจกรรม</th>
+              <th className="sticky left-0 z-10 bg-card">กิจกรรม</th>
               {cols.map((c) => (
                 <th key={c.id} className="num" title={c.description}>
                   CLO {c.number}
@@ -198,7 +198,7 @@ export function CriteriaMatrix({
                 const rs = rowSum(a.id)
                 return (
                   <tr key={a.id}>
-                    <td className="who sticky left-0 z-10 bg-white">
+                    <td className="who sticky left-0 z-10 bg-card">
                       <span className="nm block !max-w-[240px]">{a.name}</span>
                       <span className="code">
                         {methodText(a)} · {n2(a.weight)}% ของวิชา
