@@ -86,7 +86,7 @@ CMAS/
 │           ├── middlewares/  auth, RBAC, error handler
 │           ├── db/           the single PrismaClient
 │           └── lib/          env, jwt, response helpers
-├── database/            schema.prisma (source of truth), migrations/, seed.ts, seed-prototype.ts
+├── database/            schema.prisma (source of truth), migrations/, seed.ts
 ├── e2e/                 Playwright smoke against the production build
 ├── scripts/             setup.mjs + diagram / workbook generators and checkers
 └── docs/                standards, diagrams, SQL reference — see docs/README.md

@@ -13,12 +13,11 @@
  * with it the SEED_MULTI_TENANT adversarial second institution. The remaining
  * boundary is the course, so the seed creates courses with DIFFERENT
  * instructors — that is what the FR-25 / NFR-07 access tests need: an
- * instructor assigned to course A must get 404 on the others. The other
- * courses are the prototype's demo data (seed-prototype.ts).
+ * instructor assigned to course A must get 404 on the others (instructor3 is
+ * an instructor with no course at all). No demo courses are seeded.
  */
 import { PrismaClient, Role, GradeScale, ActivityType, AssessmentMethod } from "@prisma/client"
 import argon2 from "argon2"
-import { seedPrototype } from "./seed-prototype.js"
 
 const prisma = new PrismaClient()
 
@@ -52,7 +51,7 @@ async function main() {
     "อาจารย์ผู้สอน 2",
     Role.INSTRUCTOR,
   )
-  // Teaches the OTHER course only. Every course-scope test needs someone who
+  // Teaches no course. Every course-scope test needs someone who
   // is a legitimate instructor yet must still be refused course A.
   const outsider = await upsertUser("instructor3@cmas.local", "อาจารย์วิชาอื่น", Role.INSTRUCTOR)
 
@@ -75,23 +74,12 @@ async function main() {
     })
   }
 
-  // --- The prototype's four courses (index-q.html c1–c4) -----------------
-  // c2 is 90641008, the real 0 (0-0-45) PASS_FAIL prerequisite FR-14 exists
-  // for; instructor3 teaches it and not course A, which the access tests need.
-  await upsertUser("somchai@cmas.local", "ผศ.ดร. สมชาย ใจดี", Role.INSTRUCTOR)
-  await upsertUser("user_th@cmas.local", "user_th", Role.INSTRUCTOR)
-  const prototype = await seedPrototype(prisma, async (email) => {
-    const user = await prisma.user.findUniqueOrThrow({ where: { email } })
-    return user.id
-  })
-
   console.log("Seed complete:")
   console.table({
-    users: 6,
-    courses: 1 + prototype.length,
+    users: 4,
+    courses: 1,
     "course A (LETTER)": `90641001 — ${lead.email}, ${coInstructor.email}`,
-    prototype: prototype.join(" · "),
-    "teaches 90641008 only": outsider.email,
+    "instructor with no course": outsider.email,
   })
   console.log(`\nSign in as ${admin.email} — password: ${SEED_PASSWORD}`)
   console.log("Override the password with SEED_PASSWORD=... npm run db:seed\n")

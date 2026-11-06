@@ -80,7 +80,7 @@ export default function Login() {
         theme: "outline",
         size: "large",
         text: "signin_with",
-        width: 300,
+        width: 340,
       })
     }
     tryInit()
@@ -94,28 +94,33 @@ export default function Login() {
   return (
     <div className="authscreen">
       <div className="authcard">
-        <div className="text-[13px] text-dim">&lt;/&gt; CMAS</div>
-
         {pendingEmail !== null && (
           <>
             <div>
-              <h1 className="text-[22px] font-light text-ink">รอผู้ดูแลระบบอนุมัติ</h1>
-              <p className="mt-1 text-[14px] text-soft">
+              <div className="mb-3 text-[13px] tracking-wide text-dim">&lt;/&gt; CMAS</div>
+              <h1 className="text-[24px] leading-tight font-light text-ink">
+                รอผู้ดูแลระบบอนุมัติ
+              </h1>
+              <p className="mt-1.5 text-[14px] leading-relaxed text-soft">
                 อีเมลนี้ไม่ใช่อีเมลของคณะ จึงต้องได้รับอนุมัติก่อนเข้าใช้งาน
               </p>
             </div>
             {pendingEmail && (
-              <div className="flex flex-wrap items-center gap-2 rounded-sm bg-wash px-3 py-2 text-[14px]">
+              <div className="flex flex-wrap items-center gap-2 rounded-[10px] bg-wash px-3 py-2.5 text-[14px]">
                 <span className="text-ink">{pendingEmail}</span>
                 <span className="rounded-full border border-warnBd bg-warnBg px-2 py-0.5 text-[12px] text-warn">
                   รออนุมัติ
                 </span>
               </div>
             )}
-            <p className="text-[14px] text-soft">
+            <p className="text-[14px] leading-relaxed text-soft">
               ได้รับอนุมัติแล้ว กลับมาเข้าสู่ระบบด้วย Google อีกครั้ง
             </p>
-            <button type="button" className="btn w-full" onClick={() => setPendingEmail(null)}>
+            <button
+              type="button"
+              className="btn btn-primary w-full justify-center !py-2.5"
+              onClick={() => setPendingEmail(null)}
+            >
               ใช้บัญชีอื่น (บัญชีของคณะ)
             </button>
           </>
@@ -124,8 +129,11 @@ export default function Login() {
         {/* Kept mounted while pending: Google renders its button into this div once. */}
         <div className={pendingEmail !== null ? "hidden" : "flex flex-col gap-4"}>
           <div>
-            <h1 className="text-[22px] font-light text-ink">เข้าสู่ระบบ</h1>
-            <p className="mt-1 text-[14px] text-soft">ระบบติดตามผลลัพธ์การเรียนรู้ระดับรายวิชา</p>
+            <div className="mb-3 text-[13px] tracking-wide text-dim">&lt;/&gt; CMAS</div>
+            <h1 className="text-[24px] leading-tight font-light text-ink">เข้าสู่ระบบ</h1>
+            <p className="mt-1.5 text-[14px] leading-relaxed text-soft">
+              ระบบประเมินผลลัพธ์การเรียนรู้ระดับรายวิชา
+            </p>
           </div>
           {GOOGLE_CLIENT_ID ? (
             <div ref={buttonRef} className="flex justify-center" />
