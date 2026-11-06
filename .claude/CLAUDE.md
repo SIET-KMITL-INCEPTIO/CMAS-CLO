@@ -59,7 +59,9 @@ scripts/                          setup.mjs · build-*.py (diagram/workbook gene
 3. **Services don't call `prisma` directly**; they go through a repository (code-rule §3).
    `authorization.service.ts` predates that rule and still does.
 4. **Never rename or hand-edit a folder in `database/migrations/`.** Prisma records the names in
-   the database. `0002_constraints_and_triggers` is hand-written SQL (CHECKs and triggers).
+   the database. `0002_constraints_and_triggers` is hand-written SQL (CHECKs and triggers), and so is
+   `0009_lock_down_supabase_data_api` (RLS on, no grants for Supabase's `anon`/`authenticated`: the
+   app never uses the Data API, so a new table needs no policy, only the owner role).
    `prisma db push` silently drops it; always use `migrate`.
 5. **Never edit `docs/html/`.** `npm run docs:build` deletes and regenerates it.
 6. **`python scripts/check-diagrams.py` re-runs the generator scripts** and compares output (step
@@ -88,3 +90,10 @@ npm run docs:build       # docs/markdown → docs/html
 full SHA (zizmor fails the build otherwise); in-repo actions use `$/…`. Coverage and Stryker
 thresholds are a ratchet: raise them, never lower them without a reason in the PR.
 Plan and status: `docs/markdown/dev/planning/ci-cd-plan.md`.
+
+## Git
+
+Git Flow: **every branch is cut from and merged into `develop`**, never `main`. `main` takes only
+`release/*` and `hotfix/*` (a CI job rejects anything else), and both are back-merged into `develop`.
+`develop` is the default branch. Merge with merge commits, never squash or rebase. Both branches need a
+PR, one approval and `CI gate`. Details: `docs/markdown/rule/git-rule.md`.

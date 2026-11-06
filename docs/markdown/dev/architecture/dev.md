@@ -419,23 +419,29 @@ GET    /Course                // PascalCase
 
 ## 5. Git Workflow
 
-### 5.1 Branch Strategy (GitHub Flow)
+### 5.1 Branch Strategy (Git Flow)
+
+กติกาเต็มอยู่ที่ [[git-rule]] (ตารางสิทธิ์ · วิธี merge · release · hotfix) ที่นี่สรุปเฉพาะโครง:
 
 ```
 main
-  └── production เสมอ — protected branch, ห้าม push โดยตรง
+  └── เฉพาะที่ปล่อยแล้ว — protected, ติด tag ทุกเวอร์ชัน, รับได้แค่ release/* และ hotfix/*
 
-feature/[issue-number]-[short-description]
+dev
+  └── default branch — protected, ทุก branch ต้อง merge เข้าที่นี่ก่อน
+
+feature/[issue-number]-[short-description]   แตกจาก dev → PR เข้า dev
   └── ตัวอย่าง: feature/12-clo-drag-reorder
 
-fix/[issue-number]-[short-description]
+fix/[issue-number]-[short-description]       แตกจาก dev → PR เข้า dev
   └── ตัวอย่าง: fix/34-score-upload-crash
 
-hotfix/[short-description]
-  └── ตัวอย่าง: hotfix/jwt-expiry-null-check
-
-chore/[description]
+chore/[description]                          แตกจาก dev → PR เข้า dev
   └── ตัวอย่าง: chore/upgrade-fastify-v6
+
+release/[x.y.z]                              แตกจาก dev → PR เข้า main แล้ว back-merge เข้า dev
+hotfix/[short-description]                   แตกจาก main → PR เข้า main แล้ว back-merge เข้า dev
+  └── ตัวอย่าง: hotfix/jwt-expiry-null-check
 ```
 
 ### 5.2 Commit Message Convention (Conventional Commits)
@@ -486,35 +492,32 @@ FEAT(CLO): ...                  # uppercase type
 ### 5.3 Pull Request Workflow
 
 ```bash
-# 1. สร้าง branch จาก main
-git checkout main
-git pull origin main
+# 1. สร้าง branch จาก develop
+git checkout develop
+git pull origin develop
 git checkout -b feature/42-excel-upload
 
 # 2. พัฒนา + commit แบบ selective
 git add -p
 git commit -m "feat(excel): เพิ่ม endpoint upload คะแนน"
 
-# 3. Push
+# 3. Push แล้วเปิด PR เข้า develop
 git push origin feature/42-excel-upload
 
-# 4. ก่อน merge — sync กับ main ด้วย rebase (ไม่ใช่ merge)
+# 4. ก่อน merge — ดึง develop ล่าสุดเข้า branch ตัวเอง (merge ไม่ใช่ rebase
+#    เพราะ branch ที่เปิด PR แล้วต้อง force push ถ้า rebase)
 git fetch origin
-git rebase origin/main
-
-# 5. แก้ conflict (ถ้ามี)
-git rebase --continue
-
-# 6. Force push หลัง rebase
-git push --force-with-lease origin feature/42-excel-upload
+git merge origin/develop
+git push origin feature/42-excel-upload
 ```
 
 **PR Requirements:**
 
+- ปลายทางเป็น `develop` (ยกเว้น release/* และ hotfix/* ที่เข้า `main`) ระบบตรวจให้ในเช็ก `Git Flow branch rule`
 - Title ต้องเป็น Conventional Commit format
-- ผ่าน CI ทั้งหมด (lint + typecheck + build) — เมื่อตั้งค่า CI แล้ว (ดู §12)
+- ผ่าน `CI gate` (ตั้งค่าแล้ว ดู §12)
 - Reviewer อย่างน้อย 1 คน approve
-- Merge แบบ **Squash and Merge** เสมอ
+- Merge แบบ **merge commit** เสมอ ห้าม squash/rebase (เหตุผลใน [[git-rule]] §1)
 - ลบ branch หลัง merge
 
 ### 5.4 กฎที่ห้ามทำกับ Git
@@ -1013,7 +1016,8 @@ Integration tests (Fastify `inject()`) และ E2E (Playwright) ยังไ�
 | Environment | Branch | URL |
 | --- | --- | --- |
 | Development | local | `localhost:5173` + `localhost:3001` |
-| Preview | `feature/*` | Auto-deploy Vercel Preview |
+| Preview | `feature/*` (PR เข้า `develop`) | Auto-deploy Vercel Preview |
+| Staging | `develop` | TBD (ยังไม่เลือกที่ deploy) |
 | Production | `main` | TBD |
 
 ---

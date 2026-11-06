@@ -35,8 +35,9 @@ function toPublicUser(user: User): PublicUser {
 
 type AuthUsers = Pick<
   UserRepository,
-  "findByGoogleSub" | "findByEmail" | "linkGoogleSub" | "createFromGoogle" | "grantAdmin"
->
+  "findByGoogleSub" | "findByEmail" | "linkGoogleSub" | "createFromGoogle" | "grantAdmin" | "update"
+> &
+  Partial<Pick<UserRepository, "findProfile">>
 
 export class AuthService {
   constructor(
@@ -89,5 +90,25 @@ export class AuthService {
     ])
 
     return { outcome: "ok", user: toPublicUser(user), accessToken, refreshToken }
+  }
+
+  /** PATCH /auth/me — the caller renames themselves; role and status are not reachable here. */
+  async rename(userId: string, name: string) {
+    await this.users.update(userId, { name })
+    return this.me(userId)
+  }
+
+  /** GET /auth/me — the live row (NFR-19), not the token's claims. */
+  async me(userId: string) {
+    const user = await this.users.findProfile?.(userId)
+    if (!user) return null
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      status: user.status,
+      courseCount: user.courseAssignments.length,
+    }
   }
 }

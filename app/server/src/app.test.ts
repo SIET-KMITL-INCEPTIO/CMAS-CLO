@@ -48,6 +48,22 @@ afterAll(async () => {
   await app.close()
 })
 
+describe("CORS", () => {
+  it("lets the front end send PATCH and DELETE, not only GET and POST", async () => {
+    const res = await app.inject({
+      method: "OPTIONS",
+      url: "/api/v1/courses/x",
+      headers: {
+        origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
+        "access-control-request-method": "DELETE",
+      },
+    })
+    expect(res.statusCode).toBe(204)
+    const allowed = String(res.headers["access-control-allow-methods"])
+    for (const m of ["PUT", "PATCH", "DELETE"]) expect(allowed).toContain(m)
+  })
+})
+
 describe("route access declarations (A-6)", () => {
   it("refuses to boot when a route declares no access", async () => {
     await expect(

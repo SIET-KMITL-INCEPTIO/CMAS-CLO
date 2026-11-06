@@ -7,6 +7,13 @@ students on a dashboard.
 
 React 19 SPA · Fastify 5 API · Prisma 6 · PostgreSQL (Supabase)
 
+[![CMAS: 90-second walkthrough (click to play)](docs/pages/video/cmas-film-90s.png)](https://htmlpreview.github.io/?https://github.com/SIET-KMITL-INCEPTIO/CMAS-CLO/blob/main/docs/pages/video/cmas-film-90s.html)
+
+**90-second walkthrough.** Click the image to play it in the browser with sound,
+or open [`docs/pages/video/cmas-film-90s.html`](docs/pages/video/cmas-film-90s.html)
+locally. The film is a single HTML file with nothing to install. Keys: Space to
+play or pause, ← → to seek, F for fullscreen, M to mute.
+
 ---
 
 ## Quick start
@@ -29,7 +36,7 @@ Then fill in the `.env` files and go:
 # app/server/.env:                  GOOGLE_CLIENT_ID, ADMIN_EMAILS=you@example.com
 # app/client/.env:                  VITE_GOOGLE_CLIENT_ID (same OAuth client)
 npm run db:migrate:dev    # apply the schema
-npm run db:seed           # sample course, CLOs, students and scores
+npm run db:seed           # sample course + the 4 demo courses of index-q.html
 npm run dev               # client :5173 + server :3001
 ```
 
@@ -145,10 +152,16 @@ installs only that workspace and the two apps can ship on independent
 schedules. `docker-compose.prod.yml` runs the production images locally if you
 want to check an image before pushing it.
 
-CI runs on every PR to `main`: `.github/workflows/ci.yml` runs the full `verify`
-pipeline and the migration/isolation suite, and
-`.github/workflows/docker-build.yml` builds all four Dockerfiles (one check per
-image, e.g. "Docker build (server)").
+CI runs on every PR to `develop` or `main` and on every push to them:
+`.github/workflows/ci.yml` runs its jobs in parallel (format, lint, typecheck,
+unit tests with coverage, migrations + DB/isolation tests, build, E2E smoke, one
+Docker build per image, CodeQL, dependency review, secret scan) and ends in a
+single required check, **`CI gate`**. `nightly.yml` runs the slower scans at
+02:00. Plan and status: `docs/markdown/dev/planning/ci-cd-plan.md`.
+
+**Branching (Git Flow):** cut every branch from `develop` and open the PR into `develop`.
+`main` only receives `release/*` and `hotfix/*`, both back-merged into `develop`.
+Rules and commands: [git-rule.md](docs/markdown/rule/git-rule.md).
 
 ---
 
