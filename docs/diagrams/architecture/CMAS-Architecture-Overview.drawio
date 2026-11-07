@@ -1,85 +1,85 @@
 <mxfile host="65bd71144e">
     <diagram id="simple" name="Overview (simple)">
-        <mxGraphModel dx="2055" dy="876" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1640" pageHeight="740" math="0" shadow="0">
+        <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1640" pageHeight="740" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="s-title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=28;" value="ภาพรวมระบบ CMAS" vertex="1">
+                <mxCell id="s-title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=28;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ภาพรวมระบบ CMAS" vertex="1">
                     <mxGeometry height="40" width="1560" x="40" y="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-browser-frame" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=3;fontSize=20;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;" value="เว็บเบราว์เซอร์ (Chrome / Edge)" vertex="1">
+                <mxCell id="s-browser-frame" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=3;fontSize=20;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="เว็บเบราว์เซอร์ (Chrome / Edge)" vertex="1">
                     <mxGeometry height="340" width="360" x="40" y="210" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-client" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;fontColor=#444444;" value="Client (Frontend)" vertex="1">
+                <mxCell id="s-client" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;fontColor=#444444;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Client (Frontend)" vertex="1">
                     <mxGeometry height="255" width="310" x="65" y="275" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-react" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg;" value="React" vertex="1">
+                <mxCell id="s-react" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="React" vertex="1">
                     <mxGeometry height="64" width="64" x="98" y="360" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-ts" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" value="TypeScript" vertex="1">
+                <mxCell id="s-ts" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="TypeScript" vertex="1">
                     <mxGeometry height="64" width="64" x="188" y="360" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-vite" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg;" value="Vite 7 (build)" vertex="1">
+                <mxCell id="s-vite" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Vite 7 (build)" vertex="1">
                     <mxGeometry height="64" width="64" x="278" y="360" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-client-t" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;" value="เว็บแอป CMAS" vertex="1">
+                <mxCell id="s-client-t" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="เว็บแอป CMAS" vertex="1">
                     <mxGeometry height="55" width="290" x="75" y="480" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-l1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;HTTPS&lt;/font&gt;" vertex="1">
+                <mxCell id="s-l1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;HTTPS&lt;/font&gt;" vertex="1">
                     <mxGeometry height="30" width="160" x="415" y="340" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-l2" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;REST API + JWT&lt;/font&gt;" vertex="1">
+                <mxCell id="s-l2" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;REST API + JWT&lt;/font&gt;" vertex="1">
                     <mxGeometry height="30" width="160" x="415" y="400" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-a2" edge="1" parent="1" style="endArrow=block;endFill=1;startArrow=block;startFill=1;html=1;strokeWidth=3;strokeColor=#000000;">
+                <mxCell id="s-a2" edge="1" parent="1" style="endArrow=block;endFill=1;startArrow=block;startFill=1;html=1;strokeWidth=3;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="400" y="387" as="sourcePoint"/>
                         <mxPoint x="595" y="387" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="s-server" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=3;fontSize=20;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;" value="Server (Backend)" vertex="1">
+                <mxCell id="s-server" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=3;fontSize=20;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Server (Backend)" vertex="1">
                     <mxGeometry height="540" width="500" x="595" y="170" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-mid" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;ตรวจตัวตน (JWT), ตรวจสิทธิ์ (RBAC),&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(63, 63, 63); font-size: 14px; white-space: nowrap;&quot;&gt;ตรวจข้อมูลที่รับเข้า (Zod)&lt;/span&gt;&lt;/div&gt;" vertex="1">
+                <mxCell id="s-mid" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;ตรวจตัวตน (JWT), ตรวจสิทธิ์ (RBAC),&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(63, 63, 63); font-size: 14px; white-space: nowrap;&quot;&gt;ตรวจข้อมูลที่รับเข้า (Zod)&lt;/span&gt;&lt;/div&gt;" vertex="1">
                     <mxGeometry height="400" width="420" x="635" y="260" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-core" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;" value="Core Backend" vertex="1">
+                <mxCell id="s-core" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Core Backend" vertex="1">
                     <mxGeometry height="270" width="340" x="675" y="350" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-node" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg;" value="Node.js" vertex="1">
+                <mxCell id="s-node" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Node.js" vertex="1">
                     <mxGeometry height="64" width="64" x="730" y="400.5" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-ts2" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" value="TypeScript" vertex="1">
+                <mxCell id="s-ts2" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="TypeScript" vertex="1">
                     <mxGeometry height="64" width="64" x="890" y="400.5" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-fastify" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" value="Fastify" vertex="1">
+                <mxCell id="s-fastify" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Fastify" vertex="1">
                     <mxGeometry height="64" width="64" x="730" y="505.5" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-prisma" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" value="Prisma" vertex="1">
+                <mxCell id="s-prisma" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Prisma" vertex="1">
                     <mxGeometry height="64" width="64" x="890" y="505.5" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-fr-g" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;" value="Google Auth (บริการภายนอก)" vertex="1">
+                <mxCell id="s-fr-g" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Google Auth (บริการภายนอก)" vertex="1">
                     <mxGeometry height="190" width="250" x="1275" y="190" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-google" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg;" value="Google Sign-In" vertex="1">
+                <mxCell id="s-google" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Google Sign-In" vertex="1">
                     <mxGeometry height="80" width="80" x="1360" y="245" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-fr-d" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;" value="ฐานข้อมูล (Database)" vertex="1">
+                <mxCell id="s-fr-d" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=8;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ฐานข้อมูล (Database)" vertex="1">
                     <mxGeometry height="200" width="250" x="1275" y="460" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-sb" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg;" value="Supabase (PostgreSQL Database)" vertex="1">
+                <mxCell id="s-sb" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=14;fontStyle=1;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Supabase (PostgreSQL Database)" vertex="1">
                     <mxGeometry height="80" width="80" x="1360" y="520" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-e1" edge="1" parent="1" source="s-server" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;endArrow=block;endFill=1;fontSize=16;fontStyle=1;labelBackgroundColor=#FFFFFF;strokeWidth=3;exitX=1;exitY=0.176;entryX=0.003;entryY=0.397;entryDx=0;entryDy=0;entryPerimeter=0;" target="s-fr-g" value="">
+                <mxCell id="s-e1" edge="1" parent="1" source="s-server" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;endArrow=block;endFill=1;fontSize=16;fontStyle=1;labelBackgroundColor=#FFFFFF;strokeWidth=3;exitX=1;exitY=0.176;entryX=0.003;entryY=0.397;entryDx=0;entryDy=0;entryPerimeter=0;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="s-fr-g" value="">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="s-e2" edge="1" parent="1" source="s-server" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;endArrow=block;endFill=1;fontSize=16;fontStyle=1;labelBackgroundColor=#FFFFFF;strokeWidth=3;startArrow=block;startFill=1;exitX=1;exitY=0.7;entryX=0.001;entryY=0.442;entryDx=0;entryDy=0;entryPerimeter=0;" target="s-fr-d" value="">
+                <mxCell id="s-e2" edge="1" parent="1" source="s-server" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;endArrow=block;endFill=1;fontSize=16;fontStyle=1;labelBackgroundColor=#FFFFFF;strokeWidth=3;startArrow=block;startFill=1;exitX=1;exitY=0.7;entryX=0.001;entryY=0.442;entryDx=0;entryDy=0;entryPerimeter=0;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="s-fr-d" value="">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="QILXzlGNrMHnv9r1pV_W-1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;HTTPS&lt;/font&gt;" vertex="1">
+                <mxCell id="QILXzlGNrMHnv9r1pV_W-1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;HTTPS&lt;/font&gt;" vertex="1">
                     <mxGeometry height="30" width="160" x="1100" y="220" as="geometry"/>
                 </mxCell>
-                <mxCell id="QILXzlGNrMHnv9r1pV_W-2" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" value="&lt;span style=&quot;color: rgb(63, 63, 63); font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;TCP &amp;amp; TLS&lt;/span&gt;" vertex="1">
+                <mxCell id="QILXzlGNrMHnv9r1pV_W-2" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="&lt;span style=&quot;color: rgb(63, 63, 63); font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;TCP &amp;amp; TLS&lt;/span&gt;" vertex="1">
                     <mxGeometry height="30" width="160" x="1100" y="510" as="geometry"/>
                 </mxCell>
             </root>
@@ -90,252 +90,252 @@
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="fl-title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=26;" value="User flow — ล็อกอินด้วย Google" vertex="1">
+                <mxCell id="fl-title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=26;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="User flow — ล็อกอินด้วย Google" vertex="1">
                     <mxGeometry height="40" width="1800" x="40" y="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="ln-a" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=16;fontStyle=1;" value="ผู้ใช้ / เบราว์เซอร์" vertex="1">
+                <mxCell id="ln-a" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=16;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ผู้ใช้ / เบราว์เซอร์" vertex="1">
                     <mxGeometry height="200" width="1780" x="40" y="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="ln-b" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=16;fontStyle=1;" value="Google" vertex="1">
+                <mxCell id="ln-b" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=16;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Google" vertex="1">
                     <mxGeometry height="200" width="1780" x="40" y="280" as="geometry"/>
                 </mxCell>
-                <mxCell id="ln-c" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=16;fontStyle=1;fontColor=#333333;" value="เซิร์ฟเวอร์ (Backend)" vertex="1">
+                <mxCell id="ln-c" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=16;fontStyle=1;fontColor=#333333;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="เซิร์ฟเวอร์ (Backend)" vertex="1">
                     <mxGeometry height="320" width="1780" x="40" y="480" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-a1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;" value="กดปุ่ม&lt;br&gt;Sign in with Google" vertex="1">
+                <mxCell id="n-a1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="กดปุ่ม&lt;br&gt;Sign in with Google" vertex="1">
                     <mxGeometry height="80" width="200" x="130" y="150" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-b1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;" value="Google ยืนยันตัวตน&lt;br&gt;แล้วออก ID Token" vertex="1">
+                <mxCell id="n-b1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Google ยืนยันตัวตน&lt;br&gt;แล้วออก ID Token" vertex="1">
                     <mxGeometry height="70" width="220" x="330" y="345" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-a2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;" value="ส่ง ID Token ไปที่&lt;br&gt;POST /auth/google" vertex="1">
+                <mxCell id="n-a2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ส่ง ID Token ไปที่&lt;br&gt;POST /auth/google" vertex="1">
                     <mxGeometry height="70" width="220" x="600" y="155" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-c1" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=1;" value="ID Token&lt;br&gt;ถูกต้อง?" vertex="1">
+                <mxCell id="n-c1" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ID Token&lt;br&gt;ถูกต้อง?" vertex="1">
                     <mxGeometry height="110" width="190" x="615" y="505" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-x1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;" value="ปฏิเสธ (401)" vertex="1">
+                <mxCell id="n-x1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ปฏิเสธ (401)" vertex="1">
                     <mxGeometry height="80" width="190" x="280" y="520" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-c2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;" value="หาผู้ใช้จาก googleSub / email&lt;br&gt;ไม่พบ → สร้างบัญชีใหม่" vertex="1">
+                <mxCell id="n-c2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="หาผู้ใช้จาก googleSub / email&lt;br&gt;ไม่พบ → สร้างบัญชีใหม่" vertex="1">
                     <mxGeometry height="90" width="240" x="880" y="515" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-c3" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=1;" value="บัญชี&lt;br&gt;ใช้งานได้?" vertex="1">
+                <mxCell id="n-c3" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="บัญชี&lt;br&gt;ใช้งานได้?" vertex="1">
                     <mxGeometry height="110" width="190" x="1190" y="505" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-x2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;" value="ปฏิเสธ (401)&lt;br&gt;หรือแจ้งรออนุมัติ" vertex="1">
+                <mxCell id="n-x2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ปฏิเสธ (401)&lt;br&gt;หรือแจ้งรออนุมัติ" vertex="1">
                     <mxGeometry height="80" width="190" x="1190" y="675" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-c4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;" value="ออก CMAS JWT&lt;br&gt;access 15 นาที · refresh 7 วัน (cookie)" vertex="1">
+                <mxCell id="n-c4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ออก CMAS JWT&lt;br&gt;access 15 นาที · refresh 7 วัน (cookie)" vertex="1">
                     <mxGeometry height="90" width="250" x="1450" y="515" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-a3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;" value="เก็บ access token&lt;br&gt;เรียก API แนบ JWT" vertex="1">
+                <mxCell id="n-a3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="เก็บ access token&lt;br&gt;เรียก API แนบ JWT" vertex="1">
                     <mxGeometry height="70" width="250" x="1300" y="155" as="geometry"/>
                 </mxCell>
-                <mxCell id="n-a4" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;" value="ใช้งานตามบทบาท&lt;br&gt;(RBAC)" vertex="1">
+                <mxCell id="n-a4" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontSize=15;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ใช้งานตามบทบาท&lt;br&gt;(RBAC)" vertex="1">
                     <mxGeometry height="80" width="100" x="1660" y="150" as="geometry"/>
                 </mxCell>
-                <mxCell id="f1" edge="1" parent="1" source="n-a1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" target="n-b1" value="">
+                <mxCell id="f1" edge="1" parent="1" source="n-a1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0;entryY=0.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="n-b1" value="">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="f2" edge="1" parent="1" source="n-b1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0.25;entryY=1;" target="n-a2" value="ID Token">
+                <mxCell id="f2" edge="1" parent="1" source="n-b1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0.25;entryY=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="n-a2" value="ID Token">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="f3" edge="1" parent="1" source="n-a2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="n-c1" value="">
+                <mxCell id="f3" edge="1" parent="1" source="n-a2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="n-c1" value="">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="f4" edge="1" parent="1" source="n-c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="n-x1" value="ไม่">
+                <mxCell id="f4" edge="1" parent="1" source="n-c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;entryX=1;entryY=0.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="n-x1" value="ไม่">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="f5" edge="1" parent="1" source="n-c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="n-c2" value="ใช่">
+                <mxCell id="f5" edge="1" parent="1" source="n-c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="n-c2" value="ใช่">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="f6" edge="1" parent="1" source="n-c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="n-c3" value="">
+                <mxCell id="f6" edge="1" parent="1" source="n-c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="n-c3" value="">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="f7" edge="1" parent="1" source="n-c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="n-x2" value="ไม่">
+                <mxCell id="f7" edge="1" parent="1" source="n-c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="n-x2" value="ไม่">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="f8" edge="1" parent="1" source="n-c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="n-c4" value="ใช่">
+                <mxCell id="f8" edge="1" parent="1" source="n-c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="n-c4" value="ใช่">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="f9" edge="1" parent="1" source="n-c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="n-a3" value="">
+                <mxCell id="f9" edge="1" parent="1" source="n-c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="n-a3" value="">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="f10" edge="1" parent="1" source="n-a3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="n-a4" value="">
+                <mxCell id="f10" edge="1" parent="1" source="n-a3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontSize=15;fontStyle=1;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="n-a4" value="">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
     <diagram id="detail" name="Detailed architecture">
-        <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="2656" dy="3156" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="RjkY1Peh214BUfLKnp08-66" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="CMAS — Architecture Overview &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Course Monitoring and Assessment System · single-tenant · React → Fastify → PostgreSQL&lt;/span&gt;" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-66" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="CMAS — Architecture Overview &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Course Monitoring and Assessment System · single-tenant · React → Fastify → PostgreSQL&lt;/span&gt;" vertex="1">
                     <mxGeometry height="850" width="1880" x="1010" y="-1130" as="geometry"/>
                 </mxCell>
-                <mxCell id="actors" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Users" vertex="1">
+                <mxCell id="actors" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Users" vertex="1">
                     <mxGeometry height="380" width="170" x="1030" y="-1030" as="geometry"/>
                 </mxCell>
-                <mxCell id="actor-inst" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Instructor&lt;br&gt;สอน · นำเข้าคะแนน&lt;br&gt;เห็นเฉพาะวิชาของตน" vertex="1">
+                <mxCell id="actor-inst" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Instructor&lt;br&gt;สอน · นำเข้าคะแนน&lt;br&gt;เห็นเฉพาะวิชาของตน" vertex="1">
                     <mxGeometry height="120" width="140" x="1045" y="-985" as="geometry"/>
                 </mxCell>
-                <mxCell id="actor-admin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="ADMIN&lt;br&gt;อนุมัติผู้ใช้ · เห็นทุกวิชา&lt;br&gt;ไม่ทำงานสอน (D-1)" vertex="1">
+                <mxCell id="actor-admin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ADMIN&lt;br&gt;อนุมัติผู้ใช้ · เห็นทุกวิชา&lt;br&gt;ไม่ทำงานสอน (D-1)" vertex="1">
                     <mxGeometry height="120" width="140" x="1045" y="-850" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Frontend  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Browser · Vite dev :5173 · app/client&lt;/span&gt;" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Frontend  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Browser · Vite dev :5173 · app/client&lt;/span&gt;" vertex="1">
                     <mxGeometry height="380" width="410" x="1275" y="-1030" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-3" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg;" value="React 19" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-3" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="React 19" vertex="1">
                     <mxGeometry height="56" width="56" x="1357" y="-985" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-4" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" value="TypeScript" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-4" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="TypeScript" vertex="1">
                     <mxGeometry height="56" width="56" x="1452" y="-985" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-5" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg;" value="Vite 7" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-5" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Vite 7" vertex="1">
                     <mxGeometry height="56" width="56" x="1547" y="-985" as="geometry"/>
                 </mxCell>
-                <mxCell id="fe-c0a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="React Router 7 · route table" vertex="1">
+                <mxCell id="fe-c0a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="React Router 7 · route table" vertex="1">
                     <mxGeometry height="44" width="180" x="1295" y="-895" as="geometry"/>
                 </mxCell>
-                <mxCell id="fe-c0b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="TanStack Query · server state" vertex="1">
+                <mxCell id="fe-c0b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="TanStack Query · server state" vertex="1">
                     <mxGeometry height="44" width="180" x="1485" y="-895" as="geometry"/>
                 </mxCell>
-                <mxCell id="fe-c1a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Zustand · auth เท่านั้น" vertex="1">
+                <mxCell id="fe-c1a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Zustand · auth เท่านั้น" vertex="1">
                     <mxGeometry height="44" width="180" x="1295" y="-845" as="geometry"/>
                 </mxCell>
-                <mxCell id="fe-c1b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="shadcn/ui · Tailwind v4" vertex="1">
+                <mxCell id="fe-c1b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="shadcn/ui · Tailwind v4" vertex="1">
                     <mxGeometry height="44" width="180" x="1485" y="-845" as="geometry"/>
                 </mxCell>
-                <mxCell id="fe-c2a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="recharts · sonner" vertex="1">
+                <mxCell id="fe-c2a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="recharts · sonner" vertex="1">
                     <mxGeometry height="44" width="180" x="1295" y="-795" as="geometry"/>
                 </mxCell>
-                <mxCell id="fe-c2b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="xlsx · อ่านไฟล์ Excel" vertex="1">
+                <mxCell id="fe-c2b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="xlsx · อ่านไฟล์ Excel" vertex="1">
                     <mxGeometry height="44" width="180" x="1485" y="-795" as="geometry"/>
                 </mxCell>
-                <mxCell id="fe-c3a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="features/* page → hook → api" vertex="1">
+                <mxCell id="fe-c3a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="features/* page → hook → api" vertex="1">
                     <mxGeometry height="44" width="180" x="1295" y="-745" as="geometry"/>
                 </mxCell>
-                <mxCell id="fe-c3b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="apiClient · refresh token อัตโนมัติ" vertex="1">
+                <mxCell id="fe-c3b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="apiClient · refresh token อัตโนมัติ" vertex="1">
                     <mxGeometry height="44" width="180" x="1485" y="-745" as="geometry"/>
                 </mxCell>
-                <mxCell id="fe-build" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Build: Vite → static bundle (dist/)" vertex="1">
+                <mxCell id="fe-build" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Build: Vite → static bundle (dist/)" vertex="1">
                     <mxGeometry height="32" width="370" x="1295" y="-695" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-26" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Backend  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Node.js · Fastify 5 :3001 · app/server&lt;/span&gt;" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-26" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Backend  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;Node.js · Fastify 5 :3001 · app/server&lt;/span&gt;" vertex="1">
                     <mxGeometry height="380" width="560" x="1900" y="-1030" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-27" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg;" value="Node.js" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-27" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Node.js" vertex="1">
                     <mxGeometry height="56" width="56" x="1930" y="-985" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-28" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;" value="TypeScript" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-28" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="TypeScript" vertex="1">
                     <mxGeometry height="56" width="56" x="2025" y="-985" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-29" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;" value="Fastify 5" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-29" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastify/fastify-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Fastify 5" vertex="1">
                     <mxGeometry height="56" width="56" x="2120" y="-985" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-31" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;" value="Prisma 6" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-31" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Prisma 6" vertex="1">
                     <mxGeometry height="56" width="56" x="2215" y="-985" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-r1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Helmet (CSP) · CORS (origin เดียว) · Rate limit · Multipart 10 MB (Excel)" vertex="1">
+                <mxCell id="be-r1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Helmet (CSP) · CORS (origin เดียว) · Rate limit · Multipart 10 MB (Excel)" vertex="1">
                     <mxGeometry height="40" width="520" x="1920" y="-895" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-r2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="access.middleware → authMiddleware (อ่าน User row สด) → authorize() · 404 ไม่ใช่ 403" vertex="1">
+                <mxCell id="be-r2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="access.middleware → authMiddleware (อ่าน User row สด) → authorize() · 404 ไม่ใช่ 403" vertex="1">
                     <mxGeometry height="40" width="520" x="1920" y="-847" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-l0" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;" value="Route" vertex="1">
+                <mxCell id="be-l0" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Route" vertex="1">
                     <mxGeometry height="44" width="118" x="1920" y="-797" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-l1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;" value="Controller" vertex="1">
+                <mxCell id="be-l1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Controller" vertex="1">
                     <mxGeometry height="44" width="118" x="2054" y="-797" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-l2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;" value="Service" vertex="1">
+                <mxCell id="be-l2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Service" vertex="1">
                     <mxGeometry height="44" width="118" x="2188" y="-797" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-l3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;" value="Repository" vertex="1">
+                <mxCell id="be-l3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#DDEBF7;strokeColor=#3B6E9E;strokeWidth=1.5;fontSize=12;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Repository" vertex="1">
                     <mxGeometry height="44" width="118" x="2322" y="-797" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-r4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Zod validation · jose JWT · argon2 · Server-Sent Events (live updates)" vertex="1">
+                <mxCell id="be-r4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Zod validation · jose JWT · argon2 · Server-Sent Events (live updates)" vertex="1">
                     <mxGeometry height="40" width="520" x="1920" y="-743" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-r5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="modules: auth · authorization · users · courses · clos · activities · scores · students · dashboard · health" vertex="1">
+                <mxCell id="be-r5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="modules: auth · authorization · users · courses · clos · activities · scores · students · dashboard · health" vertex="1">
                     <mxGeometry height="40" width="520" x="1920" y="-695" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-le0" edge="1" parent="1" source="be-l0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;strokeWidth=1.5;" target="be-l1" value="">
+                <mxCell id="be-le0" edge="1" parent="1" source="be-l0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;strokeWidth=1.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="be-l1" value="">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-le1" edge="1" parent="1" source="be-l1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;strokeWidth=1.5;" target="be-l2" value="">
+                <mxCell id="be-le1" edge="1" parent="1" source="be-l1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;strokeWidth=1.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="be-l2" value="">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="be-le2" edge="1" parent="1" source="be-l2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;strokeWidth=1.5;" target="be-l3" value="">
+                <mxCell id="be-le2" edge="1" parent="1" source="be-l2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;strokeWidth=1.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="be-l3" value="">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-51" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Databases" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-51" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Databases" vertex="1">
                     <mxGeometry height="380" width="220" x="2580" y="-1030" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-52" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg;" value="PostgreSQL" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-52" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="PostgreSQL" vertex="1">
                     <mxGeometry height="64" width="64" x="2600" y="-985" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-53" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg;" value="Supabase (host)" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-53" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Supabase (host)" vertex="1">
                     <mxGeometry height="64" width="64" x="2710" y="-985" as="geometry"/>
                 </mxCell>
-                <mxCell id="db-c0" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Prisma schema + migrations 0001–0009" vertex="1">
+                <mxCell id="db-c0" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Prisma schema + migrations 0001–0009" vertex="1">
                     <mxGeometry height="46" width="190" x="2595" y="-885" as="geometry"/>
                 </mxCell>
-                <mxCell id="db-c1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="RLS เปิด · ปิด Supabase Data API (0009)" vertex="1">
+                <mxCell id="db-c1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="RLS เปิด · ปิด Supabase Data API (0009)" vertex="1">
                     <mxGeometry height="46" width="190" x="2595" y="-833" as="geometry"/>
                 </mxCell>
-                <mxCell id="db-c2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="Session pooler :5432 · sslmode=require" vertex="1">
+                <mxCell id="db-c2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Session pooler :5432 · sslmode=require" vertex="1">
                     <mxGeometry height="46" width="190" x="2595" y="-781" as="geometry"/>
                 </mxCell>
-                <mxCell id="db-c3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;" value="ตาราง: User · RefreshToken · Course · CLO · Activity · Score …" vertex="1">
+                <mxCell id="db-c3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#666666;strokeWidth=1;fontSize=11;spacing=4;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ตาราง: User · RefreshToken · Course · CLO · Activity · Score …" vertex="1">
                     <mxGeometry height="46" width="190" x="2595" y="-729" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-55" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Services  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;ภายนอก&lt;/span&gt;" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-55" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Services  &lt;span style=&quot;font-weight:normal;font-size:13px&quot;&gt;ภายนอก&lt;/span&gt;" vertex="1">
                     <mxGeometry height="170" width="330" x="1560" y="-570" as="geometry"/>
                 </mxCell>
-                <mxCell id="RjkY1Peh214BUfLKnp08-56" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg;" value="Google Identity" vertex="1">
+                <mxCell id="RjkY1Peh214BUfLKnp08-56" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Google Identity" vertex="1">
                     <mxGeometry height="64" width="64" x="1580" y="-520" as="geometry"/>
                 </mxCell>
-                <mxCell id="svc-g" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFF2CC;strokeColor=#B38F00;strokeWidth=1;fontSize=11;spacing=4;align=left;" value="Google Sign-In (OIDC)&lt;br&gt;ID token → server ตรวจ aud · iss · exp ด้วย JWKS" vertex="1">
+                <mxCell id="svc-g" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFF2CC;strokeColor=#B38F00;strokeWidth=1;fontSize=11;spacing=4;align=left;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Google Sign-In (OIDC)&lt;br&gt;ID token → server ตรวจ aud · iss · exp ด้วย JWKS" vertex="1">
                     <mxGeometry height="80" width="210" x="1665" y="-525" as="geometry"/>
                 </mxCell>
-                <mxCell id="dev" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;" value="Delivery &amp; tooling" vertex="1">
+                <mxCell id="dev" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;rounded=0;fillColor=#F6F1E7;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=20;fontStyle=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Delivery &amp;amp; tooling" vertex="1">
                     <mxGeometry height="170" width="500" x="1030" y="-570" as="geometry"/>
                 </mxCell>
-                <mxCell id="dev-i1" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg;" value="GitHub Actions" vertex="1">
+                <mxCell id="dev-i1" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="GitHub Actions" vertex="1">
                     <mxGeometry height="48" width="48" x="1050" y="-530" as="geometry"/>
                 </mxCell>
-                <mxCell id="dev-i2" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitest/vitest-original.svg;" value="Vitest" vertex="1">
+                <mxCell id="dev-i2" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitest/vitest-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Vitest" vertex="1">
                     <mxGeometry height="48" width="48" x="1160" y="-530" as="geometry"/>
                 </mxCell>
-                <mxCell id="dev-i3" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/playwright/playwright-original.svg;" value="Playwright" vertex="1">
+                <mxCell id="dev-i3" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/playwright/playwright-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="Playwright" vertex="1">
                     <mxGeometry height="48" width="48" x="1255" y="-530" as="geometry"/>
                 </mxCell>
-                <mxCell id="dev-i4" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/eslint/eslint-original.svg;" value="ESLint" vertex="1">
+                <mxCell id="dev-i4" parent="1" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;labelBackgroundColor=none;imageAspect=0;aspect=fixed;fontSize=12;image=https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/eslint/eslint-original.svg;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="ESLint" vertex="1">
                     <mxGeometry height="48" width="48" x="1355" y="-530" as="geometry"/>
                 </mxCell>
-                <mxCell id="dev-t" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;spacing=2;" value="npm workspaces · CI gate (unit · e2e · scans) · Git Flow: ทุก branch → develop, main รับแค่ release/hotfix" vertex="1">
+                <mxCell id="dev-t" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;spacing=2;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" value="npm workspaces · CI gate (unit · e2e · scans) · Git Flow: ทุก branch → develop, main รับแค่ release/hotfix" vertex="1">
                     <mxGeometry height="44" width="470" x="1045" y="-450" as="geometry"/>
                 </mxCell>
-                <mxCell id="e1" edge="1" parent="1" source="actors" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;" target="RjkY1Peh214BUfLKnp08-2" value="① HTTPS">
+                <mxCell id="e1" edge="1" parent="1" source="actors" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="RjkY1Peh214BUfLKnp08-2" value="① HTTPS">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="e2" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.3;entryX=0;entryY=0.3;" target="RjkY1Peh214BUfLKnp08-26" value="② REST/JSON&lt;br&gt;Bearer JWT · cookie">
+                <mxCell id="e2" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.3;entryX=0;entryY=0.3;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="RjkY1Peh214BUfLKnp08-26" value="② REST/JSON&lt;br&gt;Bearer JWT · cookie">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="e3" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.7;entryX=1;entryY=0.7;dashed=1;" target="RjkY1Peh214BUfLKnp08-2" value="SSE live updates">
+                <mxCell id="e3" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.7;entryX=1;entryY=0.7;dashed=1;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="RjkY1Peh214BUfLKnp08-2" value="SSE live updates">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="e4" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;startArrow=block;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="RjkY1Peh214BUfLKnp08-51" value="③ Prisma · SQL">
+                <mxCell id="e4" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;startArrow=block;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="RjkY1Peh214BUfLKnp08-51" value="③ Prisma · SQL">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="e5" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;dashed=1;exitX=0.85;exitY=1;entryX=0.2;entryY=0;" target="RjkY1Peh214BUfLKnp08-55" value="④ Sign-In → ID token">
+                <mxCell id="e5" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;dashed=1;exitX=0.85;exitY=1;entryX=0.2;entryY=0;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="RjkY1Peh214BUfLKnp08-55" value="④ Sign-In → ID token">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="e6" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;dashed=1;exitX=0.1;exitY=1;entryX=1;entryY=0.5;" target="RjkY1Peh214BUfLKnp08-55" value="⑤ ตรวจ ID token">
+                <mxCell id="e6" edge="1" parent="1" source="RjkY1Peh214BUfLKnp08-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;dashed=1;exitX=0.1;exitY=1;entryX=1;entryY=0.5;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;" target="RjkY1Peh214BUfLKnp08-55" value="⑤ ตรวจ ID token">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
             </root>

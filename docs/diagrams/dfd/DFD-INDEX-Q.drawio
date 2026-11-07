@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="dfd0" name="ระดับ 0 · Context">
-        <mxGraphModel dx="1702" dy="1270" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="920" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="1698" dy="1270" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1780" pageHeight="920" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -93,7 +93,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="dfd1" name="ระดับ 1">
-        <mxGraphModel dx="2595" dy="1938" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2640" pageHeight="1460" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="2590" dy="1938" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2640" pageHeight="1460" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -565,7 +565,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="dfd2-4" name="ระดับ 2 · งาน 4.0">
-        <mxGraphModel dx="1730" dy="1292" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1840" pageHeight="1088" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="1727" dy="1292" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1840" pageHeight="1088" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -728,7 +728,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="dfd2-6" name="ระดับ 2 · งาน 6.0">
-        <mxGraphModel dx="2307" dy="1722" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2430" pageHeight="1288" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="2355" dy="1761" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2430" pageHeight="1288" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
