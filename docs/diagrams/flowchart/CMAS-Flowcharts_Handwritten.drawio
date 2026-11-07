@@ -52,8 +52,8 @@
                 <mxCell id="uc-toc-16" parent="1" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" value="&lt;b&gt;1 · จัดการผู้ใช้งาน&lt;/b&gt;&lt;br&gt;• 1.1 เพิ่มบัญชีผู้ใช้&lt;br&gt;• 1.2 แก้ไขบัญชีผู้ใช้&lt;br&gt;• 1.3 ระงับการใช้งานบัญชี&lt;br&gt;• 1.4 กำหนดบทบาทและสิทธิ์&lt;br&gt;• 1.5 รีเซ็ตรหัสผ่าน&lt;br&gt;• 1.6 ตรวจสอบประวัติการใช้งาน" vertex="1">
                     <mxGeometry height="156" width="380" x="40" y="260" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-toc-17" parent="1" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" value="&lt;b&gt;2 · จัดการรายวิชา&lt;/b&gt;&lt;br&gt;• 2.1 สร้างรายวิชา&lt;br&gt;• 2.2 แก้ไขข้อมูลรายวิชา&lt;br&gt;• 2.3 ลบรายวิชา&lt;br&gt;• 2.4 มอบหมายผู้สอนประจำรายวิชา&lt;br&gt;• 2.5 กำหนด Sec / ภาคการศึกษา&lt;br&gt;• 2.6 เพิ่มผู้สอนในรายวิชา&lt;br&gt;• 2.8 ถอดผู้สอนออกจากรายวิชา" vertex="1">
-                    <mxGeometry height="176" width="380" x="440" y="260" as="geometry"/>
+                <mxCell id="uc-toc-17" parent="1" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" value="&lt;b&gt;2 · จัดการรายวิชา&lt;/b&gt;&lt;br&gt;• 2.1 สร้างรายวิชา&lt;br&gt;• 2.2 แก้ไขข้อมูลรายวิชา&lt;br&gt;• 2.3 ลบรายวิชา&lt;br&gt;• 2.4 มอบหมายผู้สอนประจำรายวิชา&lt;br&gt;• 2.5 กำหนด Sec / ภาคการศึกษา&lt;br&gt;• 2.6 เพิ่มผู้สอนในรายวิชา&lt;br&gt;• 2.8 ถอดผู้สอนออกจากรายวิชา&lt;br&gt;• 2.9 ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่" vertex="1">
+                    <mxGeometry height="196" width="380" x="440" y="260" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-toc-18" parent="1" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" value="&lt;b&gt;3 · กำหนด CLO&lt;/b&gt;&lt;br&gt;• 3.1 เพิ่ม CLO&lt;br&gt;• 3.2 แก้ไข CLO&lt;br&gt;• 3.3 กำหนดเกณฑ์ผ่านของ CLO&lt;br&gt;• 3.5 ลบ CLO" vertex="1">
                     <mxGeometry height="116" width="380" x="840" y="260" as="geometry"/>
@@ -65,7 +65,7 @@
                     <mxGeometry height="176" width="380" x="40" y="436" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-toc-21" parent="1" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" value="&lt;b&gt;6 · นำเข้า-ส่งออกคะแนน&lt;/b&gt;&lt;br&gt;• 6.1 นำเข้าคะแนนกิจกรรม&lt;br&gt;• 6.2 ดาวน์โหลดเทมเพลตคะแนน&lt;br&gt;• 6.3 ตรวจสอบความถูกต้องของข้อมูล&lt;br&gt;• 6.4 ส่งออกคะแนนกิจกรรม&lt;br&gt;• 6.5 แสดงรายงานข้อผิดพลาดการนำเข้า&lt;br&gt;• 6.6 แก้ไขคะแนนบนหน้าเว็บ" vertex="1">
-                    <mxGeometry height="156" width="380" x="440" y="456" as="geometry"/>
+                    <mxGeometry height="156" width="380" x="440" y="476" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-toc-22" parent="1" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" value="&lt;b&gt;7 · นำเข้า-ส่งออกรายชื่อ&lt;/b&gt;&lt;br&gt;• 7.1 นำเข้ารายชื่อนักศึกษา&lt;br&gt;• 7.2 ดาวน์โหลดเทมเพลตรายชื่อ&lt;br&gt;• 7.3 ตรวจสอบรูปแบบและรายการซ้ำ&lt;br&gt;• 7.4 ส่งออกรายชื่อนักศึกษา&lt;br&gt;• 7.5 แสดงรายงานข้อผิดพลาดการนำเข้า (รายชื่อ)&lt;br&gt;• 7.6 ลบนักศึกษาออกจากรายวิชา" vertex="1">
                     <mxGeometry height="156" width="380" x="840" y="572" as="geometry"/>
@@ -74,7 +74,7 @@
                     <mxGeometry height="96" width="380" x="40" y="632" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-toc-24" parent="1" style="whiteSpace=wrap;html=1;rounded=1;arcSize=6;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=13;fillColor=#F5F5F5;strokeColor=#999999;" value="&lt;b&gt;9 · บัญชีของฉัน&lt;/b&gt;&lt;br&gt;• 9.1 แก้ไขชื่อและอีเมลของตนเอง&lt;br&gt;• 9.2 เปลี่ยนรหัสผ่านของตนเอง&lt;br&gt;• 9.3 ลงทะเบียนด้วยอีเมลคณะ&lt;br&gt;• 9.4 ยืนยันอีเมล&lt;br&gt;• 9.5 ลงทะเบียนด้วยบัญชี Google คณะ" vertex="1">
-                    <mxGeometry height="136" width="380" x="440" y="632" as="geometry"/>
+                    <mxGeometry height="136" width="380" x="440" y="652" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
@@ -2466,6 +2466,298 @@
                 </mxCell>
                 <mxCell id="uc-2-8-54" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-8-51" target="uc-2-8-53" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="uc-2-9" name="2.9 ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่">
+        <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="2020" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="uc-2-9-1" value="2.9 ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=22;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="900" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอน (เฉพาะวิชาที่ตนสอน) หรือ ADMIN (ทุกวิชา) · สิทธิ์ course.create" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="62" width="900" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalCopyLevel() · copyLevelPlan() · copyLevelDo() · cloneCourse() · STUDY_PLAN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="84" width="900" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; แผนการเรียนจากหลักสูตร ค.อ.บ. เทคโนโลยีคอมพิวเตอร์ (ปรับปรุง 2567) หน้า 15–19 · ภาค 3 = ภาคพิเศษ · คัดลอกโครง ไม่คัดลอกคน" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="106" width="900" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-5" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="20" width="330" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-6" value="" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="48" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-7" value="เริ่ม / จบ" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1590" y="48" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-8" value="" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+                    <mxGeometry x="1710" y="48" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-9" value="รับข้อมูล / แสดงผล" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1760" y="48" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-10" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="82" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-11" value="ประมวลผล" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1590" y="82" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-12" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;" parent="1" vertex="1">
+                    <mxGeometry x="1710" y="82" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-13" value="เงื่อนไข" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1760" y="82" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-14" value="" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="116" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-15" value="อ่าน/เขียนฐานข้อมูล" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1590" y="116" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-16" value="" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;" parent="1" vertex="1">
+                    <mxGeometry x="1710" y="116" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-17" value="แจ้งข้อผิดพลาด" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1760" y="116" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-18" value="" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;size=0.12;fillColor=#FFFFFF;strokeColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="150" width="44" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-19" value="กระบวนการย่อย" style="whiteSpace=wrap;html=1;text;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1590" y="150" width="120" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-20" value="กด “ยกโครงทั้งชั้นปี”&lt;br&gt;ที่หน้าจัดการรายวิชา" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontStyle=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="150" width="360" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-21" value="มีสิทธิ์ &lt;b&gt;course.create&lt;/b&gt; ?&lt;br&gt;(บัญชียังใช้งานได้)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="238" width="360" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-20" target="uc-2-9-21" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-23" value="แจ้ง “สิทธิ์ไม่พอ …”&lt;br&gt;+ บันทึก AuthEvent DENY" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="259" width="280" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-24" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-21" target="uc-2-9-23" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-25" value="จบ" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#666666;fontStyle=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="266" width="150" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-23" target="uc-2-9-25" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-27" value="ค่าตั้งต้น: ชั้นปี 1 · ปีต้นทาง = ปีล่าสุดที่มีวิชาของชั้นปีนั้น&lt;br&gt;· ปีปลายทาง = ปีต้นทาง + 1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="378" width="360" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-28" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-21" target="uc-2-9-27" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-29" value="อ่านแผนการเรียน (STUDY_PLAN)&lt;br&gt;+ รายวิชาที่ผู้ใช้เข้าถึงได้ในปีต้นทาง" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="482" width="360" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-30" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-27" target="uc-2-9-29" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-31" value="จัดวิชาเป็น 3 กลุ่ม&lt;br&gt;① ตามแผนของชั้นปีนี้ → ติ๊กไว้&lt;br&gt;② นอกแผน เช่น วิชาเลือก → ไม่ติ๊ก&lt;br&gt;③ ในแผนแต่ปีต้นทางไม่ได้เปิด → แสดงอย่างเดียว" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="592" width="360" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-32" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-29" target="uc-2-9-31" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-33" value="ตรวจทีละวิชา แล้วติดคำเตือน&lt;br&gt;(ดูกรอบ “คำเตือนก่อนยืนยัน”)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="724" width="360" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-31" target="uc-2-9-33" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-35" value="แสดงรายการ: ภาคเดิม/ปีเดิม → ภาคเดิม/ปีใหม่ · Sec เดิม&lt;br&gt;วิชาที่มีอยู่แล้วที่ปลายทางถูกปิดช่องติ๊ก" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="820" width="360" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-36" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-33" target="uc-2-9-35" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-37" value="ผู้ใช้ทำอะไร ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="924" width="360" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-38" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-35" target="uc-2-9-37" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-39" value="เปลี่ยนชั้นปี / ปี" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-37" target="uc-2-9-29" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="70" y="974"/>
+                            <mxPoint x="70" y="517"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="uc-2-9-40" value="จบ (ยกเลิก)" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#666666;fontStyle=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="952" width="150" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-41" value="ยกเลิก" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-37" target="uc-2-9-40" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-42" value="ปีปลายทาง &amp;gt; ปีต้นทาง ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="1064" width="360" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-43" value="คัดลอกที่เลือก" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-37" target="uc-2-9-42" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-44" value="แจ้ง “ปีปลายทางต้องอยู่หลังปีต้นทาง”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="1080" width="280" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-45" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-42" target="uc-2-9-44" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-46" value="จบ" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#666666;fontStyle=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="1087" width="150" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-47" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-44" target="uc-2-9-46" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-48" value="เลือกอย่างน้อย 1 วิชา ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="1194" width="360" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-49" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-42" target="uc-2-9-48" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-50" value="แจ้ง “ยังไม่ได้เลือกรายวิชา”" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="1210" width="280" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-51" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-48" target="uc-2-9-50" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-52" value="จบ" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#666666;fontStyle=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="1217" width="150" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-53" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-50" target="uc-2-9-52" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-54" value="วิชานี้ยังอยู่ในขอบเขตของผู้ใช้&lt;br&gt;และ (รหัส, ภาค, ปีใหม่, Sec) ยังว่าง ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="1324" width="360" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-55" value="ใช่ · เริ่มที่วิชาแรก" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-48" target="uc-2-9-54" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-56" value="ข้ามวิชานี้ ไม่เขียนทับ&lt;br&gt;นับเป็น “ข้าม” (FR-21)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#999999;dashed=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="1350" width="280" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-57" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-54" target="uc-2-9-56" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-58" value="&lt;b&gt;คัดลอกโครงรายวิชา&lt;/b&gt; (cloneCourse)&lt;br&gt;รายละเอียดอยู่กรอบขวา ▶" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;size=0.06;fillColor=#FFFFFF;strokeColor=#333333;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="1474" width="360" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-59" value="ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-54" target="uc-2-9-58" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-60" value="ยังมีวิชาที่เลือกเหลือ ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="1578" width="360" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-61" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-58" target="uc-2-9-60" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-62" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-56" target="uc-2-9-60" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="710" y="1623"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="uc-2-9-63" value="ใช่ · วิชาถัดไป" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-60" target="uc-2-9-54" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="70" y="1623"/>
+                            <mxPoint x="70" y="1379"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="uc-2-9-64" value="บันทึกวิชาที่สร้างทั้งหมด&lt;br&gt;+ เก็บ “เลิกทำ” = ลบวิชาที่สร้างทั้งชุด" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="1708" width="360" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-65" value="ไม่ใช่" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-60" target="uc-2-9-64" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-66" value="แจ้ง “คัดลอกปี N ไปปีการศึกษา Y แล้ว … รายวิชา&lt;br&gt;· ข้าม … · ยังไม่มีรายชื่อและคะแนน” + ปุ่มเลิกทำ" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=18;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="1818" width="360" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-67" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-64" target="uc-2-9-66" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-68" value="จบ" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#666666;fontStyle=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="255" y="1922" width="150" height="44" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-69" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-66" target="uc-2-9-68" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-70" value="&lt;b&gt;▶ รายละเอียด “คัดลอกโครงรายวิชา”&lt;/b&gt; — ทำทีละตาราง ตามลำดับที่ข้อมูลอ้างถึงกัน" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="150" width="420" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-71" value="&lt;b&gt;Course&lt;/b&gt; · คัดลอกทุกช่อง&lt;br&gt;ภาคเดิม · Sec เดิม · ปีใหม่ · copiedFrom = วิชาต้นทาง" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="196" width="420" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-72" value="&lt;b&gt;CourseInstructor&lt;/b&gt; · เฉพาะบัญชีที่ใช้งานได้&lt;br&gt;ผู้สอนที่กดต้องมีชื่ออยู่เสมอ (P17)" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="288" width="420" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-73" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-71" target="uc-2-9-72" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-74" value="&lt;b&gt;GradeBand&lt;/b&gt; · ขั้นบันไดเกรดเดิม" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="380" width="420" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-75" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-72" target="uc-2-9-74" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-76" value="&lt;b&gt;CLO&lt;/b&gt; · คัดลอกทุกช่อง (เลข น้ำหนัก Bloom SOLO เป้าหมาย)&lt;br&gt;copiedFrom = CLO เดิม · จำคู่ id เก่า → ใหม่" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="472" width="420" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-77" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-74" target="uc-2-9-76" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-78" value="&lt;b&gt;BehavioralObjective&lt;/b&gt; · คัดลอกทุกช่อง&lt;br&gt;ผูกกับ CLO ใหม่ผ่านคู่ id" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="564" width="420" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-79" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-76" target="uc-2-9-78" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-80" value="&lt;b&gt;Activity&lt;/b&gt; · คัดลอกทุกช่อง (คะแนนเต็ม เกณฑ์ผ่าน น้ำหนัก)&lt;br&gt;closedAt = ว่าง → เปิดรับคะแนนใหม่" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="656" width="420" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-81" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-78" target="uc-2-9-80" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-82" value="&lt;b&gt;AssessmentCriteria&lt;/b&gt; · ผูกกิจกรรมใหม่กับวัตถุประสงค์ใหม่&lt;br&gt;หาคู่ไม่เจอ = ไม่สร้าง (กันการเชื่อมข้ามวิชา)" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="748" width="420" height="66" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-83" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-80" target="uc-2-9-82" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-84" value="&lt;b&gt;ไม่คัดลอก&lt;/b&gt; — ข้อมูลของคน เป็นของภาคที่เรียนจริง&lt;br&gt;Student · Score · StudentGrade (เกรดที่ตรึง) · ปรับเกรด&lt;br&gt;แผนพัฒนาผู้เรียน · ประวัติแก้คะแนน · ScoreUploadLog" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#999999;dashed=1;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="840" width="420" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-85" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uc-2-9-82" target="uc-2-9-84" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-86" value="&lt;b&gt;คำเตือนก่อนยืนยัน&lt;/b&gt; (ขึ้นใต้ชื่อวิชา ไม่บล็อกการคัดลอก)&lt;br&gt;• ปลายทางมีวิชานี้แล้ว → ข้าม ไม่เขียนทับ&lt;br&gt;• เปิดคนละภาคกับแผน → คงภาคเดิม&lt;br&gt;• ชื่อไม่ตรงหลักสูตร → แสดงชื่อในเล่ม&lt;br&gt;• ต้นทางตั้งค่าไม่ครบ → ข้อที่ค้างติดไปด้วย&lt;br&gt;• ผู้สอนถูกระงับ/รออนุมัติ → ไม่คัดลอกคนนั้น&lt;br&gt;• ไม่มีผู้สอนที่ใช้งานได้ (ADMIN) → ต้องมอบหมายหลังคัดลอก" style="whiteSpace=wrap;html=1;rounded=1;arcSize=4;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=12.5;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="196" width="420" height="132" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-87" value="&lt;b&gt;Edge case · CLO และวัตถุประสงค์&lt;/b&gt;&lt;br&gt;• น้ำหนัก CLO รวมไม่ถึง 100 → ติดไป ต้องแก้ในปีใหม่&lt;br&gt;• CLO ไม่มีวัตถุประสงค์ → ติดไป สถานะ “ตั้งค่าไม่ครบ”&lt;br&gt;• น้ำหนักวัตถุประสงค์ใน CLO ≠ 100 → ติดไป&lt;br&gt;• Bloom / SOLO ว่าง → ว่างเหมือนเดิม หน้าจอเตือนให้เลือก&lt;br&gt;• สลับเลข CLO ในปีใหม่ → เทียบข้ามปียังได้ เพราะอ้าง copiedFrom&lt;br&gt;• หลักสูตรปรับปรุง → CLO เป็นของหลักสูตรเก่า ต้องตรวจก่อนใช้" style="whiteSpace=wrap;html=1;rounded=1;arcSize=4;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=12.5;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="348" width="420" height="132" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-88" value="&lt;b&gt;Edge case · กิจกรรมและเกณฑ์&lt;/b&gt;&lt;br&gt;• น้ำหนักกิจกรรมรวม ≠ 100 → ติดไป&lt;br&gt;• สัดส่วนเกณฑ์ในกิจกรรม ≠ 100 → ติดไป&lt;br&gt;• กิจกรรมไม่ได้ผูกวัตถุประสงค์ → ติดไป ไม่วัด CLO ใด&lt;br&gt;• กิจกรรมที่ปิดรับคะแนนแล้ว → เปิดใหม่ในปีใหม่&lt;br&gt;• โหมดน้ำหนักตามกลุ่ม → น้ำหนักกลุ่มคัดลอกแยกชุด&lt;br&gt;  แก้ปีใหม่ไม่กระทบปีเก่า" style="whiteSpace=wrap;html=1;rounded=1;arcSize=4;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=12.5;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="500" width="420" height="132" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-89" value="&lt;b&gt;Edge case · คะแนนและเกรด&lt;/b&gt;&lt;br&gt;• ไม่มีคะแนนไป เพราะคะแนนผูกกับนักศึกษา&lt;br&gt;  → นำเข้ารายชื่อ (7.1) ก่อน แล้วจึงนำเข้าคะแนน (6.1)&lt;br&gt;• เกรดที่ตรึงไม่ไป → วิชาใหม่ตัดเกรดใหม่ได้&lt;br&gt;• เกณฑ์ผ่านรายวิชา / เกณฑ์ผ่าน CLO / เป้าหมายชั้น&lt;br&gt;  ติดไปตามปีเก่า → ถ้าคณะเปลี่ยนนโยบายต้องแก้เอง&lt;br&gt;• คะแนนต่อห้องเรียน: Sec 01 กับ 02 เป็นคนละวิชา&lt;br&gt;  รวมคะแนนหรือรวมผล CLO ข้าม Sec ไม่ได้" style="whiteSpace=wrap;html=1;rounded=1;arcSize=4;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=12.5;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="652" width="420" height="164" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-2-9-90" value="&lt;b&gt;Edge case · ปี ภาค และห้องเรียน&lt;/b&gt;&lt;br&gt;• ชั้นปีมี 2 ภาค (ปี 2 มีภาคพิเศษด้วย) → ยกครั้งเดียวได้ทุกภาคของชั้นปี&lt;br&gt;• ห้องเรียนเพิ่ม/ลดในปีใหม่ → คัดลอกเฉพาะ Sec ที่มี&lt;br&gt;  Sec ใหม่ใช้ “ทำสำเนา” ทีละวิชา&lt;br&gt;• นักศึกษาเรียนซ้ำอยู่ในห้องปี 1 ได้ → “ปี 1” เป็นป้ายของวิชา ไม่ใช่ของคน&lt;br&gt;• กดซ้ำ → วิชาที่สร้างแล้วถูกข้าม ไม่เกิดวิชาซ้ำ&lt;br&gt;• กดผิด → “เลิกทำ” ลบวิชาที่สร้างทั้งชุด" style="whiteSpace=wrap;html=1;rounded=1;arcSize=4;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;fontSize=12.5;fillColor=#F5F5F5;strokeColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="836" width="420" height="132" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
