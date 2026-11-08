@@ -40,14 +40,19 @@ REL = [('1.1', '1.4', 'include'), ('2.1', '2.4', 'include'), ('3.1', '3.3', 'inc
        ('5.1', '5.2', 'include'), ('5.1', '5.3', 'include'), ('5.3', '5.6', 'include'),
        ('5.1', '5.4', 'extend'), ('5.4', '5.7', 'extend'), ('5.1', '5.5', 'extend'),
        ('6.1', '6.3', 'include'), ('6.1', '6.5', 'extend'),
-       ('7.1', '7.3', 'include'), ('7.1', '7.5', 'extend'), ('8.2', '8.3', 'extend')]
+       ('7.1', '7.3', 'include'), ('7.1', '7.5', 'extend'), ('8.2', '8.3', 'extend'),
+       ('9.3', '9.4', 'include')]
 ROLES = [
-    ('ผู้สอน', 'ผู้สอน', 'ผู้สอนทำอะไรได้ในรายวิชาของตน',
+    ('ผู้สอน', 'ผู้สอน', 'ผู้สอนทำอะไรได้ในรายวิชาของตน', 'ทำได้เฉพาะวิชาที่ตนสอน (ตรวจสิทธิ์ทุกครั้ง)',
      ['2.1', '2.2', '2.3', '2.5', '2.6', '2.8', '2.9', '3.1', '3.2', '3.5', '4.1', '4.5', '4.6', '5.1',
       '6.1', '6.2', '6.4', '6.6', '7.1', '7.2', '7.4', '7.6', '8.1', '8.2', '9.1', '9.2']),
-    ('ผู้ดูแลระบบ', 'ผู้ดูแลระบบ', 'ผู้ดูแลระบบทำอะไรได้',
-     ['1.1', '1.2', '1.3', '1.5', '1.6', '1.7', '2.1', '2.3', '9.1', '9.2']),
+    ('ผู้ดูแลระบบ', 'ผู้ดูแลระบบ', 'ผู้ดูแลระบบทำอะไรได้', 'ดูข้อมูลทุกรายวิชาได้ (อ่านอย่างเดียว) แต่ไม่ทำงานสอน',
+     ['1.1', '1.2', '1.3', '1.5', '1.6', '1.7', '2.1', '2.3', '2.6', '2.8', '9.1', '9.2']),
+    ('ผู้ยังไม่มีบัญชี', 'ผู้ยังไม่มีบัญชี', 'ผู้ยังไม่มีบัญชีลงทะเบียนอย่างไร',
+     'Google ในโดเมนคณะใช้ได้ทันที · Google นอกโดเมนรอผู้ดูแลอนุมัติ (1.7)', ['9.3', '9.5']),
 ]
+# ใช้ได้แล้วในระบบจริง (app/server: POST /auth/google · PATCH /users/:id/approve) — นอกนั้นยังอยู่ในต้นแบบ
+BUILT = {'1.7', '9.5'}
 
 FONT = ('fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;'
         'fontSize=16;fontColor=#000000;')
@@ -64,34 +69,59 @@ DEP = ('edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor
 EW, EH, PITCH, COLP = 320, 80, 140, 460      # วงรี · ระยะแถว · ระยะคอลัมน์ (ช่องว่าง 140 พอสำหรับป้าย «include»)
 
 
-def build_page(pid, name, role_th, title, direct):
-    cells, frames, n = [], [], [0]
+class Builder:
+    def __init__(self, pid):
+        self.pid, self.cells, self.frames, self.n = pid, [], [], 0
 
-    def nid():
-        n[0] += 1
-        return '%s-%d' % (pid, n[0])
+    def nid(self):
+        self.n += 1
+        return '%s-%d' % (self.pid, self.n)
 
-    def vertex(bucket, value, style, x, y, w, h):
+    def vertex(self, value, style, x, y, w, h, frame=False):
         assert all(v % 10 == 0 for v in (x, y, w, h)), (value, x, y, w, h)
-        i = nid()
-        bucket.append('<mxCell id="%s" value="%s" style="%s" parent="1" vertex="1"><mxGeometry x="%d" y="%d" width="%d" '
-                      'height="%d" as="geometry"/></mxCell>' % (i, escape(value, {'"': '&quot;'}), style, x, y, w, h))
+        i = self.nid()
+        (self.frames if frame else self.cells).append(
+            '<mxCell id="%s" value="%s" style="%s" parent="1" vertex="1"><mxGeometry x="%d" y="%d" width="%d" '
+            'height="%d" as="geometry"/></mxCell>' % (i, escape(value, {'"': '&quot;'}), style, x, y, w, h))
         return i
 
-    def edge(a, b, style, label, ox, ix):
-        cells.append('<mxCell id="%s" value="%s" style="%s exitX=%g;exitY=0.5;exitDx=0;exitDy=0;entryX=%g;entryY=0.5;'
-                     'entryDx=0;entryDy=0;" parent="1" source="%s" target="%s" edge="1"><mxGeometry relative="1" '
-                     'as="geometry"/></mxCell>' % (nid(), escape(label), style, ox, ix, a, b))
+    def edge(self, a, b, style, label, ox, ix, pts=()):
+        geo = '<mxGeometry relative="1" as="geometry"/>'
+        if pts:
+            geo = ('<mxGeometry relative="1" as="geometry"><Array as="points">' +
+                   ''.join('<mxPoint x="%d" y="%d"/>' % q for q in pts) + '</Array></mxGeometry>')
+        self.cells.append('<mxCell id="%s" value="%s" style="%s exitX=%g;exitY=0.5;exitDx=0;exitDy=0;entryX=%g;entryY=0.5;'
+                          'entryDx=0;entryDy=0;" parent="1" source="%s" target="%s" edge="1">%s</mxCell>'
+                          % (self.nid(), escape(label), style, ox, ix, a, b, geo))
 
+    def finish(self, name, title, x_right, bottom):
+        fw = x_right - 40
+        pf = ('<mxCell id="%s" value="%s" style="%s" parent="1" vertex="1"><mxGeometry x="40" y="40" width="%d" height="%d" '
+              'as="geometry"/></mxCell>' % (self.nid(), escape(title), FRAME, fw, bottom))
+        pw, ph = x_right + 40, bottom + 80
+        return ('<diagram id="%s" name="%s"><mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" '
+                'connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="%d" pageHeight="%d" background="#FFFFFF" '
+                'math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/>%s</root></mxGraphModel></diagram>'
+                % (self.pid, escape(name), pw, ph, pf + ''.join(self.frames) + ''.join(self.cells)))
+
+
+CAPTION = ('เส้นทึบ = ผู้ใช้ทำเอง · «include» = ทำร่วมกันเสมอ · «extend» = ทำเพิ่มเมื่อจำเป็น · '
+           'พื้นสีฟ้าอ่อน = ใช้ได้แล้วในระบบจริง ที่เหลือยังอยู่ในต้นแบบ')
+
+
+def round10(v):
+    return int(round(v / 10.0)) * 10
+
+
+def build_detail(pid, name, title, note, actors):
+    """หน้ารายละเอียด: กรอบละแพ็กเกจ · actors = [(ชื่อ, [use case ที่ทำเอง])]"""
+    b = Builder(pid)
     kids = {}
     for base, kid, rel in REL:
         kids.setdefault(base, []).append((kid, rel))
-    # ลูกของ use case ที่ผู้ใช้ทำเองเท่านั้น
-    wanted = set(direct)
+    direct = sorted({u for _, ds in actors for u in ds})
     pkgs = sorted({u[0] for u in direct})
-    y = 140
-    X0 = 360
-    plan, assoc_ids = [], []
+    X0, y, plan = 360, 180, []
     for p in pkgs:
         roots = [u for u in direct if u[0] == p]
         pos, row = {}, [0]
@@ -108,54 +138,94 @@ def build_page(pid, name, role_th, title, direct):
         for r in roots:
             place(r, 0)
         ncol = max(d for d, _ in pos.values()) + 1
-        nrow = row[0]
         fw = 40 + EW + (ncol - 1) * COLP + 40
-        fh = 60 + (nrow - 1) * PITCH + EH + 40
-        plan.append((p, y, fw, fh, pos, roots))
+        fh = 60 + (row[0] - 1) * PITCH + EH + 40
+        plan.append((p, y, fw, fh, pos))
         y += fh + 60
     bottom = y - 60
-    ay = 40 + (bottom - 40) // 2
-    ay = -(-ay // 10) * 10
-    # กรอบหน้า (ชื่อไดอะแกรม) ต้องวาดก่อน
-    maxw = max(fw for _, _, fw, _, _, _ in plan)
-    frames.append(None)       # ที่ว่างของกรอบหน้า
-    ids = {}
-    for p, py, fw, fh, pos, roots in plan:
-        vertex(frames, '%s · %s' % (p, PKG[p]), FRAME, X0, py, fw, fh)
+    ids, ycen = {}, {}
+    for p, py, fw, fh, pos in plan:
+        b.vertex('%s · %s' % (p, PKG[p]), FRAME, X0, py, fw, fh, frame=True)
         for u, (d, r) in pos.items():
-            ey = py + 60 + int(round(r * PITCH / 10.0)) * 10
-            ids[u] = vertex(cells, '%s %s' % (u, UC[u]), 'ellipse;' + BOX, X0 + 40 + d * COLP, ey, EW, EH)
-    actor = vertex(cells, role_th, ACTOR, 120, ay, 60, 100)
-    for u in direct:
-        edge(actor, ids[u], ASSOC, '', 1, 0)
+            ey = py + 60 + round10(r * PITCH)
+            ycen[u] = ey + EH // 2
+            ids[u] = b.vertex('%s %s' % (u, UC[u]), 'ellipse;' + (BOX.replace('fillColor=#FFFFFF', 'fillColor=#EEF0F8')
+                              if u in BUILT else BOX), X0 + 40 + d * COLP, ey, EW, EH)
+    # actor อยู่กลางแนวสิ่งที่ตนทำ · เรียงจากบนลง ห่างกันอย่างน้อย 180
+    last, aids = 0, []
+    for k, (label, ds) in enumerate(actors):
+        want = round10(sum(ycen[u] for u in ds) / len(ds)) - 50
+        ay = max(want, last + 180, 140)
+        last = ay
+        a = b.vertex(label, ACTOR, 120, ay, 60, 100)
+        aids.append((a, ay + 50, ds))
+    multi = len(actors) > 1
+    for k, (a, acy, ds) in enumerate(aids):
+        tx = 220 + 40 * k
+        for u in ds:
+            b.edge(a, ids[u], ASSOC, '', 1, 0, pts=[(tx, acy), (tx, ycen[u])] if multi else ())
     for base, kid, rel in REL:
         if base in ids and kid in ids:
             if rel == 'include':
-                edge(ids[base], ids[kid], DEP, '«include»', 1, 0)
+                b.edge(ids[base], ids[kid], DEP, '«include»', 1, 0)
             else:
-                edge(ids[kid], ids[base], DEP, '«extend»', 0, 1)
-    cap = vertex(cells, 'เส้นทึบ = ผู้ใช้ทำเอง · «include» = ทำร่วมกันเสมอ · «extend» = ทำเพิ่มเมื่อจำเป็น',
-                 TEXT, 80, 90, 1000, 30)
-    fw_page = X0 + maxw + 40 - 40
-    pf = ('<mxCell id="%s" value="%s" style="%s" parent="1" vertex="1"><mxGeometry x="40" y="40" width="%d" height="%d" '
-          'as="geometry"/></mxCell>' % (nid(), escape(title), FRAME, fw_page, bottom + 40 - 40))
-    frames[0] = pf
-    pw, ph = 40 + fw_page + 40, 40 + bottom + 40
-    return ('<diagram id="%s" name="%s"><mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" '
-            'connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="%d" pageHeight="%d" background="#FFFFFF" '
-            'math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/>%s</root></mxGraphModel></diagram>'
-            % (pid, escape(name), pw, ph, ''.join(frames) + ''.join(cells)))
+                b.edge(ids[kid], ids[base], DEP, '«extend»', 0, 1)
+    b.vertex(note + '<br>' + CAPTION, TEXT, 80, 90, 1200, 60)
+    bottom = max(bottom, last + 140)
+    return b.finish(name, title, X0 + max(fw for _, _, fw, _, _ in plan), bottom)
 
 
-# ── แทนที่หน้า ผู้สอน / ผู้เรียน (ว่าง) ───────────────────────────────────
+def build_summary(pid, name, title, note, links):
+    """ภาพรวม: วงรีละแพ็กเกจ ในกรอบ 'ระบบ CMAS' · links = [(ชื่อ actor, [รหัสแพ็กเกจ])]"""
+    b = Builder(pid)
+    pk = sorted(PKG)
+    assert len(pk) <= 9
+    top, ph = 220, 140
+    fh = 60 + (len(pk) - 1) * ph + EH + 40
+    b.vertex('ระบบ CMAS', FRAME, 440, 180, EW + 80, fh, frame=True)
+    ids, ycen = {}, {}
+    for i, p in enumerate(pk):
+        ey = top + 20 + i * ph
+        ids[p] = b.vertex('%s · %s' % (p, PKG[p]), 'ellipse;' + BOX, 480, ey + 20, EW, EH)
+        ycen[p] = ey + 20 + EH // 2
+    last = 0
+    for k, (label, ps) in enumerate(links):
+        want = round10(sum(ycen[p] for p in ps) / len(ps)) - 50
+        ay = max(want, last + 180, 180)
+        last = ay
+        a = b.vertex(label, ACTOR, 120, ay, 60, 100)
+        tx = 240 + 60 * k
+        for p in ps:
+            b.edge(a, ids[p], ASSOC, '', 1, 0, pts=[(tx, ay + 50), (tx, ycen[p])])
+    b.vertex(note + '<br>เส้นทึบ = ผู้ใช้ทำเอง · ตัวเลข = หมวดของ use case (รายละเอียดอยู่หน้าถัดไป)', TEXT, 80, 90, 1200, 60)
+    return b.finish(name, title, 440 + EW + 80 + 40, max(180 + fh + 40, last + 140) - 40)
+
+
+# ── สร้าง/แทนที่หน้า (หน้าที่ยังไม่มีจะต่อท้ายไฟล์) ───────────────────────
 pages = re.findall(r'<diagram id="([^"]+)" name="([^"]+)">', src)
 by_name = {n: i for i, n in pages}
-targets = [('ผู้สอน', ROLES[0]), ('ผู้เรียน', ROLES[1])]
+OLD = {'ผู้ดูแลระบบ': 'ผู้เรียน'}          # ชื่อเดิมของหน้าที่เคยว่าง
+R_TEACH, R_ADMIN, R_GUEST = ROLES
+TARGETS = [
+    ('layer-1', lambda pid: build_summary(
+        pid, 'layer-1', 'ภาพรวม: ใครใช้งานส่วนไหนของระบบ',
+        'ใช้ได้จริงบางส่วน: หมวด 1 (อนุมัติบัญชี) · หมวด 9 (สมัครด้วย Google)',
+        [('ผู้ดูแลระบบ', ['1', '2', '9']), ('ผู้สอน', ['2', '3', '4', '5', '6', '7', '8', '9']),
+         ('ผู้ยังไม่มีบัญชี', ['9'])])),
+    ('layer-2', lambda pid: build_detail(
+        pid, 'layer-2', 'รายละเอียด: use case ทั้งหมดของทุกบทบาท',
+        'ผู้สอนทำได้เฉพาะวิชาที่ตนสอน · ผู้ดูแลระบบไม่ทำงานสอน',
+        [(R_ADMIN[1], R_ADMIN[4]), (R_TEACH[1], R_TEACH[4]), (R_GUEST[1], R_GUEST[4])])),
+]
+for _r in ROLES:
+    TARGETS.append((_r[0], (lambda r: lambda pid: build_detail(pid, r[0], r[2], r[3], [(r[1], r[4])]))(_r)))
 out = src
-for old_name, (name, role_th, title, direct) in targets:
-    pid = by_name.get(old_name) or by_name.get(name)
-    assert pid, 'ไม่พบหน้า ' + old_name
-    block = re.search(r'<diagram id="%s" name="[^"]+">.*?</diagram>' % re.escape(pid), out, re.S)
-    out = out.replace(block[0], build_page(pid, name, role_th, title, direct))
+for name, make in TARGETS:
+    pid = by_name.get(name) or by_name.get(OLD.get(name, ''))
+    if pid:
+        block = re.search(r'<diagram id="%s" name="[^"]+">.*?</diagram>' % re.escape(pid), out, re.S)
+        out = out.replace(block[0], make(pid))
+    else:
+        out = out.replace('</mxfile>', make('role-' + str(len(by_name))) + '</mxfile>')
 io.open(FILE, 'w', encoding='utf-8', newline='').write(out)
-print('wrote', FILE.relative_to(ROOT), '· หน้า', ', '.join(n for _, (n, *_r) in targets))
+print('wrote', FILE.relative_to(ROOT), '· หน้า', ', '.join(n for n, _ in TARGETS))
