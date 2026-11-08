@@ -47,7 +47,7 @@ python -m http.server 8899 --directory docs/html
 | `markdown/` | เอกสารต้นฉบับ **`.md` เท่านั้น** | ✅ แก้ที่นี่ | ✅ |
 | `html/` | เว็บที่ generate ออกมา | ❌ build ทับ | ❌ gitignored |
 | `pages/` | หน้า HTML เขียนมือ — **`index-q.html` = ต้นแบบ UI ทั้งระบบ** (ไฟล์เดียว ใช้เป็นข้อกำหนดเชิงพฤติกรรมของแอปจริง) · `index-q-design-system.html` (สร้างจาก `index-q.html`) · `reports/` หน้าเอกสาร (evaluation-criteria, tech-stack-review, database-preview) · `assets/` CSS/JS ร่วมของ `reports/` · `archive/` หน้าที่เลิกใช้ (design-system-preview, cs101-clo-tracking) | ✅ | ✅ |
-| `diagrams/` | ไดอะแกรม แยกตามประเภท — `usecase/` (UML use case) · `er/` · `dfd/` · `architecture/` (สถาปัตยกรรมและโครงสร้างสิทธิ์) · `flowchart/` · `threat-model/` (Threat Modeling Tool) · ชื่อที่ลงท้าย `-INDEX-Q` **สกัดจาก `index-q.html`** · ลงท้าย `_Handwritten` วาดมือ · ภาพรวมอยู่ที่ `diagrams/index-q-architecture.md` | ✅ | ✅ |
+| `diagrams/` | ไดอะแกรม แยกตามประเภท — `usecase/` (UML use case) · `er/` · `dfd/` · `architecture/` (สถาปัตยกรรมและโครงสร้างสิทธิ์) · `flowchart/` · `develop/` (ผังงานวงจรพัฒนาระบบ `SDIC.drawio` + `SDIC.png` ที่ `thesis:ch2` ฝังลงบทที่ 2) · `threat-model/` (Threat Modeling Tool) · ชื่อที่ลงท้าย `-INDEX-Q` **สกัดจาก `index-q.html`** · ลงท้าย `_Handwritten` วาดมือ · ภาพรวมอยู่ที่ `diagrams/index-q-architecture.md` | ✅ | ✅ |
 | `reference/db/` | SQL dump, `.mwb`, ER PDF — artifact ที่เอกสารอ้างถึง | ✅ | ✅ |
 | `generated/` | `project-plan.csv` จาก `npm run plan:csv` | ❌ script ทับ | ❌ gitignored |
 | `excel/` | workbook ส่งมอบ — บางไฟล์สร้างจาก `scripts/build-*.py` | ⚠️ ดูตาราง | ✅ |

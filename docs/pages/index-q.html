@@ -3988,8 +3988,9 @@ function viewCourses(){
 
   return sheet({
     title:'จัดการรายวิชา',
-    note:'หน้านี้รวมงานรายวิชาทั้งหมดไว้ที่เดียว — สร้าง แก้ไข ทำสำเนา และลบ · จัดกลุ่มได้ตามปีการศึกษา ภาคเรียน หมู่เรียน หรือรหัสวิชา · รายวิชาหนึ่งแถวคือหนึ่ง Sec — รหัส 90641003 ปรากฏสองแถวเพราะเป็นคนละ Sec คีย์ (รหัส, ภาค, ปี, Sec) เป็นสิ่งที่ทำให้สองแถวนี้ไม่ใช่ข้อมูลซ้ำ และคะแนนของสอง Sec รวมกันไม่ได้ · “ทำสำเนา” คัดลอกโครงรายวิชา (CLO จุดประสงค์ กิจกรรม เกณฑ์) ไปยัง Sec หรือภาคใหม่ โดยไม่พารายชื่อและคะแนนไปด้วย · ผู้สอนเห็นเฉพาะรายวิชาที่ตนถูกมอบหมาย ผู้ดูแลระบบเห็นทั้งหมด',
-    actions: filterBox(key,'ค้นหารหัส ชื่อ Sec หรือปี') + btn('สร้างรายวิชา','primary','data-act="add-course"'),
+    note:'หน้านี้รวมงานรายวิชาทั้งหมดไว้ที่เดียว — สร้าง แก้ไข ทำสำเนา และลบ · จัดกลุ่มได้ตามปีการศึกษา ภาคเรียน หมู่เรียน หรือรหัสวิชา · รายวิชาหนึ่งแถวคือหนึ่ง Sec — รหัส 90641003 ปรากฏสองแถวเพราะเป็นคนละ Sec คีย์ (รหัส, ภาค, ปี, Sec) เป็นสิ่งที่ทำให้สองแถวนี้ไม่ใช่ข้อมูลซ้ำ และคะแนนของสอง Sec รวมกันไม่ได้ · “ทำสำเนา” คัดลอกโครงรายวิชา (CLO จุดประสงค์ กิจกรรม เกณฑ์) ไปเป็น Sec ใหม่ในภาคเดิม โดยไม่พารายชื่อและคะแนนไปด้วย · “ยกโครงทั้งชั้นปี” คัดลอกทุกวิชาของชั้นปีหนึ่งไปปีการศึกษาถัดไป โดยเลือกวิชาตามแผนการเรียนของหลักสูตร · ผู้สอนเห็นเฉพาะรายวิชาที่ตนถูกมอบหมาย ผู้ดูแลระบบเห็นทั้งหมด',
+    actions: filterBox(key,'ค้นหารหัส ชื่อ Sec หรือปี') + btn('ยกโครงทั้งชั้นปี','','data-act="copy-level"') +
+      btn('สร้างรายวิชา','primary','data-act="add-course"'),
     body: '<div class="mb-3 flex items-center justify-between gap-4 flex-wrap">' + groupBar +
       '<span class="text-[13px] text-dim">' + list.length + ' รายวิชา' +
       (gb.id === 'none' ? '' : ' · ' + buckets.length + ' กลุ่ม') + '</span></div>' +
@@ -4191,6 +4192,10 @@ function coverageWitnesses(){
       'ผู้สอนที่ผูกกับรายวิชา ' + db.user.filter(function(u){ return u.role === 'INSTRUCTOR' && where(db.courseInstructor, 'userId', u.id).length; }).length + ' คน · ปุ่มลบเปลี่ยนเป็นระงับอัตโนมัติ'],
     ['TRIGGER band ของ PASS_FAIL','รายวิชาแบบผ่าน/ไม่ผ่านมีได้เฉพาะ S และ U',
       pfBands === 'S/U', '90641008 มี band = ' + pfBands],
+    ['แผนการเรียน (K1)','หนึ่งรหัสอยู่ในแผนได้ชั้นปีเดียว ภาคเดียว และเป็นรหัส 8 หลัก — การยกโครงทั้งชั้นปีอ่านตารางนี้',
+      dup(STUDY_PLAN, function(p){ return p.code; }) === 0 &&
+      STUDY_PLAN.every(function(p){ return /^\d{8}$/.test(p.code) && p.level >= 1 && p.level <= 4 && p.semester >= 1 && p.semester <= 3; }),
+      STUDY_PLAN.length + ' รายวิชาใน 4 ชั้นปี · ซ้ำ 0'],
     ['ไม่มีแถว Score = ยังไม่ประเมิน','ช่องว่างกับเลข 0 เป็นคนละความหมายและถูกแยกกันบนหน้าจอ',
       missing > 0 && zeros > 0, 'ช่องที่ยังไม่ประเมิน ' + missing + ' ช่อง · คะแนน 0 ที่ได้จริง ' + zeros + ' แถว']
   ];
@@ -4204,7 +4209,9 @@ const GAPS = [
   ['ตรวจสอบประวัติการใช้งาน (UC 1.6)','หน้าจอรองรับแล้ว (กดชื่อผู้ใช้ในหน้าจัดการผู้ใช้งาน) แต่ ER ยังไม่มีตารางรองรับ — ต้นแบบเก็บไว้ใน AuthEvent ซึ่งไม่มีอยู่ในสคีมา',
    'เพิ่มตาราง AuthEvent/AuditLog (userId, actorId, action, detail, at) — ไม่มีอะไรในระบบปัจจุบันอ้างอิงถึง จึงเพิ่มได้โดยไม่กระทบของเดิม'],
   ['รวมคะแนนข้าม Sec','ตัดออกโดยเจตนาตามมติ 2.7 — CLO และ Activity ผูกกับ courseId การรองรับต้องเพิ่มชั้น CourseOffering เหนือ Course',
-   'ไม่ใช่ข้อบกพร่อง เป็นขอบเขตที่ตัดสินใจไว้แล้ว · ห้ามทำครึ่ง ๆ กลาง ๆ']
+   'ไม่ใช่ข้อบกพร่อง เป็นขอบเขตที่ตัดสินใจไว้แล้ว · ห้ามทำครึ่ง ๆ กลาง ๆ'],
+  ['แผนการเรียนตามชั้นปี (K1)','“ยกโครงทั้งชั้นปี” ต้องรู้ว่ารหัสวิชาไหนเป็นของชั้นปีและภาคไหน — ต้นแบบเก็บไว้ใน STUDY_PLAN ซึ่งยังไม่มีในสคีมา · สำเนายังจดต้นทางไว้ที่ copiedFrom ของ Course และ CLO',
+   'เพิ่มตาราง StudyPlanCourse(code PK, yearLevel 1–4, semester 1–3, name) และคอลัมน์ copiedFromId (nullable) บน Course และ CLO — เพิ่มอย่างเดียว ไม่กระทบคีย์เดิม']
 ];
 
 function viewCoverage(){
@@ -5117,6 +5124,66 @@ function crudDelete(){
 
    สิ่งที่ไปกับสำเนา = โครงของรายวิชา · สิ่งที่ไม่ไป = คน และคะแนนของคน
    นักศึกษาและคะแนนเป็นของภาคเรียนที่เรียนจริง การลอกไปด้วยคือการสร้างข้อมูลปลอม */
+/* K1 (2569-11-07) — แกนกลางของการทำสำเนา ใช้ร่วมกันโดย "ทำสำเนา" (ทีละวิชา) และ "ยกโครงทั้งชั้นปี"
+   at = { semester, year, section } ของวิชาปลายทาง · คืน { id, nClo, nAct, nStaff }
+   รหัสใหม่มีเลขลำดับต่อท้าย — Date.now() อย่างเดียวซ้ำกันเมื่อคัดลอกหลายวิชาในมิลลิวินาทีเดียว
+   copiedFrom บนวิชาและ CLO = ร่องรอยว่ามาจากไหน ใช้เทียบผล CLO ข้ามปีโดยไม่ต้องพึ่งเลขข้อที่อาจถูกสลับ */
+let CLONE_SEQ = 0;
+const activeStaffOf = function(cid){
+  return where(db.courseInstructor, 'courseId', cid).map(function(x){ return byId(db.user, x.userId); })
+    .filter(function(u){ return u && u.isActive !== false && !isPending(u); })
+    .map(function(u){ return u.id; });
+};
+function cloneCourse(src, at){
+  const nid = 'c_' + Date.now() + '_' + (++CLONE_SEQ);
+  const copy = {};
+  Object.keys(src).forEach(function(k){ copy[k] = src[k]; });
+  copy.id = nid; copy.semester = at.semester; copy.year = at.year; copy.section = at.section;
+  copy.copiedFrom = src.id;
+  if (src.groupWeight) copy.groupWeight = Object.assign({}, src.groupWeight);
+  db.course.push(copy);
+
+  /* ผู้สอนตามไปด้วยเฉพาะบัญชีที่ยังใช้งานได้ — บัญชีที่ถูกระงับหรือรออนุมัติไม่ควรได้วิชาใหม่
+     ผู้สอนที่กดเองต้องมีชื่ออยู่เสมอ ไม่อย่างนั้นสำเนาจะหลุดจาก “รายวิชาของฉัน” ทันที (P17) */
+  const staff = activeStaffOf(src.id);
+  if (S.role !== 'ADMIN' && staff.indexOf(me().id) < 0) staff.push(me().id);
+  staff.forEach(function(uid, i){
+    db.courseInstructor.push({ id:'ci_' + nid + '_' + i, courseId:nid, userId:uid,
+      role:'INSTRUCTOR', assignedAt:PROTO_NOW.slice(0, 10) }); });
+
+  where(db.gradeBand, 'courseId', src.id).forEach(function(b, i){
+    db.gradeBand.push({ id:'gb_' + nid + '_' + i, courseId:nid, grade:b.grade, minValue:b.minValue }); });
+
+  /* CLO และจุดประสงค์คัดลอกทุกช่องเหมือนกิจกรรม — รายชื่อช่องที่เขียนตายตัวทำให้ช่องที่เพิ่มทีหลัง
+     (เช่น Bloom/SOLO เคยเป็นช่องใหม่) หายจากสำเนาเงียบ ๆ */
+  const cloMap = {}, objMap = {};
+  const take = function(rec, skip){
+    const t = {}; Object.keys(rec).forEach(function(k){ if (skip.indexOf(k) < 0) t[k] = rec[k]; }); return t; };
+  where(db.clo, 'courseId', src.id).forEach(function(c, i){
+    const id = 'clo_' + nid + '_' + i;
+    cloMap[c.id] = id;
+    db.clo.push(Object.assign(take(c, ['id','courseId','copiedFrom']), { id:id, courseId:nid, copiedFrom:c.id })); });
+  db.behavioralObjective.filter(function(o){ return !!cloMap[o.cloId]; }).forEach(function(o, i){
+    const id = 'bo_' + nid + '_' + i;
+    objMap[o.id] = id;
+    db.behavioralObjective.push(Object.assign(take(o, ['id','cloId']), { id:id, cloId:cloMap[o.cloId] })); });
+
+  const actMap = {};
+  where(db.activity, 'courseId', src.id).forEach(function(a, i){
+    const id = 'a_' + nid + '_' + i;
+    actMap[a.id] = id;
+    const t = { id:id, courseId:nid };
+    Object.keys(a).forEach(function(k){ if (k !== 'id' && k !== 'courseId') t[k] = a[k]; });
+    t.closedAt = null;                 /* R3 — ภาคใหม่ยังไม่มีกิจกรรมไหนปิดรับคะแนน */
+    db.activity.push(t); });
+  db.assessmentCriteria.filter(function(c){ return !!actMap[c.activityId] && !!objMap[c.objectiveId]; })
+    .forEach(function(c, i){
+      db.assessmentCriteria.push({ id:'ac_' + nid + '_' + i, activityId:actMap[c.activityId],
+        objectiveId:objMap[c.objectiveId], weight:c.weight }); });
+
+  return { id:nid, nClo:Object.keys(cloMap).length, nAct:Object.keys(actMap).length, nStaff:staff.length };
+}
+
 function dupCourse(cid){
   if (!can('course.create')) return deny('course.create');
   const src = byId(db.course, cid);
@@ -5132,55 +5199,189 @@ function dupCourse(cid){
   }
   if (sec === null) { toast('รหัสวิชานี้มีครบ 99 Sec ในภาคนี้แล้ว — ทำสำเนาไม่ได้','bad'); return; }
 
-  const nid = 'c_' + Date.now();
-  const copy = {};
-  Object.keys(src).forEach(function(k){ copy[k] = src[k]; });
-  copy.id = nid; copy.section = sec;
-  if (src.groupWeight) copy.groupWeight = Object.assign({}, src.groupWeight);
-  db.course.push(copy);
-
-  /* ผู้สอนเดิมตามไปด้วย · ถ้าเป็นผู้สอนที่กดเอง ต้องมีชื่ออยู่ในนั้นแน่นอน
-     ไม่อย่างนั้นสำเนาจะหลุดจาก “รายวิชาของฉัน” ทันทีที่สร้าง (P17) */
-  const staff = where(db.courseInstructor, 'courseId', cid).map(function(x){ return x.userId; });
-  if (S.role !== 'ADMIN' && staff.indexOf(me().id) < 0) staff.push(me().id);
-  staff.forEach(function(uid, i){
-    db.courseInstructor.push({ id:'ci_' + nid + '_' + i, courseId:nid, userId:uid,
-      role:'INSTRUCTOR', assignedAt:'2568-09-21' }); });
-
-  where(db.gradeBand, 'courseId', cid).forEach(function(b, i){
-    db.gradeBand.push({ id:'gb_' + nid + '_' + i, courseId:nid, grade:b.grade, minValue:b.minValue }); });
-
-  const cloMap = {}, objMap = {};
-  where(db.clo, 'courseId', cid).forEach(function(c, i){
-    const id = 'clo_' + nid + '_' + i;
-    cloMap[c.id] = id;
-    db.clo.push({ id:id, courseId:nid, number:c.number, weight:c.weight, levelSource:c.levelSource,
-      bloomLevel:c.bloomLevel, soloLevel:c.soloLevel, classTarget:c.classTarget, description:c.description }); });
-  db.behavioralObjective.filter(function(o){ return !!cloMap[o.cloId]; }).forEach(function(o, i){
-    const id = 'bo_' + nid + '_' + i;
-    objMap[o.id] = id;
-    db.behavioralObjective.push({ id:id, cloId:cloMap[o.cloId], number:o.number,
-      weight:o.weight, description:o.description }); });
-
-  const actMap = {};
-  where(db.activity, 'courseId', cid).forEach(function(a, i){
-    const id = 'a_' + nid + '_' + i;
-    actMap[a.id] = id;
-    const t = { id:id, courseId:nid };
-    Object.keys(a).forEach(function(k){ if (k !== 'id' && k !== 'courseId') t[k] = a[k]; });
-    t.closedAt = null;                 /* R3 — ภาคใหม่ยังไม่มีกิจกรรมไหนปิดรับคะแนน */
-    db.activity.push(t); });
-  db.assessmentCriteria.filter(function(c){ return !!actMap[c.activityId] && !!objMap[c.objectiveId]; })
-    .forEach(function(c, i){
-      db.assessmentCriteria.push({ id:'ac_' + nid + '_' + i, activityId:actMap[c.activityId],
-        objectiveId:objMap[c.objectiveId], weight:c.weight }); });
-
+  const r = cloneCourse(src, { semester:src.semester, year:src.year, section:sec });
   invalidate();
-  S.course = nid; S.expanded[nid] = true;
+  S.course = r.id; S.expanded[r.id] = true;
   saveLayout(); render();
-  toast('ทำสำเนา ' + src.code + ' เป็น Sec ' + sec + ' แล้ว — ' +
-    Object.keys(cloMap).length + ' CLO · ' + Object.keys(actMap).length +
+  toast('ทำสำเนา ' + src.code + ' เป็น Sec ' + sec + ' แล้ว — ' + r.nClo + ' CLO · ' + r.nAct +
     ' กิจกรรม · ยังไม่มีรายชื่อและคะแนน');
+}
+
+/* ══ K1 · ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่ (2569-11-07) ══════════════════════
+   "ปี 1 ของ 2568 → ปี 1 ของ 2569" — ระบบต้องรู้เองว่าวิชาไหนเป็นของชั้นปีไหน
+   ซึ่ง Course และ Student ไม่มีข้อมูลนั้น (OI-05) จึงต้องมีแผนการเรียนของหลักสูตรเก็บไว้หนึ่งตาราง
+
+   STUDY_PLAN = แผนการศึกษา §3.3.3 ของ หลักสูตร ค.อ.บ. เทคโนโลยีคอมพิวเตอร์ (ปรับปรุง พ.ศ. 2567)
+   หน้า 15–19 ของเล่ม · ภาค 3 = ภาคการศึกษาพิเศษ · วิชาเลือก (9064XXXX, XXXXXXXX, 03376XXX)
+   ไม่มีรหัสจริงในแผน จึงไม่อยู่ในตาราง — ผู้ใช้ติ๊กเองในกลุ่ม "นอกแผน"
+   ข้อเสนอสคีมา: StudyPlanCourse(code PK, yearLevel 1..4, semester 1..3, name) ดู GAPS */
+const STUDY_PLAN = [
+  [1,1,'03376116','พื้นฐานการออกแบบและพัฒนาซอฟต์แวร์'], [1,1,'03376117','ระบบคอมพิวเตอร์'],
+  [1,1,'03376118','อุปกรณ์และวงจรแอนะล็อกเบื้องต้น'], [1,1,'03376119','ความปลอดภัยในการทำงาน'],
+  [1,1,'03376120','ระบบฐานข้อมูล'], [1,1,'03206107','พื้นฐานการศึกษาสำหรับวิชาชีพครู'],
+  [1,1,'03206108','จิตวิทยาการศึกษาเพื่อพัฒนาผู้เรียน'], [1,1,'90641008','พื้นฐานทักษะการสื่อสารภาษาอังกฤษ'],
+  [1,2,'03376121','การออกแบบและพัฒนาซอฟต์แวร์ 1'], [1,2,'03376122','เครือข่ายคอมพิวเตอร์'],
+  [1,2,'03376123','อุปกรณ์และวงจรดิจิทัลเบื้องต้น'], [1,2,'03206109','นวัตกรรมเทคโนโลยีเพื่อการเรียนรู้'],
+  [1,2,'03206110','ภาษาเพื่อการสื่อสารสำหรับครู'], [1,2,'90641007','พลเมืองดิจิทัล'],
+  [1,2,'90644049','ภาษาไทยเพื่อการสร้างสรรค์'], [1,2,'90641004','โครงงานกลุ่ม 1'],
+  [2,1,'03376124','การออกแบบและพัฒนาซอฟต์แวร์ 2'], [2,1,'03376125','สื่อดิจิทัลเพื่อการเรียนรู้'],
+  [2,1,'03376126','ไมโครคอนโทรลเลอร์และการใช้งาน'], [2,1,'03206111','การวัดและประเมินผลการเรียนรู้'],
+  [2,1,'90641009','ทักษะการสื่อสารภาษาอังกฤษระหว่างวัฒนธรรม 1'],
+  [2,2,'03376127','การพัฒนาซอฟต์แวร์สำหรับเว็บ'], [2,2,'03376128','การรักษาความปลอดภัยและความเชื่อมั่นของสารสนเทศ'],
+  [2,2,'03376129','เทคโนโลยีสารสนเทศเพื่อการจัดการเรียนรู้'], [2,2,'03376130','เซ็นเซอร์และทรานสดิวเซอร์'],
+  [2,2,'03206112','การพัฒนาหลักสูตรและการจัดการเรียนรู้'], [2,2,'03206113','การวิจัยในชั้นเรียน'],
+  [2,2,'90641010','ทักษะการสื่อสารภาษาอังกฤษระหว่างวัฒนธรรม 2'], [2,2,'90641005','โครงงานกลุ่ม 2'],
+  [2,3,'03376131','การฝึกงานอุตสาหกรรม'],
+  [3,1,'03300007','การฝึกปฏิบัติวิชาชีพระหว่างเรียน 1'], [3,1,'03376132','ปัญญาประดิษฐ์เพื่องานด้านการศึกษา'],
+  [3,1,'03376133','การพัฒนาซอฟต์แวร์สำหรับอุปกรณ์เคลื่อนที่'], [3,1,'03376134','การประยุกต์ใช้ไอโอที'],
+  [3,1,'03376135','โครงงานนวัตกรรมเพื่อการเรียนรู้ 1'],
+  [3,2,'03300008','การฝึกปฏิบัติวิชาชีพระหว่างเรียน 2'], [3,2,'03376136','โครงงานนวัตกรรมเพื่อการเรียนรู้ 2'],
+  [3,2,'90641006','โครงงานกลุ่ม 3'],
+  [4,1,'03300009','การปฏิบัติการสอนในสถานศึกษา 1'],
+  [4,2,'03300010','การปฏิบัติการสอนในสถานศึกษา 2']
+].map(function(r){ return { level:r[0], semester:r[1], code:r[2], name:r[3] }; });
+const studyPlanOf = function(code){
+  return STUDY_PLAN.find(function(p){ return p.code === code; }) || null; };
+const termTh = function(sem){ return sem === 3 ? 'ภาคพิเศษ' : 'ภาค ' + sem; };
+
+/* ผลของการคัดลอก คำนวณก่อนกดยืนยัน — หน้าต่างแสดงสิ่งเดียวกับที่จะเกิดจริง
+   ต้นทาง = วิชาที่ผู้ใช้เห็น (myCourses) ในปีต้นทาง: ผู้สอนยกได้เฉพาะวิชาของตน ผู้ดูแลระบบยกได้ทุกวิชา */
+function copyLevelPlan(st){
+  const levelSems = STUDY_PLAN.filter(function(p){ return p.level === st.level; })
+    .map(function(p){ return p.semester; });
+  const pool = myCourses().filter(function(c){ return c.year === st.from; })
+    .slice().sort(function(a, b){ return (a.semester - b.semester) || a.code.localeCompare(b.code) ||
+      a.section.localeCompare(b.section); });
+  const row = function(c, p){
+    const at = { code:c.code, semester:c.semester, year:st.to, section:c.section };
+    const exists = db.course.some(function(x){
+      return x.code === at.code && x.semester === at.semester && x.year === at.year && x.section === at.section; });
+    const notes = [];
+    if (p && p.semester !== c.semester)
+      notes.push(['warn', 'เปิด' + termTh(c.semester) + ' แต่แผนการเรียนกำหนด' + termTh(p.semester) + ' — คงภาคเดิมไว้']);
+    if (p && p.name !== c.name) notes.push(['warn', 'ชื่อไม่ตรงหลักสูตร: “' + esc(p.name) + '”']);
+    const d = derive(c.id);
+    if (d.locked) notes.push(['warn', 'ต้นทางยังตั้งค่าไม่ครบ ' + d.blockers.length + ' ข้อ — ข้อที่ค้างจะติดไปด้วย']);
+    const allStaff = where(db.courseInstructor, 'courseId', c.id).length;
+    const okStaff = activeStaffOf(c.id).length;
+    if (okStaff < allStaff) notes.push(['warn', 'ผู้สอนที่ถูกระงับ/รออนุมัติ ' + (allStaff - okStaff) + ' คนไม่ถูกคัดลอก']);
+    if (!okStaff && S.role === 'ADMIN') notes.push(['bad', 'ไม่มีผู้สอนที่ใช้งานได้ — ต้องมอบหมายหลังคัดลอก']);
+    if (exists) notes.unshift(['nil', 'มีวิชานี้ใน ' + termTh(c.semester) + '/' + st.to + ' Sec ' + c.section + ' แล้ว — ข้าม ไม่เขียนทับ']);
+    return { src:c, plan:p, exists:exists, notes:notes };
+  };
+  const planned = [], offPlan = [];
+  pool.forEach(function(c){
+    const p = studyPlanOf(c.code);
+    if (p && p.level === st.level) planned.push(row(c, p));
+    else if (!p && levelSems.indexOf(c.semester) >= 0) offPlan.push(row(c, null));
+  });
+  const opened = {};
+  pool.forEach(function(c){ opened[c.code] = true; });
+  /* วิชาในแผนที่ปีต้นทางไม่ได้เปิด (หรือผู้ใช้ไม่ได้สอน) — ไม่มีโครงให้ยก จึงบอกไว้ ไม่สร้างวิชาเปล่า */
+  const missing = STUDY_PLAN.filter(function(p){ return p.level === st.level && !opened[p.code]; });
+  return { planned:planned, offPlan:offPlan, missing:missing };
+}
+
+let COPYLV = null;   /* { level, from, to } — สถานะของหน้าต่างที่เปิดอยู่ */
+const copyLevelDefaults = function(){
+  const years = myCourses().map(function(c){ return c.year; });
+  const withLevel = function(lv){
+    return myCourses().filter(function(c){ const p = studyPlanOf(c.code); return p && p.level === lv; })
+      .map(function(c){ return c.year; }); };
+  const y1 = withLevel(1);
+  const from = y1.length ? Math.max.apply(null, y1) : (years.length ? Math.max.apply(null, years) : 2568);
+  return { level:1, from:from, to:from + 1 };
+};
+
+function copyLevelBody(){
+  const st = COPYLV;
+  const plan = copyLevelPlan(st);
+  const years = myCourses().map(function(c){ return c.year; })
+    .filter(function(y, i, a){ return a.indexOf(y) === i; }).sort(function(a, b){ return b - a; });
+  if (years.indexOf(st.from) < 0) years.unshift(st.from);
+  const sel = function(id, opts, cur){
+    return '<select class="inp" id="' + id + '">' + opts.map(function(o){
+      return '<option value="' + o[0] + '"' + (o[0] === cur ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
+      '</select>'; };
+  const noteHtml = function(n){
+    const col = n[0] === 'bad' ? TONE.bad.tx : n[0] === 'warn' ? TONE.warn.tx : 'var(--dim)';
+    return '<div class="text-[12.5px] leading-snug" style="color:' + col + '">' + n[1] + '</div>'; };
+  const line = function(r, checked){
+    const c = r.src;
+    return '<label class="flex items-start gap-3 py-2 hair last:border-0' + (r.exists ? ' opacity-60' : '') + '">' +
+      '<input type="checkbox" name="cy-pick" value="' + c.id + '" class="mt-1"' +
+        (r.exists ? ' disabled' : (checked ? ' checked' : '')) + '>' +
+      '<span class="min-w-0 flex-1">' +
+        '<span class="block text-[14px]"><span class="tnum">' + c.code + '</span> · ' + esc(c.name) + '</span>' +
+        '<span class="block text-[13px] text-dim tnum">' + termTh(c.semester) + '/' + st.from + ' → ' +
+          termTh(c.semester) + '/' + st.to + ' · Sec ' + c.section + '</span>' +
+        r.notes.map(noteHtml).join('') +
+      '</span></label>'; };
+
+  const nGo = plan.planned.filter(function(r){ return !r.exists; }).length;
+  return '<div class="grid grid-cols-3 gap-3 mb-4">' +
+      '<div><label class="text-[14px] text-ink2 block mb-1.5" for="cy-level">ชั้นปี</label>' +
+        sel('cy-level', [[1,'ปี 1'],[2,'ปี 2'],[3,'ปี 3'],[4,'ปี 4']], st.level) + '</div>' +
+      '<div><label class="text-[14px] text-ink2 block mb-1.5" for="cy-from">จากปีการศึกษา</label>' +
+        sel('cy-from', years.map(function(y){ return [y, String(y)]; }), st.from) + '</div>' +
+      '<div><label class="text-[14px] text-ink2 block mb-1.5" for="cy-to">ไปปีการศึกษา</label>' +
+        sel('cy-to', [st.from + 1, st.from + 2].map(function(y){ return [y, String(y)]; }), st.to) + '</div>' +
+    '</div>' +
+    '<div class="text-[13px] text-dim mb-3">ระบบเลือกวิชาตามแผนการเรียนของหลักสูตร 2567 · คัดลอก CLO จุดประสงค์ กิจกรรม เกณฑ์ ขั้นเกรด และผู้สอน · ไม่คัดลอกนักศึกษาและคะแนน · ใช้ภาคและ Sec เดิม</div>' +
+    '<div class="over mb-1">ตามแผนการเรียน ปี ' + st.level + ' · ' + plan.planned.length + ' รายวิชา</div>' +
+    (plan.planned.length ? plan.planned.map(function(r){ return line(r, true); }).join('')
+      : '<div class="text-[14px] text-dim py-2">ปี ' + st.from + ' ไม่มีวิชาของชั้นปีนี้ที่คุณเข้าถึงได้</div>') +
+    (plan.offPlan.length
+      ? '<div class="over mt-4 mb-1">นอกแผน เช่น วิชาเลือก · ติ๊กเองถ้าต้องการ</div>' +
+        plan.offPlan.map(function(r){ return line(r, false); }).join('') : '') +
+    (plan.missing.length
+      ? '<div class="over mt-4 mb-1">ในแผนแต่ปี ' + st.from + ' ไม่ได้เปิด · ' + plan.missing.length + ' รายวิชา</div>' +
+        '<div class="text-[13px] text-dim leading-relaxed">' + plan.missing.map(function(p){
+          return '<span class="tnum">' + p.code + '</span> ' + esc(p.name) + ' (' + termTh(p.semester) + ')'; }).join(' · ') +
+        ' — ไม่มีโครงให้คัดลอก สร้างเองได้ที่ “สร้างรายวิชา”</div>' : '') +
+    '<div id="cy-count" hidden>' + nGo + '</div>';
+}
+
+function modalCopyLevel(){
+  if (!can('course.create')) return deny('course.create');
+  COPYLV = copyLevelDefaults();
+  openModal(modalFrame('ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่',
+    '<div id="cy-body">' + copyLevelBody() + '</div>',
+    btn('ยกเลิก','','data-act="close"') + btn('คัดลอกที่เลือก','primary','data-act="copy-level-do"')));
+}
+function copyLevelRepaint(){
+  const b = document.getElementById('cy-body');
+  if (b) b.innerHTML = copyLevelBody();
+}
+
+function copyLevelDo(){
+  if (!can('course.create')) return deny('course.create');
+  const st = COPYLV;
+  if (!st) return;
+  if (!(st.to > st.from)) { toast('ปีปลายทางต้องอยู่หลังปีต้นทาง','bad'); return; }
+  const ids = [].slice.call(document.querySelectorAll('#modal input[name="cy-pick"]:checked'))
+    .map(function(x){ return x.value; });
+  if (!ids.length) { toast('ยังไม่ได้เลือกรายวิชา','bad'); return; }
+  const made = [];
+  let skipped = 0;
+  ids.forEach(function(id){
+    const src = byId(db.course, id);
+    /* ตรวจซ้ำตอนกด ไม่พึ่งสิ่งที่หน้าต่างวาดไว้ — ระหว่างนั้นอาจมีคนสร้างวิชาเดียวกันไปแล้ว (FR-21) */
+    if (!src || !inScope(src.id) || db.course.some(function(x){
+      return x.code === src.code && x.semester === src.semester && x.year === st.to && x.section === src.section; })) {
+      skipped++; return; }
+    made.push(cloneCourse(src, { semester:src.semester, year:st.to, section:src.section }).id);
+  });
+  setUndo('คัดลอกปี ' + st.level + ' ไป ' + st.to + ' (' + made.length + ' รายวิชา)', 'course.create', function(){
+    made.forEach(function(id){ const r = byId(db.course, id); if (r) FORMS.course.remove(r); });
+    if (made.indexOf(S.course) >= 0) S.course = myCourses().length ? myCourses()[0].id : null;
+  });
+  closeOverlays(); invalidate();
+  S.tab.courseGroup = 'term';
+  render();
+  toast('คัดลอกปี ' + st.level + ' ไปปีการศึกษา ' + st.to + ' แล้ว ' + made.length + ' รายวิชา' +
+    (skipped ? ' · ข้าม ' + skipped + ' (มีอยู่แล้ว)' : '') + ' · ยังไม่มีรายชื่อและคะแนน', undefined,
+    made.length ? UNDO_ACTION : null);
 }
 
 /* Move a row within its ordered siblings (FR-31 for CLO, FR-42 for Activity). */
@@ -8281,7 +8482,7 @@ function capOf(act, el){
                                  ? 'course.create' : 'course.settings';
     case 'del-course': case 'del-course-confirm': return 'course.delete';
     case 'staff-add': case 'staff-del': case 'staff-pick': return 'staff.write';
-    case 'add-course': case 'dup-course': return 'course.create';
+    case 'add-course': case 'dup-course': case 'copy-level': case 'copy-level-do': return 'course.create';
     case 'weight-mode':                 return 'activity.write';
     case 'toggle-user': case 'approve-user': case 'pw-reset': case 'pw-reset-do': return 'user.manage';
     default:                            return 'course.settings';   // SEC-2
@@ -9341,6 +9542,9 @@ document.addEventListener('click', function(e){
   /* J6 — ทำสำเนารายวิชา: โครงไปด้วย (CLO · จุดประสงค์ · กิจกรรม · การเชื่อม · ขอบเขตเกรด)
      รายชื่อและคะแนนไม่ไป — สำเนาเป็นของภาคเรียนใหม่ ข้อมูลนักศึกษาเป็นของภาคเดิมเสมอ */
   if (act === 'dup-course') { dupCourse(el.dataset.course || S.course); return; }
+  /* K1 — ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่ ตามแผนการเรียนของหลักสูตร */
+  if (act === 'copy-level')    { modalCopyLevel(); return; }
+  if (act === 'copy-level-do') { copyLevelDo(); return; }
   if (act === 'grading-settings') { modalGrading(); return; }
 
   if (act === 'save-grading') {
@@ -9638,6 +9842,14 @@ document.addEventListener('change', function(e){
     return;
   }
   if (t.name === 'g-scale' || t.name === 'g-method') { gradingSync(); return; }
+  /* K1 — เปลี่ยนชั้นปีหรือปี = คำนวณรายการใหม่ · เปลี่ยนปีต้นทาง ปีปลายทางเลื่อนตามเป็นปีถัดไป */
+  if (COPYLV && (t.id === 'cy-level' || t.id === 'cy-from' || t.id === 'cy-to')) {
+    const v = parseInt(t.value, 10);
+    if (t.id === 'cy-level') COPYLV.level = v;
+    if (t.id === 'cy-from') { COPYLV.from = v; COPYLV.to = v + 1; }
+    if (t.id === 'cy-to') COPYLV.to = v;
+    copyLevelRepaint(); return;
+  }
   if (t.id === 'imp-prefix' && IMPORT) { IMPORT.withPrefix = t.checked; modalImport(2); return; }   /* V5 */
   /* P2 — ติ๊ก/เอาออก = แบ่งเท่ากันใหม่ในชุดที่ติ๊ก */
   if (t.type === 'checkbox' && t.closest && t.closest('[data-weighted]')) {

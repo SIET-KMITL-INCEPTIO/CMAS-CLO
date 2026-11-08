@@ -116,6 +116,7 @@ def lowest(cap):
 NEW = {
     '1.7': 'อนุมัติบัญชีที่รออนุมัติ',   # 2569-10-22 FR-08b — Google นอกโดเมนคณะ PENDING → ACTIVE
     '2.6': 'เพิ่ม / ถอดผู้สอนในรายวิชา',
+    '2.9': 'ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่',   # 2569-11-07 K1 — เลือกวิชาตามแผนการเรียนของหลักสูตร
     '5.6': 'ระบุนักศึกษาที่ต้องติดตาม',
     '5.7': 'บันทึกแผนพัฒนาผู้เรียนรายคน',   # 2569-10-19 ความเห็นอาจารย์ — ครูพิมพ์แผนช่วยเหลือต่อ (นักศึกษา × CLO)
     '6.6': 'แก้ไขคะแนนบนหน้าเว็บ',
@@ -188,6 +189,7 @@ UNITS = [
     ('2', '2.2', 'course.settings', []),
     ('2', '2.5', 'course.settings', []),
     ('2', '2.6', 'staff.write', []),
+    ('2', '2.9', 'course.create', []),
     ('2', '2.3', 'course.delete', []),
     ('3', '3.1', 'clo.write', [('3.3', 'include', '3.1', 'clo.write')]),
     ('3', '3.2', 'clo.write', []),
@@ -425,9 +427,7 @@ def frame_and_subject(pg, x, y, w, h, subject_title, sx, sy, sw, sh):
 
 
 def title_block(pg, x, y, view, source):
-    rows = [('ไดอะแกรม', 'Use Case — ' + view), ('ระบบ', 'CMAS · ต้นแบบ docs/pages/index-q.html'),
-            ('ที่มา', source), ('สร้างโดย', 'scripts/build-usecase-drawio.py'),
-            ('ฉบับ', VERSION)]
+    rows = [('ไดอะแกรม', 'Use Case — ' + view), ('ที่มา', source), ('ฉบับ', VERSION)]
     body = ''.join('<tr><td style="padding:2px 8px;color:%s;border-bottom:1px solid #E4E5F0;white-space:nowrap">%s</td>'
                    '<td style="padding:2px 8px;border-bottom:1px solid #E4E5F0">%s</td></tr>'
                    % (MUTED, k, v) for k, v in rows)
@@ -478,17 +478,14 @@ def page_overview(pages):
         pg.edge(base if who == 'BASE' else A[who], P[code], S_ASSOC, kind='assoc')
     pg.edge(guest, P['9'], S_ASSOC, kind='assoc')
 
-    note = pg.vertex('ภาพนี้อยู่ระดับ <i>summary use case</i> — หนึ่งวงรีคือหนึ่งแพ็กเกจ '
-                     'รายละเอียดอยู่หน้า 2–3 และรายการครบทุกข้ออยู่หน้า 4<br><br>'
-                     'ในรายวิชามี<b>บทบาทเดียว</b> — ผู้สอนทุกคนของวิชามีสิทธิ์เท่ากัน (D1) · '
-                     'ผู้ดูแลระบบ<b>ไม่ทำงานในรายวิชา</b> — สร้าง ลบ และผูกผู้สอนเข้ากับรายวิชา '
-                     'แล้วงานในรายวิชาเป็นของผู้สอน · '
-                     'ผู้ยังไม่มีบัญชีลงทะเบียนเองได้ด้วยอีเมลคณะหรือ Google (D6)',
+    note = pg.vertex('<b>อ่านภาพนี้:</b> 1 วงรี = 1 แพ็กเกจ (รายละเอียดอยู่หน้า 2–4)<br><br>'
+                     'ผู้สอนทุกคนของวิชามีสิทธิ์เท่ากัน (D1)<br>'
+                     'ผู้ดูแลระบบสร้าง ลบ และผูกผู้สอนกับวิชา แต่<b>ไม่ทำงานในวิชา</b><br>'
+                     'ผู้ยังไม่มีบัญชีลงทะเบียนเองได้ (อีเมลคณะ หรือ Google · D6)',
                      S_NOTE, 1050, 110, 400, 124, role='note')
     # P14/P16/P17 · 2.1 create, 2.3 delete and staffing belong to admin AND instructor
-    issue = pg.vertex('แพ็กเกจ 2 · <b>สร้างและลบรายวิชา</b> (2.1 · 2.3) ทำได้ทั้งผู้ดูแลระบบ '
-                      'และผู้สอน (ลบได้เฉพาะวิชาที่ตนสอน) · <b>ผู้ดูแลระบบ</b> แต่งตั้งผู้สอน (2.4) · '
-                      '<b>ผู้สอน</b> เพิ่ม/ถอดเพื่อนผู้สอน (2.6 · 2.8) และแก้ข้อมูลวิชา (2.2 · 2.5)',
+    issue = pg.vertex('แพ็กเกจ 2 · ผู้ดูแลระบบและผู้สอนสร้าง (2.1) และลบ (2.3) วิชาได้ · '
+                      '<b>ผู้ดูแลระบบ</b> แต่งตั้งผู้สอน (2.4) · <b>ผู้สอน</b> จัดการวิชาของตน (2.2 · 2.5 · 2.6 · 2.8)',
                       S_NOTE, 1050, pg.shapes[P['2']]['y'] - 8, 400, 90, role='note')
     pg.edge(issue, P['2'], S_ANCHOR + 'entryX=1;entryY=0.5;entryDx=0;entryDy=0;', kind='anchor')
     legend(pg, 440, body_h + 140, inherited=False)
@@ -586,16 +583,14 @@ def page_admin():
     dep(pg, i2, '2.4', 'include', '2.1')
 
     side = x0 + pw + 70
-    pg.vertex('กติกาที่ต้นแบบบังคับเพิ่ม<br>'
-              '· 1.3 — ระงับผู้ดูแลที่ใช้งานอยู่คนสุดท้ายไม่ได้<br>'
-              '· บัญชีผู้ดูแลระบบลบไม่ได้ ต้องลดบทบาทก่อน<br>'
-              '· 1.5 — ตั้ง mustChangePassword และบันทึก AuthEvent (FR-07)<br>'
-              '· 1.6 — อ่านจาก AuthEvent ซึ่งเสนอไว้ใน index-q.sql<br>'
-              '· 1.7 — User.status PENDING → ACTIVE ทางเดียว แยกจาก isActive (FR-08b)<br>'
-              '· 2.4 — ผู้สอนของวิชาก็เพิ่มผู้สอนได้เอง (2.6 · P14)<br>'
-              '· 2.1 สร้าง · 2.3 ลบรายวิชา — ผู้สอนทำได้เหมือนกัน (P17 · P16)<br>'
-              '· ผู้ดูแลระบบ<b>ไม่ทำงานในรายวิชา</b> — 2.2 และ 2.5 '
-              'เป็นของผู้สอน (P12) อยู่หน้า 3',
+    pg.vertex('<b>ข้อควรรู้</b><br>'
+              '· 1.3 — ระงับผู้ดูแลคนสุดท้ายไม่ได้<br>'
+              '· บัญชีผู้ดูแลลบไม่ได้ ต้องลดบทบาทก่อน<br>'
+              '· 1.5 — บังคับเปลี่ยนรหัสผ่านและบันทึกประวัติ (FR-07)<br>'
+              '· 1.6 — อ่านจากประวัติการเข้าใช้ (AuthEvent)<br>'
+              '· 1.7 — บัญชีรออนุมัติ → ใช้งานได้ (FR-08b)<br>'
+              '· 2.1 · 2.3 — ผู้สอนทำได้เหมือนกัน<br>'
+              '· 2.2 · 2.5 — เป็นงานของผู้สอน (หน้า 3)',
               S_NOTE, side, 100, 400, 152, role='note')
     legend(pg, side, 278, inherited=False)
     title_block(pg, side, body + 90, 'ผู้ดูแลระบบ', 'USE_CASES ใน index-q.html · include ตาม UML-Layer2')
@@ -697,13 +692,11 @@ def page_role(num, role, units, placed):
                   % (ROLE_TH[parent], num - 1), S_NOTE, side, ny, 330, 44, role='note')
         ny += 60
     if role == 'INSTRUCTOR':
-        pg.vertex('<b>บทบาทเดียวในรายวิชา (D1)</b> — ผู้สอนทุกคนของวิชาทำได้ทุกข้อในหน้านี้ '
-                  'เท่ากัน ไม่มีผู้ประสานงาน / ผู้สอนร่วม / ผู้ช่วยสอนอีกแล้ว<br>'
-                  'เงื่อนไขเดียวคือต้อง<b>สอนวิชานั้น</b> (CourseInstructor) — '
-                  'ตรวจกับวิชาที่ถูกกระทำ ไม่ใช่วิชาที่แสดงอยู่ (SEC-3)<br>'
-                  '2.1 สร้าง · 2.3 ลบรายวิชา ทำได้เหมือนผู้ดูแลระบบ (P17 · P16)',
-                  S_NOTE, side, ny, 330, 116, role='note')
-        ny += 132
+        pg.vertex('<b>ผู้สอนทุกคนของวิชามีสิทธิ์เท่ากัน</b> (D1)<br>'
+                  'ต้องเป็นผู้สอนวิชานั้นจึงทำได้ (SEC-3)<br>'
+                  '2.1 สร้าง · 2.3 ลบรายวิชา ทำได้เหมือนผู้ดูแลระบบ',
+                  S_NOTE, side, ny, 330, 90, role='note')
+        ny += 110
     legend(pg, side, ny + 10, inherited=any(plans[p][3] for p in pkgs))
     title_block(pg, side, max(ny + 90, frame_h - 150), ROLE_TH[role] + ' (' + role + ')',
                 'PERM ใน index-q.html · include/extend ตาม UML-Layer2')
@@ -780,8 +773,8 @@ def page_catalogue(placed):
     h = 28 + 19 * len(rows)
     pg.vertex('uc&nbsp;&nbsp;' + pg.title, S_FRAME.replace('{W}', str(thai_width(pg.title) + 60)), 20, 20, 1500, h + 230, role='frame')
     pg.vertex(table, S_TEXT, 50, 70, sum(widths), h, role='box')
-    pg.vertex('%d use case · %d จาก UML.md · %d ที่ต้นแบบเพิ่ม · %d แยกย่อยจากข้อที่มี "/" (แถวพื้นสีคือข้อที่ไม่อยู่ใน UML.md) · '
-              'actor หลักอ่านจากเมทริกซ์ PERM — ในรายวิชามีบทบาทเดียวคือผู้สอน (D1)'
+    pg.vertex('%d use case: %d จาก UML.md · %d เพิ่มโดยต้นแบบ · %d แยกย่อยจากข้อที่มี "/" (แถวพื้นสี = ไม่อยู่ใน UML.md) · '
+              'actor หลักอ่านจาก PERM'
               % (len(rows), len(UC_TEXT), len(NEW) - len(SPLITS), len(SPLITS)), S_TEXT + 'fontColor=' + MUTED + ';', 50, h + 90, 780, 34)
     title_block(pg, 50 + sum(widths) - 400, h + 90, 'รายการ use case', 'USE_CASES + PERM ใน index-q.html')
     return pg
