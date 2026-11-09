@@ -1,6 +1,6 @@
 # diagrams/ — ไฟล์ทางการ หนึ่งไฟล์ต่อหนึ่งเรื่อง
 
-> **ตรวจล่าสุด:** 2026-10-18 · `python scripts/check-diagrams.py` · เทียบกับ `docs/pages/index-q.html`, `database/schema.prisma` และ `package.json` ของ `app/`
+> **ตรวจล่าสุด:** 2026-11-09 · `python scripts/check-diagrams.py` · เทียบกับ `docs/pages/index-q.html`, `database/schema.prisma` และ `package.json` ของ `app/`
 > เปิดไฟล์ `.drawio` ด้วย [draw.io desktop](https://www.drawio.com/) หรือส่วนขยาย Draw.io Integration ใน VS Code
 
 ## ฉบับทางการ — ใช้ไฟล์ในตารางนี้เท่านั้นเวลานำเสนอหรือใส่รายงาน

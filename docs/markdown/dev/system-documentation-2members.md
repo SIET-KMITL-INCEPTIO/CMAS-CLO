@@ -358,7 +358,7 @@ erDiagram
 | **Frontend** | React 19 · React Router 7 (SPA) · Vite 7 + plugin-react-swc · TypeScript 5.9 | ระบบเป็นเครื่องมือหลังล็อกอิน ไม่ต้องการ SEO จึงใช้ SPA ล้วน |
 | **UI** | Tailwind CSS 4 · shadcn/ui · Sonner (toast) · Recharts 3 (กราฟ) | design token ชุดเดียวใช้ได้ทั้งระบบ · Recharts ตอบโจทย์กราฟแดชบอร์ดโดยไม่ต้องเขียน D3 เอง |
 | **State / Data** | TanStack Query 5 (ข้อมูลจากเซิร์ฟเวอร์) · Zustand 5 (สถานะ auth เท่านั้น) | แยก server state ออกจาก client state ชัดเจน ลดปัญหาข้อมูลค้าง |
-| **Backend** | Node.js ≥ 20 LTS · Fastify 5 · TypeScript | Fastify เร็วกว่า Express และมี schema validation ในตัว |
+| **Backend** | Node.js ≥ 24 LTS · Fastify 5 · TypeScript | Fastify เร็วกว่า Express และมี schema validation ในตัว |
 | **ความปลอดภัย** | helmet · cors · rate-limit · multipart · jose 6 (JWT access 15 นาที / refresh 7 วัน) · argon2 | ครอบ OWASP พื้นฐาน · argon2 เป็นมาตรฐานปัจจุบันของการ hash รหัสผ่าน |
 | **Validation** | Zod | สคีมาเดียวใช้ได้ทั้ง validate และ type — ไม่เชื่อ input จากไคลเอนต์เกินขอบเขตสคีมา |
 | **Excel** | SheetJS (`xlsx`) ทั้งฝั่ง parse และสร้างไฟล์ | คณะทำงานด้วย Excel อยู่แล้ว การนำเข้า / ส่งออกจึงเป็นฟีเจอร์หลัก ไม่ใช่ของแถม |
@@ -382,7 +382,7 @@ flowchart TB
     end
 
     subgraph SERVER["Backend — app/server (Railway / Fly.io)"]
-        FST["Fastify 5 + Node 20 LTS"]
+        FST["Fastify 5 + Node 24 LTS"]
         SEC["helmet · cors · rate-limit · multipart"]
         JWT["jose 6 — JWT 15m / 7d"]
         ARG["argon2"]
