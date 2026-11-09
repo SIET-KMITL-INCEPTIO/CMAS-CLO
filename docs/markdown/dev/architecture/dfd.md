@@ -105,7 +105,7 @@ See also: [[srs]] · [[schema]] · [[usecase]] · [[theory]] · [[project-plan]]
 | **UC** | Use Case | กรณีใช้งานใน [[usecase]] |
 | **SPA** | Single Page Application | ไคลเอนต์ React ที่เปลี่ยนหน้าโดยไม่โหลดใหม่ (P1) |
 | **JWT** | JSON Web Token | รูปแบบ token ที่ P2 ออกให้ |
-| **RBAC** | Role-Based Access Control | การตรวจสิทธิ์ตาม role ใน `rbac.middleware.ts` |
+| **RBAC** | Role-Based Access Control | การตรวจสิทธิ์ตาม role/capability ใน `access.middleware.ts` |
 | **CRUD** | Create · Read · Update · Delete | ชุดปฏิบัติการพื้นฐานกับข้อมูล |
 | **XSS / CSRF** | Cross-Site Scripting / Cross-Site Request Forgery | ช่องโหว่ฝั่งเบราว์เซอร์ที่กระทบวิธีเก็บ token (D8) |
 | **TLS / HTTPS** | Transport Layer Security / HTTP over TLS | การเข้ารหัสระหว่างทาง |
@@ -390,7 +390,7 @@ flowchart TB
 > **ทิศออก (f45–f47) = ภัยหลัก Information Disclosure** — เดินตรวจว่าผลลัพธ์ที่ตอบกลับ scope ตาม `courseId` เดียวกันจริง
 >
 > **f19/f44 ไม่ตัด TB-4 (แก้ใน v2.5.0):** เส้นทางจัดการผู้ใช้ไม่มี `courseId` อยู่ในนั้นเลย —
-> `usersRoutes` ถูกกันด้วย `rbac("ADMIN")` ([rbac.middleware.ts](../../../app/server/src/middlewares/rbac.middleware.ts))
+> `usersRoutes` ถูกกันด้วย `config.access = { cap: "user.manage" }` ([access.middleware.ts](../../../../app/server/src/middlewares/access.middleware.ts))
 > ไม่ใช่ `assertCourseAccess()` การวาด P4 ไว้ใน TB-4 ทำให้ TMT ออก threat "cross-course" กับเส้นที่
 > ไม่มีวันมี course อยู่ในนั้น ขณะที่ threat จริงของ P4 คือ **EoP ระดับ role** (INSTRUCTOR ตั้ง role ตัวเองเป็น ADMIN)
 > ซึ่งเป็นคนละตัว — ดู §9 ข้อ 9
@@ -898,8 +898,8 @@ TMT 2016 วาดขอบเขตได้เฉพาะระดับ **el
 - ใน TMT ให้วาด TB-4 ล้อมรอบ process **5.0–8.0 และ 10.0** (ไม่รวม 4.0 — ดูย่อหน้าถัดไป)
   **แล้วเขียน note กำกับว่า enforcement อยู่ที่ `modules/authorization/authorization.service.ts` ไม่ใช่ที่ network layer**
 - **4.0 User Admin อยู่นอก TB-4** เส้นทางจัดการผู้ใช้ไม่รับ `courseId` เลยสักเส้น
-  ([modules/index.ts](../../../app/server/src/modules/index.ts) — `usersRoutes` ไม่มี `:courseId`)
-  ด่านของมันคือ `rbac("ADMIN")` ([rbac.middleware.ts](../../../app/server/src/middlewares/rbac.middleware.ts))
+  ([modules/index.ts](../../../../app/server/src/modules/index.ts) — `usersRoutes` ไม่มี `:courseId`)
+  ด่านของมันคือ capability `user.manage` ([access.middleware.ts](../../../../app/server/src/middlewares/access.middleware.ts))
   ซึ่งถาม "role อะไร" ไม่ใช่ "ข้อมูลของใคร" — สองคำถามนี้แยกกันตาม comment ในไฟล์นั้นเอง
 - Threat "cross-course read" จะ **ไม่ถูก generate อัตโนมัติ** ต้องเพิ่มเองแบบ manual
 - **ความเสี่ยงเพิ่มขึ้นจาก v1.0.0:** เดิมมีสองด่าน (tenant guard ที่ชั้น Prisma + course check)

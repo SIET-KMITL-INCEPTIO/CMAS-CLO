@@ -155,7 +155,7 @@ Authorization: Bearer <accessToken>
 > ⚠ **อ่านคอลัมน์ Role อย่างไร (แก้ 2026-09-26)** — คอลัมน์ Role ในตารางรู้จักแค่ `ADMIN` กับ `any` · หลัง D1 ไม่มีบทบาทในรายวิชาแล้ว
 > ทุกแถวที่เขียนว่า **`any` + Scope ✅ ต้องอ่านเป็น "ผู้สอนที่ถูกมอบหมายรายวิชานั้น ผ่าน `assertCourseAccess()`"** —
 > ผู้สอนทุกคนของรายวิชามีสิทธิ์เท่ากัน (รวมแก้ CLO · ตั้งค่ารายวิชา · ตัดเกรด) · `ADMIN` ผูกคนเข้ารายวิชาและจัดการบัญชี ไม่ทำงานภายในรายวิชาแทนผู้สอน ·
-> เมทริกซ์ปัจจุบันอยู่ที่ [course-role-permissions.md](course-role-permissions.md) (ส่วนหัว) และ SEC-6 กำหนดว่า
+> เมทริกซ์ปัจจุบันอยู่ที่ [course-role-permissions.md](../requirements/course-role-permissions.md) (ส่วนหัว) และ SEC-6 กำหนดว่า
 > **การตรวจฝั่งหน้าจอเป็น UX ล้วน ๆ · API ต้องตรวจซ้ำทุกข้อ ไม่มีข้อยกเว้น**
 >
 > สองแถวที่ควรระวัง: `POST /courses` = **ADMIN หรือ INSTRUCTOR ที่บัญชียังใช้งานอยู่** (P17 · FR-22c) · endpoint นี้ไม่มี `courseId` ให้
@@ -916,9 +916,9 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
 
 | # | ช่องว่าง | ผลถ้าไม่แก้ | ต้องทำ |
 |---|---|---|---|
-| **G-1** | `registerRoutes()` ([modules/index.ts](../../../app/server/src/modules/index.ts)) register โดย**ไม่มี prefix `/api/v1`** ขัดกับ SRS §5.2 | path จริงไม่ตรงเอกสารทั้งเล่ม และเปลี่ยนทีหลังต้องแก้ client ทุกไฟล์ | `app.register(..., { prefix: "/api/v1" })` ที่ชั้นบนสุด |
-| **G-2** | `API_URL` ฝั่ง client default `http://localhost:3001` ([app.constants.ts](../../../app/client/src/lib/app.constants.ts)) ไม่มี `/api/v1` ต่อท้าย | ทุก request 404 ทันทีที่ G-1 ถูกแก้ | เปลี่ยน default เป็น `http://localhost:3001/api/v1` |
-| **G-3** | `rbac("ADMIN")` ([rbac.middleware.ts](../../../app/server/src/middlewares/rbac.middleware.ts)) ผ่านเมื่อ role ตรง **หรือเป็น ADMIN** — จึงไม่มีทางเขียน "INSTRUCTOR เท่านั้น ADMIN ห้าม" ได้ | ไม่กระทบ v1 (ADMIN เห็นทุกอย่างโดยเจตนา — FR-25) แต่ต้องรู้ตัวว่าเป็นข้อจำกัด ไม่ใช่ bug | เขียน comment ยืนยันเจตนา หรือเพิ่ม `rbacExact()` ถ้าอนาคตต้องการ |
+| ~~**G-1**~~ | **ปิดแล้ว** — `app.ts` register ทุก route (รวม `/health`) ใต้ `/api/v1` แล้ว ([modules/index.ts](../../../../app/server/src/modules/index.ts)) | — | — |
+| ~~**G-2**~~ | **ปิดแล้ว** — `API_URL` ฝั่ง client ต่อ `/api/v1` ให้เอง ([app.constants.ts](../../../../app/client/src/lib/app.constants.ts)) | — | — |
+| ~~**G-3**~~ | **ปิดแล้ว** — `rbac()` ถูกแทนที่ด้วย `config.access` + `authorize()` ([access.middleware.ts](../../../../app/server/src/middlewares/access.middleware.ts)) ซึ่งตัดสินตาม capability ต่อ course ไม่ใช่ role ตรง ๆ | — | — |
 | **G-4** | ไม่มี `User.mustChangePassword` (และ `pwResetAt` / `pwChangedAt`) ใน `schema.prisma` — ต้นแบบ `index-q` ใช้แล้ว (UC 1.5) | FR-07 (บังคับเปลี่ยนรหัสหลัง reset) ทำไม่ได้ | เพิ่มคอลัมน์ + migration `0008` ก่อน implement `/users/:userId/reset-password` |
 | **G-5** | `ScoreUploadLog` เก็บแค่ `recordsOk` / `recordsFail` ไม่เก็บ**รายละเอียดแถวที่ผิด** — ต้นแบบ `index-q` เสนอตาราง `UploadReject` (FR-65) แต่ยังไม่อยู่ใน Prisma | `GET /uploads/:uploadId/errors` ทำไม่ได้ → FR-68 (ดาวน์โหลดรายการแถวที่ผิด) | ตัดสินใจเรื่อง `UploadReject` แล้วเพิ่ม migration `0008` |
 | ~~**G-6**~~ | **ปิดแล้ว 2026-08-23** — OI-10 sign-off · CR-03 ถ่วง `Activity.weight` (ปัจจุบันคำนวณสองชั้นระดับจุดประสงค์ ดู SRS CR-03) | — | — |

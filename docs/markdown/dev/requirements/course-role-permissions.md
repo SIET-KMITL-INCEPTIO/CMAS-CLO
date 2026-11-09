@@ -6,7 +6,7 @@
 > เมทริกซ์ปัจจุบัน: capability ภายในรายวิชาทุกตัว = `INSTRUCTOR` ของรายวิชานั้น ·
 > `staff.write` / `course.create` / `course.delete` = `ADMIN` หรือ `INSTRUCTOR` · `user.manage` = `ADMIN`
 > ยืนยันด้วย `node scripts/check-perm-matrix.js` (55 ช่อง) และ `node scripts/check-action-caps.js` (24 action)
-> §2 (SEC-1…3, SEC-5) และ §3 มาตรฐานไฟล์ Excel (ยกเว้น EX-7) ยังใช้อยู่ · ดู [mockup-feedback-plan.md](mockup-feedback-plan.md)
+> §2 (SEC-1…3, SEC-5) และ §3 มาตรฐานไฟล์ Excel (ยกเว้น EX-7) ยังใช้อยู่ · ดู [mockup-feedback-plan.md](../planning/mockup-feedback-plan.md)
 
 ### เมทริกซ์ปัจจุบัน (2026-09-26 · ตรงกับ `PERM` ใน `index-q.html`, 17 capability)
 

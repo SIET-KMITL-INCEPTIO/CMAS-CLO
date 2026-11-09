@@ -122,9 +122,8 @@ Kept for the reasoning in the comments. Not to be run.
 | File | Status |
 |---|---|
 | `diagrams/usecase/index-q-usecase.drawio` | **official** use case diagram (UML 2.5, from `PERM`), `scripts/build-usecase-drawio.py` |
-| `diagrams/usecase/UML-INDEX-Q.drawio` | current one-page summary of the same model, `scripts/build-index-q-uml-drawio.py` |
-| `diagrams/usecase/UML-Layer2_Handwritten.drawio` | use case numbering declared superseded by index-q (`STATUS:SUPERSEDED` line in `diagrams/usecase/UML.md`) |
-| `diagrams/usecase/UML-Layer1_Handwritten.drawio`, `Structure.drawio` | current. Layer 1/2 are **levels of detail**, not versions |
+| `diagrams/usecase/UML-INDEX-Q.drawio` | one-page summary of the same model. **Not committed**; `scripts/build-index-q-uml-drawio.py` regenerates it |
+| `diagrams/architecture/Structure.drawio` | current, hand-drawn. `UML-Layer1/Layer2_Handwritten.drawio` and `UML.md` were deleted (see git history) |
 
 ### 3.6 Architecture diagrams: siblings, all drafts
 
@@ -135,8 +134,6 @@ was superseded):
 | File | What |
 |---|---|
 | `CMAS-Architecture_Handwritten.drawio` | 8 pages, code at commit `ff6ed7c` |
-| `CMAS-FE-BE-DB_Handwritten.drawio` | 1 page, one request walked ①–⑩ |
-| `CMAS-ARCH_Handwritten.drawio` | 1 page, stack in columns. Same subject as the file above |
 | `CMAS-Flowcharts_Handwritten.drawio` | 50 flowcharts, one per use case (5.7 added 2026-10-19; 4.2 · 5.4 · 8.1 updated to the prototype) |
 
 ### 3.7 Progress reports: one report, two variants

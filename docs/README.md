@@ -78,7 +78,7 @@ python -m http.server 8899 --directory docs/html
 | `python scripts/build-score-import-template.py` | `docs/excel/import-test/CMAS-Score-Import-Template.xlsx` — ⚠ ยังไม่มีไฟล์นี้ใน repo |
 | `python scripts/build-tqf-presentation-workbook.py` | `docs/excel/data-model/CMAS-TQF-Data-Entry.xlsx` |
 | `python scripts/build-usecase-drawio.py` | `docs/diagrams/usecase/index-q-usecase.drawio` — use case diagram ของ `index-q.html` 6 หน้า สัญกรณ์ UML 2.5 เต็มรูป อ่านสิทธิ์จาก `PERM` ในหน้านั้น |
-| `python scripts/build-index-q-uml-drawio.py` | `docs/diagrams/usecase/UML-INDEX-Q.drawio` — ข้อมูลชุดเดียวกัน หน้าเดียว วาดด้วยสัญกรณ์เดียวกับ `docs/diagrams/usecase/UML-Layer2_Handwritten.drawio` · ใช้โมเดลจากสคริปต์บรรทัดบนโดยตรง ไม่ได้คัดลอกมา |
+| `python scripts/build-index-q-uml-drawio.py` | `docs/diagrams/usecase/UML-INDEX-Q.drawio` — use case ข้อมูลชุดเดียวกัน หน้าเดียว · ⚠ ยังไม่มีไฟล์นี้ใน repo (ไม่ได้ commit ผลลัพธ์) |
 | `python scripts/build-er-index-q-drawio.py` | `docs/diagrams/er/ER-INDEX-Q.drawio` (แก้ไขได้) — **ER diagram ของ `index-q.html`** 18 ตาราง 26 ความสัมพันธ์ แบบ crow's foot · อ่านจาก `docs/reference/db/mysql/index-q.sql` ทุกคอลัมน์ ทุก FK · ทุกเส้นมีเลนของตัวเอง ไม่ทับกัน · ของที่ต้นแบบเสนอเพิ่ม `[index-q]` พื้นเหลือง |
 | `python scripts/build-index-q-workbench.py` | `docs/reference/db/mysql/index-q-v2.mwb` — โมเดล MySQL Workbench จาก `index-q.sql` (ต้องมี Workbench ในเครื่อง) · PDF `index-q_er-diagram.pdf` export ด้วยมือ: File → Export → Export as Single Page PDF |
 | `python scripts/check-diagrams.py` | **ตรวจ** ว่า UML และ ER พร้อมนำเสนอ — เลข use case ตรงกันข้ามไฟล์ · `schema.prisma` ↔ `cmas_app_mysql_v4.sql` ทั้งตารางและคอลัมน์ · ไฟล์ที่สร้างด้วยสคริปต์ยังไม่เก่า · ไฟล์ที่กำกวมบนโต๊ะนำเสนอ · `exit 1` = ยังไม่พร้อม |
