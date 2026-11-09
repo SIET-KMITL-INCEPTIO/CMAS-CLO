@@ -11,7 +11,7 @@ This file is the entry point, not a duplicate. Details live in:
 - `docs/markdown/dev/architecture/dev.md`: architecture, structure (§3), naming (§4), patterns
 - `docs/markdown/rule/code-rule.md`: layer rules (Route → Controller → Service → Repository)
 - `docs/markdown/dev/requirements/srs.md`: requirements (FR-xx / NFR-xx IDs cited in code comments)
-- `docs/pages/index-q.html`: single-file UI prototype, **ahead of the app**. `docs/diagrams/`, `docs/reference/db/mysql/index-q.sql` and the `build-*index-q*` scripts are derived from it; `index-q.sql` = `schema.prisma` + the prototype's proposed additions (README → "Two tracks")
+- `docs/index-q/index-q.html`: single-file UI prototype, **ahead of the app**. `docs/diagrams/`, `docs/reference/db/mysql/index-q.sql` and the `build-*index-q*` scripts are derived from it; `index-q.sql` = `schema.prisma` + the prototype's proposed additions (README → "Two tracks")
 - `docs/diagrams/CLAUDE.md`: diagrams show the **finished system** (to-be), drawn from the prototype, not from today's code
 - `docs/markdown/dev/architecture/prototype-to-app.md`: what each page takes from the prototype vs the app, and what never to copy
 - `app/client/src/features/README.md`, `app/server/src/modules/README.md`: per-feature file contract
@@ -39,7 +39,7 @@ app/client/src/features/<name>/   Page.page.tsx · Component.tsx · useXxx.ts ·
 app/server/src/modules/<name>/    xxx.route.ts · xxx.controller.ts · xxx.service.ts · model.repository.ts · xxx.validator.ts
 database/                         schema.prisma · migrations/ · seed.ts
 e2e/                              Playwright smoke on the production build (needs a throwaway Postgres)
-docs/                             markdown/ (source) · pages/ (hand-written HTML) · reference/ · diagrams/ (by type) · excel/ (by purpose) · word/ pdf/
+docs/                             markdown/ (source) · index-q/ (hand-written HTML: prototype, reports) · reference/ · diagrams/ (by type) · excel/ (by purpose) · pdf/
 scripts/                          setup.mjs · build-*.py (diagram/workbook generators) · check-*.{py,js}
 ```
 

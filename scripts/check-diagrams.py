@@ -33,7 +33,7 @@ for _s in (sys.stdout, sys.stderr):
 ROOT = Path(__file__).resolve().parents[1]
 UML_MD = ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML.md'
 LAYER2 = ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML-Layer2_Handwritten.drawio'
-APP = ROOT / 'docs' / 'pages' / 'index-q.html'
+APP = ROOT / 'docs' / 'index-q' / 'index-q.html'
 PRISMA = ROOT / 'database' / 'schema.prisma'
 SQL_V4 = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'cmas_app_mysql_v4.sql'
 SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'

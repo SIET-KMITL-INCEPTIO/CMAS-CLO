@@ -10,7 +10,7 @@ filenames below are relative to that folder.
 | File | Model | Tables | Purpose |
 |---|---|---|---|
 | [`cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql) | **v4 — frozen at migration 0004 (2026-09-06)**; superseded by `index-q.sql` | 13 tables · 16 FKs | Diagramming only. **No longer matches `schema.prisma`**: still has `ObjectiveAssessment`, `CourseInstructor.role`, `CLO.threshold`, and lacks `EmailVerificationToken`, `User.status` and everything from migrations 0005–0007. Kept as the grading-era snapshot |
-| [`index-q.sql`](../../reference/db/mysql/index-q.sql) | **`schema.prisma` (through migration 0007) + what the UI prototype `docs/pages/index-q.html` adds** | 16 tables · 19 FKs | The 13 Prisma tables including `User.status` (0007), plus the proposed `AuthEvent` (UC 1.6), `UploadReject` (FR-65) and `CourseGroupWeight` (N1 group weights), three password-flow columns on `User`, `Course.weightMode`, `Activity.passScore`, and `ScoreUploadLog.kind` (`SCORE` / `ROSTER`). Every addition is tagged `[index-q]` in its COMMENT, so the EER diagram shows what is proposed. Import this — it is the only MySQL file that matches the current Prisma schema, and it shows the prototype's data model. **Last loaded 2026-09-25** into a throwaway MySQL 8.0 (16 tables · 19 FKs by `information_schema`, also with `FOREIGN_KEY_CHECKS = 1`) |
+| [`index-q.sql`](../../reference/db/mysql/index-q.sql) | **`schema.prisma` (through migration 0007) + what the UI prototype `docs/index-q/index-q.html` adds** | 16 tables · 19 FKs | The 13 Prisma tables including `User.status` (0007), plus the proposed `AuthEvent` (UC 1.6), `UploadReject` (FR-65) and `CourseGroupWeight` (N1 group weights), three password-flow columns on `User`, `Course.weightMode`, `Activity.passScore`, and `ScoreUploadLog.kind` (`SCORE` / `ROSTER`). Every addition is tagged `[index-q]` in its COMMENT, so the EER diagram shows what is proposed. Import this — it is the only MySQL file that matches the current Prisma schema, and it shows the prototype's data model. **Last loaded 2026-09-25** into a throwaway MySQL 8.0 (16 tables · 19 FKs by `information_schema`, also with `FOREIGN_KEY_CHECKS = 1`) |
 | [`../enterprise/schema.mysql.sql`](../../reference/db/enterprise/schema.mysql.sql) | Full institutional design (curriculum versioning, PLO/CLO mapping, sections, enrollments, PLO attainment, audit) | 36 tables + 4 views | Reference only — **not** what the app implements. A separate model, not a version of the app schema; lives in `reference/db/enterprise/` with its PostgreSQL original |
 
 Version labels here (`v3`, `v4`) are **not** the same numbers as the ones in
@@ -59,7 +59,7 @@ Thai `_th` columns store correctly.
 > `lower_case_table_names=1` — a server setting, not a defect in the file;
 > Workbench's *Reverse Engineer MySQL Create Script* reads the file and keeps
 > the original case. Field-by-field against the `db` object in
-> `docs/pages/index-q.html` (including runtime writes): every column the
+> `docs/index-q/index-q.html` (including runtime writes): every column the
 > prototype stores exists in the SQL. Rendered diagrams:
 > `docs/diagrams/er/ER-INDEX-Q.drawio` (from `scripts/build-er-index-q-drawio.py`) and
 > `docs/reference/db/mysql/index-q-v2.mwb` (from `scripts/build-index-q-workbench.py`),

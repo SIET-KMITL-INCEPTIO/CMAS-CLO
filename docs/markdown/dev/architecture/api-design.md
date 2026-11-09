@@ -923,7 +923,7 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
 | **G-5** | `ScoreUploadLog` เก็บแค่ `recordsOk` / `recordsFail` ไม่เก็บ**รายละเอียดแถวที่ผิด** — ต้นแบบ `index-q` เสนอตาราง `UploadReject` (FR-65) แต่ยังไม่อยู่ใน Prisma | `GET /uploads/:uploadId/errors` ทำไม่ได้ → FR-68 (ดาวน์โหลดรายการแถวที่ผิด) | ตัดสินใจเรื่อง `UploadReject` แล้วเพิ่ม migration `0008` |
 | ~~**G-6**~~ | **ปิดแล้ว 2026-08-23** — OI-10 sign-off · CR-03 ถ่วง `Activity.weight` (ปัจจุบันคำนวณสองชั้นระดับจุดประสงค์ ดู SRS CR-03) | — | — |
 | ~~**G-7**~~ | **ปิดแล้ว 2026-08-23** — OI-12 sign-off · `cloScore = null` เป็นสถานะที่สาม (CR-03.1) | — | — |
-| **G-8** | route จริงมี 4 endpoint (`/health` · `/auth/google` · `/users` · `/users/:id/approve`) จาก 68 ตัวใน §3 · ยังไม่มี `criteria` / `clos` / `activities` / `scores` / dashboard ในโค้ดจริง — ต้นแบบ `docs/pages/index-q.html` มีครบแล้วและเป็นต้นแบบของ contract นี้ | client ต่อ API ไม่ได้นอกจากหน้า login / users | ทำ route ตามลำดับ Sprint · ปิดช่องว่างข้อนี้ทีละ module |
+| **G-8** | route จริงมี 4 endpoint (`/health` · `/auth/google` · `/users` · `/users/:id/approve`) จาก 68 ตัวใน §3 · ยังไม่มี `criteria` / `clos` / `activities` / `scores` / dashboard ในโค้ดจริง — ต้นแบบ `docs/index-q/index-q.html` มีครบแล้วและเป็นต้นแบบของ contract นี้ | client ต่อ API ไม่ได้นอกจากหน้า login / users | ทำ route ตามลำดับ Sprint · ปิดช่องว่างข้อนี้ทีละ module |
 
 ---
 

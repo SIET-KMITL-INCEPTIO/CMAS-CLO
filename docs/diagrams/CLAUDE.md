@@ -1,7 +1,7 @@
 # docs/diagrams/ — context
 
 ไดอะแกรมในโฟลเดอร์นี้แสดง **ระบบตอนทำเสร็จแล้ว (to-be)** ไม่ใช่สภาพโค้ดตอนนี้ (as-is)
-ต้นแบบของระบบที่เสร็จคือ `docs/pages/index-q.html` ซึ่งนำหน้าแอปจริงอยู่
+ต้นแบบของระบบที่เสร็จคือ `docs/index-q/index-q.html` ซึ่งนำหน้าแอปจริงอยู่
 
 ## หลักการ
 
@@ -37,5 +37,5 @@
 
 ## ที่เกี่ยวข้อง
 
-- ต้นแบบ: `docs/pages/index-q.html` · สิ่งที่แอปรับ/ไม่รับจากต้นแบบ: `docs/markdown/dev/architecture/prototype-to-app.md`
+- ต้นแบบ: `docs/index-q/index-q.html` · สิ่งที่แอปรับ/ไม่รับจากต้นแบบ: `docs/markdown/dev/architecture/prototype-to-app.md`
 - ข้อกำหนด: `docs/markdown/dev/requirements/srs.md` · ER ของ SQL: `docs/reference/db/mysql/index-q.sql`

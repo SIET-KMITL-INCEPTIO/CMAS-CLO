@@ -5,7 +5,7 @@ See also: [[srs]] · [[api-design-plan]] · [[prototype-to-app]] · [[objectives
 > **สร้าง:** 2026-10-18 · **สถานะ:** แผน ยังไม่มีชุดทดสอบระบบในโค้ด
 > **ตัดสินแล้ว 2026-10-18:**
 > (1) ออกแบบ API ตาม [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx)
-> (2) หน้าจอของแอปจริงใช้ตาม mock-up [`index-q.html`](../../../pages/index-q.html)
+> (2) หน้าจอของแอปจริงใช้ตาม mock-up [`index-q.html`](../../../index-q/index-q.html)
 > (3) วางแผนทดสอบเป็น **system test แบบ gray box**
 > **ตรวจกับ:** `srs.md` v2.4.3 · Excel API 74 endpoint · `capabilities.ts` · `schema.prisma` (migration 0001–0007) · ไฟล์ทดสอบใน `docs/excel/import-test/`
 

@@ -231,7 +231,7 @@
                 <mxCell id="uc-1-1-2" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ดูแลระบบ (ADMIN)" vertex="1">
                     <mxGeometry height="20" width="900" x="40" y="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-1-1-3" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · openForm(&#39;user&#39;) · crudSave() · FORMS.user" vertex="1">
+                <mxCell id="uc-1-1-3" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · openForm(&#39;user&#39;) · crudSave() · FORMS.user" vertex="1">
                     <mxGeometry height="20" width="900" x="40" y="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-1-1-4" parent="1" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" vertex="1">
@@ -398,7 +398,7 @@
                 <mxCell id="uc-1-2-2" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ดูแลระบบ (ADMIN)" vertex="1">
                     <mxGeometry height="20" width="900" x="40" y="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-1-2-3" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · openForm(&#39;user&#39;, id) · crudSave() · FORMS.user.save" vertex="1">
+                <mxCell id="uc-1-2-3" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · openForm(&#39;user&#39;, id) · crudSave() · FORMS.user.save" vertex="1">
                     <mxGeometry height="20" width="900" x="40" y="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-1-2-4" parent="1" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" vertex="1">
@@ -611,7 +611,7 @@
                 <mxCell id="uc-1-3-2" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ดูแลระบบ (ADMIN)" vertex="1">
                     <mxGeometry height="20" width="900" x="40" y="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-1-3-3" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · data-act=&quot;toggle-user&quot;" vertex="1">
+                <mxCell id="uc-1-3-3" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · data-act=&quot;toggle-user&quot;" vertex="1">
                     <mxGeometry height="20" width="900" x="40" y="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-1-3-4" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; ปุ่มเดียวกันใช้เปิดใช้งานคืน · ระงับได้จากฟอร์มแก้ไข (1.2) ด้วย" vertex="1">
@@ -763,7 +763,7 @@
                 <mxCell id="uc-1-4-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ดูแลระบบ (ADMIN)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-1-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · FORMS.user (ช่องบทบาท) · can() · PERM" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-1-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · FORMS.user (ช่องบทบาท) · can() · PERM" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-1-4-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; สิทธิ์ระดับรายวิชามาจากการเป็นผู้สอนของวิชานั้น (UC 2.4 / 2.6) ไม่ใช่จากบทบาทระบบ" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -899,7 +899,7 @@
                 <mxCell id="uc-1-5-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ดูแลระบบ (ADMIN)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-1-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalPwReset() · data-act=&quot;pw-reset-do&quot;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-1-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalPwReset() · data-act=&quot;pw-reset-do&quot;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-1-5-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; ต้นแบบไม่เก็บรหัสผ่านและไม่ส่งอีเมลจริง" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -1027,7 +1027,7 @@
                 <mxCell id="uc-1-6-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ดูแลระบบ (ADMIN)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-1-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · userDrawer(uid) · authLog()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-1-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · userDrawer(uid) · authLog()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-1-6-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -1140,7 +1140,7 @@
                 <mxCell id="uc-2-1-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ใช้ที่ใช้งานอยู่ทุกคน (ผู้สอน / ADMIN)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-2-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalCourse(&#39;create&#39;) · data-act=&quot;save-course&quot;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-2-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalCourse(&#39;create&#39;) · data-act=&quot;save-course&quot;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-2-1-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -1379,7 +1379,7 @@
                 <mxCell id="uc-2-2-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-2-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalCourse(&#39;edit&#39;, id) · data-act=&quot;save-course&quot; (mode edit)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-2-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalCourse(&#39;edit&#39;, id) · data-act=&quot;save-course&quot; (mode edit)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-2-2-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -1610,7 +1610,7 @@
                 <mxCell id="uc-2-3-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-2-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · confirmDelete(&#39;course&#39;) · crudDelete() · deletePhrase()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-2-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · confirmDelete(&#39;course&#39;) · crudDelete() · deletePhrase()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-2-3-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -1779,7 +1779,7 @@
                 <mxCell id="uc-2-4-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ดูแลระบบ (ADMIN) (มอบหมายให้วิชาใดก็ได้)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-2-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalCourse() · staffRows() · paintStaffHits() · data-act=&quot;staff-pick&quot;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-2-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalCourse() · staffRows() · paintStaffHits() · data-act=&quot;staff-pick&quot;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-2-4-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -1966,7 +1966,7 @@
                 <mxCell id="uc-2-5-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-2-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalCourse() ช่อง f-sem · f-year · f-sec · save-course" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-2-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalCourse() ช่อง f-sem · f-year · f-sec · save-course" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-2-5-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; (รหัสวิชา, ภาค, ปี, Sec) คือตัวตนของรายวิชา (FR-21) · ผู้สอนสร้างรายวิชาเองได้" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -2110,7 +2110,7 @@
                 <mxCell id="uc-2-6-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (เพิ่มผู้สอนร่วม) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-2-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · paintStaffHits() · data-act=&quot;staff-pick&quot; · save-course" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-2-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · paintStaffHits() · data-act=&quot;staff-pick&quot; · save-course" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-2-6-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -2291,7 +2291,7 @@
                 <mxCell id="uc-2-8-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-2-8-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · staffLocked() · data-act=&quot;staff-del&quot; · save-course" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-2-8-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · staffLocked() · data-act=&quot;staff-del&quot; · save-course" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-2-8-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; SEC-4: ไม่มีใครเอาแถวของตัวเองออกได้ แม้แต่ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -2470,7 +2470,7 @@
                 <mxCell id="uc-2-9-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอน (เฉพาะวิชาที่ตนสอน) หรือ ADMIN (ทุกวิชา) · สิทธิ์ course.create" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-2-9-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalCopyLevel() · copyLevelPlan() · copyLevelDo() · cloneCourse() · STUDY_PLAN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-2-9-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalCopyLevel() · copyLevelPlan() · copyLevelDo() · cloneCourse() · STUDY_PLAN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-2-9-4" value="หมายเหตุ: แผนการเรียนจากหลักสูตร ค.อ.บ. เทคโนโลยีคอมพิวเตอร์ (ปรับปรุง 2567) หน้า 15–19 · คัดลอกโครง ไม่คัดลอกคน" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -2762,7 +2762,7 @@
                 <mxCell id="uc-3-1-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-3-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · openForm(&#39;clo&#39;) · crudSave(more) · FORMS.clo" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-3-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · openForm(&#39;clo&#39;) · crudSave(more) · FORMS.clo" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-3-1-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -2991,7 +2991,7 @@
                 <mxCell id="uc-3-2-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-3-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · openForm(&#39;clo&#39;, id) · crudSave() · data-cloweight (แก้น้ำหนักในตาราง)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-3-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · openForm(&#39;clo&#39;, id) · crudSave() · data-cloweight (แก้น้ำหนักในตาราง)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-3-2-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -3241,7 +3241,7 @@
                 <mxCell id="uc-3-3-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-3-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · data-passmark → Course.cloPassMark · derive()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-3-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · data-passmark → Course.cloPassMark · derive()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-3-3-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; เกณฑ์ผ่านเป็นค่าเดียวทั้งรายวิชา ใช้กับทุก CLO · เป้าหมายชั้นเรียนคงที่ 100%" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -3369,7 +3369,7 @@
                 <mxCell id="uc-3-5-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-3-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · confirmDelete(&#39;clo&#39;) · crudDelete() · FORMS.clo.remove" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-3-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · confirmDelete(&#39;clo&#39;) · crudDelete() · FORMS.clo.remove" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-3-5-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -3518,7 +3518,7 @@
                 <mxCell id="uc-4-1-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · openForm(&#39;objective&#39;) · crudSave(more) · FORMS.objective" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-4-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · openForm(&#39;objective&#39;) · crudSave(more) · FORMS.objective" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-1-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -3729,7 +3729,7 @@
                 <mxCell id="uc-4-2-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · openForm(&#39;activity&#39;) · FORMS.activity · actFormSync()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-4-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · openForm(&#39;activity&#39;) · FORMS.activity · actFormSync()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-2-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; วิธีประเมินเป็นช่องหนึ่งของกิจกรรม: แบบทดสอบ · ข้อสอบ · รูบริก · ตรวจชิ้นงาน · สังเกตพฤติกรรม · อื่น ๆ · ชื่อที่ผู้สอนกำหนดเอง" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -4011,7 +4011,7 @@
                 <mxCell id="uc-4-3-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · FORMS.activity (maxScore · passScore) · actFormSync() · validate/save" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-4-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · FORMS.activity (maxScore · passScore) · actFormSync() · validate/save" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-3-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; เกณฑ์ = คะแนนเต็ม + คะแนนที่ถือว่าผ่าน · % ผ่านคำนวณให้ ไม่ต้องกรอกซ้ำ" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -4239,7 +4239,7 @@
                 <mxCell id="uc-4-4-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · เมทริกซ์ กิจกรรม × CLO · data-crit → setCloShare() · crit-even" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-4-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · เมทริกซ์ กิจกรรม × CLO · data-crit → setCloShare() · crit-even" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-4-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; จุดประสงค์สังกัด CLO ตามช่อง “อยู่ใต้ CLO” ในฟอร์ม (4.1/4.5) · เมทริกซ์นี้บอกว่ากิจกรรมวัด CLO ใดกี่ %" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -4456,7 +4456,7 @@
                 <mxCell id="uc-4-5-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · openForm(&#39;objective&#39;, id) · data-objweight · obj-even" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-4-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · openForm(&#39;objective&#39;, id) · data-objweight · obj-even" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-5-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -4772,7 +4772,7 @@
                 <mxCell id="uc-4-6-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-4-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · confirmDelete(&#39;objective&#39;) · FORMS.objective.remove" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-4-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · confirmDelete(&#39;objective&#39;) · FORMS.objective.remove" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-4-6-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -4921,7 +4921,7 @@
                 <mxCell id="uc-5-1-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-5-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · derive(courseId) → attain[] (CR-04)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-5-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · derive(courseId) → attain[] (CR-04)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-5-1-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -5068,7 +5068,7 @@
                 <mxCell id="uc-5-2-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ระบบ (ทำงานทุกครั้งที่ข้อมูลเปลี่ยน)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-5-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · derive() → objScore() · cloScore() · cloRaw()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-5-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · derive() → objScore() · cloScore() · cloRaw()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-5-2-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; ไม่มีคะแนน = null ไม่ใช่ 0 (CR-03.1) · คะแนน 0 ที่ได้จริงนับเป็น 0" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -5197,7 +5197,7 @@
                 <mxCell id="uc-5-3-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-5-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · viewDashboard() · readiness[] · d.locked · d.noScores" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-5-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · viewDashboard() · readiness[] · d.locked · d.noScores" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-5-3-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -5322,7 +5322,7 @@
                 <mxCell id="uc-5-4-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-5-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · studentDrawer(sid) · derive().rows" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-5-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · studentDrawer(sid) · derive().rows" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-5-4-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -5437,7 +5437,7 @@
                 <mxCell id="uc-5-5-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-5-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · data-act=&quot;export&quot; data-what=&quot;results&quot; → exportResults()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-5-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · data-act=&quot;export&quot; data-what=&quot;results&quot; → exportResults()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-5-5-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -5550,7 +5550,7 @@
                 <mxCell id="uc-5-6-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-5-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · derive() → rows[].atRisk (CR-05) · viewDashboard()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-5-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · derive() → rows[].atRisk (CR-05) · viewDashboard()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-5-6-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -5671,7 +5671,7 @@
                 <mxCell id="uc-5-7-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-5-7-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · studentDrawer(sid) · textarea[data-plan] · planOf() · db.remediation (RemediationPlan)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-5-7-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · studentDrawer(sid) · textarea[data-plan] · planOf() · db.remediation (RemediationPlan)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-5-7-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -5810,7 +5810,7 @@
                 <mxCell id="uc-6-1-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-6-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalImport() · takeFile() · validateWorkbook() · commitImport()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-6-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalImport() · takeFile() · validateWorkbook() · commitImport()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-6-1-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -6019,7 +6019,7 @@
                 <mxCell id="uc-6-2-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-6-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · data-act=&quot;template&quot; → exportScores(true) · scoreSheet(blank)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-6-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · data-act=&quot;template&quot; → exportScores(true) · scoreSheet(blank)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-6-2-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -6156,7 +6156,7 @@
                 <mxCell id="uc-6-3-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ระบบ (ขั้นที่ 2 ของการนำเข้าคะแนน)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-6-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · validateWorkbook(wb, fileName)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-6-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · validateWorkbook(wb, fileName)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-6-3-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; ทุกแถวที่ถูกปฏิเสธมี: เลขแถวตามที่เห็นใน Excel · รหัส · ฟิลด์ · ค่า · เหตุผล" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -6394,7 +6394,7 @@
                 <mxCell id="uc-6-4-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-6-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · data-act=&quot;export&quot; → exportScores(false)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-6-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · data-act=&quot;export&quot; → exportScores(false)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-6-4-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -6531,7 +6531,7 @@
                 <mxCell id="uc-6-5-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-6-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalImport(2) · modalErrReport(logId)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-6-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalImport(2) · modalErrReport(logId)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-6-5-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -6685,7 +6685,7 @@
                 <mxCell id="uc-6-6-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-6-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · change handler (data-score) · fill-max" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-6-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · change handler (data-score) · fill-max" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-6-6-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -6836,7 +6836,7 @@
                 <mxCell id="uc-7-1-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-7-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalImport() (IMPMODE roster) · validateRoster() · commitImport()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-7-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalImport() (IMPMODE roster) · validateRoster() · commitImport()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-7-1-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -7045,7 +7045,7 @@
                 <mxCell id="uc-7-2-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-7-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · data-act=&quot;template&quot; data-what=&quot;roster&quot; → exportRoster(true)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-7-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · data-act=&quot;template&quot; data-what=&quot;roster&quot; → exportRoster(true)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-7-2-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -7146,7 +7146,7 @@
                 <mxCell id="uc-7-3-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ระบบ (ขั้นที่ 2 ของการนำเข้ารายชื่อ)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-7-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · validateRoster(wb, fileName)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-7-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · validateRoster(wb, fileName)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-7-3-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -7351,7 +7351,7 @@
                 <mxCell id="uc-7-4-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-7-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · data-act=&quot;export&quot; data-what=&quot;roster&quot; → exportRoster(false)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-7-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · data-act=&quot;export&quot; data-what=&quot;roster&quot; → exportRoster(false)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-7-4-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -7470,7 +7470,7 @@
                 <mxCell id="uc-7-5-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-7-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalImport(2) · modalErrReport(logId)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-7-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalImport(2) · modalErrReport(logId)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-7-5-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; ใช้หน้าจอเดียวกับ 6.5 · หน่วยเป็น “รายชื่อ” · ScoreUploadLog.kind = ROSTER" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -7593,7 +7593,7 @@
                 <mxCell id="uc-7-6-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-7-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · confirmDelete(&#39;student&#39;) · FORMS.student.remove" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-7-6-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · confirmDelete(&#39;student&#39;) · FORMS.student.remove" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-7-6-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; หนึ่งแถว Student คือหนึ่งการลงทะเบียน ไม่ใช่ตัวบุคคล" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -7745,7 +7745,7 @@
                 <mxCell id="uc-8-1-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalGrading() · save-grading · openForm(&#39;band&#39;) · FORMS.band" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-8-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalGrading() · save-grading · openForm(&#39;band&#39;) · FORMS.band" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-1-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -8081,7 +8081,7 @@
                 <mxCell id="uc-8-2-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · data-act=&quot;run-grading&quot; · derive() grades[] (CR-09/CR-10)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-8-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · data-act=&quot;run-grading&quot; · derive() grades[] (CR-09/CR-10)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-2-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -8286,7 +8286,7 @@
                 <mxCell id="uc-8-3-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้สอนของรายวิชา (INSTRUCTOR) หรือ ADMIN" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-8-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalOverride(sid) · override-save · override-clear" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-8-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalOverride(sid) · override-save · override-clear" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-8-3-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; การปรับเก็บใน override และจะลง StudentGrade เมื่อกดตรึงเกรดอีกครั้ง (8.2)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -8488,7 +8488,7 @@
                 <mxCell id="uc-9-1-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ใช้ที่เข้าสู่ระบบแล้ว" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-9-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalProfile() · saveProfile()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-9-1-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalProfile() · saveProfile()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-9-1-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -8655,7 +8655,7 @@
                 <mxCell id="uc-9-2-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ใช้ที่เข้าสู่ระบบแล้ว" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-9-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · modalPwChange() · savePwChange()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-9-2-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · modalPwChange() · savePwChange()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-9-2-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; เกณฑ์ในฟอร์มนี้ (8 ตัว + ตัวอักษร + ตัวเลข) ต่างจากตอนลงทะเบียน (12 ตัว) · ต้นแบบไม่ตรวจรหัสเดิมจริง" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -8847,7 +8847,7 @@
                 <mxCell id="uc-9-3-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ใช้ที่ยังไม่มีบัญชี" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-9-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · AccountService.register() · AuthScreen.submitRegister() · PasswordPolicy" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-9-3-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · AccountService.register() · AuthScreen.submitRegister() · PasswordPolicy" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-9-3-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -9036,7 +9036,7 @@
                 <mxCell id="uc-9-4-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ใช้ที่ยังไม่มีบัญชี ที่ลงทะเบียนแล้ว" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-9-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · AccountService.verify() · submitVerify() · submitLogin() (unverified)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-9-4-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · AccountService.verify() · submitVerify() · submitLogin() (unverified)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-9-4-4" value="&lt;b&gt;สัญลักษณ์&lt;/b&gt;" style="whiteSpace=wrap;html=1;text;align=left;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
@@ -9215,7 +9215,7 @@
                 <mxCell id="uc-9-5-2" value="&lt;b&gt;ผู้ใช้งาน:&lt;/b&gt; ผู้ใช้ที่ยังไม่มีบัญชี" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="60" width="900" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="uc-9-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/pages/index-q.html · AccountService.google() · createFromGoogle() · AuthScreen.enter()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="uc-9-5-3" value="&lt;b&gt;อ้างอิงต้นแบบ:&lt;/b&gt; docs/index-q/index-q.html · AccountService.google() · createFromGoogle() · AuthScreen.enter()" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="40" y="80" width="900" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="uc-9-5-4" value="&lt;b&gt;หมายเหตุ:&lt;/b&gt; ต้นแบบปฏิเสธบัญชีนอกโดเมน · server จริง (auth.service.ts) สร้างเป็น PENDING รอ ADMIN อนุมัติ" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=16;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontColor=#000000;" parent="1" vertex="1">

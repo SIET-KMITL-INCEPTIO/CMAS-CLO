@@ -165,7 +165,7 @@
 
 ### 2.1.1 รูปแบบต้นแบบ
 
-ต้นแบบของระบบคือ **`docs/pages/index-q.html`** — ไฟล์ HTML เดียวที่รันได้จริงจาก `file://` โดยไม่ต้องมีเซิร์ฟเวอร์ พึ่งภายนอกเพียง Tailwind CDN และ Google Fonts
+ต้นแบบของระบบคือ **`docs/index-q/index-q.html`** — ไฟล์ HTML เดียวที่รันได้จริงจาก `file://` โดยไม่ต้องมีเซิร์ฟเวอร์ พึ่งภายนอกเพียง Tailwind CDN และ Google Fonts
 
 | คุณสมบัติ | ค่า |
 |---|---|
@@ -173,7 +173,7 @@
 | Entity ที่ CRUD ได้ในต้นแบบ | 7 entity |
 | ข้อมูลตัวอย่างในตัว | 4 รายวิชา · 30 การลงทะเบียน · 120 แถวคะแนน |
 | ตารางเส้นทาง | `ROUTES` — ใช้เป็นแหล่งจริงของโครงเมนูใน AppShell |
-| เอกสารประกอบ | `design-system-preview.html` (design token + คอมโพเนนต์) · `database-preview.html` · `evaluation-criteria.html` · `tech-stack-review.html` |
+| เอกสารประกอบ | `index-q-design-system.html` (design token) · `database-preview.html` · `evaluation-criteria.html` · `tech-stack-review.html` |
 
 > **ทำไมต้องเป็นต้นแบบที่รันได้:** ต้นแบบนี้ทำหน้าที่เป็น *ข้อกำหนดที่กดใช้งานได้* — ทีมและอาจารย์ที่ปรึกษาเห็นการไหลของงานจริงก่อนลงมือเขียนระบบ และทีมพัฒนาถอดค่า `ROUTES`, `FORMS`, `derive()` จากต้นแบบไปใช้ได้ตรง ๆ โดยไม่ต้องตีความเอกสารซ้ำ
 
@@ -543,7 +543,7 @@ flowchart LR
 | Tech Stack | `docs/markdown/graph/tech-stack.md` · `docs/markdown/dev/architecture/dev.md` §1 |
 | Architecture | `README.md` §Structure · `docs/diagrams/usecase/UML.md` · `docs/diagrams/index-q-architecture.md` |
 | DFD | `docs/markdown/dev/architecture/dfd.md` (v2.5.0) |
-| Mock-up | `docs/pages/index-q.html` · `docs/pages/archive/design-system-preview.html` |
+| Mock-up | `docs/index-q/index-q.html` · `docs/index-q/index-q-design-system.html` |
 | ผลทบทวน mockup | `docs/markdown/dev/planning/mockup-feedback-plan.md` |
 | แผนงาน | `docs/markdown/dev/planning/project-plan.md` (WBS / Gantt) · `docs/markdown/dev/planning/sprint-plan-2026.md` |
 | รายงานความก้าวหน้า | `docs/markdown/dev/progress-report-02.md` |

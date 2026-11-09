@@ -11,7 +11,7 @@
   S# ขั้นตอนหลัก · D# ฐานข้อมูล · P# กระบวนการย่อย · F# ทางออกแบบแจ้งข้อผิดพลาด
   K# ทางข้าม · T# ตารางที่คัดลอก · E## edge case
 
-อ้างอิงโค้ด: docs/pages/index-q.html  (modalCopyLevel · copyLevelPlan · copyLevelDo · cloneCourse · STUDY_PLAN)
+อ้างอิงโค้ด: docs/index-q/index-q.html  (modalCopyLevel · copyLevelPlan · copyLevelDo · cloneCourse · STUDY_PLAN)
 ผลลัพธ์:    docs/diagrams/flowchart/CMAS-Flowchart-CopyYearLevel-Skill.drawio
 
 รัน:  python scripts/build-copy-year-flowchart-skill-drawio.py
@@ -28,7 +28,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'docs' / 'diagrams' / 'flowchart' / 'CMAS-Flowchart-CopyYearLevel-Skill.drawio'
-APP = ROOT / 'docs' / 'pages' / 'index-q.html'
+APP = ROOT / 'docs' / 'index-q' / 'index-q.html'
 
 # ── ต้นแบบต้องมีฟังก์ชันที่ไดอะแกรมอ้างถึงจริง ─────────────────────────
 _app = io.open(APP, encoding='utf-8').read()

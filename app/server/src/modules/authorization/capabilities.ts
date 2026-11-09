@@ -1,5 +1,5 @@
 /**
- * Who may do what — the server copy of `PERM` in docs/pages/index-q.html.
+ * Who may do what — the server copy of `PERM` in docs/index-q/index-q.html.
  *
  * capabilities.test.ts reads PERM out of the prototype and fails if the two
  * differ, so change the prototype first (it is the spec), then this table.

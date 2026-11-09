@@ -4,7 +4,7 @@
 -- Purpose : diagramming artifact for MySQL Workbench
 --           File > Import > Reverse Engineer MySQL Create Script...
 --
--- What this is: the data model the UI prototype docs/pages/index-q.html
+-- What this is: the data model the UI prototype docs/index-q/index-q.html
 -- actually runs on. Its baseline is database/schema.prisma as of migration
 -- 0007 (revised 2569-09-25; 0006 on 2569-09-18, v4 verbatim before that), plus the
 -- deltas the prototype needs that Prisma does not have yet. Every delta is

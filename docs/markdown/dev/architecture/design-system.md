@@ -4,7 +4,7 @@ See also: [[Design System Strategy]] · [[verdure-design-system]] · [[concept-c
 
 **Version 1.4.0** · Production Release · ใช้งานจริง
 
-> **สถานะ 2026-11-09:** เอกสารนี้อธิบายชุดโทเคน **Verdure** ที่ `app/client/src/styles/tokens.css` ใช้อยู่ตอนนี้ · **ตัดสินแล้ว 2026-10-18** ว่าแอปจะย้ายไปใช้ design system ของต้นแบบ `docs/pages/index-q.html` (Nocturnal Atelier v3.2) แทน Verdure ([[prototype-to-app]] §5 DS) · ค่าของชุดเป้าหมายอยู่ที่ `docs/pages/index-q-design-system.html` (สร้างจากต้นแบบ) · เมื่อย้ายแล้วให้เขียนเอกสารนี้ใหม่ตามชุดนั้น ก่อนหน้านั้นให้เอกสารนี้ตรงกับ `tokens.css` (ตรวจ 2026-11-09: โทเคนสี ตัวอักษร ระยะ เงา ตรงกัน, radius แก้แล้ว)
+> **สถานะ 2026-11-09:** เอกสารนี้อธิบายชุดโทเคน **Verdure** ที่ `app/client/src/styles/tokens.css` ใช้อยู่ตอนนี้ · **ตัดสินแล้ว 2026-10-18** ว่าแอปจะย้ายไปใช้ design system ของต้นแบบ `docs/index-q/index-q.html` (Nocturnal Atelier v3.2) แทน Verdure ([[prototype-to-app]] §5 DS) · ค่าของชุดเป้าหมายอยู่ที่ `docs/index-q/index-q-design-system.html` (สร้างจากต้นแบบ) · เมื่อย้ายแล้วให้เขียนเอกสารนี้ใหม่ตามชุดนั้น ก่อนหน้านั้นให้เอกสารนี้ตรงกับ `tokens.css` (ตรวจ 2026-11-09: โทเคนสี ตัวอักษร ระยะ เงา ตรงกัน, radius แก้แล้ว)
 
 > **1.4.0 Changelog:** รวม typeface เหลือ **IBM Plex Sans Thai** เพียง family เดียว (เดิม Noto Serif + Plex Mono) · Icons ใช้ **React Icons (Lucide)** เท่านั้น — ห้าม emoji · Google Colors สงวนไว้สำหรับ **status semantic** ไม่ใช้ decorative
 

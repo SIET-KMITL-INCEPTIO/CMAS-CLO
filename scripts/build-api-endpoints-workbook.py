@@ -1016,7 +1016,7 @@ def sheet_readme(wb):
     ws.cell(row=row, column=2, value="ที่มา").font = F_H2
     for text in ["docs/markdown/dev/architecture/api-design.md §3 — contract",
                  "docs/markdown/dev/planning/api-design-plan.md — กฎ ความปลอดภัย endpoint ที่เสนอเพิ่ม ลำดับงาน",
-                 "docs/pages/index-q.html — ตาราง PERM และ capOf (ที่มาของ Capability)"]:
+                 "docs/index-q/index-q.html — ตาราง PERM และ capOf (ที่มาของ Capability)"]:
         row += 1
         ws.cell(row=row, column=2, value=text).font = F_BODY
 

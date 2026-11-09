@@ -11,7 +11,7 @@
   S# ขั้นตอนหลัก · D# ฐานข้อมูล · P# กระบวนการย่อย · F# ทางออกแบบแจ้งข้อผิดพลาด
   K# ทางข้าม · T# ตารางที่คัดลอก · E## edge case
 
-อ้างอิงโค้ด: docs/pages/index-q.html  (modalCopyLevel · copyLevelPlan · copyLevelDo · cloneCourse · STUDY_PLAN)
+อ้างอิงโค้ด: docs/index-q/index-q.html  (modalCopyLevel · copyLevelPlan · copyLevelDo · cloneCourse · STUDY_PLAN)
 ผลลัพธ์:    docs/diagrams/flowchart/CMAS-Flowchart-CopyYearLevel.drawio
 
 รัน:  python scripts/build-copy-year-flowchart-drawio.py
@@ -28,7 +28,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'docs' / 'diagrams' / 'flowchart' / 'CMAS-Flowchart-CopyYearLevel.drawio'
-APP = ROOT / 'docs' / 'pages' / 'index-q.html'
+APP = ROOT / 'docs' / 'index-q' / 'index-q.html'
 
 # ── ต้นแบบต้องมีฟังก์ชันที่ไดอะแกรมอ้างถึงจริง ─────────────────────────
 _app = io.open(APP, encoding='utf-8').read()
@@ -121,7 +121,7 @@ class Page:
 def header(p, title, role, extra):
     p.box('title', title, 40, 20, 1100, 34)
     p.box('meta', '<b>ผู้ใช้งาน:</b> ' + role, 40, 62, 1100, 22)
-    p.box('meta', '<b>อ้างอิงต้นแบบ:</b> docs/pages/index-q.html · ' + extra, 40, 84, 1100, 22)
+    p.box('meta', '<b>อ้างอิงต้นแบบ:</b> docs/index-q/index-q.html · ' + extra, 40, 84, 1100, 22)
 
 
 def legend(p, x, y, items):

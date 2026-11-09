@@ -291,7 +291,7 @@ def build():
 
     # ── the legend, outside the boundary ──────────────────────────────
     doc.box('<b>UML use case · index-q.html</b><br><br>'
-            'สร้างจาก USE_CASES และเมทริกซ์ PERM ใน <i>docs/pages/index-q.html</i> ด้วย '
+            'สร้างจาก USE_CASES และเมทริกซ์ PERM ใน <i>docs/index-q/index-q.html</i> ด้วย '
             '<i>scripts/build-index-q-uml-drawio.py</i> — แก้ที่ไฟล์ต้นทางแล้วสร้างใหม่ '
             'อย่าแก้ที่ภาพนี้<br><br>'
             'สัญกรณ์เดียวกับ <i>docs/diagrams/usecase/UML-Layer2_Handwritten.drawio</i><br><br>'

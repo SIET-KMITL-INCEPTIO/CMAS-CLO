@@ -12,7 +12,7 @@ Features:
 - Relative `.md` links rewritten to `.html`
 - Left sidebar nav grouped by folder (a drawer below 1024px), an "ในหน้านี้"
   outline with scroll-spy, and an `index.html` landing page
-- Styled in Nocturnal Atelier — the same tokens as `docs/pages/index-q.html`,
+- Styled in Nocturnal Atelier — the same tokens as `docs/index-q/index-q.html`,
   kept in sync by `python scripts/check-design-tokens.py`. Light only, like the
   prototype; syntax and mermaid colours use the system palette
 

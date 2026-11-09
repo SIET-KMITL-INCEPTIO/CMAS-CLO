@@ -1,4 +1,4 @@
-# ER & UML ของต้นแบบ `docs/pages/index-q.html`
+# ER & UML ของต้นแบบ `docs/index-q/index-q.html`
 
 See also: [[UML]] · [[srs]] · [[user-flow]] · [[features-pages]] · `database/schema.prisma`
 
@@ -585,4 +585,4 @@ flowchart LR
 
 ---
 
-_เอกสารนี้สกัดจาก `docs/pages/index-q.html` ณ 2026-09-10 — ถ้าต้นแบบเปลี่ยนโครง ให้สกัดใหม่ อย่าแก้ด้วยมือ_
+_เอกสารนี้สกัดจาก `docs/index-q/index-q.html` ณ 2026-09-10 — ถ้าต้นแบบเปลี่ยนโครง ให้สกัดใหม่ อย่าแก้ด้วยมือ_
