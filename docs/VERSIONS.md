@@ -185,6 +185,7 @@ indexes them. Bump the document's header first, then this row.
 | `dev/architecture/api-design.md` | 1.1.0 | 2026-09-26 | SRS 2.4.0 · migration 0001–0007 |
 | `dev/ux/user-flow.md` | 1.1.1 | 2026-10-01 | SRS 2.4.0 |
 | `dev/architecture/design-system.md` | 1.4.0 | — | — |
+| `dev/architecture/design-system-interaction.md` | split from `design-system.md` §12–15 (same 1.4.0 content) | — | — |
 | `dev/thesis/thesis-toc.md` | 1.0.0 (Draft) | 2026-08-06 | — |
 | `dev/requirements/objectives-hypotheses-evaluation.md` | 0.2.0 (Draft) | 2026-08-09 | ⚠ the body says "matches schema v5.1 as of 2026-09-26", but the header version and date were not bumped |
 | `sql/schema.md` | schema **v5.1** | 2026-09-26 | migration 0001–0007 (see §2 for the numbering) |
@@ -201,6 +202,7 @@ Documents not listed have no version header.
    under the plain name and delete the other.
 4. **v4 Excel workbooks** (§3.2). Regenerate them from `index-q.sql`, or label
    them "frozen at 0004" inside the workbook.
+6. **Charter files.** `word/charter1-3.docx`, `charter1-3.revised.docx` and `charter1-3.revised-highlighted.docx` (2 MB each, referenced nowhere). Which one was submitted? Keep that one under a plain name, and delete the other two (the highlighted copy is a review aid for `.revised`).
 5. **Two workbooks listed but not in the repo:** `excel/data-model/CMAS-ER-Diagram.xlsx`
    (`build-er-excel.py`) and `excel/import-test/CMAS-Score-Import-Template.xlsx`
    (`build-score-import-template.py`). Either run the scripts and commit the

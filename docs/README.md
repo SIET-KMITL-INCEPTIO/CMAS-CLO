@@ -74,14 +74,15 @@ python -m http.server 8899 --directory docs/html
 | `npm run plan:csv` | `docs/generated/project-plan.csv` |
 | `npm run thesis:ch2` | `docs/word/CMAS-chapter-2-theory.docx` |
 | `python scripts/build-ui-to-db-workbook.py` | `docs/excel/data-model/CMAS-UI-to-Database.xlsx` |
-| `python scripts/build-er-excel.py` | `docs/excel/data-model/CMAS-ER-Diagram.xlsx` — ⚠ ยังไม่มีไฟล์นี้ใน repo |
-| `python scripts/build-score-import-template.py` | `docs/excel/import-test/CMAS-Score-Import-Template.xlsx` — ⚠ ยังไม่มีไฟล์นี้ใน repo |
+| `python scripts/build-er-excel.py` | `docs/excel/data-model/CMAS-ER-Diagram.xlsx` — ไม่ commit ผลลัพธ์ รันสคริปต์เมื่อต้องการ |
+| `python scripts/build-score-import-template.py` | `docs/excel/import-test/CMAS-Score-Import-Template.xlsx` — ไม่ commit ผลลัพธ์ รันสคริปต์เมื่อต้องการ |
 | `python scripts/build-tqf-presentation-workbook.py` | `docs/excel/data-model/CMAS-TQF-Data-Entry.xlsx` |
 | `python scripts/build-usecase-drawio.py` | `docs/diagrams/usecase/index-q-usecase.drawio` — use case diagram ของ `index-q.html` 6 หน้า สัญกรณ์ UML 2.5 เต็มรูป อ่านสิทธิ์จาก `PERM` ในหน้านั้น |
 | `python scripts/build-index-q-uml-drawio.py` | `docs/diagrams/usecase/UML-INDEX-Q.drawio` — use case ข้อมูลชุดเดียวกัน หน้าเดียว · ⚠ ยังไม่มีไฟล์นี้ใน repo (ไม่ได้ commit ผลลัพธ์) |
 | `python scripts/build-er-index-q-drawio.py` | `docs/diagrams/er/ER-INDEX-Q.drawio` (แก้ไขได้) — **ER diagram ของ `index-q.html`** 18 ตาราง 26 ความสัมพันธ์ แบบ crow's foot · อ่านจาก `docs/reference/db/mysql/index-q.sql` ทุกคอลัมน์ ทุก FK · ทุกเส้นมีเลนของตัวเอง ไม่ทับกัน · ของที่ต้นแบบเสนอเพิ่ม `[index-q]` พื้นเหลือง |
 | `python scripts/build-index-q-workbench.py` | `docs/reference/db/mysql/index-q-v2.mwb` — โมเดล MySQL Workbench จาก `index-q.sql` (ต้องมี Workbench ในเครื่อง) · PDF `index-q_er-diagram.pdf` export ด้วยมือ: File → Export → Export as Single Page PDF |
 | `python scripts/check-diagrams.py` | **ตรวจ** ว่า UML และ ER พร้อมนำเสนอ — เลข use case ตรงกันข้ามไฟล์ · `schema.prisma` ↔ `cmas_app_mysql_v4.sql` ทั้งตารางและคอลัมน์ · ไฟล์ที่สร้างด้วยสคริปต์ยังไม่เก่า · ไฟล์ที่กำกวมบนโต๊ะนำเสนอ · `exit 1` = ยังไม่พร้อม |
+| `python scripts/check-doc-links.py` (`npm run docs:links`) | **ตรวจ** ว่าลิงก์สัมพัทธ์ในไฟล์ `.md` ที่ track ใน git ชี้ไปไฟล์ที่มีอยู่จริง · รันใน CI job `static` ทุก PR · `exit 1` = มีลิงก์เสีย |
 | `node scripts/check-perm-matrix.js` | **ตรวจ** เมทริกซ์ `PERM` ใน `index-q.html` เทียบกับ `can()` จริง — 4 บทบาท × 18 capability ทุกช่อง |
 | `node scripts/check-action-caps.js` | **ตรวจ** ว่าทุก `data-act` map ไปหา capability ที่ถูกต้องผ่าน `capOf()` — SEC-1/SEC-2 |
 | `node scripts/check-auth-events.js` | **ตรวจ** ว่า `FORMS.user.save()` เขียน `AuthEvent` ครบทุกทาง — สร้างบัญชี/เปลี่ยนบทบาท/ระงับผ่านฟอร์มแก้ไข/แก้ชื่อ-อีเมล (UC 1.1/1.2/1.4) · ก่อนแก้ 2569-09-13 ฟังก์ชันนี้ไม่เขียน AuthEvent เลยสักบรรทัด |
