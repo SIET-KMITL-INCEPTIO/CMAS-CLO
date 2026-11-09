@@ -185,7 +185,7 @@ place; most API endpoints and pages are not implemented yet.
 
 ### Two tracks: the app (CMAS) and the prototype (`index-q.html`)
 
-|              | **CMAS** (`app/`, `database/`)                            | **`docs/index-q/index-q.html`**                                                                                                                                                                                                           |
+|              | **CMAS** (`app/`, `database/`)                            | **`docs/index-q/index-q.html`**                                                                                                                                                                                                         |
 | ------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | What         | The real system: React + Fastify + Postgres               | A single-file UI prototype (~9,500 lines, Tailwind CDN + SheetJS, data in an in-page `db` object) — opens from `file://`                                                                                                                |
 | Covers       | Google sign-in, user approval, course list (heading only) | Every course-level flow, permission matrix `PERM`, all formulas (CR-01…CR-11), grading, Excel import/export                                                                                                                             |
