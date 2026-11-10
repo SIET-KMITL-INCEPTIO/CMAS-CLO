@@ -90,7 +90,7 @@ DON'T render ข้อมูลจาก user ใน HTML โดยไม่ผ�
 
 - `CORS_ORIGIN` ต้อง whitelist เฉพาะ domain ของ frontend จริง (dev/preview/prod แยกค่ากัน) — ห้ามตั้ง `*` ใน production
 - ใช้ HTTPS เท่านั้นใน production (Vercel/Railway/Fly.io จัดการให้อัตโนมัติ — ห้าม downgrade เป็น HTTP)
-- Rate limit endpoint ที่ sensitive อย่างน้อย `POST /auth/login` และ `POST /scores/batch` เพื่อกัน brute-force / abuse
+- Rate limit endpoint ที่ sensitive อย่างน้อย `POST /auth/google` · `POST /auth/email-link` · `POST /auth/email-link/verify` และ `POST /scores/batch` เพื่อกัน brute-force / abuse
 
 ---
 

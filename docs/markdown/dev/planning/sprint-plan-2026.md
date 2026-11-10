@@ -105,7 +105,7 @@ See also: [[project-plan]] · [[code-rule]] · [[git-rule]] · [[features-pages]
 
 | # | งาน | Feature | คน | อ้างอิง |
 |---|---|---|---|---|
-| 1.1 | `POST /auth/login` `/auth/refresh` `/auth/logout` — access 15 นาที · refresh 7 วัน · argon2 · `isActive = false` ได้ข้อความเดียวกับรหัสผิด | งานฐาน | ธ | FR-01…03 |
+| 1.1 | `POST /auth/google` `/auth/email-link` `/auth/email-link/verify` `/auth/refresh` `/auth/logout` — access 15 นาที · refresh 7 วัน · `isActive = false` เข้าไม่ได้ (แก้ 2026-11-10: เดิม `/auth/login` + argon2) | งานฐาน | ธ | FR-01…03 |
 | 1.2 | rate-limit 5 ครั้ง / 15 นาที ต่อ IP (`@fastify/rate-limit`) | งานฐาน | ธ | FR-04 |
 | 1.3 | RBAC ระดับระบบ อ่าน role จากแถว `User` สดทุก request | งานฐาน | ธ | NFR-06, NFR-19 |
 | 1.4 | AppShell: แถบบน · sidebar สองระดับ (ระบบ / รายวิชา) ตาม `ROUTES` ของต้นแบบ · ErrorBoundary · Toast | งานฐาน | นู | — |
