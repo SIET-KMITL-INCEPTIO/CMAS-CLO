@@ -51,8 +51,7 @@
 --                          when, from what to what, by which path (typed in the
 --                          grid · pasted · import · fill · closing an activity
 --                          · undo)
---   13 columns
---   User           +3   mustChangePassword · pwResetAt · pwChangedAt (UC 1.5)
+--   10 columns
 --   Course         +1   weightMode — MANUAL (per activity) or GROUP (per type)
 --   Activity       +4   2569-10-19 type / assessmentMethod gain 'OTHER' (none of the above)
 --                       and 'CUSTOM' (option the instructor added) · typeLabel and
@@ -175,13 +174,6 @@ CREATE TABLE `User` (
     status       ENUM('PENDING','ACTIVE') NOT NULL DEFAULT 'ACTIVE'
                               COMMENT 'PENDING = Google นอกโดเมนสถาบัน รอผู้ดูแลอนุมัติ',
 
-    -- [index-q] UC 1.5 รีเซ็ตรหัสผ่าน and the self-service change-password form.
-    -- A reset without this flag cannot force the next login to pick a new
-    -- password, which is the whole point of issuing a temporary one.
-    mustChangePassword TINYINT(1) NOT NULL DEFAULT 0
-                              COMMENT '[index-q] ต้องตั้งรหัสใหม่ก่อนใช้งานต่อ — ตั้งโดยการรีเซ็ต',
-    pwResetAt    DATETIME(3)  NULL    COMMENT '[index-q] ผู้ดูแลรีเซ็ตล่าสุดเมื่อ',
-    pwChangedAt  DATETIME(3)  NULL    COMMENT '[index-q] เจ้าของบัญชีเปลี่ยนรหัสล่าสุดเมื่อ',
     createdAt    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     updatedAt    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
                               ON UPDATE CURRENT_TIMESTAMP(3),

@@ -1123,12 +1123,12 @@ const db = {
      content. These never became Score rows — that is the point.
      field = the column heading as the instructor sees it in the file: รหัสนักศึกษา ·
      ชื่อ-นามสกุล · or the activity's name (same values the importer writes). */
-  /* Prototype-only, like uploadReject: the schema has no AuditLog, and UC 1.6
+  /* Prototype-only, like uploadReject: the schema has no AuditLog, and UC 1.5
      cannot be demonstrated without one. Shape kept deliberately close to the
      table proposed in the ER gap list so adopting it is a migration, not a
      redesign. */
   authEvent: [
-    { id:'ae2', userId:'u6', actorId:'u3', action:'PW_RESET',  detail:'ผู้ใช้แจ้งลืมรหัสผ่าน',        at:'2568-08-12 09:05' },
+    { id:'ae2', userId:'u6', actorId:'u6', action:'LOGIN',     detail:'เข้าสู่ระบบด้วยลิงก์อีเมล',      at:'2568-08-12 09:05' },
     { id:'ae3', userId:'u1', actorId:'u3', action:'ROLE_SET',  detail:'กำหนดบทบาท INSTRUCTOR',      at:'2568-06-01 08:00' }
   ],
 
@@ -4031,15 +4031,13 @@ function viewUsers(){
       '<td class="num tnum">' + uploads + '</td>' +
       '<td><div class="flex gap-1 flex-wrap">' + (isPending(u) && u.isActive ? chip('รออนุมัติ','warn')
         : chip(u.isActive ? 'ใช้งานอยู่' : 'ระงับการใช้งาน', u.isActive ? 'ok' : 'nil')) +
-        /* D6 — self-registered accounts: not yet verified, or signed up through Google */
-        (u.emailVerified === false ? chip('รอยืนยันอีเมล','warn') : '') +
+        /* บัญชีที่เข้าด้วย Google ติดป้าย · ที่เหลือเข้าด้วยลิงก์อีเมล */
         (u.authProvider === 'GOOGLE' ? pill('Google') : '') + '</div></td>' +
       '<td class="no-print"><div class="flex gap-1 justify-end flex-wrap">' +
         (isPending(u) && u.isActive ? btn('อนุมัติ','primary','data-act="approve-user" data-id="' + u.id + '"') : '') +
         btn('ตรวจสอบ','quiet','data-act="user-detail" data-id="' + u.id + '"') +
-        /* รออนุมัติ: เหลือ อนุมัติ · ตรวจสอบ · ลบบัญชี (= ปฏิเสธ) — บัญชี Google ไม่มีรหัสผ่านให้รีเซ็ต */
-        (isPending(u) ? '' : btn('แก้ไข','quiet','data-act="crud-edit" data-kind="user" data-id="' + u.id + '"') +
-          btn('รีเซ็ตรหัสผ่าน','quiet','data-act="pw-reset" data-id="' + u.id + '"')) +
+        /* รออนุมัติ: เหลือ อนุมัติ · ตรวจสอบ · ลบบัญชี (= ปฏิเสธ) */
+        (isPending(u) ? '' : btn('แก้ไข','quiet','data-act="crud-edit" data-kind="user" data-id="' + u.id + '"')) +
         ((locked || u.role === 'ADMIN')
           ? btn(u.isActive ? 'ระงับการใช้งาน' : 'เปิดใช้งาน','quiet','data-act="toggle-user" data-id="' + u.id + '"')
           : '<button data-act="crud-delete" data-kind="user" data-id="' + u.id +
@@ -4069,8 +4067,7 @@ const USE_CASES = [
   ['1','จัดการผู้ใช้งาน','1.2','แก้ไขบัญชีผู้ใช้','ADMIN','users'],
   ['1','จัดการผู้ใช้งาน','1.3','ระงับการใช้งานบัญชี','ADMIN','users'],
   ['1','จัดการผู้ใช้งาน','1.4','กำหนดบทบาทและสิทธิ์','ADMIN','users'],
-  ['1','จัดการผู้ใช้งาน','1.5','รีเซ็ตรหัสผ่าน','ADMIN','users'],
-  ['1','จัดการผู้ใช้งาน','1.6','ตรวจสอบประวัติการใช้งาน','ADMIN','users'],
+  ['1','จัดการผู้ใช้งาน','1.5','ตรวจสอบประวัติการใช้งาน','ADMIN','users'],
   ['2','จัดการรายวิชา','2.1','สร้างรายวิชา','ADMIN','courses'],
   ['2','จัดการรายวิชา','2.2','แก้ไขข้อมูลรายวิชา','INSTRUCTOR','courses'],
   ['2','จัดการรายวิชา','2.3','ลบรายวิชา','ADMIN','courses'],
@@ -4206,7 +4203,7 @@ const GAPS = [
    'เพิ่มคอลัมน์ enrolmentStatus บน Student — เป็นการแก้แบบเพิ่มเติม ไม่กระทบคีย์เดิม'],
   ['การสืบสาวเกรดอิงกลุ่ม','GradeRun ถูกตัดออกใน v4 ทำให้ mean/SD ไม่ถูกเก็บ เกรดที่ตัดแบบอิงกลุ่มจึงอธิบายย้อนหลังจากฐานข้อมูลอย่างเดียวไม่ได้',
    'เพิ่มตารางเดียวที่เก็บ courseId + n + mean + sd + computedAt แล้วให้ StudentGrade ชี้มา — ห้ามเอา GradeScheme กลับมาด้วย'],
-  ['ตรวจสอบประวัติการใช้งาน (UC 1.6)','หน้าจอรองรับแล้ว (กดชื่อผู้ใช้ในหน้าจัดการผู้ใช้งาน) แต่ ER ยังไม่มีตารางรองรับ — ต้นแบบเก็บไว้ใน AuthEvent ซึ่งไม่มีอยู่ในสคีมา',
+  ['ตรวจสอบประวัติการใช้งาน (UC 1.5)','หน้าจอรองรับแล้ว (กดชื่อผู้ใช้ในหน้าจัดการผู้ใช้งาน) แต่ ER ยังไม่มีตารางรองรับ — ต้นแบบเก็บไว้ใน AuthEvent ซึ่งไม่มีอยู่ในสคีมา',
    'เพิ่มตาราง AuthEvent/AuditLog (userId, actorId, action, detail, at) — ไม่มีอะไรในระบบปัจจุบันอ้างอิงถึง จึงเพิ่มได้โดยไม่กระทบของเดิม'],
   ['รวมคะแนนข้าม Sec','ตัดออกโดยเจตนาตามมติ 2.7 — CLO และ Activity ผูกกับ courseId การรองรับต้องเพิ่มชั้น CourseOffering เหนือ Course',
    'ไม่ใช่ข้อบกพร่อง เป็นขอบเขตที่ตัดสินใจไว้แล้ว · ห้ามทำครึ่ง ๆ กลาง ๆ'],
@@ -4300,7 +4297,7 @@ function viewCoverage(){
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   4b · บัญชีของฉัน — ผู้สอนแก้ชื่อ อีเมล และรหัสผ่านของตัวเองได้
+   4b · บัญชีของฉัน — ผู้สอนแก้ชื่อและอีเมลของตัวเองได้
    ══════════════════════════════════════════════════════════════════ */
 function acctMenu(force){
   const el = document.getElementById('acctMenu');
@@ -4316,10 +4313,8 @@ function acctMenu(force){
     '<div class="px-3 pt-2.5 pb-3 hair-b mb-1.5">' +
       '<div class="text-[14px]">' + esc(u.name) + '</div>' +
       '<div class="tnum text-[13px] text-dim">' + esc(u.email) + '</div>' +
-      '<div class="mt-2 flex gap-2 flex-wrap">' + pill(u.role) +
-        (u.mustChangePassword ? chip('ต้องตั้งรหัสผ่านใหม่','warn') : '') + '</div></div>' +
+      '<div class="mt-2 flex gap-2 flex-wrap">' + pill(u.role) + '</div></div>' +
     '<button class="acctitem" data-act="profile">' + icon('user','w-4 h-4') + 'แก้ไขบัญชีของฉัน</button>' +
-    '<button class="acctitem" data-act="pw-change">' + icon('lock','w-4 h-4') + 'เปลี่ยนรหัสผ่าน</button>' +
     /* Prototype-only. Real systems get this from the session; here it is the
        only way to show that two instructors see two different course lists. */
     '<div class="hair-t mt-1.5 pt-1.5">' +
@@ -4374,7 +4369,6 @@ function modalProfile(){
       'บทบาทและสถานะบัญชีแก้ได้โดยผู้ดูแลระบบเท่านั้น · ' +
       'อีเมลใช้เป็นชื่อผู้ใช้ จึงซ้ำกับบัญชีอื่นไม่ได้</div>',
     btn('ยกเลิก','','data-act="close"') +
-      btn('เปลี่ยนรหัสผ่าน','','data-act="pw-change"') +
       btn('บันทึก','primary','data-act="profile-save"')));
 }
 
@@ -4396,62 +4390,14 @@ function saveProfile(){
   toast(changed.length ? 'บันทึก' + changed.join('และ') + 'แล้ว' : 'ไม่มีอะไรเปลี่ยน');
 }
 
-/* No password is stored and none is checked — there is no passwordHash in this
-   prototype. What this form does carry is the rule set, because the rules are
-   the part that has to be agreed before anyone builds the real thing. */
-function modalPwChange(){
-  const u = me();
-  openModal(modalFrame('เปลี่ยนรหัสผ่าน',
-    (u.mustChangePassword
-      ? '<div class="px-4 py-3 rounded-lg mb-4 text-[14px]" style="background:' + PAL.noteBg + ';color:' + PAL.noteTx + '">' +
-        'บัญชีนี้ถูกรีเซ็ตรหัสผ่านโดยผู้ดูแลระบบ ต้องตั้งรหัสใหม่ก่อนใช้งานต่อ</div>' : '') +
-    '<div class="space-y-4">' +
-      '<div><label class="text-[14px] text-ink2 block mb-1.5">รหัสผ่านปัจจุบัน</label>' +
-        '<input class="inp" id="pw-old" type="password" autocomplete="current-password"></div>' +
-      '<div><label class="text-[14px] text-ink2 block mb-1.5">รหัสผ่านใหม่</label>' +
-        '<input class="inp" id="pw-new" type="password" autocomplete="new-password"></div>' +
-      '<div><label class="text-[14px] text-ink2 block mb-1.5">ยืนยันรหัสผ่านใหม่</label>' +
-        '<input class="inp" id="pw-new2" type="password" autocomplete="new-password"></div>' +
-    '</div>' +
-    '<ul class="mt-4 space-y-1.5 text-[14px] text-ink2">' +
-      '<li>· อย่างน้อย 8 ตัวอักษร</li>' +
-      '<li>· มีทั้งตัวอักษรและตัวเลข</li>' +
-      '<li>· ต้องไม่ซ้ำกับรหัสผ่านปัจจุบัน</li>' +
-    '</ul>' +
-    '<div class="mt-4 px-4 py-3 rounded-lg text-[14px]" style="background:' + TONE.bad.bg + ';color:' + TONE.bad.tx + '">' +
-      'ต้นแบบนี้ไม่มีระบบยืนยันตัวตนและไม่เก็บรหัสผ่าน — ฟอร์มนี้ตรวจกติกาแล้วทิ้งค่าที่พิมพ์ทันที ' +
-      'ไม่มีการบันทึกรหัสใด ๆ</div>',
-    btn('ยกเลิก','','data-act="close"') +
-      btn('เปลี่ยนรหัสผ่าน','primary','data-act="pw-change-save"')));
-}
-
-function savePwChange(){
-  const u = me();
-  const old  = document.getElementById('pw-old').value;
-  const nw   = document.getElementById('pw-new').value;
-  const nw2  = document.getElementById('pw-new2').value;
-  if (!old)                    { toast('กรอกรหัสผ่านปัจจุบันก่อน','bad'); return; }
-  if (nw.length < 8)           { toast('รหัสผ่านใหม่ต้องยาวอย่างน้อย 8 ตัวอักษร','bad'); return; }
-  if (!/[A-Za-z]/.test(nw) || !/[0-9]/.test(nw)) { toast('รหัสผ่านใหม่ต้องมีทั้งตัวอักษรและตัวเลข','bad'); return; }
-  if (nw === old)              { toast('รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านปัจจุบัน','bad'); return; }
-  if (nw !== nw2)              { toast('ยืนยันรหัสผ่านไม่ตรงกัน','bad'); return; }
-  /* Nothing about the typed value survives this line. */
-  u.mustChangePassword = false;
-  u.pwChangedAt = '2568-09-07 09:00';
-  authLog(u.id, 'PW_CHANGE', 'เจ้าของบัญชีเปลี่ยนรหัสผ่านด้วยตนเอง');
-  closeOverlays(); invalidate(); render();
-  toast('เปลี่ยนรหัสผ่านแล้ว — ครั้งถัดไปเข้าสู่ระบบด้วยรหัสใหม่');
-}
-
 /* ══════════════════════════════════════════════════════════════════
-   5a · DRAWER — ตรวจสอบบัญชีผู้ใช้ (UC 1.6)
+   5a · DRAWER — ตรวจสอบบัญชีผู้ใช้ (UC 1.5)
    Everything here is a join the admin would otherwise have to do by eye
    across three screens: which courses, which uploads, what blocks deletion.
    ══════════════════════════════════════════════════════════════════ */
 const AUTH_ACTION_TH = { SUSPEND:'ระงับการใช้งาน', ACTIVATE:'เปิดใช้งาน',
-  LOGIN:'เข้าสู่ระบบด้วยอีเมล', LOGIN_GOOGLE:'เข้าสู่ระบบด้วย Google', LOGOUT:'ออกจากระบบ',
-  REGISTER:'ลงทะเบียน', VERIFY:'ยืนยันอีเมล',
-  PW_RESET:'รีเซ็ตรหัสผ่าน', PW_CHANGE:'เปลี่ยนรหัสผ่านเอง', ROLE_SET:'กำหนดบทบาท',
+  LOGIN:'เข้าสู่ระบบด้วยลิงก์อีเมล', LOGIN_GOOGLE:'เข้าสู่ระบบด้วย Google', LOGOUT:'ออกจากระบบ',
+  REGISTER:'ลงทะเบียน', ROLE_SET:'กำหนดบทบาท',
   CREATE:'สร้างบัญชี', EDIT:'แก้ไขบัญชี', APPROVE:'อนุมัติบัญชี' };
 
 function authLog(userId, action, detail){
@@ -4518,7 +4464,7 @@ function userDrawer(uid){
         (u.role === 'ADMIN' ? chip('ลบไม่ได้ · บัญชีผู้ดูแลระบบ','nil')
           : locked ? chip('ลบไม่ได้ · onDelete: Restrict','nil') : chip('ยังลบได้','nil')) +
         (lastAdmin(u) ? chip('ผู้ดูแลคนสุดท้าย · ระงับไม่ได้','warn') : '') +
-        (u.mustChangePassword ? chip('รอตั้งรหัสผ่านใหม่','warn') : '') + '</div>' +
+        '</div>' +
     '</div>' +
 
     '<div class="scroll-y px-7 py-5 space-y-5" style="max-height:calc(100vh - 236px)">' +
@@ -4538,7 +4484,7 @@ function userDrawer(uid){
       '<div class="card overflow-hidden">' + band('เหตุการณ์กับบัญชีนี้',
         '<span>AuthEvent · ยังไม่มีในสคีมา</span>') + eventRows +
         '<div class="px-5 py-3 hair-t text-[13px] text-warn">' +
-        'UC 1.6 ต้องการตารางบันทึกเหตุการณ์ ซึ่ง ER ปัจจุบันยังไม่มี — ต้นแบบนี้จำลองไว้เป็น AuthEvent ' +
+        'UC 1.5 ต้องการตารางบันทึกเหตุการณ์ ซึ่ง ER ปัจจุบันยังไม่มี — ต้นแบบนี้จำลองไว้เป็น AuthEvent ' +
         'เพื่อพิสูจน์ว่าหน้าจอรองรับได้ ถ้าตารางถูกเพิ่ม</div></div>' +
 
       (u.role === 'ADMIN'
@@ -4555,54 +4501,9 @@ function userDrawer(uid){
 
     '<div class="px-7 py-4 hair-t flex gap-2.5 flex-wrap">' +
       btn('แก้ไขบัญชี','','data-act="crud-edit" data-kind="user" data-id="' + u.id + '"') +
-      btn('รีเซ็ตรหัสผ่าน','','data-act="pw-reset" data-id="' + u.id + '"') +
       btn(u.isActive ? 'ระงับการใช้งาน' : 'เปิดใช้งาน', u.isActive ? '' : 'primary',
           'data-act="toggle-user" data-id="' + u.id + '"' + (u.isActive ? ' class="btn btn-danger"' : '')) +
     '</div>');
-}
-
-/* รีเซ็ตรหัสผ่าน — two screens: what will happen, then what happened. The
-   temporary string is generated in the browser and shown once; there is no
-   passwordHash in this prototype and none is written. */
-function modalPwReset(uid, done){
-  const u = byId(db.user, uid);
-  if (!u) return;
-
-  if (!done) {
-    openModal(modalFrame('รีเซ็ตรหัสผ่าน',
-      '<div class="text-[15px] leading-relaxed">ตั้งรหัสผ่านชั่วคราวให้ <b>' + esc(u.name) + '</b> ' +
-        '<span class="tnum text-dim">(' + esc(u.email) + ')</span></div>' +
-      '<ul class="mt-4 space-y-2 text-[14px] text-ink2">' +
-        '<li>· รหัสเดิมใช้ไม่ได้ทันที</li>' +
-        '<li>· ระบบส่งรหัสชั่วคราวไปยังอีเมลข้างต้น</li>' +
-        '<li>· ผู้ใช้ต้องตั้งรหัสใหม่เมื่อเข้าสู่ระบบครั้งถัดไป</li>' +
-        '<li>· เหตุการณ์นี้ถูกบันทึกไว้ในประวัติของบัญชี</li>' +
-      '</ul>' +
-      '<div class="mt-5 px-4 py-3 rounded-lg text-[14px]" style="background:' + TONE.bad.bg + ';color:' + TONE.bad.tx + '">' +
-        'ต้นแบบนี้ไม่มีระบบยืนยันตัวตนจริงและไม่เก็บรหัสผ่าน — ปุ่มนี้จำลองขั้นตอนเพื่อพิสูจน์ ' +
-        'UC 1.5 เท่านั้น ไม่มีการตั้งรหัสจริงให้บัญชีใด</div>',
-      btn('ยกเลิก','','data-act="close"') +
-        btn('ยืนยันรีเซ็ต','primary','data-act="pw-reset-do" data-id="' + u.id + '"')));
-    return;
-  }
-
-  /* Deliberately not a strong secret: it must be readable aloud and it is a
-     mockup value that authenticates nothing. */
-  const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let tmp = '';
-  for (let i = 0; i < 8; i++) tmp += abc[Math.floor(Math.random() * abc.length)];
-
-  openModal(modalFrame('รีเซ็ตรหัสผ่านแล้ว',
-    '<div class="text-[15px]">ส่งรหัสชั่วคราวไปที่ <b class="tnum">' + esc(u.email) + '</b> แล้ว</div>' +
-    '<div class="mt-4 px-5 py-5 rounded-lg text-center" style="background:var(--wash);border:1px dashed var(--edge)">' +
-      '<div class="over mb-2">รหัสชั่วคราว (จำลอง)</div>' +
-      '<div class="tnum text-[28px] font-light tracking-[.22em]">' + tmp + '</div>' +
-      '<div class="text-[13px] text-dim mt-3">แสดงครั้งเดียว · หมดอายุใน 24 ชั่วโมง</div></div>' +
-    '<div class="mt-5 px-4 py-3 rounded-lg text-[14px] text-ink2" style="background:' + TONE.info.bg + '">' +
-      'บัญชีถูกทำเครื่องหมายว่า “รอตั้งรหัสผ่านใหม่” และเขียนเหตุการณ์ลง AuthEvent เรียบร้อย ' +
-      'ดูได้ที่หน้าตรวจสอบบัญชี</div>',
-    btn('เสร็จสิ้น','primary','data-act="close"') +
-      btn('ดูบัญชีนี้','','data-act="user-detail" data-id="' + u.id + '"')));
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -5898,7 +5799,7 @@ const FORMS = {
       const t = r || { id:'u_' + Date.now() };
       const isNew = !r;
       if (isNew) db.user.push(t);
-      /* UC 1.6 ตรวจสอบประวัติการใช้งาน อ่านจาก db.authEvent ต่อบัญชี — จุดนี้เป็น
+      /* UC 1.5 ตรวจสอบประวัติการใช้งาน อ่านจาก db.authEvent ต่อบัญชี — จุดนี้เป็น
          ฟังก์ชันเดียวที่อยู่เบื้องหลัง UC 1.1/1.2/1.4 (เพิ่ม/แก้ไข/กำหนดบทบาท) และ
          เดิมไม่เขียน AuthEvent เลยสักบรรทัด · roleChanged กับ activeChanged แยก
          เป็นคนละ action จาก EDIT เพราะเป็นการเปลี่ยนสิทธิ์ ไม่ใช่แก้ข้อมูลทั่วไป —
@@ -8423,12 +8324,12 @@ function deny(cap, courseId){
    ซึ่งเป็นสิทธิ์สูงสุดที่ไม่ใช่ ADMIN — นั่นคือ SEC-2 ในรูปของโค้ด */
 const READ_ACTS = ['acct','area','be','clear-filter','roster-page','close','copy-link','density','longtext','scale','layout-reset','layout','goto','help',
   'open-section','pal-go','pane-close','pane-toggle','pick-course','profile','profile-save',
-  'pw-change','pw-change-save','role','shortcuts','step','student','subnav',
+  'role','shortcuts','step','student','subnav',
   'toggle-team','user-detail','err-report','errreport','need-bloom','course-group','course-view',
   'import-next','import-prev','import-back','import-pick','close-all','clo-help','menu','drawer-back',
   /* D6/D7 · หน้าเข้าสู่ระบบ — ยังไม่มีบัญชีให้ตรวจสิทธิ์ ออกจากระบบทำได้ทุกคน */
-  'auth-go','auth-google','auth-pick','auth-google-other','auth-google-create','auth-login',
-  'auth-register','auth-verify','auth-resend','auth-forgot','auth-logout'];
+  'auth-go','auth-google','auth-pick','auth-google-other','auth-google-create','auth-send-link',
+  'auth-open-link','auth-resend','auth-logout'];
 
 const KIND_CAP = { clo:'clo.write', objective:'clo.write', activity:'activity.write',
                    student:'student.write', band:'band.write', user:'user.manage' };
@@ -8484,7 +8385,7 @@ function capOf(act, el){
     case 'staff-add': case 'staff-del': case 'staff-pick': return 'staff.write';
     case 'add-course': case 'dup-course': case 'copy-level': case 'copy-level-do': return 'course.create';
     case 'weight-mode':                 return 'activity.write';
-    case 'toggle-user': case 'approve-user': case 'pw-reset': case 'pw-reset-do': return 'user.manage';
+    case 'toggle-user': case 'approve-user': return 'user.manage';
     default:                            return 'course.settings';   // SEC-2
   }
 }
@@ -8522,19 +8423,20 @@ function applyPermissions(root){
      · Google  verify the ID token server-side: aud = our client id,
                iss = accounts.google.com, hd = kmitl.ac.th, email_verified —
                and key the account on the token's `sub`, not on the email.
-     · Email   argon2id (FR-02) · verification token = 32 random bytes,
-               stored hashed, single use, 24 h expiry · resend rate-limited.
-     · Every failure a stranger can trigger reads the same (FR-03), so the
-       forms never tell anyone which addresses have accounts.
+     · Email   no password anywhere. One-time sign-in link: token = 32 random
+               bytes, stored hashed, single use, 24 h expiry · resend rate-limited.
+               Opening the link proves the mailbox, so it signs in (and creates the
+               account the first time) under the same FR-08 rule as Google.
+     · Every request a stranger can trigger reads the same (FR-07), so the
+       form never tells anyone which addresses have accounts.
    ══════════════════════════════════════════════════════════════════ */
 /* N3 (2569-09-23) — refactor เป็นคลาส แบ่งตามชั้นเดียวกับ server (code-rule §3)
      EmailPolicy     กฎของอีเมล: รูปแบบ + โดเมนคณะ — ที่เดียวในไฟล์ที่รู้ชื่อโดเมน
-     PasswordPolicy  กฎรหัสผ่าน D7 + มิเตอร์ความแข็งแรง
      SessionStore    sessionStorage พร้อมค่าสำรองในหน่วยความจำ (private window / storage ถูกปิด)
      AccountService  งานกับบัญชีใน db: หา สร้าง ยืนยัน จำกัดความถี่ บันทึก AuthEvent
                      ไม่แตะ DOM — คืนผลเป็น object { error } หรือ { user, ... }
      AuthScreen      state ของหน้าจอ + วาด + ตัวจัดการปุ่ม: เรียก service แล้วแปลงผลเป็นหน้าจอ
-   EmailPolicy / PasswordPolicy / AccountService คือสิ่งที่จะย้ายไปเป็น auth.validator.ts
+   EmailPolicy / AccountService คือสิ่งที่จะย้ายไปเป็น auth.validator.ts
    และ auth.service.ts ตอนเขียน server จริง จึงแยกออกจากส่วนที่วาดหน้าจอ */
 
 /* D6 — ลงทะเบียนและเข้าด้วย Google ได้เฉพาะโดเมนคณะ · เทียบแบบตรงตัว:
@@ -8553,37 +8455,6 @@ class EmailPolicy {
   }
 }
 
-/* D7 — NIST 800-63B shape: length and a breached/common-password check, no
-   forced symbols and no rotation. The server checks the full breached list
-   (k-anonymity range query); this short list only makes the rule visible. */
-class PasswordPolicy {
-  constructor(common){ this.common = common; }
-  rules(pw, email){
-    const local = (email || '').split('@')[0].toLowerCase();
-    const low = (pw || '').toLowerCase();
-    return [
-      ['ยาวอย่างน้อย 12 ตัวอักษร', (pw || '').length >= 12],
-      ['ไม่ใช่รหัสผ่านที่พบบ่อยหรือตัวอักษรซ้ำกันทั้งหมด', !!pw && this.common.indexOf(low) < 0 && !/^(.)\1+$/.test(pw)],
-      ['ไม่มีชื่อผู้ใช้จากอีเมลอยู่ในรหัสผ่าน', local.length < 3 || low.indexOf(local) < 0]
-    ];
-  }
-  accepts(pw, email){ return this.rules(pw, email).every(function(r){ return r[1]; }); }
-  meterHtml(pw, email){
-    const rules = this.rules(pw, email);
-    const ok = rules.filter(function(r){ return r[1]; }).length;
-    const score = pw ? Math.min(4, ok + ((pw || '').length >= 16 ? 1 : 0)) : 0;
-    const lbl = ['—','อ่อนมาก','อ่อน','พอใช้','แข็งแรง'][score];
-    const col = [PAL.edge,TONE.bad.tx,TONE.warn.tx,TONE.info.tx,TONE.ok.tx][score];
-    return '<div class="flex gap-1 mt-2" aria-hidden="true">' + [1,2,3,4].map(function(i){
-        return '<span class="h-1 flex-1 rounded-full" style="background:' + (i <= score ? col : PAL.edge) + '"></span>'; }).join('') + '</div>' +
-      '<div class="flex justify-between text-[12.5px] mt-1"><span class="text-dim">ความแข็งแรง</span>' +
-        '<span style="color:' + (score ? col : 'var(--dim)') + '">' + lbl + '</span></div>' +
-      '<ul class="mt-1.5 space-y-0.5">' + rules.map(function(r){
-        return '<li class="text-[13px] ' + (r[1] ? 'text-ok' : 'text-dim') + '">' + (r[1] ? '✓ ' : '○ ') + r[0] + '</li>'; }).join('') +
-      '</ul>';
-  }
-}
-
 class SessionStore {
   constructor(key){ this.key = key; this.mem = null; }
   get(){
@@ -8597,12 +8468,10 @@ class SessionStore {
 }
 
 /* ทุกเมธอดคืน { error } เมื่อไม่ผ่าน · ข้อความ error คือสิ่งที่ผู้ใช้เห็นตรง ๆ
-   กติกา FR-03 (ความล้มเหลวที่คนแปลกหน้ากระตุ้นได้ต้องอ่านเหมือนกันหมด) จึงอยู่ในชั้นนี้ ไม่ใช่ที่หน้าจอ */
+   FR-07 (ที่ถามได้ว่า "อีเมลนี้มีบัญชีไหม" ต้องตอบเหมือนกันหมด) จึงอยู่ในชั้นนี้ ไม่ใช่ที่หน้าจอ */
 class AccountService {
-  constructor(emails, passwords, demoPw){
-    this.emails = emails; this.passwords = passwords;
-    this.demoPw = demoPw;   /* prototype only — seeded accounts carry no real password */
-    this.fails = [];
+  constructor(emails){
+    this.emails = emails;
   }
   find(email){
     const e = this.emails.normalize(email);
@@ -8612,45 +8481,32 @@ class AccountService {
     db.authEvent.unshift({ id:'ae' + Date.now() + Math.random().toString(36).slice(2, 6), userId:uid, actorId:uid,
       action:action, detail:detail, at:'2568-09-07 09:00' });
   }
-  /* FR-04 — five failures in 15 minutes. Counted per browser here; the server
-     counts per IP and per account. */
-  throttled(){
-    this.fails = this.fails.filter(function(t){ return Date.now() - t < 15 * 60000; });
-    return this.fails.length >= 5;
+  /* ขอลิงก์ — ผลเหมือนกันไม่ว่าอีเมลนี้มีบัญชีอยู่แล้วหรือไม่ และไม่ว่าโดเมนใด
+     (โดเมนอื่นก็ขอได้ แต่หลังเปิดลิงก์จะรออนุมัติ ตาม FR-08) */
+  requestLink(email){
+    const e = this.emails.normalize(email);
+    if (!this.emails.isWellFormed(e)) return { error:'กรอกอีเมลให้ถูกต้อง' };
+    return { email:e };
   }
-  login(email, pw){
-    if (this.throttled()) return { error:'ลองเข้าสู่ระบบบ่อยเกินไป — รอ 15 นาทีแล้วลองใหม่' };
-    const u = this.find(email);
-    const pwOk = !!u && u.authProvider !== 'GOOGLE' && pw === (u._demoPw || this.demoPw);
-    /* FR-03 — unknown address, wrong password and a suspended account read the same. */
-    if (!pwOk || u.isActive === false) { this.fails.push(Date.now()); return { error:'อีเมลหรือรหัสผ่านไม่ถูกต้อง' }; }
-    /* Only reachable with the right password, so it tells nothing to a stranger. */
-    if (u.emailVerified === false) return { user:u, unverified:true };
-    return { user:u };
-  }
-  register(name, email, pw, pw2){
-    if (!name) return { error:'กรอกชื่อ-สกุลก่อน' };
-    const bad = this.emails.check(email);
-    if (bad) return { error:bad };
-    if (!this.passwords.accepts(pw, email)) return { error:'รหัสผ่านยังไม่ผ่านเงื่อนไขใต้ช่องรหัสผ่าน' };
-    if (pw !== pw2) return { error:'รหัสผ่านสองช่องไม่ตรงกัน' };
-    /* ผลลัพธ์หน้าตาเหมือนกันไม่ว่าอีเมลนี้มีบัญชีอยู่แล้วหรือไม่ (pendingId เป็น null เฉย ๆ)
-       มิฉะนั้นฟอร์มนี้จะตอบคำถาม "X มีบัญชีไหม" · server จริงส่งอีเมลแจ้งเจ้าของเดิมแทนลิงก์ */
-    if (this.find(email)) return { pendingId:null };
-    const u = { id:'u_' + Date.now(), email:this.emails.normalize(email), name:name, role:'INSTRUCTOR', isActive:true,
-                emailVerified:false, authProvider:'EMAIL',
-                _demoPw:pw };   /* prototype only — the server keeps an argon2id hash (FR-02), never this */
-    db.user.push(u);
-    this.log(u.id, 'REGISTER', 'ลงทะเบียนด้วยอีเมล · รอยืนยันอีเมล');
-    return { pendingId:u.id };
-  }
-  /* Single use: the same link opened twice must not verify twice. */
-  verify(uid){
-    const u = uid ? byId(db.user, uid) : null;
-    if (!u || u.emailVerified !== false) return { error:'ลิงก์นี้ใช้ไปแล้วหรือหมดอายุ — เข้าสู่ระบบเพื่อขอลิงก์ใหม่' };
-    u.emailVerified = true;
-    this.log(u.id, 'VERIFY', 'ยืนยันอีเมลแล้ว');
-    return { user:u };
+  /* เปิดลิงก์ — ใช้ได้ครั้งเดียว · กฎเดียวกับ Google (FR-08):
+     โดเมนคณะ → ACTIVE เข้าได้ทันที · โดเมนอื่น → PENDING รอผู้ดูแลระบบอนุมัติ
+     ยังไม่มีบัญชี → สร้างให้ (เปิดลิงก์ได้แปลว่าเป็นเจ้าของอีเมล) ชื่อใช้ส่วนหน้าของอีเมล แก้ได้ที่ UC 9.1 */
+  openLink(email){
+    const e = this.emails.normalize(email);
+    if (!this.emails.isWellFormed(e)) return { error:'ลิงก์นี้ใช้ไปแล้วหรือหมดอายุ — ขอลิงก์ใหม่' };
+    const u = this.find(e);
+    if (u) {
+      if (u.isActive === false) return { error:'บัญชีนี้ถูกระงับการใช้งาน — ติดต่อผู้ดูแลระบบ' };
+      if (isPending(u)) return { pending:true, email:e };
+      return { user:u };
+    }
+    const fresh = { id:'u_' + Date.now(), email:e, name:e.split('@')[0], role:'INSTRUCTOR', isActive:true,
+                    emailVerified:true, authProvider:'EMAIL_LINK' };
+    if (!this.emails.isAllowed(e)) fresh.status = 'PENDING';
+    db.user.push(fresh);
+    this.log(fresh.id, 'REGISTER', fresh.status === 'PENDING'
+      ? 'ลงทะเบียนด้วยลิงก์อีเมลนอกโดเมนคณะ · รอผู้ดูแลระบบอนุมัติ' : 'ลงทะเบียนด้วยลิงก์อีเมล');
+    return fresh.status === 'PENDING' ? { pending:true, email:e } : { user:fresh };
   }
   /* hd — checked on the verified token server-side, never on what the browser claims */
   google(email){
@@ -8697,7 +8553,7 @@ class AuthScreen {
   constructor(accounts, session){
     this.accounts = accounts; this.session = session;
     this.view = 'login'; this.err = ''; this.email = '';
-    this.pendingId = null; this.resendAt = 0; this.gEmail = ''; this.timer = null;
+    this.linkEmail = ''; this.resendAt = 0; this.gEmail = ''; this.via = 'google'; this.timer = null;
   }
   static value(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
   static raw(id){ return (document.getElementById(id) || {}).value || ''; }
@@ -8751,32 +8607,17 @@ class AuthScreen {
     const or = '<div class="flex items-center gap-3 text-[13px] text-faint"><span class="flex-1 h-px bg-edge"></span>' +
       'หรือใช้อีเมลของคณะ<span class="flex-1 h-px bg-edge"></span></div>';
 
-    if (this.view === 'register') return head('ลงทะเบียนผู้สอน',
-        'ใช้อีเมลของคณะ (@' + emails.domain + ') · บัญชีใหม่มีบทบาทผู้สอน สร้างรายวิชาเองได้ หรือรอผู้ดูแลระบบมอบหมาย') +
-      google + or + err +
-      field('au-name', 'ชื่อ-สกุล', 'text', '', ' autocomplete="name"') +
-      field('au-email', 'อีเมล', 'email', this.email, ' autocomplete="email" placeholder="' + emails.placeholder() + '"') +
-      '<div>' + field('au-pw', 'รหัสผ่าน', 'password', '', ' autocomplete="new-password"') +
-        '<div id="au-meter">' + this.accounts.passwords.meterHtml('', this.email) + '</div></div>' +
-      field('au-pw2', 'ยืนยันรหัสผ่าน', 'password', '', ' autocomplete="new-password"') +
-      primary('ลงทะเบียน', 'auth-register') +
-      '<div class="text-center text-[14px] text-dim">มีบัญชีแล้ว? ' + link('เข้าสู่ระบบ', 'login') + '</div>';
-
     if (this.view === 'sent') {
       const wait = Math.max(0, Math.ceil((this.resendAt - Date.now()) / 1000));
       return head('ตรวจสอบอีเมลของคุณ',
-          'ถ้า <b>' + esc(this.email) + '</b> ลงทะเบียนได้ ระบบส่งลิงก์ยืนยันไปแล้ว · ลิงก์ใช้ได้ครั้งเดียวและหมดอายุใน 24 ชั่วโมง') +
+          'ถ้า <b>' + esc(this.linkEmail) + '</b> ลงทะเบียนได้ ระบบส่งลิงก์เข้าสู่ระบบไปแล้ว · ลิงก์ใช้ได้ครั้งเดียวและหมดอายุใน 24 ชั่วโมง') +
         err +
         '<button class="btn w-full justify-center" data-act="auth-resend"' + (wait ? ' disabled' : '') + '>' +
           (wait ? 'ส่งลิงก์อีกครั้งได้ในอีก ' + wait + ' วินาที' : 'ส่งลิงก์อีกครั้ง') + '</button>' +
-        (this.pendingId ? '<div class="authdemo"><div class="over mb-1">ต้นแบบ · จำลองกล่องจดหมาย</div>' +
-          'จาก CMAS — “ยืนยันอีเมลเพื่อเริ่มใช้งาน” <button class="authlink" data-act="auth-verify">เปิดลิงก์ยืนยัน</button></div>' : '') +
-        '<div class="text-center text-[14px] text-dim">' + link('กลับไปหน้าเข้าสู่ระบบ', 'login') + '</div>';
+        '<div class="authdemo"><div class="over mb-1">ต้นแบบ · จำลองกล่องจดหมาย</div>' +
+          'จาก CMAS — “ลิงก์เข้าสู่ระบบ” <button class="authlink" data-act="auth-open-link">เปิดลิงก์</button></div>' +
+        '<div class="text-center text-[14px] text-dim">' + link('ใช้อีเมลอื่น', 'login') + '</div>';
     }
-
-    if (this.view === 'verified') return head('ยืนยันอีเมลแล้ว',
-        'บัญชี <b>' + esc(this.email) + '</b> พร้อมใช้งาน — เข้าสู่ระบบด้วยรหัสผ่านที่ตั้งไว้') +
-      '<button class="btn btn-primary w-full justify-center !py-2.5" data-act="auth-go" data-view="login" data-auth-submit>ไปหน้าเข้าสู่ระบบ</button>';
 
     if (this.view === 'google') {
       const picks = db.user.filter(function(u){ return !isPending(u); }).slice(0, 4).map(function(u){ return [u.email, u.name]; })
@@ -8802,14 +8643,14 @@ class AuthScreen {
     /* FR-08 — ถ้อยคำใช้ได้ทั้งครั้งแรกและทุกครั้งที่ล็อกอินซ้ำก่อนได้อนุมัติ · ไม่สัญญาว่าจะแจ้งเตือน เพราะระบบไม่ส่งอีเมล */
     if (this.view === 'pending') return head('รอผู้ดูแลระบบอนุมัติ',
         'อีเมลนี้ไม่ใช่อีเมลของคณะ (@' + emails.domain + ') จึงต้องได้รับอนุมัติก่อนเข้าใช้งาน') +
-      '<div class="authdemo flex items-center gap-2 flex-wrap">' + GLOGO + '<span class="tnum">' + esc(this.gEmail) + '</span>' +
-        chip('รออนุมัติ','warn') + '</div>' +
-      '<p class="text-[14px] text-soft leading-relaxed">ได้รับอนุมัติแล้ว กลับมากด “ดำเนินการต่อด้วย Google” อีกครั้ง</p>' +
-      '<button class="btn btn-primary w-full justify-center !py-2.5" data-act="auth-google" data-auth-submit>ใช้บัญชีอื่น (บัญชีของคณะ)</button>' +
-      '<div class="text-center text-[14px] text-dim">' + link('กลับไปหน้าเข้าสู่ระบบ', 'login') + '</div>';
+      '<div class="authdemo flex items-center gap-2 flex-wrap">' + (this.via === 'google' ? GLOGO : '') +
+        '<span class="tnum">' + esc(this.gEmail) + '</span>' + chip('รออนุมัติ','warn') + '</div>' +
+      '<p class="text-[14px] text-soft leading-relaxed">ได้รับอนุมัติแล้ว กลับมาเข้าสู่ระบบอีกครั้ง</p>' +
+      '<button class="btn btn-primary w-full justify-center !py-2.5" data-act="auth-go" data-view="login" data-auth-submit>ใช้บัญชีอื่น (บัญชีของคณะ)</button>' +
+      '';
 
     if (this.view === 'google-new') return head('สร้างบัญชีผู้สอนจาก Google',
-        'ยังไม่มีบัญชี CMAS สำหรับอีเมลนี้ · Google ยืนยันอีเมลให้แล้ว จึงไม่ต้องตั้งรหัสผ่านและไม่ต้องรอลิงก์ยืนยัน') +
+        'ยังไม่มีบัญชี CMAS สำหรับอีเมลนี้ · Google ยืนยันอีเมลให้แล้ว จึงไม่ต้องรอลิงก์') +
       err +
       '<div class="authdemo flex items-center gap-2 flex-wrap">' + GLOGO + '<span class="tnum">' + esc(this.gEmail) + '</span>' +
         chip('ยืนยันแล้ว','ok') + '</div>' +
@@ -8820,43 +8661,26 @@ class AuthScreen {
     return head('เข้าสู่ระบบ', 'ระบบประเมินผลลัพธ์การเรียนรู้ระดับรายวิชา') +
       google + or + err +
       field('au-email', 'อีเมล', 'email', this.email, ' autocomplete="username" placeholder="' + emails.placeholder() + '"') +
-      '<div><div class="flex items-baseline justify-between mb-1.5">' +
-          '<label class="text-[14px] text-ink2" for="au-pw">รหัสผ่าน</label>' +
-          '<button class="authlink text-[13px]" data-act="auth-forgot">ลืมรหัสผ่าน?</button></div>' +
-        '<input class="inp" id="au-pw" type="password" autocomplete="current-password"></div>' +
-      primary('เข้าสู่ระบบ', 'auth-login') +
-      '<div class="text-center text-[14px] text-dim">ยังไม่มีบัญชี? ' + link('ลงทะเบียน', 'register') + '</div>' +
+      primary('ส่งลิงก์เข้าสู่ระบบ', 'auth-send-link') +
       '<div class="authdemo"><div class="over mb-1">ต้นแบบ · บัญชีตัวอย่าง</div>' +
         'somchai@' + emails.domain + ' (ผู้สอน) · admin@' + emails.domain + ' (ผู้ดูแลระบบ)<br>' +
-        'รหัสผ่านตัวอย่าง <span class="tnum">' + this.accounts.demoPw + '</span></div>';
+        'ไม่มีรหัสผ่าน · กดส่งลิงก์ แล้วเปิดลิงก์ในกล่องจดหมายจำลอง</div>';
   }
 
   /* ── ตัวจัดการปุ่ม ── */
-  submitLogin(){
+  sendLink(){
     this.email = AuthScreen.value('au-email').toLowerCase();
-    const r = this.accounts.login(this.email, AuthScreen.raw('au-pw'));
+    const r = this.accounts.requestLink(this.email);
     if (r.error) return this.fail(r.error);
-    if (r.unverified) {
-      this.pendingId = r.user.id; this.view = 'sent';
-      this.err = 'ยืนยันอีเมลก่อนเข้าสู่ระบบ — เปิดลิงก์ในอีเมล หรือขอลิงก์ใหม่';
-      return this.paint();
-    }
-    this.enter(r.user, 'LOGIN');
-  }
-  submitRegister(){
-    this.email = AuthScreen.value('au-email').toLowerCase();
-    const r = this.accounts.register(AuthScreen.value('au-name'), this.email,
-                                     AuthScreen.raw('au-pw'), AuthScreen.raw('au-pw2'));
-    if (r.error) return this.fail(r.error);
-    this.pendingId = r.pendingId;
+    this.linkEmail = r.email;
     this.view = 'sent'; this.err = ''; this.resendAt = Date.now() + 60000;
     this.paint();
   }
-  submitVerify(){
-    const r = this.accounts.verify(this.pendingId);
+  openLink(){
+    const r = this.accounts.openLink(this.linkEmail);
     if (r.error) { this.view = 'login'; this.err = r.error; return this.paint(); }
-    this.email = r.user.email; this.view = 'verified'; this.err = '';
-    this.paint();
+    if (r.pending) { this.gEmail = r.email; this.via = 'email'; return this.show('pending'); }
+    this.enter(r.user, 'LOGIN');
   }
   resend(){
     if (Date.now() < this.resendAt) return false;
@@ -8867,7 +8691,7 @@ class AuthScreen {
     const r = this.accounts.google(email);
     if (r.error) return this.fail(r.error);
     if (r.isNew) { this.gEmail = r.email; return this.show('google-new'); }
-    if (r.pending) { this.gEmail = r.email; return this.show('pending'); }
+    if (r.pending) { this.gEmail = r.email; this.via = 'google'; return this.show('pending'); }
     this.enter(r.user, 'LOGIN_GOOGLE');
   }
   createFromGoogle(){
@@ -8875,17 +8699,12 @@ class AuthScreen {
     if (r.error) return this.fail(r.error);
     this.enter(r.user, 'LOGIN_GOOGLE');
   }
-  updateMeter(){
-    const m = document.getElementById('au-meter');
-    if (m) m.innerHTML = this.accounts.passwords.meterHtml(AuthScreen.raw('au-pw'), AuthScreen.value('au-email'));
-  }
-
   /* ── เข้า/ออก — จุดเดียวที่หน้าจอ auth แตะ state ของแอป (S) ── */
   enter(u, how){
-    this.accounts.log(u.id, how, how === 'LOGIN_GOOGLE' ? 'เข้าสู่ระบบด้วย Google' : 'เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน');
+    this.accounts.log(u.id, how, how === 'LOGIN_GOOGLE' ? 'เข้าสู่ระบบด้วย Google' : 'เข้าสู่ระบบด้วยลิงก์อีเมล');
     S.role = u.role === 'ADMIN' ? 'ADMIN' : 'INSTRUCTOR'; S.meId = u.id; S.filter = {};
     this.session.set(u.id);
-    this.view = 'login'; this.err = ''; this.email = ''; this.accounts.fails = [];
+    this.view = 'login'; this.err = ''; this.email = '';
     clampMe(); clampCourse(); saveLayout(); invalidate();
     this.paint();
     /* The screen left behind by the previous account may be admin-only. */
@@ -8907,12 +8726,7 @@ class AuthScreen {
 
 const EMAIL_POLICY = new EmailPolicy('kmitl.ac.th');
 const SESSION = new SessionStore('cmas:session');
-const AUTH = new AuthScreen(
-  new AccountService(EMAIL_POLICY,
-    new PasswordPolicy(['password','password1','password123','12345678','123456789','1234567890','qwerty123',
-      'qwertyuiop','iloveyou','admin1234','abc12345','11111111','00000000','changeme','welcome123']),
-    'cmas-demo-2568'),
-  SESSION);
+const AUTH = new AuthScreen(new AccountService(EMAIL_POLICY), SESSION);
 
 /* Enter submits whichever form is showing. */
 document.getElementById('auth').addEventListener('keydown', function(e){
@@ -9021,14 +8835,11 @@ document.addEventListener('click', function(e){
   if (act === 'auth-pick')          { AUTH.continueWithGoogle(el.dataset.email); return; }
   if (act === 'auth-google-other')  { AUTH.continueWithGoogle(AuthScreen.value('au-gmail')); return; }
   if (act === 'auth-google-create') { AUTH.createFromGoogle(); return; }
-  if (act === 'auth-login')         { AUTH.submitLogin(); return; }
-  if (act === 'auth-register')      { AUTH.submitRegister(); return; }
-  if (act === 'auth-verify')        { AUTH.submitVerify(); return; }
-  if (act === 'auth-forgot') {
-    toast('ถ้าอีเมลนี้มีบัญชี ระบบจะส่งลิงก์ตั้งรหัสผ่านใหม่ไปให้'); return; }   /* same words for every address */
+  if (act === 'auth-send-link')     { AUTH.sendLink(); return; }
+  if (act === 'auth-open-link')     { AUTH.openLink(); return; }
   if (act === 'auth-resend') {
     if (!AUTH.resend()) return;
-    toast('ถ้าอีเมลนี้ลงทะเบียนไว้และยังไม่ยืนยัน ระบบส่งลิงก์ใหม่แล้ว · ลิงก์ก่อนหน้าใช้ไม่ได้อีก'); return;
+    toast('ส่งลิงก์ใหม่แล้ว · ลิงก์เดิมใช้ไม่ได้อีก'); return;
   }
   if (act === 'auth-logout')        { AUTH.leave(); return; }
 
@@ -9046,8 +8857,6 @@ document.addEventListener('click', function(e){
   }
   if (act === 'profile')        { acctMenu(false); modalProfile(); return; }
   if (act === 'profile-save')   { saveProfile(); return; }
-  if (act === 'pw-change')      { acctMenu(false); modalPwChange(); return; }
-  if (act === 'pw-change-save') { savePwChange(); return; }
   if (act === 'role') { acctMenu(false); S.role = el.dataset.val;
     /* The account has to match the role before the scope is computed from it,
        and only then can the open course be checked against that scope. */
@@ -9368,17 +9177,6 @@ document.addEventListener('click', function(e){
   }
   if (act === 'clo-help')     { modalCloHelp(el.dataset.clo); return; }
   if (act === 'user-detail')  { closeOverlays(); userDrawer(el.dataset.id); return; }
-  if (act === 'pw-reset')     { modalPwReset(el.dataset.id, false); return; }
-  if (act === 'pw-reset-do') {
-    const u = byId(db.user, el.dataset.id);
-    if (!u) return;
-    u.mustChangePassword = true;
-    u.pwResetAt = '2568-09-07 09:00';
-    authLog(u.id, 'PW_RESET', 'ผู้ดูแลระบบรีเซ็ตรหัสผ่านและส่งรหัสชั่วคราวทางอีเมล');
-    invalidate(); render();
-    modalPwReset(u.id, true);
-    toast('รีเซ็ตรหัสผ่านแล้ว — บัญชีนี้ต้องตั้งรหัสใหม่เมื่อเข้าสู่ระบบครั้งถัดไป'); return;
-  }
   if (act === 'err-report')   { modalErrReport(el.dataset.id); return; }
   if (act === 'errreport')    { modalErrReport(el.dataset.id); return; }
   if (act === 'crud-new')  { OBJ_CLO = el.dataset.clo || (D().clos[0] && D().clos[0].id) || null;
@@ -9704,9 +9502,6 @@ document.addEventListener('input', function(e){
     return;
   }
   if (e.target.id === 'f-staff-q') { paintStaffHits(); return; }
-  if (e.target.id === 'au-pw' || e.target.id === 'au-email') {
-    AUTH.updateMeter();
-  }
   /* M2/M3 — เกณฑ์เป็นตัวเลขที่พึ่งพากัน ตัวเลขจึงต้องเดินตามกันขณะพิมพ์
      ไม่ใช่รอให้ผิดแล้วค่อยฟ้องตอนกดบันทึก */
   if (FORM_KIND === 'activity' && e.target.id && e.target.id.indexOf('ff-') === 0) { actFormSync(e.target.id); return; }

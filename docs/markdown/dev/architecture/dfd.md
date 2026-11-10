@@ -110,7 +110,6 @@ See also: [[srs]] · [[schema]] · [[usecase]] · [[theory]] · [[project-plan]]
 | **XSS / CSRF** | Cross-Site Scripting / Cross-Site Request Forgery | ช่องโหว่ฝั่งเบราว์เซอร์ที่กระทบวิธีเก็บ token (D8) |
 | **TLS / HTTPS** | Transport Layer Security / HTTP over TLS | การเข้ารหัสระหว่างทาง |
 | **SQL** | Structured Query Language | ภาษาคิวรีที่ Prisma สร้างให้ |
-| **argon2** | Argon2id password hashing | อัลกอริทึม hash รหัสผ่านใน D1 |
 | **SheetJS** | ไลบรารี `xlsx` (SheetJS CE) | ตัว parse/สร้างไฟล์ `.xlsx` ใน P8 |
 | **at-risk** | นักศึกษากลุ่มเสี่ยง | ผู้ที่ไม่ผ่าน CLO อย่างน้อย 1 ข้อ (FR-83) |
 | **attainment** | ระดับการบรรลุ CLO | สัดส่วนผู้ผ่านเกณฑ์ (CR-04) |
@@ -256,7 +255,7 @@ flowchart TB
     P1 == "login/token (f7-f10)" ==> P2
     P1 == "API + upload (f11-f13)" ==> P3
     P1 == "health (f14,f48)" ==> P9
-    P2 == "User.passwordHash · role · isActive ตาม email (f15,f16)" ==> DS1
+    P2 == "User.googleSub · role · isActive ตาม email (f15,f16)" ==> DS1
     P3 == "User.role · isActive สดทุก request (f17,f18)" ==> DS1
 
     P3 == "คำสั่ง/ผลลัพธ์บัญชีผู้ใช้ — ไม่มี courseId (f19,f44)" ==> P4
@@ -267,7 +266,7 @@ flowchart TB
     P3 == "คำขอ/ผลรายงาน + courseId (f24,f41)" ==> P10
     P3 == "Course.id WHERE instructors.userId (f25a,f25b)" ==> DS2
 
-    P4 == "User: email·name·role·isActive·passwordHash (f26a,f26b)" ==> DS1
+    P4 == "User: email·name·role·isActive (f26a,f26b)" ==> DS1
     P5 == "Course: code·credits·gradeScale·passCriteria·classTarget<br/>+ CourseInstructor.role (f27a,f27b)" ==> DS2
     P6 == "CLO.weight · BehavioralObjective.weight<br/>Activity.maxScore·weight·passMark<br/>AssessmentCriteria.weight (f28a,f28b)" ==> DS3
     P7 == "Student.studentCode · name (PDPA) (f29a,f29b)" ==> DS4
@@ -327,7 +326,7 @@ flowchart TB
     EE3 -- "f5 เลือกไฟล์ .xlsx" --> P1
     P1  -- "f6 template / ไฟล์ export / error rows" --> EE3
 
-    P1  -- "f7 POST /auth/login {email,password}" --> P2
+    P1  -- "f7 POST /auth/google {idToken} · POST /auth/email-link/verify {token}" --> P2
     P2  -- "f8 access token 15 นาที + refresh 7 วัน" --> P1
     P1  -- "f9 เก็บ token" --> DS8
     DS8 -- "f10 อ่าน token" --> P1
@@ -367,7 +366,7 @@ flowchart TB
     P3  -- "f12" --> P1b
 
     P2b -- "f15 อ่าน User ตาม email" --> DS1
-    DS1 -- "f16 argon2 hash · isActive · role" --> P2b
+    DS1 -- "f16 googleSub · isActive · role" --> P2b
     P3  -- "f17 อ่านแถว User สดทุก request (NFR-19)" --> DS1
     DS1 -- "f18 role · isActive" --> P3
 
@@ -415,8 +414,8 @@ flowchart TB
         DS5c[("D5 · Score")]
     end
 
-    P4c -- "f26a เขียน User: email·name·passwordHash(argon2)·role·isActive" --> DS1c
-    DS1c -- "f26b อ่าน User: id·email·name·role·isActive (ห้ามคืน passwordHash)" --> P4c
+    P4c -- "f26a เขียน User: email·name·role·isActive" --> DS1c
+    DS1c -- "f26b อ่าน User: id·email·name·role·isActive (ห้ามคืน googleSub)" --> P4c
     P5c -- "f27a เขียน Course: code·name·semester·year·section·credits<br/>gradeScale·passCriteria·classTarget + CourseInstructor: userId·role" --> DS2c
     DS2c -- "f27b อ่าน Course + CourseInstructor join User (ชื่อผู้สอน)" --> P5c
     P6c -- "f28a เขียน CLO: number·description·weight·bloom/solo<br/>BehavioralObjective: number·description·weight<br/>Activity: name·type·assessmentMethod·passMark·maxScore·weight·order<br/>AssessmentCriteria: weight (Activity × จุดประสงค์)" --> DS3c
@@ -714,7 +713,7 @@ TMT 2016 สร้าง threat จาก **ชนิดของ element** ไ�
 
 | ID | ชื่อใน TMT | ตารางที่ครอบ (`schema.prisma`) | Stencil | Sensitive | หมายเหตุ |
 |---|---|---|---|---|---|
-| D1 | User | `User` | SQL Database | **Yes** | `passwordHash` (argon2) + `role` — เป้าหมายอันดับ 1 |
+| D1 | User | `User` | SQL Database | **Yes** | `role` + `googleSub` — เป้าหมายอันดับ 1 (ไม่มีรหัสผ่านให้ขโมย) |
 | D2 | Course · CourseInstructor | `Course` · `CourseInstructor` | SQL Database | No | **เป็นตารางที่นิยาม TB-4** (`instructors.some.userId`) และ**ถือเกณฑ์ตัดสิน** `passCriteria`/`cloPassMark`/`classTarget`/`gradeScale` |
 | D3 | CLO Structure | `CLO` · `BehavioralObjective` · `Activity` · `AssessmentCriteria` | SQL Database | No | ไม่ใช่ PII แต่เป็น **แหล่งของน้ำหนักคำนวณทั้งหมด** — Tampering ที่นี่เงียบกว่าการแก้คะแนน |
 | D4 | Student (roster) | `Student` | SQL Database | **Yes** | `studentCode` + `name` — PDPA · หนึ่งแถว = หนึ่ง **enrolment** ไม่ใช่หนึ่งคน (ASM-01) |
@@ -778,7 +777,7 @@ TMT 2016 สร้าง threat จาก **ชนิดของ element** ไ�
 
 | ID | จาก → ถึง | ข้อมูล | Protocol | ข้าม boundary |
 |---|---|---|---|---|
-| f7 | P1 → P2 | email + password (plaintext ใน body) | HTTPS/TLS 1.2+ | TB-1 · TB-3 |
+| f7 | P1 → P2 | Google ID token หรือโทเคนลิงก์อีเมล (ใช้ครั้งเดียว) ใน body | HTTPS/TLS 1.2+ | TB-1 · TB-3 |
 | f8 | P2 → P1 | access token 15 นาที · refresh token 7 วัน | HTTPS | TB-1 · TB-3 |
 | f9 | P1 → D8 | เก็บ token ไว้ที่เบราว์เซอร์ | in-browser | — (**ดู STRIDE #2**) |
 | f10 | D8 → P1 | อ่าน token มาแนบ header | in-browser | — |
@@ -792,8 +791,8 @@ TMT 2016 สร้าง threat จาก **ชนิดของ element** ไ�
 
 | ID | จาก → ถึง | ข้อมูล | Protocol | ข้าม boundary |
 |---|---|---|---|---|
-| f15 | P2 → D1 | `User` WHERE `email` — select `id·passwordHash·role·isActive` | TCP + TLS (Prisma) | TB-2 |
-| f16 | D1 → P2 | `User.passwordHash` (argon2) · `isActive` · `role` | TCP + TLS | TB-2 |
+| f15 | P2 → D1 | `User` WHERE `email` — select `id·googleSub·role·isActive` | TCP + TLS (Prisma) | TB-2 |
+| f16 | D1 → P2 | `User.googleSub` · `isActive` · `role` | TCP + TLS | TB-2 |
 | f17 | P3 → D1 | `User` WHERE `id` = `jwt.sub` — **สดทุก request** (NFR-19) | TCP + TLS | TB-2 |
 | f18 | D1 → P3 | `User.role` · `User.isActive` ปัจจุบัน | TCP + TLS | TB-2 |
 | f19 | P3 → P4 | คำสั่งจัดการผู้ใช้ + `{userId, role}` — **ไม่มี `courseId`** | in-process | — (ดูหมายเหตุ) |
@@ -816,7 +815,7 @@ TMT 2016 สร้าง threat จาก **ชนิดของ element** ไ�
 
 | ID | จาก → ถึง | ข้อมูล | Protocol | ข้าม boundary |
 |---|---|---|---|---|
-| f44 | P4 → P3 | ผลลัพธ์บัญชีผู้ใช้ — **ต้องไม่มี `passwordHash`** | in-process | — (P4 อยู่นอก TB-4) |
+| f44 | P4 → P3 | ผลลัพธ์บัญชีผู้ใช้ — **ต้องไม่มี `googleSub`** | in-process | — (P4 อยู่นอก TB-4) |
 | f45 | P5 → P3 | ผลลัพธ์รายวิชา · รายชื่ออาจารย์ผู้สอน | in-process | **← TB-4** |
 | f46 | P6 → P3 | ผลลัพธ์ CLO · จุดประสงค์ · กิจกรรม · เกณฑ์ | in-process | **← TB-4** |
 | f47 | P7 → P3 | ผลลัพธ์รายชื่อ + ตารางคะแนน (**PDPA**) | in-process | **← TB-4** |
@@ -827,8 +826,8 @@ TMT 2016 สร้าง threat จาก **ชนิดของ element** ไ�
 
 | ID | จาก → ถึง | ข้อมูล | Protocol | ข้าม boundary |
 |---|---|---|---|---|
-| f26a | P4 → D1 | `User`: `email·name·passwordHash(argon2)·role·isActive` — **`role` คือฟิลด์ EoP** | TCP + TLS | TB-2 |
-| f26b | D1 → P4 | `User`: `id·email·name·role·isActive` — **ห้าม select `passwordHash`** | TCP + TLS | TB-2 |
+| f26a | P4 → D1 | `User`: `email·name·role·isActive` — **`role` คือฟิลด์ EoP** | TCP + TLS | TB-2 |
+| f26b | D1 → P4 | `User`: `id·email·name·role·isActive` — **ห้าม select `googleSub`** | TCP + TLS | TB-2 |
 | f27a | P5 → D2 | `Course`: `code·name·nameEn·semester·year·section·credits·lectureHours·practiceHours·selfStudyHours·gradeScale·passCriteria·classTarget` + `CourseInstructor`: `userId·role` | TCP + TLS | TB-2 |
 | f27b | D2 → P5 | `Course` ทั้งแถว + `CourseInstructor` join `User.name` (รายชื่อผู้สอน) | TCP + TLS | TB-2 |
 | f28a | P6 → D3 | `CLO`: `number·description·weight·bloomLevel·soloLevel·levelSource·classTarget` · `BehavioralObjective`: `number·description·weight` · `Activity`: `name·type·assessmentMethod·criteriaNote·passMark·maxScore·order·weight` · `AssessmentCriteria`: `activityId·objectiveId·weight` | TCP + TLS | TB-2 |

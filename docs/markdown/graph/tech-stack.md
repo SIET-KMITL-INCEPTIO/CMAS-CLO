@@ -38,7 +38,7 @@ flowchart TB
         TS["TypeScript 5.9"]
         SEC["helmet · cors · rate-limit · multipart"]
         JWT["jose 6 (JWT: 15m access + 7d refresh)"]
-        ARG["argon2 (password hash)"]
+        ARG["argon2 (ไม่ใช้แล้ว · ระบบไม่มีรหัสผ่าน)"]
         ZOD["Zod 4 (validation)"]
         XLS["xlsx / SheetJS (parse + validate)"]
     end

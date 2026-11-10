@@ -10,7 +10,10 @@
    Revised 2569-09-18 for D1 and D6. It drew six pages while index-q.html had
    the ผู้ช่วยสอน ◁ ผู้สอนร่วม ◁ ผู้ประสานงาน ladder; D1 collapsed that to one
    INSTRUCTOR role, so pages 3–5 became one. D6 added self-registration: a
-   ผู้ยังไม่มีบัญชี actor and use cases 9.3–9.5, which no PERM role performs.
+   ผู้ยังไม่มีบัญชี actor and use cases 9.2–9.3, which no PERM role performs.
+   2569-11-10: password removed from the system — UC 1.5 (reset password), 9.2
+   (change own password) and 9.4 (verify email, folded into the sign-in link) are gone,
+   and the numbers after them were closed up.
 
    NOTATION — UML 2.5, the way a software-engineering reviewer expects it:
      uc diagram frame · subject boundary · packages as folders · stick-figure
@@ -85,7 +88,7 @@ PERM = {m.group(1): (ALIAS[m.group(2)] if m.group(2) in ALIAS
                      else re.findall(r"'([A-Z]+)'", m.group(2)))
         for m in re.finditer(r"'([a-z.]+)':\s*([A-Z][A-Z0-9_]*|\[[^\]]*\])", _pb)}
 
-assert len(UC_TEXT) == 34, 'expected 34 use cases in USE_CASES, found %d' % len(UC_TEXT)
+assert len(UC_TEXT) == 33, 'expected 33 use cases in USE_CASES, found %d' % len(UC_TEXT)
 assert len(PERM) >= 17, 'PERM matrix not found in index-q.html'
 assert all(PERM.values()), 'capabilities read as empty: %s — an alias was not resolved' % (
     [k for k, v in PERM.items() if not v],)
@@ -114,7 +117,7 @@ def lowest(cap):
 
 # ══ use cases index-q.html adds (not in UML.md / USE_CASES) ══════════
 NEW = {
-    '1.7': 'อนุมัติบัญชีที่รออนุมัติ',   # 2569-10-22 FR-08b — Google นอกโดเมนคณะ PENDING → ACTIVE
+    '1.6': 'อนุมัติบัญชีที่รออนุมัติ',   # 2569-10-22 FR-08b — Google หรือลิงก์อีเมลนอกโดเมนคณะ PENDING → ACTIVE
     '2.6': 'เพิ่ม / ถอดผู้สอนในรายวิชา',
     '2.9': 'ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่',   # 2569-11-07 K1 — เลือกวิชาตามแผนการเรียนของหลักสูตร
     '5.6': 'ระบุนักศึกษาที่ต้องติดตาม',
@@ -125,14 +128,12 @@ NEW = {
     '8.2': 'ประมวลผลและตรึงเกรด',
     '8.3': 'ปรับเกรดรายบุคคล',
     '9.1': 'แก้ไขชื่อและอีเมลของตนเอง',
-    '9.2': 'เปลี่ยนรหัสผ่านของตนเอง',
     # D6 / D7 — self-registration. The actor is someone with NO account yet,
     # so these are the only use cases no role in PERM performs (GUEST below).
-    '9.3': 'ลงทะเบียนด้วยอีเมลคณะ',
-    '9.4': 'ยืนยันอีเมล',
-    '9.5': 'ลงทะเบียนด้วยบัญชี Google',   # 2569-10-22 — นอกโดเมนคณะก็ลงทะเบียนได้ แต่รออนุมัติ (1.7)
+    '9.2': 'ลงทะเบียนด้วยลิงก์อีเมล',   # 2569-11-10 — ไม่มีรหัสผ่าน · เปิดลิงก์ = ยืนยันอีเมลและเข้าสู่ระบบ · โดเมนอื่นรออนุมัติ (1.6)
+    '9.3': 'ลงทะเบียนด้วยบัญชี Google',   # 2569-10-22 — นอกโดเมนคณะก็ลงทะเบียนได้ แต่รออนุมัติ (1.6)
 }
-GUEST_UC = ['9.3', '9.4', '9.5']
+GUEST_UC = ['9.2', '9.3']
 GUEST_TH = 'ผู้ยังไม่มีบัญชี'
 PKG_TEXT.update({'8': 'ตัดเกรด', '9': 'บัญชีของฉัน'})
 
@@ -563,7 +564,7 @@ def dep(pg, ids, kid, rel, frm, cond_role=None, notes=None):
 def page_admin():
     pg = Page('CMAS · ผู้ดูแลระบบ')
     ncol, x0 = 2, 470
-    g1 = [['1.1', '1.4'], ['1.2'], ['1.3'], ['1.5'], ['1.6'], ['1.7']]
+    g1 = [['1.1', '1.4'], ['1.2'], ['1.3'], ['1.5'], ['1.6']]
     g2 = [['2.1', '2.4'], ['2.3']]
     # measure first, then draw — the frame and subject are sized from content
     probe = Page('probe')
@@ -575,7 +576,7 @@ def page_admin():
     i1, _ = package(pg, '1', '1 · ' + PKG_TEXT['1'], x0, 100, g1, ncol, {})
     i2, _ = package(pg, '2', '2 · ' + PKG_TEXT['2'], x0, 100 + h1 + 24, g2, ncol, {})
     admin = pg.vertex(role_label('ADMIN'), S_ACTOR, 180, 60 + (body + 60) // 2 - 40, 34, 64, role='actor')
-    for c in ('1.1', '1.2', '1.3', '1.5', '1.6', '1.7'):
+    for c in ('1.1', '1.2', '1.3', '1.5', '1.6'):
         pg.edge(admin, i1[c], S_ASSOC, kind='assoc')
     for c in ('2.1', '2.3'):
         pg.edge(admin, i2[c], S_ASSOC, kind='assoc')
@@ -586,9 +587,8 @@ def page_admin():
     pg.vertex('<b>ข้อควรรู้</b><br>'
               '· 1.3 — ระงับผู้ดูแลคนสุดท้ายไม่ได้<br>'
               '· บัญชีผู้ดูแลลบไม่ได้ ต้องลดบทบาทก่อน<br>'
-              '· 1.5 — บังคับเปลี่ยนรหัสผ่านและบันทึกประวัติ (FR-07)<br>'
-              '· 1.6 — อ่านจากประวัติการเข้าใช้ (AuthEvent)<br>'
-              '· 1.7 — บัญชีรออนุมัติ → ใช้งานได้ (FR-08b)<br>'
+              '· 1.5 — อ่านจากประวัติการเข้าใช้ (AuthEvent)<br>'
+              '· 1.6 — บัญชีรออนุมัติ → ใช้งานได้ (FR-08b)<br>'
               '· 2.1 · 2.3 — ผู้สอนทำได้เหมือนกัน<br>'
               '· 2.2 · 2.5 — เป็นงานของผู้สอน (หน้า 3)',
               S_NOTE, side, 100, 400, 152, role='note')
@@ -716,7 +716,7 @@ def page_catalogue(placed):
             if r == 'extend' and point:
                 txt += ' @ ' + point
             rel[kid] = txt
-    rel.update({'1.4': '«include» จาก 1.1', '2.4': '«include» จาก 2.1', '9.4': '«include» จาก 9.3'})
+    rel.update({'1.4': '«include» จาก 1.1', '2.4': '«include» จาก 2.1'})
     cap_of = {uc: cap for _p, uc, cap, _k in UNITS}
     for _p, _uc, _c, kids in UNITS:
         for kid, _r, _f, kcap in kids:

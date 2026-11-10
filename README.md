@@ -197,5 +197,5 @@ and the prototype habits that must not be copied (client-side `can()`, in-browse
 [`docs/markdown/dev/architecture/prototype-to-app.md`](docs/markdown/dev/architecture/prototype-to-app.md).
 
 `index-q.sql` = Prisma through migration `0007` **plus** what the prototype proposes and Prisma lacks (`AuthEvent`, `UploadReject`,
-`CourseGroupWeight`, `Course.weightMode`, `Activity.passScore`, password-flow columns on `User`, `ScoreUploadLog.kind`) — those are candidates
+`CourseGroupWeight`, `Course.weightMode`, `Activity.passScore`, `ScoreUploadLog.kind`) — those are candidates
 for a future migration `0008`, not requirements yet.
