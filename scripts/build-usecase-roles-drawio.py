@@ -61,10 +61,10 @@ FRAME = ('html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fil
 ACTOR = ('shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;'
          'fillColor=#FFFFFF;' + FONT)
 TEXT = 'text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;' + FONT
-ASSOC = ('edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=none;'
-         'labelBackgroundColor=#FFFFFF;' + FONT)
-DEP = ('edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;dashed=1;endArrow=open;endFill=0;'
-       'labelBackgroundColor=#FFFFFF;' + FONT)
+# เส้นเหมือนหน้า overview: เส้นตรง (edgeStyle=none) · actor ออกจากกึ่งกลาง · ปลายเปิดที่ use case
+ASSOC = ('edgeStyle=none;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=open;endFill=0;' + FONT)
+DEP = ('edgeStyle=none;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;dashed=1;endArrow=open;endFill=0;'
+       'labelBackgroundColor=#FFFFFF;' + FONT + 'fontSize=14;')
 EW, EH, PITCH, COLP = 320, 80, 140, 460      # วงรี · ระยะแถว · ระยะคอลัมน์ (ช่องว่าง 140 พอสำหรับป้าย «include»)
 
 
@@ -89,9 +89,14 @@ class Builder:
         if pts:
             geo = ('<mxGeometry relative="1" as="geometry"><Array as="points">' +
                    ''.join('<mxPoint x="%d" y="%d"/>' % q for q in pts) + '</Array></mxGeometry>')
-        self.cells.append('<mxCell id="%s" value="%s" style="%s exitX=%g;exitY=0.5;exitDx=0;exitDy=0;entryX=%g;entryY=0.5;'
+        if style == ASSOC:        # actor -> use case: จากกึ่งกลาง actor ตรงไปขอบซ้ายของวงรี เหมือน overview
+            geo = '<mxGeometry relative="1" as="geometry"/>'
+            ex = 'exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;'
+        else:
+            ex = 'exitX=%g;exitY=0.5;exitDx=0;exitDy=0;' % ox
+        self.cells.append('<mxCell id="%s" value="%s" style="%s %sentryX=%g;entryY=0.5;'
                           'entryDx=0;entryDy=0;" parent="1" source="%s" target="%s" edge="1">%s</mxCell>'
-                          % (self.nid(), escape(label), style, ox, ix, a, b, geo))
+                          % (self.nid(), escape(label), style, ex, ix, a, b, geo))
 
     def finish(self, name, title, x_right, bottom):
         fw = x_right - 40
@@ -120,7 +125,25 @@ def build_detail(pid, name, title, note, actors):
         kids.setdefault(base, []).append((kid, rel))
     direct = sorted({u for _, ds in actors for u in ds})
     pkgs = sorted({u[0] for u in direct})
-    X0, y, plan = 360, 180, []
+    X0, plan = 360, []
+    # ความกว้างกรอบแพ็กเกจ = ของแพ็กเกจที่กว้างสุด เพื่อให้ขอบขวาเรียงตรงกันทุกกรอบ
+    depth = {}
+    for p in pkgs:
+        ds, stack = 0, [u for u in direct if u[0] == p]
+        while stack:
+            u = stack.pop()
+            ds = max(ds, depth.get(u, 0))
+            for k, _ in kids.get(u, []):
+                depth[k] = depth.get(u, 0) + 1
+                stack.append(k)
+    ncol_all = max([depth.get(u, 0) for u in list(UC) if u[0] in pkgs] + [0]) + 1
+    FW = 40 + EW + (ncol_all - 1) * COLP + 40
+    out_w = X0 + FW + 40 - 40 - 80                       # ความกว้างกล่องหมายเหตุ (ชิดในกรอบนอก)
+    chars = len(re.sub(r'<[^>]+>', '', note)) * 9, len(CAPTION) * 9
+    nlines = sum(max(1, -(-c // out_w)) for c in chars)
+    note_h = round10(nlines * 24 + 10)
+    y = 90 + note_h + 40
+    top0 = y
     for p in pkgs:
         roots = [u for u in direct if u[0] == p]
         pos, row = {}, [0]
@@ -137,7 +160,7 @@ def build_detail(pid, name, title, note, actors):
         for r in roots:
             place(r, 0)
         ncol = max(d for d, _ in pos.values()) + 1
-        fw = 40 + EW + (ncol - 1) * COLP + 40
+        fw = FW
         fh = 60 + (row[0] - 1) * PITCH + EH + 40
         plan.append((p, y, fw, fh, pos))
         y += fh + 60
@@ -154,7 +177,7 @@ def build_detail(pid, name, title, note, actors):
     last, aids = 0, []
     for k, (label, ds) in enumerate(actors):
         want = round10(sum(ycen[u] for u in ds) / len(ds)) - 50
-        ay = max(want, last + 180, 140)
+        ay = max(want, last + 180, top0)
         last = ay
         a = b.vertex(label, ACTOR, 120, ay, 60, 100)
         aids.append((a, ay + 50, ds))
@@ -169,9 +192,9 @@ def build_detail(pid, name, title, note, actors):
                 b.edge(ids[base], ids[kid], DEP, '«include»', 1, 0)
             else:
                 b.edge(ids[kid], ids[base], DEP, '«extend»', 0, 1)
-    b.vertex(note + '<br>' + CAPTION, TEXT, 80, 90, 1200, 60)
+    b.vertex(note + '<br>' + CAPTION, TEXT, 80, 90, out_w, note_h)
     bottom = max(bottom, last + 140)
-    return b.finish(name, title, X0 + max(fw for _, _, fw, _, _ in plan), bottom)
+    return b.finish(name, title, X0 + FW + 40, bottom)
 
 
 def build_summary(pid, name, title, note, links):
@@ -179,9 +202,13 @@ def build_summary(pid, name, title, note, links):
     b = Builder(pid)
     pk = sorted(PKG)
     assert len(pk) <= 9
-    top, ph = 220, 140
+    tail = 'เส้นทึบ = ผู้ใช้ทำเอง · ตัวเลข = หมวดของ use case (รายละเอียดอยู่หน้าถัดไป)'
+    out_w = 440 + EW + 80 + 40 - 40 - 80                 # กล่องหมายเหตุอยู่ในกรอบนอก ไม่ล้น
+    nlines = sum(max(1, -(-len(re.sub(r'<[^>]+>', '', t)) * 9 // out_w)) for t in (note, tail))
+    base = round10(90 + nlines * 24 + 10 + 40)           # ขอบบนของกรอบ "ระบบ CMAS"
+    top, ph = base + 40, 140
     fh = 60 + (len(pk) - 1) * ph + EH + 40
-    b.vertex('ระบบ CMAS', FRAME, 440, 180, EW + 80, fh, frame=True)
+    b.vertex('ระบบ CMAS', FRAME, 440, base, EW + 80, fh, frame=True)
     ids, ycen = {}, {}
     for i, p in enumerate(pk):
         ey = top + 20 + i * ph
@@ -190,14 +217,13 @@ def build_summary(pid, name, title, note, links):
     last = 0
     for k, (label, ps) in enumerate(links):
         want = round10(sum(ycen[p] for p in ps) / len(ps)) - 50
-        ay = max(want, last + 180, 180)
+        ay = max(want, last + 180, base)
         last = ay
         a = b.vertex(label, ACTOR, 120, ay, 60, 100)
-        tx = 240 + 60 * k
         for p in ps:
-            b.edge(a, ids[p], ASSOC, '', 1, 0, pts=[(tx, ay + 50), (tx, ycen[p])])
-    b.vertex(note + '<br>เส้นทึบ = ผู้ใช้ทำเอง · ตัวเลข = หมวดของ use case (รายละเอียดอยู่หน้าถัดไป)', TEXT, 80, 90, 1200, 60)
-    return b.finish(name, title, 440 + EW + 80 + 40, max(180 + fh + 40, last + 140) - 40)
+            b.edge(a, ids[p], ASSOC, '', 1, 0)
+    b.vertex(note + '<br>' + tail, TEXT, 80, 90, out_w, round10(nlines * 24 + 10))
+    return b.finish(name, title, 440 + EW + 80 + 40, max(base + fh + 40, last + 140) - 40)
 
 
 # ── สร้าง/แทนที่หน้า (หน้าที่ยังไม่มีจะต่อท้ายไฟล์) ───────────────────────
