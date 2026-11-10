@@ -5,7 +5,7 @@ See also: [[api-design]] · [[srs]] · [[course-role-permissions]] · [[code-rul
 > **สร้าง:** 2026-10-11 · **สถานะ:** แผน — รอตัดสิน D-1…D-5 ใน §1
 > **ขอบเขต:** สิ่งที่ต้องเพิ่มหรือแก้ใน [[api-design]] v1.1.0 และใน `app/server/src/` ก่อนเขียน route ของรายวิชา
 > **ตรวจกับ:** `api-design.md` v1.1.0 · `srs.md` v2.4.3 · `schema.prisma` (13 models, migration 0001–0007) ·
-> `docs/pages/index-q.html` (ตาราง `PERM` และ `capOf`) · `docs/reference/db/mysql/index-q.sql` · โค้ดเซิร์ฟเวอร์ ณ วันที่สร้าง
+> `docs/index-q/index-q.html` (ตาราง `PERM` และ `capOf`) · `docs/reference/db/mysql/index-q.sql` · โค้ดเซิร์ฟเวอร์ ณ วันที่สร้าง
 >
 > เอกสารนี้**ไม่ใช่ contract** — contract ยังเป็น [[api-design]] เมื่อข้อใดในแผนนี้ถูกรับ ให้ย้ายเข้า [[api-design]] แล้วลบออกจากที่นี่
 

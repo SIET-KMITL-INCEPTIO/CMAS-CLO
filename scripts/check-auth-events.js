@@ -11,7 +11,7 @@
 //
 //   node scripts/check-auth-events.js
 const fs = require("fs")
-const src = fs.readFileSync("docs/pages/index-q.html", "utf8")
+const src = fs.readFileSync("docs/index-q/index-q.html", "utf8")
 const grab = (a, b) => src.slice(src.indexOf(a), src.indexOf(b, src.indexOf(a)))
 
 const authLogSrc = grab("function authLog(userId, action, detail){", "\n}") + "\n}"

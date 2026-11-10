@@ -10,11 +10,11 @@ See also: [[srs]] · [[features-pages]] · [[user-flow]] · [[api-design]] · [[
 
 ## 1. แบ่งหน้าที่
 
-| เอามาจาก `docs/pages/index-q.html` | เอามาจากแอป React (`app/`, `database/`) |
+| เอามาจาก `docs/index-q/index-q.html` | เอามาจากแอป React (`app/`, `database/`) |
 |---|---|
 | ฟีเจอร์และฟังก์ชันทั้งหมด ([[features-pages]] §1.1) | Tech stack: React 19 · Fastify 5 · Prisma 6 · PostgreSQL (Supabase) |
 | Flow และลำดับขั้นตั้งค่า 6 ขั้น ([[user-flow]] §3, §11) | ความปลอดภัย: `authMiddleware` · `rbac` · `assertCourseAccess` · Zod · rate limit ([[api-design-plan]] §3–§4) |
-| หน้าตา: โทเคนสี ตัวอักษร ระยะ เงา ([index-q-design-system.html](../../../pages/index-q-design-system.html)) | ประสิทธิภาพ: code splitting ราย route · TanStack Query cache · transaction ในฐานข้อมูล |
+| หน้าตา: โทเคนสี ตัวอักษร ระยะ เงา ([index-q-design-system.html](../../../index-q/index-q-design-system.html)) | ประสิทธิภาพ: code splitting ราย route · TanStack Query cache · transaction ในฐานข้อมูล |
 | ข้อความบนหน้าจอ ชื่อปุ่ม และข้อความ error ภาษาไทย | โครงไฟล์ราย feature และกฎชั้น Route → Controller → Service → Repository ([[code-rule]]) |
 | ตารางสิทธิ์ `PERM` (17 capability) — ใช้เป็น**รายการ** | การตรวจสิทธิ์จริง — ทำที่เซิร์ฟเวอร์ทุก route |
 | สูตร CR-01…CR-11 — ใช้เป็น**ผลที่ต้องได้** | การคำนวณจริง — service เดียวที่เซิร์ฟเวอร์ (FR-88) |

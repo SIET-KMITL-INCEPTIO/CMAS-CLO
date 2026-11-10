@@ -4,8 +4,8 @@ Which file in `docs/` is current, which ones are older copies of it, and which
 files only *look* related. Read this before opening anything in
 `reference/db/` or `diagrams/` for a presentation.
 
-Last checked: **2026-09-28**, against `database/schema.prisma` (13 models,
-migrations `0001`–`0007`). When this page and the code disagree, the code wins.
+Last checked: **2026-11-09**, against `database/schema.prisma` (13 models,
+migrations `0001`–`0007`, unchanged since 2026-09-28). When this page and the code disagree, the code wins.
 Fix this page in the same change.
 
 ---
@@ -122,9 +122,8 @@ Kept for the reasoning in the comments. Not to be run.
 | File | Status |
 |---|---|
 | `diagrams/usecase/index-q-usecase.drawio` | **official** use case diagram (UML 2.5, from `PERM`), `scripts/build-usecase-drawio.py` |
-| `diagrams/usecase/UML-INDEX-Q.drawio` | current one-page summary of the same model, `scripts/build-index-q-uml-drawio.py` |
-| `diagrams/usecase/UML-Layer2_Handwritten.drawio` | use case numbering declared superseded by index-q (`STATUS:SUPERSEDED` line in `diagrams/usecase/UML.md`) |
-| `diagrams/usecase/UML-Layer1_Handwritten.drawio`, `Structure.drawio` | current. Layer 1/2 are **levels of detail**, not versions |
+| `diagrams/usecase/UML-INDEX-Q.drawio` | one-page summary of the same model. **Not committed**; `scripts/build-index-q-uml-drawio.py` regenerates it |
+| `diagrams/architecture/Structure.drawio` | current, hand-drawn. `UML-Layer1/Layer2_Handwritten.drawio` and `UML.md` were deleted (see git history) |
 
 ### 3.6 Architecture diagrams: siblings, all drafts
 
@@ -135,8 +134,6 @@ was superseded):
 | File | What |
 |---|---|
 | `CMAS-Architecture_Handwritten.drawio` | 8 pages, code at commit `ff6ed7c` |
-| `CMAS-FE-BE-DB_Handwritten.drawio` | 1 page, one request walked ①–⑩ |
-| `CMAS-ARCH_Handwritten.drawio` | 1 page, stack in columns. Same subject as the file above |
 | `CMAS-Flowcharts_Handwritten.drawio` | 50 flowcharts, one per use case (5.7 added 2026-10-19; 4.2 · 5.4 · 8.1 updated to the prototype) |
 
 ### 3.7 Progress reports: one report, two variants
@@ -188,6 +185,7 @@ indexes them. Bump the document's header first, then this row.
 | `dev/architecture/api-design.md` | 1.1.0 | 2026-09-26 | SRS 2.4.0 · migration 0001–0007 |
 | `dev/ux/user-flow.md` | 1.1.1 | 2026-10-01 | SRS 2.4.0 |
 | `dev/architecture/design-system.md` | 1.4.0 | — | — |
+| `dev/architecture/design-system-interaction.md` | split from `design-system.md` §12–15 (same 1.4.0 content) | — | — |
 | `dev/thesis/thesis-toc.md` | 1.0.0 (Draft) | 2026-08-06 | — |
 | `dev/requirements/objectives-hypotheses-evaluation.md` | 0.2.0 (Draft) | 2026-08-09 | ⚠ the body says "matches schema v5.1 as of 2026-09-26", but the header version and date were not bumped |
 | `sql/schema.md` | schema **v5.1** | 2026-09-26 | migration 0001–0007 (see §2 for the numbering) |
@@ -204,6 +202,7 @@ Documents not listed have no version header.
    under the plain name and delete the other.
 4. **v4 Excel workbooks** (§3.2). Regenerate them from `index-q.sql`, or label
    them "frozen at 0004" inside the workbook.
+6. **Charter files.** `word/charter1-3.docx`, `charter1-3.revised.docx` and `charter1-3.revised-highlighted.docx` (2 MB each, referenced nowhere). Which one was submitted? Keep that one under a plain name, and delete the other two (the highlighted copy is a review aid for `.revised`).
 5. **Two workbooks listed but not in the repo:** `excel/data-model/CMAS-ER-Diagram.xlsx`
    (`build-er-excel.py`) and `excel/import-test/CMAS-Score-Import-Template.xlsx`
    (`build-score-import-template.py`). Either run the scripts and commit the

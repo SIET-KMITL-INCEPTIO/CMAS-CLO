@@ -1,7 +1,7 @@
 // SEC-1 · the dispatcher gate, not the button. Fires actions the way a TA would
 // by calling capOf() directly on a synthetic element, bypassing any hidden button.
 const fs = require("fs")
-const src = fs.readFileSync("docs/pages/index-q.html", "utf8")
+const src = fs.readFileSync("docs/index-q/index-q.html", "utf8")
 const grab = (a, b) => src.slice(src.indexOf(a), src.indexOf(b))
 
 const permSrc = src.slice(

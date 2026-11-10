@@ -6,7 +6,7 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]] · [[pro
 > EmailVerificationToken, Course, CourseInstructor, CLO, BehavioralObjective, Activity, AssessmentCriteria,
 > Student, Score, ScoreUploadLog, GradeBand, StudentGrade — และโครงสร้าง route ที่มีอยู่ใน `app/client/src/features/`
 >
-> **อัปเดต 2026-10-14 — ตามต้นแบบ `docs/pages/index-q.html`:** เพิ่ม §1.1 ฟังก์ชันที่ต้นแบบมีแต่ตาราง §1 ยังไม่ได้แยกออกมา
+> **อัปเดต 2026-10-14 — ตามต้นแบบ `docs/index-q/index-q.html`:** เพิ่ม §1.1 ฟังก์ชันที่ต้นแบบมีแต่ตาราง §1 ยังไม่ได้แยกออกมา
 > (ถอนรายวิชา · ปิดรับคะแนน · ยกเว้น · ประวัติการแก้คะแนน · เลิกทำ · ทำสำเนา ฯลฯ) และ §2.1 เทียบหน้าในต้นแบบกับ route ของแอป
 > ตาราง §1 และ §2 เดิมไม่เปลี่ยน · ชื่อปุ่มในตารางใหม่คัดจากต้นแบบตรงตัว
 >
@@ -14,7 +14,7 @@ See also: [[dev]] · [[code-rule]] · [[database-schema]] · [[schema]] · [[pro
 > **14 feature / 14 หน้า** (เดิม 13/13) · สถานะ implement ยังเท่าเดิม: client มี 4 route (`/` · `/auth/login` · `/admin/users` · `/courses`)
 >
 > **อัปเดต 2026-08-04:** ตัด Curriculum / Institution ออกตามงาน 2.7 → เหลือ **13 feature / 13 หน้า**
-> **ต้นแบบ:** ทุกหน้าที่ยัง "ไม่มีหน้า" ด้านล่างมีต้นแบบใช้งานได้แล้วใน `docs/pages/index-q.html` (ไม่ใช่โค้ดจริง — ดู [[index-q-architecture]])
+> **ต้นแบบ:** ทุกหน้าที่ยัง "ไม่มีหน้า" ด้านล่างมีต้นแบบใช้งานได้แล้วใน `docs/index-q/index-q.html` (ไม่ใช่โค้ดจริง — ดู [[index-q-architecture]])
 
 ---
 

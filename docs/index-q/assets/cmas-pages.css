@@ -1,9 +1,8 @@
 /* ══════════════════════════════════════════════════════════════════════
-   CMAS · ชั้นออกแบบร่วมของหน้าเอกสารใน docs/pages/
+   CMAS · ชั้นออกแบบร่วมของหน้าเอกสารใน docs/index-q/
    Nocturnal Atelier — ภาษาเดียวกับ index-q.html
 
-   ใช้กับ: database-preview · evaluation-criteria · tech-stack-review ·
-           design-system-preview
+   ใช้กับ: database-preview · evaluation-criteria · tech-stack-review
    ไม่ใช้กับ: index-q.html — เป็นต้นแบบไฟล์เดียวที่ต้องส่งทางอีเมลและเปิดจาก
    file:// ได้ จึงถือสำเนาโทเคนของตัวเอง · ความตรงกันของสองที่ถูกบังคับด้วย
    scripts/check-design-tokens.py ไม่ใช่ด้วยความจำ

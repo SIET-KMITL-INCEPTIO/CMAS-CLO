@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""UML use case diagram of docs/pages/index-q.html, as a draw.io file.
+"""UML use case diagram of docs/index-q/index-q.html, as a draw.io file.
 
    Output: docs/diagrams/usecase/index-q-usecase.drawio — four pages
      1 · ภาพรวมระบบ            summary level: actors, their generalization, nine packages
@@ -58,7 +58,7 @@ for _s in (sys.stdout, sys.stderr):
         _s.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = Path(__file__).resolve().parents[1]
-APP = ROOT / 'docs' / 'pages' / 'index-q.html'
+APP = ROOT / 'docs' / 'index-q' / 'index-q.html'
 OUT = ROOT / 'docs' / 'diagrams' / 'usecase' / 'index-q-usecase.drawio'
 
 # ══ read the prototype ═══════════════════════════════════════════════

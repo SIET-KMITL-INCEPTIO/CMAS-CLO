@@ -4,10 +4,10 @@ import { CAPABILITIES } from "./capabilities.js"
 
 /**
  * The prototype's PERM table is the spec. This test reads it out of
- * docs/pages/index-q.html and fails when the server table drifts from it.
+ * docs/index-q/index-q.html and fails when the server table drifts from it.
  */
 const html = readFileSync(
-  new URL("../../../../../docs/pages/index-q.html", import.meta.url),
+  new URL("../../../../../docs/index-q/index-q.html", import.meta.url),
   "utf-8",
 )
 

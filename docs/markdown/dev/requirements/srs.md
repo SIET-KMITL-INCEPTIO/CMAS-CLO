@@ -10,7 +10,7 @@ See also: [[dev]] · [[features-pages]] · [[schema]] · [[usecase]] · [[code-r
 >
 > **v2.4.3 (2026-10-11) — CR-10 ระบุชนิดของ SD:** ใช้ **SD ประชากร (หารด้วย n)** ไม่ใช่ n − 1 และ T เป็น
 > **linear T-score** (ไม่ normalize) · เดิมเขียนแค่ "SD" ซึ่งตีความได้สองแบบและให้เกรดต่างกัน · ตรงกับที่ต้นแบบ
-> `docs/pages/index-q.html` คำนวณอยู่แล้ว ฝั่งเซิร์ฟเวอร์ยังไม่มีโค้ดส่วนนี้ · เพิ่มแหล่งอ้างอิงใน §1.4
+> `docs/index-q/index-q.html` คำนวณอยู่แล้ว ฝั่งเซิร์ฟเวอร์ยังไม่มีโค้ดส่วนนี้ · เพิ่มแหล่งอ้างอิงใน §1.4
 >
 > **v2.4.2 (2026-10-02) — จุดเน้นของผลลัพธ์คือ "ใครต้องได้รับความช่วยเหลือ" ไม่ใช่ "บรรลุเป้าหรือไม่":**
 > เป้าหมายของชั้นคงที่ 100% (ทุกคนผ่าน) **FR-101 ยกเลิก** — ไม่มีการตั้งเป้าราย CLO · เพิ่ม CR-05.1 "กติกาที่ต้นแบบเสนอ รอ migration"
@@ -18,7 +18,7 @@ See also: [[dev]] · [[features-pages]] · [[schema]] · [[usecase]] · [[code-r
 >
 > **v2.4.1 (2026-10-01):** CR-05 เพิ่มกติกา "กิจกรรมน้ำหนัก 0 ยังไม่เข้าการคำนวณ และไม่ทำให้คะแนนไม่ครบ" — ไม่มีการเปลี่ยน schema
 >
-> **v2.4.0 — ตามให้ทันโค้ด migration `0006` และ `0007` (2026-09-26 · ที่มา [mockup-feedback-plan.md](mockup-feedback-plan.md) §5):**
+> **v2.4.0 — ตามให้ทันโค้ด migration `0006` และ `0007` (2026-09-26 · ที่มา [mockup-feedback-plan.md](../planning/mockup-feedback-plan.md) §5):**
 > - **`0006` · สายเดียว CLO → จุดประสงค์ → กิจกรรม (T4/T11)** — `AssessmentCriteria` ผูก **Activity ↔ `BehavioralObjective`**
 >   (ไม่ใช่ CLO แล้ว) · ตัด `ObjectiveAssessment` ทิ้ง (FR-34 · OI-08 ปิด) · ถึง CLO ได้ผ่านจุดประสงค์เท่านั้น
 > - **`0006` · E1 เกณฑ์ผ่าน CLO ค่าเดียว** — ตัด `CLO.threshold` แทนด้วย `Course.cloPassMark` (default 60) · CR-03 / CR-03.1 / CR-05 เขียนใหม่ ·
@@ -32,7 +32,7 @@ See also: [[dev]] · [[features-pages]] · [[schema]] · [[usecase]] · [[code-r
 > - ทั้งระบบ **13 models** (14 ที่ v2.3.0 → −`ObjectiveAssessment`) · Baseline `database/schema.prisma` ตรงกับ migration `0001`–`0007`
 > - **ส่วนที่ต้นแบบ `index-q.html` ทำเกิน Prisma** (`Course.weightMode` · `CourseGroupWeight` · `Activity.passScore` · `AuthEvent` · `UploadReject`) **ยังไม่เป็น requirement** จนกว่าจะมีมติและ migration `0008` — ดู [mysql-dumps.md](../../sql/mysql-dumps.md)
 >
-> **v2.3.0 — มติจากการรีวิว mockup (2026-09-14) · ที่มา [mockup-feedback-plan.md](mockup-feedback-plan.md):**
+> **v2.3.0 — มติจากการรีวิว mockup (2026-09-14) · ที่มา [mockup-feedback-plan.md](../planning/mockup-feedback-plan.md):**
 > - **D1 · บทบาทในรายวิชาเหลือ "ผู้สอน" เท่านั้น** — ตัด `CourseRole` (LEAD / CO / ASSISTANT) ทั้ง enum และคอลัมน์
 >   ผู้สอนทุกคนในรายวิชามีสิทธิ์เท่ากัน รวมถึงแก้ CLO และตัดเกรด · ASM-03a · FR-22 · FR-23 เขียนใหม่ ·
 >   [course-role-permissions.md](course-role-permissions.md) ถูกแทนที่ส่วนเมทริกซ์
@@ -290,7 +290,7 @@ at-risk      ⟺  มี CLO อย่างน้อย 1 ตัวที่ cl
 
 > ทั้งสี่ข้อมีไว้เพื่อให้คำถาม **"ใครต้องได้รับความช่วยเหลือ ใน CLO ไหน เพราะอะไร"** ตอบได้ถูก · เป้าหมายของชั้นคือทุกคนผ่าน (100%)
 > คำตัดสิน "บรรลุ / ไม่บรรลุ" ราย CLO จึงเกือบเป็น "ไม่บรรลุ" เสมอและไม่ใช่ตัวเลขหลักของหน้าจอ — ตัวเลขหลักคือ**จำนวนคนที่ยังต้องช่วย**
-> ต้นแบบ `docs/pages/index-q.html` ทำครบแล้ว · คอลัมน์ที่ต้องเพิ่มอยู่ใน `index-q.sql` · ยังไม่มี migration และยังไม่อยู่ใน `schema.prisma`
+> ต้นแบบ `docs/index-q/index-q.html` ทำครบแล้ว · คอลัมน์ที่ต้องเพิ่มอยู่ใน `index-q.sql` · ยังไม่มี migration และยังไม่อยู่ใน `schema.prisma`
 
 | กติกา | ความหมาย | ผลต่อสูตร |
 |---|---|---|

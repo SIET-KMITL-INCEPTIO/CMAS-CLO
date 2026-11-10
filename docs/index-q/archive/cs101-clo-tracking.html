@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <script>
@@ -16,25 +16,17 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ["IBM Plex Sans Thai", "ui-sans-serif", "system-ui"],
-              mono: ["IBM Plex Mono", "monospace"],
+              sans: ["Inter", "IBM Plex Sans Thai", "ui-sans-serif", "system-ui"],
+              mono: ["Inter", "IBM Plex Sans Thai", "ui-sans-serif"],
             },
+            // Nocturnal Atelier (index-q) — light only. Names kept so the markup is unchanged.
             colors: {
-              olive: {
-                50: "#f6f7ed",
-                100: "#e9edd4",
-                500: "#6b7a29",
-                600: "#55621f",
-                700: "#414c18",
-                900: "#252d0c",
-              },
-              plum: {
-                50: "#f8f4fd",
-                100: "#ede3fb",
-                500: "#7c3aed",
-                600: "#6d28d9",
-                700: "#5b21b6",
-              },
+              olive: { 50: "#F4F5FA", 100: "#E9EBF5", 500: "#878CB4", 600: "#465078", 700: "#3C456A", 900: "#1E233C" },
+              plum: { 50: "#F4F5FA", 100: "#E4E5F0", 500: "#878CB4", 600: "#465078", 700: "#3C456A" },
+              gray: { 50: "#F7F7FB", 100: "#EDEEF6", 200: "#E4E5F0", 300: "#C8CDEB", 400: "#878CB4", 500: "#5B6180", 600: "#4A5070", 700: "#1E233C" },
+              rose: { 50: "#F4E8E8", 100: "#F4E8E8", 500: "#B96F6E", 600: "#A2504F", 700: "#8C4241" },
+              amber: { 50: "#F6EFE0", 100: "#F4EEE1", 400: "#C7A860", 500: "#C7A860", 600: "#96793D", 700: "#7D6430", 800: "#6A5528" },
+              emerald: { 50: "#E7EFEA", 700: "#3E6553" },
             },
           },
         },
@@ -42,42 +34,37 @@
     </script>
     <style>
       body {
-        background: linear-gradient(
-          160deg,
-          #fdf6fb 0%,
-          #f7f3fc 45%,
-          #f4f6f0 100%
-        );
+        background: #FAFAFC;
         background-attachment: fixed;
       }
       .card {
         background: #fff;
-        border: 1px solid #ece7f2;
-        border-radius: 18px;
+        border: 1px solid #E4E5F0;
+        border-radius: 12px;
       }
       .num {
         font-variant-numeric: tabular-nums;
-        font-family: "IBM Plex Mono", monospace;
+        font-family: "Inter", "IBM Plex Sans Thai", sans-serif;
       }
       .row-hover:hover {
-        background: #faf8fd;
+        background: #F7F7FB;
       }
       .fld {
         width: 100%;
         padding: 0.6rem 0.8rem;
-        border: 1px solid #e6e0ee;
+        border: 1px solid #E4E5F0;
         border-radius: 0.75rem;
         font-size: 14px;
         outline: none;
         background: #fff;
       }
       .fld:focus {
-        border-color: #6b7a29;
-        box-shadow: 0 0 0 3px #6b7a2915;
+        border-color: #465078;
+        box-shadow: 0 0 0 3px rgba(70,80,120,.15);
       }
       .fld.err {
-        border-color: #e11d48;
-        background: #fff6f8;
+        border-color: #A2504F;
+        background: #F4E8E8;
       }
       .btn {
         padding: 0.6rem 1rem;
@@ -110,17 +97,17 @@
         width: 8px;
       }
       ::-webkit-scrollbar-thumb {
-        background: #e3dcec;
+        background: #E4E5F0;
         border-radius: 8px;
       }
       .sc:focus {
-        border-color: #6b7a29;
-        background: #f6f7ed;
+        border-color: #465078;
+        background: #F4F5FA;
       }
     </style>
   </head>
   <body class="font-sans text-olive-900 min-h-screen">
-    <header class="bg-white border-b border-[#ece7f2] sticky top-0 z-30">
+    <header class="bg-white border-b border-[#E4E5F0] sticky top-0 z-30">
       <div class="max-w-6xl mx-auto px-5">
         <div class="flex items-center justify-between pt-4 pb-2">
           <div class="flex items-center gap-3">
@@ -138,7 +125,7 @@
             </div>
             <button
               onclick="editCourse()"
-              class="text-xs px-2.5 py-1 rounded-lg border border-[#ece7f2] text-gray-500 hover:bg-gray-50"
+              class="text-xs px-2.5 py-1 rounded-lg border border-[#E4E5F0] text-gray-500 hover:bg-gray-50"
             >
               แก้ไข
             </button>
@@ -654,7 +641,7 @@
           input = `<textarea rows="2" class="fld ${err ? "err" : ""}" oninput="F.values['${f.name}']=this.value">${esc(v)}</textarea>`;
         else if (f.type === "toggle")
           input = `<button type="button" onclick="setVal('${f.name}',${!v})"
-        class="flex items-center gap-2.5 px-3 py-2 rounded-xl border ${v ? "border-olive-500 bg-olive-50" : "border-[#e6e0ee] bg-white"} w-full text-left text-sm">
+        class="flex items-center gap-2.5 px-3 py-2 rounded-xl border ${v ? "border-olive-500 bg-olive-50" : "border-[#E4E5F0] bg-white"} w-full text-left text-sm">
         <span class="w-9 h-5 rounded-full ${v ? "bg-olive-600" : "bg-gray-300"} relative shrink-0">
           <span class="absolute top-0.5 ${v ? "left-4.5" : "left-0.5"} w-4 h-4 rounded-full bg-white transition-all" style="left:${v ? "18px" : "2px"}"></span></span>
         <span>${v ? f.onText || "เปิด" : f.offText || "ปิด"}</span></button>`;
@@ -669,15 +656,15 @@
       }
       function renderForm() {
         $("#modalBody").innerHTML = `
-    <div class="px-6 pt-5 pb-4 border-b border-[#f2eef7] flex items-start justify-between gap-4">
+    <div class="px-6 pt-5 pb-4 border-b border-[#EDEEF6] flex items-start justify-between gap-4">
       <div><h3 class="font-semibold text-lg">${F.title}</h3>
       ${F.subtitle ? `<p class="text-[13px] text-gray-500 mt-0.5">${F.subtitle}</p>` : ""}</div>
       <button onclick="closeForm()" class="text-gray-400 text-2xl leading-none px-1">×</button>
     </div>
     ${F.banner ? `<div class="mx-6 mt-4 rounded-xl bg-amber-50 border border-amber-100 p-3 text-[13px] text-amber-800">${F.banner}</div>` : ""}
     <div class="px-6 py-5 grid grid-cols-2 gap-4">${F.fields.map(field).join("")}</div>
-    <div class="px-6 py-4 border-t border-[#f2eef7] flex justify-end gap-2 sticky bottom-0 bg-white">
-      <button onclick="closeForm()" class="btn border border-[#ece7f2]">ยกเลิก</button>
+    <div class="px-6 py-4 border-t border-[#EDEEF6] flex justify-end gap-2 sticky bottom-0 bg-white">
+      <button onclick="closeForm()" class="btn border border-[#E4E5F0]">ยกเลิก</button>
       <button onclick="submitForm()" class="btn ${F.danger ? "bg-rose-600" : "bg-olive-700"} text-white">${F.submitLabel || "บันทึก"}</button>
     </div>`;
       }
@@ -700,8 +687,8 @@
         $("#modalBody").innerHTML = `
     <div class="px-6 pt-5"><h3 class="font-semibold text-lg">${title}</h3>
     <p class="text-sm text-gray-600 mt-2 leading-relaxed">${body}</p></div>
-    <div class="px-6 py-4 mt-3 border-t border-[#f2eef7] flex justify-end gap-2">
-      <button onclick="closeForm()" class="btn border border-[#ece7f2]">ยกเลิก</button>
+    <div class="px-6 py-4 mt-3 border-t border-[#EDEEF6] flex justify-end gap-2">
+      <button onclick="closeForm()" class="btn border border-[#E4E5F0]">ยกเลิก</button>
       <button id="cfmBtn" class="btn bg-rose-600 text-white">${confirmLabel}</button></div>`;
         $("#cfmBtn").onclick = () => {
           closeForm();
@@ -1260,8 +1247,8 @@
     <div class="flex flex-wrap gap-2 mt-4 mb-6">
       <button onclick="cloForm()" class="btn bg-olive-700 text-white">+ เพิ่ม CLO</button>
       <button onclick="taskForm()" class="btn bg-plum-700 text-white">+ เพิ่มชิ้นงาน</button>
-      <button onclick="studentForm()" class="btn border border-[#ece7f2] bg-white">+ เพิ่มนักศึกษา</button>
-      <button onclick="importForm()" class="btn border border-[#ece7f2] bg-white">↑ นำเข้าคะแนน</button>
+      <button onclick="studentForm()" class="btn border border-[#E4E5F0] bg-white">+ เพิ่มนักศึกษา</button>
+      <button onclick="importForm()" class="btn border border-[#E4E5F0] bg-white">↑ นำเข้าคะแนน</button>
     </div>
     <div class="max-w-3xl">
       ${step(1, "ตั้งค่ารายวิชาและ CLO", "อาจารย์", "กำหนด CLO พร้อมสองเกณฑ์: เกณฑ์ผ่านรายคน และสัดส่วนผู้ผ่านที่ต้องการของทั้งห้อง แล้วผูกเข้ากับ PLO", "โครงร่างการวัดผลที่ตรวจย้อนกลับได้")}
@@ -1316,7 +1303,7 @@
           a,
           b,
           c,
-        ]) => `<div class="rounded-xl border border-[#ece7f2] p-3.5"><p class="font-medium">${a}</p>
+        ]) => `<div class="rounded-xl border border-[#E4E5F0] p-3.5"><p class="font-medium">${a}</p>
       <p class="num text-[12px] text-plum-700 mt-1.5">${b}</p><p class="text-gray-500 text-[12px] mt-1.5">${c}</p></div>`,
       )
       .join("")}
@@ -1351,16 +1338,16 @@
     <input id="q" value="${esc(rf.q)}" placeholder="ค้นหารหัสหรือชื่อ..." class="fld w-56">
     <select id="riskSel" class="fld w-36">${["ทั้งหมด", "เสี่ยงสูง", "เฝ้าระวัง", "ปลอดภัย"].map((o) => `<option ${rf.risk === o ? "selected" : ""}>${o}</option>`).join("")}</select>
     <select id="stSel" class="fld w-40">${["ทั้งหมด", ...STATUSES].map((o) => `<option ${rf.status === o ? "selected" : ""}>${o}</option>`).join("")}</select>
-    <button onclick="toast('ส่งออก CSV แล้ว')" class="btn border border-[#ece7f2] bg-white">↓ ส่งออก</button>
+    <button onclick="toast('ส่งออก CSV แล้ว')" class="btn border border-[#E4E5F0] bg-white">↓ ส่งออก</button>
     <span class="ml-auto self-center text-sm text-gray-500 num">${rows.length} คน</span>
   </div>
   <div class="card overflow-hidden">
     <table class="w-full text-sm">
-      <thead class="bg-[#faf8fd] text-[11px] uppercase text-gray-500">
+      <thead class="bg-[#F7F7FB] text-[11px] uppercase text-gray-500">
         <tr><th class="text-left px-5 py-3">นักศึกษา</th><th class="text-left py-3">สาขา</th>
         <th class="text-left py-3">สถานะ CLO</th><th class="text-left py-3">ความเสี่ยง</th>
         <th class="text-right py-3">คะแนนรวม</th><th class="px-5"></th></tr></thead>
-      <tbody class="divide-y divide-[#f2eef7]">
+      <tbody class="divide-y divide-[#EDEEF6]">
       ${
         rows
           .map(
@@ -1384,7 +1371,7 @@
         <td class="py-3 text-right"><span class="num font-semibold">${fmt(p.overall)}%</span>
           <span class="text-xs text-gray-400 ml-1">${letter(p.overall)}</span></td>
         <td class="px-5 text-right whitespace-nowrap">
-          <button onclick="event.stopPropagation();studentForm('${s.id}')" class="text-xs px-2 py-1 rounded-lg border border-[#ece7f2] hover:bg-gray-50">แก้ไข</button>
+          <button onclick="event.stopPropagation();studentForm('${s.id}')" class="text-xs px-2 py-1 rounded-lg border border-[#E4E5F0] hover:bg-gray-50">แก้ไข</button>
           <button onclick="event.stopPropagation();deleteStudent('${s.id}')" class="text-xs px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50">ลบ</button></td>
       </tr>`,
           )
@@ -1443,7 +1430,7 @@
         <div class="text-right shrink-0">
           <span class="text-[11px] px-2.5 py-1 rounded-full ${s.achieved ? "bg-olive-100 text-olive-700" : "bg-rose-100 text-rose-600"}">${s.achieved ? "บรรลุเกณฑ์" : "ยังไม่บรรลุ"}</span>
           <div class="mt-2 flex gap-1 justify-end">
-            <button onclick="cloForm('${c.id}')" class="text-xs px-2 py-1 rounded-lg border border-[#ece7f2] hover:bg-gray-50">แก้ไข</button>
+            <button onclick="cloForm('${c.id}')" class="text-xs px-2 py-1 rounded-lg border border-[#E4E5F0] hover:bg-gray-50">แก้ไข</button>
             <button onclick="deleteCLO('${c.id}')" class="text-xs px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50">ลบ</button>
           </div>
         </div>
@@ -1463,8 +1450,8 @@
       <p class="text-sm text-gray-500 num">${TASKS.length} ชิ้นงาน · ${CLOS.length} CLO · น้ำหนักรวม ${tw}%
       ${tw !== 100 ? '<span class="text-rose-600">— ยังไม่ครบ 100%</span>' : ""}</p></div>
     <div class="flex gap-2 flex-wrap">
-      <button onclick="importForm()" class="btn border border-[#ece7f2] bg-white">↑ นำเข้าคะแนน</button>
-      <button onclick="toast('ดาวน์โหลดเทมเพลตแล้ว')" class="btn border border-[#ece7f2] bg-white">📄 เทมเพลต</button>
+      <button onclick="importForm()" class="btn border border-[#E4E5F0] bg-white">↑ นำเข้าคะแนน</button>
+      <button onclick="toast('ดาวน์โหลดเทมเพลตแล้ว')" class="btn border border-[#E4E5F0] bg-white">📄 เทมเพลต</button>
       <button onclick="taskForm()" class="btn bg-plum-700 text-white">+ ชิ้นงานใหม่</button>
     </div>
   </div>
@@ -1481,7 +1468,7 @@
         <div class="w-24">${bar(s.rate, c.target)}</div>
         <span class="num text-sm font-semibold ${s.achieved ? "text-olive-600" : "text-rose-600"} w-12 text-right">${s.rate.toFixed(0)}%</span>
       </div>
-      <div class="mt-3 divide-y divide-[#f5f1f9] border-t border-[#f5f1f9]">
+      <div class="mt-3 divide-y divide-[#F4F5FA] border-t border-[#F4F5FA]">
         ${
           ts
             .map(
@@ -1491,7 +1478,7 @@
           <span class="num text-xs text-gray-400 hidden sm:inline">เต็ม ${t.max}</span>
           <span class="num text-xs text-gray-500 w-16 text-right">น้ำหนัก ${t.weight}%</span>
           <button onclick="toggleGraded('${t.id}')" class="text-[11px] px-2 py-0.5 rounded-full w-24 text-center ${t.graded ? "bg-olive-50 text-olive-700" : "bg-gray-100 text-gray-500"}">${t.graded ? "ตรวจแล้ว" : "ยังไม่ตรวจ"}</button>
-          <button onclick="taskForm('${t.id}')" class="text-xs px-2 py-1 rounded-lg border border-[#ece7f2]">แก้ไข</button>
+          <button onclick="taskForm('${t.id}')" class="text-xs px-2 py-1 rounded-lg border border-[#E4E5F0]">แก้ไข</button>
           <button onclick="deleteTask('${t.id}')" class="text-xs px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50">ลบ</button>
         </div>`,
             )
@@ -1503,21 +1490,21 @@
   </div>
 
   <div class="card overflow-hidden">
-    <div class="flex items-center justify-between px-5 py-3.5 border-b border-[#f2eef7] gap-3 flex-wrap">
+    <div class="flex items-center justify-between px-5 py-3.5 border-b border-[#EDEEF6] gap-3 flex-wrap">
       <div><h3 class="font-semibold">ตารางกรอกคะแนน</h3>
         <p class="text-xs text-gray-400">Enter = ลงแถวถัดไป · ลูกศรเลื่อนช่อง · เว้นว่าง = ยังไม่ตรวจ</p></div>
       <button onclick="saveScores()" class="btn ${dirty ? "bg-olive-700 text-white" : "bg-gray-100 text-gray-400"}">บันทึกคะแนน</button>
     </div>
     <div class="overflow-x-auto">
-      <table class="text-sm min-w-full"><thead class="bg-[#faf8fd] text-[11px] text-gray-500">
-        <tr><th class="text-left px-5 py-2.5 sticky left-0 bg-[#faf8fd]">นักศึกษา</th>
+      <table class="text-sm min-w-full"><thead class="bg-[#F7F7FB] text-[11px] text-gray-500">
+        <tr><th class="text-left px-5 py-2.5 sticky left-0 bg-[#F7F7FB]">นักศึกษา</th>
         ${TASKS.map(
           (t) => `<th class="px-2 py-2.5 text-center min-w-[80px]">
           <div class="truncate max-w-[80px] mx-auto">${esc(t.name.split("·")[0].trim())}</div>
           <div class="num text-[10px] text-gray-400">${t.clo} /${t.max}</div></th>`,
         ).join("")}
         <th class="px-4 text-right">รวม</th><th class="px-4 text-right">CLO ผ่าน</th></tr></thead>
-      <tbody class="divide-y divide-[#f2eef7]">
+      <tbody class="divide-y divide-[#EDEEF6]">
       ${st
         .map((s, ri) => {
           const p = profile(s.id);
@@ -1529,7 +1516,7 @@
           <input type="number" min="0" max="${t.max}" value="${scores[s.id][t.id] ?? ""}" placeholder="—"
             data-sid="${s.id}" data-tid="${t.id}" data-r="${ri}" data-c="${ci}"
             oninput="editScore(this)" onkeydown="gridKey(event,this)"
-            class="sc w-16 px-1.5 py-1 rounded-lg border border-[#ece7f2] text-center num text-[13px] outline-none"></td>`,
+            class="sc w-16 px-1.5 py-1 rounded-lg border border-[#E4E5F0] text-center num text-[13px] outline-none"></td>`,
         ).join("")}
         <td class="px-4 text-right num font-semibold">${fmt(p.overall)}</td>
         <td class="px-4 text-right"><span class="num text-xs px-2 py-1 rounded-full ${riskTone(p.risk)}">${p.passCount}/${p.gradedCount}</span></td>
@@ -1578,7 +1565,7 @@
           )
           .join("")}
       </div>
-      <div class="grid grid-cols-4 gap-3 mt-5 pt-4 border-t border-[#f2eef7] text-center">
+      <div class="grid grid-cols-4 gap-3 mt-5 pt-4 border-t border-[#EDEEF6] text-center">
         ${[
           ["ค่าเฉลี่ย", st.mean.toFixed(1)],
           ["มัธยฐาน", st.median.toFixed(1)],
@@ -1603,7 +1590,7 @@
       </div>
       <div class="card p-5">
         <div class="flex items-center justify-between mb-3"><h3 class="font-semibold text-sm">เกณฑ์ตัดเกรด</h3>
-          <button onclick="boundsForm()" class="text-xs px-2.5 py-1 rounded-lg border border-[#ece7f2]">แก้ไข</button></div>
+          <button onclick="boundsForm()" class="text-xs px-2.5 py-1 rounded-lg border border-[#E4E5F0]">แก้ไข</button></div>
         ${[...BOUNDS]
           .sort((a, b) => b[1] - a[1])
           .map(
@@ -1616,14 +1603,14 @@
     </div>
   </div>
   <div class="card mt-4 overflow-hidden">
-    <div class="px-5 py-3.5 border-b border-[#f2eef7] flex items-center justify-between">
+    <div class="px-5 py-3.5 border-b border-[#EDEEF6] flex items-center justify-between">
       <h3 class="font-semibold text-sm">สมุดคะแนนรายคน</h3>
-      <button onclick="toast('ส่งออกรายงาน Excel แล้ว')" class="text-sm px-3.5 py-1.5 rounded-lg border border-[#ece7f2]">↓ ส่งออกรายงาน</button></div>
+      <button onclick="toast('ส่งออกรายงาน Excel แล้ว')" class="text-sm px-3.5 py-1.5 rounded-lg border border-[#E4E5F0]">↓ ส่งออกรายงาน</button></div>
     <div class="overflow-x-auto"><table class="w-full text-sm">
-      <thead class="bg-[#faf8fd] text-[11px] text-gray-500"><tr>
+      <thead class="bg-[#F7F7FB] text-[11px] text-gray-500"><tr>
         <th class="text-left px-5 py-2.5">นักศึกษา</th>${CLOS.map((c) => `<th class="py-2.5 text-center num">${c.id}</th>`).join("")}
         <th class="text-right py-2.5">รวม</th><th class="text-right px-5">เกรด</th></tr></thead>
-      <tbody class="divide-y divide-[#f2eef7]">
+      <tbody class="divide-y divide-[#EDEEF6]">
       ${active()
         .map((s) => {
           const p = profile(s.id);
@@ -1762,12 +1749,12 @@
     </div>
   </div>
   <div class="card mt-4 overflow-hidden">
-    <div class="px-5 py-3.5 border-b border-[#f2eef7] flex items-center justify-between">
+    <div class="px-5 py-3.5 border-b border-[#EDEEF6] flex items-center justify-between">
       <h3 class="font-semibold text-sm">รายชื่อที่ควรเข้าช่วยเหลือ</h3>
       <span class="text-xs text-gray-500 num">${high.length + watch.length} คน · เรียงตามความเร่งด่วน</span></div>
     ${
       [...high, ...watch].length
-        ? `<div class="divide-y divide-[#f2eef7]">
+        ? `<div class="divide-y divide-[#EDEEF6]">
       ${[...high, ...watch]
         .sort((a, b) => (a.p.overall ?? 0) - (b.p.overall ?? 0))
         .map(
@@ -1778,7 +1765,7 @@
           <p class="text-xs text-gray-500 truncate">ยังไม่ผ่าน ${p.failed.map((f) => `${f.clo.id} (${fmt(f.value)}%)`).join(", ") || "—"}
           ${interventions.filter((i) => i.sid === s.id).length ? ` · ช่วยเหลือแล้ว ${interventions.filter((i) => i.sid === s.id).length} ครั้ง` : ""}</p></div>
           <span class="num text-sm font-semibold">${fmt(p.overall)}%</span>
-          <button onclick="event.stopPropagation();interveneForm('${s.id}')" class="text-xs px-3 py-1.5 rounded-lg border border-[#ece7f2] hover:bg-gray-50">บันทึกการช่วยเหลือ</button>
+          <button onclick="event.stopPropagation();interveneForm('${s.id}')" class="text-xs px-3 py-1.5 rounded-lg border border-[#E4E5F0] hover:bg-gray-50">บันทึกการช่วยเหลือ</button>
         </div>`,
         )
         .join("")}</div>`
@@ -1794,7 +1781,7 @@
         const p = profile(sid),
           acts = interventions.filter((i) => i.sid === sid);
         $("#drawerBody").innerHTML = `
-    <div class="p-5 border-b border-[#f2eef7] flex items-start justify-between gap-3">
+    <div class="p-5 border-b border-[#EDEEF6] flex items-start justify-between gap-3">
       <div><h3 class="font-semibold text-lg">${esc(s.name)}</h3>
         <p class="text-xs text-gray-400 num">${s.id} · ${s.program} · ${s.status}</p></div>
       <button onclick="closeDrawer()" class="text-gray-400 text-2xl leading-none px-1">×</button></div>
@@ -1805,7 +1792,7 @@
         <div class="rounded-xl ${riskTone(p.risk)} py-3"><p class="text-[11px] opacity-70">ความเสี่ยง</p><p class="text-sm font-semibold mt-1.5">${p.risk}</p></div>
       </div>
       <div class="flex gap-2">
-        <button onclick="studentForm('${sid}')" class="flex-1 btn border border-[#ece7f2] text-sm">แก้ไขข้อมูล</button>
+        <button onclick="studentForm('${sid}')" class="flex-1 btn border border-[#E4E5F0] text-sm">แก้ไขข้อมูล</button>
         <button onclick="interveneForm('${sid}')" class="flex-1 btn bg-olive-700 text-white text-sm">บันทึกการช่วยเหลือ</button>
       </div>
       <div><h4 class="text-sm font-semibold mb-3">ผลลัพธ์รายด้าน</h4>
@@ -1822,7 +1809,7 @@
         }
       </div>
       <div><h4 class="text-sm font-semibold mb-2">คะแนนรายชิ้นงาน</h4>
-        <div class="divide-y divide-[#f5f1f9] text-sm">
+        <div class="divide-y divide-[#F4F5FA] text-sm">
         ${TASKS.map((t) => {
           const v = scores[sid][t.id];
           const r = v === null || v === undefined ? null : pct(v, t.max);
@@ -1840,7 +1827,7 @@
           .map(
             (
               a,
-            ) => `<div class="rounded-xl border border-[#f2eef7] p-3 mb-2 text-[13px]">
+            ) => `<div class="rounded-xl border border-[#EDEEF6] p-3 mb-2 text-[13px]">
           <p class="font-medium">${a.kind} <span class="text-gray-400 num text-xs">· ${a.date} · ${a.clo}</span></p>
           ${a.note ? `<p class="text-gray-500 text-xs mt-1">${esc(a.note)}</p>` : ""}</div>`,
           )
@@ -1849,7 +1836,7 @@
       }
       ${
         s.note
-          ? `<div class="rounded-xl bg-[#faf8fd] p-4"><h4 class="text-sm font-semibold mb-1">บันทึกภายใน</h4>
+          ? `<div class="rounded-xl bg-[#F7F7FB] p-4"><h4 class="text-sm font-semibold mb-1">บันทึกภายใน</h4>
         <p class="text-xs text-gray-600">${esc(s.note)}</p></div>`
           : ""
       }

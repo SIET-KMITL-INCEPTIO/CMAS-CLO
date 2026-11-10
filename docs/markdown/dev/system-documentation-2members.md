@@ -165,7 +165,7 @@
 
 ### 2.1.1 รูปแบบต้นแบบ
 
-ต้นแบบของระบบคือ **`docs/pages/index-q.html`** — ไฟล์ HTML เดียวที่รันได้จริงจาก `file://` โดยไม่ต้องมีเซิร์ฟเวอร์ พึ่งภายนอกเพียง Tailwind CDN และ Google Fonts
+ต้นแบบของระบบคือ **`docs/index-q/index-q.html`** — ไฟล์ HTML เดียวที่รันได้จริงจาก `file://` โดยไม่ต้องมีเซิร์ฟเวอร์ พึ่งภายนอกเพียง Tailwind CDN และ Google Fonts
 
 | คุณสมบัติ | ค่า |
 |---|---|
@@ -173,7 +173,7 @@
 | Entity ที่ CRUD ได้ในต้นแบบ | 7 entity |
 | ข้อมูลตัวอย่างในตัว | 4 รายวิชา · 30 การลงทะเบียน · 120 แถวคะแนน |
 | ตารางเส้นทาง | `ROUTES` — ใช้เป็นแหล่งจริงของโครงเมนูใน AppShell |
-| เอกสารประกอบ | `design-system-preview.html` (design token + คอมโพเนนต์) · `database-preview.html` · `evaluation-criteria.html` · `tech-stack-review.html` |
+| เอกสารประกอบ | `index-q-design-system.html` (design token) · `database-preview.html` · `evaluation-criteria.html` · `tech-stack-review.html` |
 
 > **ทำไมต้องเป็นต้นแบบที่รันได้:** ต้นแบบนี้ทำหน้าที่เป็น *ข้อกำหนดที่กดใช้งานได้* — ทีมและอาจารย์ที่ปรึกษาเห็นการไหลของงานจริงก่อนลงมือเขียนระบบ และทีมพัฒนาถอดค่า `ROUTES`, `FORMS`, `derive()` จากต้นแบบไปใช้ได้ตรง ๆ โดยไม่ต้องตีความเอกสารซ้ำ
 
@@ -358,7 +358,7 @@ erDiagram
 | **Frontend** | React 19 · React Router 7 (SPA) · Vite 7 + plugin-react-swc · TypeScript 5.9 | ระบบเป็นเครื่องมือหลังล็อกอิน ไม่ต้องการ SEO จึงใช้ SPA ล้วน |
 | **UI** | Tailwind CSS 4 · shadcn/ui · Sonner (toast) · Recharts 3 (กราฟ) | design token ชุดเดียวใช้ได้ทั้งระบบ · Recharts ตอบโจทย์กราฟแดชบอร์ดโดยไม่ต้องเขียน D3 เอง |
 | **State / Data** | TanStack Query 5 (ข้อมูลจากเซิร์ฟเวอร์) · Zustand 5 (สถานะ auth เท่านั้น) | แยก server state ออกจาก client state ชัดเจน ลดปัญหาข้อมูลค้าง |
-| **Backend** | Node.js ≥ 20 LTS · Fastify 5 · TypeScript | Fastify เร็วกว่า Express และมี schema validation ในตัว |
+| **Backend** | Node.js ≥ 24 LTS · Fastify 5 · TypeScript | Fastify เร็วกว่า Express และมี schema validation ในตัว |
 | **ความปลอดภัย** | helmet · cors · rate-limit · multipart · jose 6 (JWT access 15 นาที / refresh 7 วัน) · argon2 | ครอบ OWASP พื้นฐาน · argon2 เป็นมาตรฐานปัจจุบันของการ hash รหัสผ่าน |
 | **Validation** | Zod | สคีมาเดียวใช้ได้ทั้ง validate และ type — ไม่เชื่อ input จากไคลเอนต์เกินขอบเขตสคีมา |
 | **Excel** | SheetJS (`xlsx`) ทั้งฝั่ง parse และสร้างไฟล์ | คณะทำงานด้วย Excel อยู่แล้ว การนำเข้า / ส่งออกจึงเป็นฟีเจอร์หลัก ไม่ใช่ของแถม |
@@ -382,7 +382,7 @@ flowchart TB
     end
 
     subgraph SERVER["Backend — app/server (Railway / Fly.io)"]
-        FST["Fastify 5 + Node 20 LTS"]
+        FST["Fastify 5 + Node 24 LTS"]
         SEC["helmet · cors · rate-limit · multipart"]
         JWT["jose 6 — JWT 15m / 7d"]
         ARG["argon2"]
@@ -543,7 +543,7 @@ flowchart LR
 | Tech Stack | `docs/markdown/graph/tech-stack.md` · `docs/markdown/dev/architecture/dev.md` §1 |
 | Architecture | `README.md` §Structure · `docs/diagrams/usecase/UML.md` · `docs/diagrams/index-q-architecture.md` |
 | DFD | `docs/markdown/dev/architecture/dfd.md` (v2.5.0) |
-| Mock-up | `docs/pages/index-q.html` · `docs/pages/archive/design-system-preview.html` |
+| Mock-up | `docs/index-q/index-q.html` · `docs/index-q/index-q-design-system.html` |
 | ผลทบทวน mockup | `docs/markdown/dev/planning/mockup-feedback-plan.md` |
 | แผนงาน | `docs/markdown/dev/planning/project-plan.md` (WBS / Gantt) · `docs/markdown/dev/planning/sprint-plan-2026.md` |
 | รายงานความก้าวหน้า | `docs/markdown/dev/progress-report-02.md` |
