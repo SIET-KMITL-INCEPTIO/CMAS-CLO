@@ -50,7 +50,7 @@ See also: [[Schema]] · [[Summary Project]] · [[website final]] · [[concept-cl
 | ORM                   | Prisma                   | 6.19.x                  | Held back from 7.x (breaking config model) — see §15          |
 | Database              | PostgreSQL               | 15+ (Supabase)          |                                                                |
 | Auth                  | JWT (`jose`)              | 6.x                     | Access token 15m + refresh token 7d, not a 30d single token    |
-| Password Hashing      | argon2                   | latest                  |                                                                |
+| Password Hashing      | — (ไม่มีรหัสผ่านตั้งแต่ 2026-11-10) | —               | argon2 ยังอยู่ใน `package.json` และ `database/seed.ts` จนกว่าจะแก้โค้ด |
 | Security Middleware   | `@fastify/helmet`, `@fastify/rate-limit`, `@fastify/cors` | latest | |
 | File Upload           | `@fastify/multipart`      | latest                  | 10MB cap                                                       |
 | **Local Dev Container** | Docker + Docker Compose   | latest                  | `docker-compose up` runs client + server (w/ Supabase DB) w/ hot reload |
