@@ -160,7 +160,7 @@ later rewrite. The repo does not record which one was submitted.
 ### 3.9 Threat model: one model, one report
 
 In [`diagrams/threat-model/`](diagrams/threat-model/). Checked 2026-10-20 against
-`diagrams/dfd/DFD-INDEX-Q.drawio` v1.4. DFD v1.4 (2026-10-19) changes labels only — `RemediationPlan` joins D5, "แผนพัฒนาผู้เรียน" and "บันทึกการตั้งค่าตัดเกรด" join existing flows; still 6 processes, 6 stores, 44 flows — so the threat model needs no new element, only the label wording. The model was relabelled on 2026-10-19 (the 6.0 ↔ D2 grading flows and ผู้สอน → 6.0 carry the new words); **still old wording:** the 6.0 ↔ D5 and 6.1 ↔ D5 flows, which do not yet mention แผนพัฒนาผู้เรียน.
+`diagrams/dfd/DFD-INDEX-Q.drawio` v1.4; the DFD is now **v1.5 (2026-11-10) and the model is behind it** — v1.5 adds the external entity "บริการส่งอีเมล" (e-mail-link sign-in, FR-07) with 2 flows on level 0 (ลิงก์เข้าสู่ระบบ · ผลการส่งอีเมล) and the same 2 on level 1 (1.0 ↔ mail), so level 0 has 8 flows and level 1 has 46; `RefreshToken` joins D1 (no new flow). The model needs one new external entity, four flows and the label edits listed in docs/diagrams/README.md. DFD v1.4 (2026-10-19) changes labels only — `RemediationPlan` joins D5, "แผนพัฒนาผู้เรียน" and "บันทึกการตั้งค่าตัดเกรด" join existing flows; still 6 processes, 6 stores, 44 flows — so the threat model needs no new element, only the label wording. The model was relabelled on 2026-10-19 (the 6.0 ↔ D2 grading flows and ผู้สอน → 6.0 carry the new words); **still old wording:** the 6.0 ↔ D5 and 6.1 ↔ D5 flows, which do not yet mention แผนพัฒนาผู้เรียน.
 
 | File | Status |
 |---|---|
