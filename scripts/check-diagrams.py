@@ -5,14 +5,12 @@
    ขัดกับหน้าอื่นไหม · ความขัดแย้งที่คนดูจับได้ใน 10 วินาทีคือสิ่งที่ทำให้
    การนำเสนอพัง ไม่ใช่ความสวยของภาพ
 
-   ตรวจ 7 ข้อ:
+   ตรวจ 5 ข้อ:
      UML-1  เลข use case ตรงกันระหว่าง UML.md · UML-Layer2_Handwritten.drawio · index-q.html (ข้ามเมื่อสองไฟล์แรกไม่มี)
      UML-2  ไม่มีเลขซ้ำในไฟล์เดียวกัน
      UML-3  ไม่มี use case ที่ไม่มีเลข
      UML-4  ไฟล์ที่สร้างด้วยสคริปต์ ตรงกับ index-q.html ณ ตอนนี้
-     ER-1   schema.prisma ↔ cmas_app_mysql_v4.sql — ชื่อตารางและชื่อคอลัมน์
      ER-2   index-q.sql = schema.prisma (หลัง migration 0008) · ตาราง/คอลัมน์ที่เสนอเพิ่มต้องมีบันทึกใน PROPOSED
-     PRES   ไฟล์ที่กำกวมบนโต๊ะนำเสนอ — รุ่นเก่าวางคู่รุ่นใหม่ ชื่อซ้ำ ของที่ถูกยกเลิก
 
    exit 0 = พร้อม · exit 1 = มีข้อขัดแย้งที่ต้องตัดสินใจก่อนขึ้นจอ
 
@@ -35,7 +33,6 @@ UML_MD = ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML.md'
 LAYER2 = ROOT / 'docs' / 'diagrams' / 'usecase' / 'UML-Layer2_Handwritten.drawio'
 APP = ROOT / 'docs' / 'index-q' / 'index-q.html'
 PRISMA = ROOT / 'database' / 'schema.prisma'
-SQL_V4 = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'cmas_app_mysql_v4.sql'
 SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
 GEN = [('scripts/build-usecase-drawio.py', 'docs/diagrams/usecase/index-q-usecase.drawio'),
        ('scripts/build-er-index-q-drawio.py', 'docs/diagrams/er/ER-INDEX-Q.drawio'),
@@ -263,8 +260,6 @@ for script, out in GEN:
     else:
         print('  ✓ %-42s ตรง' % out)
 
-# ══ ER-1 · prisma ↔ v4 ═════════════════════════════════════════════
-head('ER-1', 'schema.prisma ↔ cmas_app_mysql_v4.sql (v4 ค้างที่ 0004 โดยตั้งใจ · แจ้งเป็นคำเตือน)')
 pr = io.open(PRISMA, encoding='utf-8').read()
 MODELS = set(re.findall(r'^model\s+(\w+)', pr, re.M))
 prisma_cols = {}
@@ -308,26 +303,6 @@ def sql_tables(path):
     return out
 
 
-v4 = sql_tables(SQL_V4)
-miss = sorted(set(prisma_cols) - set(v4))
-extra = sorted(set(v4) - set(prisma_cols))
-if miss or extra:
-    warn.append('ER-1 · v4 ตารางไม่ตรง schema ปัจจุบัน (v4 ค้างที่ 0004 · ใช้ index-q.sql แทน)')
-    print('  ✗ ตาราง — ขาดจาก SQL %s · เกินใน SQL %s' % (miss, extra))
-else:
-    print('  ✓ ตาราง %d ตัว ตรงกันทั้งหมด' % len(v4))
-colbad = 0
-for mdl in sorted(prisma_cols):
-    p, s = set(prisma_cols[mdl]), set(v4.get(mdl, []))
-    only_p, only_s = sorted(p - s), sorted(s - p)
-    if only_p or only_s:
-        colbad += 1
-        print('  ✗ %-20s prisma เท่านั้น=%s · SQL เท่านั้น=%s' % (mdl, only_p, only_s))
-if colbad:
-    warn.append('ER-1 · v4 คอลัมน์ไม่ตรง %d ตาราง (v4 ค้างที่ 0004 · ใช้ index-q.sql แทน)' % colbad)
-else:
-    print('  ✓ คอลัมน์ตรงกันทุกตาราง (%d คอลัมน์)' % sum(len(c) for c in prisma_cols.values()))
-
 # ══ ER-2 · index-q.sql ═════════════════════════════════════════════
 head('ER-2', 'index-q.sql = schema.prisma')
 iq = sql_tables(SQL_IQ)
@@ -357,48 +332,6 @@ for (m_, c_), why in REMOVED_FROM_DESIGN.items():
 if not dropped and not unexpected and not iq_colbad:
     print('  ✓ ตรงตามที่เอกสารบอก — schema.prisma %d ตาราง + เสนอเพิ่ม %d ตาราง %d คอลัมน์'
           % (len(prisma_cols), len(added), len(PROPOSED_COLS)))
-
-# ══ PRES · ของกำกวมบนโต๊ะนำเสนอ ════════════════════════════════════
-head('PRES', 'ไฟล์ที่กำกวมเมื่อวางเรียงกัน')
-refdir = ROOT / 'docs' / 'reference' / 'db'
-mysqldir = refdir / 'mysql'
-# a replaced export is deleted (git history keeps it), so two exports of the
-# same version can never sit side by side and be opened BY MISTAKE.
-pdfs = sorted(p.name for p in mysqldir.glob('*.pdf'))
-v4pdfs = [p for p in pdfs if 'v4' in p.lower()]
-if len(v4pdfs) > 1:
-    fail.append('PRES · มี ER PDF รุ่น v4 มากกว่าหนึ่งไฟล์ที่ระดับบนสุด')
-    print('  ✗ ER PDF ที่ขึ้นต้นว่า v4 มี %d ไฟล์ — ลบไฟล์เก่า (ฉบับเก่าอยู่ใน git history)' % len(v4pdfs))
-    for p in v4pdfs:
-        print('      ' + p)
-else:
-    print('  ✓ มี ER PDF รุ่น v4 ไฟล์เดียวที่ระดับบนสุด: %s' % (v4pdfs[0] if v4pdfs else '(ไม่มี)'))
-
-# The actual defect found 2026-09-13: a "current" PDF that still names a table
-# dropped 2026-09-06. Re-derive the check instead of trusting the fix stuck.
-try:
-    from pypdf import PdfReader
-    RETIRED_TABLES = ('GradeScheme', 'GradeRun')
-    for pdf in v4pdfs:
-        path = mysqldir / pdf
-        txt = ' '.join((pg.extract_text() or '') for pg in PdfReader(str(path)).pages)
-        stale = [t for t in RETIRED_TABLES if t in txt]
-        if stale:
-            fail.append('PRES · %s ยังพูดถึงตารางที่ถูกยุบแล้ว %s' % (pdf, stale))
-            print('  ✗ %s ยังมี %s — schema ยุบตารางนี้ไปแล้ว 2569-09-06' % (pdf, stale))
-        else:
-            print('  ✓ %s ไม่มีตารางที่ถูกยุบ (%s)' % (pdf, ' · '.join(RETIRED_TABLES)))
-except ImportError:
-    warn.append('PRES · ข้ามการตรวจเนื้อหา PDF — ไม่มี pypdf (pip install pypdf)')
-    print('  ! ไม่มี pypdf ติดตั้ง — ข้ามการตรวจว่า PDF มีตารางที่ถูกยุบแล้วหรือไม่')
-
-alt = refdir / 'schema.sql'
-if alt.exists():
-    ntab = len(sql_tables(alt))
-    if ntab and ntab != len(v4):
-        warn.append('PRES · docs/reference/db/schema.sql เป็นสคีมาคนละชุด')
-        print('  ! schema.sql มี %d ตาราง (v4 มี %d) — เป็นแบบ enterprise ที่ไม่ได้ใช้' % (ntab, len(v4)))
-        print('      ชื่อไฟล์อ่านเหมือนเป็นสคีมาหลัก · เปิดผิดแล้วอธิบายผิดทั้งการนำเสนอ')
 
 # ══ สรุป ═══════════════════════════════════════════════════════════
 print('\n' + '═' * 76)

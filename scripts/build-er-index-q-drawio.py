@@ -7,8 +7,8 @@
    .drawio is the only ER picture this script makes. The Workbench EER comes from
    scripts/build-index-q-workbench.py.)
 
-   WHY THIS EXISTS: the only rendered ER in the repo (cmas_app_v4_er-diagram.pdf)
-   is the 13-table v4 schema. index-q.html runs on 15 tables — AuthEvent and
+   WHY THIS EXISTS: the only rendered ER in the repo (the v4 PDF, since deleted)
+   was the 13-table v4 schema. index-q.html runs on 15 tables — AuthEvent and
    UploadReject existed nowhere as a picture.
 
    CHECKING THE PICTURE: draw.io does not run on the build machine, so the

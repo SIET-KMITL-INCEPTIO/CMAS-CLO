@@ -25,7 +25,6 @@
 | `usecase/UML-INDEX-Q.drawio` | **ไม่ได้ commit** · สร้างได้ด้วย `python scripts/build-index-q-uml-drawio.py` (ข้อมูลชุดเดียวกับ use case ทางการ ย่อเหลือหน้าเดียวสำหรับสไลด์) |
 | `architecture/Structure.drawio` | วาดมือหน้าเดียว · โครงสร้างผู้สอนแบบบทบาทเดียว |
 | `../reference/db/mysql/index-q-v2.mwb` · `index-q-er-diagram.pdf` | ER แบบ MySQL Workbench 19 ตาราง · โมเดลสร้างจาก `index-q.sql` ด้วย `python scripts/build-index-q-workbench.py` · PDF export ด้วยมือ: File → Export → Export as Single Page PDF |
-| `../reference/db/mysql/cmas_app_v4*` | ER รุ่น v4 (migration 0004) จาก Workbench · ค้างไว้ตามเดิม |
 
 ไฟล์ที่ทีมวาดเองทุกไฟล์เก็บไว้ครบ ไม่ได้ลบ ส่วนไฟล์ที่สคริปต์สร้างเก็บเฉพาะรุ่นล่าสุด (2026-10-14 ลบหน้า 2–3 ของ `Structure.drawio` ที่ยังวาดบทบาท 3 แบบ และ Excel 2 ไฟล์ที่ค้างที่ v4 ออก ดู [`VERSIONS.md`](../VERSIONS.md) §3.2)
 

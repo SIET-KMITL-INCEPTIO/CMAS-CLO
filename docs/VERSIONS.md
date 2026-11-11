@@ -14,7 +14,7 @@ Fix this page in the same change.
 
 | Rule | Example |
 |---|---|
-| The **current** file keeps a stable name with no date | `mysql/index-q-er-diagram.pdf` |
+| The **current** file keeps a stable name with no date | `mysql/index-q.sql` |
 | A replaced file is **deleted** in the commit that adds its replacement. Git history keeps it, so there is no `superseded/` folder to open by mistake | `git log --follow -- docs/diagrams/threat-model/report.htm` |
 | A markdown document carries its own version in its header, plus the baseline it was checked against | `> **Version:** 2.4.0 \| **Updated:** 2026-09-26` · `> **Baseline:** [[srs]] v2.4.0 · migration 0001–0007` |
 | A generated file is never versioned by hand. Its version is the version of its input | `ER-INDEX-Q.*` ← `index-q.sql` |
@@ -44,7 +44,7 @@ that cannot drift, because Prisma records it in the database.
 | (before Prisma) | ≤ 2026-08-03 | 13 | — | v1 | deleted | git history only |
 | (before Prisma) | ≤ 2026-08-03 | 15 | — | v2 (multi-tenant) | deleted | git history only |
 | `0001`–`0002` | 2026-08-04 | 11 | v2 | **v3** | deleted 2026-10-21 (`cmas_app_mysql_v3.sql`, `cmas_app_production_v3.sql` + `.mwb`, `cmas_app_v3_er-diagram.pdf`) | git history only |
-| `0003`–`0004` | 2026-08-23, trimmed 2026-09-06 | 13 | v3 | **v4** | `cmas_app_mysql_v4.sql` · `cmas_app_v4.mwb` · `cmas_app_v4_er-diagram.pdf` | **frozen**: kept at top level as the Workbench model; `check-diagrams.py` ER-1 compares it and only warns |
+| `0003`–`0004` | 2026-08-23, trimmed 2026-09-06 | 13 | v3 | **v4** | deleted 2026-11-11 (`cmas_app_mysql_v4.sql`, `cmas_app_v4.mwb`, `cmas_app_v4_er-diagram.pdf`) | git history only |
 | `0005` | 2026-09-14 | 14 | v4 | — | no MySQL mirror | — |
 | `0006` | 2026-09-17 | 13 | v5 | — | no MySQL mirror | — |
 | `0007` | 2026-09-23 | 13 | **v5.1** | **`index-q`** | `index-q.sql` (13 Prisma tables + 4 proposed by the prototype = 17) · `index-q_er-diagram.pdf` | **current** |
@@ -79,19 +79,16 @@ listed in the header of the SQL file under "PROTOTYPE <-> SQL".
 |---|---|---|
 | `reference/db/mysql/index-q.sql` | hand-written | **source**: edit this |
 | `diagrams/er/ER-INDEX-Q.drawio` | `scripts/build-er-index-q-drawio.py` | edit the layout |
-| `reference/db/mysql/index-q-v2.mwb` | `scripts/build-index-q-workbench.py` (needs MySQL Workbench) | Workbench model of `index-q.sql` · 18 tables, 26 relationships |
-| `reference/db/mysql/index-q-er-diagram.pdf` | MySQL Workbench export of the model above, 2026-10-19 | show the Workbench-style EER (replaces `index-q_er-diagram.pdf` of 2026-09-25, which had 16 tables) |
+| `reference/db/mysql/index-q-v2.mwb` | `scripts/build-index-q-workbench.py` (needs MySQL Workbench) | Workbench model of `index-q.sql` · 19 tables, 27 relationships |
 
-### 3.2 Frozen-at-v4 derivatives: versions that fall behind together
+### 3.2 Removed v4 derivatives
 
-Built from `cmas_app_mysql_v4.sql`, so they describe migration `0004`, not the
-current schema:
+The v4 SQL, Workbench model and PDF (`cmas_app_mysql_v4.sql`, `cmas_app_v4.mwb`,
+`cmas_app_v4_er-diagram.pdf`) and four older ER files were deleted 2026-11-11 so no
+stale ER can be opened by mistake. The ER PDF is exported by hand from
+`index-q-v2.mwb` when needed (File > Export > Export as Single Page PDF).
 
-- `reference/db/mysql/cmas_app_v4.mwb`, `cmas_app_v4_er-diagram.pdf`
-
-They still have `ObjectiveAssessment` and `CLO.threshold`, and have no
-`EmailVerificationToken` or `User.status`. Use `diagrams/er/ER-INDEX-Q.*` for the
-current model. The two Excel workbooks generated from v4 (`CMAS-ER-Tables.xlsx`,
+Use `diagrams/er/ER-INDEX-Q.*` for the current model. The two Excel workbooks generated from v4 (`CMAS-ER-Tables.xlsx`,
 `CMAS-ER-Data-Entry.xlsx`) and their scripts were removed 2026-10-14; they are in
 git history.
 
