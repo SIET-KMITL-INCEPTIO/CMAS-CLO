@@ -33,7 +33,7 @@ type Endpoint = {
   courseScope: string
   capability: string
   status: "done" | "contract" | "new" | "later"
-  design: { success: string; errors: string } | null
+  design: { body: string; success: string; errors: string } | null
 }
 
 const DESIGN_JSON = new URL("../../../docs/excel/api/api-endpoints.json", import.meta.url)
@@ -44,7 +44,6 @@ const { prefix, endpoints } = JSON.parse(readFileSync(DESIGN_JSON, "utf8")) as {
 
 const PUBLIC = "ไม่ต้องล็อกอิน"
 const LOGGED_IN = "ผู้ใช้ที่ล็อกอิน"
-const RESOLVE = "resolve จาก id"
 const NO_CAPABILITY = ["อ่าน", "—"]
 
 /** The design's "who may call" + capability, in the server's own terms. */
@@ -65,19 +64,6 @@ const shape = (url: string) => url.replace(/:\w+/g, ":_").replace(/(.)\/$/, "$1"
 const inScope = endpoints.filter((e) => e.status !== "later")
 const done = endpoints.filter((e) => e.status === "done")
 const toBuild = inScope.filter((e) => e.status !== "done")
-// A route whose course is found from a leaf id (/clos/:cloId) needs the A-3 resolver,
-// which access.middleware.ts does not have yet: it accepts a course capability only
-// on a path with :courseId.
-const needsResolver = (e: Endpoint) => {
-  const a = accessOf(e)
-  return (
-    e.courseScope === RESOLVE &&
-    typeof a === "object" &&
-    !e.path.includes(":courseId") &&
-    a.cap !== "user.manage" &&
-    a.cap !== "course.create"
-  )
-}
 
 let app: FastifyInstance
 const registered: RouteOptions[] = []
@@ -125,13 +111,12 @@ describe("routes the server registers = the design's done rows", () => {
   )
 })
 
+// A leaf route (/clos/:cloId) finds its course through the A-3 resolver in
+// access.middleware.ts, so every designed endpoint registers with its access.
+// Once all are built the list is empty; a new design row makes it non-empty again.
 describe("every designed endpoint can be built on this server", () => {
-  const ready = toBuild.filter((e) => !needsResolver(e))
-  const blocked = toBuild.filter(needsResolver)
-
-  it.each(ready.map((e) => [`${e.method} ${e.path}`, e] as const))(
-    "%s registers with its access",
-    async (_name, e) => {
+  it("has no in-scope endpoint left unbuilt, or each one registers", async () => {
+    for (const e of toBuild) {
       const probe = await buildApp({
         logger: false,
         extraRoutes: async (api) =>
@@ -143,28 +128,9 @@ describe("every designed endpoint can be built on this server", () => {
           }),
       })
       await probe.close()
-    },
-  )
-
-  // Expected to fail until access.middleware.ts can resolve courseId from a leaf id
-  // (A-3). When the resolver lands these start passing — and it.fails turns red, which
-  // is the signal to move them into the list above.
-  it.fails.each(blocked.map((e) => [`${e.method} ${e.path}`, e] as const))(
-    "%s registers once the A-3 resolver exists",
-    async (_name, e) => {
-      const probe = await buildApp({
-        logger: false,
-        extraRoutes: async (api) =>
-          void api.route({
-            method: e.method,
-            url: e.path,
-            config: { access: accessOf(e) },
-            handler: async () => "designed",
-          }),
-      })
-      await probe.close()
-    },
-  )
+    }
+    expect(done.length + toBuild.length).toBe(inScope.length)
+  })
 })
 
 describe("implemented endpoints answer as designed", () => {
@@ -181,8 +147,13 @@ describe("implemented endpoints answer as designed", () => {
     },
   )
 
+  // Only a public route reaches its body without a token: every other one answers 401 first,
+  // which the test above covers. Their bodies are covered by the validator tests.
+  const takesBody = (e: Endpoint) => !e.design?.body.startsWith("—")
   it.each(
-    done.filter((e) => e.method === "POST").map((e) => [`${e.method} ${e.path}`, e] as const),
+    done
+      .filter((e) => e.method === "POST" && e.role === PUBLIC && takesBody(e))
+      .map((e) => [`${e.method} ${e.path}`, e] as const),
   )("%s refuses a malformed body with 400", async (_name, e) => {
     expect(statuses(e.design!.errors).has(400)).toBe(true)
     const res = await app.inject({ method: e.method, url: e.fullPath, payload: { wrong: true } })

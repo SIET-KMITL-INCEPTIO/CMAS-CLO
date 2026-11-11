@@ -75,4 +75,45 @@ export class UserRepository {
   grantAdmin(id: string): Promise<User> {
     return prisma.user.update({ where: { id }, data: { role: "ADMIN", status: "ACTIVE" } })
   }
+
+  /** GET /auth/me and GET /users/:userId (A-9: never passwordHash or googleSub). */
+  findProfile(id: string) {
+    return prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        status: true,
+        isActive: true,
+        authProvider: true,
+        createdAt: true,
+        courseAssignments: {
+          orderBy: { assignedAt: "asc" },
+          select: {
+            course: {
+              select: { id: true, code: true, section: true, semester: true, year: true },
+            },
+          },
+        },
+        _count: { select: { uploadLogs: true } },
+      },
+    })
+  }
+
+  update(id: string, data: { name?: string; role?: Role; isActive?: boolean }) {
+    return prisma.user.update({ where: { id }, data })
+  }
+
+  /** Active ADMIN accounts other than `exceptId` — the last one must stay (design #11, #12). */
+  countOtherActiveAdmins(exceptId: string) {
+    return prisma.user.count({
+      where: { role: "ADMIN", isActive: true, status: "ACTIVE", id: { not: exceptId } },
+    })
+  }
+
+  countCourses(id: string) {
+    return prisma.courseInstructor.count({ where: { userId: id } })
+  }
 }

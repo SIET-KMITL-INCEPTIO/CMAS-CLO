@@ -346,7 +346,7 @@ erDiagram
 |---|---|
 | `database/schema.prisma` | **แหล่งจริง** ของโครงสร้างข้อมูล (PostgreSQL) |
 | `database/migrations/0001…0007` | ลำดับการเปลี่ยนโครงสร้าง + CHECK constraint + trigger |
-| `docs/reference/db/mysql/index-q.sql` | สำเนาเชิง MySQL สำหรับ reverse-engineer เป็น EER Diagram ใน MySQL Workbench — Prisma ถึง 0007 + ส่วนที่ต้นแบบ index-q เสนอเพิ่ม (16 ตาราง · 19 FK) · `cmas_app_mysql_v4.sql` แช่แข็งที่ 0004 ไม่ตรง schema แล้ว |
+| `docs/reference/db/mysql/index-q.sql` | สำเนาเชิง MySQL สำหรับ reverse-engineer เป็น EER Diagram ใน MySQL Workbench — = `schema.prisma` หลัง migration 0008 (19 ตาราง · 27 FK) · ไฟล์ MySQL รุ่นเก่าถูกลบแล้ว เหลือไฟล์นี้ไฟล์เดียว |
 | `docs/diagrams/er/ER-INDEX-Q.drawio` / `.pdf` | ไดอะแกรมสำหรับใส่เล่มและพรีเซนต์ |
 
 ## 2.4 Tech Stack

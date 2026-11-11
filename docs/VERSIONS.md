@@ -4,8 +4,8 @@ Which file in `docs/` is current, which ones are older copies of it, and which
 files only *look* related. Read this before opening anything in
 `reference/db/` or `diagrams/` for a presentation.
 
-Last checked: **2026-11-09**, against `database/schema.prisma` (13 models,
-migrations `0001`–`0007`, unchanged since 2026-09-28). When this page and the code disagree, the code wins.
+Last checked: **2026-11-10**, against `database/schema.prisma` on `feature/api-endpoints` (19 models,
+migrations `0001`–`0008`; `develop` still has 13 models / `0001`–`0007` until that branch merges). When this page and the code disagree, the code wins.
 Fix this page in the same change.
 
 ---
@@ -14,7 +14,7 @@ Fix this page in the same change.
 
 | Rule | Example |
 |---|---|
-| The **current** file keeps a stable name with no date | `mysql/index-q-er-diagram.pdf` |
+| The **current** file keeps a stable name with no date | `mysql/index-q.sql` |
 | A replaced file is **deleted** in the commit that adds its replacement. Git history keeps it, so there is no `superseded/` folder to open by mistake | `git log --follow -- docs/diagrams/threat-model/report.htm` |
 | A markdown document carries its own version in its header, plus the baseline it was checked against | `> **Version:** 2.4.0 \| **Updated:** 2026-09-26` · `> **Baseline:** [[srs]] v2.4.0 · migration 0001–0007` |
 | A generated file is never versioned by hand. Its version is the version of its input | `ER-INDEX-Q.*` ← `index-q.sql` |
@@ -44,7 +44,7 @@ that cannot drift, because Prisma records it in the database.
 | (before Prisma) | ≤ 2026-08-03 | 13 | — | v1 | deleted | git history only |
 | (before Prisma) | ≤ 2026-08-03 | 15 | — | v2 (multi-tenant) | deleted | git history only |
 | `0001`–`0002` | 2026-08-04 | 11 | v2 | **v3** | deleted 2026-10-21 (`cmas_app_mysql_v3.sql`, `cmas_app_production_v3.sql` + `.mwb`, `cmas_app_v3_er-diagram.pdf`) | git history only |
-| `0003`–`0004` | 2026-08-23, trimmed 2026-09-06 | 13 | v3 | **v4** | `cmas_app_mysql_v4.sql` · `cmas_app_v4.mwb` · `cmas_app_v4_er-diagram.pdf` | **frozen**: kept at top level as the Workbench model; `check-diagrams.py` ER-1 compares it and only warns |
+| `0003`–`0004` | 2026-08-23, trimmed 2026-09-06 | 13 | v3 | **v4** | deleted 2026-11-11 (`cmas_app_mysql_v4.sql`, `cmas_app_v4.mwb`, `cmas_app_v4_er-diagram.pdf`) | git history only |
 | `0005` | 2026-09-14 | 14 | v4 | — | no MySQL mirror | — |
 | `0006` | 2026-09-17 | 13 | v5 | — | no MySQL mirror | — |
 | `0007` | 2026-09-23 | 13 | **v5.1** | **`index-q`** | `index-q.sql` (13 Prisma tables + 4 proposed by the prototype = 17) · `index-q_er-diagram.pdf` | **current** |
@@ -79,19 +79,16 @@ listed in the header of the SQL file under "PROTOTYPE <-> SQL".
 |---|---|---|
 | `reference/db/mysql/index-q.sql` | hand-written | **source**: edit this |
 | `diagrams/er/ER-INDEX-Q.drawio` | `scripts/build-er-index-q-drawio.py` | edit the layout |
-| `reference/db/mysql/index-q-v2.mwb` | `scripts/build-index-q-workbench.py` (needs MySQL Workbench) | Workbench model of `index-q.sql` · 18 tables, 26 relationships |
-| `reference/db/mysql/index-q-er-diagram.pdf` | MySQL Workbench export of the model above, 2026-10-19 | show the Workbench-style EER (replaces `index-q_er-diagram.pdf` of 2026-09-25, which had 16 tables) |
+| `reference/db/mysql/index-q-v2.mwb` | `scripts/build-index-q-workbench.py` (needs MySQL Workbench) | Workbench model of `index-q.sql` · 19 tables, 27 relationships |
 
-### 3.2 Frozen-at-v4 derivatives: versions that fall behind together
+### 3.2 Removed v4 derivatives
 
-Built from `cmas_app_mysql_v4.sql`, so they describe migration `0004`, not the
-current schema:
+The v4 SQL, Workbench model and PDF (`cmas_app_mysql_v4.sql`, `cmas_app_v4.mwb`,
+`cmas_app_v4_er-diagram.pdf`) and four older ER files were deleted 2026-11-11 so no
+stale ER can be opened by mistake. The ER PDF is exported by hand from
+`index-q-v2.mwb` when needed (File > Export > Export as Single Page PDF).
 
-- `reference/db/mysql/cmas_app_v4.mwb`, `cmas_app_v4_er-diagram.pdf`
-
-They still have `ObjectiveAssessment` and `CLO.threshold`, and have no
-`EmailVerificationToken` or `User.status`. Use `diagrams/er/ER-INDEX-Q.*` for the
-current model. The two Excel workbooks generated from v4 (`CMAS-ER-Tables.xlsx`,
+Use `diagrams/er/ER-INDEX-Q.*` for the current model. The two Excel workbooks generated from v4 (`CMAS-ER-Tables.xlsx`,
 `CMAS-ER-Data-Entry.xlsx`) and their scripts were removed 2026-10-14; they are in
 git history.
 
@@ -160,16 +157,16 @@ later rewrite. The repo does not record which one was submitted.
 ### 3.9 Threat model: one model, one report
 
 In [`diagrams/threat-model/`](diagrams/threat-model/). Checked 2026-10-20 against
-`diagrams/dfd/DFD-INDEX-Q.drawio` v1.4. DFD v1.4 (2026-10-19) changes labels only — `RemediationPlan` joins D5, "แผนพัฒนาผู้เรียน" and "บันทึกการตั้งค่าตัดเกรด" join existing flows; still 6 processes, 6 stores, 44 flows — so the threat model needs no new element, only the label wording. The model was relabelled on 2026-10-19 (the 6.0 ↔ D2 grading flows and ผู้สอน → 6.0 carry the new words); **still old wording:** the 6.0 ↔ D5 and 6.1 ↔ D5 flows, which do not yet mention แผนพัฒนาผู้เรียน.
+`diagrams/dfd/DFD-INDEX-Q.drawio` v1.4; the DFD is now **v1.5 (2026-11-10) and the model was brought to it on 2026-11-10 by script (flow names, new entity and boundary)** — v1.5 adds the external entity "บริการส่งอีเมล" (e-mail-link sign-in, FR-07) with 2 flows on level 0 (ลิงก์เข้าสู่ระบบ · ผลการส่งอีเมล) and the same 2 on level 1 (1.0 ↔ mail), so level 0 has 8 flows and level 1 has 46; `RefreshToken` joins D1 (no new flow). The model now has the entity, its boundary and the four flows, and every flow name equals the DFD; threats for the new elements were generated in the Threat Modeling Tool and exported as `threat-report.htm` on 2026-11-11 (728 threats, none assessed yet). DFD v1.4 (2026-10-19) changes labels only — `RemediationPlan` joins D5, "แผนพัฒนาผู้เรียน" and "บันทึกการตั้งค่าตัดเกรด" join existing flows; still 6 processes, 6 stores, 44 flows — so the threat model needs no new element, only the label wording. The model was relabelled on 2026-10-19 (the 6.0 ↔ D2 grading flows and ผู้สอน → 6.0 carry the new words); **still old wording:** the 6.0 ↔ D5 and 6.1 ↔ D5 flows, which do not yet mention แผนพัฒนาผู้เรียน.
 
 | File | Status |
 |---|---|
 | `threat-model.tm7` | **current**, edited by hand in Microsoft Threat Modeling Tool. Four pages (`Layer0`, `Layer1`, `Layer2-P4`, `Layer2-P6`) that mirror DFD levels 0, 1 and the two level-2 pages |
-| `report.htm` | **current**, exported from the model above: 695 threats. Every threat is still *Not Started* / *High* (the tool's default): not yet assessed |
+| `threat-report.htm` | **current**, exported from the model above on 2026-11-11 (renamed from `report.htm`): 728 threats on the v1.5 model. Every threat is still *Not Started* / *High* (the tool's default): not yet assessed. The header fields (contributors, description, assumptions, external dependencies) are empty |
 
 The model is **not generated** from the DFD, so `check-diagrams.py` does not compare
 them: when the DFD changes, redraw the model by hand and export a new report.
-Overwrite `threat-model.tm7` and `report.htm` in place; earlier states of both are
+Overwrite `threat-model.tm7` and `threat-report.htm` in place; earlier states of both are
 in git history.
 
 ## 4. Document versions (markdown)

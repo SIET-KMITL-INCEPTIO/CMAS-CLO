@@ -11,24 +11,22 @@ See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
 [`../../../database/schema.prisma`](../../../database/schema.prisma) (app source of truth).
 
 > **Updated 2026-09-26 — ไฟล์ MySQL ที่ตรงกับ `schema.prisma` ตอนนี้คือ `index-q.sql`, ไม่ใช่ v4.**
-> `cmas_app_mysql_v4.sql` ถูกแช่แข็งที่สถานะ migration `0004` (13 ตาราง มี `ObjectiveAssessment`
-> ไม่มี `EmailVerificationToken`) — migration `0005`–`0007` ไม่ได้ถูกตามเข้าไป
-> `reference/db/mysql/index-q.sql` ใช้ Prisma ถึง `0007` เป็นฐาน (13 ตาราง) แล้วเติมส่วนที่ต้นแบบ `index-q.html`
-> เสนอเพิ่มอีก 3 ตาราง (`AuthEvent` · `UploadReject` · `CourseGroupWeight`) รวม **16 ตาราง · 19 FK**
-> — ทุกอย่างที่เพิ่มติดป้าย `[index-q]` ใน COMMENT · ภาพ ER ของไฟล์นี้: `docs/diagrams/er/ER-INDEX-Q.*`
+> ไฟล์ v4 เดิมแช่แข็งที่ migration `0004` และถูกลบแล้ว (2026-11-11) เหลือ `index-q.sql` ไฟล์เดียว
+> `reference/db/mysql/index-q.sql` = `schema.prisma` หลัง migration `0008` (19 ตาราง · 27 FK) — ส่วนที่ต้นแบบ `index-q.html`
+> เคยเสนอเพิ่ม (`AuthEvent` · `UploadReject` · `CourseGroupWeight` · `ScoreChange` · `RemediationPlan`) ถูกรับเข้า schema แล้วด้วย `0008` พร้อม `RefreshToken` รวม **19 ตาราง · 27 FK**
+> — ไม่มีส่วนที่ติดป้าย `[index-q]` เหลือแล้ว · ภาพ ER ของไฟล์นี้: `docs/diagrams/er/ER-INDEX-Q.*`
 > · แผนภาพ mermaid ด้านล่างเป็นของ **`schema.prisma` ปัจจุบัน** (ไม่รวมส่วนที่ index-q เสนอเพิ่ม)
 
 > **Updated 2026-09-06 — ตารางตัดเกรดเหลือ 2 ตาราง.** ตัด `GradeScheme` และ `GradeRun` ออก
 > · `GradeScheme` ยุบเป็นคอลัมน์ `Course.gradeMethod` (อิงเกณฑ์ / อิงกลุ่ม) เพราะหน่วยของ
 > เส้นแบ่งเกรดตามมาจากวิธีอยู่แล้ว · `GradeRun` ตัดทิ้งพร้อม `n / mean / sd` ซึ่งแลกกับการที่
 > เกรดอิงกลุ่มย้อนพิสูจน์ที่มาไม่ได้ (ตัวเกรดยังคงที่ เพราะเก็บเป็นค่าจริง) · ทั้งระบบเหลือ
-> **13 ตาราง 80 คอลัมน์ 16 FK** · เหตุผลเต็มอยู่ในหัวไฟล์ `cmas_app_mysql_v4.sql` และ SRS v2.2.0
-> · **ต้อง re-import ไฟล์ v4 ใหม่** ถ้าเคยวาดไดอะแกรมไว้ก่อนวันนี้
+> **13 ตาราง 80 คอลัมน์ 16 FK** · เหตุผลเต็มอยู่ใน SRS v2.2.0
 
 > **Updated 2026-08-23 — v4 adds การตัดเกรด (grading).** Four new tables
 > (`GradeScheme`, `GradeBand`, `GradeRun`, `StudentGrade`), `CLO.bloomLevel`,
 > `CLO.classTarget`, and `Course.gradingType` renamed to `Course.gradeScale`.
-> **Import `cmas_app_mysql_v4.sql`** — v3 no longer matches `schema.prisma`.
+> Import `index-q.sql` (the v4 file has since been deleted).
 >
 > **Updated 2026-08-04 — the app model is now SINGLE-TENANT.** `Institution`,
 > `Membership`, `Curriculum` and `CurriculumCourse` were deleted; `Course` is the
@@ -40,8 +38,7 @@ See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
 | File | Model | Size | Translated from |
 |---|---|---|---|
 | [`reference/db/enterprise/schema.mysql.sql`](../../reference/db/enterprise/schema.mysql.sql) | Full institutional design — **reference only** | 36 tables, 4 views, 59 FKs | `enterprise/schema.pg.sql` (PostgreSQL 14+) |
-| [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) | **Prisma through migration 0007 + what `index-q.html` proposes. USE THIS ONE** | 16 tables, 19 FKs | `database/schema.prisma` + prototype deltas |
-| [`reference/db/mysql/cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql) | ~~Diagramming mirror~~ — **frozen at migration 0004**, stale since 0005 (still has `ObjectiveAssessment`, `CourseRole`, `CLO.threshold`) | 13 tables, 16 FKs | `database/schema.prisma` as of 2026-09-06 |
+| [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) | **`schema.prisma` through migration 0008. USE THIS ONE** | 19 tables, 27 FKs | `database/schema.prisma` |
 | [`mysql-dumps.md`](./mysql-dumps.md) | How-to | — | Workbench steps + translation table |
 
 **Requires MySQL 8.0.16+** (for `CHECK`, expression defaults, and the stored
@@ -70,7 +67,7 @@ Full steps (including the live-database route and the `.mwb` model save) are in
 
 เรนเดอร์ได้ทันทีใน Obsidian / GitHub — ใช้ตรวจรูปทรงก่อนเปิด Workbench
 โครงสร้างตรงกับ `database/schema.prisma` ปัจจุบัน · ไฟล์ที่ reverse-engineer ได้ที่ตรงกันคือ
-[`index-q.sql`](../../reference/db/mysql/index-q.sql) (13 ตารางนี้ + 3 ตารางที่ต้นแบบเสนอเพิ่ม)
+[`index-q.sql`](../../reference/db/mysql/index-q.sql) (13 ตารางนี้ + 6 ตารางจาก migration 0008)
 
 ```mermaid
 erDiagram

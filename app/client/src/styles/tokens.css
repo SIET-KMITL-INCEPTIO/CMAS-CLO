@@ -285,3 +285,45 @@
   --color-danger-bg: var(--status-danger-bg);
   --color-danger-text: var(--status-danger-text);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NOCTURNAL ATELIER v3.2 (light field) — the index-q prototype's tokens
+   Decision DS (2026-10-18): the app moves to these, replacing Verdure page
+   by page. Values copied from docs/pages/index-q.html (tailwind.config + :root);
+   ink-soft is the readable secondary text (6.06:1 on white). Names that
+   Verdure already owns (info, success, warning, danger) are left alone.
+   ═══════════════════════════════════════════════════════════════════════ */
+@theme {
+  --color-peri: #c8cdeb;
+  --color-cool: #878cb4;
+  --color-haze: #465078;
+  --color-mid: #1e233c;
+  --color-char: #0a0f19;
+  --color-field: #e9eaf4;
+  --color-card: #ffffff;
+  --color-wash: #f4f5fa;
+  --color-tint: #eeeff8;
+  --color-edge: #e4e5f0;
+  --color-edge2: #edeef6;
+  --color-ink: #1e233c;
+  --color-ink2: #4a5070;
+  --color-ink-soft: #5b6180;
+  --color-dim: #878cb4;
+  --color-faint: #9aa0be;
+  --color-ok: #4f7c68;
+  --color-ok-bg: #e7efea;
+  --color-warn: #7d6430;
+  --color-warn-bg: #f4eee1;
+  --color-bad: #a2504f;
+  --color-bad-bg: #f4e8e8;
+
+  --shadow-soft: 0 1px 2px rgba(30, 35, 60, 0.03), 0 6px 20px -10px rgba(30, 35, 60, 0.1);
+  --shadow-card: 0 1px 2px rgba(30, 35, 60, 0.04), 0 14px 44px -14px rgba(30, 35, 60, 0.13);
+}
+
+:root {
+  /* the prototype's sign-in backdrop */
+  --bg-field:
+    radial-gradient(1100px 560px at 15% -10%, #c8cdeb 0%, transparent 62%),
+    linear-gradient(180deg, #eeeff8, #f4f5fa);
+}

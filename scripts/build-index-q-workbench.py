@@ -4,7 +4,7 @@
    Output (docs/reference/db/mysql/):
      index-q-v2.mwb             the EER model, openable in MySQL Workbench
 
-   The PDF (index-q-er-diagram.pdf) is exported by hand from that model —
+   The PDF is exported by hand from that model —
    File > Export > Export as Single Page PDF. Workbench will not do it from a
    script: it answers "select a diagram first" and leaves a dialog open.
 
@@ -42,7 +42,7 @@ for _s in (sys.stdout, sys.stderr):
 
 ROOT = Path(__file__).resolve().parents[1]
 SQL = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
-SEED = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'cmas_app_v4.mwb'      # an empty-able model to open
+SEED = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q-v2.mwb'   # any model with one schema; its tables are cleared and rebuilt
 OUT_MWB = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q-v2.mwb'
 INNER = ROOT / 'scripts' / 'workbench-index-q-er.py'
 ER_SCRIPT = ROOT / 'scripts' / 'build-er-index-q-drawio.py'

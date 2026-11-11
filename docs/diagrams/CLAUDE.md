@@ -23,7 +23,7 @@
 |---|---|
 | ไม่ลงท้าย `_Handwritten` (DFD, ER, use case, flowchart ยกโครงปี) | สคริปต์ใน `scripts/build-*.py` สร้าง **ห้ามแก้ใน draw.io** แก้ต้นแบบหรือสคริปต์แล้วรันใหม่ |
 | ลงท้าย `_Handwritten` | แก้ใน draw.io ได้ แต่ต้องเทียบกับต้นแบบเอง |
-| `threat-model/threat-model.tm7` | แก้ด้วย Microsoft Threat Modeling Tool แล้วสร้าง `report.htm` ใหม่ |
+| `threat-model/threat-model.tm7` | แก้ด้วย Microsoft Threat Modeling Tool แล้วสร้าง `threat-report.htm` ใหม่ |
 
 ชื่อที่มี `-INDEX-Q` สกัดจาก `index-q.html` ทั้งหมด
 

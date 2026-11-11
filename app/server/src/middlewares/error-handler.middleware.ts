@@ -24,7 +24,11 @@ export function errorHandler(
   if (err instanceof CourseNotFoundError) return notFound(reply, err.message)
 
   if (err instanceof AppError) {
-    return reply.status(err.statusCode).send({ success: false, message: err.message })
+    return reply.status(err.statusCode).send({
+      success: false,
+      message: err.message,
+      ...(err.errors !== undefined ? { errors: err.errors } : {}),
+    })
   }
 
   if (err instanceof ZodError) return badRequest(reply, err.flatten())

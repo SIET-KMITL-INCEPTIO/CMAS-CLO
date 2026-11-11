@@ -9,8 +9,7 @@ filenames below are relative to that folder.
 
 | File | Model | Tables | Purpose |
 |---|---|---|---|
-| [`cmas_app_mysql_v4.sql`](../../reference/db/mysql/cmas_app_mysql_v4.sql) | **v4 — frozen at migration 0004 (2026-09-06)**; superseded by `index-q.sql` | 13 tables · 16 FKs | Diagramming only. **No longer matches `schema.prisma`**: still has `ObjectiveAssessment`, `CourseInstructor.role`, `CLO.threshold`, and lacks `EmailVerificationToken`, `User.status` and everything from migrations 0005–0007. Kept as the grading-era snapshot |
-| [`index-q.sql`](../../reference/db/mysql/index-q.sql) | **`schema.prisma` (through migration 0007) + what the UI prototype `docs/index-q/index-q.html` adds** | 16 tables · 19 FKs | The 13 Prisma tables including `User.status` (0007), plus the proposed `AuthEvent` (UC 1.6), `UploadReject` (FR-65) and `CourseGroupWeight` (N1 group weights), three password-flow columns on `User`, `Course.weightMode`, `Activity.passScore`, and `ScoreUploadLog.kind` (`SCORE` / `ROSTER`). Every addition is tagged `[index-q]` in its COMMENT, so the EER diagram shows what is proposed. Import this — it is the only MySQL file that matches the current Prisma schema, and it shows the prototype's data model. **Last loaded 2026-09-25** into a throwaway MySQL 8.0 (16 tables · 19 FKs by `information_schema`, also with `FOREIGN_KEY_CHECKS = 1`) |
+| [`index-q.sql`](../../reference/db/mysql/index-q.sql) | **`schema.prisma` through migration 0008** (the tables and columns the prototype used to propose were accepted by 0008) | 19 tables · 27 FKs | Equal to `schema.prisma` except the password columns: the 13 tables of 0007 plus `AuthEvent`, `UploadReject`, `CourseGroupWeight`, `ScoreChange`, `RemediationPlan` and `RefreshToken`. The password columns of `User` (`passwordHash`, `mustChangePassword`, `pwResetAt`, `pwChangedAt`) and the `PW_RESET` / `PW_CHANGE` / `VERIFY` event values are **not drawn** (no passwords since 2026-11-10); `schema.prisma` keeps them until a migration drops them, and `REMOVED_FROM_DESIGN` in `check-diagrams.py` lists the intended difference. Import this — it is the only MySQL file that matches the current Prisma schema. `scripts/check-diagrams.py` (ER-2) fails when the two drift apart. **Last loaded 2026-09-25** (16 tables then; not re-run for 19) |
 | [`../enterprise/schema.mysql.sql`](../../reference/db/enterprise/schema.mysql.sql) | Full institutional design (curriculum versioning, PLO/CLO mapping, sections, enrollments, PLO attainment, audit) | 36 tables + 4 views | Reference only — **not** what the app implements. A separate model, not a version of the app schema; lives in `reference/db/enterprise/` with its PostgreSQL original |
 
 Version labels here (`v3`, `v4`) are **not** the same numbers as the ones in
@@ -42,12 +41,11 @@ defaults (`DEFAULT (CURRENT_DATE)`), and a `STORED` generated column
 (`student_clo_scores.percent_score`). All tables are `InnoDB` + `utf8mb4` so the
 Thai `_th` columns store correctly.
 
-> **History — loaded against a live MySQL 8.0.43 on 2026-09-11** (before migrations 0005–0007 were mirrored; current counts are in the `index-q.sql` row above) — `cmas_app_mysql_v4.sql`
-> and `index-q.sql` only, each into a throwaway schema:
+> **History — loaded against a live MySQL 8.0.43 on 2026-09-11** (before migrations 0005–0007 were mirrored; current counts are in the `index-q.sql` row above) — `index-q.sql`
+> (and the since-deleted v4 file), each into a throwaway schema:
 >
 > | File | Tables | FKs | Also checked |
 > |---|---:|---:|---|
-> | `cmas_app_mysql_v4.sql` | 13 | 16 | — |
 > | `index-q.sql` | 15 | 19 | runs top-to-bottom with `FOREIGN_KEY_CHECKS = 1` · 11 of its tables are byte-identical to v4 by `SHOW CREATE TABLE`; `CourseInstructor` differs only in its COMMENT and `User` only by the 3 added columns · moving `AuthEvent` above `User` makes it fail with ERROR 1824, so the ordering claim is real |
 >
 > **Re-verified 2026-09-13** — `index-q.sql` loaded into a throwaway MySQL 8.0.43
@@ -78,7 +76,7 @@ Thai `_th` columns store correctly.
 Best for just getting the diagram.
 
 1. MySQL Workbench → **File ▸ Import ▸ Reverse Engineer MySQL Create Script…**
-2. **Browse** to `index-q.sql` (current: Prisma 0007 + prototype deltas; `cmas_app_mysql_v4.sql` is frozen at 0004).
+2. **Browse** to `index-q.sql` (= `schema.prisma` after migration 0008; the older MySQL files were deleted).
 3. Tick **"Place imported objects on a diagram"** → **Execute** → **Finish**.
 4. An EER diagram opens with every table and all foreign-key relationship lines.
 5. Tidy layout: **Arrange ▸ Autolayout**, then drag clusters apart.

@@ -12,7 +12,7 @@
    level 1 with a new number on the box.
 
    This is NOT the DFD in docs/markdown/dev/architecture/dfd.md. That one is the
-   input to threat modelling: ten processes, 56 numbered flows, trust
+   input to threat modelling: eleven processes, 87 numbered flows, trust
    boundaries, table.column on every arrow. This one answers a simpler question
    for a reader who has never seen the system — what goes in, what happens to
    it, what comes out — in the words the prototype's own screens use.
@@ -69,7 +69,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'docs' / 'diagrams' / 'dfd' / 'DFD-INDEX-Q.drawio'
 PRISMA = ROOT / 'database' / 'schema.prisma'
 SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
-VERSION = '1.4 · 2026-10-19'
+VERSION = '1.5 · 2026-11-10'
 
 INK, MUTED, TINT, WASH = '#1E233C', '#6B7192', '#E9EBF5', '#F4F5FA'
 FONT = ('fontFamily=IBM Plex Sans Thai;'
@@ -93,7 +93,7 @@ ENT, PROC, STORE = 'entity', 'process', 'store'
 # (id, plain name, tables) · the tables column is what R6 checks and what the
 # legend prints — the diagram itself shows only the plain name
 STORES = [
-    ('D1', 'บัญชีผู้ใช้', ['User', 'EmailVerificationToken', 'AuthEvent']),
+    ('D1', 'บัญชีผู้ใช้', ['User', 'EmailVerificationToken', 'AuthEvent', 'RefreshToken']),
     ('D2', 'รายวิชา', ['Course', 'CourseInstructor']),
     ('D3', 'CLO กิจกรรม และเกณฑ์', ['CLO', 'BehavioralObjective', 'Activity', 'AssessmentCriteria',
                                     'CourseGroupWeight']),
@@ -112,7 +112,7 @@ PROCS = [
 
 # ── what crosses the system boundary (level 0) ───────────────────────
 # R5 holds every level-1 flow that touches an entity to one of these phrases.
-T, A, G = 'ผู้สอน', 'ผู้ดูแลระบบ', 'Google'
+T, A, G, M = 'ผู้สอน', 'ผู้ดูแลระบบ', 'Google', 'บริการส่งอีเมล'
 CTX = {
     (T, 'in'): ['คำขอเข้าสู่ระบบ', 'แผนพัฒนาผู้เรียน', 'ข้อมูลรายวิชาและการตั้งค่า', 'CLO กิจกรรม และเกณฑ์วัดผล',
                 'คะแนน (กรอกเองหรือไฟล์ Excel)', 'รายชื่อนักศึกษา', 'คำขอดูผลและรายงาน', 'ช่วงเกรดและการปรับเกรด'],
@@ -122,6 +122,10 @@ CTX = {
     (A, 'out'): ['รายการบัญชีและประวัติการใช้งาน', 'ผลการมอบหมายผู้สอน'],
     (G, 'in'): ['ผลยืนยันตัวตน (อีเมล ชื่อ)'],
     (G, 'out'): ['คำขอยืนยันตัวตน'],
+    # 2026-11-10: เข้าสู่ระบบด้วยลิงก์อีเมล (FR-07) — ระบบส่งลิงก์ผ่านผู้ให้บริการอีเมลภายนอก
+    # (ยังไม่เลือกรายใด จึงใช้ชื่อกลาง · ผู้สอนเปิดลิงก์ = เส้น "คำขอเข้าสู่ระบบ" ที่มีอยู่แล้ว)
+    (M, 'out'): ['ลิงก์เข้าสู่ระบบ'],
+    (M, 'in'): ['ผลการส่งอีเมล'],
 }
 
 
@@ -194,6 +198,8 @@ def level0():
     p.box(A, ENT, A, S_ENTITY, 1500, 190, 200, 100)
     p.box(G, ENT, 'Google<br><span style="font-weight:normal;font-size:12px">บริการยืนยันตัวตน</span>',
           S_ENTITY, 1500, 650, 200, 100)
+    p.box(M, ENT, M + '<br><span style="font-weight:normal;font-size:12px">ส่งลิงก์เข้าสู่ระบบ</span>',
+          S_ENTITY, 1500, 860, 200, 100)
     p.box('P0', PROC, proc_label('0', '<b>ระบบ CMAS</b><br>ติดตามและประเมินผลลัพธ์การเรียนรู้<br>ระดับรายวิชา (CLO)'),
           S_PROC.replace('fontSize=14', 'fontSize=15'), 760, 380, 340, 180)
 
@@ -205,6 +211,8 @@ def level0():
     p.flow('P0', A, lines((A, 'out')), [(1100, 430), (1600, 430), (1600, 290)], lx=-0.3, ly=-28)
     p.flow('P0', G, lines((G, 'out')), [(1100, 510), (1600, 510), (1600, 650)], lx=-0.3, ly=16)
     p.flow(G, 'P0', lines((G, 'in')), [(1500, 720), (880, 720), (880, 560)], lx=-0.35, ly=16)
+    p.flow('P0', M, lines((M, 'out')), [(840, 560), (840, 890), (1500, 890)], lx=-0.2, ly=-16)
+    p.flow(M, 'P0', lines((M, 'in')), [(1500, 940), (780, 940), (780, 560)], lx=-0.2, ly=16)
     p.box(None, None, LEGEND + '<br><br>นักศึกษาไม่ได้ใช้ระบบเอง — ผู้สอนเป็นคนป้อนข้อมูลให้',
           S_NOTE, 60, 720, 620, 170)
     return p
@@ -228,6 +236,8 @@ def level1():
     p.box('T1', ENT, T, S_ENTITY, 60, 250, 170, 1150, owner=T)
     p.box(G, ENT, 'Google<br><span style="font-weight:normal;font-size:12px">บริการยืนยันตัวตน</span>',
           S_ENTITY, 900, 110, 190, 70)
+    p.box(M, ENT, M + '<br><span style="font-weight:normal;font-size:12px">ส่งลิงก์เข้าสู่ระบบ</span>',
+          S_ENTITY, 300, 110, 190, 70)
     # ผู้ดูแลระบบ sits between the two processes it talks to. Anywhere on the
     # edge of the page its arrows to 2.0 have to cross ผู้สอน's arrows to 1.0.
     p.box(A, ENT, A, S_ENTITY, 900, 420, 180, 70)
@@ -256,6 +266,8 @@ def level1():
     p.flow('P1', G, 'คำขอยืนยันตัวตน', [(750, 250), (750, 130), (900, 130)], ctx=['คำขอยืนยันตัวตน'], lx=0.45)
     p.flow(G, 'P1', 'ผลยืนยันตัวตน<br>(อีเมล ชื่อ)', [(1000, 180), (1000, 215), (800, 215), (800, 250)],
            ctx=['ผลยืนยันตัวตน (อีเมล ชื่อ)'], lx=-0.1)
+    p.flow('P1', M, 'ลิงก์เข้าสู่ระบบ', [(640, 250), (640, 130), (490, 130)], ctx=['ลิงก์เข้าสู่ระบบ'], lx=0.2, ly=-14)
+    p.flow(M, 'P1', 'ผลการส่งอีเมล', [(490, 165), (600, 165), (600, 250)], ctx=['ผลการส่งอีเมล'], lx=-0.3, ly=14)
     p.flow(A, 'P1', 'คำขอเข้าสู่ระบบ<br>การอนุมัติและปิดบัญชี', [(1020, 420), (1020, 395), (800, 395), (800, 370)],
            ctx=['คำขอเข้าสู่ระบบ', 'การอนุมัติและปิดบัญชี'], lx=-0.05)
     p.flow('P1', A, 'รายการบัญชี<br>ประวัติการใช้งาน', [(660, 370), (660, 440), (900, 440)],
@@ -528,7 +540,7 @@ def main():
         print('ไม่เขียนไฟล์ — ผิดกฎ %d ข้อ' % len(bad))
         return 1
     xml = ('<mxfile host="drawio" agent="CMAS scripts/build-dfd-index-q-drawio.py" version="24.0.0">%s%s%s%s</mxfile>'
-           % (l0.xml('dfd0', 1780, 920), l1.xml('dfd1', 2640, 1460),
+           % (l0.xml('dfd0', 1780, 1040), l1.xml('dfd1', 2640, 1460),
               l2[0].xml('dfd2-4', *l2[0].size), l2[1].xml('dfd2-6', *l2[1].size)))
     io.open(OUT, 'w', encoding='utf-8', newline='\n').write(xml)
     n_proc = sum(1 for k in l1.kind_of.values() if k == PROC)
