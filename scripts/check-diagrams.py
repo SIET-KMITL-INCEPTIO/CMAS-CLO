@@ -47,6 +47,14 @@ GEN = [('scripts/build-usecase-drawio.py', 'docs/diagrams/usecase/index-q-usecas
 #  ให้ใส่ที่นี่พร้อมเหตุผล แล้วติดป้ายในไฟล์ SQL)
 PROPOSED = {}
 PROPOSED_COLS = {}
+# คอลัมน์ที่ schema.prisma ยังมีแต่ถูกตัดจากการออกแบบ จึงไม่วาดใน index-q.sql และ ER
+# (2026-11-10 ตัดรหัสผ่าน · หายจริงเมื่อมี migration ใหม่ที่ drop คอลัมน์และแก้ CHECK chk_user_has_credential)
+REMOVED_FROM_DESIGN = {
+    ('User', 'passwordHash'): 'ไม่มีรหัสผ่าน',
+    ('User', 'mustChangePassword'): 'ไม่มี UC รีเซ็ตรหัสผ่าน',
+    ('User', 'pwResetAt'): 'ไม่มี UC รีเซ็ตรหัสผ่าน',
+    ('User', 'pwChangedAt'): 'ไม่มี UC เปลี่ยนรหัสผ่าน',
+}
 
 fail, warn = [], []
 
@@ -331,7 +339,7 @@ if dropped:
     print('  ✗ ขาดจาก schema.prisma: %s' % dropped)
 iq_colbad = 0
 for mdl in sorted(set(prisma_cols) & set(iq)):
-    only_p = sorted(set(prisma_cols[mdl]) - set(iq[mdl]))
+    only_p = sorted(c for c in set(prisma_cols[mdl]) - set(iq[mdl]) if (mdl, c) not in REMOVED_FROM_DESIGN)
     only_s = sorted(c for c in set(iq[mdl]) - set(prisma_cols[mdl]) if (mdl, c) not in PROPOSED_COLS)
     if only_p or only_s:
         iq_colbad += 1
@@ -344,6 +352,8 @@ if unexpected:
 for t in added:
     if t in PROPOSED:
         print('  ✓ เพิ่ม %-14s %s' % (t, PROPOSED[t]))
+for (m_, c_), why in REMOVED_FROM_DESIGN.items():
+    print('  · ไม่วาด %s.%s — %s (ยังอยู่ใน schema.prisma รอ migration)' % (m_, c_, why))
 if not dropped and not unexpected and not iq_colbad:
     print('  ✓ ตรงตามที่เอกสารบอก — schema.prisma %d ตาราง + เสนอเพิ่ม %d ตาราง %d คอลัมน์'
           % (len(prisma_cols), len(added), len(PROPOSED_COLS)))

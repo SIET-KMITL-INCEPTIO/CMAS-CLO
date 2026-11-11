@@ -13,13 +13,15 @@
 --
 -- Source of truth is database/schema.prisma. Nothing deploys from this file.
 --
--- Password removal (2026-11-10): the system has no passwords. User.passwordHash,
--- mustChangePassword, pwResetAt, pwChangedAt, EmailVerificationToken (reused as
--- the sign-in link store) and the PW_RESET / PW_CHANGE / VERIFY values of
--- AuthEvent.action are still in schema.prisma because dropping them needs a
--- new migration. Each is marked "(removed from the design 2026-11-10)" in its
--- COMMENT. CHECK chk_user_has_credential (0005) must be relaxed by that same
--- migration, or an e-mail-link account (no passwordHash, no googleSub) is refused.
+-- No passwords (2026-11-10): the design has none, so this file does not draw
+-- the password columns or password events that schema.prisma still carries:
+--   User.passwordHash · mustChangePassword · pwResetAt · pwChangedAt
+--   AuthEvent.action values PW_RESET · PW_CHANGE · VERIFY
+-- They go away with a new migration; until then scripts/check-diagrams.py
+-- (REMOVED_FROM_DESIGN) is the one place that lists the intended difference
+-- and ER-2 fails on any other. That migration must also relax CHECK
+-- chk_user_has_credential (0005), or an e-mail-link account (no passwordHash,
+-- no googleSub) is refused. EmailVerificationToken stays: it stores the link.
 --
 -- ============================================================================
 -- WHAT CHANGED SINCE v4 — ALREADY IN schema.prisma (not tagged)
@@ -27,7 +29,7 @@
 --   0005  D1  CourseInstructor.role DROPPED — one course role, equal rights
 --         D4  CLO.soloLevel (SURFACE / DEEP / TRANSFER) beside bloomLevel
 --         D6  self-registration: User.authProvider · googleSub · emailVerifiedAt,
---             passwordHash nullable (Google-only accounts), EmailVerificationToken NEW
+--             EmailVerificationToken NEW
 --   0006  T4  AssessmentCriteria re-pointed Activity <-> BehavioralObjective
 --             (was Activity <-> CLO). ObjectiveAssessment DROPPED — merged in.
 --         T1  CLO.weight · E3 CLO.levelSource · T6 BehavioralObjective.weight
@@ -87,7 +89,7 @@
 -- Checked 2569-10-02 against the live db object of index-q.html: every other
 -- field of every collection has a column of the same name here, and every
 -- other column here is either read by the prototype or comes from the
--- schema.prisma baseline (passwordHash, googleSub, User.status, createdAt /
+-- schema.prisma baseline (googleSub, User.status, createdAt /
 -- updatedAt, the EmailVerificationToken table).
 --
 --   index-q.html                      this file
@@ -98,8 +100,6 @@
 --   db.override[studentId]{to,why}    StudentGrade.grade + overrideReason — a
 --                                     prototype convenience, NOT a table
 --   db.user[].emailVerified (bool)    User.emailVerifiedAt (NULL = not yet)
---   db.user[]._demoPw                 User.passwordHash — the prototype keeps
---                                     no hash; nothing here stores a password
 --   db.scoreChange[].from / .to       fromScore + fromExcused / toScore +
 --     number | null | 'EXCUSED'       toExcused
 --   db.scoreChange[].courseId         (none) a filter shortcut; here it is
@@ -162,9 +162,6 @@ CREATE TABLE `User` (
     id           VARCHAR(30)  NOT NULL,
     email        VARCHAR(255) NOT NULL   COMMENT 'one human, one credential',
     name         VARCHAR(255) NOT NULL,
-    -- NULL for an account that only ever signs in with Google (D6). Migration
-    -- 0005 CHECKs that at least one of passwordHash / googleSub is present.
-    passwordHash VARCHAR(255) NULL       COMMENT 'argon2id (removed from the design 2026-11-10 — no passwords; column stays until a migration drops it)',
     role         ENUM('ADMIN','INSTRUCTOR') NOT NULL DEFAULT 'INSTRUCTOR',
     isActive     TINYINT(1)   NOT NULL DEFAULT 1
                               COMMENT 'kill switch — never hard-delete a User',
@@ -179,12 +176,6 @@ CREATE TABLE `User` (
     status       ENUM('PENDING','ACTIVE') NOT NULL DEFAULT 'ACTIVE'
                               COMMENT 'PENDING = Google หรือลิงก์อีเมลนอกโดเมนสถาบัน รอผู้ดูแลอนุมัติ',
 
-    -- 0008. UC 1.5 reset password was removed from the design on 2026-11-10;
-    -- the three columns stay in schema.prisma until a migration drops them.
-    mustChangePassword TINYINT(1) NOT NULL DEFAULT 0
-                              COMMENT '(removed from the design 2026-11-10 — no passwords)',
-    pwResetAt    DATETIME(3)  NULL    COMMENT '(removed from the design 2026-11-10 — no passwords)',
-    pwChangedAt  DATETIME(3)  NULL    COMMENT '(removed from the design 2026-11-10 — no passwords)',
 
     createdAt    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     updatedAt    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
@@ -675,8 +666,7 @@ CREATE TABLE AuthEvent (
     userId   VARCHAR(30)   NOT NULL COMMENT 'บัญชีที่ถูกกระทำ',
     actorId  VARCHAR(30)   NOT NULL COMMENT 'ผู้กระทำ',
     action   ENUM('CREATE','EDIT','ROLE_SET','SUSPEND','ACTIVATE',
-                  'PW_RESET','PW_CHANGE','DENY',
-                  'REGISTER','VERIFY','LOGIN','LOGIN_GOOGLE','LOGOUT') NOT NULL,
+                  'DENY','REGISTER','LOGIN','LOGIN_GOOGLE','LOGOUT') NOT NULL,
     detail   VARCHAR(500)  NULL,
     `at`     DATETIME(3)   NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     PRIMARY KEY (id),
