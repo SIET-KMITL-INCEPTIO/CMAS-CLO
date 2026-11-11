@@ -12,7 +12,7 @@
    level 1 with a new number on the box.
 
    This is NOT the DFD in docs/markdown/dev/architecture/dfd.md. That one is the
-   input to threat modelling: ten processes, 56 numbered flows, trust
+   input to threat modelling: eleven processes, 87 numbered flows, trust
    boundaries, table.column on every arrow. This one answers a simpler question
    for a reader who has never seen the system — what goes in, what happens to
    it, what comes out — in the words the prototype's own screens use.
