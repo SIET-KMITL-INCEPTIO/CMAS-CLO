@@ -11,7 +11,7 @@
      UML-3  ไม่มี use case ที่ไม่มีเลข
      UML-4  ไฟล์ที่สร้างด้วยสคริปต์ ตรงกับ index-q.html ณ ตอนนี้
      ER-1   schema.prisma ↔ cmas_app_mysql_v4.sql — ชื่อตารางและชื่อคอลัมน์
-     ER-2   index-q.sql = schema.prisma + ตาราง/คอลัมน์ที่เสนอเพิ่มและมีบันทึกไว้ ไม่มีอย่างอื่นแปลกปลอม
+     ER-2   index-q.sql = schema.prisma (หลัง migration 0008) · ตาราง/คอลัมน์ที่เสนอเพิ่มต้องมีบันทึกใน PROPOSED
      PRES   ไฟล์ที่กำกวมบนโต๊ะนำเสนอ — รุ่นเก่าวางคู่รุ่นใหม่ ชื่อซ้ำ ของที่ถูกยกเลิก
 
    exit 0 = พร้อม · exit 1 = มีข้อขัดแย้งที่ต้องตัดสินใจก่อนขึ้นจอ
@@ -41,29 +41,12 @@ GEN = [('scripts/build-usecase-drawio.py', 'docs/diagrams/usecase/index-q-usecas
        ('scripts/build-er-index-q-drawio.py', 'docs/diagrams/er/ER-INDEX-Q.drawio'),
        ('scripts/build-dfd-index-q-drawio.py', 'docs/diagrams/dfd/DFD-INDEX-Q.drawio')]
 
-# ตารางที่ index-q.sql เสนอเพิ่มจาก schema.prisma · มีบันทึกเหตุผลไว้ใน coverage GAPS
-# (2569-09-18: ฐานเทียบเปลี่ยนจาก v4 เป็น schema.prisma — migration 0005/0006
-#  แก้ตารางไปแล้ว v4 จึงไม่ใช่ฐานของ index-q.sql อีกต่อไป)
-PROPOSED = {
-    'AuthEvent': 'UC 1.5 ตรวจสอบประวัติการใช้งาน · SEC-5 บันทึกการถูกปฏิเสธ · D6 ลงทะเบียน',
-    'UploadReject': 'UC 6.5 / 7.5 รายงานแถวที่ถูกปฏิเสธตอนนำเข้า',
-    'CourseGroupWeight': 'N1/N2 น้ำหนักต่อกลุ่มประเภทกิจกรรม เมื่อ Course.weightMode = GROUP',
-    'ScoreChange': 'R5 ประวัติการเปลี่ยนคะแนนรายช่อง — ใคร เมื่อไร จากอะไรเป็นอะไร ด้วยวิธีไหน',
-    'RemediationPlan': 'ความเห็นอาจารย์ 2569-10-19 แผนพัฒนาผู้เรียนรายคน × CLO (ครูพิมพ์เอง ไม่เข้าสูตรคะแนน)',
-}
-# คอลัมน์ [index-q] ที่เสนอเพิ่มบนตารางที่ prisma มีอยู่แล้ว
-PROPOSED_COLS = {
-    ('ScoreUploadLog', 'kind'): 'UC 7.1 แยกการนำเข้ารายชื่อกับคะแนน',
-    ('Course', 'weightMode'): 'N1 กรอกน้ำหนักกิจกรรมทีละรายการ หรือต่อกลุ่มประเภท',
-    ('Activity', 'passScore'): 'M3 เกณฑ์ผ่านกิจกรรมเป็นคะแนน (passMark คำนวณจากค่านี้)',
-    ('Activity', 'typeLabel'): 'ความเห็นอาจารย์ 2569-10-19 ประเภทกิจกรรมที่ผู้สอนพิมพ์เอง (type = OTHER)',
-    ('Activity', 'assessmentLabel'): 'ความเห็นอาจารย์ 2569-10-19 วิธีประเมินที่ผู้สอนพิมพ์เอง',
-    ('Activity', 'closedAt'): 'R3 ปิดรับคะแนน — ช่องว่างหลังปิดคือขาดส่ง',
-    ('Student', 'status'): 'R2 ถอนรายวิชา — ออกจากตัวหารทุกตัว',
-    ('Student', 'withdrawnAt'): 'R2',
-    ('Score', 'status'): 'R3 ยกเว้น — ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้',
-    ('Score', 'excuseReason'): 'U6 เหตุผลการยกเว้น',
-}
+# ตารางและคอลัมน์ที่ index-q.sql เสนอเพิ่มเกิน schema.prisma
+# (2026-11-10: ว่างแล้ว — migration 0008 รับทุกข้อเสนอของต้นแบบเข้า schema.prisma ครบ
+#  index-q.sql จึงต้องเท่ากับ schema.prisma ทุกตารางทุกคอลัมน์ · ถ้ามีข้อเสนอใหม่
+#  ให้ใส่ที่นี่พร้อมเหตุผล แล้วติดป้ายในไฟล์ SQL)
+PROPOSED = {}
+PROPOSED_COLS = {}
 
 fail, warn = [], []
 
@@ -338,7 +321,7 @@ else:
     print('  ✓ คอลัมน์ตรงกันทุกตาราง (%d คอลัมน์)' % sum(len(c) for c in prisma_cols.values()))
 
 # ══ ER-2 · index-q.sql ═════════════════════════════════════════════
-head('ER-2', 'index-q.sql = schema.prisma + ตารางที่เสนอเพิ่ม')
+head('ER-2', 'index-q.sql = schema.prisma')
 iq = sql_tables(SQL_IQ)
 added = sorted(set(iq) - set(prisma_cols))
 dropped = sorted(set(prisma_cols) - set(iq))

@@ -5,15 +5,21 @@
 --           File > Import > Reverse Engineer MySQL Create Script...
 --
 -- What this is: the data model the UI prototype docs/index-q/index-q.html
--- actually runs on. Its baseline is database/schema.prisma as of migration
--- 0007 (revised 2569-09-25; 0006 on 2569-09-18, v4 verbatim before that), plus the
--- deltas the prototype needs that Prisma does not have yet. Every delta is
--- tagged [index-q] at its definition and in its COMMENT, so the EER diagram
--- shows what is proposed without this header open beside it.
+-- runs on. Its baseline is database/schema.prisma as of migration 0008
+-- (2026-10-22). 0008 accepted every table and column this file used to
+-- PROPOSE (decision D-4), so nothing here is a proposal any more: the file
+-- equals schema.prisma, and scripts/check-diagrams.py (ER-2) fails if the two
+-- drift apart.
 --
--- Source of truth is still database/schema.prisma. Nothing deploys from this
--- file. The [index-q] parts are PROPOSALS: they become real only when a
--- Prisma migration adds them.
+-- Source of truth is database/schema.prisma. Nothing deploys from this file.
+--
+-- Password removal (2026-11-10): the system has no passwords. User.passwordHash,
+-- mustChangePassword, pwResetAt, pwChangedAt, EmailVerificationToken (reused as
+-- the sign-in link store) and the PW_RESET / PW_CHANGE / VERIFY values of
+-- AuthEvent.action are still in schema.prisma because dropping them needs a
+-- new migration. Each is marked "(removed from the design 2026-11-10)" in its
+-- COMMENT. CHECK chk_user_has_credential (0005) must be relaxed by that same
+-- migration, or an e-mail-link account (no passwordHash, no googleSub) is refused.
 --
 -- ============================================================================
 -- WHAT CHANGED SINCE v4 — ALREADY IN schema.prisma (not tagged)
@@ -35,8 +41,8 @@
 --             the instructor picked · MANUAL = both picked by hand. The verb
 --             analysis of E3 is gone; only the column's meaning changed.
 --
--- WHAT index-q.html ADDS ON TOP — 18 tables · 26 FKs
---   = 13 tables of schema.prisma + 5 proposed tables · 13 proposed columns
+-- WHAT MIGRATION 0008 ADDED (2026-10-22) — proposed by index-q.html, now in schema.prisma
+--   = 13 tables through 0007 + 5 tables from the prototype + RefreshToken (D-2) · 19 tables
 -- ----------------------------------------------------------------------------
 --   5 tables
 --   RemediationPlan   NEW  2569-10-19 teacher feedback — the instructor's free-text plan to
@@ -51,7 +57,7 @@
 --                          when, from what to what, by which path (typed in the
 --                          grid · pasted · import · fill · closing an activity
 --                          · undo)
---   10 columns
+--   columns
 --   Course         +1   weightMode — MANUAL (per activity) or GROUP (per type)
 --   Activity       +4   2569-10-19 type / assessmentMethod gain 'OTHER' (none of the above)
 --                       and 'CUSTOM' (option the instructor added) · typeLabel and
@@ -132,10 +138,9 @@
 --   No ON DELETE actions, CHECKs or triggers — those live in the Prisma
 --   migrations (0002, 0004, 0005, 0006). This file exists so the EER draws cleanly.
 --   One exception: ScoreChange carries ON DELETE CASCADE on its Student and
---   Activity keys. It has no migration yet to hold the rule, and the prototype
---   already behaves that way (deleting either drops the cell's history).
+--   Activity keys (migration 0008 holds the rule; the prototype behaves the same).
 --   Runs clean top to bottom on MySQL 8.0 (verified 2569-10-02 on a scratch
---   server: 17 tables, 23 foreign keys, 11 columns tagged [index-q]).
+--   server with the 17 tables of that date).
 -- ============================================================================
 
 SET NAMES utf8mb4;
@@ -159,7 +164,7 @@ CREATE TABLE `User` (
     name         VARCHAR(255) NOT NULL,
     -- NULL for an account that only ever signs in with Google (D6). Migration
     -- 0005 CHECKs that at least one of passwordHash / googleSub is present.
-    passwordHash VARCHAR(255) NULL       COMMENT 'argon2id only — NULL = Google-only account',
+    passwordHash VARCHAR(255) NULL       COMMENT 'argon2id (removed from the design 2026-11-10 — no passwords; column stays until a migration drops it)',
     role         ENUM('ADMIN','INSTRUCTOR') NOT NULL DEFAULT 'INSTRUCTOR',
     isActive     TINYINT(1)   NOT NULL DEFAULT 1
                               COMMENT 'kill switch — never hard-delete a User',
@@ -172,7 +177,14 @@ CREATE TABLE `User` (
     -- FR-08 (migration 0007). Separate from isActive on purpose: status only
     -- moves PENDING -> ACTIVE, isActive is the kill switch that can flip back.
     status       ENUM('PENDING','ACTIVE') NOT NULL DEFAULT 'ACTIVE'
-                              COMMENT 'PENDING = Google นอกโดเมนสถาบัน รอผู้ดูแลอนุมัติ',
+                              COMMENT 'PENDING = Google หรือลิงก์อีเมลนอกโดเมนสถาบัน รอผู้ดูแลอนุมัติ',
+
+    -- 0008. UC 1.5 reset password was removed from the design on 2026-11-10;
+    -- the three columns stay in schema.prisma until a migration drops them.
+    mustChangePassword TINYINT(1) NOT NULL DEFAULT 0
+                              COMMENT '(removed from the design 2026-11-10 — no passwords)',
+    pwResetAt    DATETIME(3)  NULL    COMMENT '(removed from the design 2026-11-10 — no passwords)',
+    pwChangedAt  DATETIME(3)  NULL    COMMENT '(removed from the design 2026-11-10 — no passwords)',
 
     createdAt    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     updatedAt    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
@@ -187,7 +199,7 @@ CREATE TABLE `User` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='ผู้ใช้ระบบ — ADMIN หรือ INSTRUCTOR (ไม่มี role นักศึกษา) · ลงทะเบียนเองได้ (D6)';
 
--- The link an EMAIL registration is verified by (D6). Only the hash is stored,
+-- The sign-in link (D6; since 2026-11-10 the e-mail-link sign-in uses it as its token store). Only the hash is stored,
 -- so a leaked table cannot be replayed; usedAt makes the link single-use.
 CREATE TABLE EmailVerificationToken (
     id        VARCHAR(30)  NOT NULL,
@@ -248,11 +260,11 @@ CREATE TABLE Course (
     classTarget    DOUBLE       NOT NULL DEFAULT 100
                                 COMMENT 'สัดส่วนผู้ผ่าน CLO จึงถือว่าบรรลุ (%) — D2 ทุกคนผ่าน · CLO may override',
 
-    -- [index-q] N1 (2569-09-23). GROUP: the instructor enters one weight per
+    -- N1 (2569-09-23). GROUP: the instructor enters one weight per
     -- activity type (CourseGroupWeight) and each activity's weight is split from
     -- it in proportion to maxScore. MANUAL: Activity.weight is entered directly.
     weightMode     ENUM('MANUAL','GROUP') NOT NULL DEFAULT 'MANUAL'
-                                COMMENT '[index-q] กรอกน้ำหนักรายกิจกรรม หรือรายกลุ่มประเภท',
+                                COMMENT 'กรอกน้ำหนักรายกิจกรรม หรือรายกลุ่มประเภท',
 
     createdAt      DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     updatedAt      DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
@@ -349,33 +361,33 @@ CREATE TABLE Activity (
     name     VARCHAR(255) NOT NULL,
     -- T3 / T11: the free-text `method` split into what the activity IS and how
     -- it is marked; the old text survives as the start of criteriaNote.
-    -- [index-q] 2569-10-19: OTHER = "none of the above" (no name needed).
+    -- 2569-10-19: OTHER = "none of the above" (no name needed).
     -- CUSTOM = an option the instructor added to the dropdown herself; its name is
     -- typeLabel / assessmentLabel, and names used in a course come back as options.
     -- Each CUSTOM type name is its own weight group (see CourseGroupWeight.type).
     type     ENUM('LECTURE','LAB','TEST','PROJECT','OTHER','CUSTOM') NOT NULL DEFAULT 'TEST'
                           COMMENT 'บรรยาย · ปฏิบัติการ · สอบ · โครงงาน/ชิ้นงาน · อื่น ๆ · กำหนดเอง',
     typeLabel VARCHAR(100) NOT NULL DEFAULT ''
-                          COMMENT '[index-q] ชื่อประเภทที่ผู้สอนกำหนดเอง — ใช้เมื่อ type = CUSTOM',
+                          COMMENT 'ชื่อประเภทที่ผู้สอนกำหนดเอง — ใช้เมื่อ type = CUSTOM',
     assessmentMethod ENUM('QUIZ','EXAM','RUBRIC','WORK','OBSERVATION','OTHER','CUSTOM') NOT NULL DEFAULT 'EXAM'
                           COMMENT 'วิธีประเมิน',
     assessmentLabel VARCHAR(100) NOT NULL DEFAULT ''
-                          COMMENT '[index-q] ชื่อวิธีประเมินที่ผู้สอนกำหนดเอง — ใช้เมื่อ assessmentMethod = CUSTOM',
+                          COMMENT 'ชื่อวิธีประเมินที่ผู้สอนกำหนดเอง — ใช้เมื่อ assessmentMethod = CUSTOM',
     criteriaNote VARCHAR(1000) NOT NULL DEFAULT '' COMMENT 'เกณฑ์การประเมิน / รูบริก — ข้อความอิสระ',
     passMark DOUBLE       NOT NULL DEFAULT 50
                           COMMENT '% of maxScore that passes THIS activity — reported, never decides a CLO (E1)',
-    -- [index-q] M3 (2569-09-21). The instructor enters and reads a SCORE, not a
+    -- M3 (2569-09-21). The instructor enters and reads a SCORE, not a
     -- percent; passMark is kept equal to passScore / maxScore * 100.
     -- NULL = not entered, the UI falls back to passMark * maxScore / 100.
     passScore DOUBLE      NULL
-                          COMMENT '[index-q] คะแนนที่ถือว่าผ่านกิจกรรม — passMark คำนวณจากค่านี้',
+                          COMMENT 'คะแนนที่ถือว่าผ่านกิจกรรม — passMark คำนวณจากค่านี้',
     maxScore DOUBLE       NOT NULL COMMENT 'must be > 0 — every formula divides by it',
     `order`  INT          NOT NULL,
     weight   DOUBLE       NOT NULL COMMENT '% of course total; all activities sum to 100',
-    -- [index-q] R3 — NULL = still collecting scores, a missing Score row means
+    -- R3 — NULL = still collecting scores, a missing Score row means
     -- "not assessed yet". Once set, a missing row means "did not submit" and
     -- someone has to decide: 0, or EXCUSED. Re-opening sets it back to NULL.
-    closedAt DATE         NULL COMMENT '[index-q] ปิดรับคะแนนเมื่อ · NULL = ยังเก็บคะแนนอยู่',
+    closedAt DATE         NULL COMMENT 'ปิดรับคะแนนเมื่อ · NULL = ยังเก็บคะแนนอยู่',
     PRIMARY KEY (id),
     KEY idx_activity_course (courseId),
     KEY idx_activity_order (courseId, `order`),
@@ -384,7 +396,7 @@ CREATE TABLE Activity (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='กิจกรรมประเมิน — คะแนนถูกบันทึกรายกิจกรรมเท่านั้น';
 
--- [index-q] N1/N2 — db.course[].groupWeight in index-q.html, e.g. { LAB:25,
+-- N1/N2 — db.course[].groupWeight in index-q.html, e.g. { LAB:25,
 -- TEST:75 }. Stored as rows, not a JSON column: one weight per (course, type)
 -- is exactly what the unique key says. Read only when Course.weightMode =
 -- GROUP; the rows are kept when the course switches back to MANUAL.
@@ -398,7 +410,7 @@ CREATE TABLE CourseGroupWeight (
     CONSTRAINT fk_groupweight_course
         FOREIGN KEY (courseId) REFERENCES Course (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  COMMENT='[index-q] น้ำหนักต่อกลุ่มประเภทกิจกรรม — ระบบแบ่งให้กิจกรรมในกลุ่มตามคะแนนเต็ม';
+  COMMENT='น้ำหนักต่อกลุ่มประเภทกิจกรรม — ระบบแบ่งให้กิจกรรมในกลุ่มตามคะแนนเต็ม';
 
 -- Associative entity: Activity <-> BehavioralObjective is M:N and `weight`
 -- belongs to the pairing rather than to either side (T4, migration 0006).
@@ -432,12 +444,12 @@ CREATE TABLE Student (
     studentCode VARCHAR(50)  NOT NULL,
     name        VARCHAR(255) NOT NULL,
     courseId    VARCHAR(30)  NOT NULL,
-    -- [index-q] R2 — WITHDRAWN leaves every denominator (attainment, mean/SD,
+    -- R2 — WITHDRAWN leaves every denominator (attainment, mean/SD,
     -- completeness, the follow-up list) and shows grade W. The Score rows are
     -- kept on purpose: restoring the status brings the student back whole.
     status      ENUM('ENROLLED','WITHDRAWN') NOT NULL DEFAULT 'ENROLLED'
-                             COMMENT '[index-q] ถอนรายวิชา = ไม่นับในผลใด ๆ แต่คะแนนยังเก็บไว้',
-    withdrawnAt DATE         NULL COMMENT '[index-q] วันที่ถอน · NULL เมื่อยังลงทะเบียนอยู่',
+                             COMMENT 'ถอนรายวิชา = ไม่นับในผลใด ๆ แต่คะแนนยังเก็บไว้',
+    withdrawnAt DATE         NULL COMMENT 'วันที่ถอน · NULL เมื่อยังลงทะเบียนอยู่',
     PRIMARY KEY (id),
     -- Unique inside a course. The same code in two courses is two enrolments
     -- of one person, which is correct and must stay legal.
@@ -455,16 +467,16 @@ CREATE TABLE Score (
     activityId VARCHAR(30) NOT NULL,
     -- No row means "ยังไม่ประเมิน". A 0 here is a real zero the student
     -- earned; the ABSENCE of the row is the missing value.
-    -- [index-q] R3 — score is NULL only when status = EXCUSED: the student is
+    -- R3 — score is NULL only when status = EXCUSED: the student is
     -- exempt from this activity and it leaves both numerator and denominator.
     -- App rule (and a CHECK when this becomes a migration):
     --   (status = 'SCORED') = (score IS NOT NULL)
     score      DOUBLE      NULL,
     status     ENUM('SCORED','EXCUSED') NOT NULL DEFAULT 'SCORED'
-                           COMMENT '[index-q] EXCUSED = ยกเว้น ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้',
-    -- [index-q] U6 — why the student was excused. Optional, set only while
+                           COMMENT 'EXCUSED = ยกเว้น ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้',
+    -- U6 — why the student was excused. Optional, set only while
     -- status = EXCUSED (cleared when the cell becomes a score or empty again).
-    excuseReason VARCHAR(255) NULL COMMENT '[index-q] เหตุผลการยกเว้น · ไม่บังคับ',
+    excuseReason VARCHAR(255) NULL COMMENT 'เหตุผลการยกเว้น · ไม่บังคับ',
     uploadedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     PRIMARY KEY (id),
     UNIQUE KEY uq_score_student_activity (studentId, activityId),
@@ -536,14 +548,14 @@ CREATE TABLE ScoreUploadLog (
     recordsOk   INT          NOT NULL COMMENT 'score import: cells written · roster import: students added',
     recordsFail INT          NOT NULL,
 
-    -- [index-q] commitImport() in index-q.html logs BOTH kinds of Excel import
+    -- commitImport() in index-q.html logs BOTH kinds of Excel import
     -- here: scores (UC 6.1) and the student roster (UC 7.1). v4 has no way to
     -- tell them apart, so a roster upload reads as a score upload, recordsOk
     -- means two different things, and the 7.5 error report cannot say which
     -- file its rejected rows came from. Kept as a column on this table rather
     -- than a rename or a second log table: both imports share every other field.
     kind        ENUM('SCORE','ROSTER') NOT NULL DEFAULT 'SCORE'
-                             COMMENT '[index-q] ชนิดการนำเข้า — คะแนน (UC 6.1) หรือรายชื่อนักศึกษา (UC 7.1)',
+                             COMMENT 'ชนิดการนำเข้า — คะแนน (UC 6.1) หรือรายชื่อนักศึกษา (UC 7.1)',
     createdAt   DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     PRIMARY KEY (id),
     KEY idx_uploadlog_course (courseId),
@@ -557,7 +569,7 @@ CREATE TABLE ScoreUploadLog (
   COMMENT='ตามรอยการนำเข้าไฟล์ Excel — ใครทำ เมื่อไร ด้วยไฟล์อะไร · คะแนนและรายชื่อ แยกด้วย kind';
 
 -- ----------------------------------------------------------------------------
--- [index-q] PROPOSED — tables index-q.html stores that schema.prisma lacks
+-- Tables 0008 added (index-q.html stored them first)
 --
 -- All three below sit outside the calculation path like ScoreUploadLog: no
 -- formula reads them, so adding them is a migration, not a redesign. (The
@@ -586,9 +598,9 @@ CREATE TABLE UploadReject (
     CONSTRAINT fk_uploadreject_log
         FOREIGN KEY (logId) REFERENCES ScoreUploadLog (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  COMMENT='[index-q] แถวที่ถูกปฏิเสธตอนนำเข้า — ทำให้รายงานข้อผิดพลาด FR-65 สร้างได้จริง';
+  COMMENT='แถวที่ถูกปฏิเสธตอนนำเข้า — ทำให้รายงานข้อผิดพลาด FR-65 สร้างได้จริง';
 
--- [index-q] 2569-10-19 (teacher feedback) — db.remediation in index-q.html.
+-- 2569-10-19 (teacher feedback) — db.remediation in index-q.html.
 -- The instructor's plan for one student on one CLO: what will be done so the
 -- student can still pass it (retake · extra assignment · more practice).
 -- Free text; it is never read by a score or grade formula. One row per
@@ -611,9 +623,9 @@ CREATE TABLE RemediationPlan (
     CONSTRAINT fk_remediation_user
         FOREIGN KEY (updatedBy) REFERENCES `User` (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  COMMENT='[index-q] แผนพัฒนาคุณภาพผู้เรียนรายคน × CLO — ครูพิมพ์เอง ไม่เข้าสูตรคะแนน';
+  COMMENT='แผนพัฒนาคุณภาพผู้เรียนรายคน × CLO — ครูพิมพ์เอง ไม่เข้าสูตรคะแนน';
 
--- [index-q] R5 — db.scoreChange in index-q.html. Every score write goes
+-- R5 — db.scoreChange in index-q.html. Every score write goes
 -- through one function (writeScore), and that function appends here. Without
 -- it a hand-edited cell leaves no trace: ScoreUploadLog only knows imports,
 -- and "who changed this, and from what" is the first question of any grade
@@ -651,7 +663,7 @@ CREATE TABLE ScoreChange (
     CONSTRAINT fk_scorechange_log
         FOREIGN KEY (logId) REFERENCES ScoreUploadLog (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  COMMENT='[index-q] ประวัติการเปลี่ยนคะแนนรายช่อง — ใคร เมื่อไร จากอะไรเป็นอะไร ด้วยวิธีไหน';
+  COMMENT='ประวัติการเปลี่ยนคะแนนรายช่อง — ใคร เมื่อไร จากอะไรเป็นอะไร ด้วยวิธีไหน';
 
 -- UC 1.6 ตรวจสอบประวัติการใช้งาน. userId is whom the event happened TO;
 -- actorId is who DID it — the same person for PW_CHANGE, EDIT-by-self and
@@ -676,17 +688,35 @@ CREATE TABLE AuthEvent (
     CONSTRAINT fk_authevent_actor
         FOREIGN KEY (actorId) REFERENCES `User` (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  COMMENT='[index-q] ประวัติเหตุการณ์กับบัญชี UC 1.6 — รวมการถูกปฏิเสธสิทธิ์ (FR-22b)';
+  COMMENT='ประวัติเหตุการณ์กับบัญชี UC 1.6 — รวมการถูกปฏิเสธสิทธิ์ (FR-22b)';
+
+-- 0008 (D-2 / S-2). Revocable refresh tokens: only the SHA-256 is stored, every
+-- use rotates the token inside its family, and reuse of a rotated token
+-- revokes the whole family. The raw token lives only in the httpOnly cookie.
+CREATE TABLE RefreshToken (
+    id         VARCHAR(30)  NOT NULL,
+    userId     VARCHAR(30)  NOT NULL,
+    tokenHash  VARCHAR(255) NOT NULL COMMENT 'SHA-256 of the refresh token — never the token itself',
+    familyId   VARCHAR(30)  NOT NULL COMMENT 'one sign-in = one family; rotation keeps it, reuse of an old member revokes all',
+    expiresAt  DATETIME(3)  NOT NULL,
+    revokedAt  DATETIME(3)  NULL     COMMENT 'set on logout, rotation or family revocation',
+    replacedBy VARCHAR(30)  NULL     COMMENT 'id of the token that replaced this one',
+    createdAt  DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_refreshtoken_hash (tokenHash),
+    KEY idx_refreshtoken_user (userId),
+    KEY idx_refreshtoken_family (familyId),
+    CONSTRAINT fk_refreshtoken_user
+        FOREIGN KEY (userId) REFERENCES `User` (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='refresh token ที่เพิกถอนได้ — เก็บเฉพาะ SHA-256 · หมุนทุกครั้งที่ใช้ · ใช้ซ้ำ = เพิกถอนทั้งสาย';
 
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================================
--- END — 17 tables · 23 foreign keys · 0 deferred FKs
---   13 tables as schema.prisma has them after migration 0007
---   · 11 columns added by index-q.html: User (+3), Course (+1), Activity (+2),
---     ScoreUploadLog (+1), Student (+2), Score (+2) — and Score.score NULLable
---   · 4 tables proposed by index-q.html: CourseGroupWeight, UploadReject,
---     ScoreChange, AuthEvent
+-- END — 19 tables · 27 foreign keys · 0 deferred FKs
+--   = schema.prisma after migration 0008, table for table and column for column
+--   (ER-2 in scripts/check-diagrams.py fails when they differ)
 --
 -- Every FK points at a table already created above it, so the file runs
 -- top-to-bottom even with FOREIGN_KEY_CHECKS ON. UploadReject and ScoreChange
@@ -696,8 +726,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 --   1. File > Import > Reverse Engineer MySQL Create Script...
 --   2. Select this file · tick "Place imported objects on a diagram"
 --   3. Arrange > Autolayout
---   4. View > Object Descriptions shows the COMMENTs — the [index-q] tag is how
---      the four proposed tables and eleven proposed columns identify themselves
+--   4. View > Object Descriptions shows the COMMENTs — the COMMENTs explain each column;
+--      "(removed from the design 2026-11-10)" marks the leftover password columns
 --   5. File > Export > Export as Single Page PDF... -> index-q-er-diagram.pdf
 --      (the copy in this folder is older than this file until that is redone)
 --

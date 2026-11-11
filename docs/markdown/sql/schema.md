@@ -10,7 +10,7 @@ See also: [[dev]] · [[srs]] · [[Summary Project]] · [[concept-clo MOC]]
 > [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) (MySQL — สำหรับทำ ER
 > ใน MySQL Workbench)
 >
-> **ฉบับปัจจุบัน (2026-09-26): 13 ตาราง · migration `0001`–`0007`** — ตรวจกับ `schema.prisma` แล้ว
+> **ฉบับปัจจุบัน: 19 ตาราง · migration `0001`–`0008`** (เนื้อหาตารางด้านล่างอธิบาย 13 ตารางของ `0007`; 6 ตารางของ `0008` — `AuthEvent` · `UploadReject` · `CourseGroupWeight` · `ScoreChange` · `RemediationPlan` · `RefreshToken` — ดูคำอธิบายใน [[mysql-dumps]] และ `index-q.sql` · อัปเดต 2026-11-10)
 >
 > | เวอร์ชัน | วันที่ | ตาราง | สิ่งที่เปลี่ยน |
 > |---|---|---:|---|
@@ -23,9 +23,8 @@ See also: [[dev]] · [[srs]] · [[Summary Project]] · [[concept-clo MOC]]
 > ⚠️ เลขเวอร์ชันในตารางนี้ **ไม่ตรงกับเลขในชื่อไฟล์ MySQL** — `cmas_app_mysql_v4.sql` คือ v3 ของตารางนี้ · ตารางเทียบเลขทั้งสองชุดกับเลข migration อยู่ที่ [`docs/VERSIONS.md`](../../VERSIONS.md)
 >
 > DDL ที่รันได้: `database/migrations/` (Postgres — ของจริง) ·
-> [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) (MySQL — เท่ากับ `schema.prisma` ถึง `0007` + ส่วนที่ต้นแบบ
-> `index-q.html` เสนอเพิ่ม ใช้ทำ ER ใน MySQL Workbench) — ส่วนที่ **ยังไม่อยู่ใน Prisma**
-> (`AuthEvent` · `UploadReject` · `CourseGroupWeight` · `Course.weightMode` · `Activity.passScore` ฯลฯ) ดู [[mysql-dumps]]
+> [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) (MySQL — เท่ากับ `schema.prisma` ถึง `0008` ทุกตารางทุกคอลัมน์ ใช้ทำ ER ใน MySQL Workbench) —
+> ส่วนที่ต้นแบบ `index-q.html` เคยเสนอ (`AuthEvent` · `UploadReject` · `CourseGroupWeight` · `Course.weightMode` · `Activity.passScore` ฯลฯ) ถูกรับเข้า Prisma ด้วย `0008` แล้ว ดู [[mysql-dumps]]
 >
 > ⚠️ **ต้อง re-verify กับ Postgres จริงอีกครั้ง** — ตัวเลข CHECK / trigger ที่เคยรายงาน (2026-07-30: 37 CHECK · 22 FK ·
 > 7 trigger) เป็นของ schema 15 ตารางที่ถูกแทนที่ไปแล้ว ปัจจุบัน migration เขียน **41 CHECK** (0002: 28 · 0004: 7 · 0005: 3 · 0006: 4 — หัก `chk_clo_threshold` ที่หายไปพร้อมคอลัมน์ใน 0006) และ **3 trigger**
@@ -363,4 +362,4 @@ erDiagram
 | `Faculty` / `Department` / `Program` / PLO | เลื่อน — **ไม่ใช่ตารางเพิ่มล้วนอีกแล้ว** เพราะไม่มี `Institution` ให้ห้อย ต้องสร้างตารางแม่แล้ว backfill คีย์ลงทุกแถว `Course` (โครงอ้างอิงอยู่ใน [`reference/db/enterprise/schema.pg.sql`](../../reference/db/enterprise/schema.pg.sql)) |
 | `ObjectiveAssessment` ไม่มีหน้าจอ | ✅ **OI-08 ปิดแล้ว** — ตัดตารางทิ้งใน `0006` |
 | ชื่อระดับ SOLO (`SURFACE` / `DEEP` / `TRANSFER`) | ⚠ ยังไม่ตรวจกับเอกสาร คอบ. หน้า 33 — เปลี่ยนชื่อก่อน migrate ขึ้นระบบจริง |
-| `AuthEvent` · `UploadReject` · `CourseGroupWeight` · `Course.weightMode` · `Activity.passScore` | ต้นแบบ `index-q.html` เสนอเพิ่ม **ยังไม่อยู่ใน Prisma** — ต้องตัดสินก่อนทำ migration `0008` (ดู [[mysql-dumps]]) |
+| `AuthEvent` · `UploadReject` · `CourseGroupWeight` · `Course.weightMode` · `Activity.passScore` | ต้นแบบ `index-q.html` เสนอเพิ่ม — **รับเข้า Prisma แล้วด้วย migration `0008`** (ดู [[mysql-dumps]]) |

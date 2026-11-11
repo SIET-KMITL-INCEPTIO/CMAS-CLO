@@ -93,7 +93,7 @@ ENT, PROC, STORE = 'entity', 'process', 'store'
 # (id, plain name, tables) · the tables column is what R6 checks and what the
 # legend prints — the diagram itself shows only the plain name
 STORES = [
-    ('D1', 'บัญชีผู้ใช้', ['User', 'EmailVerificationToken', 'AuthEvent']),
+    ('D1', 'บัญชีผู้ใช้', ['User', 'EmailVerificationToken', 'AuthEvent', 'RefreshToken']),
     ('D2', 'รายวิชา', ['Course', 'CourseInstructor']),
     ('D3', 'CLO กิจกรรม และเกณฑ์', ['CLO', 'BehavioralObjective', 'Activity', 'AssessmentCriteria',
                                     'CourseGroupWeight']),

@@ -713,7 +713,7 @@ TMT 2016 สร้าง threat จาก **ชนิดของ element** ไ�
 
 | ID | ชื่อใน TMT | ตารางที่ครอบ (`schema.prisma`) | Stencil | Sensitive | หมายเหตุ |
 |---|---|---|---|---|---|
-| D1 | User | `User` | SQL Database | **Yes** | `role` + `googleSub` — เป้าหมายอันดับ 1 (ไม่มีรหัสผ่านให้ขโมย) |
+| D1 | User | `User` · `EmailVerificationToken` · `AuthEvent` · `RefreshToken` | SQL Database | **Yes** | `role` + `googleSub` — เป้าหมายอันดับ 1 (ไม่มีรหัสผ่านให้ขโมย) · `RefreshToken` และโทเคนลิงก์เก็บเฉพาะ SHA-256 · `AuthEvent` บันทึกการเข้าสู่ระบบและการถูกปฏิเสธ |
 | D2 | Course · CourseInstructor | `Course` · `CourseInstructor` | SQL Database | No | **เป็นตารางที่นิยาม TB-4** (`instructors.some.userId`) และ**ถือเกณฑ์ตัดสิน** `passCriteria`/`cloPassMark`/`classTarget`/`gradeScale` |
 | D3 | CLO Structure | `CLO` · `BehavioralObjective` · `Activity` · `AssessmentCriteria` | SQL Database | No | ไม่ใช่ PII แต่เป็น **แหล่งของน้ำหนักคำนวณทั้งหมด** — Tampering ที่นี่เงียบกว่าการแก้คะแนน |
 | D4 | Student (roster) | `Student` | SQL Database | **Yes** | `studentCode` + `name` — PDPA · หนึ่งแถว = หนึ่ง **enrolment** ไม่ใช่หนึ่งคน (ASM-01) |

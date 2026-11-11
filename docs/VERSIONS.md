@@ -4,8 +4,8 @@ Which file in `docs/` is current, which ones are older copies of it, and which
 files only *look* related. Read this before opening anything in
 `reference/db/` or `diagrams/` for a presentation.
 
-Last checked: **2026-11-09**, against `database/schema.prisma` (13 models,
-migrations `0001`–`0007`, unchanged since 2026-09-28). When this page and the code disagree, the code wins.
+Last checked: **2026-11-10**, against `database/schema.prisma` on `feature/api-endpoints` (19 models,
+migrations `0001`–`0008`; `develop` still has 13 models / `0001`–`0007` until that branch merges). When this page and the code disagree, the code wins.
 Fix this page in the same change.
 
 ---

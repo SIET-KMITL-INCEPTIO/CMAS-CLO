@@ -50,8 +50,9 @@ ROLES = [
     ('ผู้ยังไม่มีบัญชี', 'ผู้ยังไม่มีบัญชี', 'ผู้ยังไม่มีบัญชีลงทะเบียนอย่างไร',
      'Google ในโดเมนคณะใช้ได้ทันที · Google หรือลิงก์อีเมลนอกโดเมนรอผู้ดูแลอนุมัติ (1.6)', ['9.2', '9.3']),
 ]
-# ใช้ได้แล้วในระบบจริง (app/server: POST /auth/google · PATCH /users/:id/approve) — นอกนั้นยังอยู่ในต้นแบบ
-BUILT = {'1.6', '9.3'}
+# ไม่ระบายสีสถานะความคืบหน้า (docs/diagrams/CLAUDE.md ข้อ 4: ไดอะแกรมแสดงระบบที่เสร็จแล้ว สถานะอยู่ใน progress/ และ README)
+# ยังเก็บกลไกไว้: ใส่รหัส use case ใน BUILT ถ้าต้องการเน้นเป็นพิเศษ
+BUILT = set()
 
 FONT = ('fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;'
         'fontSize=16;fontColor=#000000;')
@@ -109,8 +110,7 @@ class Builder:
                 % (self.pid, escape(name), pw, ph, pf + ''.join(self.frames) + ''.join(self.cells)))
 
 
-CAPTION = ('เส้นทึบ = ผู้ใช้ทำเอง · «include» = ทำร่วมกันเสมอ · «extend» = ทำเพิ่มเมื่อจำเป็น · '
-           'พื้นสีฟ้าอ่อน = ใช้ได้แล้วในระบบจริง ที่เหลือยังอยู่ในต้นแบบ')
+CAPTION = 'เส้นทึบ = ผู้ใช้ทำเอง · «include» = ทำร่วมกันเสมอ · «extend» = ทำเพิ่มเมื่อจำเป็น'
 
 
 def round10(v):
@@ -234,7 +234,7 @@ R_TEACH, R_ADMIN, R_GUEST = ROLES
 TARGETS = [
     ('layer-1', lambda pid: build_summary(
         pid, 'layer-1', 'ภาพรวม: ใครใช้งานส่วนไหนของระบบ',
-        'ใช้ได้จริงบางส่วน: หมวด 1 (อนุมัติบัญชี) · หมวด 9 (สมัครด้วย Google)',
+        'ผู้ดูแลระบบจัดการบัญชีและรายวิชา · ผู้สอนทำงานสอนในรายวิชาของตน · ผู้ยังไม่มีบัญชีลงทะเบียนด้วย Google หรือลิงก์อีเมล',
         [('ผู้ดูแลระบบ', ['1', '2', '9']), ('ผู้สอน', ['2', '3', '4', '5', '6', '7', '8', '9']),
          ('ผู้ยังไม่มีบัญชี', ['9'])])),
     ('layer-2', lambda pid: build_detail(

@@ -102,7 +102,7 @@ def unique_single(t, col):
 
 # ══ layout — grouped by the SQL's own sections, Course in the middle ══
 COLUMNS = [
-    ['User', 'AuthEvent', 'EmailVerificationToken'],
+    ['User', 'AuthEvent', 'EmailVerificationToken', 'RefreshToken'],
     ['CourseInstructor', 'ScoreUploadLog', 'UploadReject'],
     # ScoreChange under Course's column: Student/Activity are one gap to the
     # right, ScoreUploadLog one gap to the left. Only User is far (bus route).
@@ -232,11 +232,14 @@ IQ_TABLES = [tn for tn in ORDER if TABLES[tn]['iq']]
 IQ_COLS = ['%s.%s' % (tn, c['name']) for tn in ORDER if not TABLES[tn]['iq']
            for c in TABLES[tn]['cols'] if c['iq']]
 NOTE_TINT = ('<b>พื้นเหลือง</b> = ต้นแบบเสนอเพิ่ม (ยังไม่อยู่ใน schema.prisma) · '
-             'ตาราง: %s · คอลัมน์: %s' % (' · '.join(IQ_TABLES), ' · '.join(IQ_COLS)))
+             'ตาราง: %s · คอลัมน์: %s' % (' · '.join(IQ_TABLES), ' · '.join(IQ_COLS))
+             if IQ_TABLES or IQ_COLS else
+             '<b>ภาพนี้ตรงกับ schema.prisma หลัง migration 0008 ทุกตารางทุกคอลัมน์</b> · ไม่มีส่วนที่ต้นแบบเสนอเพิ่ม · '
+             'คอลัมน์รหัสผ่านของ User (passwordHash · mustChangePassword · pwResetAt · pwChangedAt) ถูกตัดจากการออกแบบเมื่อ 2026-11-10 แต่ยังอยู่ใน schema.prisma รอ migration')
 NOTE_APP = ('<b>ที่ SQL บังคับไม่ได้ (แอปเป็นคนตรวจ)</b><br><br>'
             '• สิทธิ์ในรายวิชา: ผู้สอนทุกคนเท่ากัน (D1) จึงไม่มี CourseInstructor.role<br>'
             '• น้ำหนักรวม 100% · คะแนนไม่เกินคะแนนเต็ม · กิจกรรมกับจุดประสงค์อยู่วิชาเดียวกัน<br>'
-            '• ต้องมี passwordHash หรือ googleSub อย่างน้อยหนึ่งอย่าง (อยู่ใน migrations)')
+            '• CHECK chk_user_has_credential (passwordHash หรือ googleSub) อยู่ใน migration 0005 — ต้องแก้ด้วย migration ใหม่ เพราะบัญชีลิงก์อีเมลไม่มีทั้งสองอย่าง')
 NOTES = [(NOTE_HOW, X0, NY, 820, 200),
          (NOTE_TINT, X0 + 900, NY, 640, 60),
          (NOTE_APP, X0 + 862, NY + 72, 720, 160)]  # Thai wraps to 5 lines at 720px; 103 clipped the border

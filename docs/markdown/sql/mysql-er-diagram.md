@@ -13,9 +13,9 @@ See also: [`schema.md`](./schema.md) (app schema narrative, Thai) ·
 > **Updated 2026-09-26 — ไฟล์ MySQL ที่ตรงกับ `schema.prisma` ตอนนี้คือ `index-q.sql`, ไม่ใช่ v4.**
 > `cmas_app_mysql_v4.sql` ถูกแช่แข็งที่สถานะ migration `0004` (13 ตาราง มี `ObjectiveAssessment`
 > ไม่มี `EmailVerificationToken`) — migration `0005`–`0007` ไม่ได้ถูกตามเข้าไป
-> `reference/db/mysql/index-q.sql` ใช้ Prisma ถึง `0007` เป็นฐาน (13 ตาราง) แล้วเติมส่วนที่ต้นแบบ `index-q.html`
-> เสนอเพิ่มอีก 3 ตาราง (`AuthEvent` · `UploadReject` · `CourseGroupWeight`) รวม **16 ตาราง · 19 FK**
-> — ทุกอย่างที่เพิ่มติดป้าย `[index-q]` ใน COMMENT · ภาพ ER ของไฟล์นี้: `docs/diagrams/er/ER-INDEX-Q.*`
+> `reference/db/mysql/index-q.sql` = `schema.prisma` หลัง migration `0008` (19 ตาราง · 27 FK) — ส่วนที่ต้นแบบ `index-q.html`
+> เคยเสนอเพิ่ม (`AuthEvent` · `UploadReject` · `CourseGroupWeight` · `ScoreChange` · `RemediationPlan`) ถูกรับเข้า schema แล้วด้วย `0008` พร้อม `RefreshToken` รวม **19 ตาราง · 27 FK**
+> — ไม่มีส่วนที่ติดป้าย `[index-q]` เหลือแล้ว · ภาพ ER ของไฟล์นี้: `docs/diagrams/er/ER-INDEX-Q.*`
 > · แผนภาพ mermaid ด้านล่างเป็นของ **`schema.prisma` ปัจจุบัน** (ไม่รวมส่วนที่ index-q เสนอเพิ่ม)
 
 > **Updated 2026-09-06 — ตารางตัดเกรดเหลือ 2 ตาราง.** ตัด `GradeScheme` และ `GradeRun` ออก
@@ -70,7 +70,7 @@ Full steps (including the live-database route and the `.mwb` model save) are in
 
 เรนเดอร์ได้ทันทีใน Obsidian / GitHub — ใช้ตรวจรูปทรงก่อนเปิด Workbench
 โครงสร้างตรงกับ `database/schema.prisma` ปัจจุบัน · ไฟล์ที่ reverse-engineer ได้ที่ตรงกันคือ
-[`index-q.sql`](../../reference/db/mysql/index-q.sql) (13 ตารางนี้ + 3 ตารางที่ต้นแบบเสนอเพิ่ม)
+[`index-q.sql`](../../reference/db/mysql/index-q.sql) (13 ตารางนี้ + 6 ตารางจาก migration 0008)
 
 ```mermaid
 erDiagram
