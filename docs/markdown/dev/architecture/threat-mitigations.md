@@ -2,7 +2,7 @@
 
 See also: [[dfd]] · [[api-design]] · [[api-design-plan]] · [[security-rule]]
 
-> **สร้าง:** 2026-10-22 · **ตรวจกับ:** `docs/diagrams/threat-model/report.htm` (สร้าง 2026-10-19 จาก DFD v1.4 · 695 ภัย สถานะ Not Started ทั้งหมด) ·
+> **สร้าง:** 2026-10-22 · **ตรวจกับ:** `docs/diagrams/threat-model/threat-report.htm` (ฉบับเดิมสร้าง 2026-10-19 จาก DFD v1.4 · 695 ภัย · ถูกแทนที่ 2026-11-11 ด้วยรายงานของ DFD v1.5 · 728 ภัย สถานะ Not Started ทั้งหมด — **ตารางด้านล่างจับคู่ตามชนิดของภัย ยังไม่ได้ไล่เทียบรายข้อกับรุ่นใหม่**) ·
 > โค้ดใน branch `feature/api-endpoints` (72 จาก 72 endpoint ในขอบเขต)
 >
 > Threat Modeling Tool สร้างภัยตาม STRIDE ให้ทุกเส้นข้อมูลที่ข้าม trust boundary ภัยชนิดเดียวกันจึงซ้ำหลายร้อยแถว

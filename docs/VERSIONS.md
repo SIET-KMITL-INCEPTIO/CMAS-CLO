@@ -160,16 +160,16 @@ later rewrite. The repo does not record which one was submitted.
 ### 3.9 Threat model: one model, one report
 
 In [`diagrams/threat-model/`](diagrams/threat-model/). Checked 2026-10-20 against
-`diagrams/dfd/DFD-INDEX-Q.drawio` v1.4; the DFD is now **v1.5 (2026-11-10) and the model was brought to it on 2026-11-10 by script (flow names, new entity and boundary)** — v1.5 adds the external entity "บริการส่งอีเมล" (e-mail-link sign-in, FR-07) with 2 flows on level 0 (ลิงก์เข้าสู่ระบบ · ผลการส่งอีเมล) and the same 2 on level 1 (1.0 ↔ mail), so level 0 has 8 flows and level 1 has 46; `RefreshToken` joins D1 (no new flow). The model now has the entity, its boundary and the four flows, and every flow name equals the DFD; threats for the new elements and `report.htm` still have to be generated in the Threat Modeling Tool. DFD v1.4 (2026-10-19) changes labels only — `RemediationPlan` joins D5, "แผนพัฒนาผู้เรียน" and "บันทึกการตั้งค่าตัดเกรด" join existing flows; still 6 processes, 6 stores, 44 flows — so the threat model needs no new element, only the label wording. The model was relabelled on 2026-10-19 (the 6.0 ↔ D2 grading flows and ผู้สอน → 6.0 carry the new words); **still old wording:** the 6.0 ↔ D5 and 6.1 ↔ D5 flows, which do not yet mention แผนพัฒนาผู้เรียน.
+`diagrams/dfd/DFD-INDEX-Q.drawio` v1.4; the DFD is now **v1.5 (2026-11-10) and the model was brought to it on 2026-11-10 by script (flow names, new entity and boundary)** — v1.5 adds the external entity "บริการส่งอีเมล" (e-mail-link sign-in, FR-07) with 2 flows on level 0 (ลิงก์เข้าสู่ระบบ · ผลการส่งอีเมล) and the same 2 on level 1 (1.0 ↔ mail), so level 0 has 8 flows and level 1 has 46; `RefreshToken` joins D1 (no new flow). The model now has the entity, its boundary and the four flows, and every flow name equals the DFD; threats for the new elements were generated in the Threat Modeling Tool and exported as `threat-report.htm` on 2026-11-11 (728 threats, none assessed yet). DFD v1.4 (2026-10-19) changes labels only — `RemediationPlan` joins D5, "แผนพัฒนาผู้เรียน" and "บันทึกการตั้งค่าตัดเกรด" join existing flows; still 6 processes, 6 stores, 44 flows — so the threat model needs no new element, only the label wording. The model was relabelled on 2026-10-19 (the 6.0 ↔ D2 grading flows and ผู้สอน → 6.0 carry the new words); **still old wording:** the 6.0 ↔ D5 and 6.1 ↔ D5 flows, which do not yet mention แผนพัฒนาผู้เรียน.
 
 | File | Status |
 |---|---|
 | `threat-model.tm7` | **current**, edited by hand in Microsoft Threat Modeling Tool. Four pages (`Layer0`, `Layer1`, `Layer2-P4`, `Layer2-P6`) that mirror DFD levels 0, 1 and the two level-2 pages |
-| `report.htm` | **current**, exported from the model above: 695 threats. Every threat is still *Not Started* / *High* (the tool's default): not yet assessed |
+| `threat-report.htm` | **current**, exported from the model above on 2026-11-11 (renamed from `report.htm`): 728 threats on the v1.5 model. Every threat is still *Not Started* / *High* (the tool's default): not yet assessed. The header fields (contributors, description, assumptions, external dependencies) are empty |
 
 The model is **not generated** from the DFD, so `check-diagrams.py` does not compare
 them: when the DFD changes, redraw the model by hand and export a new report.
-Overwrite `threat-model.tm7` and `report.htm` in place; earlier states of both are
+Overwrite `threat-model.tm7` and `threat-report.htm` in place; earlier states of both are
 in git history.
 
 ## 4. Document versions (markdown)
