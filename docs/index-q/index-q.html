@@ -9000,14 +9000,19 @@ class AuthScreen {
     }
 
     if (this.view === 'google') {
-      const picks = db.user.filter(function(u){ return !isPending(u); }).slice(0, 4).map(function(u){ return [u.email, u.name]; })
+      /* แค่สามบัญชี: ผู้สอนหนึ่งคน ผู้ดูแลระบบ และตัวอย่างนอกโดเมน · บัญชีอื่นพิมพ์ในช่อง “ใช้บัญชีอื่น” ได้
+         กรองด้วยโดเมน เพราะ u7 ที่อนุมัติแล้วจะไม่ใช่ PENDING และจะซ้ำกับแถวตัวอย่างนอกโดเมน */
+      const inDomain = db.user.filter(function(u){ return !isPending(u) && u.email.endsWith('@' + emails.domain); });
+      const picks = ['INSTRUCTOR', 'ADMIN'].map(function(r){ return inDomain.find(function(u){ return u.role === r; }); })
+        .filter(Boolean).map(function(u){ return [u.email, u.name]; })
         .concat([['somchai.home@gmail.com', 'บัญชีส่วนตัว (ตัวอย่างนอกโดเมน)']]);
       return '<div class="flex items-center gap-2 text-[14px] text-ink2">' + GLOGO + 'ลงชื่อเข้าใช้ด้วย Google</div>' +
         '<div><h1 class="text-[24px] font-light leading-tight">เลือกบัญชี</h1>' +
           '<p class="text-[14px] text-dim mt-1.5">เพื่อไปยัง CMAS · บัญชีที่ไม่ใช่ @' + emails.domain + ' ต้องรอผู้ดูแลระบบอนุมัติ</p></div>' +
         err +
         '<div class="space-y-2">' + picks.map(function(p){
-          const initial = p[1].replace(/^[^\s]*\s/, '').slice(0, 1) || p[1].slice(0, 1);
+          const after = p[1].replace(/^[^\s]*\s/, '').slice(0, 1);
+          const initial = /\p{L}/u.test(after) ? after : p[1].slice(0, 1);
           return '<button class="authpick" data-act="auth-pick" data-email="' + esc(p[0]) + '">' +
             '<span class="w-8 h-8 rounded-full grid place-items-center text-[13px] text-white shrink-0" ' +
               'style="background:linear-gradient(135deg,' + PAL.avatarA + ',' + PAL.avatarB + ')">' + esc(initial) + '</span>' +
