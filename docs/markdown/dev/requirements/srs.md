@@ -646,7 +646,7 @@ FR-10 ถึง FR-15 ถูกยกเลิกพร้อมกับกา�
 | ~~DC-11~~ | ❌ ยกเลิก — ไม่มี `Membership` · การมอบหมายอาจารย์ตรวจที่ชั้น API เท่านั้น | — |
 | ~~DC-12~~ | ❌ ยกเลิก — ไม่มี `CurriculumCourse` | — |
 | ~~DC-13~~ | ❌ ยกเลิก — ไม่มี `Institution` | — |
-| DC-14 | `User` ต้องมี `passwordHash` หรือ `googleSub` อย่างน้อยหนึ่งอย่าง (`chk_user_has_credential`, 0005) | CHECK |
+| ~~DC-14~~ | ❌ ยกเลิก — ไม่มี `passwordHash` · `chk_user_has_credential` ถูกถอดใน migration 0009 (บัญชีลิงก์อีเมลไม่มี `googleSub`) | — |
 | DC-15 | `CLO.weight` · `BehavioralObjective.weight` อยู่ระหว่าง 0–100 · `Activity.passMark` 0–100 · `Course.cloPassMark` 0–100 (0006) | CHECK |
 | DC-16 | `EmailVerificationToken.tokenHash` ไม่ซ้ำและไม่ว่าง · `expiresAt` ต้องหลัง `createdAt` (0005) | UNIQUE · CHECK |
 | DC-14 | `Course.passCriteria` / `Course.classTarget` อยู่ในช่วง 0–100 | CHECK |

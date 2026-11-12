@@ -113,7 +113,6 @@ erDiagram
 | ฟิลด์ | หมายเหตุ |
 |---|---|
 | `email` | **unique** — 1 คน 1 credential |
-| `passwordHash` | argon2id เท่านั้น · **nullable** (บัญชีที่เข้าด้วย Google อย่างเดียวไม่มีรหัสผ่าน) · CHECK ความยาว ≥ 20 กัน plaintext หลุด และ `chk_user_has_credential` บังคับว่าต้องมี `passwordHash` หรือ `googleSub` อย่างน้อยหนึ่งอย่าง (0005) |
 | `role` | ADMIN \| INSTRUCTOR — **คอลัมน์ธรรมดาบน `User`** |
 | `isActive` | สวิตช์ปิดบัญชี (FR-03) — ปิดแล้วเปิดกลับได้ |
 | `status` | `PENDING` \| `ACTIVE` (0007, FR-08) — Google จากนอกโดเมนสถาบันเกิดเป็น `PENDING` จนกว่า ADMIN อนุมัติ · เดินทางเดียว `PENDING → ACTIVE` · มี `@@index([status])` ให้หน้ารออนุมัติ |

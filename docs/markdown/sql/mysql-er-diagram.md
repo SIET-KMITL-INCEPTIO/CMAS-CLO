@@ -91,7 +91,6 @@ erDiagram
         varchar id PK
         varchar email UK
         varchar name
-        varchar passwordHash "NULL ได้ — Google อย่างเดียว"
         enum role "ADMIN | INSTRUCTOR"
         tinyint isActive
         enum status "PENDING | ACTIVE (0007)"
