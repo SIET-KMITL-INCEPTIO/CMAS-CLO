@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ทดลองตรวจไฟล์คะแนนก่อนนำเข้า</title>
+<!-- Trial only. Mirrors the checks in app/server/src/lib/excel.ts and
+     modules/scores/scores.service.ts (previewImport) so the rules can be tried in a
+     browser before they are written as VBA or an Office Add-in. It writes nothing and
+     contacts no server: the file is read in this page and stays there.
+     SheetJS version matches index-q.html. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root { --bg:#f7f7f8; --fg:#1d1d1f; --mut:#6b6b73; --line:#dcdce0; --card:#fff;
+          --ok:#1a7f37; --bad:#b42318; --badbg:#fde8e6; --warn:#92400e; --warnbg:#fef3c7; --acc:#2557d6; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#16161a; --fg:#ececf0; --mut:#9a9aa5; --line:#2e2e36; --card:#1e1e24;
+            --ok:#4ade80; --bad:#f87171; --badbg:#3b1d1d; --warn:#fbbf24; --warnbg:#3a2e0d; --acc:#7aa2ff; }
+  }
+  * { box-sizing:border-box }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui,"Noto Sans Thai",sans-serif }
+  main { max-width:1000px; margin:0 auto; padding:20px 16px 60px }
+  h1 { font-size:20px; margin:0 0 4px } p.sub { color:var(--mut); margin:0 0 16px }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:16px }
+  #drop { border:2px dashed var(--line); border-radius:10px; padding:28px; text-align:center; cursor:pointer; color:var(--mut) }
+  #drop.over { border-color:var(--acc); color:var(--acc) }
+  button { font:inherit; padding:8px 14px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--fg); cursor:pointer }
+  button.primary { background:var(--acc); color:#fff; border-color:var(--acc) }
+  button:disabled { opacity:.5; cursor:default }
+  .sum { display:flex; gap:12px; flex-wrap:wrap }
+  .sum div { flex:1 1 120px; border:1px solid var(--line); border-radius:8px; padding:10px 12px }
+  .sum b { display:block; font-size:22px }
+  .ok { color:var(--ok) } .bad { color:var(--bad) }
+  .fatal { background:var(--badbg); color:var(--bad); border-radius:8px; padding:10px 12px }
+  table { border-collapse:collapse; width:100%; font-size:14px }
+  th, td { border:1px solid var(--line); padding:5px 8px; text-align:left; vertical-align:top }
+  th { background:var(--bg); position:sticky; top:0 }
+  td.e { background:var(--badbg); color:var(--bad); font-weight:600 }
+  td.x { background:var(--warnbg); color:var(--warn) }
+  .scroll { overflow:auto; max-height:420px }
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+  small { color:var(--mut) }
+  ul { margin:6px 0 0 18px; padding:0 }
+</style>
+</head>
+<body>
+<main>
+  <h1>ทดลองตรวจไฟล์คะแนนก่อนนำเข้า</h1>
+  <p class="sub">ใช้กติกาเดียวกับการนำเข้าคะแนนของระบบ · อ่านไฟล์ในหน้านี้เท่านั้น ไม่ส่งไปที่ไหนและไม่บันทึกอะไร</p>
+
+  <div class="card">
+    <div id="drop" tabindex="0">วางไฟล์ .xlsx ที่นี่ หรือกดเพื่อเลือกไฟล์
+      <input id="file" type="file" accept=".xlsx" hidden>
+    </div>
+    <small>ลองกับไฟล์ใน <code>docs/excel/import-test/</code> (01-scores-valid, 02-scores-errors, 04-legacy-flat) หรือไฟล์ที่ส่งออกจากระบบแล้วเพิ่มคอลัมน์ "Active"</small>
+  </div>
+
+  <div id="out"></div>
+</main>
+
+<script>
+/* ---- same constants as app/server/src/lib/excel.ts and scores.service.ts ---- */
+const MAX_ROWS = 2000, MAX_SHEETS = 5, HEADER_SEARCH_ROWS = 30
+const CODE_HEADER = 'รหัสนักศึกษา'
+const EXCUSED_WORDS = new Set(['ยกเว้น', 'EXCUSED', 'excused'])
+const SCORE_COL_FROM = 2 // columns A, B = code, name
+
+const $ = (s) => document.querySelector(s)
+const esc = (v) => String(v ?? '').replace(/[&<>"]/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]))
+const asText = (v) => (v === null || v === undefined ? '' : String(v).trim())
+
+class FileError extends Error {}
+let current = null // { wb, sheetName, grid, headerIdx, cols, result }
+
+function parse(buf) {
+  const bytes = new Uint8Array(buf)
+  if (![0x50, 0x4b, 0x03, 0x04].every((b, i) => bytes[i] === b)) throw new FileError('ไฟล์ต้องเป็น Excel (.xlsx)')
+  let wb
+  try { wb = XLSX.read(buf, { type: 'array', cellFormula: true, cellHTML: false }) }
+  catch { throw new FileError('อ่านไฟล์ Excel ไม่ได้') }
+  if (wb.SheetNames.length > MAX_SHEETS) throw new FileError('ไฟล์มีได้ไม่เกิน ' + MAX_SHEETS + ' ชีต')
+  const sheetName = wb.SheetNames[0]
+  const sheet = wb.Sheets[sheetName]
+  for (const ref of Object.keys(sheet)) {
+    if (ref[0] !== '!' && sheet[ref] && sheet[ref].f)
+      throw new FileError('ไฟล์มีสูตร (เซลล์ ' + ref + ') — วางเป็นค่า (Paste values) แล้วนำเข้าใหม่')
+  }
+  const grid = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: true, defval: null, blankrows: true })
+  const headerIdx = grid.slice(0, HEADER_SEARCH_ROWS).findIndex((r) => asText(r && r[0]) === CODE_HEADER)
+  if (headerIdx < 0) throw new FileError('ไม่พบหัวคอลัมน์ "' + CODE_HEADER + '" ในคอลัมน์ A')
+  const rows = grid.slice(headerIdx + 1)
+    .map((cells, i) => ({ row: headerIdx + 2 + i, cells: cells || [] }))
+    .filter((r) => r.cells.some((c) => c !== null && asText(c) !== ''))
+  if (rows.length > MAX_ROWS) throw new FileError('ไฟล์มีได้ไม่เกิน ' + MAX_ROWS + ' แถว')
+  const headers = (grid[headerIdx] || []).map((h) => asText(h))
+  return { wb, sheetName, grid, headerIdx, headers, rows }
+}
+
+/* A column is a known activity column when its header carries "(เต็ม N)".
+   The real import matches by [id] or name against the course's activities; this page has no course,
+   so the header itself is the only thing it can check. */
+function columnsOf(headers) {
+  return headers.slice(SCORE_COL_FROM).map((header, i) => {
+    const m = /\(เต็ม\s*([0-9.]+)\)/.exec(header)
+    return { index: i + SCORE_COL_FROM, header, max: m ? Number(m[1]) : null, known: Boolean(m) }
+  })
+}
+
+function check(p) {
+  const cols = columnsOf(p.headers)
+  const seen = new Set(), rejects = [], bad = new Set(), cellBad = new Map()
+  let ok = 0
+  const mark = (row, col, code, msg, val, field) => {
+    rejects.push({ row, code, msg, val: asText(val).slice(0, 60), field })
+    bad.add(row)
+    if (col !== null) cellBad.set(row + ':' + col, msg)
+  }
+  for (const { row, cells } of p.rows) {
+    const before = rejects.length
+    const code = asText(cells[0])
+    if (!code) mark(row, 0, 'MISSING_CODE', 'ไม่ได้กรอกรหัสนักศึกษา', '', CODE_HEADER)
+    else if (seen.has(code)) mark(row, 0, 'DUPLICATE_IN_FILE', 'รหัสซ้ำกับแถวก่อนหน้าในไฟล์', code, CODE_HEADER)
+    if (code) seen.add(code)
+    for (const c of cols) {
+      const raw = cells[c.index]
+      if (raw === null || raw === undefined || asText(raw) === '') continue // blank never overwrites
+      if (!c.known) { mark(row, c.index, 'UNKNOWN_COLUMN', 'คอลัมน์นี้ไม่ตรงกับกิจกรรมใดในรายวิชา', raw, c.header); continue }
+      if (EXCUSED_WORDS.has(asText(raw))) continue
+      const n = typeof raw === 'number' ? raw : Number(asText(raw))
+      if (!Number.isFinite(n)) mark(row, c.index, 'NOT_A_NUMBER', 'คะแนนต้องเป็นตัวเลข หรือคำว่า ยกเว้น', raw, c.header)
+      else if (n < 0) mark(row, c.index, 'NEGATIVE', 'คะแนนติดลบไม่ได้', raw, c.header)
+      else if (n > c.max) mark(row, c.index, 'ABOVE_MAX', 'คะแนนเกินคะแนนเต็ม ' + c.max, raw, c.header)
+    }
+    if (rejects.length === before) ok++
+  }
+  return { cols, rejects, bad, cellBad, ok, failed: bad.size, total: p.rows.length }
+}
+
+function render(p, r) {
+  const unknownCols = r.cols.filter((c) => !c.known && p.rows.some((x) => asText(x.cells[c.index]) !== ''))
+  let h = '<div class="card"><div class="sum">' +
+    '<div>แถวทั้งหมด<b>' + r.total + '</b></div>' +
+    '<div>ผ่าน<b class="ok">' + r.ok + '</b></div>' +
+    '<div>ไม่ผ่าน<b class="bad">' + r.failed + '</b></div>' +
+    '<div>คอลัมน์กิจกรรม<b>' + r.cols.filter((c) => c.known).length + '</b></div></div>'
+  if (unknownCols.length)
+    h += '<p class="fatal" style="margin-top:12px">คอลัมน์ที่ระบบไม่รู้จัก: ' + unknownCols.map((c) => '<b>' + esc(c.header || '(ไม่มีชื่อ)') + '</b>').join(', ') +
+      '<br><small>คอลัมน์ที่ไม่มี "(เต็ม N)" ในหัว ระบบจะไม่เขียนค่าให้ใครเลยจนกว่าจะสร้างกิจกรรมนี้ในรายวิชา (เพิ่มกิจกรรมต้องทำในเว็บ ไม่ใช่ใน Excel)</small></p>'
+  h += '<div class="row" style="margin-top:12px"><button id="dl" class="primary">ดาวน์โหลดสำเนาที่แปลงแล้ว (.xlsx)</button>' +
+    '<small>แปลงรหัสนักศึกษาเป็นข้อความ และ "x"/"ยกเว้น" เป็นคำที่ระบบรับ · ไม่แก้ค่าที่ผิด</small></div></div>'
+
+  if (r.rejects.length) {
+    h += '<div class="card"><b>รายการที่ไม่ผ่าน (' + r.rejects.length + ')</b><div class="scroll"><table><tr><th>แถว</th><th>คอลัมน์</th><th>ค่า</th><th>เหตุผล</th></tr>' +
+      r.rejects.slice(0, 300).map((x) => '<tr><td>' + x.row + '</td><td>' + esc(x.field) + '</td><td>' + esc(x.val) + '</td><td>' + esc(x.msg) + '</td></tr>').join('') +
+      '</table></div>' + (r.rejects.length > 300 ? '<small>แสดง 300 รายการแรก</small>' : '') + '</div>'
+  }
+
+  h += '<div class="card"><b>ตารางที่อ่านได้ (ช่องแดง = ผิด)</b><div class="scroll"><table><tr><th>แถว</th>' +
+    p.headers.map((x) => '<th>' + esc(x) + '</th>').join('') + '</tr>' +
+    p.rows.slice(0, 200).map(({ row, cells }) => '<tr><td>' + row + '</td>' +
+      p.headers.map((_, i) => {
+        const msg = r.cellBad.get(row + ':' + i)
+        const v = cells[i]
+        const cls = msg ? 'e' : (i >= SCORE_COL_FROM && EXCUSED_WORDS.has(asText(v)) ? 'x' : '')
+        return '<td class="' + cls + '"' + (msg ? ' title="' + esc(msg) + '"' : '') + '>' + esc(v) + '</td>'
+      }).join('') + '</tr>').join('') +
+    '</table></div>' + (p.rows.length > 200 ? '<small>แสดง 200 แถวแรก</small>' : '') + '</div>'
+  $('#out').innerHTML = h
+  $('#dl').onclick = () => download(p)
+}
+
+function download(p) {
+  // Values only; the code column is text so a leading zero survives; excused spelled the way the server accepts.
+  const aoa = p.grid.map((row, ri) => (row || []).map((v, ci) => {
+    if (ri <= p.headerIdx) return v
+    if (ci === 0) return asText(v)
+    if (ci >= SCORE_COL_FROM && /^x$/i.test(asText(v))) return 'ยกเว้น'
+    return v
+  }))
+  const ws = XLSX.utils.aoa_to_sheet(aoa)
+  for (let r = p.headerIdx + 1; r < aoa.length; r++) {
+    const c = ws[XLSX.utils.encode_cell({ r, c: 0 })]
+    if (c) { c.t = 's'; c.v = String(c.v); c.z = '@' }
+  }
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, p.sheetName.slice(0, 31))
+  XLSX.writeFile(wb, 'checked-scores.xlsx')
+}
+
+async function handle(file) {
+  const out = $('#out')
+  try {
+    const p = parse(await file.arrayBuffer())
+    render(p, check(p))
+  } catch (e) {
+    out.innerHTML = '<div class="card"><p class="fatal">' + esc(e instanceof FileError ? e.message : 'เกิดข้อผิดพลาด: ' + e.message) +
+      '<br><small>ระบบจะปฏิเสธไฟล์นี้ทั้งไฟล์ก่อนตรวจรายแถว</small></p></div>'
+  }
+}
+
+const drop = $('#drop'), input = $('#file')
+drop.onclick = () => input.click()
+drop.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') input.click() }
+input.onchange = () => input.files[0] && handle(input.files[0])
+drop.ondragover = (e) => { e.preventDefault(); drop.classList.add('over') }
+drop.ondragleave = () => drop.classList.remove('over')
+drop.ondrop = (e) => { e.preventDefault(); drop.classList.remove('over'); e.dataTransfer.files[0] && handle(e.dataTransfer.files[0]) }
+</script>
+</body>
+</html>
