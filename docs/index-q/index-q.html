@@ -7375,20 +7375,36 @@ function watchChip(){
     '<button class="underline underline-offset-2" data-act="watch-stop">หยุด</button>';
 }
 
+/* บอกผลการเชื่อมทุกกรณี: สำเร็จ = ป้ายเขียว + แถบมุมล่างซ้าย · ไม่สำเร็จ = ข้อความแดงในหน้าต่าง (อยู่จนกว่าจะปิด) + ป้าย */
+function watchFail(msg){
+  const e = document.getElementById('imp-err');
+  if (e) { e.textContent = 'เชื่อมไม่สำเร็จ — ' + msg; e.hidden = false; }
+  toast('เชื่อมไม่สำเร็จ — ' + esc(msg), 'bad');
+}
+
 async function watchStart(){
   if (!XL_OK()) return;
-  if (typeof window.showOpenFilePicker !== 'function') {
-    toast('เบราว์เซอร์นี้เชื่อมไฟล์ไม่ได้ — ใช้ Chrome หรือ Edge','bad'); return; }
+  if (typeof window.showOpenFilePicker !== 'function') { watchFail('เบราว์เซอร์นี้ไม่รองรับ — ใช้ Chrome หรือ Edge'); return; }
   let picked;
   try {
     picked = await window.showOpenFilePicker({ multiple:false, types:[{ description:'Excel (.xlsx)',
       accept:{ 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx'] } }] });
-  } catch (e) { return; }                              /* ยกเลิกหน้าต่างเลือกไฟล์ */
-  try { WATCH.last = (await picked[0].getFile()).lastModified; }
-  catch (e) { toast('เปิดไฟล์ไม่ได้ — ลองใหม่อีกครั้ง','bad'); return; }
-  WATCH.handle = picked[0]; WATCH.name = picked[0].name; WATCH.course = S.course; WATCH.at = '';
+  } catch (e) {
+    if (e && e.name === 'AbortError') toast('ยกเลิกแล้ว — ยังไม่ได้เชื่อมไฟล์', 'bad');
+    else watchFail('เปิดหน้าต่างเลือกไฟล์ไม่ได้ (' + (e && e.name || 'ไม่ทราบสาเหตุ') + ')');
+    return;
+  }
+  /* ตรวจไฟล์ก่อนเชื่อม: อ่านได้ · เป็นของ Sec นี้ — ไม่ผ่านก็ไม่เชื่อม */
+  let f, im;
+  try { f = await picked[0].getFile(); }
+  catch (e) { watchFail('เปิดไฟล์ไม่ได้ — ปิดไฟล์ในโปรแกรมอื่นหรือเลือกใหม่'); return; }
+  try { im = validateWorkbook(await readWorkbook(f), f.name); }
+  catch (e) { watchFail(e.message); return; }
+  WATCH.handle = picked[0]; WATCH.name = f.name; WATCH.last = f.lastModified; WATCH.course = S.course; WATCH.at = '';
   closeOverlays(); watchChip();
-  toast('เชื่อมไฟล์ ' + WATCH.name + ' แล้ว — บันทึกใน Excel (Ctrl+S) แล้วกลับมาที่หน้านี้');
+  toast('เชื่อมสำเร็จ · ' + esc(f.name) + ' · ' + im.cols.length + ' กิจกรรม · ' + im.students + ' นักศึกษา' +
+    (im.skipped.length ? ' · ข้าม ' + im.skipped.length + ' คอลัมน์ที่ไม่ตรงกิจกรรม' : '') +
+    ' — บันทึกใน Excel แล้วกลับมาที่หน้านี้');
 }
 
 function watchStop(quiet){
