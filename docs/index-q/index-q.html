@@ -7408,6 +7408,8 @@ function watchFail(msg){
   toast('เชื่อมไม่สำเร็จ — ' + esc(msg), 'bad');
 }
 
+/* เชื่อมได้สองทาง — กดลิงก์แล้วเลือกไฟล์ (watchStart) หรือลากไฟล์จาก File Explorer มาวางในกล่องเชื่อมไฟล์ (watchDrop)
+   ทั้งสองได้ FileSystemFileHandle แล้วส่งต่อให้ watchLink ตัวเดียว */
 async function watchStart(){
   if (!XL_OK()) return;
   if (typeof window.showOpenFilePicker !== 'function') { watchFail('เบราว์เซอร์นี้ไม่รองรับ — ใช้ Chrome หรือ Edge'); return; }
@@ -7416,10 +7418,29 @@ async function watchStart(){
     handle = (await window.showOpenFilePicker({ multiple:false, types:[{ description:'Excel (.xlsx)',
       accept:{ 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx'] } }] }))[0];
   } catch (e) {
-    if (e && e.name === 'AbortError') toast('ยกเลิกแล้ว — ยังไม่ได้เชื่อมไฟล์', 'bad');
+    if (e && e.name === 'AbortError')
+      watchFail('ยังไม่ได้เลือกไฟล์ — หน้าต่างเลือกไฟล์อาจอยู่หลังหน้าต่างอื่น หรือลากไฟล์จาก File Explorer มาวางในกรอบ “เชื่อมไฟล์” ด้านล่างแทน');
     else watchFail('เปิดหน้าต่างเลือกไฟล์ไม่ได้ (' + ((e && e.name) || 'ไม่ทราบสาเหตุ') + ')');
     return;
   }
+  await watchLink(handle);
+}
+
+/* ลากไฟล์มาวาง — getAsFileSystemHandle ต้องเรียกระหว่างเหตุการณ์ drop เท่านั้น (await ทีหลังไม่ได้) */
+function watchDrop(e){
+  e.preventDefault();
+  const item = e.dataTransfer && e.dataTransfer.items && e.dataTransfer.items[0];
+  if (!item || item.kind !== 'file') { watchFail('วางได้เฉพาะไฟล์ .xlsx'); return; }
+  if (typeof item.getAsFileSystemHandle !== 'function') { watchFail('เบราว์เซอร์นี้ไม่รองรับ — ใช้ Chrome หรือ Edge'); return; }
+  const pending = item.getAsFileSystemHandle();
+  if (!XL_OK()) return;
+  pending.then(function(h){
+    if (!h || h.kind !== 'file') { watchFail('วางได้เฉพาะไฟล์ .xlsx ไม่ใช่โฟลเดอร์'); return; }
+    return watchLink(h);
+  }, function(){ watchFail('อ่านไฟล์ที่วางไม่ได้ — ลองลากจาก File Explorer อีกครั้ง'); });
+}
+
+async function watchLink(handle){
   let r;
   try { r = await watchRead(handle); }                /* ตรวจก่อนเชื่อม: อ่านได้ · เป็นของ Sec นี้ */
   catch (e) { watchFail(e.message); return; }
@@ -7538,8 +7559,9 @@ function modalImport(step){
           (roster ? ' data-what="roster"' : '') + '>ดาวน์โหลดเทมเพลต</button>' +
         (roster ? ' — หรือใช้ไฟล์จากทะเบียนได้เลย: ระบบหาคอลัมน์รหัสและชื่อจากหัวตาราง (ชื่อ-นามสกุลคอลัมน์เดียว หรือ ชื่อ กับ นามสกุลแยกกัน) และแสดงให้ตรวจก่อนบันทึก'
                 : ' — เติมรหัสและชื่อนักศึกษามาให้แล้ว เหลือเพียงคอลัมน์คะแนนที่ต้องกรอก จึงไม่มีโอกาสพิมพ์รหัสผิด') +
-        (roster ? '' : '<div class="mt-2">หรือ <button class="underline underline-offset-2 text-ink" data-act="watch-start">เชื่อมไฟล์ที่เปิดใน Excel</button>' +
-          ' — แก้ใน Excel แล้วหน้านี้อัปเดตเอง (เปิด AutoSave หรือกด Ctrl+S)</div>') +
+        (roster ? '' : '<div id="watchz" class="mt-3 px-3 py-2.5 rounded-lg" style="border:1.5px dashed var(--edge);background:var(--card,transparent)">' +
+          '<button class="underline underline-offset-2 text-ink" data-act="watch-start">เชื่อมไฟล์ที่เปิดใน Excel</button>' +
+          ' — หรือลากไฟล์จาก File Explorer มาวางในกรอบนี้ · แก้ใน Excel แล้วหน้านี้อัปเดตเอง (เปิด AutoSave หรือกด Ctrl+S)</div>') +
         '</div>';
     foot = btn('ยกเลิก','','data-act="close"');
 
@@ -7663,7 +7685,18 @@ function modalImport(step){
   openModal(modalFrame(TITLE,
     '<div class="flex items-start gap-4 mb-7">' + steps + '</div>' + body, foot));
 
-  if (st === 1) wireDropzone();
+  if (st === 1) { wireDropzone(); wireWatchzone(); }
+}
+
+/* กรอบเชื่อมไฟล์ในหน้าต่างนำเข้าคะแนน — ลากไฟล์มาวาง = เชื่อม (ไม่ใช่นำเข้าครั้งเดียว) */
+function wireWatchzone(){
+  const z = document.getElementById('watchz');
+  if (!z) return;
+  ['dragenter','dragover'].forEach(function(ev){
+    z.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); z.style.borderColor = PAL.sel; });
+  });
+  z.addEventListener('dragleave', function(){ z.style.borderColor = 'var(--edge)'; });
+  z.addEventListener('drop', function(e){ e.stopPropagation(); z.style.borderColor = 'var(--edge)'; watchDrop(e); });
 }
 
 /* The file input and the drop target are the same code path; a drop is just a
