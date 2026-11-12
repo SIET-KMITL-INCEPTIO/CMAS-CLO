@@ -226,6 +226,14 @@ html[data-density="compact"] td.who .nm{ display:inline; }
 #watch-chip .wb-x{ flex:none; padding:4px; margin-top:-2px; border-radius:7px; color:var(--faint); line-height:0; }
 #watch-chip .wb-x:hover{ color:var(--ink); background:var(--tint); }
 #watch-chip.flash{ border-color:#BCD3C6; }
+#watch-chip[data-state="conflict"] .wb-dot{ background:#B7791F; }
+#watch-chip .wb-warn{ margin-top:6px; padding:6px 8px; border-radius:8px; background:#FBF3E4; color:#8A5A12; }
+#watch-chip .wb-acts{ margin-top:8px; display:flex; gap:6px; flex-wrap:wrap; }
+#watch-chip .wb-btn{ padding:4px 10px; border-radius:8px; border:1px solid var(--edge); background:var(--card);
+  color:var(--ink); font-size:12.5px; }
+#watch-chip .wb-btn:hover{ background:var(--tint); }
+#watch-chip .wb-btn.primary{ background:var(--ink); border-color:var(--ink); color:#fff; }
+#watch-chip .wb-btn.primary:hover{ opacity:.9; }
 @keyframes wbPulse{ 0%{ box-shadow:0 0 0 0 rgba(79,124,104,.45); } 70%{ box-shadow:0 0 0 7px rgba(79,124,104,0); }
                     100%{ box-shadow:0 0 0 0 rgba(79,124,104,0); } }
 body.watch-on #toasts{ bottom:104px; }
@@ -7135,7 +7143,20 @@ function patchSheet(xml, opt){
 }
 
 /* เอาไฟล์ที่ SheetJS สร้างมาเติมสิ่งที่มันเขียนไม่ได้ แล้วคืนไบต์ชุดใหม่ */
+/* S-7 เหมือน safeText ของเซิร์ฟเวอร์: ข้อความที่ขึ้นต้นด้วย = + - @ ถูกนำหน้าด้วย '
+   ชื่อที่ผู้ใช้พิมพ์จึงไม่กลายเป็นสูตรเมื่อมีคนเปิดไฟล์ส่งออก · ช่องตัวเลขและสูตรที่ระบบใส่เองไม่ถูกแตะ */
+function neutraliseText(wb){
+  wb.SheetNames.forEach(function(n){
+    const ws = wb.Sheets[n];
+    Object.keys(ws).forEach(function(ref){
+      const c = ws[ref];
+      if (ref[0] !== '!' && c && c.t === 's' && !c.f && /^[=+\-@]/.test(String(c.v))) c.v = "'" + c.v;
+    });
+  });
+}
+
 async function finishWorkbook(wb, opt){
+  neutraliseText(wb);
   const raw = new Uint8Array(XLSX.write(wb, { type:'array', bookType:'xlsx', Props:wb.Props }));
   if (!opt) return raw;
   const files = await zipRead(raw);
@@ -7388,15 +7409,21 @@ function commitImport(){
    · AutoSave ของ Excel ทำงานกับไฟล์ใน OneDrive / SharePoint เท่านั้น — ไฟล์ในเครื่องต้องกด Ctrl+S
    · ตัวตรวจเดียวกับการนำเข้า (validateWorkbook) และตัวเขียนเดียว (writeScore) → ประวัติ · กติกา · เลิกทำ เหมือนกัน
    · อ่านอย่างเดียว · ช่องว่างในไฟล์ไม่ลบคะแนน · ใช้ File System Access API (Chrome / Edge)
-   · ตอนเชื่อมแค่จำเวลาแก้ไขของไฟล์ ไม่ใช้ค่าในไฟล์ทันที — ไม่งั้นไฟล์เก่าจะทับสิ่งที่แก้ในเว็บไปแล้ว */
+   ใช้เฉพาะช่องที่ "แก้ใน Excel" — base คือค่าที่ตรงกันล่าสุดของแต่ละช่อง (ค่าในเว็บตอนเชื่อม แล้วขยับตามทุกครั้งที่ซิงก์)
+     ไฟล์ ≠ base และเว็บ = base  → แก้ใน Excel อย่างเดียว → ใช้ค่า Excel
+     ไฟล์ = base                 → Excel ไม่ได้แตะ → ไม่ทับสิ่งที่แก้ในเว็บ
+     ไฟล์ ≠ base และเว็บ ≠ base  → แก้ทั้งสองที่ → ไม่เขียน รอผู้ใช้เลือกที่การ์ด (ใช้ค่า Excel / เก็บค่าในเว็บ) */
 const WATCH = { handle:null, name:'', last:0, course:null, label:'', atMs:0, n:0, timer:null, busy:false, fails:0,
-                syncing:false, pause:'' };
+                syncing:false, pause:'', base:{}, cols:[], skipped:0, conflicts:[], rejSig:'', offer:null };
 const WATCH_MS = 3000;
 
 const clockNow = function(){
   const d = new Date(), pad = function(n){ return (n < 10 ? '0' : '') + n; };
   return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
 };
+const watchKey = function(sid, aid){ return sid + '|' + aid; };
+/* ค่าในเว็บของช่องหนึ่ง ในรูปเดียวกับ validateWorkbook (ตัวเลข · 'EXCUSED' · null) */
+const webVal = function(d, sid, aid){ return d.stateOf(sid, aid) === 'excused' ? 'EXCUSED' : d.scoreOf(sid, aid); };
 
 /* อ่านไฟล์และตรวจกับรายวิชาที่เปิดอยู่ — ใช้ทั้งตอนเชื่อมและตอนอัปเดต · โยนข้อความที่ผู้ใช้อ่านได้ */
 async function watchRead(handle){
@@ -7411,6 +7438,35 @@ async function watchRead(handle){
   return { file:f, im: validateWorkbook(await readWorkbook(f), f.name) };
 }
 
+/* ── จำไฟล์ที่เชื่อมไว้ข้ามการรีเฟรช (IndexedDB) ─────────────────────
+   เก็บ FileSystemFileHandle ต่อ ผู้ใช้ × รายวิชา · ลบเมื่อกดหยุด ออกจากระบบ หรือสลับบัญชี
+   เปิดหน้าใหม่ → ถ้าเบราว์เซอร์ยังให้สิทธิ์อ่าน เชื่อมต่อเอง · ไม่อย่างนั้นการ์ดถามให้กดอนุญาตครั้งเดียว */
+const watchStoreKey = function(courseId){ return me().id + '|' + courseId; };
+const WATCH_IDB = {
+  open: function(){
+    return new Promise(function(res, rej){
+      if (!window.indexedDB) { rej(new Error('no indexedDB')); return; }
+      const q = indexedDB.open('cmas-proto', 1);
+      q.onupgradeneeded = function(){ q.result.createObjectStore('watch'); };
+      q.onsuccess = function(){ res(q.result); };
+      q.onerror = function(){ rej(q.error); };
+    });
+  },
+  run: async function(mode, fn){
+    try {
+      const idb = await this.open();
+      return await new Promise(function(res, rej){
+        const tx = idb.transaction('watch', mode), req = fn(tx.objectStore('watch'));
+        tx.oncomplete = function(){ res(req ? req.result : undefined); };
+        tx.onerror = function(){ rej(tx.error); };
+      });
+    } catch (e) { return undefined; }                  /* โหมดส่วนตัว / ถูกบล็อก — ทำงานต่อโดยไม่จำ */
+  },
+  put: function(k, v){ return this.run('readwrite', function(s){ return s.put(v, k); }); },
+  get: function(k){ return this.run('readonly', function(s){ return s.get(k); }); },
+  del: function(k){ return this.run('readwrite', function(s){ return s.delete(k); }); }
+};
+
 /* "12 วินาทีที่แล้ว" — ป้ายวาดใหม่ทุกรอบตรวจ (3 วินาที) เวลาจึงเดินเอง */
 const agoTh = function(ms){
   const sec = Math.max(0, Math.round((Date.now() - ms) / 1000));
@@ -7418,30 +7474,62 @@ const agoTh = function(ms){
        : sec < 3600 ? Math.floor(sec / 60) + ' นาทีที่แล้ว' : 'เมื่อ ' + clockNow();
 };
 
-/* ป้ายสถานะมุมขวาล่าง · สด (จุดเขียวกะพริบ) · กำลังอัปเดต · พัก (บอกเหตุผล) · อ่านไม่ได้ */
+/* การ์ดสถานะมุมขวาล่าง
+   สด (เขียวกะพริบ) · กำลังอัปเดต · พัก (บอกเหตุผล) · อ่านไม่ได้ · แก้ทั้งสองที่ (ให้เลือก) · เชื่อมต่ออีกครั้ง (หลังรีเฟรช)
+   บรรทัดเตือน: กิจกรรมในรายวิชาที่ไม่มีในไฟล์ (ไฟล์ล้าสมัย → ส่งออกใหม่) · คอลัมน์ในไฟล์ที่ไม่ตรงกิจกรรม */
 function watchChip(){
   let el = document.getElementById('watch-chip');
-  document.body.classList.toggle('watch-on', !!WATCH.handle);
-  if (!WATCH.handle) { if (el) el.remove(); return; }
+  const on = !!(WATCH.handle || WATCH.offer);
+  document.body.classList.toggle('watch-on', on);
+  if (!on) { if (el) el.remove(); return; }
   if (!el) {
     el = document.createElement('div'); el.id = 'watch-chip'; el.className = 'no-print';
     el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'off');
     document.body.appendChild(el);
   }
-  const state = WATCH.syncing ? 'sync' : WATCH.fails ? 'error' : WATCH.pause ? 'pause' : 'live';
+  const small = function(act, label, primary){
+    return '<button class="wb-btn' + (primary ? ' primary' : '') + '" data-act="' + act + '">' + label + '</button>'; };
+  const x = function(act, label){
+    return '<button class="wb-x" data-act="' + act + '" aria-label="' + label + '" title="' + label + '">' +
+      icon('close','w-3.5 h-3.5') + '</button>'; };
+
+  if (!WATCH.handle) {                                  /* หลังรีเฟรช: ไฟล์ที่เคยเชื่อมไว้ */
+    el.dataset.state = 'pause';
+    el.innerHTML = '<span class="wb-dot" aria-hidden="true"></span>' +
+      '<div class="wb-body"><div class="wb-title">เชื่อมไฟล์ Excel อีกครั้ง?</div>' +
+        '<div class="wb-file" title="' + esc(WATCH.offer.name) + '">' + esc(WATCH.offer.name) + '</div>' +
+        '<div class="wb-acts">' + small('watch-resume', 'เชื่อมต่อ', true) + '</div></div>' +
+      x('watch-forget', 'ไม่เชื่อมไฟล์นี้แล้ว');
+    return;
+  }
+
+  const nConf = WATCH.conflicts.length;
+  const state = WATCH.syncing ? 'sync' : WATCH.fails ? 'error' : nConf ? 'conflict' : WATCH.pause ? 'pause' : 'live';
   const title = { live:'สด · ' + WATCH.label, sync:'กำลังอัปเดต…', pause:'พัก · ' + WATCH.label,
-                  error:'อ่านไฟล์ไม่ได้' }[state];
+                  error:'อ่านไฟล์ไม่ได้', conflict:nConf + ' ช่องถูกแก้ทั้งใน Excel และในเว็บ' }[state];
   const meta = state === 'pause' ? WATCH.pause
              : state === 'error' ? 'Excel อาจกำลังบันทึก — ลองใหม่เอง'
+             : state === 'conflict' ? 'ยังไม่ได้ทับ — เลือกว่าจะใช้ค่าไหน'
              : WATCH.atMs ? 'อัปเดต ' + agoTh(WATCH.atMs) + (WATCH.n ? ' · ' + WATCH.n + ' ช่อง' : '')
              : 'แก้ใน Excel แล้วบันทึก — หน้านี้เปลี่ยนเอง';
+
+  /* ไฟล์ล้าสมัย — นับจากรายวิชาตอนนี้ จึงเห็นทันทีที่เพิ่มกิจกรรมในเว็บ ไม่ต้องรอบันทึกใน Excel */
+  const missing = S.course === WATCH.course
+    ? D().acts.filter(function(a){ return WATCH.cols.indexOf(a.id) < 0; }).length : 0;
+  const warn = [];
+  if (missing) warn.push('ไฟล์ไม่มี ' + missing + ' กิจกรรมของรายวิชา — ส่งออกใหม่แล้วเชื่อมไฟล์ใหม่');
+  if (WATCH.skipped) warn.push('ข้าม ' + WATCH.skipped + ' คอลัมน์ในไฟล์ที่ไม่ตรงกิจกรรมใด');
+
   el.dataset.state = state;
   el.innerHTML = '<span class="wb-dot" aria-hidden="true"></span>' +
     '<div class="wb-body"><div class="wb-title">' + esc(title) + '</div>' +
       '<div class="wb-file" title="' + esc(WATCH.name) + '">' + esc(WATCH.name) + '</div>' +
-      '<div class="wb-meta">' + esc(meta) + '</div></div>' +
-    '<button class="wb-x" data-act="watch-stop" aria-label="หยุดเชื่อมไฟล์" title="หยุดเชื่อมไฟล์">' +
-      icon('close','w-3.5 h-3.5') + '</button>';
+      '<div class="wb-meta">' + esc(meta) + '</div>' +
+      (warn.length ? '<div class="wb-warn">' + warn.map(esc).join('<br>') + '</div>' : '') +
+      (state === 'conflict' ? '<div class="wb-acts">' + small('watch-take', 'ใช้ค่า Excel', true) +
+                                small('watch-keep', 'เก็บค่าในเว็บ') + '</div>'
+       : missing ? '<div class="wb-acts">' + small('export', 'ส่งออกคะแนนใหม่') + '</div>' : '') +
+    '</div>' + x('watch-stop', 'หยุดเชื่อมไฟล์');
 }
 
 /* ไม่สำเร็จ = ข้อความแดงในหน้าต่างนำเข้า (อยู่จนกว่าจะปิด) + ป้าย · ไม่เชื่อมไฟล์นั้น */
@@ -7451,27 +7539,67 @@ function watchFail(msg){
   toast('เชื่อมไม่สำเร็จ — ' + esc(msg), 'bad');
 }
 
-/* เชื่อมไฟล์ = ไฟล์ที่เพิ่งนำเข้าผ่านหน้าต่างนำเข้าคะแนน (ลากมาวาง หรือ "เลือกไฟล์" ใน Chrome / Edge)
-   ได้ FileSystemFileHandle มาพร้อมไฟล์ · ติ๊ก "อัปเดตอัตโนมัติ" ในขั้นยืนยัน → นำเข้าแล้วเชื่อมต่อในคราวเดียว */
-async function watchLink(handle){
+/* เชื่อมไฟล์ — มาจาก "ยืนยันบันทึก" ที่ติ๊กอัปเดตอัตโนมัติ (ไฟล์เพิ่งนำเข้า ค่าตรงกับเว็บแล้ว)
+   หรือจาก "เชื่อมต่ออีกครั้ง" หลังรีเฟรช (resume: ใช้ค่าในไฟล์ที่ต่างจากเว็บทั้งหมดก่อน เพราะไม่มี base เดิม) */
+async function watchLink(handle, resume){
   let r;
   try { r = await watchRead(handle); }                /* ตรวจก่อนเชื่อม: อ่านได้ · เป็นของ Sec นี้ */
-  catch (e) { watchFail(e.message); return; }
-  const C = D().course;
+  catch (e) { watchFail(e.message); return false; }
+  const d = D(), C = d.course;
+  const base = {};
+  d.rosterAll.forEach(function(st){
+    r.im.cols.forEach(function(c){ base[watchKey(st.id, c.act.id)] = webVal(d, st.id, c.act.id); });
+  });
   clearInterval(WATCH.timer);
   Object.assign(WATCH, { handle:handle, name:r.file.name, last:r.file.lastModified, course:S.course,
                          label:C.code + ' Sec ' + C.section, atMs:0, n:0, fails:0, syncing:false, pause:'',
-                         timer:setInterval(watchTick, WATCH_MS) });
-  closeOverlays(); watchChip();
+                         base:base, cols:r.im.cols.map(function(c){ return c.act.id; }), skipped:r.im.skipped.length,
+                         conflicts:[], rejSig:'', offer:null, timer:setInterval(watchTick, WATCH_MS) });
+  WATCH_IDB.put(watchStoreKey(S.course), { handle:handle, name:r.file.name });
+  closeOverlays();
+  if (resume) watchApply(r.im, true); else watchChip();
   toast('เชื่อมสำเร็จ · ' + esc(r.file.name) + ' · ' + r.im.cols.length + ' กิจกรรม · ' + r.im.students + ' นักศึกษา' +
     (r.im.skipped.length ? ' · ข้าม ' + r.im.skipped.length + ' คอลัมน์ที่ไม่ตรงกิจกรรม' : '') +
     ' — แก้ใน Excel แล้วหน้านี้อัปเดตเอง (เปิด AutoSave หรือกด Ctrl+S)');
+  return true;
 }
 
 function watchStop(quiet){
-  clearInterval(WATCH.timer); WATCH.timer = null; WATCH.handle = null;
+  if (WATCH.handle && WATCH.course) WATCH_IDB.del(watchStoreKey(WATCH.course));
+  clearInterval(WATCH.timer);
+  Object.assign(WATCH, { timer:null, handle:null, conflicts:[], offer:null });
   watchChip();
   if (!quiet) toast('หยุดเชื่อมไฟล์แล้ว');
+}
+
+/* เปิดหน้า / เปลี่ยนรายวิชา — มีไฟล์ที่เคยเชื่อมไว้กับรายวิชานี้ไหม */
+async function watchOffer(){
+  if (WATCH.handle || document.body.dataset.auth !== 'in' || !S.course) return;
+  const course = S.course;
+  const saved = await WATCH_IDB.get(watchStoreKey(course));
+  if (WATCH.handle || S.course !== course) return;
+  if (!saved || !saved.handle) { if (WATCH.offer) { WATCH.offer = null; watchChip(); } return; }
+  WATCH.offer = { handle:saved.handle, name:saved.name, course:course };
+  let perm = 'prompt';
+  try { perm = await saved.handle.queryPermission({ mode:'read' }); } catch (e) { /* เบราว์เซอร์เก่า */ }
+  if (perm === 'granted') { await watchLink(saved.handle, true); return; }   /* ยังมีสิทธิ์ → เชื่อมเอง */
+  watchChip();
+}
+window.addEventListener('load', function(){ setTimeout(watchOffer, 300); });
+window.addEventListener('hashchange', function(){ setTimeout(watchOffer, 0); });
+
+/* "เชื่อมต่อ" บนการ์ด — ต้องมาจากการกดของผู้ใช้ เบราว์เซอร์จึงยอมถามสิทธิ์ */
+async function watchResume(){
+  const o = WATCH.offer;
+  if (!o) return;
+  let perm = 'denied';
+  try { perm = await o.handle.requestPermission({ mode:'read' }); } catch (e) { /* ไฟล์ถูกลบ / ไม่รองรับ */ }
+  if (perm !== 'granted') { toast('ไม่ได้รับสิทธิ์อ่านไฟล์ — นำเข้าไฟล์ใหม่อีกครั้ง', 'bad'); return; }
+  if (!(await watchLink(o.handle, true))) { WATCH_IDB.del(watchStoreKey(o.course)); WATCH.offer = null; watchChip(); }
+}
+function watchForget(){
+  if (WATCH.offer) WATCH_IDB.del(watchStoreKey(WATCH.offer.course));
+  WATCH.offer = null; watchChip();
 }
 
 /* ตรวจไฟล์หนึ่งรอบ — เรียกจากตัวจับเวลา โฟกัส และแท็บกลับมาให้เห็น
@@ -7510,21 +7638,69 @@ async function watchTick(){
 window.addEventListener('focus', watchTick);
 document.addEventListener('visibilitychange', watchTick);
 
-function watchApply(im){
+/* เขียนชุดหนึ่งผ่าน writeScore พร้อมประวัติการนำเข้าและเลิกทำ · คืนจำนวนช่องที่เขียน */
+function watchWrite(im, cells, label){
+  if (!cells.length) return 0;
+  setUndo(label + ' ' + cells.length + ' ช่อง', 'score.import',
+    scoreSnap(cells.map(function(x){ return [x.studentId, x.activityId]; })));
+  const logId = logUpload(im, 'SCORE', cells.length);
+  cells.forEach(function(x){
+    writeScore(x.studentId, x.activityId, x.score, 'IMPORT', logId);
+    WATCH.base[watchKey(x.studentId, x.activityId)] = x.score;
+  });
+  return cells.length;
+}
+
+/* all = true: ใช้ทุกช่องที่ต่างจากเว็บ (ตอนเชื่อมต่ออีกครั้งหลังรีเฟรช) */
+function watchApply(im, all){
   if (!can('score.import')) { watchStop(true); deny('score.import'); return; }
-  const changed = im.ok.filter(function(x){ return x.score !== x.prev; });    /* เฉพาะช่องที่ต่างจากในระบบ */
-  if (!changed.length && !im.rejects.length) return;
-  if (changed.length) setUndo('อัปเดตจาก Excel ' + changed.length + ' ช่อง', 'score.import',
-    scoreSnap(changed.map(function(x){ return [x.studentId, x.activityId]; })));
-  const logId = logUpload(im, 'SCORE', changed.length);
-  changed.forEach(function(x){ writeScore(x.studentId, x.activityId, x.score, 'IMPORT', logId); });
-  WATCH.atMs = Date.now(); WATCH.n = changed.length;
-  invalidate(); render(); watchChip();
+  const take = [], conflicts = [];
+  im.ok.forEach(function(x){
+    const k = watchKey(x.studentId, x.activityId), base = WATCH.base[k];
+    if (x.score === x.prev) { WATCH.base[k] = x.score; return; }          /* ตรงกันแล้วทั้งสองฝั่ง */
+    if (all) { take.push(x); return; }
+    if (x.score === base) return;                                          /* Excel ไม่ได้แตะ → เก็บค่าในเว็บ */
+    if (x.prev !== base) { conflicts.push(x); return; }                    /* แก้ทั้งสองที่ */
+    take.push(x);
+  });
+  WATCH.cols = im.cols.map(function(c){ return c.act.id; });
+  WATCH.skipped = im.skipped.length;
+  const newConf = conflicts.filter(function(x){
+    return !WATCH.conflicts.some(function(y){ return y.studentId === x.studentId && y.activityId === x.activityId && y.score === x.score; });
+  }).length;
+  WATCH.conflicts = conflicts;
+  /* ช่องที่ไม่ผ่านเดิมซ้ำทุกครั้งที่บันทึก — บันทึกประวัติและแจ้งเฉพาะเมื่อชุดที่ไม่ผ่านเปลี่ยน */
+  const rejSig = im.rejects.map(function(r){ return r.row + ':' + r.field + ':' + r.value; }).join('|');
+  const rejNew = rejSig !== WATCH.rejSig;
+  WATCH.rejSig = rejSig;
+
+  const n = take.length ? watchWrite(im, take, 'อัปเดตจาก Excel')
+          : (rejNew && im.rejects.length ? (logUpload(im, 'SCORE', 0), 0) : 0);
+  if (n) { WATCH.atMs = Date.now(); WATCH.n = n; invalidate(); render(); }
+  watchChip();
   const chip = document.getElementById('watch-chip');
-  if (chip && changed.length) { chip.classList.add('flash'); setTimeout(function(){ chip.classList.remove('flash'); }, 1500); }
-  toast((changed.length ? 'อัปเดตจาก Excel ' + changed.length + ' ช่อง' : 'ไม่ได้อัปเดตจาก Excel') +
-    (im.rejects.length ? ' · ข้าม ' + im.rejects.length + ' รายการ (ดูที่ประวัติการนำเข้า)' : ''),
-    im.rejects.length ? 'bad' : undefined, changed.length ? UNDO_ACTION : null);
+  if (chip && n) { chip.classList.add('flash'); setTimeout(function(){ chip.classList.remove('flash'); }, 1500); }
+  if (n || (rejNew && im.rejects.length))
+    toast((n ? 'อัปเดตจาก Excel ' + n + ' ช่อง' : 'ไม่ได้อัปเดตจาก Excel') +
+      (im.rejects.length ? ' · ข้าม ' + im.rejects.length + ' รายการ (ดูที่ประวัติการนำเข้า)' : ''),
+      im.rejects.length ? 'bad' : undefined, n ? UNDO_ACTION : null);
+  if (newConf) toast(conflicts.length + ' ช่องถูกแก้ทั้งใน Excel และในเว็บ — เลือกที่การ์ดมุมขวาล่าง', 'bad');
+}
+
+/* การ์ด "แก้ทั้งสองที่" */
+function watchTake(){
+  const c = WATCH.conflicts; if (!c.length) return;
+  const n = watchWrite({ courseId:WATCH.course, fileName:WATCH.name, rejects:[] }, c, 'ใช้ค่า Excel');
+  WATCH.conflicts = []; WATCH.atMs = Date.now(); WATCH.n = n;
+  invalidate(); render(); watchChip();
+  toast('ใช้ค่าจาก Excel ' + n + ' ช่อง', undefined, UNDO_ACTION);
+}
+function watchKeep(){
+  const c = WATCH.conflicts; if (!c.length) return;
+  /* base = ค่าในไฟล์ตอนนี้ → รอบหน้า Excel "ไม่ได้แตะ" ช่องนี้ ค่าในเว็บจึงอยู่ต่อ จนกว่าจะแก้ใน Excel อีกครั้ง */
+  c.forEach(function(x){ WATCH.base[watchKey(x.studentId, x.activityId)] = x.score; });
+  WATCH.conflicts = []; watchChip();
+  toast('เก็บค่าในเว็บ ' + c.length + ' ช่อง — ใน Excel ยังเป็นค่าเดิม ส่งออกใหม่ถ้าต้องการให้ตรงกัน');
 }
 
 /* Import wizard — the 10-minute flow NFR-09 measures (user-flow §6).
@@ -8568,7 +8744,8 @@ function capOf(act, el){
     case 'stu-withdraw': case 'stu-withdraw-do': case 'stu-restore': return 'student.write';
     case 'import':                      return what === 'roster' ? 'student.write' : 'score.import';
     case 'import-done':                 return IMPMODE === 'roster' ? 'student.write' : 'score.import';
-    case 'watch-stop':                  return 'score.import';
+    case 'watch-stop': case 'watch-take': case 'watch-keep':
+    case 'watch-resume': case 'watch-forget': return 'score.import';
     case 'template':                    return 'score.export';
     case 'export':                      return what === 'results' ? 'results.export' : 'score.export';
     case 'override': case 'override-save': case 'override-clear': return 'grade.override';
@@ -8778,7 +8955,7 @@ class AuthScreen {
     const out = !su || su.isActive === false || isPending(su);
     document.body.dataset.auth = out ? 'out' : 'in';
     /* ออกจากระบบ = เลิกเชื่อมไฟล์ Excel · ไม่ให้คะแนนจากไฟล์ถูกเขียนในชื่อคนถัดไปที่เข้าระบบ */
-    if (out && typeof WATCH !== 'undefined' && WATCH.handle) watchStop(true);
+    if (out && typeof WATCH !== 'undefined' && (WATCH.handle || WATCH.offer)) watchStop(true);
     host.hidden = !out;
     if (!out) { host.innerHTML = ''; return; }
     host.innerHTML = '<div class="authcard">' + this.html() + '</div>';
@@ -9050,7 +9227,7 @@ document.addEventListener('click', function(e){
     const u = byId(db.user, el.dataset.id);
     if (!u) return;
     acctMenu(false);
-    if (u.id !== S.meId && WATCH.handle) watchStop(true);   /* สลับบัญชี = เลิกเชื่อมไฟล์ของคนก่อน */
+    if (u.id !== S.meId && (WATCH.handle || WATCH.offer)) watchStop(true);   /* สลับบัญชี = เลิกเชื่อมไฟล์ของคนก่อน */
     S.meId = u.id; S.filter = {};
     SESSION.set(u.id);   /* the prototype switcher stands in for signing in as that account */
     clampCourse(); saveLayout(); invalidate();
@@ -9358,6 +9535,10 @@ document.addEventListener('click', function(e){
   }
   if (act === 'import')       { IMPORT = null; IMPORT_HANDLE = null; IMPMODE = el.dataset.what === 'roster' ? 'roster' : 'score'; modalImport(1); return; }
   if (act === 'watch-stop')   { watchStop(); return; }
+  if (act === 'watch-take')   { watchTake(); return; }
+  if (act === 'watch-keep')   { watchKeep(); return; }
+  if (act === 'watch-resume') { watchResume(); return; }
+  if (act === 'watch-forget') { watchForget(); return; }
   if (act === 'import-pick')  { importPick(); return; }
   if (act === 'import-next')  { modalImport(S.tab.importStep + 1); return; }
   if (act === 'import-prev')  { modalImport(S.tab.importStep - 1); return; }
