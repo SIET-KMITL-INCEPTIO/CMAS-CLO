@@ -6583,7 +6583,7 @@ function scoreSheet(blank){
   /* EX-3 · หนึ่ง dataValidation ต่อหนึ่งกิจกรรม ขอบเขตคือคะแนนเต็มของกิจกรรมนั้น */
   const last = first + Math.max(0, body.length - 1);
   const validations = body.length ? d.acts.map(function(a, c){
-    return { sqref: cellRef(first, 2 + c) + ':' + cellRef(last, 2 + c), max: a.maxScore, name: a.name };
+    return { sqref: cellRef(first, 2 + c) + ':' + cellRef(last, 2 + c), max: a.maxScore };
   }) : [];
 
   const guide = [
@@ -7093,12 +7093,11 @@ function patchSheet(xml, opt){
         const tl = v.sqref.split(':')[0];
         const rule = 'OR(ISBLANK(' + tl + '),AND(ISNUMBER(' + tl + '),' + tl + '>=0,' + tl + '<=' + v.max + '),' +
           tl + '="ยกเว้น",LOWER(' + tl + ')="x")';
-        return '<dataValidation type="custom" allowBlank="1" showInputMessage="1" ' +
+        /* ไม่มีกล่องเหลือง (input message) ตอนเลือกช่อง — บังช่องข้างเคียงทุกครั้งที่ขยับ · ข้อความแสดงเฉพาะตอนกรอกผิด */
+        return '<dataValidation type="custom" allowBlank="1" ' +
           'showErrorMessage="1" errorStyle="stop" ' +
           'errorTitle="' + xmlEsc('คะแนนไม่ถูกต้อง') + '" ' +
           'error="' + xmlEsc('กรอกได้เฉพาะตัวเลข 0 ถึง ' + v.max + ' · เว้นว่างได้ถ้ายังไม่ประเมิน · พิมพ์ ยกเว้น เพื่อยกเว้น') + '" ' +
-          'promptTitle="' + xmlEsc(String(v.name || 'คะแนน').slice(0, 32)) + '" ' +   /* สคีมาจำกัด 32 ตัวอักษร เกิน = Repaired */
-          'prompt="' + xmlEsc('เต็ม ' + v.max + ' คะแนน · เว้นว่าง = ยังไม่ประเมิน · ยกเว้น = ไม่นับ') + '" ' +
           'sqref="' + v.sqref + '"><formula1>' + xmlEsc(rule) + '</formula1></dataValidation>';
       }).join('') + '</dataValidations>';
     /* ลำดับ element ใน worksheet ถูกบังคับโดยสคีมา: sheetData → sheetProtection →
