@@ -40,6 +40,7 @@ divergent source of truth for DDL that Prisma already owns.
 | `0005_single_course_role_solo_and_self_registration` | 2026-09-14 | Drops `CourseRole` + `uq_courseinstructor_lead` (D1) · `CLO.soloLevel` (D4) · `EmailVerificationToken` · `User.passwordHash` nullable, `authProvider`, `googleSub`, `emailVerifiedAt` (D6) · `classTarget` default 70 → 100 (D2) | **yes** |
 | `0006_clo_objective_activity_hierarchy` | 2026-09-17 | Drops `ObjectiveAssessment` and `CLO.threshold` · `AssessmentCriteria` re-keyed to `objectiveId` · `Course.cloPassMark` (average of the old thresholds) · `CLO.weight` · `BehavioralObjective.weight` · `Activity.type` / `assessmentMethod` / `criteriaNote` / `passMark` (drops `method`) | **yes** |
 | `0007_google_domain_account_status` | 2026-09-23 | `AccountStatus` enum · `User.status` (default `ACTIVE`) · index `User_status_idx` (FR-08) | **yes** |
+| `0009_drop_password_columns` | 2026-11-12 | Drops `User.passwordHash` · `mustChangePassword` · `pwResetAt` · `pwChangedAt` and CHECKs `chk_user_has_credential` · `chk_user_hash` (no passwords) | **yes** |
 
 **Caveat, stated plainly:** `0002`–`0007` are hand-written, and each header says to compare them with
 `prisma migrate diff --from-migrations … --to-schema-datamodel …` against a shadow database before applying

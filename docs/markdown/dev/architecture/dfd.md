@@ -878,9 +878,7 @@ TMT 2016 สร้าง threat จาก **ชนิดของ element** ไ�
 > **`ObjectiveAssessment` ถูกตัดแล้ว (0006)** — v2.5.0 ตรวจไว้ว่าเป็น traceability อย่างเดียวที่ต้องไม่มีเส้นเข้า P10 (FR-35) ·
 > จึงมีเส้น D3 → P10 (f38) ที่ดึง `BehavioralObjective.weight` และ `AssessmentCriteria.weight` **โดยตั้งใจ** ไม่ใช่การละเมิด
 >
-> **ที่ยังไม่ครบ (บันทึกตรง ๆ):** `User.passwordHash` · `mustChangePassword` · `pwResetAt` · `pwChangedAt` ยังอยู่ใน `schema.prisma`
-> แต่ตัดจากการออกแบบแล้ว (ไม่มีรหัสผ่านตั้งแต่ 2026-11-10) จึงไม่มีเส้นที่แตะคอลัมน์เหล่านี้ · ต้องมี migration ใหม่ drop คอลัมน์และแก้ CHECK `chk_user_has_credential`
-> ซึ่งยังบังคับว่า `User` ต้องมี `passwordHash` หรือ `googleSub` — บัญชีลิงก์อีเมล (f58 → ผ่าน P2) จะถูกปฏิเสธจนกว่าจะแก้
+> **คอลัมน์รหัสผ่าน:** `User.passwordHash` · `mustChangePassword` · `pwResetAt` · `pwChangedAt` และ CHECK `chk_user_has_credential` ถูกถอดแล้วใน migration 0009 (2026-11-12) จึงไม่มีเส้นที่แตะคอลัมน์เหล่านี้ และบัญชีลิงก์อีเมล (f58 → ผ่าน P2) ไม่ถูกปฏิเสธอีก
 > · `EmailVerificationToken` ใช้เป็นที่เก็บโทเคนของลิงก์เข้าสู่ระบบ (ยังไม่มีโค้ด 🕐)
 
 ---

@@ -44,14 +44,9 @@ GEN = [('scripts/build-usecase-drawio.py', 'docs/diagrams/usecase/index-q-usecas
 #  ให้ใส่ที่นี่พร้อมเหตุผล แล้วติดป้ายในไฟล์ SQL)
 PROPOSED = {}
 PROPOSED_COLS = {}
-# คอลัมน์ที่ schema.prisma ยังมีแต่ถูกตัดจากการออกแบบ จึงไม่วาดใน index-q.sql และ ER
-# (2026-11-10 ตัดรหัสผ่าน · หายจริงเมื่อมี migration ใหม่ที่ drop คอลัมน์และแก้ CHECK chk_user_has_credential)
-REMOVED_FROM_DESIGN = {
-    ('User', 'passwordHash'): 'ไม่มีรหัสผ่าน',
-    ('User', 'mustChangePassword'): 'ไม่มี UC รีเซ็ตรหัสผ่าน',
-    ('User', 'pwResetAt'): 'ไม่มี UC รีเซ็ตรหัสผ่าน',
-    ('User', 'pwChangedAt'): 'ไม่มี UC เปลี่ยนรหัสผ่าน',
-}
+# คอลัมน์ที่ schema.prisma ยังมีแต่ไม่วาดใน index-q.sql และ ER
+# (2026-11-12: ว่าง — migration 0009 drop คอลัมน์รหัสผ่านของ User แล้ว)
+REMOVED_FROM_DESIGN = {}
 
 fail, warn = [], []
 

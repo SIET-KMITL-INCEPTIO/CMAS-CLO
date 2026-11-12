@@ -13,15 +13,11 @@
 --
 -- Source of truth is database/schema.prisma. Nothing deploys from this file.
 --
--- No passwords (2026-11-10): the design has none, so this file does not draw
--- the password columns or password events that schema.prisma still carries:
---   User.passwordHash · mustChangePassword · pwResetAt · pwChangedAt
---   AuthEvent.action values PW_RESET · PW_CHANGE · VERIFY
--- They go away with a new migration; until then scripts/check-diagrams.py
--- (REMOVED_FROM_DESIGN) is the one place that lists the intended difference
--- and ER-2 fails on any other. That migration must also relax CHECK
--- chk_user_has_credential (0005), or an e-mail-link account (no passwordHash,
--- no googleSub) is refused. EmailVerificationToken stays: it stores the link.
+-- No passwords (migration 0009, 2026-11-12): User.passwordHash, mustChangePassword,
+-- pwResetAt and pwChangedAt were dropped from schema.prisma, so they are not here.
+-- AuthEvent.action keeps PW_RESET · PW_CHANGE · VERIFY in schema.prisma (Postgres
+-- cannot drop enum values cheaply); this file does not list them.
+-- EmailVerificationToken stays: it stores the sign-in link.
 --
 -- ============================================================================
 -- WHAT CHANGED SINCE v4 — ALREADY IN schema.prisma (not tagged)
