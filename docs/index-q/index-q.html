@@ -7353,13 +7353,12 @@ function commitImport(){
   return { ok:im.ok.length, fail:im.rejects.length };
 }
 
-/* WATCH — เชื่อมไฟล์ .xlsx ที่เปิดอยู่ใน Excel: กดบันทึก (Ctrl+S) แล้วหน้านี้อัปเดตเอง
-   ไม่ใช่ตอนพิมพ์ — Excel เขียนไฟล์เมื่อบันทึกเท่านั้น · อ่านผ่านตัวตรวจเดียวกับการนำเข้า (validateWorkbook)
-   และเขียนผ่าน writeScore ทางเดียว จึงมีประวัติ ตรวจกติกาเดียวกัน และเลิกทำได้เหมือนนำเข้า
-   อ่านอย่างเดียว ไม่เขียนกลับลงไฟล์ · ช่องว่างในไฟล์ไม่ลบคะแนน (เหมือนนำเข้า) · ใช้ File System Access API (Chrome / Edge)
+/* WATCH — เชื่อมไฟล์ .xlsx ที่เปิดอยู่ใน Excel: บันทึกใน Excel แล้วกลับมาที่หน้านี้ ระบบอ่านไฟล์ให้หนึ่งครั้ง
+   ไม่มีตัวจับเวลา และไม่อ่านไฟล์ตอนที่ Excel กำลังบันทึก (อ่านเฉพาะตอนผู้ใช้สลับกลับมาที่หน้านี้)
+   อ่านผ่านตัวตรวจเดียวกับการนำเข้า (validateWorkbook) เขียนผ่าน writeScore ทางเดียว จึงมีประวัติและเลิกทำได้
+   อ่านอย่างเดียว · ช่องว่างในไฟล์ไม่ลบคะแนน · ใช้ File System Access API (Chrome / Edge)
    ตอนเชื่อมแค่จำเวลาแก้ไขของไฟล์ ไม่ใช้ค่าในไฟล์ทันที — ไม่งั้นไฟล์เก่าจะทับสิ่งที่แก้ในเว็บไปแล้ว */
-const WATCH = { handle:null, name:'', last:0, timer:null, busy:false, course:null, fails:0, at:'' };
-const WATCH_MS = 1500;
+const WATCH = { handle:null, name:'', last:0, course:null, at:'' };
 
 function watchChip(){
   let el = document.getElementById('watch-chip');
@@ -7371,8 +7370,7 @@ function watchChip(){
       'box-shadow:0 2px 8px rgba(0,0,0,.12)';
     document.body.appendChild(el);
   }
-  el.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:#1a7f37"></span>' +
-    '<span>เชื่อมไฟล์ <b>' + esc(WATCH.name) + '</b>' + (WATCH.at ? ' · อัปเดตล่าสุด ' + WATCH.at : '') + '</span>' +
+  el.innerHTML = '<span>เชื่อมไฟล์ <b>' + esc(WATCH.name) + '</b>' + (WATCH.at ? ' · อัปเดตล่าสุด ' + WATCH.at : '') + '</span>' +
     '<button class="underline underline-offset-2" data-act="watch-stop">หยุด</button>';
 }
 
@@ -7385,42 +7383,32 @@ async function watchStart(){
     picked = await window.showOpenFilePicker({ multiple:false, types:[{ description:'Excel (.xlsx)',
       accept:{ 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx'] } }] });
   } catch (e) { return; }                              /* ยกเลิกหน้าต่างเลือกไฟล์ */
-  watchStop(true);
-  WATCH.handle = picked[0]; WATCH.name = picked[0].name; WATCH.course = S.course; WATCH.at = ''; WATCH.fails = 0;
-  try { WATCH.last = (await WATCH.handle.getFile()).lastModified; }
-  catch (e) { WATCH.handle = null; toast('เปิดไฟล์ไม่ได้ — ลองใหม่อีกครั้ง','bad'); return; }
-  WATCH.timer = setInterval(watchTick, WATCH_MS);
+  try { WATCH.last = (await picked[0].getFile()).lastModified; }
+  catch (e) { toast('เปิดไฟล์ไม่ได้ — ลองใหม่อีกครั้ง','bad'); return; }
+  WATCH.handle = picked[0]; WATCH.name = picked[0].name; WATCH.course = S.course; WATCH.at = '';
   closeOverlays(); watchChip();
-  toast('เชื่อมไฟล์ ' + WATCH.name + ' แล้ว — แก้ใน Excel แล้วกดบันทึก (Ctrl+S) หน้านี้จะอัปเดตเอง');
+  toast('เชื่อมไฟล์ ' + WATCH.name + ' แล้ว — บันทึกใน Excel (Ctrl+S) แล้วกลับมาที่หน้านี้');
 }
 
 function watchStop(quiet){
-  clearInterval(WATCH.timer); WATCH.timer = null; WATCH.handle = null;
+  WATCH.handle = null;
   watchChip();
   if (!quiet) toast('หยุดเชื่อมไฟล์แล้ว');
 }
 
+/* กลับมาที่หน้านี้ = ตรวจไฟล์หนึ่งครั้ง */
 async function watchTick(){
-  if (!WATCH.handle || WATCH.busy) return;
-  if (S.course !== WATCH.course) return;               /* อยู่คนละรายวิชา — รอจนกลับมา */
-  const ae = document.activeElement;
-  if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return;                       /* กำลังพิมพ์ — ไม่วาดหน้าทับ */
+  if (!WATCH.handle || S.course !== WATCH.course) return;
   if (!document.getElementById('modal').hidden || !document.getElementById('drawer').hidden) return;
-  WATCH.busy = true;
   try {
     const f = await WATCH.handle.getFile();
     if (f.lastModified === WATCH.last) return;
-    let wb;
-    try { wb = await readWorkbook(f); }
-    catch (e) {                                        /* Excel อาจยังเขียนไม่เสร็จ — ลองใหม่รอบหน้า */
-      if (++WATCH.fails === 3) toast('อ่านไฟล์ ' + WATCH.name + ' ไม่ได้ — บันทึกจาก Excel อีกครั้ง','bad');
-      return;
-    }
-    WATCH.fails = 0; WATCH.last = f.lastModified;
+    const wb = await readWorkbook(f);
+    WATCH.last = f.lastModified;
     watchApply(wb, f.name);
-  } catch (e) { /* ไฟล์ถูกล็อกหรือหายชั่วคราว — ลองใหม่รอบหน้า */ }
-  finally { WATCH.busy = false; }
+  } catch (e) { toast('อ่านไฟล์ ' + WATCH.name + ' ไม่ได้ — บันทึกจาก Excel แล้วกลับมาใหม่','bad'); }
 }
+window.addEventListener('focus', watchTick);
 
 function watchApply(wb, fileName){
   if (!can('score.import')) { watchStop(true); deny('score.import'); return; }
@@ -7499,7 +7487,7 @@ function modalImport(step){
         (roster ? ' — หรือใช้ไฟล์จากทะเบียนได้เลย: ระบบหาคอลัมน์รหัสและชื่อจากหัวตาราง (ชื่อ-นามสกุลคอลัมน์เดียว หรือ ชื่อ กับ นามสกุลแยกกัน) และแสดงให้ตรวจก่อนบันทึก'
                 : ' — เติมรหัสและชื่อนักศึกษามาให้แล้ว เหลือเพียงคอลัมน์คะแนนที่ต้องกรอก จึงไม่มีโอกาสพิมพ์รหัสผิด') +
         (roster ? '' : '<div class="mt-2">หรือ <button class="underline underline-offset-2 text-ink" data-act="watch-start">เชื่อมไฟล์ที่เปิดใน Excel</button>' +
-          ' — กดบันทึกใน Excel แล้วหน้านี้อัปเดตเอง</div>') +
+          ' — บันทึกใน Excel แล้วกลับมาที่หน้านี้</div>') +
         '</div>';
     foot = btn('ยกเลิก','','data-act="close"');
 
