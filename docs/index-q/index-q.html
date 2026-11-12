@@ -7064,9 +7064,14 @@ function patchSheet(xml, opt){
   if (opt.freeze) {
     const col = opt.freeze.match(/^[A-Z]+/)[0], row = parseInt(opt.freeze.match(/\d+/)[0], 10);
     let x = 0; for (let i = 0; i < col.length; i++) x = x * 26 + (col.charCodeAt(i) - 64);
-    const pane = '<pane xSplit="' + (x - 1) + '" ySplit="' + (row - 1) + '" topLeftCell="' + opt.freeze +
-      '" activePane="bottomRight" state="frozen"/>' +
-      '<selection pane="bottomRight" activeCell="' + opt.freeze + '" sqref="' + opt.freeze + '"/>';
+    /* Excel เขียน pane ตามจำนวนทิศที่ตรึงจริง: ตรึงแถวอย่างเดียว = ไม่มี xSplit และ activePane="bottomLeft"
+       xSplit="0" คู่กับ activePane="bottomRight" ผิดสคีมา — Excel ซ่อมไฟล์ (ขึ้น Repaired) */
+    const xs = x - 1, ys = row - 1;
+    const both = xs > 0 && ys > 0, active = both ? 'bottomRight' : (ys > 0 ? 'bottomLeft' : 'topRight');
+    const sel = function(pane, cell){ return '<selection pane="' + pane + '"' + (cell ? ' activeCell="' + cell + '" sqref="' + cell + '"' : '') + '/>'; };
+    const pane = '<pane' + (xs > 0 ? ' xSplit="' + xs + '"' : '') + (ys > 0 ? ' ySplit="' + ys + '"' : '') +
+      ' topLeftCell="' + opt.freeze + '" activePane="' + active + '" state="frozen"/>' +
+      (both ? sel('topRight') + sel('bottomLeft') : '') + sel(active, opt.freeze);
     xml = xml.replace(/<sheetView([^>]*)\/>/, '<sheetView$1>' + pane + '</sheetView>')
              .replace(/<sheetView([^>]*)>(?!<pane)/, '<sheetView$1>' + pane);
   }
@@ -7084,6 +7089,7 @@ function patchSheet(xml, opt){
   if (opt.validations && opt.validations.length) {
     const dv = '<dataValidations count="' + opt.validations.length + '">' +
       opt.validations.map(function(v){
+        /* promptTitle / errorTitle ยาวได้ไม่เกิน 32 ตัวอักษรตามสคีมา — เกินแล้ว Excel ซ่อมไฟล์และทิ้ง dataValidation */
         /* U7 — ชนิด custom แทน decimal: decimal ปฏิเสธคำว่า “ยกเว้น” ตอนพิมพ์ใน Excel · สูตรอ้างช่องซ้ายบนของช่วง */
         const tl = v.sqref.split(':')[0];
         const rule = 'OR(ISBLANK(' + tl + '),AND(ISNUMBER(' + tl + '),' + tl + '>=0,' + tl + '<=' + v.max + '),' +
@@ -7092,7 +7098,7 @@ function patchSheet(xml, opt){
           'showErrorMessage="1" errorStyle="stop" ' +
           'errorTitle="' + xmlEsc('คะแนนไม่ถูกต้อง') + '" ' +
           'error="' + xmlEsc('กรอกได้เฉพาะตัวเลข 0 ถึง ' + v.max + ' · เว้นว่างได้ถ้ายังไม่ประเมิน · พิมพ์ ยกเว้น เพื่อยกเว้น') + '" ' +
-          'promptTitle="' + xmlEsc(v.name || 'คะแนน') + '" ' +
+          'promptTitle="' + xmlEsc(String(v.name || 'คะแนน').slice(0, 32)) + '" ' +
           'prompt="' + xmlEsc('เต็ม ' + v.max + ' คะแนน · เว้นว่าง = ยังไม่ประเมิน · ยกเว้น = ไม่นับ') + '" ' +
           'sqref="' + v.sqref + '"><formula1>' + xmlEsc(rule) + '</formula1></dataValidation>';
       }).join('') + '</dataValidations>';
