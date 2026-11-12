@@ -1768,9 +1768,11 @@ function derive(courseId){
          ถ้าคะแนนครบ = passCourse เดิม · ไม่มีคะแนนเลย = null · เป็นภาพ real-time ไม่ใช่เกรดจริง */
       /* ถ้าช่องว่างที่เหลือเป็น 0 — คำเตือนล่วงหน้า ไม่แทนที่คำตัดสินด้านบน (null ยังเป็น null) */
       ifZero: (function(){
-        if (t.missing === 0) return null;
+        /* ไม่มีช่องว่าง = ไม่ต้องคาดการณ์ · ยังไม่มีคะแนนจริงสักช่อง = ไม่ตัดสิน (ไม่ใช่ "ไม่ผ่าน") */
+        if (t.missing === 0 || t.covered === 0) return null;
         const zt = total(s.id, true);
         const bad = clos.filter(function(c){
+          if (per[c.id].pct === null) return false;            /* CLO นี้ยังไม่มีคะแนนจริง */
           const p = cloScore(s.id, c.id, true).pct; return p !== null && p < passMark; });
         return { pct: zt.pct, failingClos: bad,
                  failCourse: zt.pct !== null && zt.pct < course.passCriteria };
@@ -2706,7 +2708,7 @@ const modalFrame = function(title, body, foot){
    เป็นสัญญาณการสอน · คะแนนยังไม่ครบยังไม่ใช่ทั้งสองอย่างจนกว่าคะแนนจะมา */
 /* สถานะ ณ ตอนนี้ของคนที่คะแนนยังไม่ครบ — นับช่องว่างเป็น 0 (ไม่แก้ข้อมูล) · ว่าง = ยังไม่มีคะแนนเลย */
 function nowChip(r){
-  if (r.passNow === null || r.passNow === undefined) return '';
+  if (r.passNow === null || r.passNow === undefined || D().locked) return '';   /* ตั้งค่าวิชาไม่ครบ = ตัวเลขยังเชื่อไม่ได้ */
   return '<span title="นับช่องที่ยังไม่มีคะแนนเป็น 0 — ยังไม่ใช่เกรดจริง">' +
     chip(r.passNow ? 'ผ่านแล้ว' : 'ยังไม่ผ่าน', r.passNow ? 'ok' : 'bad') + '</span>';
 }
@@ -2746,7 +2748,7 @@ function followWhy(d, x){
     parts.push('รอคะแนน ' + waiting + ' จาก ' + d.acts.filter(function(a){ return a.weight > 0; }).length + ' กิจกรรม');
   /* ถ้าที่ยังว่างเป็น 0 — เตือนเฉพาะที่ยังไม่ถูกจัดเป็นเสี่ยงอยู่แล้ว */
   const z = r.ifZero;
-  if (waiting > 0 && z && (z.failCourse || z.failingClos.length) && !r.atRisk && r.passCourse !== false)
+  if (waiting > 0 && z && !d.locked && (z.failCourse || z.failingClos.length) && !r.atRisk && r.passCourse !== false)
     parts.push('<span class="text-warn">ถ้าที่เหลือเป็น 0 ' + (z.failCourse ? 'ไม่ผ่านรายวิชา' : 'ไม่ผ่าน CLO ' +
       z.failingClos.map(function(c){ return c.number; }).join(', ')) + '</span>');
   return parts.join(' · ');
@@ -6644,7 +6646,9 @@ async function exportResults(){
       .concat(d.clos.map(function(c){
         const v = r.clo[c.id].pct; return v === null ? '' : Math.round(v * 100) / 100; }))
       .concat([ r.total.pct === null ? '' : Math.round(r.total.pct * 100) / 100,
-                r.passCourse === null ? 'ยังประเมินไม่ครบ' : (r.passCourse ? 'ผ่าน' : 'ไม่ผ่าน'),
+                r.passCourse !== null ? (r.passCourse ? 'ผ่าน' : 'ไม่ผ่าน')
+                  : (r.passNow === null || d.locked ? 'ยังประเมินไม่ครบ'
+                     : (r.passNow ? 'ผ่านแล้ว (คะแนนยังไม่ครบ)' : 'ยังไม่ผ่าน (คะแนนยังไม่ครบ)')),
                 (g && g.grade) || '',
                 !r.total.complete ? 'ยังประเมินไม่ครบ'
                                    : (r.atRisk ? 'เสี่ยง' : 'ปกติ') ]);
