@@ -7073,7 +7073,8 @@ function patchSheet(xml, opt){
       ' topLeftCell="' + opt.freeze + '" activePane="' + active + '" state="frozen"/>' +
       (both ? sel('topRight') + sel('bottomLeft') : '') + sel(active, opt.freeze);
     xml = xml.replace(/<sheetView([^>]*)\/>/, '<sheetView$1>' + pane + '</sheetView>')
-             .replace(/<sheetView([^>]*)>(?!<pane)/, '<sheetView$1>' + pane);
+             .replace(/<sheetView\b([^>]*)>(?!<pane)/, '<sheetView$1>' + pane);
+    /* \b: ไม่ให้จับ <sheetViews> — เดิมจับแล้ววาง pane ไว้นอก <sheetView> (ผิดสคีมา) Excel จึงขึ้น Repaired */
   }
 
   /* ป้องกันแผ่น — ปลดล็อกเฉพาะช่องคะแนนผ่าน xf ที่ protection locked="0" */
