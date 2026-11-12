@@ -7060,21 +7060,21 @@ function patchSheet(xml, opt){
        เพราะ aoa_to_sheet ใส่ '' ให้ทุกช่องในตารางคะแนนอยู่แล้ว */
   }
 
-  /* ตรึงหัวตาราง — sheetView ที่ SheetJS เขียนไว้ไม่มี pane เลย */
+  /* ตรึงหัวตาราง — sheetView ที่ SheetJS เขียนไว้ไม่มี pane เลย
+     Excel เขียน pane ตามทิศที่ตรึงจริง: ตรึงแถวอย่างเดียว = ไม่มี xSplit และ activePane="bottomLeft"
+     xSplit="0" คู่กับ bottomRight หรือ pane ที่หลุดออกนอก <sheetView> ผิดสคีมา — Excel ซ่อมไฟล์ (ขึ้น Repaired)
+     และไฟล์ที่ถูกซ่อมบันทึกทับไม่ได้ (Ctrl+S กลายเป็น Save As) */
   if (opt.freeze) {
-    const col = opt.freeze.match(/^[A-Z]+/)[0], row = parseInt(opt.freeze.match(/\d+/)[0], 10);
-    let x = 0; for (let i = 0; i < col.length; i++) x = x * 26 + (col.charCodeAt(i) - 64);
-    /* Excel เขียน pane ตามจำนวนทิศที่ตรึงจริง: ตรึงแถวอย่างเดียว = ไม่มี xSplit และ activePane="bottomLeft"
-       xSplit="0" คู่กับ activePane="bottomRight" ผิดสคีมา — Excel ซ่อมไฟล์ (ขึ้น Repaired) */
-    const xs = x - 1, ys = row - 1;
+    const at = XLSX.utils.decode_cell(opt.freeze), xs = at.c, ys = at.r;
     const both = xs > 0 && ys > 0, active = both ? 'bottomRight' : (ys > 0 ? 'bottomLeft' : 'topRight');
-    const sel = function(pane, cell){ return '<selection pane="' + pane + '"' + (cell ? ' activeCell="' + cell + '" sqref="' + cell + '"' : '') + '/>'; };
+    const sel = function(p, cell){
+      return '<selection pane="' + p + '"' + (cell ? ' activeCell="' + cell + '" sqref="' + cell + '"' : '') + '/>'; };
     const pane = '<pane' + (xs > 0 ? ' xSplit="' + xs + '"' : '') + (ys > 0 ? ' ySplit="' + ys + '"' : '') +
       ' topLeftCell="' + opt.freeze + '" activePane="' + active + '" state="frozen"/>' +
       (both ? sel('topRight') + sel('bottomLeft') : '') + sel(active, opt.freeze);
-    xml = xml.replace(/<sheetView([^>]*)\/>/, '<sheetView$1>' + pane + '</sheetView>')
-             .replace(/<sheetView\b([^>]*)>(?!<pane)/, '<sheetView$1>' + pane);
-    /* \b: ไม่ให้จับ <sheetViews> — เดิมจับแล้ววาง pane ไว้นอก <sheetView> (ผิดสคีมา) Excel จึงขึ้น Repaired */
+    /* \b กันไม่ให้จับ <sheetViews> · รองรับทั้ง <sheetView …/> และ <sheetView …></sheetView> */
+    xml = xml.replace(/<sheetView\b([^>]*?)(\/?)>/, function(m, attrs, self){
+      return '<sheetView' + attrs + '>' + pane + (self ? '</sheetView>' : ''); });
   }
 
   /* ป้องกันแผ่น — ปลดล็อกเฉพาะช่องคะแนนผ่าน xf ที่ protection locked="0" */
@@ -7082,7 +7082,6 @@ function patchSheet(xml, opt){
     const prot = '<sheetProtection sheet="1" objects="1" scenarios="1"/>';
     /* ไม่ใส่ selectLockedCells / selectUnlockedCells: ใน OOXML ค่า "1" แปลว่า "ห้าม" เลือกช่อง
        ใส่ไว้ = เลือกช่องไหนไม่ได้เลย จึงพิมพ์คะแนนไม่ได้ · ค่าตั้งต้น (ไม่ใส่) = เลือกได้ทุกช่อง */
-    xml = xml.replace(/<sheetData>/, prot.length ? '<sheetData>' : '<sheetData>');
     xml = xml.replace(/<\/sheetData>/, '</sheetData>' + prot);
   }
 
@@ -7090,7 +7089,6 @@ function patchSheet(xml, opt){
   if (opt.validations && opt.validations.length) {
     const dv = '<dataValidations count="' + opt.validations.length + '">' +
       opt.validations.map(function(v){
-        /* promptTitle / errorTitle ยาวได้ไม่เกิน 32 ตัวอักษรตามสคีมา — เกินแล้ว Excel ซ่อมไฟล์และทิ้ง dataValidation */
         /* U7 — ชนิด custom แทน decimal: decimal ปฏิเสธคำว่า “ยกเว้น” ตอนพิมพ์ใน Excel · สูตรอ้างช่องซ้ายบนของช่วง */
         const tl = v.sqref.split(':')[0];
         const rule = 'OR(ISBLANK(' + tl + '),AND(ISNUMBER(' + tl + '),' + tl + '>=0,' + tl + '<=' + v.max + '),' +
@@ -7099,7 +7097,7 @@ function patchSheet(xml, opt){
           'showErrorMessage="1" errorStyle="stop" ' +
           'errorTitle="' + xmlEsc('คะแนนไม่ถูกต้อง') + '" ' +
           'error="' + xmlEsc('กรอกได้เฉพาะตัวเลข 0 ถึง ' + v.max + ' · เว้นว่างได้ถ้ายังไม่ประเมิน · พิมพ์ ยกเว้น เพื่อยกเว้น') + '" ' +
-          'promptTitle="' + xmlEsc(String(v.name || 'คะแนน').slice(0, 32)) + '" ' +
+          'promptTitle="' + xmlEsc(String(v.name || 'คะแนน').slice(0, 32)) + '" ' +   /* สคีมาจำกัด 32 ตัวอักษร เกิน = Repaired */
           'prompt="' + xmlEsc('เต็ม ' + v.max + ' คะแนน · เว้นว่าง = ยังไม่ประเมิน · ยกเว้น = ไม่นับ') + '" ' +
           'sqref="' + v.sqref + '"><formula1>' + xmlEsc(rule) + '</formula1></dataValidation>';
       }).join('') + '</dataValidations>';
@@ -7325,48 +7323,66 @@ function validateWorkbook(wb, fileName){
            students:Object.keys(seen).length, courseId:S.course };
 }
 
+/* ประวัติการนำเข้า: หนึ่งแถว ScoreUploadLog + แถว UploadReject ของรายการที่ไม่ผ่าน
+   ใช้ร่วมกันทั้งการนำเข้าในหน้าต่าง (คะแนน/รายชื่อ) และการเชื่อมไฟล์ */
+function logUpload(im, kind, okCount){
+  const logId = 'lx' + Date.now();
+  /* kind — the roster import shares this log with score imports; without it
+     a roster row reads as a score upload (index-q.sql ScoreUploadLog.kind). */
+  db.scoreUploadLog.unshift({ id:logId, courseId:im.courseId, uploadedBy:me().id,
+    fileName:im.fileName, recordsOk:okCount, recordsFail:im.rejects.length,
+    kind:kind, createdAt:PROTO_NOW });
+  im.rejects.forEach(function(r){
+    db.uploadReject.push({ logId:logId, row:r.row, studentCode:r.studentCode,
+      field:r.field, value:r.value, reason:r.reason });
+  });
+  return logId;
+}
+
 function commitImport(){
   const im = IMPORT;
   if (!im) return null;
-  const logId = 'lx' + Date.now();
+  IMPORT = null;
 
   if (im.mode === 'roster') {
     im.ok.forEach(function(x, i){
       db.student.push({ id:'st_' + Date.now() + '_' + i, courseId:im.courseId,
         studentCode:x.studentCode, name:rosterName(im, x) });
     });
-    /* kind — the roster import shares this log with score imports; without it
-       a roster row reads as a score upload (index-q.sql ScoreUploadLog.kind).
-       uploadedBy was hardcoded 'u1', crediting every import to one account. */
-    db.scoreUploadLog.unshift({ id:logId, courseId:im.courseId, uploadedBy:me().id,
-      fileName:im.fileName, recordsOk:im.ok.length, recordsFail:im.rejects.length,
-      kind:'ROSTER', createdAt:'2568-09-07 09:00' });
-    im.rejects.forEach(function(r){
-      db.uploadReject.push({ logId:logId, row:r.row, studentCode:r.studentCode,
-        field:r.field, value:r.value, reason:r.reason });
-    });
-    IMPORT = null;
+    logUpload(im, 'ROSTER', im.ok.length);
     return { ok:im.ok.length, fail:im.rejects.length, mode:'roster' };
   }
 
+  const logId = logUpload(im, 'SCORE', im.ok.length);
   im.ok.forEach(function(x){ writeScore(x.studentId, x.activityId, x.score, 'IMPORT', logId); });
-  db.scoreUploadLog.unshift({ id:logId, courseId:im.courseId, uploadedBy:me().id,
-    fileName:im.fileName, recordsOk:im.ok.length, recordsFail:im.rejects.length,
-    kind:'SCORE', createdAt:'2568-09-07 09:00' });
-  im.rejects.forEach(function(r){
-    db.uploadReject.push({ logId:logId, row:r.row, studentCode:r.studentCode,
-      field:r.field, value:r.value, reason:r.reason });
-  });
-  IMPORT = null;
   return { ok:im.ok.length, fail:im.rejects.length };
 }
 
-/* WATCH — เชื่อมไฟล์ .xlsx ที่เปิดอยู่ใน Excel: บันทึกใน Excel แล้วกลับมาที่หน้านี้ ระบบอ่านไฟล์ให้หนึ่งครั้ง
-   ไม่มีตัวจับเวลา และไม่อ่านไฟล์ตอนที่ Excel กำลังบันทึก (อ่านเฉพาะตอนผู้ใช้สลับกลับมาที่หน้านี้)
-   อ่านผ่านตัวตรวจเดียวกับการนำเข้า (validateWorkbook) เขียนผ่าน writeScore ทางเดียว จึงมีประวัติและเลิกทำได้
-   อ่านอย่างเดียว · ช่องว่างในไฟล์ไม่ลบคะแนน · ใช้ File System Access API (Chrome / Edge)
-   ตอนเชื่อมแค่จำเวลาแก้ไขของไฟล์ ไม่ใช้ค่าในไฟล์ทันที — ไม่งั้นไฟล์เก่าจะทับสิ่งที่แก้ในเว็บไปแล้ว */
-const WATCH = { handle:null, name:'', last:0, course:null, at:'' };
+/* ── WATCH · เชื่อมไฟล์ .xlsx ที่เปิดอยู่ใน Excel ─────────────────────
+   ผู้สอนบันทึกใน Excel (Ctrl+S) แล้วกลับมาที่หน้านี้ → อ่านไฟล์หนึ่งครั้ง
+   · ไม่มีตัวจับเวลา: อ่านเฉพาะตอนหน้าต่างได้โฟกัสคืน จึงไม่แย่งไฟล์ตอน Excel กำลังบันทึก
+   · ตัวตรวจเดียวกับการนำเข้า (validateWorkbook) และตัวเขียนเดียว (writeScore) → ประวัติ · กติกา · เลิกทำ เหมือนกัน
+   · อ่านอย่างเดียว · ช่องว่างในไฟล์ไม่ลบคะแนน · ใช้ File System Access API (Chrome / Edge)
+   · ตอนเชื่อมแค่จำเวลาแก้ไขของไฟล์ ไม่ใช้ค่าในไฟล์ทันที — ไม่งั้นไฟล์เก่าจะทับสิ่งที่แก้ในเว็บไปแล้ว */
+const WATCH = { handle:null, name:'', last:0, course:null, label:'', at:'' };
+
+const clockNow = function(){
+  const d = new Date(), pad = function(n){ return (n < 10 ? '0' : '') + n; };
+  return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+};
+
+/* อ่านไฟล์และตรวจกับรายวิชาที่เปิดอยู่ — ใช้ทั้งตอนเชื่อมและตอนอัปเดต · โยนข้อความที่ผู้ใช้อ่านได้ */
+async function watchRead(handle){
+  let f;
+  try { f = await handle.getFile(); }
+  catch (e) {
+    const err = new Error(e && e.name === 'NotFoundError' ? 'ไม่พบไฟล์แล้ว (ถูกลบหรือย้าย)'
+                                                         : 'เปิดไฟล์ไม่ได้ — ปิดไฟล์ในโปรแกรมอื่นหรือเลือกใหม่');
+    err.gone = !!(e && e.name === 'NotFoundError');
+    throw err;
+  }
+  return { file:f, im: validateWorkbook(await readWorkbook(f), f.name) };
+}
 
 function watchChip(){
   let el = document.getElementById('watch-chip');
@@ -7378,11 +7394,12 @@ function watchChip(){
       'box-shadow:0 2px 8px rgba(0,0,0,.12)';
     document.body.appendChild(el);
   }
-  el.innerHTML = '<span>เชื่อมไฟล์ <b>' + esc(WATCH.name) + '</b>' + (WATCH.at ? ' · อัปเดตล่าสุด ' + WATCH.at : '') + '</span>' +
+  el.innerHTML = '<span>เชื่อมไฟล์ <b>' + esc(WATCH.name) + '</b> · ' + esc(WATCH.label) +
+      (WATCH.at ? ' · อัปเดตล่าสุด ' + WATCH.at : '') + '</span>' +
     '<button class="underline underline-offset-2" data-act="watch-stop">หยุด</button>';
 }
 
-/* บอกผลการเชื่อมทุกกรณี: สำเร็จ = ป้ายเขียว + แถบมุมล่างซ้าย · ไม่สำเร็จ = ข้อความแดงในหน้าต่าง (อยู่จนกว่าจะปิด) + ป้าย */
+/* ไม่สำเร็จ = ข้อความแดงในหน้าต่างนำเข้า (อยู่จนกว่าจะปิด) + ป้าย · ไม่เชื่อมไฟล์นั้น */
 function watchFail(msg){
   const e = document.getElementById('imp-err');
   if (e) { e.textContent = 'เชื่อมไม่สำเร็จ — ' + msg; e.hidden = false; }
@@ -7392,25 +7409,24 @@ function watchFail(msg){
 async function watchStart(){
   if (!XL_OK()) return;
   if (typeof window.showOpenFilePicker !== 'function') { watchFail('เบราว์เซอร์นี้ไม่รองรับ — ใช้ Chrome หรือ Edge'); return; }
-  let picked;
+  let handle;
   try {
-    picked = await window.showOpenFilePicker({ multiple:false, types:[{ description:'Excel (.xlsx)',
-      accept:{ 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx'] } }] });
+    handle = (await window.showOpenFilePicker({ multiple:false, types:[{ description:'Excel (.xlsx)',
+      accept:{ 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx'] } }] }))[0];
   } catch (e) {
     if (e && e.name === 'AbortError') toast('ยกเลิกแล้ว — ยังไม่ได้เชื่อมไฟล์', 'bad');
-    else watchFail('เปิดหน้าต่างเลือกไฟล์ไม่ได้ (' + (e && e.name || 'ไม่ทราบสาเหตุ') + ')');
+    else watchFail('เปิดหน้าต่างเลือกไฟล์ไม่ได้ (' + ((e && e.name) || 'ไม่ทราบสาเหตุ') + ')');
     return;
   }
-  /* ตรวจไฟล์ก่อนเชื่อม: อ่านได้ · เป็นของ Sec นี้ — ไม่ผ่านก็ไม่เชื่อม */
-  let f, im;
-  try { f = await picked[0].getFile(); }
-  catch (e) { watchFail('เปิดไฟล์ไม่ได้ — ปิดไฟล์ในโปรแกรมอื่นหรือเลือกใหม่'); return; }
-  try { im = validateWorkbook(await readWorkbook(f), f.name); }
+  let r;
+  try { r = await watchRead(handle); }                /* ตรวจก่อนเชื่อม: อ่านได้ · เป็นของ Sec นี้ */
   catch (e) { watchFail(e.message); return; }
-  WATCH.handle = picked[0]; WATCH.name = f.name; WATCH.last = f.lastModified; WATCH.course = S.course; WATCH.at = '';
+  const C = D().course;
+  Object.assign(WATCH, { handle:handle, name:r.file.name, last:r.file.lastModified, course:S.course,
+                         label:C.code + ' Sec ' + C.section, at:'' });
   closeOverlays(); watchChip();
-  toast('เชื่อมสำเร็จ · ' + esc(f.name) + ' · ' + im.cols.length + ' กิจกรรม · ' + im.students + ' นักศึกษา' +
-    (im.skipped.length ? ' · ข้าม ' + im.skipped.length + ' คอลัมน์ที่ไม่ตรงกิจกรรม' : '') +
+  toast('เชื่อมสำเร็จ · ' + esc(r.file.name) + ' · ' + r.im.cols.length + ' กิจกรรม · ' + r.im.students + ' นักศึกษา' +
+    (r.im.skipped.length ? ' · ข้าม ' + r.im.skipped.length + ' คอลัมน์ที่ไม่ตรงกิจกรรม' : '') +
     ' — บันทึกใน Excel แล้วกลับมาที่หน้านี้');
 }
 
@@ -7420,40 +7436,39 @@ function watchStop(quiet){
   if (!quiet) toast('หยุดเชื่อมไฟล์แล้ว');
 }
 
-/* กลับมาที่หน้านี้ = ตรวจไฟล์หนึ่งครั้ง */
+/* หน้าต่างได้โฟกัสคืน = ตรวจไฟล์หนึ่งครั้ง
+   รอเมื่อ: อยู่คนละรายวิชา หรือมีหน้าต่าง/ลิ้นชักเปิดอยู่ (ค่า prev ในหน้าต่างนำเข้าจะเพี้ยนถ้าเขียนทับตอนนั้น) */
 async function watchTick(){
   if (!WATCH.handle || S.course !== WATCH.course) return;
   if (!document.getElementById('modal').hidden || !document.getElementById('drawer').hidden) return;
-  try {
-    const f = await WATCH.handle.getFile();
-    if (f.lastModified === WATCH.last) return;
-    const wb = await readWorkbook(f);
-    WATCH.last = f.lastModified;
-    watchApply(wb, f.name);
-  } catch (e) { toast('อ่านไฟล์ ' + WATCH.name + ' ไม่ได้ — บันทึกจาก Excel แล้วกลับมาใหม่','bad'); }
+  const handle = WATCH.handle;
+  let f;
+  try { f = await handle.getFile(); } catch (e) { f = null; }
+  if (f && f.lastModified === WATCH.last) return;
+  /* จำเวลาไว้ก่อน await ตัวถัดไป — โฟกัสเข้ามาสองครั้งติดกันจะไม่นำเข้าซ้ำ */
+  if (f) WATCH.last = f.lastModified;
+  let r;
+  try { r = await watchRead(handle); }
+  catch (e) {
+    if (e.gone) { watchStop(true); toast(esc(WATCH.name || 'ไฟล์') + ': ' + esc(e.message) + ' — เลิกเชื่อมแล้ว', 'bad'); }
+    else toast('อัปเดตจาก ' + esc(WATCH.name) + ' ไม่ได้ — ' + esc(e.message), 'bad');
+    return;
+  }
+  if (handle === WATCH.handle) watchApply(r.im);      /* ถูกหยุดหรือเปลี่ยนไฟล์ระหว่างอ่าน → ทิ้ง */
 }
 window.addEventListener('focus', watchTick);
 
-function watchApply(wb, fileName){
+function watchApply(im){
   if (!can('score.import')) { watchStop(true); deny('score.import'); return; }
-  let im;
-  try { im = validateWorkbook(wb, fileName); }
-  catch (e) { toast(e.message, 'bad'); return; }
   const changed = im.ok.filter(function(x){ return x.score !== x.prev; });    /* เฉพาะช่องที่ต่างจากในระบบ */
   if (!changed.length && !im.rejects.length) return;
-  const snap = changed.length ? scoreSnap(changed.map(function(x){ return [x.studentId, x.activityId]; })) : null;
-  const logId = 'lx' + Date.now();
+  if (changed.length) setUndo('อัปเดตจาก Excel ' + changed.length + ' ช่อง', 'score.import',
+    scoreSnap(changed.map(function(x){ return [x.studentId, x.activityId]; })));
+  const logId = logUpload(im, 'SCORE', changed.length);
   changed.forEach(function(x){ writeScore(x.studentId, x.activityId, x.score, 'IMPORT', logId); });
-  db.scoreUploadLog.unshift({ id:logId, courseId:im.courseId, uploadedBy:me().id, fileName:fileName,
-    recordsOk:changed.length, recordsFail:im.rejects.length, kind:'SCORE', createdAt:PROTO_NOW });
-  im.rejects.forEach(function(r){
-    db.uploadReject.push({ logId:logId, row:r.row, studentCode:r.studentCode, field:r.field, value:r.value, reason:r.reason });
-  });
-  if (snap && changed.length) setUndo('อัปเดตจาก Excel ' + changed.length + ' ช่อง', 'score.import', snap);
-  const d = new Date(), pad = function(n){ return (n < 10 ? '0' : '') + n; };
-  WATCH.at = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  WATCH.at = clockNow();
   invalidate(); render(); watchChip();
-  toast('อัปเดตจาก Excel ' + changed.length + ' ช่อง' +
+  toast((changed.length ? 'อัปเดตจาก Excel ' + changed.length + ' ช่อง' : 'ไม่ได้อัปเดตจาก Excel') +
     (im.rejects.length ? ' · ข้าม ' + im.rejects.length + ' รายการ (ดูที่ประวัติการนำเข้า)' : ''),
     im.rejects.length ? 'bad' : undefined, changed.length ? UNDO_ACTION : null);
 }
