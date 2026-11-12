@@ -7358,12 +7358,15 @@ function commitImport(){
 }
 
 /* ── WATCH · เชื่อมไฟล์ .xlsx ที่เปิดอยู่ใน Excel ─────────────────────
-   ผู้สอนบันทึกใน Excel (Ctrl+S) แล้วกลับมาที่หน้านี้ → อ่านไฟล์หนึ่งครั้ง
-   · ไม่มีตัวจับเวลา: อ่านเฉพาะตอนหน้าต่างได้โฟกัสคืน จึงไม่แย่งไฟล์ตอน Excel กำลังบันทึก
+   Excel บันทึกไฟล์ (AutoSave หรือ Ctrl+S) → หน้านี้เห็นเองภายใน ~3 วินาที ไม่ต้องกดอะไร
+   · ทุก 3 วินาทีดูแค่เวลาแก้ไขของไฟล์ (เบา) — อ่านทั้งไฟล์เมื่อเวลาเปลี่ยนเท่านั้น
+   · ได้โฟกัสคืน / แท็บกลับมาให้เห็น = ตรวจทันที · แท็บถูกซ่อนอยู่ = ไม่อ่าน
+   · AutoSave ของ Excel ทำงานกับไฟล์ใน OneDrive / SharePoint เท่านั้น — ไฟล์ในเครื่องต้องกด Ctrl+S
    · ตัวตรวจเดียวกับการนำเข้า (validateWorkbook) และตัวเขียนเดียว (writeScore) → ประวัติ · กติกา · เลิกทำ เหมือนกัน
    · อ่านอย่างเดียว · ช่องว่างในไฟล์ไม่ลบคะแนน · ใช้ File System Access API (Chrome / Edge)
    · ตอนเชื่อมแค่จำเวลาแก้ไขของไฟล์ ไม่ใช้ค่าในไฟล์ทันที — ไม่งั้นไฟล์เก่าจะทับสิ่งที่แก้ในเว็บไปแล้ว */
-const WATCH = { handle:null, name:'', last:0, course:null, label:'', at:'' };
+const WATCH = { handle:null, name:'', last:0, course:null, label:'', at:'', timer:null, busy:false, fails:0 };
+const WATCH_MS = 3000;
 
 const clockNow = function(){
   const d = new Date(), pad = function(n){ return (n < 10 ? '0' : '') + n; };
@@ -7421,41 +7424,52 @@ async function watchStart(){
   try { r = await watchRead(handle); }                /* ตรวจก่อนเชื่อม: อ่านได้ · เป็นของ Sec นี้ */
   catch (e) { watchFail(e.message); return; }
   const C = D().course;
+  clearInterval(WATCH.timer);
   Object.assign(WATCH, { handle:handle, name:r.file.name, last:r.file.lastModified, course:S.course,
-                         label:C.code + ' Sec ' + C.section, at:'' });
+                         label:C.code + ' Sec ' + C.section, at:'', fails:0,
+                         timer:setInterval(watchTick, WATCH_MS) });
   closeOverlays(); watchChip();
   toast('เชื่อมสำเร็จ · ' + esc(r.file.name) + ' · ' + r.im.cols.length + ' กิจกรรม · ' + r.im.students + ' นักศึกษา' +
     (r.im.skipped.length ? ' · ข้าม ' + r.im.skipped.length + ' คอลัมน์ที่ไม่ตรงกิจกรรม' : '') +
-    ' — บันทึกใน Excel แล้วกลับมาที่หน้านี้');
+    ' — แก้ใน Excel แล้วหน้านี้อัปเดตเอง (เปิด AutoSave หรือกด Ctrl+S)');
 }
 
 function watchStop(quiet){
-  WATCH.handle = null;
+  clearInterval(WATCH.timer); WATCH.timer = null; WATCH.handle = null;
   watchChip();
   if (!quiet) toast('หยุดเชื่อมไฟล์แล้ว');
 }
 
-/* หน้าต่างได้โฟกัสคืน = ตรวจไฟล์หนึ่งครั้ง
-   รอเมื่อ: อยู่คนละรายวิชา หรือมีหน้าต่าง/ลิ้นชักเปิดอยู่ (ค่า prev ในหน้าต่างนำเข้าจะเพี้ยนถ้าเขียนทับตอนนั้น) */
+/* ตรวจไฟล์หนึ่งรอบ — เรียกจากตัวจับเวลา โฟกัส และแท็บกลับมาให้เห็น
+   รอเมื่อ: กำลังอ่านรอบก่อน · แท็บถูกซ่อน · อยู่คนละรายวิชา · มีหน้าต่าง/ลิ้นชักเปิด · กำลังพิมพ์ในช่องบนหน้า
+   (วาดหน้าใหม่ตอนนั้นจะทับสิ่งที่พิมพ์ และค่า prev ในหน้าต่างนำเข้าจะเพี้ยน) */
 async function watchTick(){
-  if (!WATCH.handle || S.course !== WATCH.course) return;
+  if (!WATCH.handle || WATCH.busy || document.hidden || S.course !== WATCH.course) return;
   if (!document.getElementById('modal').hidden || !document.getElementById('drawer').hidden) return;
+  const ae = document.activeElement;
+  if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return;
   const handle = WATCH.handle;
-  let f;
-  try { f = await handle.getFile(); } catch (e) { f = null; }
-  if (f && f.lastModified === WATCH.last) return;
-  /* จำเวลาไว้ก่อน await ตัวถัดไป — โฟกัสเข้ามาสองครั้งติดกันจะไม่นำเข้าซ้ำ */
-  if (f) WATCH.last = f.lastModified;
-  let r;
-  try { r = await watchRead(handle); }
-  catch (e) {
-    if (e.gone) { watchStop(true); toast(esc(WATCH.name || 'ไฟล์') + ': ' + esc(e.message) + ' — เลิกเชื่อมแล้ว', 'bad'); }
-    else toast('อัปเดตจาก ' + esc(WATCH.name) + ' ไม่ได้ — ' + esc(e.message), 'bad');
-    return;
-  }
-  if (handle === WATCH.handle) watchApply(r.im);      /* ถูกหยุดหรือเปลี่ยนไฟล์ระหว่างอ่าน → ทิ้ง */
+  WATCH.busy = true;
+  try {
+    let f;
+    try { f = await handle.getFile(); } catch (e) { f = null; }
+    if (f && f.lastModified === WATCH.last) return;
+    let r;
+    try { r = await watchRead(handle); }
+    catch (e) {
+      if (e.gone) { watchStop(true); toast(esc(WATCH.name || 'ไฟล์') + ': ' + esc(e.message) + ' — เลิกเชื่อมแล้ว', 'bad'); return; }
+      /* Excel / OneDrive อาจกำลังเขียนไฟล์อยู่ — ไม่จำเวลา รอบหน้าลองใหม่ · แจ้งเมื่อพลาดติดกัน 3 รอบ */
+      if (++WATCH.fails === 3) toast('อัปเดตจาก ' + esc(WATCH.name) + ' ไม่ได้ — ' + esc(e.message), 'bad');
+      return;
+    }
+    WATCH.fails = 0;
+    if (handle !== WATCH.handle) return;              /* ถูกหยุดหรือเปลี่ยนไฟล์ระหว่างอ่าน → ทิ้ง */
+    WATCH.last = r.file.lastModified;
+    watchApply(r.im);
+  } finally { WATCH.busy = false; }
 }
 window.addEventListener('focus', watchTick);
+document.addEventListener('visibilitychange', watchTick);
 
 function watchApply(im){
   if (!can('score.import')) { watchStop(true); deny('score.import'); return; }
@@ -7525,7 +7539,7 @@ function modalImport(step){
         (roster ? ' — หรือใช้ไฟล์จากทะเบียนได้เลย: ระบบหาคอลัมน์รหัสและชื่อจากหัวตาราง (ชื่อ-นามสกุลคอลัมน์เดียว หรือ ชื่อ กับ นามสกุลแยกกัน) และแสดงให้ตรวจก่อนบันทึก'
                 : ' — เติมรหัสและชื่อนักศึกษามาให้แล้ว เหลือเพียงคอลัมน์คะแนนที่ต้องกรอก จึงไม่มีโอกาสพิมพ์รหัสผิด') +
         (roster ? '' : '<div class="mt-2">หรือ <button class="underline underline-offset-2 text-ink" data-act="watch-start">เชื่อมไฟล์ที่เปิดใน Excel</button>' +
-          ' — บันทึกใน Excel แล้วกลับมาที่หน้านี้</div>') +
+          ' — แก้ใน Excel แล้วหน้านี้อัปเดตเอง (เปิด AutoSave หรือกด Ctrl+S)</div>') +
         '</div>';
     foot = btn('ยกเลิก','','data-act="close"');
 
