@@ -1800,11 +1800,11 @@ function derive(courseId){
          ถ้าคะแนนครบ = passCourse เดิม · ไม่มีคะแนนเลย = null · เป็นภาพ real-time ไม่ใช่เกรดจริง */
       /* ถ้าช่องว่างที่เหลือเป็น 0 — คำเตือนล่วงหน้า ไม่แทนที่คำตัดสินด้านบน (null ยังเป็น null) */
       ifZero: (function(){
-        /* ไม่มีช่องว่าง = ไม่ต้องคาดการณ์ · ยังไม่มีคะแนนจริงสักช่อง = ไม่ตัดสิน (ไม่ใช่ "ไม่ผ่าน") */
-        if (t.missing === 0 || t.covered === 0) return null;
+        /* ไม่มีช่องว่าง = ไม่ต้องคาดการณ์ · R4 (2569-11-13): คนที่ยังไม่มีคะแนนจริงสักช่องก็ถูกคำนวณแบบเติม 0 เช่นกัน
+           (เดิมข้าม) — ผู้สอนต้องเห็นความเสี่ยงตั้งแต่ก่อนกรอกคะแนนช่องแรก · คำตัดสินจริงยังเป็น null */
+        if (t.missing === 0) return null;
         const zt = total(s.id, true);
         const bad = clos.filter(function(c){
-          if (per[c.id].pct === null) return false;            /* CLO นี้ยังไม่มีคะแนนจริง */
           const p = cloScore(s.id, c.id, true).pct; return p !== null && p < passMark; });
         return { pct: zt.pct, failingClos: bad,
                  failCourse: zt.pct !== null && zt.pct < course.passCriteria };
@@ -1814,6 +1814,10 @@ function derive(courseId){
   rows.forEach(function(r){
     r.passNow = r.passCourse !== null ? r.passCourse
       : (r.ifZero && r.ifZero.pct !== null ? !r.ifZero.failCourse : null);
+    /* R4 (2569-11-12) — ความเสี่ยงคำนวณโดยนับช่องว่างเป็น 0: นักศึกษาที่ผ่านจากคะแนนที่มีจริง (atRisk = false)
+       แต่จะไม่ผ่านรายวิชาหรือ CLO ถ้าช่องที่เหลือเป็น 0 (อาจไม่ส่งงาน) เป็น "เสี่ยงถ้าไม่ส่ง" และต้องถูกติดตาม
+       ข้อมูลที่เก็บและคำตัดสินจริงยังเป็น null · คนที่ยังไม่มีคะแนนจริงสักช่องก็ถูกนับ (เติม 0 ทุกช่อง) */
+    r.atRiskIfZero = !r.atRisk && !!r.ifZero && (r.ifZero.failCourse || r.ifZero.failingClos.length > 0);
   });
 
   /* CR-04 — attainment, with CR-03.1's mandatory third state carried through:
@@ -2744,18 +2748,18 @@ function nowChip(r){
   return '<span title="นับช่องที่ยังไม่มีคะแนนเป็น 0 — ยังไม่ใช่เกรดจริง">' +
     chip(r.passNow ? 'ผ่านแล้ว' : 'ยังไม่ผ่าน', r.passNow ? 'ok' : 'bad') + '</span>';
 }
-const FOLLOW_LBL = { 3:['ไม่ผ่านรายวิชา','bad'], 2:['ต่ำกว่าเกณฑ์ CLO','warn'], 1:['ยังประเมินไม่ครบ','nil'] };
+const FOLLOW_LBL = { 3:['ไม่ผ่านรายวิชา','bad'], 2:['ต่ำกว่าเกณฑ์ CLO','warn'], 1.5:['เสี่ยงถ้าไม่ส่ง','warn'], 1:['ยังประเมินไม่ครบ','nil'] };
 function followList(d){
   /* gap = ระยะที่ห่างจากเกณฑ์ผ่าน CLO มากที่สุด */
   const risk = d.rows.map(function(r){
-    const lvl = r.passCourse === false ? 3 : (r.atRisk ? 2 : (!r.total.complete ? 1 : 0));
+    const lvl = r.passCourse === false ? 3 : (r.atRisk ? 2 : (r.atRiskIfZero && !d.locked ? 1.5 : (!r.total.complete ? 1 : 0)));
     const gap = r.failingClos.reduce(function(m, c){ return Math.max(m, d.passMark - r.clo[c.id].pct); }, 0);
     const lbl = FOLLOW_LBL[lvl];
     return { r:r, lvl:lvl, gap:gap, lbl:lbl };
   }).filter(function(x){ return x.lvl > 0; })
     .sort(function(a, b){
       if (a.lvl !== b.lvl) return b.lvl - a.lvl;
-      if (a.lvl === 1) return b.r.total.missing - a.r.total.missing;
+      if (a.lvl < 2) return b.r.total.missing - a.r.total.missing;
       if (b.r.failingClos.length !== a.r.failingClos.length)
         return b.r.failingClos.length - a.r.failingClos.length;
       if (b.gap !== a.gap) return b.gap - a.gap;
@@ -2765,6 +2769,7 @@ function followList(d){
   return { risk:risk,
     nFail: n(function(x){ return x.lvl === 3; }),
     nClo:  n(function(x){ return x.lvl === 2 && x.r.atRisk; }),
+    nZero: n(function(x){ return x.lvl === 1.5; }),
     nInc:  n(function(x){ return x.lvl === 1; }) };
 }
 /* เหตุผลของหนึ่งแถว (HTML) — * คือ CLO ที่คะแนนยังไม่ครบ ตัดสินชั่วคราว (Q2) */
@@ -2776,7 +2781,7 @@ function followWhy(d, x){
           ' <span class="text-dim tnum">(−' + n2x(Math.round((d.passMark - r.clo[c.id].pct) * 10) / 10) + ')</span>'; }).join(', '));
   else if (x.lvl === 3) parts.push('คะแนนรวมต่ำกว่าเกณฑ์ผ่าน ' + n0(d.course.passCriteria) + '%');
   const waiting = r.total.missing;
-  if (waiting > 0 && x.lvl === 1)
+  if (waiting > 0 && x.lvl < 2)
     parts.push('รอคะแนน ' + waiting + ' จาก ' + d.acts.filter(function(a){ return a.weight > 0; }).length + ' กิจกรรม');
   /* ถ้าที่ยังว่างเป็น 0 — เตือนเฉพาะที่ยังไม่ถูกจัดเป็นเสี่ยงอยู่แล้ว */
   const z = r.ifZero;
@@ -2830,12 +2835,13 @@ function viewOverview(){
       }).join('') + '</tbody></table>';
 
   const follow = followList(d), risk = follow.risk;
-  const nFail = follow.nFail, nClo = follow.nClo, nInc = follow.nInc;
+  const nFail = follow.nFail, nClo = follow.nClo, nZero = follow.nZero, nInc = follow.nInc;
   const riskCard = '<div class="card overflow-hidden mb-4">' +
     band('นักศึกษาที่ต้องติดตาม',
       d.roster.length === 0 ? '' :
       '<span class="flex items-center gap-2">' +
-        tip('เรียงตามความรุนแรง: ไม่ผ่านรายวิชา → ต่ำกว่าเกณฑ์ CLO → รอคะแนน\n' +
+        tip('เรียงตามความรุนแรง: ไม่ผ่านรายวิชา → ต่ำกว่าเกณฑ์ CLO → เสี่ยงถ้าไม่ส่ง → รอคะแนน\n' +
+            'เสี่ยงถ้าไม่ส่ง = ผ่านจากคะแนนที่มี แต่จะไม่ผ่านถ้าช่องที่ยังว่างเป็น 0 (นับ 0 เฉพาะการเตือน ไม่เปลี่ยนคะแนนที่เก็บ)\n' +
             'ตัวเลขในวงเล็บคือระยะห่างจากเกณฑ์ผ่าน CLO · * = คะแนนของข้อนั้นยังไม่ครบ') + '</span>') +
     (d.roster.length === 0
       ? hollow('ยังไม่มีรายชื่อนักศึกษา')
@@ -2884,11 +2890,11 @@ function viewOverview(){
              avg === null ? 'ยังไม่มีคะแนนครบ'
                : 'สูงสุด ' + n2(Math.max.apply(null, d.complete.map(function(r){ return r.total.pct; }))) +
                  ' · ต่ำสุด ' + n2(Math.min.apply(null, d.complete.map(function(r){ return r.total.pct; })))) +
-        stat('นักศึกษาที่ต้องติดตาม', d.roster.length === 0 ? '—' : (nFail + nClo) + ' / ' + d.roster.length,
-             d.roster.length === 0 ? 'ยังไม่มีรายชื่อ' : (nFail + nClo
-               ? 'ไม่ผ่านรายวิชา ' + nFail + ' · ต่ำกว่าเกณฑ์ CLO ' + nClo
+        stat('นักศึกษาที่ต้องติดตาม', d.roster.length === 0 ? '—' : (nFail + nClo + nZero) + ' / ' + d.roster.length,
+             d.roster.length === 0 ? 'ยังไม่มีรายชื่อ' : (nFail + nClo + nZero
+               ? 'ไม่ผ่านรายวิชา ' + nFail + ' · ต่ำกว่าเกณฑ์ CLO ' + nClo + (nZero ? ' · เสี่ยงถ้าไม่ส่ง ' + nZero : '')
                : 'ไม่มีใครต่ำกว่าเกณฑ์') + (nInc ? ' · รอคะแนน ' + nInc : ''),
-             d.roster.length === 0 ? 'nil' : (nFail ? 'bad' : (nClo ? 'warn' : 'ok'))) +
+             d.roster.length === 0 ? 'nil' : (nFail ? 'bad' : ((nClo || nZero) ? 'warn' : 'ok'))) +
       '</div>' +
       '<div class="card overflow-hidden mb-4">' +
         chartHead('ผู้ผ่านราย CLO',
@@ -4659,7 +4665,8 @@ function studentDrawer(sid, back){
           ? chip(r.passCourse ? 'ผ่านรายวิชา' : 'ไม่ผ่านรายวิชา', r.passCourse ? 'ok' : 'bad')
           : nowChip(r) +
             (r.total.missing ? chip('รอคะแนน ' + r.total.missing + ' กิจกรรม','warn') : '')) +
-        (r.atRisk ? chip('ยังไม่ผ่าน ' + r.failingClos.length + ' CLO','bad') : chip('ผ่านทุก CLO','ok')) +
+        (r.atRisk ? chip('ยังไม่ผ่าน ' + r.failingClos.length + ' CLO','bad')
+          : (r.atRiskIfZero && !d.locked ? chip('เสี่ยงถ้าไม่ส่ง','warn') : chip('ผ่านทุก CLO','ok'))) +
         (g && g.overrideReason ? chip('เกรดถูกปรับ','warn') : '') +
       '</div>' +
       '<div class="px-7 py-5"><div class="over mb-2">ผลราย CLO และจุดประสงค์</div>' + cloRows + '</div>' +
@@ -6682,7 +6689,7 @@ async function exportResults(){
                   : (r.passNow === null || d.locked ? 'ยังประเมินไม่ครบ'
                      : (r.passNow ? 'ผ่านแล้ว (คะแนนยังไม่ครบ)' : 'ยังไม่ผ่าน (คะแนนยังไม่ครบ)')),
                 (g && g.grade) || '',
-                !r.total.complete ? 'ยังประเมินไม่ครบ'
+                !r.total.complete ? (r.atRiskIfZero && !d.locked ? 'เสี่ยงถ้าไม่ส่ง' : 'ยังประเมินไม่ครบ')
                                    : (r.atRisk ? 'เสี่ยง' : 'ปกติ') ]);
   }).concat(d.withdrawn.map(function(st){            /* R2 — คนที่ถอนอยู่ท้ายตาราง เกรด W ไม่มีตัวเลข */
     return [st.studentCode, st.name].concat(d.clos.map(function(){ return ''; }), ['', '', 'W', 'ถอนรายวิชา']);
