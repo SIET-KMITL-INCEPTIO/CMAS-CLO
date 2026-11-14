@@ -2,6 +2,9 @@
 
 See also: [[srs]] · [[api-design-plan]] · [[prototype-to-app]] · [[objectives-hypotheses-evaluation]] · [[course-role-permissions]] · [[sprint-plan-2026]]
 
+> **ตำแหน่งในเล่ม (2026-11-14):** เล่มปริญญานิพนธ์ §2.5.3 อธิบายการทดสอบแบบกล่องเทาเป็นทฤษฎี แต่ §3.6.1 นับเฉพาะ
+> **กล่องขาว** (Vitest) และ **กล่องดำ** (ผู้ทรงคุณวุฒิ) — แผนนี้จึงเป็นหลักฐานเสริม ไม่ใช่การทดสอบหลักของบทที่ 4 · ดู [[objectives-hypotheses-evaluation]] §3.1
+>
 > **สร้าง:** 2026-10-18 · **สถานะ:** แผน ยังไม่มีชุดทดสอบระบบในโค้ด
 > **ตัดสินแล้ว 2026-10-18:**
 > (1) ออกแบบ API ตาม [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx)
