@@ -11,7 +11,8 @@ This file is the entry point, not a duplicate. Details live in:
 - `docs/markdown/dev/architecture/dev.md`: architecture, structure (§3), naming (§4), patterns
 - `docs/markdown/rule/code-rule.md`: layer rules (Route → Controller → Service → Repository)
 - `docs/markdown/dev/requirements/srs.md`: requirements (FR-xx / NFR-xx IDs cited in code comments)
-- `docs/pages/index-q.html`: single-file UI prototype, **ahead of the app**. `docs/diagrams/`, `docs/reference/db/mysql/index-q.sql` and the `build-*index-q*` scripts are derived from it; `index-q.sql` = `schema.prisma` + the prototype's proposed additions (README → "Two tracks")
+- `docs/index-q/index-q.html`: single-file UI prototype, **ahead of the app**. `docs/diagrams/`, `docs/reference/db/mysql/index-q.sql` and the `build-*index-q*` scripts are derived from it; `index-q.sql` = `schema.prisma` + the prototype's proposed additions (README → "Two tracks")
+- `docs/diagrams/CLAUDE.md`: diagrams show the **finished system** (to-be), drawn from the prototype, not from today's code
 - `docs/markdown/dev/architecture/prototype-to-app.md`: what each page takes from the prototype vs the app, and what never to copy
 - `app/client/src/features/README.md`, `app/server/src/modules/README.md`: per-feature file contract
 
@@ -27,7 +28,7 @@ and fix the doc in the same change.
 | Client  | React 19, TypeScript, Vite 7, Tailwind v4, React Router 7 (explicit route table in `pages.config.ts`), TanStack Query, Zustand (auth only), shadcn/ui, recharts, sonner |
 | Server  | Fastify 5, TypeScript (NodeNext ESM: imports end in `.js`), Zod 4, jose (JWT), argon2                                                                                   |
 | DB      | PostgreSQL (Supabase) via Prisma 6. Schema: `database/schema.prisma`                                                                                                    |
-| Tooling | npm workspaces (`app/client`, `app/server`), Vitest, ESLint, Prettier                                                                                                   |
+| Tooling | Node 24 LTS, npm workspaces (`app/client`, `app/server`), Vitest, Playwright, Stryker, ESLint, Prettier (skips `docs/`)                                                 |
 
 Ports: client `5173`, server `3001`. Launch configs are in `.claude/launch.json`.
 
@@ -38,7 +39,7 @@ app/client/src/features/<name>/   Page.page.tsx · Component.tsx · useXxx.ts ·
 app/server/src/modules/<name>/    xxx.route.ts · xxx.controller.ts · xxx.service.ts · model.repository.ts · xxx.validator.ts
 database/                         schema.prisma · migrations/ · seed.ts
 e2e/                              Playwright smoke on the production build (needs a throwaway Postgres)
-docs/                             markdown/ (source) · pages/ (hand-written HTML) · reference/ · diagrams/ (by type) · excel/ (by purpose) · word/ pdf/
+docs/                             markdown/ (source) · index-q/ (hand-written HTML: prototype, reports) · reference/ · diagrams/ (by type) · excel/ (by purpose) · pdf/
 scripts/                          setup.mjs · build-*.py (diagram/workbook generators) · check-*.{py,js}
 ```
 
@@ -64,10 +65,11 @@ scripts/                          setup.mjs · build-*.py (diagram/workbook gene
    app never uses the Data API, so a new table needs no policy, only the owner role).
    `prisma db push` silently drops it; always use `migrate`.
 5. **Never edit `docs/html/`.** `npm run docs:build` deletes and regenerates it.
-6. **`python scripts/check-diagrams.py` re-runs the generator scripts** and compares output (step
+6. **`python scripts/check-doc-links.py`** (`npm run docs:links`, a CI step) fails on any broken relative link in tracked `.md` files. Run it after moving or renaming a doc.
+7. **`python scripts/check-diagrams.py` re-runs the generator scripts** and compares output (step
    UML-4). It may rewrite tracked `.drawio` files, so check `git status` after running it. It
    currently exits 1 on known presentation warnings.
-7. TypeScript strict, no `any`. Validate all input with Zod on the server. Excel uploads are
+8. TypeScript strict, no `any`. Validate all input with Zod on the server. Excel uploads are
    validated row by row server-side.
 
 ## Commands

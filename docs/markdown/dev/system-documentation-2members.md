@@ -1,6 +1,7 @@
 # เอกสารสรุปโครงการระบบ (System Documentation)
 ## ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา — CMAS / CLO System
 
+> ⚠ **ภาพรวม ณ 26 กันยายน 2569** — สถานะปัจจุบัน (2026-11-14: 19 model · migration 0001–0009 · ทุกหน้าในรายวิชามีแล้ว · เข้าสู่ระบบด้วย Google ไม่มีรหัสผ่าน) ดู [[srs]] v2.7.0 และ [[features-pages]] ·
 > **อัปเดตตามโค้ด 26 กันยายน 2569** (migration 0001–0007 · 14 feature) · **จัดทำ:** 21 กันยายน 2569 · **สถานะโครงงาน:** CLO 3 (ออกแบบสถาปัตยกรรม) ใกล้ปิด · CLO 4 (พัฒนา) อยู่ใน Sprint 2
 > **ขอบเขตเอกสาร:** แบ่งตามความรับผิดชอบของสมาชิก 2 ท่าน — **นูรีน** (Technical & General Tasks) · **นัท** (System Design & Architecture)
 > **แหล่งอ้างอิง:** อ่านจากโค้ดและเอกสารจริงในรีโพซิทอรี ณ วันที่จัดทำ (ดูภาคผนวก ก)
@@ -43,7 +44,7 @@
 
 | ชั้น | มีแล้ว | ยังไม่มี |
 |---|---|---|
-| Server | Fastify 5 · Prisma 6 · Zod · jose (JWT) · argon2 · `auth.middleware.ts` · `rbac.middleware.ts` · `authorization.service.ts` · `GET /health` | endpoint ธุรกิจทั้งหมด (ยัง comment ไว้ใน `routes/index.ts`) |
+| Server | Fastify 5 · Prisma 6 · Zod · jose (JWT) · ~~argon2~~ (เลิกใช้ 2026-11-10) · `auth.middleware.ts` · `rbac.middleware.ts` · `authorization.service.ts` · `GET /health` | endpoint ธุรกิจทั้งหมด (ยัง comment ไว้ใน `routes/index.ts`) |
 | Client | React 19 · React Router 7 · TanStack Query · Zustand · หน้า `Home` `Login` `Users` `CourseList` | AppShell · component library · ทุกหน้าระดับรายวิชา |
 | Database | 13 model · migration 0001–0007 (รวม CHECK constraint + trigger + การตัดเกรด + ลำดับชั้น CLO → จุดประสงค์ → กิจกรรม + สถานะบัญชี PENDING/ACTIVE) | — (schema ปิดแล้ว รอ feature เรียกใช้) |
 | เอกสารออกแบบ | SRS · DFD L0–L2 · ER (Prisma + MySQL mirror) · API contract · Design System · ต้นแบบ `index-q.html` | — |
@@ -71,7 +72,7 @@
 |---|---|---|---|
 | **F7** | นำเข้า-ส่งออกรายชื่อนักศึกษา | 7.1 นำเข้ารายชื่อ · 7.2 ดาวน์โหลดเทมเพลต · 7.3 ตรวจรูปแบบและรายการซ้ำ · 7.4 ส่งออกรายชื่อ · 7.5 รายงานข้อผิดพลาด · 7.6 ลบนักศึกษา | `Student` |
 | **F6** | นำเข้า-ส่งออกคะแนน | 6.1 นำเข้าคะแนน · 6.2 ดาวน์โหลดเทมเพลต · 6.3 ตรวจสอบความถูกต้อง · 6.4 ส่งออกคะแนน · 6.5 รายงานข้อผิดพลาด · 6.6 แก้ไขคะแนนบนหน้าเว็บ | `Score` · `ScoreUploadLog` · `Activity` |
-| **F9** | บัญชีของฉัน | 9.1 แก้ไขชื่อ / อีเมลของตนเอง · 9.2 เปลี่ยนรหัสผ่านของตนเอง | `User` |
+| **F9** | บัญชีของฉัน | 9.1 แก้ไขชื่อ / อีเมลของตนเอง · 9.2 ลงทะเบียนด้วยลิงก์อีเมล · 9.3 ลงทะเบียนด้วย Google | `User` |
 
 ### 1.1.3 ประเด็นเทคนิคสำคัญของสาย Excel
 
@@ -119,7 +120,7 @@
 | Sprint | ช่วงเวลา | งานของนูรีน | ผลลัพธ์ที่ต้องสาธิตได้ |
 |---|---|---|---|
 | **S1** | 7 – 20 ก.ย. 69 | AppShell · Component library | เข้าสู่ระบบแล้วเห็นโครงหน้าจอครบ · คอมโพเนนต์ 6 ตัวใช้งานได้ |
-| **S2** | 21 ก.ย. – 4 ต.ค. 69 | Seed data · F9 บัญชีของฉัน · เริ่ม F7 | ทีมพัฒนาบน seed ได้ · ผู้ใช้แก้ชื่อ / อีเมล / รหัสผ่านตนเองได้ |
+| **S2** | 21 ก.ย. – 4 ต.ค. 69 | Seed data · F9 บัญชีของฉัน · เริ่ม F7 | ทีมพัฒนาบน seed ได้ · ผู้ใช้แก้ชื่อ / อีเมลตนเองได้ |
 | **S3** | 5 – 18 ต.ค. 69 | F7 รายชื่อ (API + หน้าจอ) · ปิดงาน F9 | เพิ่ม / แก้ / ลบนักศึกษาในรายวิชาได้ |
 | **S4** | 19 ต.ค. – 1 พ.ย. 69 | F6 กรอกคะแนนบนหน้าเว็บ (6.6) | กรอกคะแนนรายกิจกรรมได้ · ส่งตาราง `Score` ที่ **ว่าง ≠ 0** ให้นัทใช้คำนวณ |
 | **S5** | 2 – 15 พ.ย. 69 | `ExcelWorkbookWriter` · F7 นำเข้า / ส่งออก | นำเข้ารายชื่อจากไฟล์จริงได้ · ส่งมอบ Writer ให้นัทใช้ทำใบส่งเกรด |
@@ -138,7 +139,7 @@
 | `ExcelWorkbookWriter` | นูรีน → นัท (ส่งออกรายงาน / ใบส่งเกรด) | สิ้น S5 | — |
 | `request.user` จากการล็อกอิน | นัท → นูรีน | สิ้น S1 | — |
 | `can(cap, courseId)` ตรวจสิทธิ์ที่ API | นัท → นูรีน | สิ้น S2 | ใช้ตัวแทนที่อนุญาตทุกอย่างใน dev |
-| ธงบังคับเปลี่ยนรหัสผ่านหลังรีเซ็ต | นัจญมา → นูรีน (9.2) | สิ้น S2 | — |
+| ~~ธงบังคับเปลี่ยนรหัสผ่านหลังรีเซ็ต~~ ❌ ยกเลิก 2026-11-10 (ไม่มีรหัสผ่าน) | — | — | — |
 | ตาราง `Activity` + API | นัจญมา → นูรีน (map หัวคอลัมน์คะแนน) | สิ้น S4 | ใช้ seed |
 
 ### 1.3.3 งานเร่งด่วนที่ต้องปิดก่อน
@@ -165,7 +166,7 @@
 
 ### 2.1.1 รูปแบบต้นแบบ
 
-ต้นแบบของระบบคือ **`docs/pages/index-q.html`** — ไฟล์ HTML เดียวที่รันได้จริงจาก `file://` โดยไม่ต้องมีเซิร์ฟเวอร์ พึ่งภายนอกเพียง Tailwind CDN และ Google Fonts
+ต้นแบบของระบบคือ **`docs/index-q/index-q.html`** — ไฟล์ HTML เดียวที่รันได้จริงจาก `file://` โดยไม่ต้องมีเซิร์ฟเวอร์ พึ่งภายนอกเพียง Tailwind CDN และ Google Fonts
 
 | คุณสมบัติ | ค่า |
 |---|---|
@@ -173,7 +174,7 @@
 | Entity ที่ CRUD ได้ในต้นแบบ | 7 entity |
 | ข้อมูลตัวอย่างในตัว | 4 รายวิชา · 30 การลงทะเบียน · 120 แถวคะแนน |
 | ตารางเส้นทาง | `ROUTES` — ใช้เป็นแหล่งจริงของโครงเมนูใน AppShell |
-| เอกสารประกอบ | `design-system-preview.html` (design token + คอมโพเนนต์) · `database-preview.html` · `evaluation-criteria.html` · `tech-stack-review.html` |
+| เอกสารประกอบ | `index-q-design-system.html` (design token) · `database-preview.html` · `evaluation-criteria.html` · `tech-stack-review.html` |
 
 > **ทำไมต้องเป็นต้นแบบที่รันได้:** ต้นแบบนี้ทำหน้าที่เป็น *ข้อกำหนดที่กดใช้งานได้* — ทีมและอาจารย์ที่ปรึกษาเห็นการไหลของงานจริงก่อนลงมือเขียนระบบ และทีมพัฒนาถอดค่า `ROUTES`, `FORMS`, `derive()` จากต้นแบบไปใช้ได้ตรง ๆ โดยไม่ต้องตีความเอกสารซ้ำ
 
@@ -207,7 +208,7 @@
 | **D4** | ระดับ taxonomy (Bloom vs SOLO) รอเอกสารต้นทางของ คอบ. | ออกแบบ UI ให้สลับ enum ได้ ไม่ hard-code |
 | **D5** | ไม่นำ PLO กลับเข้าขอบเขต | คงขอบเขตตาม SRS เดิม |
 | **D6** | เปิดให้ **ลงทะเบียนเอง → ยืนยันอีเมล** เฉพาะโดเมนของคณะ | เพิ่มตาราง `EmailVerificationToken` และ enum `AuthProvider` (migration 0005) |
-| **D7** | นโยบายรหัสผ่าน ≥ 12 ตัวอักษร + มิเตอร์ความแข็งแรง | มีผลต่อฟอร์มสมัครและหน้าเปลี่ยนรหัสผ่าน (F9) |
+| ~~**D7**~~ | ~~นโยบายรหัสผ่าน ≥ 12 ตัวอักษร~~ ❌ ยกเลิก 2026-11-10 — ระบบไม่มีรหัสผ่าน | — |
 
 ## 2.2 Use Case Diagram & Description
 
@@ -257,7 +258,7 @@ flowchart LR
 
 | # | Package | Use case ย่อย | Actor | เจ้าของ |
 |---|---|---|---|---|
-| 1 | จัดการผู้ใช้งาน | 1.1 เพิ่มบัญชี · 1.2 แก้ไขบัญชี · 1.3 ระงับบัญชี · 1.4 กำหนดบทบาท · 1.5 รีเซ็ตรหัสผ่าน · 1.6 ตรวจสอบประวัติการใช้งาน | ADMIN | นัจญมา |
+| 1 | จัดการผู้ใช้งาน | 1.1 เพิ่มบัญชี · 1.2 แก้ไขบัญชี · 1.3 ระงับบัญชี · 1.4 กำหนดบทบาท · 1.5 ตรวจสอบประวัติการใช้งาน · 1.6 อนุมัติบัญชีที่รออนุมัติ | ADMIN | นัจญมา |
 | 2 | จัดการรายวิชา | 2.1 สร้าง · 2.2 แก้ไข · 2.3 ลบ · 2.4 มอบหมายผู้สอน · 2.5 กำหนดหมู่เรียน / ภาคการศึกษา · 2.6 เชิญผู้สอนร่วม · 2.7 สร้างรายวิชาของตนเอง · 2.8 ถอดผู้สอนร่วม | ADMIN / INSTRUCTOR | **นัท** |
 | 3 | กำหนด CLO | 3.1 เพิ่ม · 3.2 แก้ไข · 3.3 กำหนดเกณฑ์ผ่าน · 3.5 ลบ | INSTRUCTOR | นัจญมา |
 | 4 | วัตถุประสงค์เชิงพฤติกรรม | 4.1 เพิ่มวัตถุประสงค์ · 4.2 เพิ่มวิธีการประเมิน · 4.3 เพิ่มเกณฑ์การประเมิน · 4.4 จับคู่กับ CLO · 4.5 แก้ไข · 4.6 ลบ | INSTRUCTOR | นัจญมา |
@@ -265,7 +266,7 @@ flowchart LR
 | 6 | นำเข้า-ส่งออกคะแนน | 6.1–6.6 | INSTRUCTOR | นูรีน |
 | 7 | นำเข้า-ส่งออกรายชื่อ | 7.1–7.6 | INSTRUCTOR | นูรีน |
 | 8 | ตัดเกรด | 8.1 กำหนดขอบเขตเกรด · 8.2 ประมวลผลและตรึงเกรด · 8.3 ปรับเกรดรายบุคคล | INSTRUCTOR | **นัท** |
-| 9 | บัญชีของฉัน | 9.1 แก้ไขชื่อ / อีเมล · 9.2 เปลี่ยนรหัสผ่าน | ทุกบทบาท | นูรีน |
+| 9 | บัญชีของฉัน | 9.1 แก้ไขชื่อ / อีเมล · 9.2 ลงทะเบียนด้วยลิงก์อีเมล · 9.3 ลงทะเบียนด้วย Google | ทุกบทบาท · 9.2–9.3 ผู้ยังไม่มีบัญชี | นูรีน |
 
 ### 2.2.3 ตัวอย่าง Use Case Description แบบเต็ม — UC 5.1 วิเคราะห์และสรุปข้อมูล CLO
 
@@ -313,7 +314,7 @@ erDiagram
 
 | เอนทิตี | หน้าที่ | หมายเหตุ |
 |---|---|---|
-| `User` | บัญชีผู้ใช้ + บทบาทระดับคณะ | `role` = ADMIN / INSTRUCTOR · `isActive` ใช้ระงับบัญชี · รหัสผ่าน hash ด้วย argon2 |
+| `User` | บัญชีผู้ใช้ + บทบาทระดับคณะ | `role` = ADMIN / INSTRUCTOR · `isActive` ใช้ระงับบัญชี · ไม่มีรหัสผ่าน (เข้าด้วย Google หรือลิงก์อีเมล) |
 | `EmailVerificationToken` | โทเคนยืนยันอีเมลตอนลงทะเบียนเอง | เพิ่มตามมติ D6 |
 | `Course` | รายวิชาที่เปิดสอนจริงต่อภาคการศึกษา | ถือ `credits` · `gradeScale` · `gradeMethod` · `passCriteria` · `cloPassMark` (เกณฑ์ผ่าน CLO ค่าเดียวทั้งวิชา) · `classTarget` (default 100) |
 | `CourseInstructor` | ตารางเชื่อมผู้สอน ↔ รายวิชา | ผู้สอนทุกคนสิทธิ์เท่ากัน (ตัด `CourseRole` แล้ว) |
@@ -346,7 +347,7 @@ erDiagram
 |---|---|
 | `database/schema.prisma` | **แหล่งจริง** ของโครงสร้างข้อมูล (PostgreSQL) |
 | `database/migrations/0001…0007` | ลำดับการเปลี่ยนโครงสร้าง + CHECK constraint + trigger |
-| `docs/reference/db/mysql/index-q.sql` | สำเนาเชิง MySQL สำหรับ reverse-engineer เป็น EER Diagram ใน MySQL Workbench — Prisma ถึง 0007 + ส่วนที่ต้นแบบ index-q เสนอเพิ่ม (16 ตาราง · 19 FK) · `cmas_app_mysql_v4.sql` แช่แข็งที่ 0004 ไม่ตรง schema แล้ว |
+| `docs/reference/db/mysql/index-q.sql` | สำเนาเชิง MySQL สำหรับ reverse-engineer เป็น EER Diagram ใน MySQL Workbench — = `schema.prisma` หลัง migration 0008 (19 ตาราง · 27 FK) · ไฟล์ MySQL รุ่นเก่าถูกลบแล้ว เหลือไฟล์นี้ไฟล์เดียว |
 | `docs/diagrams/er/ER-INDEX-Q.drawio` / `.pdf` | ไดอะแกรมสำหรับใส่เล่มและพรีเซนต์ |
 
 ## 2.4 Tech Stack
@@ -358,7 +359,7 @@ erDiagram
 | **Frontend** | React 19 · React Router 7 (SPA) · Vite 7 + plugin-react-swc · TypeScript 5.9 | ระบบเป็นเครื่องมือหลังล็อกอิน ไม่ต้องการ SEO จึงใช้ SPA ล้วน |
 | **UI** | Tailwind CSS 4 · shadcn/ui · Sonner (toast) · Recharts 3 (กราฟ) | design token ชุดเดียวใช้ได้ทั้งระบบ · Recharts ตอบโจทย์กราฟแดชบอร์ดโดยไม่ต้องเขียน D3 เอง |
 | **State / Data** | TanStack Query 5 (ข้อมูลจากเซิร์ฟเวอร์) · Zustand 5 (สถานะ auth เท่านั้น) | แยก server state ออกจาก client state ชัดเจน ลดปัญหาข้อมูลค้าง |
-| **Backend** | Node.js ≥ 20 LTS · Fastify 5 · TypeScript | Fastify เร็วกว่า Express และมี schema validation ในตัว |
+| **Backend** | Node.js ≥ 24 LTS · Fastify 5 · TypeScript | Fastify เร็วกว่า Express และมี schema validation ในตัว |
 | **ความปลอดภัย** | helmet · cors · rate-limit · multipart · jose 6 (JWT access 15 นาที / refresh 7 วัน) · argon2 | ครอบ OWASP พื้นฐาน · argon2 เป็นมาตรฐานปัจจุบันของการ hash รหัสผ่าน |
 | **Validation** | Zod | สคีมาเดียวใช้ได้ทั้ง validate และ type — ไม่เชื่อ input จากไคลเอนต์เกินขอบเขตสคีมา |
 | **Excel** | SheetJS (`xlsx`) ทั้งฝั่ง parse และสร้างไฟล์ | คณะทำงานด้วย Excel อยู่แล้ว การนำเข้า / ส่งออกจึงเป็นฟีเจอร์หลัก ไม่ใช่ของแถม |
@@ -382,10 +383,10 @@ flowchart TB
     end
 
     subgraph SERVER["Backend — app/server (Railway / Fly.io)"]
-        FST["Fastify 5 + Node 20 LTS"]
+        FST["Fastify 5 + Node 24 LTS"]
         SEC["helmet · cors · rate-limit · multipart"]
         JWT["jose 6 — JWT 15m / 7d"]
-        ARG["argon2"]
+        ARG["argon2 (ไม่ใช้แล้ว)"]
         ZOD["Zod"]
         XLS["SheetJS (parse + validate)"]
     end
@@ -497,7 +498,7 @@ flowchart LR
 
 | Data store | เนื้อหา | ความอ่อนไหว |
 |---|---|---|
-| D1 | `User` | ✅ (รหัสผ่าน hash) |
+| D1 | `User` | ✅ (ไม่มีรหัสผ่าน) |
 | D2 | `Course` · `CourseInstructor` | — |
 | D3 | `CLO` · `BehavioralObjective` · `Activity` · `AssessmentCriteria` · `ObjectiveAssessment` | — |
 | D4 | `Student` | ✅ PDPA |
@@ -525,7 +526,7 @@ flowchart LR
 |---|---|
 | **Spoofing** | การล็อกอิน (P2) · ที่เก็บ token ในเบราว์เซอร์ (D8) |
 | **Tampering** | ไฟล์ Excel ที่อัปโหลด (D7 → P8) · การแก้คะแนนตรง ๆ ใน D5 |
-| **Repudiation** | ต้องมี `ScoreUploadLog` (D6) และประวัติการใช้งาน (UC 1.6) |
+| **Repudiation** | ต้องมี `ScoreUploadLog` (D6) และประวัติการใช้งาน (UC 1.5) |
 | **Information disclosure** | D4 / D5 เป็นข้อมูลตาม PDPA · การข้าม TB-4 คือการรั่วข้ามรายวิชา |
 | **Denial of service** | rate-limit ที่การล็อกอิน · จำกัดขนาดไฟล์อัปโหลด |
 | **Elevation of privilege** | route ที่ลืมต่อ middleware · INSTRUCTOR แตะ `courseId` ที่ไม่ใช่ของตน |
@@ -543,7 +544,7 @@ flowchart LR
 | Tech Stack | `docs/markdown/graph/tech-stack.md` · `docs/markdown/dev/architecture/dev.md` §1 |
 | Architecture | `README.md` §Structure · `docs/diagrams/usecase/UML.md` · `docs/diagrams/index-q-architecture.md` |
 | DFD | `docs/markdown/dev/architecture/dfd.md` (v2.5.0) |
-| Mock-up | `docs/pages/index-q.html` · `docs/pages/archive/design-system-preview.html` |
+| Mock-up | `docs/index-q/index-q.html` · `docs/index-q/index-q-design-system.html` |
 | ผลทบทวน mockup | `docs/markdown/dev/planning/mockup-feedback-plan.md` |
 | แผนงาน | `docs/markdown/dev/planning/project-plan.md` (WBS / Gantt) · `docs/markdown/dev/planning/sprint-plan-2026.md` |
 | รายงานความก้าวหน้า | `docs/markdown/dev/progress-report-02.md` |

@@ -218,9 +218,6 @@ model User {
   id           String  @id @default(cuid())
   email        String  @unique
   name         String
-  // argon2id only (FR-02). NULL for an account that signs in only with Google;
-  // migration 0005 CHECKs that at least one of passwordHash / googleSub exists.
-  passwordHash String?
   role         Role    @default(INSTRUCTOR)
   isActive     Boolean @default(true) // account kill switch (FR-03)
 
@@ -237,11 +234,6 @@ model User {
   // on this, never on the email string, which a Workspace admin can reassign.
   googleSub       String?      @unique
   emailVerifiedAt DateTime?
-
-  // 0008 (UC 1.5) — only meaningful for EMAIL accounts, which are after v1 (D-5).
-  mustChangePassword Boolean   @default(false)
-  pwResetAt          DateTime?
-  pwChangedAt        DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

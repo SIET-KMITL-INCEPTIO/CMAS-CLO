@@ -1,7 +1,7 @@
 # แก้ index-q.html ตามคอมเมนต์อาจารย์ (2569-10-19)
 
 ที่มา: `คอมเม้นมอคอัพอาจารย์.pdf` (6 หัวข้อ) + `อดแ.pdf` (mockup ที่เขียนมาร์ก 3 จุด) + โน้ตประชุม 19 ต.ค.
-เป้าหมาย: `docs/pages/index-q.html` · branch `fix/index-q-teacher-feedback` · ส่งความก้าวหน้า **เสาร์ที่ 24 ต.ค.**
+เป้าหมาย: `docs/index-q/index-q.html` · branch `fix/index-q-teacher-feedback` · ส่งความก้าวหน้า **เสาร์ที่ 24 ต.ค.**
 
 ## สถานะ
 

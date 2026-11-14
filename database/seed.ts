@@ -2,7 +2,6 @@
  * Idempotent development seed.
  *
  *   npm run db:seed
- *   SEED_PASSWORD=... npm run db:seed
  *
  * Safe to re-run: every write is an upsert keyed on the schema's natural unique
  * constraints, so running it twice produces the same rows rather than
@@ -17,11 +16,8 @@
  * an instructor with no course at all). No demo courses are seeded.
  */
 import { PrismaClient, Role, GradeScale, ActivityType, AssessmentMethod } from "@prisma/client"
-import argon2 from "argon2"
 
 const prisma = new PrismaClient()
-
-const SEED_PASSWORD = process.env.SEED_PASSWORD ?? "ChangeMe!2026"
 
 type CourseSpec = {
   code: string
@@ -81,8 +77,9 @@ async function main() {
     "course A (LETTER)": `90641001 — ${lead.email}, ${coInstructor.email}`,
     "instructor with no course": outsider.email,
   })
-  console.log(`\nSign in as ${admin.email} — password: ${SEED_PASSWORD}`)
-  console.log("Override the password with SEED_PASSWORD=... npm run db:seed\n")
+  console.log(`
+Sign in as ${admin.email} with Google (accounts have no password)
+`)
 }
 
 async function upsertUser(email: string, name: string, role: Role) {
@@ -95,7 +92,6 @@ async function upsertUser(email: string, name: string, role: Role) {
       email,
       name,
       role,
-      passwordHash: await argon2.hash(SEED_PASSWORD),
       emailVerifiedAt: new Date(),
     },
   })

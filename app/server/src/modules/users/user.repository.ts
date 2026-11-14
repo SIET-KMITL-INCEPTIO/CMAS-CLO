@@ -102,7 +102,7 @@ export class UserRepository {
     })
   }
 
-  update(id: string, data: { name?: string; role?: Role; isActive?: boolean }) {
+  update(id: string, data: { name?: string; role?: Role; isActive?: boolean }): Promise<User> {
     return prisma.user.update({ where: { id }, data })
   }
 

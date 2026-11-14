@@ -1,0 +1,95 @@
+<mxfile host="65bd71144e">
+    <diagram id="sdic-0" name="วงจรการพัฒนาระบบ (SDLC)">
+        <mxGraphModel dx="893" dy="668" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="560" pageHeight="810" background="#FFFFFF" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="n-start" parent="1" style="shape=mxgraph.flowchart.terminator;html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;fillColor=#FFFFFF;" value="เริ่มต้น" vertex="1">
+                    <mxGeometry height="40" width="150" x="205" y="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="n-plan" parent="1" style="html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;fillColor=#EEF0F8;" value="&lt;b&gt;1. การวางแผน&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="52" width="340" x="110" y="74" as="geometry"/>
+                </mxCell>
+                <mxCell id="n-ana" parent="1" style="html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;fillColor=#EEF0F8;" value="&lt;b&gt;2. การวิเคราะห์&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="52" width="340" x="110" y="152" as="geometry"/>
+                </mxCell>
+                <mxCell id="n-des" parent="1" style="html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;fillColor=#EEF0F8;" value="&lt;b&gt;3. การออกแบบ&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="52" width="340" x="110" y="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="n-dev" parent="1" style="html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;fillColor=#EEF0F8;" value="&lt;b&gt;4. การพัฒนา&lt;/b&gt;&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="52" width="340" x="110" y="308" as="geometry"/>
+                </mxCell>
+                <mxCell id="n-tst" parent="1" style="html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;fillColor=#EEF0F8;" value="&lt;b&gt;5. การทดสอบ&lt;/b&gt;&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="52" width="340" x="110" y="386" as="geometry"/>
+                </mxCell>
+                <mxCell id="n-d1" parent="1" style="shape=rhombus;perimeter=rhombusPerimeter;html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;fillColor=#FFFFFF;" value="เกณฑ์&lt;br&gt;การทดสอบ" vertex="1">
+                    <mxGeometry height="84" width="250" x="155" y="466" as="geometry"/>
+                </mxCell>
+                <mxCell id="n-d2" parent="1" style="shape=rhombus;perimeter=rhombusPerimeter;html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;fillColor=#FFFFFF;" value="มีความต้องการที่ต้อง&lt;br&gt;ทำในรอบถัดไป" vertex="1">
+                    <mxGeometry height="84" width="290" x="135" y="580" as="geometry"/>
+                </mxCell>
+                <mxCell id="n-mnt" parent="1" style="html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;fillColor=#EEF0F8;" value="&lt;b&gt;6. การบำรุงรักษา&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="52" width="340" x="110" y="690" as="geometry"/>
+                </mxCell>
+                <mxCell id="n-end" parent="1" style="shape=mxgraph.flowchart.terminator;html=1;whiteSpace=wrap;rounded=0;strokeWidth=2;strokeColor=#000000;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;fillColor=#FFFFFF;" value="สิ้นสุด" vertex="1">
+                    <mxGeometry height="36" width="150" x="205" y="764" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-0" edge="1" parent="1" source="n-start" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="n-plan">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-1" edge="1" parent="1" source="n-plan" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="n-ana">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-2" edge="1" parent="1" source="n-ana" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="n-des">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-3" edge="1" parent="1" source="n-des" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="n-dev">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-4" edge="1" parent="1" source="n-dev" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="n-tst">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-5" edge="1" parent="1" source="n-tst" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="n-d1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-6" edge="1" parent="1" source="n-d1" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="n-d2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-6" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;" value="ผ่าน" vertex="1">
+                    <mxGeometry height="20" width="120" x="292" y="556" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-7" edge="1" parent="1" source="n-d2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="n-mnt">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-7" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;" value="ไม่มี" vertex="1">
+                    <mxGeometry height="20" width="120" x="292" y="666" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-8" edge="1" parent="1" source="n-mnt" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="n-end">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-9" edge="1" parent="1" source="n-d1" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="n-dev">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="48" y="508"/>
+                            <mxPoint x="48" y="334"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="l-9" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;" value="ไม่ผ่าน" vertex="1">
+                    <mxGeometry height="20" width="120" x="56" y="470" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-10" edge="1" parent="1" source="n-d2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="n-ana">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="512" y="622"/>
+                            <mxPoint x="512" y="178"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="l-10" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontFamily=IBM Plex Sans Thai;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DIBM%2BPlex%2BSans%2BThai;fontSize=14;fontColor=#000000;" value="มี" vertex="1">
+                    <mxGeometry height="20" width="120" x="520" y="536" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

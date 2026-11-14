@@ -36,15 +36,15 @@
    "n": 2,
    "group": "1 เข้าสู่ระบบ",
    "method": "POST",
-   "path": "/auth/login",
-   "fullPath": "/api/v1/auth/login",
-   "what": "เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน",
+   "path": "/auth/email-link",
+   "fullPath": "/api/v1/auth/email-link",
+   "what": "ขอลิงก์เข้าสู่ระบบทางอีเมล หน้าจอหลังส่งเหมือนกันทุกกรณี",
    "role": "ไม่ต้องล็อกอิน",
    "courseScope": "—",
    "capability": "—",
-   "fr": "FR-01, FR-03, FR-04",
-   "status": "later",
-   "phase": "—",
+   "fr": "FR-01, FR-07",
+   "status": "new",
+   "phase": "P1",
    "needs0008": false,
    "classification": {
     "operation": "ยืนยันตัวตน",
@@ -54,17 +54,48 @@
    },
    "design": {
     "params": "—",
-    "body": "—",
-    "success": "ไม่ทำใน v1",
-    "errors": "—",
-    "rules": "D-5: v1 เข้าสู่ระบบด้วย Google อย่างเดียว · ถ้าเปิดใช้ภายหลังให้ออกแบบตาม api-design §4",
-    "tests": "—"
+    "body": "email (string, อีเมลถูกรูปแบบ, ตัดช่องว่างและแปลงเป็นตัวพิมพ์เล็ก)",
+    "success": "200 · {message} ข้อความเดียวกันไม่ว่าอีเมลมีบัญชีหรือไม่ (FR-07)",
+    "errors": "400 body ผิดรูป · 429 ขอซ้ำก่อน 60 วินาที / เกินเพดานต่อ IP",
+    "rules": "สร้างโทเคน 32 bytes เก็บเฉพาะ hash · อายุ 24 ชม. · ใช้ครั้งเดียว · ส่งอีเมลหลังตอบ client ไม่ให้เวลาตอบบอกว่าอีเมลมีบัญชีหรือไม่ · ไม่ log อีเมลลงไฟล์",
+    "tests": "ST-AUTH-08"
    },
    "bodyFields": null,
    "enumFields": null
   },
   {
    "n": 3,
+   "group": "1 เข้าสู่ระบบ",
+   "method": "POST",
+   "path": "/auth/email-link/verify",
+   "fullPath": "/api/v1/auth/email-link/verify",
+   "what": "แลกโทเคนจากลิงก์เป็น session · ACTIVE หรือ PENDING ตามกฎเดียวกับ Google",
+   "role": "ไม่ต้องล็อกอิน",
+   "courseScope": "—",
+   "capability": "—",
+   "fr": "FR-01, FR-07, FR-08",
+   "status": "new",
+   "phase": "P1",
+   "needs0008": false,
+   "classification": {
+    "operation": "ยืนยันตัวตน",
+    "effect": "เขียนแถวเดียว",
+    "access": "สาธารณะ",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": "—",
+    "body": "token (string ≥ 1) — โทเคนจากลิงก์ในอีเมล",
+    "success": "200 · ACTIVE → {status:'ACTIVE', user{id, email, name, role}, accessToken} + refresh cookie · PENDING → {status:'PENDING', message}",
+    "errors": "400 body ผิดรูป · 401 โทเคนไม่มี / ใช้แล้ว / หมดอายุ / บัญชีถูกปิด (ข้อความเดียวกันทุกกรณี) · 429",
+    "rules": "ตัดสินบัญชีด้วยฟังก์ชันเดียวกับ /auth/google: โดเมนคณะ → ACTIVE · อื่น → PENDING (FR-08) · ไม่มีบัญชี → สร้างเป็น INSTRUCTOR · ทำเครื่องหมายใช้แล้วก่อนออก token · บันทึก AuthEvent",
+    "tests": "ST-AUTH-09"
+   },
+   "bodyFields": null,
+   "enumFields": null
+  },
+  {
+   "n": 4,
    "group": "1 เข้าสู่ระบบ",
    "method": "POST",
    "path": "/auth/refresh",
@@ -95,7 +126,7 @@
    "enumFields": null
   },
   {
-   "n": 4,
+   "n": 5,
    "group": "1 เข้าสู่ระบบ",
    "method": "POST",
    "path": "/auth/logout",
@@ -126,7 +157,7 @@
    "enumFields": null
   },
   {
-   "n": 5,
+   "n": 6,
    "group": "1 เข้าสู่ระบบ",
    "method": "GET",
    "path": "/auth/me",
@@ -157,18 +188,18 @@
    "enumFields": null
   },
   {
-   "n": 6,
+   "n": 7,
    "group": "1 เข้าสู่ระบบ",
    "method": "PATCH",
-   "path": "/auth/password",
-   "fullPath": "/api/v1/auth/password",
-   "what": "เปลี่ยนรหัสผ่านของตัวเอง",
+   "path": "/auth/me",
+   "fullPath": "/api/v1/auth/me",
+   "what": "แก้ชื่อของตัวเอง (บัญชีของฉัน) · อีเมลแก้ไม่ได้",
    "role": "ผู้ใช้ที่ล็อกอิน",
    "courseScope": "—",
    "capability": "—",
-   "fr": "FR-09",
-   "status": "later",
-   "phase": "—",
+   "fr": "FR-119",
+   "status": "done",
+   "phase": "P2",
    "needs0008": false,
    "classification": {
     "operation": "แก้ไข",
@@ -178,17 +209,17 @@
    },
    "design": {
     "params": "—",
-    "body": "—",
-    "success": "ไม่ทำใน v1",
-    "errors": "—",
-    "rules": "D-5: v1 เข้าสู่ระบบด้วย Google อย่างเดียว · ถ้าเปิดใช้ภายหลังให้ออกแบบตาม api-design §4",
-    "tests": "—"
+    "body": "{name: string 1–100 ตัวอักษร} · strict ไม่รับฟิลด์อื่น",
+    "success": "200 · {id, email, name, role, status, courseCount}",
+    "errors": "400 ชื่อว่าง/ยาวเกิน/มีฟิลด์อื่น · 401",
+    "rules": "แก้ได้เฉพาะชื่อของตัวเอง · role · status · email แก้ทางนี้ไม่ได้ (FR-119)",
+    "tests": "ST-AUTH-07"
    },
    "bodyFields": null,
    "enumFields": null
   },
   {
-   "n": 7,
+   "n": 8,
    "group": "2 บัญชีผู้ใช้",
    "method": "GET",
    "path": "/users",
@@ -219,7 +250,7 @@
    "enumFields": null
   },
   {
-   "n": 8,
+   "n": 9,
    "group": "2 บัญชีผู้ใช้",
    "method": "PATCH",
    "path": "/users/:id/approve",
@@ -250,7 +281,7 @@
    "enumFields": null
   },
   {
-   "n": 9,
+   "n": 10,
    "group": "2 บัญชีผู้ใช้",
    "method": "POST",
    "path": "/users",
@@ -281,7 +312,7 @@
    "enumFields": null
   },
   {
-   "n": 10,
+   "n": 11,
    "group": "2 บัญชีผู้ใช้",
    "method": "GET",
    "path": "/users/:userId",
@@ -312,7 +343,7 @@
    "enumFields": null
   },
   {
-   "n": 11,
+   "n": 12,
    "group": "2 บัญชีผู้ใช้",
    "method": "GET",
    "path": "/users/instructors",
@@ -343,7 +374,7 @@
    "enumFields": null
   },
   {
-   "n": 12,
+   "n": 13,
    "group": "2 บัญชีผู้ใช้",
    "method": "PATCH",
    "path": "/users/:userId",
@@ -385,7 +416,7 @@
    }
   },
   {
-   "n": 13,
+   "n": 14,
    "group": "2 บัญชีผู้ใช้",
    "method": "PATCH",
    "path": "/users/:userId/status",
@@ -421,37 +452,6 @@
    "enumFields": null
   },
   {
-   "n": 14,
-   "group": "2 บัญชีผู้ใช้",
-   "method": "POST",
-   "path": "/users/:userId/reset-password",
-   "fullPath": "/api/v1/users/:userId/reset-password",
-   "what": "รีเซ็ตรหัสผ่านให้ผู้ใช้",
-   "role": "ADMIN",
-   "courseScope": "—",
-   "capability": "user.manage",
-   "fr": "FR-07",
-   "status": "later",
-   "phase": "—",
-   "needs0008": false,
-   "classification": {
-    "operation": "สร้าง",
-    "effect": "เขียนแถวเดียว",
-    "access": "ผู้ดูแลระบบ",
-    "caution": "สูง"
-   },
-   "design": {
-    "params": "—",
-    "body": "—",
-    "success": "ไม่ทำใน v1",
-    "errors": "—",
-    "rules": "D-5: v1 เข้าสู่ระบบด้วย Google อย่างเดียว · ถ้าเปิดใช้ภายหลังให้ออกแบบตาม api-design §4",
-    "tests": "—"
-   },
-   "bodyFields": null,
-   "enumFields": null
-  },
-  {
    "n": 15,
    "group": "2 บัญชีผู้ใช้",
    "method": "GET",
@@ -461,7 +461,7 @@
    "role": "ADMIN",
    "courseScope": "—",
    "capability": "user.manage",
-   "fr": "FR-22b, UC 1.6",
+   "fr": "FR-22b, UC 1.5",
    "status": "done",
    "phase": "P5",
    "needs0008": true,

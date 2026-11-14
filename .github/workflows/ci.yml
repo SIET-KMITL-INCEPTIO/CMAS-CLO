@@ -101,6 +101,11 @@ jobs:
       - name: API design matches the system
         run: python3 scripts/check-api-design.py
 
+      # Every relative link in the tracked Markdown files points at a file
+      # that exists (docs/ and app/ READMEs, root README, CLAUDE.md).
+      - name: Markdown links resolve
+        run: python3 scripts/check-doc-links.py
+
   unit:
     name: Unit tests + coverage
     needs: changes

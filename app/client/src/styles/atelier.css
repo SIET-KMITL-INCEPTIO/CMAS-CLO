@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════
    NOCTURNAL ATELIER — base and component classes
-   Ported from the <style> block of docs/pages/index-q.html. Class names are
+   Ported from the <style> block of docs/index-q/index-q.html. Class names are
    the prototype's, so a screen can be built by reading the prototype's markup.
    Element ids of the prototype (#toasts, #tipbox, #pop, #modal) became classes.
    ═══════════════════════════════════════════════════════════════════════ */

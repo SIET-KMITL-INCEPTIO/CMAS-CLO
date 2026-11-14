@@ -6,7 +6,7 @@
 > เมทริกซ์ปัจจุบัน: capability ภายในรายวิชาทุกตัว = `INSTRUCTOR` ของรายวิชานั้น ·
 > `staff.write` / `course.create` / `course.delete` = `ADMIN` หรือ `INSTRUCTOR` · `user.manage` = `ADMIN`
 > ยืนยันด้วย `node scripts/check-perm-matrix.js` (55 ช่อง) และ `node scripts/check-action-caps.js` (24 action)
-> §2 (SEC-1…3, SEC-5) และ §3 มาตรฐานไฟล์ Excel (ยกเว้น EX-7) ยังใช้อยู่ · ดู [mockup-feedback-plan.md](mockup-feedback-plan.md)
+> §2 (SEC-1…3, SEC-5) และ §3 มาตรฐานไฟล์ Excel (ยกเว้น EX-7) ยังใช้อยู่ · ดู [mockup-feedback-plan.md](../planning/mockup-feedback-plan.md)
 
 ### เมทริกซ์ปัจจุบัน (2026-09-26 · ตรงกับ `PERM` ใน `index-q.html`, 17 capability)
 
@@ -20,7 +20,7 @@
 ADMIN **ไม่ทำงานภายในรายวิชาแทนผู้สอน** (หน้าที่คือผูกคนเข้ารายวิชาและดูแลบัญชี) · ต้องไม่สังกัดรายวิชา = ไม่มีสิทธิ์ใดในวิชานั้น (SEC-2/SEC-3) ·
 ตารางเมทริกซ์ 4 คอลัมน์ด้านล่าง (LEAD / CO / ASSISTANT / ADMIN) เป็น**ประวัติของ 2569-09-12** ไม่ใช่ปัจจุบัน
 
-เป้าหมายที่เขียนก่อนสร้าง สำหรับ `docs/pages/index-q.html`
+เป้าหมายที่เขียนก่อนสร้าง สำหรับ `docs/index-q/index-q.html`
 เขียนเมื่อ 2568-09-10 · สกัดจากโค้ดที่มีอยู่ ไม่ใช่จากความจำ
 
 ---

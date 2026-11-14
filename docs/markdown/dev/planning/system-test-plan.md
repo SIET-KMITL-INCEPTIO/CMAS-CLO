@@ -8,7 +8,7 @@ See also: [[srs]] · [[api-design-plan]] · [[prototype-to-app]] · [[objectives
 > **สร้าง:** 2026-10-18 · **สถานะ:** แผน ยังไม่มีชุดทดสอบระบบในโค้ด
 > **ตัดสินแล้ว 2026-10-18:**
 > (1) ออกแบบ API ตาม [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx)
-> (2) หน้าจอของแอปจริงใช้ตาม mock-up [`index-q.html`](../../../pages/index-q.html)
+> (2) หน้าจอของแอปจริงใช้ตาม mock-up [`index-q.html`](../../../index-q/index-q.html)
 > (3) วางแผนทดสอบเป็น **system test แบบ gray box**
 > **ตรวจกับ:** `srs.md` v2.4.3 · Excel API 76 endpoint · `capabilities.ts` · `schema.prisma` (migration 0001–0007) · ไฟล์ทดสอบใน `docs/excel/import-test/`
 
@@ -18,7 +18,7 @@ See also: [[srs]] · [[api-design-plan]] · [[prototype-to-app]] · [[objectives
 
 | ทดสอบ | ไม่ทดสอบในแผนนี้ |
 |---|---|
-| **API 70 endpoint** ใน Excel ทุกแถวที่สถานะไม่ใช่ "หลัง v1" | 4 endpoint "หลัง v1" (#2, #6, #9, #13: login ด้วยรหัสผ่าน ฯลฯ ตาม D-5) |
+| **API 74 endpoint** ใน Excel ทุกแถวที่สถานะไม่ใช่ "หลัง v1" | 1 endpoint "หลัง v1" (#9 `POST /users`) · ไม่มีรหัสผ่านในระบบ (ตัด 2026-11-10) |
 | **หน้าจอ React ทุกหน้า** เทียบกับหน้าเดียวกันใน `index-q.html` | หน้า "ความครอบคลุมของแบบจำลอง" ในต้นแบบ (ไม่ใช่ฟีเจอร์ · [[prototype-to-app]] §2) |
 | **ข้อกำหนด MUST ทุกข้อ** ใน [[srs]] §4 และ NFR ที่วัดได้ | ตัวระบบ Google เอง (ทดสอบแค่ว่าเซิร์ฟเวอร์ตรวจ ID token ถูก) |
 | สมมติฐาน H1–H3 ใน [[objectives-hypotheses-evaluation]] | H7 (usability กับอาจารย์จริง) ซึ่งมีแผนประเมินของตัวเอง |
@@ -121,6 +121,8 @@ Unit test ที่มีอยู่ (`*.test.ts` ข้างไฟล์โ�
 | ST-AUTH-05 | refresh หมุน token · ใช้ refresh token เดิมซ้ำ → เพิกถอนทั้งสาย · logout แล้วใช้ไม่ได้ | FR-01 · S-2 | แถว `RefreshToken` เก็บ hash ไม่เก็บค่าจริง (ต้องมี `0008`) |
 | ST-AUTH-06 | ผู้ใช้ที่ไม่ใช่ ADMIN เรียก `/users` | FR-05 | 403 |
 | ST-AUTH-07 | `GET /users/:id` ไม่ส่ง `googleSub` หรือคอลัมน์ภายในออกมา | — | เทียบฟิลด์คำตอบกับ DTO (A-9) |
+| ST-AUTH-08 | `POST /auth/email-link` ด้วยอีเมลที่มีบัญชี / ไม่มีบัญชี / โดเมนอื่น · ขอซ้ำภายใน 60 วินาที | FR-07 | ตอบ 200 ข้อความเดียวกันทุกกรณี · ซ้ำ → 429 · เวลาตอบไม่ต่างกันอย่างมีนัย |
+| ST-AUTH-09 | `POST /auth/email-link/verify` ด้วยโทเคนถูก / ใช้ซ้ำ / หมดอายุ / ปลอม | FR-07, FR-08 | ถูก: ครั้งแรกได้ token ครั้งที่สอง 401 · โดเมนคณะ → `ACTIVE` · โดเมนอื่น → `PENDING` ไม่ออก token · บัญชีใหม่ถูกสร้างเป็น `INSTRUCTOR` |
 
 ### 5.4 ST-COURSE รายวิชาและผู้สอน (Excel กลุ่ม 3 · ช่วง P2)
 
@@ -212,7 +214,7 @@ Unit test ที่มีอยู่ (`*.test.ts` ข้างไฟล์โ�
 
 | เกณฑ์ | ค่า |
 |---|---|
-| Endpoint ในขอบเขต (Excel) | 76 / 76 มีกรณีบวกอย่างน้อย 1 และกรณีลบอย่างน้อย 1 |
+| Endpoint ในขอบเขต (Excel) | 79 / 79 มีกรณีบวกอย่างน้อย 1 และกรณีลบอย่างน้อย 1 |
 | ตารางสิทธิ์ §5.2 | ทุกช่อง × ทุก endpoint ที่มี `:courseId` หรือ leaf id |
 | ชนิดกรณีทดสอบตามประเภทใน Excel | endpoint ที่ "ระดับความระวัง" = สูง (ลบ · ตัดเกรด · นำเข้า commit · จัดการบัญชี) ต้องมีกรณีลบ/ซ้ำ/ไม่มีสิทธิ์ครบ · "ผลต่อข้อมูล" = transaction ต้องมีกรณีล้มกลางทางแล้วไม่มีแถวค้าง · "ประเภทสิทธิ์" = งานสอน ต้องมีกรณี ADMIN ได้ 403 |
 | FR ระดับ MUST | ทุกข้อมีกรณีทดสอบอย่างน้อย 1 · ตารางย้อนรอยอยู่ใน §9 |
@@ -248,7 +250,7 @@ Unit test ที่มีอยู่ (`*.test.ts` ข้างไฟล์โ�
 
 | กลุ่ม FR | ชุด |
 |---|---|
-| FR-01…FR-09, FR-08b · NFR-19 | ST-AUTH · ST-ACL-03 |
+| FR-01 · FR-07 · FR-08 · FR-08b · NFR-19 | ST-AUTH · ST-ACL-03 |
 | FR-20…FR-28 | ST-COURSE |
 | FR-30…FR-36, FR-99…FR-102 | ST-CLO |
 | FR-40…FR-48 | ST-ACT |

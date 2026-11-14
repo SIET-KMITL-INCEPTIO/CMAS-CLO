@@ -5,7 +5,7 @@ See also: [[api-design]] · [[srs]] · [[course-role-permissions]] · [[code-rul
 > **สร้าง:** 2026-10-11 · **สถานะ:** แผน — รอตัดสิน D-1…D-5 ใน §1
 > **ขอบเขต:** สิ่งที่ต้องเพิ่มหรือแก้ใน [[api-design]] v1.1.0 และใน `app/server/src/` ก่อนเขียน route ของรายวิชา
 > **ตรวจกับ:** `api-design.md` v1.1.0 · `srs.md` v2.4.3 · `schema.prisma` (13 models, migration 0001–0007) ·
-> `docs/pages/index-q.html` (ตาราง `PERM` และ `capOf`) · `docs/reference/db/mysql/index-q.sql` · โค้ดเซิร์ฟเวอร์ ณ วันที่สร้าง
+> `docs/index-q/index-q.html` (ตาราง `PERM` และ `capOf`) · `docs/reference/db/mysql/index-q.sql` · โค้ดเซิร์ฟเวอร์ ณ วันที่สร้าง
 >
 > เอกสารนี้**ไม่ใช่ contract** — contract ยังเป็น [[api-design]] เมื่อข้อใดในแผนนี้ถูกรับ ให้ย้ายเข้า [[api-design]] แล้วลบออกจากที่นี่
 
@@ -25,7 +25,7 @@ Excel ตอบว่ามี endpoint อะไร ใครเรียกไ
 | **D-2** | เก็บ refresh token ที่ไหน และเพิกถอนได้ไหม | **cookie `httpOnly` + หมุนทุกครั้งที่ใช้ + ตาราง `RefreshToken` เก็บ hash** | ตอนนี้เพิกถอนไม่ได้เลย (F-2) · ถ้าไม่เพิ่มตาราง `POST /auth/logout` จะเป็นแค่การลบฝั่ง client |
 | **D-3** | สองคนแก้คะแนนช่องเดียวกันพร้อมกัน | **ส่งค่าเดิมมาด้วย (`from`) ไม่ตรงกับ DB ตอบ 409** | `ScoreChange` เก็บ `from`/`to` อยู่แล้ว จึงไม่ต้องเพิ่มคอลัมน์ · ถ้าเลือก "คนหลังชนะ" ประวัติยังครบแต่คนแรกไม่รู้ว่าถูกทับ |
 | **D-4** ✅ | รับ 4 ตารางและ 11 คอลัมน์ที่ต้นแบบเสนอเข้า `schema.prisma` หรือไม่ | **ตัดสินแล้ว: รับตาม ER ล่าสุด (`ER-INDEX-Q`, 17 ตาราง) ใน migration `0008`** | endpoint ของ ถอนรายวิชา · ปิดรับคะแนน · ยกเว้น · ประวัติคะแนน · แถวที่นำเข้าไม่ผ่าน ทำไม่ได้ถ้าไม่มี (F-5) |
-| **D-5** | v1 มี login ด้วย email + รหัสผ่านหรือไม่ | **ไม่มี — Google อย่างเดียว** ย้าย 6 endpoint ไปเป็น "หลัง v1" | ตอนนี้ทำแล้วเฉพาะ Google · ถ้าจะมี ต้องเพิ่ม `mustChangePassword` (G-4) และกติกา lockout (FR-04) |
+| **D-5** | v1 มี login ด้วย email + รหัสผ่านหรือไม่ | **ไม่มีรหัสผ่าน (แก้ 2026-11-10) — มี 2 ทาง: Google และลิงก์อีเมล** · ตัด `/auth/login` `/auth/password` `/users/:id/reset-password` · เพิ่ม `/auth/email-link` `/auth/email-link/verify` | ตอนนี้ทำแล้วเฉพาะ Google · ถ้าจะมี ต้องเพิ่ม `mustChangePassword` (G-4) และกติกา lockout (FR-04) |
 
 ---
 
@@ -103,7 +103,7 @@ A-1…A-5 ใน [[api-design]] §1.1 ใช้ต่อ · เพิ่มอ�
 | คะแนน | `PUT /courses/:courseId/scores` รับค่า ตัวเลข · `null` · `EXCUSED` พร้อมเหตุผล และ `from` (D-3) | `score.edit` | CR-05.1 | ✅ |
 | | `GET /courses/:courseId/score-changes` | (อ่าน) | NFR-16 | ✅ |
 | รายวิชา | `POST /courses/:courseId/duplicate` | `course.create` | ต้นแบบ | |
-| บัญชี | `GET /users/:userId/auth-events` | `user.manage` | UC 1.6 | ✅ |
+| บัญชี | `GET /users/:userId/auth-events` | `user.manage` | UC 1.5 | ✅ |
 | นักศึกษา | `PUT` · `DELETE /students/:studentId/remediation-plans/:cloId` — แผนพัฒนาผู้เรียนรายคน × CLO | `student.write` | ต้นแบบ 5.7 (2569-10-19) | ✅ |
 
 "เลิกทำ" ของต้นแบบไม่ต้องมี endpoint — client ยิงคำสั่งย้อนกลับด้วยสิทธิ์เดียวกับการแก้เดิม

@@ -80,10 +80,9 @@ for _role, _units in pages.items():
 NON_COURSE = {
     '1': [('1.1', 'ADMIN', [('1.4', 'include', '1.1')]),
           ('1.2', 'ADMIN', []), ('1.3', 'ADMIN', []),
-          ('1.5', 'ADMIN', []), ('1.6', 'ADMIN', []), ('1.7', 'ADMIN', [])],
+          ('1.5', 'ADMIN', []), ('1.6', 'ADMIN', [])],
     '2': [('2.1', 'ADMIN', [('2.4', 'include', '2.1')]), ('2.3', 'ADMIN', [])],
-    '9': [('9.1', 'EVERY', []), ('9.2', 'EVERY', []),
-          ('9.3', 'GUEST', [('9.4', 'include', '9.3')]), ('9.5', 'GUEST', [])],
+    '9': [('9.1', 'EVERY', []), ('9.2', 'GUEST', []), ('9.3', 'GUEST', [])],
 }
 for _pkg, _rows in NON_COURSE.items():
     UNITS_BY_PKG[_pkg] = _rows + UNITS_BY_PKG.get(_pkg, [])
@@ -268,11 +267,11 @@ def build():
                          role='actor')
               for r in ['ADMIN'] + CHAIN + ['GUEST']}
 
-    # 9.1/9.2 belong to every signed-in user. Layer2 has no abstract ผู้ใช้ระบบ
+    # 9.1 belongs to every signed-in user. Layer2 has no abstract ผู้ใช้ระบบ
     # actor, and inventing one here would need a generalization crossing the
     # whole page; a line from each signed-in role says the same thing.
     assoc = [(r, c) for r, c in assoc if r != 'EVERY']
-    for code in ('9.1', '9.2'):
+    for code in ('9.1',):
         for r in ['ADMIN'] + CHAIN:
             assoc.append((r, code))
 
@@ -291,7 +290,7 @@ def build():
 
     # ── the legend, outside the boundary ──────────────────────────────
     doc.box('<b>UML use case · index-q.html</b><br><br>'
-            'สร้างจาก USE_CASES และเมทริกซ์ PERM ใน <i>docs/pages/index-q.html</i> ด้วย '
+            'สร้างจาก USE_CASES และเมทริกซ์ PERM ใน <i>docs/index-q/index-q.html</i> ด้วย '
             '<i>scripts/build-index-q-uml-drawio.py</i> — แก้ที่ไฟล์ต้นทางแล้วสร้างใหม่ '
             'อย่าแก้ที่ภาพนี้<br><br>'
             'สัญกรณ์เดียวกับ <i>docs/diagrams/usecase/UML-Layer2_Handwritten.drawio</i><br><br>'
@@ -299,7 +298,7 @@ def build():
             'ไม่มีผู้ประสานงาน / ผู้สอนร่วม / ผู้ช่วยสอนแล้ว<br><br>'
             '<b>ผู้ดูแลระบบไม่ทำงานในรายวิชา</b> — สร้าง ลบ และผูกผู้สอนเข้ากับรายวิชาเท่านั้น '
             '(ASM-03b) · 2.1 และ 2.3 ผู้สอนทำได้ด้วย (P17 · P16)<br><br>'
-            '<b>9 บัญชีของฉัน</b> — 9.1 9.2 ผู้ใช้ทุกคนทำได้ · 9.3–9.5 ลงทะเบียนเอง '
+            '<b>9 บัญชีของฉัน</b> — 9.1 ผู้ใช้ทุกคนทำได้ · 9.2–9.3 ลงทะเบียนเอง '
             'โดยผู้ยังไม่มีบัญชี เฉพาะอีเมลคณะ (D6)<br><br>'
             'แพ็กเกจเรียงตามเจ้าของ ไม่ใช่ตามเลข เพื่อให้เส้นโยงสั้น',
             S_NOTE, SYS_X + sys_w + 90, SYS_Y, 620, 620, role='note')
@@ -398,7 +397,7 @@ def main():
     io.open(OUT, 'w', encoding='utf-8', newline='\n').write(xml)
     print('wrote', OUT.relative_to(ROOT))
     print('%d use case · %d แพ็กเกจ · สัญกรณ์ตาม UML-Layer2' % (len(ids), len(PKG_ORDER)))
-    print('  %-22s %s' % (ROLE_TH['ADMIN'], '1.1 1.2 1.3 1.4 1.5 1.6 1.7 2.1 2.3 2.4'))
+    print('  %-22s %s' % (ROLE_TH['ADMIN'], '1.1 1.2 1.3 1.4 1.5 1.6 2.1 2.3 2.4'))
     for r in reversed(CHAIN):
         print('  %-22s %s' % (ROLE_TH[r],
                               ' '.join(sorted(k for k, v in placed.items() if v == r))))

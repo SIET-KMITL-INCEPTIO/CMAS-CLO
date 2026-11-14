@@ -1131,12 +1131,12 @@ const db = {
      content. These never became Score rows — that is the point.
      field = the column heading as the instructor sees it in the file: รหัสนักศึกษา ·
      ชื่อ-นามสกุล · or the activity's name (same values the importer writes). */
-  /* Prototype-only, like uploadReject: the schema has no AuditLog, and UC 1.6
+  /* Prototype-only, like uploadReject: the schema has no AuditLog, and UC 1.5
      cannot be demonstrated without one. Shape kept deliberately close to the
      table proposed in the ER gap list so adopting it is a migration, not a
      redesign. */
   authEvent: [
-    { id:'ae2', userId:'u6', actorId:'u3', action:'PW_RESET',  detail:'ผู้ใช้แจ้งลืมรหัสผ่าน',        at:'2568-08-12 09:05' },
+    { id:'ae2', userId:'u6', actorId:'u6', action:'LOGIN',     detail:'เข้าสู่ระบบด้วยลิงก์อีเมล',      at:'2568-08-12 09:05' },
     { id:'ae3', userId:'u1', actorId:'u3', action:'ROLE_SET',  detail:'กำหนดบทบาท INSTRUCTOR',      at:'2568-06-01 08:00' }
   ],
 
@@ -1496,13 +1496,13 @@ function syncGroupWeights(course){
 /* ── R2 · R3 · R5 (2569-10-02) — สามสถานะที่ทำให้ "ใครต้องได้รับความช่วยเหลือ" ตอบได้ถูก ──────────
    ข้อเสนอของต้นแบบ ยังไม่มีใน schema.prisma (รายการอยู่ใน docs/reference/db/mysql/index-q.sql):
      Student.status · withdrawnAt   ถอนรายวิชา — ออกจากตัวหารทุกตัว คะแนนเดิมยังเก็บไว้ คืนสถานะได้
-     Activity.closedAt              ปิดรับคะแนน — ช่องว่างหลังปิดคือ "ขาดส่ง" ไม่ใช่ "ยังไม่ได้ประเมิน"
+     Activity.closedAt              (เลิกใช้ในต้นแบบ) ไม่มีการปิดรับคะแนน — ช่องว่างนับเป็น 0 ใน passNow แทน
      Score.status = EXCUSED         ยกเว้น — ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้ (score เป็น null)
      ScoreChange                    หนึ่งแถวต่อการเปลี่ยนคะแนนหนึ่งช่อง: ใคร เมื่อไร จากอะไรเป็นอะไร ด้วยวิธีไหน
                                     (ต้นแบบเก็บ from/to เป็นค่าเดียว: ตัวเลข | null | 'EXCUSED' — ใน SQL คือ fromScore+fromExcused
                                     และ toScore+toExcused · courseId ในต้นแบบเป็นทางลัดของการกรอง ใน SQL ได้จาก Activity)
-   ข้อมูลตั้งต้นมีแถวจริงของทุกกรณี: c5 และ c3 (อิงกลุ่ม) มีคนถอนวิชาละ 1 คน · c1 มีช่องขาดส่ง 1 ช่อง (ปฏิบัติการ UML ปิดแล้ว)
-   กับช่องที่ยังรอคะแนน 1 ช่อง (โครงงานยังเปิด) · c2 มีการยกเว้น 1 ช่อง */
+   ข้อมูลตั้งต้นมีแถวจริงของทุกกรณี: c5 และ c3 (อิงกลุ่ม) มีคนถอนวิชาละ 1 คน · c1 มีช่องที่ยังรอคะแนน
+   · c2 มีการยกเว้น 1 ช่อง */
 const PROTO_NOW = '2568-09-07 09:00';   /* "ตอนนี้" ของต้นแบบ — ค่าเดียวกับที่ประวัติอื่นใช้ */
 db.scoreChange = [
   { id:'chg2', courseId:'c1', studentId:'s1_12', activityId:'a14', from:56, to:60, source:'MANUAL', changedBy:'u1',
@@ -1515,11 +1515,6 @@ db.scoreChange = [
   w.status = 'WITHDRAWN'; w.withdrawnAt = '2568-09-01';
   const w3 = byId(db.student, 's3_11');           /* วิชาอิงกลุ่ม: คนถอนไม่อยู่ใน n / mean / SD (CR-10) */
   w3.status = 'WITHDRAWN'; w3.withdrawnAt = '2568-09-03';
-  const closed = { a11:'2568-07-03', a12:'2568-08-14', a13:'2568-08-21',
-                   a21:'2568-08-20', a22:'2568-08-28', a23:'2568-09-05',
-                   a31:'2568-07-10', a32:'2568-08-15', a33:'2568-08-29' };
-  for (let i = 1; i <= 9; i++) closed['a5_' + i] = '2568-08-' + String(10 + i).padStart(2, '0');
-  db.activity.forEach(function(a){ a.closedAt = closed[a.id] || null; });
   db.score.push({ id:'sc_ex1', studentId:'s2_7', activityId:'a23', score:null, status:'EXCUSED', uploadedAt:'2568-09-05',
                   excuseReason:'ลาป่วยช่วงสัปดาห์สุดท้าย มีใบรับรองแพทย์' });
 })();
@@ -1638,7 +1633,6 @@ function derive(courseId){
   /* R3 — ช่องหนึ่งช่องมีสามสถานะ: มีคะแนน · ยกเว้น · ว่าง — และช่องว่างอ่านต่างกันตามว่ากิจกรรมปิดแล้วหรือยัง */
   const stateOf = function(sid, aid){
     const r = scoreIdx[sid + '|' + aid]; return !r ? 'blank' : (r.status === 'EXCUSED' ? 'excused' : 'scored'); };
-  const isClosed = function(a){ return !!a.closedAt; };
 
   /* CR-01 invariants */
   const actWeightSum = Math.round(acts.reduce(function(t,a){ return t + a.weight; }, 0) * 100) / 100;
@@ -1675,7 +1669,9 @@ function derive(courseId){
 
   /* CR-03 ย้ายลงระดับจุดประสงค์ — ถ่วงด้วย Activity.weight × % ที่กิจกรรมวัดจุดประสงค์นี้
      ตัวหารนับเฉพาะกิจกรรมที่มีแถวคะแนน · ไม่มีเลยได้ null ไม่ใช่ 0 (CR-03.1) */
-  const objScore = function(sid, oid){
+  /* zf (zero-fill) — มุมมอง "ถ้าช่องว่างเป็น 0": ใช้ประเมินความเสี่ยงล่วงหน้าเท่านั้น
+     ช่องที่ว่างยังเป็น null ในข้อมูลและในคำตัดสินจริง (zf = false) จนกว่าจะมีคะแนน */
+  const objScore = function(sid, oid, zf){
     let num = 0, den = 0, missing = 0, linked = 0, excused = 0;
     acts.forEach(function(a){
       const c = critOfObj(a.id, oid);
@@ -1684,7 +1680,7 @@ function derive(courseId){
       linked++;
       const w = a.weight * c.weight;
       const sc = scoreOf(sid, a.id);
-      if (sc === null) { missing++; return; }
+      if (sc === null) { missing++; if (zf) den += w; return; }
       num += (sc / a.maxScore) * w;
       den += w;
     });
@@ -1693,12 +1689,12 @@ function derive(courseId){
   };
 
   /* E1 — คะแนน CLO = Σ (น้ำหนักจุดประสงค์ × คะแนนจุดประสงค์) ÷ น้ำหนักของจุดประสงค์ที่มีคะแนนแล้ว */
-  const cloScore = function(sid, cloId){
+  const cloScore = function(sid, cloId, zf){
     const os = objsOf(cloId);
     let num = 0, den = 0;
     const obj = {};
     os.forEach(function(o){
-      const v = objScore(sid, o.id);
+      const v = objScore(sid, o.id, zf);
       obj[o.id] = v;
       if (v.pct === null) return;
       num += v.pct * (o.weight || 0);
@@ -1748,19 +1744,17 @@ function derive(courseId){
 
   /* CR-05 — course total, normalised over the weight actually assessed so an
      incomplete student is not mistaken for a failing one. */
-  const total = function(sid){
+  const total = function(sid, zf){
     let earned = 0, covered = 0, missing = 0;
-    const overdue = [];
     acts.forEach(function(a){
       if (!counts(a)) return;
       const stt = stateOf(sid, a.id);
       if (stt === 'excused') return;                       /* R3 — น้ำหนักที่เหลือถูกคิดใหม่ให้เต็ม */
-      if (stt === 'blank') { missing++; if (isClosed(a)) overdue.push(a); return; }
+      if (stt === 'blank') { missing++; if (zf) covered += a.weight; return; }
       earned  += (scoreOf(sid, a.id) / a.maxScore) * a.weight;
       covered += a.weight;
     });
-    /* overdue — ช่องว่างในกิจกรรมที่ปิดรับคะแนนแล้ว = ขาดส่ง ต้องมีคนตัดสิน (0 หรือยกเว้น) */
-    return { earned: earned, covered: covered, missing: missing, overdue: overdue,
+    return { earned: earned, covered: covered, missing: missing,
              pct: covered === 0 ? null : (earned / covered) * 100,
              complete: covered > 0 && missing === 0 };
   };
@@ -1777,9 +1771,25 @@ function derive(courseId){
       passedClos: passed.length, scoredClos: scored.length,
       atRisk: failing.length > 0,                    // CR-05
       failingClos: failing,
-      overdue: t.overdue,
-      passCourse: t.complete ? t.pct >= course.passCriteria : null
+      passCourse: t.complete ? t.pct >= course.passCriteria : null,
+      /* สถานะ ณ ตอนนี้ — นับช่องที่ยังว่างเป็น 0 โดยไม่ต้องให้ผู้สอนกรอก 0 · true/false = ผ่าน/ยังไม่ผ่าน
+         ถ้าคะแนนครบ = passCourse เดิม · ไม่มีคะแนนเลย = null · เป็นภาพ real-time ไม่ใช่เกรดจริง */
+      /* ถ้าช่องว่างที่เหลือเป็น 0 — คำเตือนล่วงหน้า ไม่แทนที่คำตัดสินด้านบน (null ยังเป็น null) */
+      ifZero: (function(){
+        /* ไม่มีช่องว่าง = ไม่ต้องคาดการณ์ · ยังไม่มีคะแนนจริงสักช่อง = ไม่ตัดสิน (ไม่ใช่ "ไม่ผ่าน") */
+        if (t.missing === 0 || t.covered === 0) return null;
+        const zt = total(s.id, true);
+        const bad = clos.filter(function(c){
+          if (per[c.id].pct === null) return false;            /* CLO นี้ยังไม่มีคะแนนจริง */
+          const p = cloScore(s.id, c.id, true).pct; return p !== null && p < passMark; });
+        return { pct: zt.pct, failingClos: bad,
+                 failCourse: zt.pct !== null && zt.pct < course.passCriteria };
+      })()
     };
+  });
+  rows.forEach(function(r){
+    r.passNow = r.passCourse !== null ? r.passCourse
+      : (r.ifZero && r.ifZero.pct !== null ? !r.ifZero.failCourse : null);
   });
 
   /* CR-04 — attainment, with CR-03.1's mandatory third state carried through:
@@ -1939,7 +1949,7 @@ function derive(courseId){
     objWeightSum:objWeightSum, badObjClos:badObjClos, noObjClos:noObjClos, unmeasuredObjs:unmeasuredObjs,
     unlinkedActs:unlinkedActs, cloWeightSum:cloWeightSum, weightGap:weightGap, passMark:passMark,
     rows:rows, attain:attain, target:target, complete:complete,
-    rosterAll:rosterAll, withdrawn:withdrawn, stateOf:stateOf, isClosed:isClosed,
+    rosterAll:rosterAll, withdrawn:withdrawn, stateOf:stateOf,
     changes: where(db.scoreChange, 'courseId', courseId),
     grades:grades, frozenCount:frozenCount, bandsFor:gradeFor, stats:stats, reject:reject, tScore:tScore,
     readiness:readiness, blockers:blockers, locked:blockers.length > 0,
@@ -2285,8 +2295,7 @@ function modalCloHelp(cloId){
           esc(x.weakest.description) + ' <span class="tnum">(' + n2(x.weakestPct) + '%)</span></div>' : '') +
       (function(){ const pl = planOf(x.r.student.id, a.clo.id);
         return pl ? '<div class="text-[13px] text-ink2 mt-0.5">แผน: ' + esc(pl.plan) + '</div>' : ''; })() +
-      (x.r.overdue.length ? '<div class="text-[13px] text-bad mt-0.5">ขาดส่ง ' +
-          x.r.overdue.map(function(k){ return esc(k.name); }).join(', ') + '</div>' : '') + '</button>';
+      '</button>';
   };
   const group = function(title, list, t){
     return !list.length ? '' : '<div class="mt-4 first:mt-0"><div class="flex items-center gap-2 mb-1">' + chip(title + ' · ' + list.length + ' คน', t) +
@@ -2705,14 +2714,19 @@ const modalFrame = function(title, body, foot){
    ลิงก์ “ดูทั้งหมดในแดชบอร์ด” จึงพาไปรายการที่สั้นกว่ารายการที่กดมา
    CR-05 · สามระดับ เพราะสิ่งที่ต้องทำต่างกัน: ไม่ผ่านรายวิชาเป็นเรื่องเกรด · ต่ำกว่าเกณฑ์ CLO ทั้งที่ผ่านรายวิชา
    เป็นสัญญาณการสอน · คะแนนยังไม่ครบยังไม่ใช่ทั้งสองอย่างจนกว่าคะแนนจะมา */
+/* สถานะ ณ ตอนนี้ของคนที่คะแนนยังไม่ครบ — นับช่องว่างเป็น 0 (ไม่แก้ข้อมูล) · ว่าง = ยังไม่มีคะแนนเลย */
+function nowChip(r){
+  if (r.passNow === null || r.passNow === undefined || D().locked) return '';   /* ตั้งค่าวิชาไม่ครบ = ตัวเลขยังเชื่อไม่ได้ */
+  return '<span title="นับช่องที่ยังไม่มีคะแนนเป็น 0 — ยังไม่ใช่เกรดจริง">' +
+    chip(r.passNow ? 'ผ่านแล้ว' : 'ยังไม่ผ่าน', r.passNow ? 'ok' : 'bad') + '</span>';
+}
 const FOLLOW_LBL = { 3:['ไม่ผ่านรายวิชา','bad'], 2:['ต่ำกว่าเกณฑ์ CLO','warn'], 1:['ยังประเมินไม่ครบ','nil'] };
 function followList(d){
-  /* R3 — "ขาดส่ง" (ช่องว่างในกิจกรรมที่ปิดแล้ว) อยู่ระดับเดียวกับต่ำกว่าเกณฑ์ CLO: เป็นสัญญาณที่แรงที่สุดว่าต้องเข้าไปช่วย
-     เดิมคนกลุ่มนี้ถูกจัดเป็น "ยังประเมินไม่ครบ ยังไม่ใช่คนที่ตก" · gap = ระยะที่ห่างจากเกณฑ์ผ่าน CLO มากที่สุด */
+  /* gap = ระยะที่ห่างจากเกณฑ์ผ่าน CLO มากที่สุด */
   const risk = d.rows.map(function(r){
-    const lvl = r.passCourse === false ? 3 : ((r.atRisk || r.overdue.length) ? 2 : (!r.total.complete ? 1 : 0));
+    const lvl = r.passCourse === false ? 3 : (r.atRisk ? 2 : (!r.total.complete ? 1 : 0));
     const gap = r.failingClos.reduce(function(m, c){ return Math.max(m, d.passMark - r.clo[c.id].pct); }, 0);
-    const lbl = lvl === 2 && !r.atRisk ? ['ขาดส่งงาน','warn'] : FOLLOW_LBL[lvl];
+    const lbl = FOLLOW_LBL[lvl];
     return { r:r, lvl:lvl, gap:gap, lbl:lbl };
   }).filter(function(x){ return x.lvl > 0; })
     .sort(function(a, b){
@@ -2727,7 +2741,6 @@ function followList(d){
   return { risk:risk,
     nFail: n(function(x){ return x.lvl === 3; }),
     nClo:  n(function(x){ return x.lvl === 2 && x.r.atRisk; }),
-    nOver: n(function(x){ return x.lvl === 2 && !x.r.atRisk; }),
     nInc:  n(function(x){ return x.lvl === 1; }) };
 }
 /* เหตุผลของหนึ่งแถว (HTML) — * คือ CLO ที่คะแนนยังไม่ครบ ตัดสินชั่วคราว (Q2) */
@@ -2738,11 +2751,14 @@ function followWhy(d, x){
         return 'CLO ' + c.number + (r.clo[c.id].complete ? '' : '*') +
           ' <span class="text-dim tnum">(−' + n2x(Math.round((d.passMark - r.clo[c.id].pct) * 10) / 10) + ')</span>'; }).join(', '));
   else if (x.lvl === 3) parts.push('คะแนนรวมต่ำกว่าเกณฑ์ผ่าน ' + n0(d.course.passCriteria) + '%');
-  if (r.overdue.length)
-    parts.push('<span class="text-bad">ขาดส่ง ' + r.overdue.map(function(a){ return esc(a.name); }).join(', ') + '</span>');
-  const waiting = r.total.missing - r.overdue.length;
+  const waiting = r.total.missing;
   if (waiting > 0 && x.lvl === 1)
     parts.push('รอคะแนน ' + waiting + ' จาก ' + d.acts.filter(function(a){ return a.weight > 0; }).length + ' กิจกรรม');
+  /* ถ้าที่ยังว่างเป็น 0 — เตือนเฉพาะที่ยังไม่ถูกจัดเป็นเสี่ยงอยู่แล้ว */
+  const z = r.ifZero;
+  if (waiting > 0 && z && !d.locked && (z.failCourse || z.failingClos.length) && !r.atRisk && r.passCourse !== false)
+    parts.push('<span class="text-warn">ถ้าที่เหลือเป็น 0 ' + (z.failCourse ? 'ไม่ผ่านรายวิชา' : 'ไม่ผ่าน CLO ' +
+      z.failingClos.map(function(c){ return c.number; }).join(', ')) + '</span>');
   return parts.join(' · ');
 }
 
@@ -2790,14 +2806,13 @@ function viewOverview(){
       }).join('') + '</tbody></table>';
 
   const follow = followList(d), risk = follow.risk;
-  const nFail = follow.nFail, nClo = follow.nClo, nOver = follow.nOver, nInc = follow.nInc;
+  const nFail = follow.nFail, nClo = follow.nClo, nInc = follow.nInc;
   const riskCard = '<div class="card overflow-hidden mb-4">' +
     band('นักศึกษาที่ต้องติดตาม',
       d.roster.length === 0 ? '' :
       '<span class="flex items-center gap-2">' +
-        tip('เรียงตามความรุนแรง: ไม่ผ่านรายวิชา → ต่ำกว่าเกณฑ์ CLO หรือขาดส่ง → รอคะแนน\n' +
-            'ตัวเลขในวงเล็บคือระยะห่างจากเกณฑ์ผ่าน CLO · * = คะแนนของข้อนั้นยังไม่ครบ\n' +
-            'ขาดส่ง = ช่องว่างในกิจกรรมที่ปิดรับคะแนนแล้ว') + '</span>') +
+        tip('เรียงตามความรุนแรง: ไม่ผ่านรายวิชา → ต่ำกว่าเกณฑ์ CLO → รอคะแนน\n' +
+            'ตัวเลขในวงเล็บคือระยะห่างจากเกณฑ์ผ่าน CLO · * = คะแนนของข้อนั้นยังไม่ครบ') + '</span>') +
     (d.roster.length === 0
       ? hollow('ยังไม่มีรายชื่อนักศึกษา')
       : risk.length === 0
@@ -2845,11 +2860,11 @@ function viewOverview(){
              avg === null ? 'ยังไม่มีคะแนนครบ'
                : 'สูงสุด ' + n2(Math.max.apply(null, d.complete.map(function(r){ return r.total.pct; }))) +
                  ' · ต่ำสุด ' + n2(Math.min.apply(null, d.complete.map(function(r){ return r.total.pct; })))) +
-        stat('นักศึกษาที่ต้องติดตาม', d.roster.length === 0 ? '—' : (nFail + nClo + nOver) + ' / ' + d.roster.length,
-             d.roster.length === 0 ? 'ยังไม่มีรายชื่อ' : (nFail + nClo + nOver
-               ? 'ไม่ผ่านรายวิชา ' + nFail + ' · ต่ำกว่าเกณฑ์ CLO ' + nClo + (nOver ? ' · ขาดส่ง ' + nOver : '')
+        stat('นักศึกษาที่ต้องติดตาม', d.roster.length === 0 ? '—' : (nFail + nClo) + ' / ' + d.roster.length,
+             d.roster.length === 0 ? 'ยังไม่มีรายชื่อ' : (nFail + nClo
+               ? 'ไม่ผ่านรายวิชา ' + nFail + ' · ต่ำกว่าเกณฑ์ CLO ' + nClo
                : 'ไม่มีใครต่ำกว่าเกณฑ์') + (nInc ? ' · รอคะแนน ' + nInc : ''),
-             d.roster.length === 0 ? 'nil' : (nFail ? 'bad' : ((nClo + nOver) ? 'warn' : 'ok'))) +
+             d.roster.length === 0 ? 'nil' : (nFail ? 'bad' : (nClo ? 'warn' : 'ok'))) +
       '</div>' +
       '<div class="card overflow-hidden mb-4">' +
         chartHead('ผู้ผ่านราย CLO',
@@ -3072,7 +3087,7 @@ function viewActivities(){
       '<td class="wrapcell"><div class="text-[14px] clip">' + esc(a.name) + '</div>' +
         /* W1 — คะแนนเต็มกับคะแนนผ่านอยู่ในคอลัมน์ขวาแล้ว บรรทัดนี้เหลือเฉพาะหมายเหตุเกณฑ์ที่ผู้สอนพิมพ์เอง */
         (a.criteriaNote ? '<div class="text-[13px] text-dim clip">' + esc(a.criteriaNote) + '</div>' : '') +
-        (a.closedAt ? '<div class="text-[12.5px] text-dim">ปิดรับคะแนนแล้ว · <span class="tnum">' + esc(a.closedAt) + '</span></div>' : '') + '</td>' +
+        '</td>' +
       '<td><div class="text-[14px]">' + esc(actTypeText(a)) + '</div>' +
         '<div class="text-[13px] text-dim">' + esc(assessText(a) || '—') + '</div></td>' +
       '<td class="num tnum text-[14px]">' + n2x(a.maxScore) + '</td>' +
@@ -3339,15 +3354,11 @@ function viewRoster(){
     '<tr>' + cols.map(function(a){
       /* P3 (2569-09-23) — ปฏิบัติการให้คะแนนแบบ "เต็มแล้วหักตามที่ทำไม่ได้" ช่องว่างจึงโชว์คะแนนเต็มเป็นค่าเริ่ม
          และมีปุ่มเติมคะแนนเต็มให้ทุกช่องที่ยังว่างในคอลัมน์ · ช่องว่างยังหมายถึง "ยังไม่ประเมิน" จนกว่าจะกดเติม (FR-62) */
-      const closed = d.isClosed(a);
-      const nBlank = d.roster.filter(function(st){ return d.stateOf(st.id, a.id) === 'blank'; }).length;
       const nFilled = filledKeys(a).length;   /* Q12 — เติมไว้และยังไม่ได้แก้ */
-      /* U9 (2569-10-02) — คำสั่งของคอลัมน์ทั้งหมด (ปิดรับ · ตัดสินช่องค้าง · เปิดใหม่ · เริ่มจากคะแนนเต็ม · ย้อน · ตรวจแล้ว · แก้กิจกรรม)
+      /* U9 (2569-10-02) — คำสั่งของคอลัมน์ทั้งหมด (เริ่มจากคะแนนเต็ม · ย้อน · ตรวจแล้ว · แก้กิจกรรม)
          อยู่ในเมนู ⋯ เดียว · หัวคอลัมน์เหลือชื่อกับสถานะเป็นข้อความ ไม่ใช่ปุ่ม 4–5 ตัวต่อคอลัมน์ */
       const lineCls = 'mt-0.5 text-[12.5px] font-normal normal-case tracking-normal no-print whitespace-nowrap';
-      const status = (closed ? '<div class="' + lineCls + ' text-dim" title="ปิดรับคะแนนเมื่อ ' + esc(a.closedAt) + '">ปิดรับแล้ว' +
-          (nBlank && a.weight > 0 ? ' · <span class="text-bad">รอตัดสิน ' + nBlank + ' คน</span>' : '') + '</div>' : '') +
-        (nFilled ? '<div class="' + lineCls + ' text-ink2">เติมไว้ ' + nFilled + ' · รอตรวจ</div>' : '');
+      const status = (nFilled ? '<div class="' + lineCls + ' text-ink2">เติมไว้ ' + nFilled + ' · รอตรวจ</div>' : '');
       return '<th' + gcls(a, 'num') + ' title="' + esc(a.name) + ' · ' + critText(a) + ' · ' + a.weight + '% ของวิชา">' +
         '<div class="flex items-start justify-between gap-1"><span class="colname">' + esc(a.name) + '</span>' +
           '<button class="menubtn no-print" data-act="menu" data-menu="col" data-id="' + a.id + '" aria-haspopup="menu" ' +
@@ -3355,7 +3366,7 @@ function viewRoster(){
         status + '</th>';
     }).join('') + '</tr>';
 
-  let anyFilled = false, anyLate = false, anyExc = false;
+  let anyFilled = false, anyExc = false;
   /* R5 — การแก้ครั้งล่าสุดของแต่ละช่อง (d.changes เรียงใหม่ → เก่า) แสดงใน tooltip ของช่อง */
   const lastChange = {};
   d.changes.forEach(function(c){ const k = c.studentId + '|' + c.activityId; if (!lastChange[k]) lastChange[k] = c; });
@@ -3365,18 +3376,15 @@ function viewRoster(){
       const stt = d.stateOf(r.student.id, a.id);
       const sc = d.scoreOf(r.student.id, a.id);
       const none = stt === 'blank', exc = stt === 'excused';
-      const late = none && d.isClosed(a) && a.weight > 0;          /* R3 — ขาดส่ง */
       const below = stt === 'scored' && (sc / a.maxScore) * 100 < a.passMark;
       const filled = stt === 'scored' && FILLED[k2] && sc === a.maxScore;
       if (filled) anyFilled = true;
-      if (late) anyLate = true;
       if (exc) anyExc = true;
-      const bg = late ? TONE.bad.bg : none ? PAL.blank : (exc || filled) ? TONE.info.bg : '';
-      const word = late ? 'ขาดส่ง' : none ? 'ยังไม่ประเมิน' : exc ? 'ยกเว้น' : (below ? 'ต่ำกว่าเกณฑ์ผ่านกิจกรรม' : '');
+      const bg = none ? PAL.blank : (exc || filled) ? TONE.info.bg : '';
+      const word = none ? 'ยังไม่ประเมิน' : exc ? 'ยกเว้น' : (below ? 'ต่ำกว่าเกณฑ์ผ่านกิจกรรม' : '');
       const ch = lastChange[k2];
       const who = ch ? (byId(db.user, ch.changedBy) || { name:'—' }).name : '';
-      const say = (late ? 'ขาดส่ง — กิจกรรมปิดรับคะแนนแล้วแต่ยังไม่มีคะแนน · พิมพ์คะแนน (0 ถ้าไม่ได้ส่ง) หรือ x เพื่อยกเว้น'
-        : none ? 'ยังไม่ประเมิน — พิมพ์คะแนนเพื่อบันทึก · x = ยกเว้น'
+      const say = (none ? 'ยังไม่ประเมิน — พิมพ์คะแนนเพื่อบันทึก · x = ยกเว้น'
         : exc ? 'ยกเว้น — ไม่นับกิจกรรมนี้สำหรับนักศึกษาคนนี้ · พิมพ์คะแนนเพื่อเปลี่ยน · ลบ x ออก = กลับเป็นช่องว่าง'
         : (filled ? 'คะแนนเต็มที่เติมให้ ยังไม่ได้ตรวจรายคน · ' : '') +
           (below ? 'ต่ำกว่าเกณฑ์ผ่านกิจกรรม ' + n2x(passScoreOf(a)) + ' คะแนน · ' : '') +
@@ -3387,7 +3395,7 @@ function viewRoster(){
       return '<td' + gcls(a, 'num scorecell') + (bg ? ' style="background:' + bg + '"' : '') + '>' +
         '<input class="cellinp' + (none ? ' empty' : '') + (below ? ' text-bad' : '') + '" data-score="' + k2 +
         '" value="' + (stt === 'scored' ? sc : exc ? 'x' : '') + '" placeholder="' +
-          (late ? 'ขาด' : (a.type === 'LAB' && !d.isClosed(a) ? n2x(a.maxScore) : '–')) + '" inputmode="decimal" ' +
+          (a.type === 'LAB' ? n2x(a.maxScore) : '–') + '" inputmode="decimal" ' +
         'aria-label="คะแนน ' + esc(r.student.name) + ' · ' + esc(a.name) + (word ? ' — ' + word : '') +
         '" title="' + esc(say) + '">' +
         '<span class="text-dim text-[12.5px]">/' + a.maxScore + '</span>' +
@@ -3406,13 +3414,13 @@ function viewRoster(){
       cells +
       '<td class="num tnum text-[14px] font-medium" style="color:' + TONE[t].tx + '">' + n2(r.total.pct) +
         (r.total.complete ? '' : '<div class="text-[12.5px] font-normal text-dim">ประเมินแล้ว ' + n0(r.total.covered) + '%</div>') + '</td>' +
-      /* R3 — "ขาดส่ง" (กิจกรรมปิดแล้ว) กับ "รอคะแนน" (กิจกรรมยังเปิด) เป็นคนละเรื่อง จึงเป็นคนละป้าย */
+      /* ผ่านแล้ว / ยังไม่ผ่าน = นับช่องว่างเป็น 0 (nowChip) · รอคะแนน = จำนวนกิจกรรมที่ยังว่าง */
       '<td>' + (d.acts.length === 0 ? chip('รอกิจกรรม','nil') : r.total.complete
         ? chip(r.passCourse ? 'ผ่านรายวิชา' : 'ไม่ผ่าน', r.passCourse ? 'ok' : 'bad')
-        : (r.overdue.length ? chip('ขาดส่ง ' + r.overdue.length + ' กิจกรรม', 'bad') : '') +
-          (r.total.missing - r.overdue.length
-            ? (r.overdue.length ? '<div class="mt-1">' : '') + chip('รอคะแนน ' + (r.total.missing - r.overdue.length) + ' กิจกรรม', 'warn') +
-              (r.overdue.length ? '</div>' : '') : '')) + '</td>' +
+        : nowChip(r) +
+          (r.total.missing
+            ? '<div class="mt-1">' + chip('รอคะแนน ' + r.total.missing + ' กิจกรรม', 'warn') +
+              '</div>' : '')) + '</td>' +
       '<td class="no-print text-right"><button class="menubtn" data-act="menu" data-menu="row" data-id="' + r.student.id +
         '" aria-haspopup="menu" aria-expanded="false" aria-label="คำสั่งของ ' + esc(r.student.name) +
         '" title="แก้ไข · ถอนรายวิชา · ลบ">⋯</button></td></tr>';
@@ -3490,7 +3498,7 @@ function viewRoster(){
 
   return sheet({
     title: TITLE,
-    note:'ช่องเหลือง = ยังไม่ประเมิน (ไม่ใช่ 0) · ช่องแดง = ขาดส่งในกิจกรรมที่ปิดรับแล้ว · พิมพ์ x = ยกเว้น · วางช่วงคะแนนจาก Excel ได้ (Ctrl+V) และเลิกทำได้ (Ctrl+Z) · คำสั่งของกิจกรรมอยู่ที่ ⋯ หัวคอลัมน์ ของนักศึกษาอยู่ที่ ⋯ ท้ายแถว · กดชื่อเพื่อดูผลรายบุคคล',
+    note:'ช่องเหลือง = ยังไม่ประเมิน (ไม่ใช่ 0) · พิมพ์ x = ยกเว้น · วางช่วงคะแนนจาก Excel ได้ (Ctrl+V) และเลิกทำได้ (Ctrl+Z) · คำสั่งของกิจกรรมอยู่ที่ ⋯ หัวคอลัมน์ ของนักศึกษาอยู่ที่ ⋯ ท้ายแถว · กดชื่อเพื่อดูผลรายบุคคล',
     actions: filterBox(key,'ค้นหารหัสหรือชื่อ') +
              btn('+ นักศึกษา','','data-act="stu-new-row"') +
              btn('นำเข้ารายชื่อ','','data-act="import" data-what="roster"') +
@@ -3507,7 +3515,7 @@ function viewRoster(){
         '<span>แสดง ' + pageRows.length + ' จาก ' + d.rows.length + ' คน' +
           (shown.length !== d.rows.length ? ' (ตรงคำค้น ' + shown.length + ')' : '') +
           (d.withdrawn.length ? ' · ถอนรายวิชา ' + d.withdrawn.length + ' คน' : '') + '</span>' +
-        '<span>· เหลือง = ยังไม่ประเมิน' + (anyLate ? ' · แดง = ขาดส่ง' : '') + (anyExc ? ' · x = ยกเว้น' : '') +
+        '<span>· เหลือง = ยังไม่ประเมิน' + (anyExc ? ' · x = ยกเว้น' : '') +
           (anyFilled ? ' · ฟ้า = คะแนนเต็มที่เติมไว้ ยังไม่ตรวจ' : '') + '</span>' +
         '<span>· วางจาก Excel ได้ (<b>Ctrl+V</b>)</span></div>' +
       logPanel + chgPanel
@@ -3745,7 +3753,7 @@ function viewGrading(){
         '<td class="num tnum">' + r.passedClos + '/' + r.scoredClos + '</td>' +
         '<td>' + (r.total.complete
           ? chip(r.passCourse ? 'ผ่าน' : 'ไม่ผ่าน', r.passCourse ? 'ok' : 'bad')
-          : chip('รอประเมิน','warn')) + '</td>' +
+          : (nowChip(r) || chip('รอประเมิน','warn'))) + '</td>' +
         '<td class="tnum text-[14px]">' + (g.boundary || '<span class="text-dim">—</span>') + '</td>' +
         '<td class="tnum text-[15px] font-medium">' + (g.grade || '<span class="text-dim">—</span>') +
           (g.overrideReason ? ' <span class="text-[12.5px] font-normal text-warn">ปรับแล้ว</span>' : '') +
@@ -3996,8 +4004,9 @@ function viewCourses(){
 
   return sheet({
     title:'จัดการรายวิชา',
-    note:'หน้านี้รวมงานรายวิชาทั้งหมดไว้ที่เดียว — สร้าง แก้ไข ทำสำเนา และลบ · จัดกลุ่มได้ตามปีการศึกษา ภาคเรียน หมู่เรียน หรือรหัสวิชา · รายวิชาหนึ่งแถวคือหนึ่ง Sec — รหัส 90641003 ปรากฏสองแถวเพราะเป็นคนละ Sec คีย์ (รหัส, ภาค, ปี, Sec) เป็นสิ่งที่ทำให้สองแถวนี้ไม่ใช่ข้อมูลซ้ำ และคะแนนของสอง Sec รวมกันไม่ได้ · “ทำสำเนา” คัดลอกโครงรายวิชา (CLO จุดประสงค์ กิจกรรม เกณฑ์) ไปยัง Sec หรือภาคใหม่ โดยไม่พารายชื่อและคะแนนไปด้วย · ผู้สอนเห็นเฉพาะรายวิชาที่ตนถูกมอบหมาย ผู้ดูแลระบบเห็นทั้งหมด',
-    actions: filterBox(key,'ค้นหารหัส ชื่อ Sec หรือปี') + btn('สร้างรายวิชา','primary','data-act="add-course"'),
+    note:'หน้านี้รวมงานรายวิชาทั้งหมดไว้ที่เดียว — สร้าง แก้ไข ทำสำเนา และลบ · จัดกลุ่มได้ตามปีการศึกษา ภาคเรียน หมู่เรียน หรือรหัสวิชา · รายวิชาหนึ่งแถวคือหนึ่ง Sec — รหัส 90641003 ปรากฏสองแถวเพราะเป็นคนละ Sec คีย์ (รหัส, ภาค, ปี, Sec) เป็นสิ่งที่ทำให้สองแถวนี้ไม่ใช่ข้อมูลซ้ำ และคะแนนของสอง Sec รวมกันไม่ได้ · “ทำสำเนา” คัดลอกโครงรายวิชา (CLO จุดประสงค์ กิจกรรม เกณฑ์) ไปเป็น Sec ใหม่ในภาคเดิม โดยไม่พารายชื่อและคะแนนไปด้วย · “ยกโครงทั้งชั้นปี” คัดลอกทุกวิชาของชั้นปีหนึ่งไปปีการศึกษาถัดไป โดยเลือกวิชาตามแผนการเรียนของหลักสูตร · ผู้สอนเห็นเฉพาะรายวิชาที่ตนถูกมอบหมาย ผู้ดูแลระบบเห็นทั้งหมด',
+    actions: filterBox(key,'ค้นหารหัส ชื่อ Sec หรือปี') + btn('ยกโครงทั้งชั้นปี','','data-act="copy-level"') +
+      btn('สร้างรายวิชา','primary','data-act="add-course"'),
     body: '<div class="mb-3 flex items-center justify-between gap-4 flex-wrap">' + groupBar +
       '<span class="text-[13px] text-dim">' + list.length + ' รายวิชา' +
       (gb.id === 'none' ? '' : ' · ' + buckets.length + ' กลุ่ม') + '</span></div>' +
@@ -4038,15 +4047,13 @@ function viewUsers(){
       '<td class="num tnum">' + uploads + '</td>' +
       '<td><div class="flex gap-1 flex-wrap">' + (isPending(u) && u.isActive ? chip('รออนุมัติ','warn')
         : chip(u.isActive ? 'ใช้งานอยู่' : 'ระงับการใช้งาน', u.isActive ? 'ok' : 'nil')) +
-        /* D6 — self-registered accounts: not yet verified, or signed up through Google */
-        (u.emailVerified === false ? chip('รอยืนยันอีเมล','warn') : '') +
+        /* บัญชีที่เข้าด้วย Google ติดป้าย · ที่เหลือเข้าด้วยลิงก์อีเมล */
         (u.authProvider === 'GOOGLE' ? pill('Google') : '') + '</div></td>' +
       '<td class="no-print"><div class="flex gap-1 justify-end flex-wrap">' +
         (isPending(u) && u.isActive ? btn('อนุมัติ','primary','data-act="approve-user" data-id="' + u.id + '"') : '') +
         btn('ตรวจสอบ','quiet','data-act="user-detail" data-id="' + u.id + '"') +
-        /* รออนุมัติ: เหลือ อนุมัติ · ตรวจสอบ · ลบบัญชี (= ปฏิเสธ) — บัญชี Google ไม่มีรหัสผ่านให้รีเซ็ต */
-        (isPending(u) ? '' : btn('แก้ไข','quiet','data-act="crud-edit" data-kind="user" data-id="' + u.id + '"') +
-          btn('รีเซ็ตรหัสผ่าน','quiet','data-act="pw-reset" data-id="' + u.id + '"')) +
+        /* รออนุมัติ: เหลือ อนุมัติ · ตรวจสอบ · ลบบัญชี (= ปฏิเสธ) */
+        (isPending(u) ? '' : btn('แก้ไข','quiet','data-act="crud-edit" data-kind="user" data-id="' + u.id + '"')) +
         ((locked || u.role === 'ADMIN')
           ? btn(u.isActive ? 'ระงับการใช้งาน' : 'เปิดใช้งาน','quiet','data-act="toggle-user" data-id="' + u.id + '"')
           : '<button data-act="crud-delete" data-kind="user" data-id="' + u.id +
@@ -4076,8 +4083,7 @@ const USE_CASES = [
   ['1','จัดการผู้ใช้งาน','1.2','แก้ไขบัญชีผู้ใช้','ADMIN','users'],
   ['1','จัดการผู้ใช้งาน','1.3','ระงับการใช้งานบัญชี','ADMIN','users'],
   ['1','จัดการผู้ใช้งาน','1.4','กำหนดบทบาทและสิทธิ์','ADMIN','users'],
-  ['1','จัดการผู้ใช้งาน','1.5','รีเซ็ตรหัสผ่าน','ADMIN','users'],
-  ['1','จัดการผู้ใช้งาน','1.6','ตรวจสอบประวัติการใช้งาน','ADMIN','users'],
+  ['1','จัดการผู้ใช้งาน','1.5','ตรวจสอบประวัติการใช้งาน','ADMIN','users'],
   ['2','จัดการรายวิชา','2.1','สร้างรายวิชา','ADMIN','courses'],
   ['2','จัดการรายวิชา','2.2','แก้ไขข้อมูลรายวิชา','INSTRUCTOR','courses'],
   ['2','จัดการรายวิชา','2.3','ลบรายวิชา','ADMIN','courses'],
@@ -4199,6 +4205,10 @@ function coverageWitnesses(){
       'ผู้สอนที่ผูกกับรายวิชา ' + db.user.filter(function(u){ return u.role === 'INSTRUCTOR' && where(db.courseInstructor, 'userId', u.id).length; }).length + ' คน · ปุ่มลบเปลี่ยนเป็นระงับอัตโนมัติ'],
     ['TRIGGER band ของ PASS_FAIL','รายวิชาแบบผ่าน/ไม่ผ่านมีได้เฉพาะ S และ U',
       pfBands === 'S/U', '90641008 มี band = ' + pfBands],
+    ['แผนการเรียน (K1)','หนึ่งรหัสอยู่ในแผนได้ชั้นปีเดียว ภาคเดียว และเป็นรหัส 8 หลัก — การยกโครงทั้งชั้นปีอ่านตารางนี้',
+      dup(STUDY_PLAN, function(p){ return p.code; }) === 0 &&
+      STUDY_PLAN.every(function(p){ return /^\d{8}$/.test(p.code) && p.level >= 1 && p.level <= 4 && p.semester >= 1 && p.semester <= 3; }),
+      STUDY_PLAN.length + ' รายวิชาใน 4 ชั้นปี · ซ้ำ 0'],
     ['ไม่มีแถว Score = ยังไม่ประเมิน','ช่องว่างกับเลข 0 เป็นคนละความหมายและถูกแยกกันบนหน้าจอ',
       missing > 0 && zeros > 0, 'ช่องที่ยังไม่ประเมิน ' + missing + ' ช่อง · คะแนน 0 ที่ได้จริง ' + zeros + ' แถว']
   ];
@@ -4209,10 +4219,12 @@ const GAPS = [
    'เพิ่มคอลัมน์ enrolmentStatus บน Student — เป็นการแก้แบบเพิ่มเติม ไม่กระทบคีย์เดิม'],
   ['การสืบสาวเกรดอิงกลุ่ม','GradeRun ถูกตัดออกใน v4 ทำให้ mean/SD ไม่ถูกเก็บ เกรดที่ตัดแบบอิงกลุ่มจึงอธิบายย้อนหลังจากฐานข้อมูลอย่างเดียวไม่ได้',
    'เพิ่มตารางเดียวที่เก็บ courseId + n + mean + sd + computedAt แล้วให้ StudentGrade ชี้มา — ห้ามเอา GradeScheme กลับมาด้วย'],
-  ['ตรวจสอบประวัติการใช้งาน (UC 1.6)','หน้าจอรองรับแล้ว (กดชื่อผู้ใช้ในหน้าจัดการผู้ใช้งาน) แต่ ER ยังไม่มีตารางรองรับ — ต้นแบบเก็บไว้ใน AuthEvent ซึ่งไม่มีอยู่ในสคีมา',
+  ['ตรวจสอบประวัติการใช้งาน (UC 1.5)','หน้าจอรองรับแล้ว (กดชื่อผู้ใช้ในหน้าจัดการผู้ใช้งาน) แต่ ER ยังไม่มีตารางรองรับ — ต้นแบบเก็บไว้ใน AuthEvent ซึ่งไม่มีอยู่ในสคีมา',
    'เพิ่มตาราง AuthEvent/AuditLog (userId, actorId, action, detail, at) — ไม่มีอะไรในระบบปัจจุบันอ้างอิงถึง จึงเพิ่มได้โดยไม่กระทบของเดิม'],
   ['รวมคะแนนข้าม Sec','ตัดออกโดยเจตนาตามมติ 2.7 — CLO และ Activity ผูกกับ courseId การรองรับต้องเพิ่มชั้น CourseOffering เหนือ Course',
-   'ไม่ใช่ข้อบกพร่อง เป็นขอบเขตที่ตัดสินใจไว้แล้ว · ห้ามทำครึ่ง ๆ กลาง ๆ']
+   'ไม่ใช่ข้อบกพร่อง เป็นขอบเขตที่ตัดสินใจไว้แล้ว · ห้ามทำครึ่ง ๆ กลาง ๆ'],
+  ['แผนการเรียนตามชั้นปี (K1)','“ยกโครงทั้งชั้นปี” ต้องรู้ว่ารหัสวิชาไหนเป็นของชั้นปีและภาคไหน — ต้นแบบเก็บไว้ใน STUDY_PLAN ซึ่งยังไม่มีในสคีมา · สำเนายังจดต้นทางไว้ที่ copiedFrom ของ Course และ CLO',
+   'เพิ่มตาราง StudyPlanCourse(code PK, yearLevel 1–4, semester 1–3, name) และคอลัมน์ copiedFromId (nullable) บน Course และ CLO — เพิ่มอย่างเดียว ไม่กระทบคีย์เดิม']
 ];
 
 function viewCoverage(){
@@ -4301,7 +4313,7 @@ function viewCoverage(){
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   4b · บัญชีของฉัน — ผู้สอนแก้ชื่อ อีเมล และรหัสผ่านของตัวเองได้
+   4b · บัญชีของฉัน — ผู้สอนแก้ชื่อและอีเมลของตัวเองได้
    ══════════════════════════════════════════════════════════════════ */
 function acctMenu(force){
   const el = document.getElementById('acctMenu');
@@ -4320,10 +4332,8 @@ function acctMenu(force){
       '<div class="min-w-0 pt-3">' +
         '<div class="text-[15px] truncate">' + esc(u.name) + '</div>' +
         '<div class="tnum text-[13px] text-dim truncate">' + esc(u.email) + '</div>' +
-        '<div class="mt-1.5 flex gap-2 flex-wrap">' + pill(u.role) +
-          (u.mustChangePassword ? chip('ต้องตั้งรหัสผ่านใหม่','warn') : '') + '</div></div></div>' +
+        '<div class="mt-1.5 flex gap-2 flex-wrap">' + pill(u.role) + '</div></div></div>' +
     '<button class="acctitem" data-act="profile">' + icon('user','w-4 h-4') + 'แก้ไขบัญชีของฉัน</button>' +
-    '<button class="acctitem" data-act="pw-change">' + icon('lock','w-4 h-4') + 'เปลี่ยนรหัสผ่าน</button>' +
     /* Prototype-only. Real systems get this from the session; here it is the
        only way to show that two instructors see two different course lists. */
     '<div class="hair-t mt-1.5 pt-1.5">' +
@@ -4377,7 +4387,6 @@ function modalProfile(){
       'บทบาทและสถานะบัญชีแก้ได้โดยผู้ดูแลระบบเท่านั้น · ' +
       'อีเมลใช้เป็นชื่อผู้ใช้ จึงซ้ำกับบัญชีอื่นไม่ได้</div>',
     btn('ยกเลิก','','data-act="close"') +
-      btn('เปลี่ยนรหัสผ่าน','','data-act="pw-change"') +
       btn('บันทึก','primary','data-act="profile-save"')));
 }
 
@@ -4399,62 +4408,14 @@ function saveProfile(){
   toast(changed.length ? 'บันทึก' + changed.join('และ') + 'แล้ว' : 'ไม่มีอะไรเปลี่ยน');
 }
 
-/* No password is stored and none is checked — there is no passwordHash in this
-   prototype. What this form does carry is the rule set, because the rules are
-   the part that has to be agreed before anyone builds the real thing. */
-function modalPwChange(){
-  const u = me();
-  openModal(modalFrame('เปลี่ยนรหัสผ่าน',
-    (u.mustChangePassword
-      ? '<div class="px-4 py-3 rounded-lg mb-4 text-[14px]" style="background:' + PAL.noteBg + ';color:' + PAL.noteTx + '">' +
-        'บัญชีนี้ถูกรีเซ็ตรหัสผ่านโดยผู้ดูแลระบบ ต้องตั้งรหัสใหม่ก่อนใช้งานต่อ</div>' : '') +
-    '<div class="space-y-4">' +
-      '<div><label class="text-[14px] text-ink2 block mb-1.5">รหัสผ่านปัจจุบัน</label>' +
-        '<input class="inp" id="pw-old" type="password" autocomplete="current-password"></div>' +
-      '<div><label class="text-[14px] text-ink2 block mb-1.5">รหัสผ่านใหม่</label>' +
-        '<input class="inp" id="pw-new" type="password" autocomplete="new-password"></div>' +
-      '<div><label class="text-[14px] text-ink2 block mb-1.5">ยืนยันรหัสผ่านใหม่</label>' +
-        '<input class="inp" id="pw-new2" type="password" autocomplete="new-password"></div>' +
-    '</div>' +
-    '<ul class="mt-4 space-y-1.5 text-[14px] text-ink2">' +
-      '<li>· อย่างน้อย 8 ตัวอักษร</li>' +
-      '<li>· มีทั้งตัวอักษรและตัวเลข</li>' +
-      '<li>· ต้องไม่ซ้ำกับรหัสผ่านปัจจุบัน</li>' +
-    '</ul>' +
-    '<div class="mt-4 px-4 py-3 rounded-lg text-[14px]" style="background:' + TONE.bad.bg + ';color:' + TONE.bad.tx + '">' +
-      'ต้นแบบนี้ไม่มีระบบยืนยันตัวตนและไม่เก็บรหัสผ่าน — ฟอร์มนี้ตรวจกติกาแล้วทิ้งค่าที่พิมพ์ทันที ' +
-      'ไม่มีการบันทึกรหัสใด ๆ</div>',
-    btn('ยกเลิก','','data-act="close"') +
-      btn('เปลี่ยนรหัสผ่าน','primary','data-act="pw-change-save"')));
-}
-
-function savePwChange(){
-  const u = me();
-  const old  = document.getElementById('pw-old').value;
-  const nw   = document.getElementById('pw-new').value;
-  const nw2  = document.getElementById('pw-new2').value;
-  if (!old)                    { toast('กรอกรหัสผ่านปัจจุบันก่อน','bad'); return; }
-  if (nw.length < 8)           { toast('รหัสผ่านใหม่ต้องยาวอย่างน้อย 8 ตัวอักษร','bad'); return; }
-  if (!/[A-Za-z]/.test(nw) || !/[0-9]/.test(nw)) { toast('รหัสผ่านใหม่ต้องมีทั้งตัวอักษรและตัวเลข','bad'); return; }
-  if (nw === old)              { toast('รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านปัจจุบัน','bad'); return; }
-  if (nw !== nw2)              { toast('ยืนยันรหัสผ่านไม่ตรงกัน','bad'); return; }
-  /* Nothing about the typed value survives this line. */
-  u.mustChangePassword = false;
-  u.pwChangedAt = '2568-09-07 09:00';
-  authLog(u.id, 'PW_CHANGE', 'เจ้าของบัญชีเปลี่ยนรหัสผ่านด้วยตนเอง');
-  closeOverlays(); invalidate(); render();
-  toast('เปลี่ยนรหัสผ่านแล้ว — ครั้งถัดไปเข้าสู่ระบบด้วยรหัสใหม่');
-}
-
 /* ══════════════════════════════════════════════════════════════════
-   5a · DRAWER — ตรวจสอบบัญชีผู้ใช้ (UC 1.6)
+   5a · DRAWER — ตรวจสอบบัญชีผู้ใช้ (UC 1.5)
    Everything here is a join the admin would otherwise have to do by eye
    across three screens: which courses, which uploads, what blocks deletion.
    ══════════════════════════════════════════════════════════════════ */
 const AUTH_ACTION_TH = { SUSPEND:'ระงับการใช้งาน', ACTIVATE:'เปิดใช้งาน',
-  LOGIN:'เข้าสู่ระบบด้วยอีเมล', LOGIN_GOOGLE:'เข้าสู่ระบบด้วย Google', LOGOUT:'ออกจากระบบ',
-  REGISTER:'ลงทะเบียน', VERIFY:'ยืนยันอีเมล',
-  PW_RESET:'รีเซ็ตรหัสผ่าน', PW_CHANGE:'เปลี่ยนรหัสผ่านเอง', ROLE_SET:'กำหนดบทบาท',
+  LOGIN:'เข้าสู่ระบบด้วยลิงก์อีเมล', LOGIN_GOOGLE:'เข้าสู่ระบบด้วย Google', LOGOUT:'ออกจากระบบ',
+  REGISTER:'ลงทะเบียน', ROLE_SET:'กำหนดบทบาท',
   CREATE:'สร้างบัญชี', EDIT:'แก้ไขบัญชี', APPROVE:'อนุมัติบัญชี' };
 
 function authLog(userId, action, detail){
@@ -4521,7 +4482,7 @@ function userDrawer(uid){
         (u.role === 'ADMIN' ? chip('ลบไม่ได้ · บัญชีผู้ดูแลระบบ','nil')
           : locked ? chip('ลบไม่ได้ · onDelete: Restrict','nil') : chip('ยังลบได้','nil')) +
         (lastAdmin(u) ? chip('ผู้ดูแลคนสุดท้าย · ระงับไม่ได้','warn') : '') +
-        (u.mustChangePassword ? chip('รอตั้งรหัสผ่านใหม่','warn') : '') + '</div>' +
+        '</div>' +
     '</div>' +
 
     '<div class="scroll-y px-7 py-5 space-y-5" style="max-height:calc(100vh - 236px)">' +
@@ -4541,7 +4502,7 @@ function userDrawer(uid){
       '<div class="card overflow-hidden">' + band('เหตุการณ์กับบัญชีนี้',
         '<span>AuthEvent · ยังไม่มีในสคีมา</span>') + eventRows +
         '<div class="px-5 py-3 hair-t text-[13px] text-warn">' +
-        'UC 1.6 ต้องการตารางบันทึกเหตุการณ์ ซึ่ง ER ปัจจุบันยังไม่มี — ต้นแบบนี้จำลองไว้เป็น AuthEvent ' +
+        'UC 1.5 ต้องการตารางบันทึกเหตุการณ์ ซึ่ง ER ปัจจุบันยังไม่มี — ต้นแบบนี้จำลองไว้เป็น AuthEvent ' +
         'เพื่อพิสูจน์ว่าหน้าจอรองรับได้ ถ้าตารางถูกเพิ่ม</div></div>' +
 
       (u.role === 'ADMIN'
@@ -4558,54 +4519,9 @@ function userDrawer(uid){
 
     '<div class="px-7 py-4 hair-t flex gap-2.5 flex-wrap">' +
       btn('แก้ไขบัญชี','','data-act="crud-edit" data-kind="user" data-id="' + u.id + '"') +
-      btn('รีเซ็ตรหัสผ่าน','','data-act="pw-reset" data-id="' + u.id + '"') +
       btn(u.isActive ? 'ระงับการใช้งาน' : 'เปิดใช้งาน', u.isActive ? '' : 'primary',
           'data-act="toggle-user" data-id="' + u.id + '"' + (u.isActive ? ' class="btn btn-danger"' : '')) +
     '</div>');
-}
-
-/* รีเซ็ตรหัสผ่าน — two screens: what will happen, then what happened. The
-   temporary string is generated in the browser and shown once; there is no
-   passwordHash in this prototype and none is written. */
-function modalPwReset(uid, done){
-  const u = byId(db.user, uid);
-  if (!u) return;
-
-  if (!done) {
-    openModal(modalFrame('รีเซ็ตรหัสผ่าน',
-      '<div class="text-[15px] leading-relaxed">ตั้งรหัสผ่านชั่วคราวให้ <b>' + esc(u.name) + '</b> ' +
-        '<span class="tnum text-dim">(' + esc(u.email) + ')</span></div>' +
-      '<ul class="mt-4 space-y-2 text-[14px] text-ink2">' +
-        '<li>· รหัสเดิมใช้ไม่ได้ทันที</li>' +
-        '<li>· ระบบส่งรหัสชั่วคราวไปยังอีเมลข้างต้น</li>' +
-        '<li>· ผู้ใช้ต้องตั้งรหัสใหม่เมื่อเข้าสู่ระบบครั้งถัดไป</li>' +
-        '<li>· เหตุการณ์นี้ถูกบันทึกไว้ในประวัติของบัญชี</li>' +
-      '</ul>' +
-      '<div class="mt-5 px-4 py-3 rounded-lg text-[14px]" style="background:' + TONE.bad.bg + ';color:' + TONE.bad.tx + '">' +
-        'ต้นแบบนี้ไม่มีระบบยืนยันตัวตนจริงและไม่เก็บรหัสผ่าน — ปุ่มนี้จำลองขั้นตอนเพื่อพิสูจน์ ' +
-        'UC 1.5 เท่านั้น ไม่มีการตั้งรหัสจริงให้บัญชีใด</div>',
-      btn('ยกเลิก','','data-act="close"') +
-        btn('ยืนยันรีเซ็ต','primary','data-act="pw-reset-do" data-id="' + u.id + '"')));
-    return;
-  }
-
-  /* Deliberately not a strong secret: it must be readable aloud and it is a
-     mockup value that authenticates nothing. */
-  const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let tmp = '';
-  for (let i = 0; i < 8; i++) tmp += abc[Math.floor(Math.random() * abc.length)];
-
-  openModal(modalFrame('รีเซ็ตรหัสผ่านแล้ว',
-    '<div class="text-[15px]">ส่งรหัสชั่วคราวไปที่ <b class="tnum">' + esc(u.email) + '</b> แล้ว</div>' +
-    '<div class="mt-4 px-5 py-5 rounded-lg text-center" style="background:var(--wash);border:1px dashed var(--edge)">' +
-      '<div class="over mb-2">รหัสชั่วคราว (จำลอง)</div>' +
-      '<div class="tnum text-[28px] font-light tracking-[.22em]">' + tmp + '</div>' +
-      '<div class="text-[13px] text-dim mt-3">แสดงครั้งเดียว · หมดอายุใน 24 ชั่วโมง</div></div>' +
-    '<div class="mt-5 px-4 py-3 rounded-lg text-[14px] text-ink2" style="background:' + TONE.info.bg + '">' +
-      'บัญชีถูกทำเครื่องหมายว่า “รอตั้งรหัสผ่านใหม่” และเขียนเหตุการณ์ลง AuthEvent เรียบร้อย ' +
-      'ดูได้ที่หน้าตรวจสอบบัญชี</div>',
-    btn('เสร็จสิ้น','primary','data-act="close"') +
-      btn('ดูบัญชีนี้','','data-act="user-detail" data-id="' + u.id + '"')));
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -4665,15 +4581,13 @@ function studentDrawer(sid, back){
   const actRows = d.acts.map(function(a){
     const sc = d.scoreOf(s.id, a.id);
     const stt = d.stateOf(s.id, a.id);
-    const late = stt === 'blank' && d.isClosed(a) && a.weight > 0;
     return '<div class="flex items-center justify-between gap-3 py-2.5 hair last:border-0">' +
       '<span class="text-[14px] min-w-0 flex-1">' + esc(a.name) +
         '<span class="text-dim text-[13px]"> · ' + esc(assessText(a)) + ' · น้ำหนัก ' + a.weight + '%' +
-          (d.isClosed(a) ? ' · ปิดรับคะแนนแล้ว' : '') + '</span></span>' +
+          '</span></span>' +
       '<span class="tnum text-[14px] shrink-0 flex items-center gap-2">' + (stt === 'excused'
         ? (excuseReasonOf(s.id, a.id) ? '<span class="text-[13px] text-dim max-w-[200px] truncate" title="' +
             esc(excuseReasonOf(s.id, a.id)) + '">' + esc(excuseReasonOf(s.id, a.id)) + '</span>' : '') + chip('ยกเว้น','info')
-        : late ? chip('ขาดส่ง','bad')
         : stt === 'blank' ? '<span class="text-warn text-[13px]">ยังไม่ประเมิน</span>'
         : sc + '<span class="text-dim"> / ' + a.maxScore + '</span>' +
           (sc >= passScoreOf(a) ? chip('ผ่าน','ok')
@@ -4721,8 +4635,8 @@ function studentDrawer(sid, back){
       '<div class="px-7 py-3 hair flex flex-wrap gap-2">' +
         (r.total.complete
           ? chip(r.passCourse ? 'ผ่านรายวิชา' : 'ไม่ผ่านรายวิชา', r.passCourse ? 'ok' : 'bad')
-          : (r.overdue.length ? chip('ขาดส่ง ' + r.overdue.length + ' กิจกรรม','bad') : '') +
-            (r.total.missing - r.overdue.length ? chip('รอคะแนน ' + (r.total.missing - r.overdue.length) + ' กิจกรรม','warn') : '')) +
+          : nowChip(r) +
+            (r.total.missing ? chip('รอคะแนน ' + r.total.missing + ' กิจกรรม','warn') : '')) +
         (r.atRisk ? chip('ยังไม่ผ่าน ' + r.failingClos.length + ' CLO','bad') : chip('ผ่านทุก CLO','ok')) +
         (g && g.overrideReason ? chip('เกรดถูกปรับ','warn') : '') +
       '</div>' +
@@ -5127,6 +5041,65 @@ function crudDelete(){
 
    สิ่งที่ไปกับสำเนา = โครงของรายวิชา · สิ่งที่ไม่ไป = คน และคะแนนของคน
    นักศึกษาและคะแนนเป็นของภาคเรียนที่เรียนจริง การลอกไปด้วยคือการสร้างข้อมูลปลอม */
+/* K1 (2569-11-07) — แกนกลางของการทำสำเนา ใช้ร่วมกันโดย "ทำสำเนา" (ทีละวิชา) และ "ยกโครงทั้งชั้นปี"
+   at = { semester, year, section } ของวิชาปลายทาง · คืน { id, nClo, nAct, nStaff }
+   รหัสใหม่มีเลขลำดับต่อท้าย — Date.now() อย่างเดียวซ้ำกันเมื่อคัดลอกหลายวิชาในมิลลิวินาทีเดียว
+   copiedFrom บนวิชาและ CLO = ร่องรอยว่ามาจากไหน ใช้เทียบผล CLO ข้ามปีโดยไม่ต้องพึ่งเลขข้อที่อาจถูกสลับ */
+let CLONE_SEQ = 0;
+const activeStaffOf = function(cid){
+  return where(db.courseInstructor, 'courseId', cid).map(function(x){ return byId(db.user, x.userId); })
+    .filter(function(u){ return u && u.isActive !== false && !isPending(u); })
+    .map(function(u){ return u.id; });
+};
+function cloneCourse(src, at){
+  const nid = 'c_' + Date.now() + '_' + (++CLONE_SEQ);
+  const copy = {};
+  Object.keys(src).forEach(function(k){ copy[k] = src[k]; });
+  copy.id = nid; copy.semester = at.semester; copy.year = at.year; copy.section = at.section;
+  copy.copiedFrom = src.id;
+  if (src.groupWeight) copy.groupWeight = Object.assign({}, src.groupWeight);
+  db.course.push(copy);
+
+  /* ผู้สอนตามไปด้วยเฉพาะบัญชีที่ยังใช้งานได้ — บัญชีที่ถูกระงับหรือรออนุมัติไม่ควรได้วิชาใหม่
+     ผู้สอนที่กดเองต้องมีชื่ออยู่เสมอ ไม่อย่างนั้นสำเนาจะหลุดจาก “รายวิชาของฉัน” ทันที (P17) */
+  const staff = activeStaffOf(src.id);
+  if (S.role !== 'ADMIN' && staff.indexOf(me().id) < 0) staff.push(me().id);
+  staff.forEach(function(uid, i){
+    db.courseInstructor.push({ id:'ci_' + nid + '_' + i, courseId:nid, userId:uid,
+      role:'INSTRUCTOR', assignedAt:PROTO_NOW.slice(0, 10) }); });
+
+  where(db.gradeBand, 'courseId', src.id).forEach(function(b, i){
+    db.gradeBand.push({ id:'gb_' + nid + '_' + i, courseId:nid, grade:b.grade, minValue:b.minValue }); });
+
+  /* CLO และจุดประสงค์คัดลอกทุกช่องเหมือนกิจกรรม — รายชื่อช่องที่เขียนตายตัวทำให้ช่องที่เพิ่มทีหลัง
+     (เช่น Bloom/SOLO เคยเป็นช่องใหม่) หายจากสำเนาเงียบ ๆ */
+  const cloMap = {}, objMap = {};
+  const take = function(rec, skip){
+    const t = {}; Object.keys(rec).forEach(function(k){ if (skip.indexOf(k) < 0) t[k] = rec[k]; }); return t; };
+  where(db.clo, 'courseId', src.id).forEach(function(c, i){
+    const id = 'clo_' + nid + '_' + i;
+    cloMap[c.id] = id;
+    db.clo.push(Object.assign(take(c, ['id','courseId','copiedFrom']), { id:id, courseId:nid, copiedFrom:c.id })); });
+  db.behavioralObjective.filter(function(o){ return !!cloMap[o.cloId]; }).forEach(function(o, i){
+    const id = 'bo_' + nid + '_' + i;
+    objMap[o.id] = id;
+    db.behavioralObjective.push(Object.assign(take(o, ['id','cloId']), { id:id, cloId:cloMap[o.cloId] })); });
+
+  const actMap = {};
+  where(db.activity, 'courseId', src.id).forEach(function(a, i){
+    const id = 'a_' + nid + '_' + i;
+    actMap[a.id] = id;
+    const t = { id:id, courseId:nid };
+    Object.keys(a).forEach(function(k){ if (k !== 'id' && k !== 'courseId') t[k] = a[k]; });
+    db.activity.push(t); });
+  db.assessmentCriteria.filter(function(c){ return !!actMap[c.activityId] && !!objMap[c.objectiveId]; })
+    .forEach(function(c, i){
+      db.assessmentCriteria.push({ id:'ac_' + nid + '_' + i, activityId:actMap[c.activityId],
+        objectiveId:objMap[c.objectiveId], weight:c.weight }); });
+
+  return { id:nid, nClo:Object.keys(cloMap).length, nAct:Object.keys(actMap).length, nStaff:staff.length };
+}
+
 function dupCourse(cid){
   if (!can('course.create')) return deny('course.create');
   const src = byId(db.course, cid);
@@ -5142,55 +5115,189 @@ function dupCourse(cid){
   }
   if (sec === null) { toast('รหัสวิชานี้มีครบ 99 Sec ในภาคนี้แล้ว — ทำสำเนาไม่ได้','bad'); return; }
 
-  const nid = 'c_' + Date.now();
-  const copy = {};
-  Object.keys(src).forEach(function(k){ copy[k] = src[k]; });
-  copy.id = nid; copy.section = sec;
-  if (src.groupWeight) copy.groupWeight = Object.assign({}, src.groupWeight);
-  db.course.push(copy);
-
-  /* ผู้สอนเดิมตามไปด้วย · ถ้าเป็นผู้สอนที่กดเอง ต้องมีชื่ออยู่ในนั้นแน่นอน
-     ไม่อย่างนั้นสำเนาจะหลุดจาก “รายวิชาของฉัน” ทันทีที่สร้าง (P17) */
-  const staff = where(db.courseInstructor, 'courseId', cid).map(function(x){ return x.userId; });
-  if (S.role !== 'ADMIN' && staff.indexOf(me().id) < 0) staff.push(me().id);
-  staff.forEach(function(uid, i){
-    db.courseInstructor.push({ id:'ci_' + nid + '_' + i, courseId:nid, userId:uid,
-      role:'INSTRUCTOR', assignedAt:'2568-09-21' }); });
-
-  where(db.gradeBand, 'courseId', cid).forEach(function(b, i){
-    db.gradeBand.push({ id:'gb_' + nid + '_' + i, courseId:nid, grade:b.grade, minValue:b.minValue }); });
-
-  const cloMap = {}, objMap = {};
-  where(db.clo, 'courseId', cid).forEach(function(c, i){
-    const id = 'clo_' + nid + '_' + i;
-    cloMap[c.id] = id;
-    db.clo.push({ id:id, courseId:nid, number:c.number, weight:c.weight, levelSource:c.levelSource,
-      bloomLevel:c.bloomLevel, soloLevel:c.soloLevel, classTarget:c.classTarget, description:c.description }); });
-  db.behavioralObjective.filter(function(o){ return !!cloMap[o.cloId]; }).forEach(function(o, i){
-    const id = 'bo_' + nid + '_' + i;
-    objMap[o.id] = id;
-    db.behavioralObjective.push({ id:id, cloId:cloMap[o.cloId], number:o.number,
-      weight:o.weight, description:o.description }); });
-
-  const actMap = {};
-  where(db.activity, 'courseId', cid).forEach(function(a, i){
-    const id = 'a_' + nid + '_' + i;
-    actMap[a.id] = id;
-    const t = { id:id, courseId:nid };
-    Object.keys(a).forEach(function(k){ if (k !== 'id' && k !== 'courseId') t[k] = a[k]; });
-    t.closedAt = null;                 /* R3 — ภาคใหม่ยังไม่มีกิจกรรมไหนปิดรับคะแนน */
-    db.activity.push(t); });
-  db.assessmentCriteria.filter(function(c){ return !!actMap[c.activityId] && !!objMap[c.objectiveId]; })
-    .forEach(function(c, i){
-      db.assessmentCriteria.push({ id:'ac_' + nid + '_' + i, activityId:actMap[c.activityId],
-        objectiveId:objMap[c.objectiveId], weight:c.weight }); });
-
+  const r = cloneCourse(src, { semester:src.semester, year:src.year, section:sec });
   invalidate();
-  S.course = nid; S.expanded[nid] = true;
+  S.course = r.id; S.expanded[r.id] = true;
   saveLayout(); render();
-  toast('ทำสำเนา ' + src.code + ' เป็น Sec ' + sec + ' แล้ว — ' +
-    Object.keys(cloMap).length + ' CLO · ' + Object.keys(actMap).length +
+  toast('ทำสำเนา ' + src.code + ' เป็น Sec ' + sec + ' แล้ว — ' + r.nClo + ' CLO · ' + r.nAct +
     ' กิจกรรม · ยังไม่มีรายชื่อและคะแนน');
+}
+
+/* ══ K1 · ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่ (2569-11-07) ══════════════════════
+   "ปี 1 ของ 2568 → ปี 1 ของ 2569" — ระบบต้องรู้เองว่าวิชาไหนเป็นของชั้นปีไหน
+   ซึ่ง Course และ Student ไม่มีข้อมูลนั้น (OI-05) จึงต้องมีแผนการเรียนของหลักสูตรเก็บไว้หนึ่งตาราง
+
+   STUDY_PLAN = แผนการศึกษา §3.3.3 ของ หลักสูตร ค.อ.บ. เทคโนโลยีคอมพิวเตอร์ (ปรับปรุง พ.ศ. 2567)
+   หน้า 15–19 ของเล่ม · ภาค 3 = ภาคการศึกษาพิเศษ · วิชาเลือก (9064XXXX, XXXXXXXX, 03376XXX)
+   ไม่มีรหัสจริงในแผน จึงไม่อยู่ในตาราง — ผู้ใช้ติ๊กเองในกลุ่ม "นอกแผน"
+   ข้อเสนอสคีมา: StudyPlanCourse(code PK, yearLevel 1..4, semester 1..3, name) ดู GAPS */
+const STUDY_PLAN = [
+  [1,1,'03376116','พื้นฐานการออกแบบและพัฒนาซอฟต์แวร์'], [1,1,'03376117','ระบบคอมพิวเตอร์'],
+  [1,1,'03376118','อุปกรณ์และวงจรแอนะล็อกเบื้องต้น'], [1,1,'03376119','ความปลอดภัยในการทำงาน'],
+  [1,1,'03376120','ระบบฐานข้อมูล'], [1,1,'03206107','พื้นฐานการศึกษาสำหรับวิชาชีพครู'],
+  [1,1,'03206108','จิตวิทยาการศึกษาเพื่อพัฒนาผู้เรียน'], [1,1,'90641008','พื้นฐานทักษะการสื่อสารภาษาอังกฤษ'],
+  [1,2,'03376121','การออกแบบและพัฒนาซอฟต์แวร์ 1'], [1,2,'03376122','เครือข่ายคอมพิวเตอร์'],
+  [1,2,'03376123','อุปกรณ์และวงจรดิจิทัลเบื้องต้น'], [1,2,'03206109','นวัตกรรมเทคโนโลยีเพื่อการเรียนรู้'],
+  [1,2,'03206110','ภาษาเพื่อการสื่อสารสำหรับครู'], [1,2,'90641007','พลเมืองดิจิทัล'],
+  [1,2,'90644049','ภาษาไทยเพื่อการสร้างสรรค์'], [1,2,'90641004','โครงงานกลุ่ม 1'],
+  [2,1,'03376124','การออกแบบและพัฒนาซอฟต์แวร์ 2'], [2,1,'03376125','สื่อดิจิทัลเพื่อการเรียนรู้'],
+  [2,1,'03376126','ไมโครคอนโทรลเลอร์และการใช้งาน'], [2,1,'03206111','การวัดและประเมินผลการเรียนรู้'],
+  [2,1,'90641009','ทักษะการสื่อสารภาษาอังกฤษระหว่างวัฒนธรรม 1'],
+  [2,2,'03376127','การพัฒนาซอฟต์แวร์สำหรับเว็บ'], [2,2,'03376128','การรักษาความปลอดภัยและความเชื่อมั่นของสารสนเทศ'],
+  [2,2,'03376129','เทคโนโลยีสารสนเทศเพื่อการจัดการเรียนรู้'], [2,2,'03376130','เซ็นเซอร์และทรานสดิวเซอร์'],
+  [2,2,'03206112','การพัฒนาหลักสูตรและการจัดการเรียนรู้'], [2,2,'03206113','การวิจัยในชั้นเรียน'],
+  [2,2,'90641010','ทักษะการสื่อสารภาษาอังกฤษระหว่างวัฒนธรรม 2'], [2,2,'90641005','โครงงานกลุ่ม 2'],
+  [2,3,'03376131','การฝึกงานอุตสาหกรรม'],
+  [3,1,'03300007','การฝึกปฏิบัติวิชาชีพระหว่างเรียน 1'], [3,1,'03376132','ปัญญาประดิษฐ์เพื่องานด้านการศึกษา'],
+  [3,1,'03376133','การพัฒนาซอฟต์แวร์สำหรับอุปกรณ์เคลื่อนที่'], [3,1,'03376134','การประยุกต์ใช้ไอโอที'],
+  [3,1,'03376135','โครงงานนวัตกรรมเพื่อการเรียนรู้ 1'],
+  [3,2,'03300008','การฝึกปฏิบัติวิชาชีพระหว่างเรียน 2'], [3,2,'03376136','โครงงานนวัตกรรมเพื่อการเรียนรู้ 2'],
+  [3,2,'90641006','โครงงานกลุ่ม 3'],
+  [4,1,'03300009','การปฏิบัติการสอนในสถานศึกษา 1'],
+  [4,2,'03300010','การปฏิบัติการสอนในสถานศึกษา 2']
+].map(function(r){ return { level:r[0], semester:r[1], code:r[2], name:r[3] }; });
+const studyPlanOf = function(code){
+  return STUDY_PLAN.find(function(p){ return p.code === code; }) || null; };
+const termTh = function(sem){ return sem === 3 ? 'ภาคพิเศษ' : 'ภาค ' + sem; };
+
+/* ผลของการคัดลอก คำนวณก่อนกดยืนยัน — หน้าต่างแสดงสิ่งเดียวกับที่จะเกิดจริง
+   ต้นทาง = วิชาที่ผู้ใช้เห็น (myCourses) ในปีต้นทาง: ผู้สอนยกได้เฉพาะวิชาของตน ผู้ดูแลระบบยกได้ทุกวิชา */
+function copyLevelPlan(st){
+  const levelSems = STUDY_PLAN.filter(function(p){ return p.level === st.level; })
+    .map(function(p){ return p.semester; });
+  const pool = myCourses().filter(function(c){ return c.year === st.from; })
+    .slice().sort(function(a, b){ return (a.semester - b.semester) || a.code.localeCompare(b.code) ||
+      a.section.localeCompare(b.section); });
+  const row = function(c, p){
+    const at = { code:c.code, semester:c.semester, year:st.to, section:c.section };
+    const exists = db.course.some(function(x){
+      return x.code === at.code && x.semester === at.semester && x.year === at.year && x.section === at.section; });
+    const notes = [];
+    if (p && p.semester !== c.semester)
+      notes.push(['warn', 'เปิด' + termTh(c.semester) + ' แต่แผนการเรียนกำหนด' + termTh(p.semester) + ' — คงภาคเดิมไว้']);
+    if (p && p.name !== c.name) notes.push(['warn', 'ชื่อไม่ตรงหลักสูตร: “' + esc(p.name) + '”']);
+    const d = derive(c.id);
+    if (d.locked) notes.push(['warn', 'ต้นทางยังตั้งค่าไม่ครบ ' + d.blockers.length + ' ข้อ — ข้อที่ค้างจะติดไปด้วย']);
+    const allStaff = where(db.courseInstructor, 'courseId', c.id).length;
+    const okStaff = activeStaffOf(c.id).length;
+    if (okStaff < allStaff) notes.push(['warn', 'ผู้สอนที่ถูกระงับ/รออนุมัติ ' + (allStaff - okStaff) + ' คนไม่ถูกคัดลอก']);
+    if (!okStaff && S.role === 'ADMIN') notes.push(['bad', 'ไม่มีผู้สอนที่ใช้งานได้ — ต้องมอบหมายหลังคัดลอก']);
+    if (exists) notes.unshift(['nil', 'มีวิชานี้ใน ' + termTh(c.semester) + '/' + st.to + ' Sec ' + c.section + ' แล้ว — ข้าม ไม่เขียนทับ']);
+    return { src:c, plan:p, exists:exists, notes:notes };
+  };
+  const planned = [], offPlan = [];
+  pool.forEach(function(c){
+    const p = studyPlanOf(c.code);
+    if (p && p.level === st.level) planned.push(row(c, p));
+    else if (!p && levelSems.indexOf(c.semester) >= 0) offPlan.push(row(c, null));
+  });
+  const opened = {};
+  pool.forEach(function(c){ opened[c.code] = true; });
+  /* วิชาในแผนที่ปีต้นทางไม่ได้เปิด (หรือผู้ใช้ไม่ได้สอน) — ไม่มีโครงให้ยก จึงบอกไว้ ไม่สร้างวิชาเปล่า */
+  const missing = STUDY_PLAN.filter(function(p){ return p.level === st.level && !opened[p.code]; });
+  return { planned:planned, offPlan:offPlan, missing:missing };
+}
+
+let COPYLV = null;   /* { level, from, to } — สถานะของหน้าต่างที่เปิดอยู่ */
+const copyLevelDefaults = function(){
+  const years = myCourses().map(function(c){ return c.year; });
+  const withLevel = function(lv){
+    return myCourses().filter(function(c){ const p = studyPlanOf(c.code); return p && p.level === lv; })
+      .map(function(c){ return c.year; }); };
+  const y1 = withLevel(1);
+  const from = y1.length ? Math.max.apply(null, y1) : (years.length ? Math.max.apply(null, years) : 2568);
+  return { level:1, from:from, to:from + 1 };
+};
+
+function copyLevelBody(){
+  const st = COPYLV;
+  const plan = copyLevelPlan(st);
+  const years = myCourses().map(function(c){ return c.year; })
+    .filter(function(y, i, a){ return a.indexOf(y) === i; }).sort(function(a, b){ return b - a; });
+  if (years.indexOf(st.from) < 0) years.unshift(st.from);
+  const sel = function(id, opts, cur){
+    return '<select class="inp" id="' + id + '">' + opts.map(function(o){
+      return '<option value="' + o[0] + '"' + (o[0] === cur ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
+      '</select>'; };
+  const noteHtml = function(n){
+    const col = n[0] === 'bad' ? TONE.bad.tx : n[0] === 'warn' ? TONE.warn.tx : 'var(--dim)';
+    return '<div class="text-[12.5px] leading-snug" style="color:' + col + '">' + n[1] + '</div>'; };
+  const line = function(r, checked){
+    const c = r.src;
+    return '<label class="flex items-start gap-3 py-2 hair last:border-0' + (r.exists ? ' opacity-60' : '') + '">' +
+      '<input type="checkbox" name="cy-pick" value="' + c.id + '" class="mt-1"' +
+        (r.exists ? ' disabled' : (checked ? ' checked' : '')) + '>' +
+      '<span class="min-w-0 flex-1">' +
+        '<span class="block text-[14px]"><span class="tnum">' + c.code + '</span> · ' + esc(c.name) + '</span>' +
+        '<span class="block text-[13px] text-dim tnum">' + termTh(c.semester) + '/' + st.from + ' → ' +
+          termTh(c.semester) + '/' + st.to + ' · Sec ' + c.section + '</span>' +
+        r.notes.map(noteHtml).join('') +
+      '</span></label>'; };
+
+  const nGo = plan.planned.filter(function(r){ return !r.exists; }).length;
+  return '<div class="grid grid-cols-3 gap-3 mb-4">' +
+      '<div><label class="text-[14px] text-ink2 block mb-1.5" for="cy-level">ชั้นปี</label>' +
+        sel('cy-level', [[1,'ปี 1'],[2,'ปี 2'],[3,'ปี 3'],[4,'ปี 4']], st.level) + '</div>' +
+      '<div><label class="text-[14px] text-ink2 block mb-1.5" for="cy-from">จากปีการศึกษา</label>' +
+        sel('cy-from', years.map(function(y){ return [y, String(y)]; }), st.from) + '</div>' +
+      '<div><label class="text-[14px] text-ink2 block mb-1.5" for="cy-to">ไปปีการศึกษา</label>' +
+        sel('cy-to', [st.from + 1, st.from + 2].map(function(y){ return [y, String(y)]; }), st.to) + '</div>' +
+    '</div>' +
+    '<div class="text-[13px] text-dim mb-3">ระบบเลือกวิชาตามแผนการเรียนของหลักสูตร 2567 · คัดลอก CLO จุดประสงค์ กิจกรรม เกณฑ์ ขั้นเกรด และผู้สอน · ไม่คัดลอกนักศึกษาและคะแนน · ใช้ภาคและ Sec เดิม</div>' +
+    '<div class="over mb-1">ตามแผนการเรียน ปี ' + st.level + ' · ' + plan.planned.length + ' รายวิชา</div>' +
+    (plan.planned.length ? plan.planned.map(function(r){ return line(r, true); }).join('')
+      : '<div class="text-[14px] text-dim py-2">ปี ' + st.from + ' ไม่มีวิชาของชั้นปีนี้ที่คุณเข้าถึงได้</div>') +
+    (plan.offPlan.length
+      ? '<div class="over mt-4 mb-1">นอกแผน เช่น วิชาเลือก · ติ๊กเองถ้าต้องการ</div>' +
+        plan.offPlan.map(function(r){ return line(r, false); }).join('') : '') +
+    (plan.missing.length
+      ? '<div class="over mt-4 mb-1">ในแผนแต่ปี ' + st.from + ' ไม่ได้เปิด · ' + plan.missing.length + ' รายวิชา</div>' +
+        '<div class="text-[13px] text-dim leading-relaxed">' + plan.missing.map(function(p){
+          return '<span class="tnum">' + p.code + '</span> ' + esc(p.name) + ' (' + termTh(p.semester) + ')'; }).join(' · ') +
+        ' — ไม่มีโครงให้คัดลอก สร้างเองได้ที่ “สร้างรายวิชา”</div>' : '') +
+    '<div id="cy-count" hidden>' + nGo + '</div>';
+}
+
+function modalCopyLevel(){
+  if (!can('course.create')) return deny('course.create');
+  COPYLV = copyLevelDefaults();
+  openModal(modalFrame('ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่',
+    '<div id="cy-body">' + copyLevelBody() + '</div>',
+    btn('ยกเลิก','','data-act="close"') + btn('คัดลอกที่เลือก','primary','data-act="copy-level-do"')));
+}
+function copyLevelRepaint(){
+  const b = document.getElementById('cy-body');
+  if (b) b.innerHTML = copyLevelBody();
+}
+
+function copyLevelDo(){
+  if (!can('course.create')) return deny('course.create');
+  const st = COPYLV;
+  if (!st) return;
+  if (!(st.to > st.from)) { toast('ปีปลายทางต้องอยู่หลังปีต้นทาง','bad'); return; }
+  const ids = [].slice.call(document.querySelectorAll('#modal input[name="cy-pick"]:checked'))
+    .map(function(x){ return x.value; });
+  if (!ids.length) { toast('ยังไม่ได้เลือกรายวิชา','bad'); return; }
+  const made = [];
+  let skipped = 0;
+  ids.forEach(function(id){
+    const src = byId(db.course, id);
+    /* ตรวจซ้ำตอนกด ไม่พึ่งสิ่งที่หน้าต่างวาดไว้ — ระหว่างนั้นอาจมีคนสร้างวิชาเดียวกันไปแล้ว (FR-21) */
+    if (!src || !inScope(src.id) || db.course.some(function(x){
+      return x.code === src.code && x.semester === src.semester && x.year === st.to && x.section === src.section; })) {
+      skipped++; return; }
+    made.push(cloneCourse(src, { semester:src.semester, year:st.to, section:src.section }).id);
+  });
+  setUndo('คัดลอกปี ' + st.level + ' ไป ' + st.to + ' (' + made.length + ' รายวิชา)', 'course.create', function(){
+    made.forEach(function(id){ const r = byId(db.course, id); if (r) FORMS.course.remove(r); });
+    if (made.indexOf(S.course) >= 0) S.course = myCourses().length ? myCourses()[0].id : null;
+  });
+  closeOverlays(); invalidate();
+  S.tab.courseGroup = 'term';
+  render();
+  toast('คัดลอกปี ' + st.level + ' ไปปีการศึกษา ' + st.to + ' แล้ว ' + made.length + ' รายวิชา' +
+    (skipped ? ' · ข้าม ' + skipped + ' (มีอยู่แล้ว)' : '') + ' · ยังไม่มีรายชื่อและคะแนน', undefined,
+    made.length ? UNDO_ACTION : null);
 }
 
 /* Move a row within its ordered siblings (FR-31 for CLO, FR-42 for Activity). */
@@ -5707,7 +5814,7 @@ const FORMS = {
       const t = r || { id:'u_' + Date.now() };
       const isNew = !r;
       if (isNew) db.user.push(t);
-      /* UC 1.6 ตรวจสอบประวัติการใช้งาน อ่านจาก db.authEvent ต่อบัญชี — จุดนี้เป็น
+      /* UC 1.5 ตรวจสอบประวัติการใช้งาน อ่านจาก db.authEvent ต่อบัญชี — จุดนี้เป็น
          ฟังก์ชันเดียวที่อยู่เบื้องหลัง UC 1.1/1.2/1.4 (เพิ่ม/แก้ไข/กำหนดบทบาท) และ
          เดิมไม่เขียน AuthEvent เลยสักบรรทัด · roleChanged กับ activeChanged แยก
          เป็นคนละ action จาก EDIT เพราะเป็นการเปลี่ยนสิทธิ์ ไม่ใช่แก้ข้อมูลทั่วไป —
@@ -5837,14 +5944,10 @@ function menuItemsFor(kind, id){
   if (kind === 'col') {
     const a = byId(db.activity, id); if (!a) return null;
     const nBlank = d.roster.filter(function(st){ return d.stateOf(st.id, a.id) === 'blank'; }).length;
-    const nFilled = filledKeys(a).length, closed = d.isClosed(a);
+    const nFilled = filledKeys(a).length;
     const it = [];
-    if (!closed) it.push({ label:'ปิดรับคะแนน', hint: nBlank ? 'ว่าง ' + nBlank : '', attrs:A('act-close', 'data-id="' + id + '"') });
-    else {
-      if (nBlank && a.weight > 0) it.push({ label:'ตัดสินช่องที่ค้าง', hint:nBlank + ' ช่อง', attrs:A('act-close', 'data-id="' + id + '"') });
-      it.push({ label:'เปิดรับคะแนนอีกครั้ง', attrs:A('act-reopen', 'data-id="' + id + '"') });
-    }
-    if (a.type === 'LAB' && !closed && nBlank)
+    /* ไม่มี "ปิดรับคะแนน": ช่องว่างนับเป็น 0 ในสถานะ ณ ตอนนี้ (passNow) ผู้สอนไม่ต้องตัดสินช่องที่ค้าง */
+    if (a.type === 'LAB' && nBlank)
       it.push({ label:'เริ่มจากคะแนนเต็ม', hint:nBlank + ' ช่อง', attrs:A('fill-max', 'data-id="' + id + '"') });
     if (nFilled) {
       it.push({ label:'ยืนยันคะแนนเต็มที่เติม (ตรวจแล้ว)', hint:nFilled + ' ช่อง', attrs:A('fill-max-keep', 'data-id="' + id + '"') });
@@ -5869,7 +5972,7 @@ function menuItemsFor(kind, id){
     const stt = d.stateOf(st.id, a.id), sc = d.scoreOf(st.id, a.id);
     const T = 'data-sid="' + st.id + '" data-aid="' + a.id + '"';
     const it = [];
-    if (stt !== 'scored' || sc !== 0) it.push({ label:'ได้ 0', hint:'ไม่ได้ส่ง / ขาดสอบ', attrs:A('cell-set', T + ' data-val="ZERO"') });
+    /* ไม่มีเมนู "ได้ 0": ช่องว่างถูกนับเป็น 0 ในการคำนวณสถานะอยู่แล้ว (passNow) ผู้สอนไม่ต้องกรอก · พิมพ์ 0 เองยังได้ */
     it.push({ label: stt === 'excused' ? 'แก้เหตุผลการยกเว้น…' : 'ยกเว้น…', hint:'ไม่นับกิจกรรมนี้', attrs:A('cell-excuse', T) });
     if (stt !== 'blank')
       it.push({ label: stt === 'excused' ? 'ยกเลิกการยกเว้น' : 'ล้างช่อง', hint:'กลับเป็นช่องว่าง', attrs:A('cell-set', T + ' data-val="CLEAR"') });
@@ -5888,7 +5991,7 @@ function modalExcuse(sid, aid){
   const had = D().stateOf(sid, aid) === 'excused';
   openModal(modalFrame((had ? 'เหตุผลการยกเว้น — ' : 'ยกเว้น — ') + esc(st.name),
     '<div class="text-[14px] text-ink2 leading-relaxed">กิจกรรม <b>' + esc(a.name) + '</b> จะไม่ถูกนับสำหรับนักศึกษาคนนี้ ' +
-      '(น้ำหนักที่เหลือถูกคิดใหม่ให้เต็ม) และไม่ถือว่าขาดส่ง</div>' +
+      '(น้ำหนักที่เหลือถูกคิดใหม่ให้เต็ม)</div>' +
     '<div class="mt-4"><label class="text-[14px] text-ink2 block mb-1.5" for="ex-why">เหตุผล <span class="text-dim">(ไม่บังคับ · เก็บลงประวัติ)</span></label>' +
       '<textarea class="inp" id="ex-why" rows="3" maxlength="255" placeholder="เช่น ลาป่วย มีใบรับรองแพทย์ · ได้รับอนุมัติให้สอบแก้ตัวภาคหน้า">' +
         esc(excuseReasonOf(sid, aid)) + '</textarea></div>',
@@ -6553,9 +6656,11 @@ async function exportResults(){
       .concat(d.clos.map(function(c){
         const v = r.clo[c.id].pct; return v === null ? '' : Math.round(v * 100) / 100; }))
       .concat([ r.total.pct === null ? '' : Math.round(r.total.pct * 100) / 100,
-                r.passCourse === null ? 'ยังประเมินไม่ครบ' : (r.passCourse ? 'ผ่าน' : 'ไม่ผ่าน'),
+                r.passCourse !== null ? (r.passCourse ? 'ผ่าน' : 'ไม่ผ่าน')
+                  : (r.passNow === null || d.locked ? 'ยังประเมินไม่ครบ'
+                     : (r.passNow ? 'ผ่านแล้ว (คะแนนยังไม่ครบ)' : 'ยังไม่ผ่าน (คะแนนยังไม่ครบ)')),
                 (g && g.grade) || '',
-                !r.total.complete ? (r.overdue.length ? 'ขาดส่ง ' + r.overdue.length + ' กิจกรรม' : 'ยังประเมินไม่ครบ')
+                !r.total.complete ? 'ยังประเมินไม่ครบ'
                                    : (r.atRisk ? 'เสี่ยง' : 'ปกติ') ]);
   }).concat(d.withdrawn.map(function(st){            /* R2 — คนที่ถอนอยู่ท้ายตาราง เกรด W ไม่มีตัวเลข */
     return [st.studentCode, st.name].concat(d.clos.map(function(){ return ''; }), ['', '', 'W', 'ถอนรายวิชา']);
@@ -6608,7 +6713,7 @@ async function exportResults(){
   const sStyles = {};
   sumHead.forEach(function(_, c){ sStyles[cellRef(0, c)] = XF.head; });
 
-  /* R1 — แผ่นที่สาม: รายชื่อที่ยังไม่ผ่านราย CLO เรียงจากห่างเกณฑ์มากไปน้อย · คนที่ขาดส่งงานอยู่ท้ายแผ่น */
+  /* R1 — แผ่นที่สาม: รายชื่อที่ยังไม่ผ่านราย CLO เรียงจากห่างเกณฑ์มากไปน้อย */
   const helpHead = ['CLO','รหัสนักศึกษา','ชื่อ-นามสกุล','คะแนน CLO (%)','ห่างจากเกณฑ์','กลุ่ม','สถานะคะแนน','จุดประสงค์ที่อ่อนที่สุด','แผนพัฒนาผู้เรียน'];
   const helpBody = [];
   d.attain.forEach(function(a){
@@ -6619,9 +6724,6 @@ async function exportResults(){
         x.weakest ? d.objLabel(x.weakest) + ' ' + x.weakest.description : '',
         (planOf(x.r.student.id, a.clo.id) || { plan:'' }).plan]); });
   });
-  d.rows.filter(function(r){ return r.overdue.length; }).forEach(function(r){
-    helpBody.push(['ขาดส่งงาน', r.student.studentCode, r.student.name, '', '', '', '',
-      r.overdue.map(function(k){ return k.name; }).join(', ')]); });
   const wh = XLSX.utils.aoa_to_sheet([helpHead].concat(helpBody.length ? helpBody : [['ไม่มีนักศึกษาที่ยังไม่ผ่าน']]));
   wh['!cols'] = [{wch:12},{wch:16},{wch:28},{wch:15},{wch:14},{wch:12},{wch:20},{wch:48},{wch:40}];
   const hStyles = {};
@@ -8235,12 +8337,12 @@ function deny(cap, courseId){
    ซึ่งเป็นสิทธิ์สูงสุดที่ไม่ใช่ ADMIN — นั่นคือ SEC-2 ในรูปของโค้ด */
 const READ_ACTS = ['acct','area','be','clear-filter','roster-page','close','copy-link','density','longtext','scale','layout-reset','layout','goto','help',
   'open-section','pal-go','pane-close','pane-toggle','pick-course','profile','profile-save',
-  'pw-change','pw-change-save','role','shortcuts','step','student','subnav',
+  'role','shortcuts','step','student','subnav',
   'toggle-team','user-detail','err-report','errreport','need-bloom','course-group','course-view',
-  'import-next','import-prev','import-back','import-pick','close-all','clo-help','menu','drawer-back',
+  'import-next','import-prev','import-back','import-pick','clo-help','menu','drawer-back',
   /* D6/D7 · หน้าเข้าสู่ระบบ — ยังไม่มีบัญชีให้ตรวจสิทธิ์ ออกจากระบบทำได้ทุกคน */
-  'auth-go','auth-google','auth-pick','auth-google-other','auth-google-create','auth-login',
-  'auth-register','auth-verify','auth-resend','auth-forgot','auth-logout'];
+  'auth-go','auth-google','auth-pick','auth-google-other','auth-google-create','auth-send-link',
+  'auth-open-link','auth-resend','auth-logout'];
 
 const KIND_CAP = { clo:'clo.write', objective:'clo.write', activity:'activity.write',
                    student:'student.write', band:'band.write', user:'user.manage' };
@@ -8276,7 +8378,6 @@ function capOf(act, el){
     case 'cell-set': case 'cell-excuse': case 'cell-excuse-do': case 'paste-do': return 'score.edit';
     case 'stu-new-row': case 'stu-row-save':
     case 'stu-withdraw': case 'stu-withdraw-do': case 'stu-restore': return 'student.write';
-    case 'act-close': case 'act-close-do': case 'act-reopen': return 'score.edit';
     case 'import':                      return what === 'roster' ? 'student.write' : 'score.import';
     case 'import-done':                 return IMPMODE === 'roster' ? 'student.write' : 'score.import';
     case 'template':                    return 'score.export';
@@ -8294,9 +8395,9 @@ function capOf(act, el){
                                  ? 'course.create' : 'course.settings';
     case 'del-course': case 'del-course-confirm': return 'course.delete';
     case 'staff-add': case 'staff-del': case 'staff-pick': return 'staff.write';
-    case 'add-course': case 'dup-course': return 'course.create';
+    case 'add-course': case 'dup-course': case 'copy-level': case 'copy-level-do': return 'course.create';
     case 'weight-mode':                 return 'activity.write';
-    case 'toggle-user': case 'approve-user': case 'pw-reset': case 'pw-reset-do': return 'user.manage';
+    case 'toggle-user': case 'approve-user': return 'user.manage';
     default:                            return 'course.settings';   // SEC-2
   }
 }
@@ -8334,19 +8435,20 @@ function applyPermissions(root){
      · Google  verify the ID token server-side: aud = our client id,
                iss = accounts.google.com, hd = kmitl.ac.th, email_verified —
                and key the account on the token's `sub`, not on the email.
-     · Email   argon2id (FR-02) · verification token = 32 random bytes,
-               stored hashed, single use, 24 h expiry · resend rate-limited.
-     · Every failure a stranger can trigger reads the same (FR-03), so the
-       forms never tell anyone which addresses have accounts.
+     · Email   no password anywhere. One-time sign-in link: token = 32 random
+               bytes, stored hashed, single use, 24 h expiry · resend rate-limited.
+               Opening the link proves the mailbox, so it signs in (and creates the
+               account the first time) under the same FR-08 rule as Google.
+     · Every request a stranger can trigger reads the same (FR-07), so the
+       form never tells anyone which addresses have accounts.
    ══════════════════════════════════════════════════════════════════ */
 /* N3 (2569-09-23) — refactor เป็นคลาส แบ่งตามชั้นเดียวกับ server (code-rule §3)
      EmailPolicy     กฎของอีเมล: รูปแบบ + โดเมนคณะ — ที่เดียวในไฟล์ที่รู้ชื่อโดเมน
-     PasswordPolicy  กฎรหัสผ่าน D7 + มิเตอร์ความแข็งแรง
      SessionStore    sessionStorage พร้อมค่าสำรองในหน่วยความจำ (private window / storage ถูกปิด)
      AccountService  งานกับบัญชีใน db: หา สร้าง ยืนยัน จำกัดความถี่ บันทึก AuthEvent
                      ไม่แตะ DOM — คืนผลเป็น object { error } หรือ { user, ... }
      AuthScreen      state ของหน้าจอ + วาด + ตัวจัดการปุ่ม: เรียก service แล้วแปลงผลเป็นหน้าจอ
-   EmailPolicy / PasswordPolicy / AccountService คือสิ่งที่จะย้ายไปเป็น auth.validator.ts
+   EmailPolicy / AccountService คือสิ่งที่จะย้ายไปเป็น auth.validator.ts
    และ auth.service.ts ตอนเขียน server จริง จึงแยกออกจากส่วนที่วาดหน้าจอ */
 
 /* D6 — ลงทะเบียนและเข้าด้วย Google ได้เฉพาะโดเมนคณะ · เทียบแบบตรงตัว:
@@ -8365,37 +8467,6 @@ class EmailPolicy {
   }
 }
 
-/* D7 — NIST 800-63B shape: length and a breached/common-password check, no
-   forced symbols and no rotation. The server checks the full breached list
-   (k-anonymity range query); this short list only makes the rule visible. */
-class PasswordPolicy {
-  constructor(common){ this.common = common; }
-  rules(pw, email){
-    const local = (email || '').split('@')[0].toLowerCase();
-    const low = (pw || '').toLowerCase();
-    return [
-      ['ยาวอย่างน้อย 12 ตัวอักษร', (pw || '').length >= 12],
-      ['ไม่ใช่รหัสผ่านที่พบบ่อยหรือตัวอักษรซ้ำกันทั้งหมด', !!pw && this.common.indexOf(low) < 0 && !/^(.)\1+$/.test(pw)],
-      ['ไม่มีชื่อผู้ใช้จากอีเมลอยู่ในรหัสผ่าน', local.length < 3 || low.indexOf(local) < 0]
-    ];
-  }
-  accepts(pw, email){ return this.rules(pw, email).every(function(r){ return r[1]; }); }
-  meterHtml(pw, email){
-    const rules = this.rules(pw, email);
-    const ok = rules.filter(function(r){ return r[1]; }).length;
-    const score = pw ? Math.min(4, ok + ((pw || '').length >= 16 ? 1 : 0)) : 0;
-    const lbl = ['—','อ่อนมาก','อ่อน','พอใช้','แข็งแรง'][score];
-    const col = [PAL.edge,TONE.bad.tx,TONE.warn.tx,TONE.info.tx,TONE.ok.tx][score];
-    return '<div class="flex gap-1 mt-2" aria-hidden="true">' + [1,2,3,4].map(function(i){
-        return '<span class="h-1 flex-1 rounded-full" style="background:' + (i <= score ? col : PAL.edge) + '"></span>'; }).join('') + '</div>' +
-      '<div class="flex justify-between text-[12.5px] mt-1"><span class="text-dim">ความแข็งแรง</span>' +
-        '<span style="color:' + (score ? col : 'var(--dim)') + '">' + lbl + '</span></div>' +
-      '<ul class="mt-1.5 space-y-0.5">' + rules.map(function(r){
-        return '<li class="text-[13px] ' + (r[1] ? 'text-ok' : 'text-dim') + '">' + (r[1] ? '✓ ' : '○ ') + r[0] + '</li>'; }).join('') +
-      '</ul>';
-  }
-}
-
 class SessionStore {
   constructor(key){ this.key = key; this.mem = null; }
   get(){
@@ -8409,12 +8480,10 @@ class SessionStore {
 }
 
 /* ทุกเมธอดคืน { error } เมื่อไม่ผ่าน · ข้อความ error คือสิ่งที่ผู้ใช้เห็นตรง ๆ
-   กติกา FR-03 (ความล้มเหลวที่คนแปลกหน้ากระตุ้นได้ต้องอ่านเหมือนกันหมด) จึงอยู่ในชั้นนี้ ไม่ใช่ที่หน้าจอ */
+   FR-07 (ที่ถามได้ว่า "อีเมลนี้มีบัญชีไหม" ต้องตอบเหมือนกันหมด) จึงอยู่ในชั้นนี้ ไม่ใช่ที่หน้าจอ */
 class AccountService {
-  constructor(emails, passwords, demoPw){
-    this.emails = emails; this.passwords = passwords;
-    this.demoPw = demoPw;   /* prototype only — seeded accounts carry no real password */
-    this.fails = [];
+  constructor(emails){
+    this.emails = emails;
   }
   find(email){
     const e = this.emails.normalize(email);
@@ -8424,45 +8493,32 @@ class AccountService {
     db.authEvent.unshift({ id:'ae' + Date.now() + Math.random().toString(36).slice(2, 6), userId:uid, actorId:uid,
       action:action, detail:detail, at:'2568-09-07 09:00' });
   }
-  /* FR-04 — five failures in 15 minutes. Counted per browser here; the server
-     counts per IP and per account. */
-  throttled(){
-    this.fails = this.fails.filter(function(t){ return Date.now() - t < 15 * 60000; });
-    return this.fails.length >= 5;
+  /* ขอลิงก์ — ผลเหมือนกันไม่ว่าอีเมลนี้มีบัญชีอยู่แล้วหรือไม่ และไม่ว่าโดเมนใด
+     (โดเมนอื่นก็ขอได้ แต่หลังเปิดลิงก์จะรออนุมัติ ตาม FR-08) */
+  requestLink(email){
+    const e = this.emails.normalize(email);
+    if (!this.emails.isWellFormed(e)) return { error:'กรอกอีเมลให้ถูกต้อง' };
+    return { email:e };
   }
-  login(email, pw){
-    if (this.throttled()) return { error:'ลองเข้าสู่ระบบบ่อยเกินไป — รอ 15 นาทีแล้วลองใหม่' };
-    const u = this.find(email);
-    const pwOk = !!u && u.authProvider !== 'GOOGLE' && pw === (u._demoPw || this.demoPw);
-    /* FR-03 — unknown address, wrong password and a suspended account read the same. */
-    if (!pwOk || u.isActive === false) { this.fails.push(Date.now()); return { error:'อีเมลหรือรหัสผ่านไม่ถูกต้อง' }; }
-    /* Only reachable with the right password, so it tells nothing to a stranger. */
-    if (u.emailVerified === false) return { user:u, unverified:true };
-    return { user:u };
-  }
-  register(name, email, pw, pw2){
-    if (!name) return { error:'กรอกชื่อ-สกุลก่อน' };
-    const bad = this.emails.check(email);
-    if (bad) return { error:bad };
-    if (!this.passwords.accepts(pw, email)) return { error:'รหัสผ่านยังไม่ผ่านเงื่อนไขใต้ช่องรหัสผ่าน' };
-    if (pw !== pw2) return { error:'รหัสผ่านสองช่องไม่ตรงกัน' };
-    /* ผลลัพธ์หน้าตาเหมือนกันไม่ว่าอีเมลนี้มีบัญชีอยู่แล้วหรือไม่ (pendingId เป็น null เฉย ๆ)
-       มิฉะนั้นฟอร์มนี้จะตอบคำถาม "X มีบัญชีไหม" · server จริงส่งอีเมลแจ้งเจ้าของเดิมแทนลิงก์ */
-    if (this.find(email)) return { pendingId:null };
-    const u = { id:'u_' + Date.now(), email:this.emails.normalize(email), name:name, role:'INSTRUCTOR', isActive:true,
-                emailVerified:false, authProvider:'EMAIL',
-                _demoPw:pw };   /* prototype only — the server keeps an argon2id hash (FR-02), never this */
-    db.user.push(u);
-    this.log(u.id, 'REGISTER', 'ลงทะเบียนด้วยอีเมล · รอยืนยันอีเมล');
-    return { pendingId:u.id };
-  }
-  /* Single use: the same link opened twice must not verify twice. */
-  verify(uid){
-    const u = uid ? byId(db.user, uid) : null;
-    if (!u || u.emailVerified !== false) return { error:'ลิงก์นี้ใช้ไปแล้วหรือหมดอายุ — เข้าสู่ระบบเพื่อขอลิงก์ใหม่' };
-    u.emailVerified = true;
-    this.log(u.id, 'VERIFY', 'ยืนยันอีเมลแล้ว');
-    return { user:u };
+  /* เปิดลิงก์ — ใช้ได้ครั้งเดียว · กฎเดียวกับ Google (FR-08):
+     โดเมนคณะ → ACTIVE เข้าได้ทันที · โดเมนอื่น → PENDING รอผู้ดูแลระบบอนุมัติ
+     ยังไม่มีบัญชี → สร้างให้ (เปิดลิงก์ได้แปลว่าเป็นเจ้าของอีเมล) ชื่อใช้ส่วนหน้าของอีเมล แก้ได้ที่ UC 9.1 */
+  openLink(email){
+    const e = this.emails.normalize(email);
+    if (!this.emails.isWellFormed(e)) return { error:'ลิงก์นี้ใช้ไปแล้วหรือหมดอายุ — ขอลิงก์ใหม่' };
+    const u = this.find(e);
+    if (u) {
+      if (u.isActive === false) return { error:'บัญชีนี้ถูกระงับการใช้งาน — ติดต่อผู้ดูแลระบบ' };
+      if (isPending(u)) return { pending:true, email:e };
+      return { user:u };
+    }
+    const fresh = { id:'u_' + Date.now(), email:e, name:e.split('@')[0], role:'INSTRUCTOR', isActive:true,
+                    emailVerified:true, authProvider:'EMAIL_LINK' };
+    if (!this.emails.isAllowed(e)) fresh.status = 'PENDING';
+    db.user.push(fresh);
+    this.log(fresh.id, 'REGISTER', fresh.status === 'PENDING'
+      ? 'ลงทะเบียนด้วยลิงก์อีเมลนอกโดเมนคณะ · รอผู้ดูแลระบบอนุมัติ' : 'ลงทะเบียนด้วยลิงก์อีเมล');
+    return fresh.status === 'PENDING' ? { pending:true, email:e } : { user:fresh };
   }
   /* hd — checked on the verified token server-side, never on what the browser claims */
   google(email){
@@ -8509,7 +8565,7 @@ class AuthScreen {
   constructor(accounts, session){
     this.accounts = accounts; this.session = session;
     this.view = 'login'; this.err = ''; this.email = '';
-    this.pendingId = null; this.resendAt = 0; this.gEmail = ''; this.timer = null;
+    this.linkEmail = ''; this.resendAt = 0; this.gEmail = ''; this.via = 'google'; this.timer = null;
   }
   static value(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
   static raw(id){ return (document.getElementById(id) || {}).value || ''; }
@@ -8563,32 +8619,17 @@ class AuthScreen {
     const or = '<div class="flex items-center gap-3 text-[13px] text-faint"><span class="flex-1 h-px bg-edge"></span>' +
       'หรือใช้อีเมลของคณะ<span class="flex-1 h-px bg-edge"></span></div>';
 
-    if (this.view === 'register') return head('ลงทะเบียนผู้สอน',
-        'ใช้อีเมลของคณะ (@' + emails.domain + ') · บัญชีใหม่มีบทบาทผู้สอน สร้างรายวิชาเองได้ หรือรอผู้ดูแลระบบมอบหมาย') +
-      google + or + err +
-      field('au-name', 'ชื่อ-สกุล', 'text', '', ' autocomplete="name"') +
-      field('au-email', 'อีเมล', 'email', this.email, ' autocomplete="email" placeholder="' + emails.placeholder() + '"') +
-      '<div>' + field('au-pw', 'รหัสผ่าน', 'password', '', ' autocomplete="new-password"') +
-        '<div id="au-meter">' + this.accounts.passwords.meterHtml('', this.email) + '</div></div>' +
-      field('au-pw2', 'ยืนยันรหัสผ่าน', 'password', '', ' autocomplete="new-password"') +
-      primary('ลงทะเบียน', 'auth-register') +
-      '<div class="text-center text-[14px] text-dim">มีบัญชีแล้ว? ' + link('เข้าสู่ระบบ', 'login') + '</div>';
-
     if (this.view === 'sent') {
       const wait = Math.max(0, Math.ceil((this.resendAt - Date.now()) / 1000));
       return head('ตรวจสอบอีเมลของคุณ',
-          'ถ้า <b>' + esc(this.email) + '</b> ลงทะเบียนได้ ระบบส่งลิงก์ยืนยันไปแล้ว · ลิงก์ใช้ได้ครั้งเดียวและหมดอายุใน 24 ชั่วโมง') +
+          'ถ้า <b>' + esc(this.linkEmail) + '</b> ลงทะเบียนได้ ระบบส่งลิงก์เข้าสู่ระบบไปแล้ว · ลิงก์ใช้ได้ครั้งเดียวและหมดอายุใน 24 ชั่วโมง') +
         err +
         '<button class="btn w-full justify-center" data-act="auth-resend"' + (wait ? ' disabled' : '') + '>' +
           (wait ? 'ส่งลิงก์อีกครั้งได้ในอีก ' + wait + ' วินาที' : 'ส่งลิงก์อีกครั้ง') + '</button>' +
-        (this.pendingId ? '<div class="authdemo"><div class="over mb-1">ต้นแบบ · จำลองกล่องจดหมาย</div>' +
-          'จาก CMAS — “ยืนยันอีเมลเพื่อเริ่มใช้งาน” <button class="authlink" data-act="auth-verify">เปิดลิงก์ยืนยัน</button></div>' : '') +
-        '<div class="text-center text-[14px] text-dim">' + link('กลับไปหน้าเข้าสู่ระบบ', 'login') + '</div>';
+        '<div class="authdemo"><div class="over mb-1">ต้นแบบ · จำลองกล่องจดหมาย</div>' +
+          'จาก CMAS — “ลิงก์เข้าสู่ระบบ” <button class="authlink" data-act="auth-open-link">เปิดลิงก์</button></div>' +
+        '<div class="text-center text-[14px] text-dim">' + link('ใช้อีเมลอื่น', 'login') + '</div>';
     }
-
-    if (this.view === 'verified') return head('ยืนยันอีเมลแล้ว',
-        'บัญชี <b>' + esc(this.email) + '</b> พร้อมใช้งาน — เข้าสู่ระบบด้วยรหัสผ่านที่ตั้งไว้') +
-      '<button class="btn btn-primary w-full justify-center !py-2.5" data-act="auth-go" data-view="login" data-auth-submit>ไปหน้าเข้าสู่ระบบ</button>';
 
     if (this.view === 'google') {
       const picks = db.user.filter(function(u){ return !isPending(u); }).slice(0, 4).map(function(u){ return [u.email, u.name]; })
@@ -8614,14 +8655,14 @@ class AuthScreen {
     /* FR-08 — ถ้อยคำใช้ได้ทั้งครั้งแรกและทุกครั้งที่ล็อกอินซ้ำก่อนได้อนุมัติ · ไม่สัญญาว่าจะแจ้งเตือน เพราะระบบไม่ส่งอีเมล */
     if (this.view === 'pending') return head('รอผู้ดูแลระบบอนุมัติ',
         'อีเมลนี้ไม่ใช่อีเมลของคณะ (@' + emails.domain + ') จึงต้องได้รับอนุมัติก่อนเข้าใช้งาน') +
-      '<div class="authdemo flex items-center gap-2 flex-wrap">' + GLOGO + '<span class="tnum">' + esc(this.gEmail) + '</span>' +
-        chip('รออนุมัติ','warn') + '</div>' +
-      '<p class="text-[14px] text-soft leading-relaxed">ได้รับอนุมัติแล้ว กลับมากด “ดำเนินการต่อด้วย Google” อีกครั้ง</p>' +
-      '<button class="btn btn-primary w-full justify-center !py-2.5" data-act="auth-google" data-auth-submit>ใช้บัญชีอื่น (บัญชีของคณะ)</button>' +
-      '<div class="text-center text-[14px] text-dim">' + link('กลับไปหน้าเข้าสู่ระบบ', 'login') + '</div>';
+      '<div class="authdemo flex items-center gap-2 flex-wrap">' + (this.via === 'google' ? GLOGO : '') +
+        '<span class="tnum">' + esc(this.gEmail) + '</span>' + chip('รออนุมัติ','warn') + '</div>' +
+      '<p class="text-[14px] text-soft leading-relaxed">ได้รับอนุมัติแล้ว กลับมาเข้าสู่ระบบอีกครั้ง</p>' +
+      '<button class="btn btn-primary w-full justify-center !py-2.5" data-act="auth-go" data-view="login" data-auth-submit>ใช้บัญชีอื่น (บัญชีของคณะ)</button>' +
+      '';
 
     if (this.view === 'google-new') return head('สร้างบัญชีผู้สอนจาก Google',
-        'ยังไม่มีบัญชี CMAS สำหรับอีเมลนี้ · Google ยืนยันอีเมลให้แล้ว จึงไม่ต้องตั้งรหัสผ่านและไม่ต้องรอลิงก์ยืนยัน') +
+        'ยังไม่มีบัญชี CMAS สำหรับอีเมลนี้ · Google ยืนยันอีเมลให้แล้ว จึงไม่ต้องรอลิงก์') +
       err +
       '<div class="authdemo flex items-center gap-2 flex-wrap">' + GLOGO + '<span class="tnum">' + esc(this.gEmail) + '</span>' +
         chip('ยืนยันแล้ว','ok') + '</div>' +
@@ -8632,43 +8673,26 @@ class AuthScreen {
     return head('เข้าสู่ระบบ', 'ระบบประเมินผลลัพธ์การเรียนรู้ระดับรายวิชา') +
       google + or + err +
       field('au-email', 'อีเมล', 'email', this.email, ' autocomplete="username" placeholder="' + emails.placeholder() + '"') +
-      '<div><div class="flex items-baseline justify-between mb-1.5">' +
-          '<label class="text-[14px] text-ink2" for="au-pw">รหัสผ่าน</label>' +
-          '<button class="authlink text-[13px]" data-act="auth-forgot">ลืมรหัสผ่าน?</button></div>' +
-        '<input class="inp" id="au-pw" type="password" autocomplete="current-password"></div>' +
-      primary('เข้าสู่ระบบ', 'auth-login') +
-      '<div class="text-center text-[14px] text-dim">ยังไม่มีบัญชี? ' + link('ลงทะเบียน', 'register') + '</div>' +
+      primary('ส่งลิงก์เข้าสู่ระบบ', 'auth-send-link') +
       '<div class="authdemo"><div class="over mb-1">ต้นแบบ · บัญชีตัวอย่าง</div>' +
         'somchai@' + emails.domain + ' (ผู้สอน) · admin@' + emails.domain + ' (ผู้ดูแลระบบ)<br>' +
-        'รหัสผ่านตัวอย่าง <span class="tnum">' + this.accounts.demoPw + '</span></div>';
+        'ไม่มีรหัสผ่าน · กดส่งลิงก์ แล้วเปิดลิงก์ในกล่องจดหมายจำลอง</div>';
   }
 
   /* ── ตัวจัดการปุ่ม ── */
-  submitLogin(){
+  sendLink(){
     this.email = AuthScreen.value('au-email').toLowerCase();
-    const r = this.accounts.login(this.email, AuthScreen.raw('au-pw'));
+    const r = this.accounts.requestLink(this.email);
     if (r.error) return this.fail(r.error);
-    if (r.unverified) {
-      this.pendingId = r.user.id; this.view = 'sent';
-      this.err = 'ยืนยันอีเมลก่อนเข้าสู่ระบบ — เปิดลิงก์ในอีเมล หรือขอลิงก์ใหม่';
-      return this.paint();
-    }
-    this.enter(r.user, 'LOGIN');
-  }
-  submitRegister(){
-    this.email = AuthScreen.value('au-email').toLowerCase();
-    const r = this.accounts.register(AuthScreen.value('au-name'), this.email,
-                                     AuthScreen.raw('au-pw'), AuthScreen.raw('au-pw2'));
-    if (r.error) return this.fail(r.error);
-    this.pendingId = r.pendingId;
+    this.linkEmail = r.email;
     this.view = 'sent'; this.err = ''; this.resendAt = Date.now() + 60000;
     this.paint();
   }
-  submitVerify(){
-    const r = this.accounts.verify(this.pendingId);
+  openLink(){
+    const r = this.accounts.openLink(this.linkEmail);
     if (r.error) { this.view = 'login'; this.err = r.error; return this.paint(); }
-    this.email = r.user.email; this.view = 'verified'; this.err = '';
-    this.paint();
+    if (r.pending) { this.gEmail = r.email; this.via = 'email'; return this.show('pending'); }
+    this.enter(r.user, 'LOGIN');
   }
   resend(){
     if (Date.now() < this.resendAt) return false;
@@ -8679,7 +8703,7 @@ class AuthScreen {
     const r = this.accounts.google(email);
     if (r.error) return this.fail(r.error);
     if (r.isNew) { this.gEmail = r.email; return this.show('google-new'); }
-    if (r.pending) { this.gEmail = r.email; return this.show('pending'); }
+    if (r.pending) { this.gEmail = r.email; this.via = 'google'; return this.show('pending'); }
     this.enter(r.user, 'LOGIN_GOOGLE');
   }
   createFromGoogle(){
@@ -8687,17 +8711,12 @@ class AuthScreen {
     if (r.error) return this.fail(r.error);
     this.enter(r.user, 'LOGIN_GOOGLE');
   }
-  updateMeter(){
-    const m = document.getElementById('au-meter');
-    if (m) m.innerHTML = this.accounts.passwords.meterHtml(AuthScreen.raw('au-pw'), AuthScreen.value('au-email'));
-  }
-
   /* ── เข้า/ออก — จุดเดียวที่หน้าจอ auth แตะ state ของแอป (S) ── */
   enter(u, how){
-    this.accounts.log(u.id, how, how === 'LOGIN_GOOGLE' ? 'เข้าสู่ระบบด้วย Google' : 'เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน');
+    this.accounts.log(u.id, how, how === 'LOGIN_GOOGLE' ? 'เข้าสู่ระบบด้วย Google' : 'เข้าสู่ระบบด้วยลิงก์อีเมล');
     S.role = u.role === 'ADMIN' ? 'ADMIN' : 'INSTRUCTOR'; S.meId = u.id; S.filter = {};
     this.session.set(u.id);
-    this.view = 'login'; this.err = ''; this.email = ''; this.accounts.fails = [];
+    this.view = 'login'; this.err = ''; this.email = '';
     clampMe(); clampCourse(); saveLayout(); invalidate();
     this.paint();
     /* The screen left behind by the previous account may be admin-only. */
@@ -8719,12 +8738,7 @@ class AuthScreen {
 
 const EMAIL_POLICY = new EmailPolicy('kmitl.ac.th');
 const SESSION = new SessionStore('cmas:session');
-const AUTH = new AuthScreen(
-  new AccountService(EMAIL_POLICY,
-    new PasswordPolicy(['password','password1','password123','12345678','123456789','1234567890','qwerty123',
-      'qwertyuiop','iloveyou','admin1234','abc12345','11111111','00000000','changeme','welcome123']),
-    'cmas-demo-2568'),
-  SESSION);
+const AUTH = new AuthScreen(new AccountService(EMAIL_POLICY), SESSION);
 
 /* Enter submits whichever form is showing. */
 document.getElementById('auth').addEventListener('keydown', function(e){
@@ -8833,14 +8847,11 @@ document.addEventListener('click', function(e){
   if (act === 'auth-pick')          { AUTH.continueWithGoogle(el.dataset.email); return; }
   if (act === 'auth-google-other')  { AUTH.continueWithGoogle(AuthScreen.value('au-gmail')); return; }
   if (act === 'auth-google-create') { AUTH.createFromGoogle(); return; }
-  if (act === 'auth-login')         { AUTH.submitLogin(); return; }
-  if (act === 'auth-register')      { AUTH.submitRegister(); return; }
-  if (act === 'auth-verify')        { AUTH.submitVerify(); return; }
-  if (act === 'auth-forgot') {
-    toast('ถ้าอีเมลนี้มีบัญชี ระบบจะส่งลิงก์ตั้งรหัสผ่านใหม่ไปให้'); return; }   /* same words for every address */
+  if (act === 'auth-send-link')     { AUTH.sendLink(); return; }
+  if (act === 'auth-open-link')     { AUTH.openLink(); return; }
   if (act === 'auth-resend') {
     if (!AUTH.resend()) return;
-    toast('ถ้าอีเมลนี้ลงทะเบียนไว้และยังไม่ยืนยัน ระบบส่งลิงก์ใหม่แล้ว · ลิงก์ก่อนหน้าใช้ไม่ได้อีก'); return;
+    toast('ส่งลิงก์ใหม่แล้ว · ลิงก์เดิมใช้ไม่ได้อีก'); return;
   }
   if (act === 'auth-logout')        { AUTH.leave(); return; }
 
@@ -8858,8 +8869,6 @@ document.addEventListener('click', function(e){
   }
   if (act === 'profile')        { acctMenu(false); modalProfile(); return; }
   if (act === 'profile-save')   { saveProfile(); return; }
-  if (act === 'pw-change')      { acctMenu(false); modalPwChange(); return; }
-  if (act === 'pw-change-save') { savePwChange(); return; }
   if (act === 'role') { acctMenu(false); S.role = el.dataset.val;
     /* The account has to match the role before the scope is computed from it,
        and only then can the open course be checked against that scope. */
@@ -8978,80 +8987,6 @@ document.addEventListener('click', function(e){
     return;
   }
 
-  /* R3 — ปิดรับคะแนน · ช่องที่ยังว่างต้องมีคนตัดสิน: ได้ 0 / ยกเว้น / เว้นไว้ก่อน (ยังค้างเป็น "ขาดส่ง")
-     เปิดซ้ำกับกิจกรรมที่ปิดแล้ว = ตัดสินช่องที่ยังค้าง · ไม่มีช่องว่างเลย = ปิดได้ทันทีโดยไม่ต้องถาม */
-  if (act === 'act-close') {
-    const a = byId(db.activity, el.dataset.id);
-    if (!a) return;
-    const dd = D();
-    const blanks = dd.roster.filter(function(st){ return dd.stateOf(st.id, a.id) === 'blank'; });
-    if (!blanks.length) {
-      if (!a.closedAt) { setUndo('ปิดรับคะแนน ' + a.name, 'score.edit', recSnap(a, ['closedAt']));
-        a.closedAt = PROTO_NOW.slice(0, 10); invalidate(); render();
-        toast('ปิดรับคะแนน “' + esc(a.name) + '” แล้ว — ทุกคนมีคะแนนครบ', undefined, UNDO_ACTION); }
-      return;
-    }
-    const radio = function(sid, val, label, on){
-      return '<label class="inline-flex items-center gap-1.5 mr-3 cursor-pointer whitespace-nowrap">' +
-        '<input type="radio" name="cl-' + sid + '" value="' + val + '"' + (on ? ' checked' : '') + '>' + label + '</label>'; };
-    openModal(modalFrame((a.closedAt ? 'ตัดสินช่องที่ค้าง — ' : 'ปิดรับคะแนน — ') + esc(a.name),
-      '<div class="text-[15px] leading-relaxed">มีนักศึกษา <b class="tnum">' + blanks.length + '</b> คนที่ยังไม่มีคะแนนในกิจกรรมนี้ ' +
-        'เมื่อปิดรับคะแนนแล้ว ช่องว่างจะหมายถึง <b>ขาดส่ง</b> ไม่ใช่ “ยังไม่ประเมิน” — เลือกให้แต่ละคน</div>' +
-      '<div class="mt-3 text-[13px] text-dim leading-relaxed">' +
-        '<b class="text-ink2">ได้ 0</b> = ไม่ได้ส่งหรือขาดสอบ คะแนนเป็น 0 จริง · ' +
-        '<b class="text-ink2">ยกเว้น</b> = มีเหตุอันควร ไม่นับกิจกรรมนี้สำหรับคนนี้ (น้ำหนักที่เหลือคิดใหม่ให้เต็ม) · ' +
-        '<b class="text-ink2">เว้นไว้ก่อน</b> = ยังไม่ตัดสิน ขึ้นเป็น “ขาดส่ง” ในรายชื่อที่ต้องติดตาม</div>' +
-      '<div class="flex items-center gap-2 mt-4 mb-2 text-[13px]"><span class="text-dim">ตั้งทุกคนเป็น</span>' +
-        ['ZERO|ได้ 0','EXCUSED|ยกเว้น','LATER|เว้นไว้ก่อน'].map(function(o){ const k = o.split('|');
-          return '<button class="chipbtn" data-act="close-all" data-val="' + k[0] + '">' + k[1] + '</button>'; }).join('') + '</div>' +
-      '<div class="scroll-y" style="max-height:34vh"><table class="dt"><tbody>' + blanks.map(function(st){
-        return '<tr><td class="text-[14px]"><span class="tnum text-dim">' + esc(st.studentCode) + '</span> ' + esc(st.name) + '</td>' +
-          '<td class="text-[14px]">' + radio(st.id, 'ZERO', 'ได้ 0') + radio(st.id, 'EXCUSED', 'ยกเว้น') +
-            radio(st.id, 'LATER', 'เว้นไว้ก่อน', true) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
-      '<div class="mt-4"><label class="text-[14px] text-ink2 block mb-1.5" for="cl-why">เหตุผลของการยกเว้น ' +
-        '<span class="text-dim">(ใช้กับทุกคนที่เลือก “ยกเว้น” · ไม่บังคับ · แก้รายคนได้ภายหลังจากเมนูของช่อง)</span></label>' +
-        '<input class="inp" id="cl-why" maxlength="255" placeholder="เช่น ไปแข่งขันทักษะวิชาการ"></div>',
-      btn('ยกเลิก','','data-act="close"') +
-      btn(a.closedAt ? 'บันทึกการตัดสิน' : 'ปิดรับคะแนน','primary','data-act="act-close-do" data-id="' + a.id + '"')));
-    return;
-  }
-  if (act === 'close-all') {
-    [].slice.call(document.querySelectorAll('#modal input[type=radio][value="' + el.dataset.val + '"]'))
-      .forEach(function(x){ x.checked = true; });
-    return;
-  }
-  if (act === 'act-close-do') {
-    const a = byId(db.activity, el.dataset.id);
-    if (!a) return;
-    const tally = { ZERO:0, EXCUSED:0, LATER:0 };
-    const whyAll = ((document.getElementById('cl-why') || {}).value || '').trim();     /* V4 — เหตุผลเดียวสำหรับทุกคนที่เลือกยกเว้น */
-    const picks = [];
-    D().roster.forEach(function(st){
-      const pick = document.querySelector('#modal input[name="cl-' + st.id + '"]:checked');
-      if (pick) picks.push([st.id, pick.value]);
-    });
-    const restore = allOf([scoreSnap(picks.map(function(x){ return [x[0], a.id]; })), recSnap(a, ['closedAt'])]);
-    picks.forEach(function(x){
-      tally[x[1]]++;
-      if (x[1] === 'ZERO') writeScore(x[0], a.id, 0, 'CLOSE');
-      if (x[1] === 'EXCUSED') writeScore(x[0], a.id, 'EXCUSED', 'CLOSE', null, whyAll);
-    });
-    if (!a.closedAt) a.closedAt = PROTO_NOW.slice(0, 10);
-    setUndo('ปิดรับคะแนน ' + a.name, 'score.edit', restore);
-    closeOverlays(); invalidate(); render();
-    toast('ปิดรับคะแนน “' + esc(a.name) + '” แล้ว · ได้ 0: ' + tally.ZERO + ' · ยกเว้น: ' + tally.EXCUSED +
-      (tally.LATER ? ' · ยังค้างตัดสิน: ' + tally.LATER : ''), undefined, UNDO_ACTION);
-    return;
-  }
-  if (act === 'act-reopen') {
-    const a = byId(db.activity, el.dataset.id);
-    if (!a) return;
-    setUndo('เปิดรับคะแนน ' + a.name + ' อีกครั้ง', 'score.edit', recSnap(a, ['closedAt']));
-    a.closedAt = null;
-    invalidate(); render();
-    toast('เปิดรับคะแนน “' + esc(a.name) + '” อีกครั้ง — ช่องว่างกลับเป็น “ยังไม่ประเมิน” คะแนนที่มีอยู่ไม่เปลี่ยน', undefined, UNDO_ACTION);
-    return;
-  }
 
   if (act === 'fill-max') {
     const a = byId(db.activity, el.dataset.id);
@@ -9180,17 +9115,6 @@ document.addEventListener('click', function(e){
   }
   if (act === 'clo-help')     { modalCloHelp(el.dataset.clo); return; }
   if (act === 'user-detail')  { closeOverlays(); userDrawer(el.dataset.id); return; }
-  if (act === 'pw-reset')     { modalPwReset(el.dataset.id, false); return; }
-  if (act === 'pw-reset-do') {
-    const u = byId(db.user, el.dataset.id);
-    if (!u) return;
-    u.mustChangePassword = true;
-    u.pwResetAt = '2568-09-07 09:00';
-    authLog(u.id, 'PW_RESET', 'ผู้ดูแลระบบรีเซ็ตรหัสผ่านและส่งรหัสชั่วคราวทางอีเมล');
-    invalidate(); render();
-    modalPwReset(u.id, true);
-    toast('รีเซ็ตรหัสผ่านแล้ว — บัญชีนี้ต้องตั้งรหัสใหม่เมื่อเข้าสู่ระบบครั้งถัดไป'); return;
-  }
   if (act === 'err-report')   { modalErrReport(el.dataset.id); return; }
   if (act === 'errreport')    { modalErrReport(el.dataset.id); return; }
   if (act === 'crud-new')  { OBJ_CLO = el.dataset.clo || (D().clos[0] && D().clos[0].id) || null;
@@ -9354,6 +9278,9 @@ document.addEventListener('click', function(e){
   /* J6 — ทำสำเนารายวิชา: โครงไปด้วย (CLO · จุดประสงค์ · กิจกรรม · การเชื่อม · ขอบเขตเกรด)
      รายชื่อและคะแนนไม่ไป — สำเนาเป็นของภาคเรียนใหม่ ข้อมูลนักศึกษาเป็นของภาคเดิมเสมอ */
   if (act === 'dup-course') { dupCourse(el.dataset.course || S.course); return; }
+  /* K1 — ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่ ตามแผนการเรียนของหลักสูตร */
+  if (act === 'copy-level')    { modalCopyLevel(); return; }
+  if (act === 'copy-level-do') { copyLevelDo(); return; }
   if (act === 'grading-settings') { modalGrading(); return; }
 
   if (act === 'save-grading') {
@@ -9513,9 +9440,6 @@ document.addEventListener('input', function(e){
     return;
   }
   if (e.target.id === 'f-staff-q') { paintStaffHits(); return; }
-  if (e.target.id === 'au-pw' || e.target.id === 'au-email') {
-    AUTH.updateMeter();
-  }
   /* M2/M3 — เกณฑ์เป็นตัวเลขที่พึ่งพากัน ตัวเลขจึงต้องเดินตามกันขณะพิมพ์
      ไม่ใช่รอให้ผิดแล้วค่อยฟ้องตอนกดบันทึก */
   if (FORM_KIND === 'activity' && e.target.id && e.target.id.indexOf('ff-') === 0) { actFormSync(e.target.id); return; }
@@ -9651,6 +9575,14 @@ document.addEventListener('change', function(e){
     return;
   }
   if (t.name === 'g-scale' || t.name === 'g-method') { gradingSync(); return; }
+  /* K1 — เปลี่ยนชั้นปีหรือปี = คำนวณรายการใหม่ · เปลี่ยนปีต้นทาง ปีปลายทางเลื่อนตามเป็นปีถัดไป */
+  if (COPYLV && (t.id === 'cy-level' || t.id === 'cy-from' || t.id === 'cy-to')) {
+    const v = parseInt(t.value, 10);
+    if (t.id === 'cy-level') COPYLV.level = v;
+    if (t.id === 'cy-from') { COPYLV.from = v; COPYLV.to = v + 1; }
+    if (t.id === 'cy-to') COPYLV.to = v;
+    copyLevelRepaint(); return;
+  }
   if (t.id === 'imp-prefix' && IMPORT) { IMPORT.withPrefix = t.checked; modalImport(2); return; }   /* V5 */
   /* P2 — ติ๊ก/เอาออก = แบ่งเท่ากันใหม่ในชุดที่ติ๊ก */
   if (t.type === 'checkbox' && t.closest && t.closest('[data-weighted]')) {

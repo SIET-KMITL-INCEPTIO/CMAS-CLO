@@ -98,11 +98,12 @@ G_SCORE, G_GRADE, G_DASH = "7 คะแนนและ Excel", "8 ตัดเ�
 E = [
     # ── 1 เข้าสู่ระบบ ───────────────────────────────────────────────────────
     (G_AUTH, "POST", "/auth/google", "เข้าสู่ระบบด้วย Google ตรวจ ID token ที่เซิร์ฟเวอร์", NONE, NO, NO, "FR-01, FR-08", ST_DONE, "—", "", "", ""),
-    (G_AUTH, "POST", "/auth/login", "เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน", NONE, NO, NO, "FR-01, FR-03, FR-04", ST_LATER, "—", "", "", "รอ D-5"),
+    (G_AUTH, "POST", "/auth/email-link", "ขอลิงก์เข้าสู่ระบบทางอีเมล หน้าจอหลังส่งเหมือนกันทุกกรณี", NONE, NO, NO, "FR-01, FR-07", ST_NEW, "P1", "", "", "เสนอ 2026-11-10 · ต้องมีบริการส่งอีเมล"),
+    (G_AUTH, "POST", "/auth/email-link/verify", "แลกโทเคนจากลิงก์เป็น session · ACTIVE หรือ PENDING ตามกฎเดียวกับ Google", NONE, NO, NO, "FR-01, FR-07, FR-08", ST_NEW, "P1", "", "", "เสนอ 2026-11-10 · ใช้ฟังก์ชันตัดสินโดเมนตัวเดียวกับ /auth/google"),
     (G_AUTH, "POST", "/auth/refresh", "ขอ access token ใหม่ด้วย refresh token", NONE, NO, NO, "FR-01", ST_DONE, "P0", "", "✓", "ตาราง RefreshToken ตาม D-2"),
     (G_AUTH, "POST", "/auth/logout", "ออกจากระบบและเพิกถอน refresh token", LOGGED, NO, NO, "FR-01", ST_DONE, "P0", "", "✓", "ตาราง RefreshToken ตาม D-2"),
     (G_AUTH, "GET", "/auth/me", "ข้อมูลและบทบาทของผู้ใช้ที่ล็อกอินอยู่", LOGGED, NO, READ, "NFR-19", ST_DONE, "P0", "", "", ""),
-    (G_AUTH, "PATCH", "/auth/password", "เปลี่ยนรหัสผ่านของตัวเอง", LOGGED, NO, NO, "FR-09", ST_LATER, "—", "", "", "รอ D-5"),
+    (G_AUTH, "PATCH", "/auth/me", "แก้ชื่อของตัวเอง (บัญชีของฉัน) · อีเมลแก้ไม่ได้", LOGGED, NO, NO, "FR-119", ST_DONE, "P2", "", "", ""),
     # ── 2 บัญชีผู้ใช้ ────────────────────────────────────────────────────────
     (G_USER, "GET", "/users", "รายการบัญชี กรองด้วย ?status=PENDING หรือ ACTIVE", ADMIN, NO, "user.manage", "FR-05, FR-08b", ST_DONE, "—", "", "", ""),
     (G_USER, "PATCH", "/users/:id/approve", "อนุมัติบัญชีที่รออนุมัติ", ADMIN, NO, "user.manage", "FR-08b", ST_DONE, "—", "", "", "โค้ดใช้ :id ไม่ใช่ :userId"),
@@ -111,8 +112,7 @@ E = [
     (G_USER, "GET", "/users/instructors", "ค้นหาผู้สอนที่มอบหมายเข้ารายวิชาได้ ด้วยชื่อหรืออีเมล", BOTH, NO, "course.create", "FR-22", ST_DONE, "F1", "", "", "G1 ใน frontend-plan"),
     (G_USER, "PATCH", "/users/:userId", "แก้ชื่อหรือบทบาทของบัญชี", ADMIN, NO, "user.manage", "FR-05", ST_DONE, "P2", "", "", ""),
     (G_USER, "PATCH", "/users/:userId/status", "เปิดหรือปิดการใช้งานบัญชี", ADMIN, NO, "user.manage", "FR-03, FR-06", ST_DONE, "P2", "", "", ""),
-    (G_USER, "POST", "/users/:userId/reset-password", "รีเซ็ตรหัสผ่านให้ผู้ใช้", ADMIN, NO, "user.manage", "FR-07", ST_LATER, "—", "", "", "รอ D-5 · ต้องมี mustChangePassword (G-4)"),
-    (G_USER, "GET", "/users/:userId/auth-events", "ประวัติบัญชี รวมการถูกปฏิเสธสิทธิ์", ADMIN, NO, "user.manage", "FR-22b, UC 1.6", ST_DONE, "P5", "", "✓", ""),
+    (G_USER, "GET", "/users/:userId/auth-events", "ประวัติบัญชี รวมการถูกปฏิเสธสิทธิ์", ADMIN, NO, "user.manage", "FR-22b, UC 1.5", ST_DONE, "P5", "", "✓", ""),
     # ── 3 รายวิชา ───────────────────────────────────────────────────────────
     (G_COURSE, "GET", "/courses", "รายวิชาที่ผู้เรียกมองเห็น", LOGGED, FILTER, READ, "FR-24, FR-25", ST_DONE, "P2", "#6", "", ""),
     (G_COURSE, "POST", "/courses", "สร้างรายวิชา ผู้สร้างเป็นผู้สอนใน transaction เดียวกัน", BOTH, NO, "course.create", "FR-20, FR-21, FR-22c, FR-27, FR-28", ST_DONE, "P2", "#6", "", ""),
@@ -227,7 +227,7 @@ DECISIONS = [
     ("D-2", "เก็บ refresh token ที่ไหน เพิกถอนได้ไหม", "cookie httpOnly หมุนทุกครั้ง และตาราง RefreshToken"),
     ("D-3", "สองคนแก้คะแนนช่องเดียวกันพร้อมกัน", "ส่งค่าเดิมมาด้วย ไม่ตรงกับฐานข้อมูลตอบ 409"),
     ("D-4", "รับ 4 ตารางและ 11 คอลัมน์ที่ต้นแบบเสนอหรือไม่", "รับทั้งหมดใน migration 0008"),
-    ("D-5", "v1 มี login ด้วยอีเมลและรหัสผ่านหรือไม่", "ไม่มี ใช้ Google อย่างเดียว"),
+    ("D-5", "v1 มี login ด้วยอีเมลและรหัสผ่านหรือไม่", "ไม่มีรหัสผ่าน · มี 2 ทาง: Google และลิงก์อีเมล (แก้ 2026-11-10)"),
 ]
 
 
@@ -451,7 +451,18 @@ DESIGN = [
      "400 body ผิดรูป · 401 token ปลอม / aud ผิด / email_verified=false / บัญชีถูกปิด (ข้อความเดียวกันทุกกรณี) · 429",
      "ตรวจ ID token ที่เซิร์ฟเวอร์ (FR-08) · อีเมลนอกโดเมนคณะ → สร้างบัญชี PENDING · บัญชีใหม่เป็น INSTRUCTOR เสมอ · หลัง D-2 refreshToken ย้ายไปเป็น cookie httpOnly (S-2) ไม่อยู่ใน body",
      "ST-AUTH-01, 02, 04"),
-    ("POST", "/auth/login") + LATER_DESIGN,
+    ("POST", "/auth/email-link", "—",
+     "email (string, อีเมลถูกรูปแบบ, ตัดช่องว่างและแปลงเป็นตัวพิมพ์เล็ก)",
+     "200 · {message} ข้อความเดียวกันไม่ว่าอีเมลมีบัญชีหรือไม่ (FR-07)",
+     "400 body ผิดรูป · 429 ขอซ้ำก่อน 60 วินาที / เกินเพดานต่อ IP",
+     "สร้างโทเคน 32 bytes เก็บเฉพาะ hash · อายุ 24 ชม. · ใช้ครั้งเดียว · ส่งอีเมลหลังตอบ client ไม่ให้เวลาตอบบอกว่าอีเมลมีบัญชีหรือไม่ · ไม่ log อีเมลลงไฟล์",
+     "ST-AUTH-08"),
+    ("POST", "/auth/email-link/verify", "—",
+     "token (string ≥ 1) — โทเคนจากลิงก์ในอีเมล",
+     "200 · ACTIVE → {status:'ACTIVE', user{id, email, name, role}, accessToken} + refresh cookie · PENDING → {status:'PENDING', message}",
+     "400 body ผิดรูป · 401 โทเคนไม่มี / ใช้แล้ว / หมดอายุ / บัญชีถูกปิด (ข้อความเดียวกันทุกกรณี) · 429",
+     "ตัดสินบัญชีด้วยฟังก์ชันเดียวกับ /auth/google: โดเมนคณะ → ACTIVE · อื่น → PENDING (FR-08) · ไม่มีบัญชี → สร้างเป็น INSTRUCTOR · ทำเครื่องหมายใช้แล้วก่อนออก token · บันทึก AuthEvent",
+     "ST-AUTH-09"),
     ("POST", "/auth/refresh", "— (อ่าน cookie cmas_rt)", "— (ไม่มี body)",
      "200 · {accessToken} + Set-Cookie refresh token ใบใหม่ (หมุนทุกครั้ง)",
      "401 ไม่มี / หมดอายุ / ปลอม / ถูกเพิกถอน / บัญชีถูกปิด · 401 ใช้ token ที่หมุนไปแล้ว → เพิกถอนทั้งสาย (S-2) · 403 Origin ไม่อยู่ใน allowlist (S-11)",
@@ -467,7 +478,11 @@ DESIGN = [
      "401 token หมดอายุ / บัญชีถูกปิดหลังออก token",
      "อ่านแถว User สด ไม่ใช้ claim ใน token (NFR-19) · ไม่ส่ง passwordHash, googleSub (A-9)",
      "ST-ACL-03 · ST-AUTH-07"),
-    ("PATCH", "/auth/password") + LATER_DESIGN,
+    ("PATCH", "/auth/me", "—", "{name: string 1–100 ตัวอักษร} · strict ไม่รับฟิลด์อื่น",
+     "200 · {id, email, name, role, status, courseCount}",
+     "400 ชื่อว่าง/ยาวเกิน/มีฟิลด์อื่น · 401",
+     "แก้ได้เฉพาะชื่อของตัวเอง · role · status · email แก้ทางนี้ไม่ได้ (FR-119)",
+     "ST-AUTH-07"),
     # ── 2 บัญชีผู้ใช้ ────────────────────────────────────────────────────────
     ("GET", "/users",
      "status=PENDING|ACTIVE (มีแล้ว) · ต่อไป: q (ชื่อ/อีเมล), role, isActive, page=1, perPage=20 (≤100)",
@@ -503,7 +518,6 @@ DESIGN = [
      "400 · 403 · 404 · 422 ปิดบัญชีตัวเอง / ปิดผู้ดูแลที่ใช้งานอยู่คนสุดท้าย",
      "ไม่มี DELETE /users โดยเจตนา (FR-06) · มีผลใน request ถัดไปทันที เพราะ authMiddleware อ่าน User สด · AuthEvent SUSPEND / ACTIVATE",
      "ST-ACL-03"),
-    ("POST", "/users/:userId/reset-password") + LATER_DESIGN,
     ("GET", "/users/:userId/auth-events", ":userId · action?, page=1, perPage=20 (≤100)", "—",
      "200 · [{id, action, actorId, actorName, at, detail}] · meta {total, page, perPage}",
      "400 · 401 · 403 · 404",
@@ -1050,7 +1064,7 @@ def sheet_readme(wb):
     ws.cell(row=row, column=2, value="ที่มา").font = F_H2
     for text in ["docs/markdown/dev/architecture/api-design.md §3 — contract",
                  "docs/markdown/dev/planning/api-design-plan.md — กฎ ความปลอดภัย endpoint ที่เสนอเพิ่ม ลำดับงาน",
-                 "docs/pages/index-q.html — ตาราง PERM และ capOf (ที่มาของ Capability)"]:
+                 "docs/index-q/index-q.html — ตาราง PERM และ capOf (ที่มาของ Capability)"]:
         row += 1
         ws.cell(row=row, column=2, value=text).font = F_BODY
 

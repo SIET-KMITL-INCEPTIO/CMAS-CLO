@@ -7,10 +7,10 @@ students on a dashboard.
 
 React 19 SPA · Fastify 5 API · Prisma 6 · PostgreSQL (Supabase)
 
-[![CMAS: 90-second walkthrough (click to play)](docs/pages/video/cmas-film-90s.png)](https://htmlpreview.github.io/?https://github.com/SIET-KMITL-INCEPTIO/CMAS-CLO/blob/main/docs/pages/video/cmas-film-90s.html)
+[![CMAS: 90-second walkthrough (click to play)](docs/index-q/video/cmas-film-90s.png)](https://htmlpreview.github.io/?https://github.com/SIET-KMITL-INCEPTIO/CMAS-CLO/blob/main/docs/index-q/video/cmas-film-90s.html)
 
 **90-second walkthrough.** Click the image to play it in the browser with sound,
-or open [`docs/pages/video/cmas-film-90s.html`](docs/pages/video/cmas-film-90s.html)
+or open [`docs/index-q/video/cmas-film-90s.html`](docs/index-q/video/cmas-film-90s.html)
 locally. The film is a single HTML file with nothing to install. Keys: Space to
 play or pause, ← → to seek, F for fullscreen, M to mute.
 
@@ -192,7 +192,7 @@ place; most API endpoints and pages are not implemented yet.
 
 ### Two tracks: the app (CMAS) and the prototype (`index-q.html`)
 
-|              | **CMAS** (`app/`, `database/`)                            | **`docs/pages/index-q.html`**                                                                                                                                                                                                           |
+|              | **CMAS** (`app/`, `database/`)                            | **`docs/index-q/index-q.html`**                                                                                                                                                                                                         |
 | ------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | What         | The real system: React + Fastify + Postgres               | A single-file UI prototype (~9,500 lines, Tailwind CDN + SheetJS, data in an in-page `db` object) — opens from `file://`                                                                                                                |
 | Covers       | Google sign-in, user approval, course list (heading only) | Every course-level flow, permission matrix `PERM`, all formulas (CR-01…CR-11), grading, Excel import/export                                                                                                                             |
@@ -204,5 +204,5 @@ and the prototype habits that must not be copied (client-side `can()`, in-browse
 [`docs/markdown/dev/architecture/prototype-to-app.md`](docs/markdown/dev/architecture/prototype-to-app.md).
 
 `index-q.sql` = Prisma through migration `0007` **plus** what the prototype proposes and Prisma lacks (`AuthEvent`, `UploadReject`,
-`CourseGroupWeight`, `Course.weightMode`, `Activity.passScore`, password-flow columns on `User`, `ScoreUploadLog.kind`) — those are candidates
+`CourseGroupWeight`, `Course.weightMode`, `Activity.passScore`, `ScoreUploadLog.kind`) — those are candidates
 for a future migration `0008`, not requirements yet.

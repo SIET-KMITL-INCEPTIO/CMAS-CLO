@@ -4,7 +4,7 @@ See also: [[Schema]] · [[Summary Project]] · [[website final]] · [[concept-cl
 
 ## ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO System)
 
-> **Version:** 2.1.0 | **Updated:** 2026-09-26 | **Owner:** ทีมพัฒนา 67030098 / 67030110 / 67030120
+> **Version:** 2.2.0 | **Updated:** 2026-11-09 | **Owner:** ทีมพัฒนา 67030098 / 67030110 / 67030120
 
 ---
 
@@ -45,26 +45,26 @@ See also: [[Schema]] · [[Summary Project]] · [[website final]] · [[concept-cl
 | Toast / Notifications | Sonner                   | 2.x                     | `<Toaster />` mounted once in `App.tsx`                       |
 | Excel Processing      | xlsx (SheetJS)            | 0.20.3                  | **Installed from `cdn.sheetjs.com`, not npm registry** — see §15 |
 | Backend Framework     | Fastify                  | 5.x                     | TypeScript-first                                               |
-| Runtime               | Node.js                  | ≥20 LTS                 |                                                                |
+| Runtime               | Node.js                  | ≥24 LTS                 | `engines` ใน `package.json` · `.nvmrc` = 24 · ตัว setup ตรวจเวอร์ชัน |
 | Language              | TypeScript               | 5.9.x                   | Held back from 7.x (native compiler) — see §15                |
 | ORM                   | Prisma                   | 6.19.x                  | Held back from 7.x (breaking config model) — see §15          |
 | Database              | PostgreSQL               | 15+ (Supabase)          |                                                                |
 | Auth                  | JWT (`jose`)              | 6.x                     | Access token 15m + refresh token 7d, not a 30d single token    |
-| Password Hashing      | argon2                   | latest                  |                                                                |
+| Password Hashing      | — (ไม่มีรหัสผ่านตั้งแต่ 2026-11-10) | —               | argon2 ยังอยู่ใน `package.json` และ `database/seed.ts` จนกว่าจะแก้โค้ด |
 | Security Middleware   | `@fastify/helmet`, `@fastify/rate-limit`, `@fastify/cors` | latest | |
 | File Upload           | `@fastify/multipart`      | latest                  | 10MB cap                                                       |
 | **Local Dev Container** | Docker + Docker Compose   | latest                  | `docker-compose up` runs client + server (w/ Supabase DB) w/ hot reload |
-| **Server Image (dev)** | `node:20-alpine`          | 20-alpine               | Fastify dev server, bind-mounted source, connects to Supabase |
-| **Server Image (prod)** | `node:20-alpine` (multi-stage) | latest            | Optimized build → Railway / Fly.io, non-root user, connects to Supabase |
-| **Client Image (dev)** | `node:20-alpine`          | 20-alpine               | Vite dev server, `--host 0.0.0.0` for container access        |
-| **Client Image (prod)** | `nginx:1.27-alpine` (multi-stage) | latest          | Static SPA via nginx w/ SPA fallback (try_files)              |
+| **Server Image (dev)** | `node:24-alpine`          | 24-alpine               | Fastify dev server, bind-mounted source, connects to Supabase |
+| **Server Image (prod)** | `node:24-alpine` (multi-stage, pin ด้วย digest) | 24-alpine | Optimized build → Railway / Fly.io, non-root user, connects to Supabase |
+| **Client Image (dev)** | `node:24-alpine`          | 24-alpine               | Vite dev server, `--host 0.0.0.0` for container access        |
+| **Client Image (prod)** | `nginx:1.30-alpine` (multi-stage, pin ด้วย digest) | 1.30-alpine | Static SPA via nginx w/ SPA fallback (try_files)              |
 | **Database** | Supabase PostgreSQL 15    | managed                 | Single source: dev + prod both use Supabase (no local postgres container) |
 | **Container Orchestration** | docker-compose.yml + docker-compose.prod.yml | — | Lightweight, both use Supabase connection string from .env  |
 | Monorepo              | npm workspaces            | —                        | **Not pnpm** — see §15                                        |
 | Linting               | ESLint 10 + typescript-eslint | latest              | Flat config, both apps                                         |
-| Formatting            | *(not yet decided)*       | —                        | No Prettier/Biome configured yet                               |
-| Testing               | *(not yet implemented)*   | —                        | Vitest/Playwright are planned, not installed                   |
-| CI/CD                 | *(not yet implemented)*   | —                        | GitHub Actions workflows are planned, not present               |
+| Formatting            | Prettier                  | 3.x                      | `npm run format:check` · **ข้าม `docs/` ทั้งโฟลเดอร์** (ดู `.prettierignore`) |
+| Testing               | Vitest · Playwright · Stryker | 3.x · 1.x · 9.x      | Vitest ทั้งสองฝั่ง (coverage threshold บังคับ) · Playwright smoke ใน `e2e/` · Stryker (mutation) ฝั่ง server |
+| CI/CD                 | GitHub Actions            | —                        | `.github/workflows/ci.yml` (ปิดท้ายด้วย `CI gate`) · `nightly.yml` · แผน: [[ci-cd-plan]] |
 | Hosting API           | Railway / Fly.io          | —                        |                                                                |
 | Hosting Web           | Vercel                    | —                        |                                                                |
 | Hosting DB            | Supabase                  | —                        |                                                                |
@@ -112,7 +112,7 @@ npm run dev:server         # server อย่างเดียว
 
 ### 2.2b การใช้ Docker (alternative — แนะนำ)
 
-ถ้าต้องการ **consistency** ขอแนะนำใช้ Docker Compose — ทุกคน dev ด้วย Node 20 Alpine เดียวกัน และ database ชี้ไปที่ Supabase เดียวกัน (dev + prod)
+ถ้าต้องการ **consistency** ขอแนะนำใช้ Docker Compose — ทุกคน dev ด้วย Node 24 Alpine เดียวกัน และ database ชี้ไปที่ Supabase เดียวกัน (dev + prod)
 
 **Prerequisites:** Docker + Docker Compose ให้เป็น latest stable
 
@@ -147,7 +147,7 @@ docker compose down        # สตอป containers
 
 **ประโยชน์:**
 - ✅ ไม่ต้องติดตั้ง Node local — ทั้งหมดใน container
-- ✅ ทุกคน run Node 20 Alpine เดียวกัน
+- ✅ ทุกคน run Node 24 Alpine เดียวกัน
 - ✅ Hot reload ยังทำงาน (bind-mount source)
 - ✅ Database ชี้ Supabase (dev ↔ prod เดียวกัน) — ไม่มี "works locally but not in prod"
 - ✅ Production Dockerfile (`Dockerfile.prod`) ใช้ image เดียวกัน → guaranteed consistency ตั้ง local ถึง production
@@ -318,11 +318,12 @@ app/server/
 
 ```
 database/
-├── schema.prisma    # 13 models (migration 0001–0007): User, EmailVerificationToken,
-│                     # Course, CourseInstructor, CLO, BehavioralObjective, Activity,
-│                     # AssessmentCriteria, Student, Score, ScoreUploadLog,
-│                     # GradeBand, StudentGrade — Curriculum/Institution ถูกตัดแล้ว (2026-08-04)
-├── migrations/      # 0001_init … 0007_google_domain_account_status (0002–0007 เขียนมือทั้งหมด — ยังไม่ได้ตรวจกับ shadow DB ดูหัวแต่ละไฟล์)
+├── schema.prisma    # 19 models (migration 0001–0009): User, EmailVerificationToken, RefreshToken,
+│                     # AuthEvent, Course, CourseInstructor, CourseGroupWeight, CLO,
+│                     # BehavioralObjective, Activity, AssessmentCriteria, Student, Score,
+│                     # ScoreChange, ScoreUploadLog, UploadReject, RemediationPlan,
+│                     # GradeBand, StudentGrade — ไม่มีคอลัมน์รหัสผ่าน (0009_drop_password_columns)
+├── migrations/      # 0001_init … 0009 (มีสอง folder เลข 0009: drop_password_columns · lock_down_supabase_data_api — ห้ามเปลี่ยนชื่อ)
 ├── seed.ts
 └── .env.example
 ```
@@ -1126,9 +1127,9 @@ for (const course of courses) {
 
 | Package | Held at | Latest available | เหตุผล |
 | --- | --- | --- | --- |
-| `prisma` / `@prisma/client` | 6.19.3 | 7.8.0 | Prisma 7 ลบ `url`/`directUrl` ออกจาก `schema.prisma` ทั้งหมด ย้ายไป `prisma.config.ts` และบังคับใช้ driver adapter (`@prisma/adapter-pg`) แทน — เป็นการเปลี่ยนสถาปัตยกรรมจริง ไม่ใช่แค่ bump version ทีมเล็ก 3 คน ระยะเวลาโปรเจกต์จำกัด ไม่คุ้มความเสี่ยง |
+| `prisma` / `@prisma/client` | 6.19.3 | 8.0.0-rc.33 (stable ล่าสุด 7.10.1) | Prisma 7 ลบ `url`/`directUrl` ออกจาก `schema.prisma` ทั้งหมด ย้ายไป `prisma.config.ts` และบังคับใช้ driver adapter (`@prisma/adapter-pg`) แทน — เป็นการเปลี่ยนสถาปัตยกรรมจริง ไม่ใช่แค่ bump version ทีมเล็ก 3 คน ระยะเวลาโปรเจกต์จำกัด ไม่คุ้มความเสี่ยง · เวอร์ชันล่าสุดบน npm ตอนนี้เป็น 8 rc (ตรวจ 2026-11-09) |
 | `typescript` | 5.9.3 | 7.0.2 | TS 7 คือ native compiler ที่เขียนใหม่ด้วย Go ยังใหม่มาก ความเข้ากันได้กับ `tsx`/`typescript-eslint` ยังไม่ยืนยัน |
-| `vite` | 7.3.6 | 8.1.4 | เลือก pin ตามหลัง latest หนึ่ง major แบบระมัดระวัง แทนที่จะไล่ตาม major ล่าสุดทันที |
+| `vite` | 7.3.6 | 8.3.7 | เลือก pin ตามหลัง latest หนึ่ง major แบบระมัดระวัง แทนที่จะไล่ตาม major ล่าสุดทันที (ตรวจ 2026-11-09) |
 | `xlsx` | 0.20.3 (จาก `cdn.sheetjs.com`) | — | เวอร์ชันบน **npm registry เก่าและไม่มี patch** สำหรับช่องโหว่ ReDoS + prototype pollution (GHSA-4r6h-8v6p-xvw6, GHSA-5pgg-2g8v-p4x9) SheetJS ปล่อย patch ผ่าน CDN ของตัวเองเท่านั้น ไม่ผ่าน npm — ต้องติดตั้งจาก URL ตรง |
 | Package manager | npm workspaces | — | เดิมตั้งใจใช้ pnpm ตามแผนแรก แต่ `corepack enable` ต้องการสิทธิ์ admin ที่ไม่มีในเครื่อง dev — เปลี่ยนมาใช้ npm workspaces เพราะไม่ต้องติดตั้งอะไรเพิ่มเลย (มากับ Node อยู่แล้ว) ลดแรงเสียดทานตอน setup ให้เพื่อนร่วมทีม |
 | Backend framework | Fastify (ไม่ใช่ Hono) | — | เปลี่ยนจาก Hono → Node/Express → **Fastify** เพื่อ throughput สูงกว่า (schema-based serialization) และ schema validation ในตัวที่ช่วยเรื่อง security ไปพร้อมกัน |
@@ -1139,24 +1140,7 @@ for (const course of courses) {
 
 ## Appendix A: Root `package.json` Scripts
 
-```json
-{
-  "scripts": {
-    "dev": "concurrently -n CLIENT,SERVER -c blue,green \"npm run dev -w app/client\" \"npm run dev -w app/server\"",
-    "dev:client": "npm run dev -w app/client",
-    "dev:server": "npm run dev -w app/server",
-    "build": "npm run build -w app/client && npm run build -w app/server",
-    "build:client": "npm run build -w app/client",
-    "build:server": "npm run build -w app/server",
-    "lint": "npm run lint -w app/client && npm run lint -w app/server",
-    "db:generate": "prisma generate --schema=database/schema.prisma",
-    "db:migrate:dev": "prisma migrate dev --schema=database/schema.prisma",
-    "db:migrate:deploy": "prisma migrate deploy --schema=database/schema.prisma",
-    "db:studio": "prisma studio --schema=database/schema.prisma",
-    "db:seed": "node database/seed.js"
-  }
-}
-```
+รายการเต็มอยู่ที่ [`package.json`](../../../../package.json) (ไม่คัดลอกมาไว้ที่นี่เพราะเก่าเร็ว) · คำสั่งที่ใช้บ่อยอยู่ใน `README.md` และ `.claude/CLAUDE.md` → "Commands"
 
 ## Appendix B: `.gitignore`
 

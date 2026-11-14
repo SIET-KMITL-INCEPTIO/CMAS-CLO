@@ -10,11 +10,11 @@ See also: [[srs]] · [[features-pages]] · [[user-flow]] · [[api-design]] · [[
 
 ## 1. แบ่งหน้าที่
 
-| เอามาจาก `docs/pages/index-q.html` | เอามาจากแอป React (`app/`, `database/`) |
+| เอามาจาก `docs/index-q/index-q.html` | เอามาจากแอป React (`app/`, `database/`) |
 |---|---|
 | ฟีเจอร์และฟังก์ชันทั้งหมด ([[features-pages]] §1.1) | Tech stack: React 19 · Fastify 5 · Prisma 6 · PostgreSQL (Supabase) |
 | Flow และลำดับขั้นตั้งค่า 6 ขั้น ([[user-flow]] §3, §11) | ความปลอดภัย: `authMiddleware` · `rbac` · `assertCourseAccess` · Zod · rate limit ([[api-design-plan]] §3–§4) |
-| หน้าตา: โทเคนสี ตัวอักษร ระยะ เงา ([index-q-design-system.html](../../../pages/index-q-design-system.html)) | ประสิทธิภาพ: code splitting ราย route · TanStack Query cache · transaction ในฐานข้อมูล |
+| หน้าตา: โทเคนสี ตัวอักษร ระยะ เงา ([index-q-design-system.html](../../../index-q/index-q-design-system.html)) | ประสิทธิภาพ: code splitting ราย route · TanStack Query cache · transaction ในฐานข้อมูล |
 | ข้อความบนหน้าจอ ชื่อปุ่ม และข้อความ error ภาษาไทย | โครงไฟล์ราย feature และกฎชั้น Route → Controller → Service → Repository ([[code-rule]]) |
 | ตารางสิทธิ์ `PERM` (17 capability) — ใช้เป็น**รายการ** | การตรวจสิทธิ์จริง — ทำที่เซิร์ฟเวอร์ทุก route |
 | สูตร CR-01…CR-11 — ใช้เป็น**ผลที่ต้องได้** | การคำนวณจริง — service เดียวที่เซิร์ฟเวอร์ (FR-88) |
@@ -68,7 +68,7 @@ See also: [[srs]] · [[features-pages]] · [[user-flow]] · [[api-design]] · [[
 | **DS** ✅ | แอปใช้ design system และหน้าจอชุดไหน | **ตัดสินแล้ว 2026-10-18:** หน้าจอของแอปจริงใช้ตาม mock-up `index-q.html` ทั้งหน้าตาและ flow · design system ของต้นแบบ (Nocturnal Atelier) ย้ายเข้า `tokens.css` แทน Verdure · ตรวจด้วยเช็กลิสต์ ST-UI ใน [[system-test-plan]] §5.8 |
 | D-1 ✅ | ADMIN ทำอะไรได้ในรายวิชาที่ไม่ได้สอน | **ตัดสินแล้ว 2026-10-15:** อ่านได้ ทำงานของผู้สอนไม่ได้ ([[api-design-plan]] §1) |
 | D-4 ✅ | รับตารางที่ต้นแบบเสนอเข้า migration `0008` หรือไม่ | **ตัดสินแล้ว 2026-10-15:** รับตาม ER ล่าสุด (17 ตาราง) |
-| D-5 | v1 มี login ด้วยอีเมลและรหัสผ่านหรือไม่ | ไม่มี ต้นแบบมีหน้านี้ แต่แอปส่ง Google อย่างเดียว |
+| D-5 | v1 มี login ด้วยอีเมลและรหัสผ่านหรือไม่ | ไม่มีรหัสผ่าน (แก้ 2026-11-10) · มี 2 ทาง: Google และลิงก์อีเมล ภายใต้กฎ FR-08 เดียวกัน · ต้นแบบทำครบทั้งสองทางแล้ว แอปทำแค่ Google |
 
 D-2 และ D-3 อยู่ใน [[api-design-plan]] §1
 

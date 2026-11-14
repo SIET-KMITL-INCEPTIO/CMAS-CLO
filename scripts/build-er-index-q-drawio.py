@@ -7,8 +7,8 @@
    .drawio is the only ER picture this script makes. The Workbench EER comes from
    scripts/build-index-q-workbench.py.)
 
-   WHY THIS EXISTS: the only rendered ER in the repo (cmas_app_v4_er-diagram.pdf)
-   is the 13-table v4 schema. index-q.html runs on 15 tables — AuthEvent and
+   WHY THIS EXISTS: the only rendered ER in the repo (the v4 PDF, since deleted)
+   was the 13-table v4 schema. index-q.html runs on 15 tables — AuthEvent and
    UploadReject existed nowhere as a picture.
 
    CHECKING THE PICTURE: draw.io does not run on the build machine, so the
@@ -102,7 +102,7 @@ def unique_single(t, col):
 
 # ══ layout — grouped by the SQL's own sections, Course in the middle ══
 COLUMNS = [
-    ['User', 'AuthEvent', 'EmailVerificationToken'],
+    ['User', 'AuthEvent', 'EmailVerificationToken', 'RefreshToken'],
     ['CourseInstructor', 'ScoreUploadLog', 'UploadReject'],
     # ScoreChange under Course's column: Student/Activity are one gap to the
     # right, ScoreUploadLog one gap to the left. Only User is far (bus route).
@@ -216,36 +216,29 @@ if any(r['gap'] == len(COLUMNS) - 1 for r in RELS):
     RIGHT += GAP_X - MARK
 PAGE_W, PAGE_H = RIGHT + X0, NY + 287
 TITLE = 'ER Diagram · ข้อมูลของ index-q.html'
-SUBTITLE = ('สร้างจาก docs/reference/db/mysql/index-q.sql ด้วย scripts/build-er-index-q-drawio.py — '
-            'แก้ที่ไฟล์ SQL แล้วสร้างใหม่ อย่าแก้ที่ภาพ · %d ตาราง · %d ความสัมพันธ์ · '
-            "สัญกรณ์ crow's foot" % (len(TABLES), len(RELS)))
-NOTE_HOW = ('<b>อ่านภาพนี้อย่างไร</b><br><br>'
-            '<b>PK</b> คีย์หลัก (ขีดเส้นใต้) · <b>FK</b> คีย์นอก · <b>UQ</b> ค่าไม่ซ้ำ<br>'
-            '<b>เส้น</b> — ขีดคู่ฝั่งตารางแม่ = ต้องมีหนึ่งแถว · '
-            'ตีนกาฝั่งตารางลูก = ศูนย์ถึงหลายแถว · วงกลมกับขีด = ศูนย์หรือหนึ่งแถว<br><br>'
-            '<b>StudentGrade → Student เป็น 1:1</b> เพราะ studentId เป็น UNIQUE — '
-            'หนึ่งการลงทะเบียนมีเกรดเดียว<br>'
-            '<b>AuthEvent มีเส้นไป User สองเส้น</b> — userId คือบัญชีที่ถูกกระทำ '
-            'actorId คือผู้กระทำ<br>'
-            '<b>เส้นที่อ้อมใต้ตาราง</b> — ตารางแม่อยู่ไกลเกินหนึ่งช่อง (ScoreChange.changedBy → User) '
-            'จึงเดินตามรางใต้ตารางทั้งหมด ไม่พาดผ่านกล่องใด<br>'
-            '<b>คะแนน CLO ไปถึงผ่านจุดประสงค์</b> — Activity → AssessmentCriteria → '
-            'BehavioralObjective → CLO (migration 0006)<br>'
-            '<b>Course คือราก</b> — ไม่มีตารางใดอยู่เหนือรายวิชา (ตัด Curriculum/PLO ตามมติ 2.7)')
+SUBTITLE = ('สร้างจาก index-q.sql ด้วย scripts/build-er-index-q-drawio.py (แก้ที่ SQL แล้วสร้างใหม่) · '
+            "%d ตาราง · %d ความสัมพันธ์ · crow's foot" % (len(TABLES), len(RELS)))
+NOTE_HOW = ('<b>อ่านภาพนี้</b><br><br>'
+            '<b>PK</b> คีย์หลัก (ขีดเส้นใต้) · <b>FK</b> คีย์นอก · <b>UQ</b> ไม่ซ้ำ<br>'
+            '<b>เส้น</b> ขีดคู่ = ต้องมี 1 แถว · ตีนกา = 0 ถึงหลายแถว · วงกลมกับขีด = 0 หรือ 1 แถว<br><br>'
+            '• StudentGrade → Student เป็น 1:1 (1 การลงทะเบียน มี 1 เกรด)<br>'
+            '• AuthEvent มี 2 เส้นไป User: userId = ผู้ถูกกระทำ · actorId = ผู้กระทำ<br>'
+            '• เส้นอ้อมใต้ตาราง = ตารางแม่อยู่ไกล (เช่น ScoreChange.changedBy → User)<br>'
+            '• คะแนน CLO ผ่านจุดประสงค์: Activity → AssessmentCriteria → BehavioralObjective → CLO<br>'
+            '• Course คือราก ไม่มีตารางอยู่เหนือรายวิชา')
 # Derived from the parsed SQL, not typed: the first version listed the three
 # User columns by hand and would have silently omitted any column added later.
 IQ_TABLES = [tn for tn in ORDER if TABLES[tn]['iq']]
 IQ_COLS = ['%s.%s' % (tn, c['name']) for tn in ORDER if not TABLES[tn]['iq']
            for c in TABLES[tn]['cols'] if c['iq']]
-NOTE_TINT = ('<b>พื้นเหลือง = [index-q]</b> ต้นแบบเสนอเพิ่ม ยังไม่อยู่ใน schema.prisma — '
-             'ตาราง %s · คอลัมน์ %s' % (' · '.join(IQ_TABLES), ' · '.join(IQ_COLS)))
-NOTE_APP = ('<b>สิ่งที่ SQL บังคับไม่ได้ และอยู่ที่แอป</b><br><br>'
-            'สิทธิ์ในรายวิชา — บทบาทเดียว ผู้สอนทุกคนของวิชาทำได้เท่ากัน (D1) จึงไม่มี '
-            'CourseInstructor.role · ใครทำอะไรได้ตัดสินที่ rbac middleware '
-            '(course-role-permissions.md)<br><br>'
-            'น้ำหนักรวม 100% · คะแนนไม่เกินคะแนนเต็ม · กิจกรรมกับจุดประสงค์อยู่วิชาเดียวกัน · '
-            'passwordHash หรือ googleSub ต้องมีอย่างน้อยหนึ่ง — '
-            'อยู่ใน migrations/0002 0004 0005 0006 ไม่ได้อยู่ในไฟล์ diagram นี้')
+NOTE_TINT = ('<b>พื้นเหลือง</b> = ต้นแบบเสนอเพิ่ม (ยังไม่อยู่ใน schema.prisma) · '
+             'ตาราง: %s · คอลัมน์: %s' % (' · '.join(IQ_TABLES), ' · '.join(IQ_COLS))
+             if IQ_TABLES or IQ_COLS else
+             '<b>ภาพนี้ตรงกับ schema.prisma หลัง migration 0008</b> ยกเว้นส่วนที่ตัดจากการออกแบบ (ไม่มีรหัสผ่านในระบบ) · ไม่มีส่วนที่ต้นแบบเสนอเพิ่ม')
+NOTE_APP = ('<b>ที่ SQL บังคับไม่ได้ (แอปเป็นคนตรวจ)</b><br><br>'
+            '• สิทธิ์ในรายวิชา: ผู้สอนทุกคนเท่ากัน (D1) จึงไม่มี CourseInstructor.role<br>'
+            '• น้ำหนักรวม 100% · คะแนนไม่เกินคะแนนเต็ม · กิจกรรมกับจุดประสงค์อยู่วิชาเดียวกัน<br>'
+            '• ผู้ใช้ต้องมีวิธียืนยันตัวตนอย่างน้อยหนึ่งอย่าง: Google (googleSub) หรือลิงก์อีเมล (EmailVerificationToken)')
 NOTES = [(NOTE_HOW, X0, NY, 820, 200),
          (NOTE_TINT, X0 + 900, NY, 640, 60),
          (NOTE_APP, X0 + 862, NY + 72, 720, 160)]  # Thai wraps to 5 lines at 720px; 103 clipped the border

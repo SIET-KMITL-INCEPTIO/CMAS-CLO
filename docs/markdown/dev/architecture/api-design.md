@@ -136,7 +136,7 @@ client ต้องพก id ทุกชั้นติดตัวไปหม
 Authorization: Bearer <accessToken>
 ```
 
-`/health` และ `/auth/login` · `/auth/refresh` เท่านั้นที่ไม่ต้องใช้ (SRS §5.2)
+`/health` · `/auth/google` · `/auth/email-link` · `/auth/email-link/verify` · `/auth/refresh` เท่านั้นที่ไม่ต้องใช้ (SRS §5.2)
 
 ### 2.6 การเขียนคอลัมน์ตัวเลข
 
@@ -155,7 +155,7 @@ Authorization: Bearer <accessToken>
 > ⚠ **อ่านคอลัมน์ Role อย่างไร (แก้ 2026-09-26)** — คอลัมน์ Role ในตารางรู้จักแค่ `ADMIN` กับ `any` · หลัง D1 ไม่มีบทบาทในรายวิชาแล้ว
 > ทุกแถวที่เขียนว่า **`any` + Scope ✅ ต้องอ่านเป็น "ผู้สอนที่ถูกมอบหมายรายวิชานั้น ผ่าน `assertCourseAccess()`"** —
 > ผู้สอนทุกคนของรายวิชามีสิทธิ์เท่ากัน (รวมแก้ CLO · ตั้งค่ารายวิชา · ตัดเกรด) · `ADMIN` ผูกคนเข้ารายวิชาและจัดการบัญชี ไม่ทำงานภายในรายวิชาแทนผู้สอน ·
-> เมทริกซ์ปัจจุบันอยู่ที่ [course-role-permissions.md](course-role-permissions.md) (ส่วนหัว) และ SEC-6 กำหนดว่า
+> เมทริกซ์ปัจจุบันอยู่ที่ [course-role-permissions.md](../requirements/course-role-permissions.md) (ส่วนหัว) และ SEC-6 กำหนดว่า
 > **การตรวจฝั่งหน้าจอเป็น UX ล้วน ๆ · API ต้องตรวจซ้ำทุกข้อ ไม่มีข้อยกเว้น**
 >
 > สองแถวที่ควรระวัง: `POST /courses` = **ADMIN หรือ INSTRUCTOR ที่บัญชียังใช้งานอยู่** (P17 · FR-22c) · endpoint นี้ไม่มี `courseId` ให้
@@ -165,23 +165,23 @@ Authorization: Bearer <accessToken>
 ### 3.1 Auth & Users — 13 endpoints (**implement แล้ว 3**)
 
 > สถานะ: ✅ = มีใน `app/server/src/modules/` แล้ว · ⬜ = contract ยังไม่ทำ · ปัจจุบันเข้าสู่ระบบได้ทาง Google อย่างเดียว
-> (`POST /auth/google` — ตรวจ ID token ที่เซิร์ฟเวอร์ FR-08) · email + password (`/auth/login`) ยังไม่มี
+> (`POST /auth/google` — ตรวจ ID token ที่เซิร์ฟเวอร์ FR-08) · ลิงก์อีเมล (`/auth/email-link`) ยังไม่มี · ระบบไม่มีรหัสผ่าน (ตัด 2026-11-10)
 
 | | Method | Path | Role | Scope | FR |
 |---|---|---|---|---|---|
 | ✅ | POST | `/auth/google` | — | — | FR-01, FR-08 |
-| ⬜ | POST | `/auth/login` | — | — | FR-01, FR-03, FR-04 |
+| ⬜ | POST | `/auth/email-link` | — | — | FR-01, FR-07 |
+| ⬜ | POST | `/auth/email-link/verify` | — | — | FR-01, FR-07, FR-08 |
 | ⬜ | POST | `/auth/refresh` | — | — | FR-01 |
 | ⬜ | POST | `/auth/logout` | any | — | FR-01 |
 | ⬜ | GET | `/auth/me` | any | — | NFR-19 |
-| ⬜ | PATCH | `/auth/password` | any | — | FR-09 |
+| ✅ | PATCH | `/auth/me` | any | — | FR-119 · แก้ชื่อของตัวเอง อีเมลแก้ไม่ได้ |
 | ✅ | GET | `/users` (`?status=PENDING` หรือ `ACTIVE`) | ADMIN | — | FR-05, FR-08b |
 | ✅ | PATCH | `/users/:id/approve` | ADMIN | — | FR-08b |
 | ⬜ | POST | `/users` | ADMIN | — | FR-05 |
 | ⬜ | GET | `/users/:userId` | ADMIN | — | FR-05 |
 | ⬜ | PATCH | `/users/:userId` | ADMIN | — | FR-05 |
 | ⬜ | PATCH | `/users/:userId/status` | ADMIN | — | FR-03, FR-06 |
-| ⬜ | POST | `/users/:userId/reset-password` | ADMIN | — | FR-07 |
 
 > ที่ implement แล้วใช้ `:id` ไม่ใช่ `:userId` · ยังไม่มี prefix `/api/v1` (G-1)
 
@@ -298,32 +298,24 @@ Authorization: Bearer <accessToken>
 
 ## 4. Auth & Users
 
-### 4.1 `POST /auth/login` — FR-01, FR-03, FR-04
+### 4.1 `POST /auth/email-link` — FR-01, FR-07
 
 ```jsonc
 // Request
-{ "email": "somchai@kmutnb.ac.th", "password": "••••••••" }
+{ "email": "somchai@kmutnb.ac.th" }
 
-// 200
-{
-  "success": true,
-  "data": {
-    "accessToken": "eyJ...",     // 15 นาที
-    "refreshToken": "eyJ...",    // 7 วัน
-    "user": { "id": "clx1", "email": "...", "name": "สมชาย ใจดี", "role": "INSTRUCTOR", "mustChangePassword": false }
-  }
-}
+// 200 — ข้อความเดียวกันไม่ว่าอีเมลนี้มีบัญชีหรือไม่
+{ "success": true, "data": { "message": "ถ้าอีเมลนี้ลงทะเบียนได้ ระบบส่งลิงก์เข้าสู่ระบบไปแล้ว" } }
 ```
 
 | กรณี | ผลลัพธ์ |
 |---|---|
-| รหัสผ่านผิด | `401` — `"อีเมลหรือรหัสผ่านไม่ถูกต้อง"` |
-| ไม่มีบัญชีนี้ | `401` — **ข้อความเดียวกันเป๊ะ** (FR-03: ห้ามเปิดเผยว่าบัญชีมีอยู่) |
-| `isActive = false` | `401` — **ข้อความเดียวกันเป๊ะ** |
-| ผิดเกิน 5 ครั้ง/15 นาที/IP | `429` (FR-04 — ตั้ง `@fastify/rate-limit` เฉพาะ route นี้ แยกจาก global) |
+| อีเมลรูปแบบผิด | `400` |
+| ขอซ้ำก่อน 60 วินาที / เกินเพดานต่อ IP | `429` (`@fastify/rate-limit` เฉพาะ route นี้) |
+| อีเมลโดเมนอื่น / ยังไม่มีบัญชี | `202` เหมือนกัน — ตัดสินสถานะตอนเปิดลิงก์ (FR-08) |
 
-> `mustChangePassword` รองรับ FR-07 (ADMIN รีเซ็ตรหัสชั่วคราว → บังคับเปลี่ยนเมื่อ login ครั้งถัดไป)
-> **ต้องเพิ่มคอลัมน์ `User.mustChangePassword Boolean @default(false)`** ใน schema — ยังไม่มี (ดู §12 G-4)
+โทเคน 32 bytes เก็บเฉพาะ hash ใช้ครั้งเดียว อายุ 24 ชม. · ส่งอีเมลหลังตอบ client เพื่อไม่ให้เวลาตอบบอกว่าอีเมลมีบัญชีหรือไม่ ·
+ผังตัดสินใจ: [CMAS-Flowchart-AuthMethods.drawio](../../../diagrams/flowchart/CMAS-Flowchart-AuthMethods.drawio)
 
 ### 4.2 `POST /auth/refresh`
 
@@ -342,11 +334,15 @@ v1 ใช้ stateless JWT จึงไม่มี token blacklist — endpoint
 คืน user จาก**แถว `User` สด ๆ** ไม่ใช่จาก claim ใน token (NFR-19) — client ใช้ค่านี้
 ตัดสินใจแสดงเมนู แต่การซ่อนเมนูไม่ใช่การควบคุมสิทธิ์ (NFR-06)
 
-### 4.5 `PATCH /auth/password` — FR-08
+### 4.5 `POST /auth/email-link/verify` — FR-01, FR-07, FR-08
 
 ```jsonc
-{ "currentPassword": "...", "newPassword": "..." }  // 200 | 400 (นโยบายรหัสผ่าน) | 401 (currentPassword ผิด)
+{ "token": "..." }   // 200 | 401
+// 200 ACTIVE  → { status: "ACTIVE", user: {...}, accessToken } + refresh cookie
+// 200 PENDING → { status: "PENDING", message }      ← รูปแบบเดียวกับ POST /auth/google
 ```
+`401` เมื่อโทเคนไม่มี / ใช้แล้ว / หมดอายุ / บัญชีถูกปิด (ข้อความเดียวกันทุกกรณี) ·
+ตัดสินสถานะด้วยฟังก์ชันตัวเดียวกับ `/auth/google`: โดเมนคณะ → `ACTIVE` · โดเมนอื่น → `PENDING` · ไม่มีบัญชี → สร้างเป็น `INSTRUCTOR`
 
 ### 4.6 `GET /users` — FR-05
 
@@ -363,10 +359,9 @@ Query: `q` (ชื่อ/อีเมล) · `role` (`ADMIN|INSTRUCTOR`) · `isA
 ### 4.7 `POST /users` — FR-05
 
 ```jsonc
-{ "email": "new@kmutnb.ac.th", "name": "สมหญิง", "role": "INSTRUCTOR", "password": "temp1234" }  // → 201
+{ "email": "new@kmutnb.ac.th", "name": "สมหญิง", "role": "INSTRUCTOR" }  // → 201 · ไม่มีรหัสผ่าน ผู้ใช้เข้าด้วย Google หรือลิงก์อีเมล
 ```
-`409` เมื่ออีเมลซ้ำ · รหัสผ่าน hash ด้วย **argon2 เท่านั้น** (FR-02) และ `passwordHash`
-**ห้ามปรากฏใน response ใด ๆ**
+`409` เมื่ออีเมลซ้ำ · `googleSub` และโทเคนลิงก์**ห้ามปรากฏใน response ใด ๆ**
 
 ### 4.8 `PATCH /users/:userId/status` — FR-03, FR-06
 
@@ -377,15 +372,6 @@ Query: `q` (ชื่อ/อีเมล) · `role` (`ADMIN|INSTRUCTOR`) · `isA
 > **ไม่มี `DELETE /users/:userId` โดยเจตนา** — FR-06 ห้ามลบ User ที่ยังผูกกับรายวิชา
 > หรือเคยอัปโหลดคะแนน และ `onDelete: Restrict` ทั้งสองความสัมพันธ์บังคับไว้ที่ DB อยู่แล้ว
 > การมี endpoint ที่ล้มเหลว 100% สำหรับผู้ใช้จริงทุกคนมีค่าเท่ากับกับดัก — ปิดบัญชีแทน
-
-### 4.9 `POST /users/:userId/reset-password` — FR-07
-
-```jsonc
-// → 200
-{ "success": true, "data": { "temporaryPassword": "Xk8#mQ2p" } }
-```
-ตั้ง `mustChangePassword = true` พร้อมกัน · รหัสชั่วคราวแสดงบนหน้าจอ ADMIN ครั้งเดียว
-**ห้าม log** (NFR-08)
 
 ---
 
@@ -902,12 +888,9 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
 
 | FR | Endpoint |
 |---|---|
-| FR-01, FR-03, FR-04 | `POST /auth/login` · `POST /auth/refresh` |
-| FR-02 | ทุก endpoint ที่เขียน `passwordHash` (argon2 เท่านั้น) |
+| FR-01, FR-07 | `POST /auth/email-link` · `POST /auth/email-link/verify` · `POST /auth/refresh` |
 | FR-05, FR-06 | `GET/POST /users` · `PATCH /users/:userId` · `PATCH /users/:userId/status` |
-| FR-07 | `POST /users/:userId/reset-password` |
-| FR-09 | `PATCH /auth/password` |
-| FR-08, FR-08b | `POST /auth/google` ✅ · `GET /users?status=PENDING` ✅ · `PATCH /users/:id/approve` ✅ |
+| FR-08, FR-08b | `POST /auth/google` ✅ · `POST /auth/email-link/verify` · `GET /users?status=PENDING` ✅ · `PATCH /users/:id/approve` ✅ |
 | FR-20, FR-21, FR-27, FR-28 | `POST /courses` · `PATCH /courses/:courseId` |
 | FR-22, FR-23 | `POST` / `DELETE /courses/:courseId/instructors` (ไม่มี PATCH — ไม่มี role) |
 | FR-24, FR-25 | `GET /courses` |
@@ -946,14 +929,14 @@ ADMIN เห็นทั้งคณะ · INSTRUCTOR เห็นเฉพา�
 
 | # | ช่องว่าง | ผลถ้าไม่แก้ | ต้องทำ |
 |---|---|---|---|
-| **G-1** | `registerRoutes()` ([modules/index.ts](../../../app/server/src/modules/index.ts)) register โดย**ไม่มี prefix `/api/v1`** ขัดกับ SRS §5.2 | path จริงไม่ตรงเอกสารทั้งเล่ม และเปลี่ยนทีหลังต้องแก้ client ทุกไฟล์ | `app.register(..., { prefix: "/api/v1" })` ที่ชั้นบนสุด |
-| **G-2** | `API_URL` ฝั่ง client default `http://localhost:3001` ([app.constants.ts](../../../app/client/src/lib/app.constants.ts)) ไม่มี `/api/v1` ต่อท้าย | ทุก request 404 ทันทีที่ G-1 ถูกแก้ | เปลี่ยน default เป็น `http://localhost:3001/api/v1` |
-| **G-3** | `rbac("ADMIN")` ([rbac.middleware.ts](../../../app/server/src/middlewares/rbac.middleware.ts)) ผ่านเมื่อ role ตรง **หรือเป็น ADMIN** — จึงไม่มีทางเขียน "INSTRUCTOR เท่านั้น ADMIN ห้าม" ได้ | ไม่กระทบ v1 (ADMIN เห็นทุกอย่างโดยเจตนา — FR-25) แต่ต้องรู้ตัวว่าเป็นข้อจำกัด ไม่ใช่ bug | เขียน comment ยืนยันเจตนา หรือเพิ่ม `rbacExact()` ถ้าอนาคตต้องการ |
-| **G-4** | ไม่มี `User.mustChangePassword` (และ `pwResetAt` / `pwChangedAt`) ใน `schema.prisma` — ต้นแบบ `index-q` ใช้แล้ว (UC 1.5) | FR-07 (บังคับเปลี่ยนรหัสหลัง reset) ทำไม่ได้ | เพิ่มคอลัมน์ + migration `0008` ก่อน implement `/users/:userId/reset-password` |
+| ~~**G-1**~~ | **ปิดแล้ว** — `app.ts` register ทุก route (รวม `/health`) ใต้ `/api/v1` แล้ว ([modules/index.ts](../../../../app/server/src/modules/index.ts)) | — | — |
+| ~~**G-2**~~ | **ปิดแล้ว** — `API_URL` ฝั่ง client ต่อ `/api/v1` ให้เอง ([app.constants.ts](../../../../app/client/src/lib/app.constants.ts)) | — | — |
+| ~~**G-3**~~ | **ปิดแล้ว** — `rbac()` ถูกแทนที่ด้วย `config.access` + `authorize()` ([access.middleware.ts](../../../../app/server/src/middlewares/access.middleware.ts)) ซึ่งตัดสินตาม capability ต่อ course ไม่ใช่ role ตรง ๆ | — | — |
+| ~~**G-4**~~ | **ปิดแล้ว 2026-11-10** — ไม่มีรหัสผ่านจึงไม่ต้องเพิ่ม `User.mustChangePassword` / `pwResetAt` / `pwChangedAt` (ตัด UC 1.5 รีเซ็ตรหัสผ่าน) | — | — |
 | **G-5** | `ScoreUploadLog` เก็บแค่ `recordsOk` / `recordsFail` ไม่เก็บ**รายละเอียดแถวที่ผิด** — ต้นแบบ `index-q` เสนอตาราง `UploadReject` (FR-65) แต่ยังไม่อยู่ใน Prisma | `GET /uploads/:uploadId/errors` ทำไม่ได้ → FR-68 (ดาวน์โหลดรายการแถวที่ผิด) | ตัดสินใจเรื่อง `UploadReject` แล้วเพิ่ม migration `0008` |
 | ~~**G-6**~~ | **ปิดแล้ว 2026-08-23** — OI-10 sign-off · CR-03 ถ่วง `Activity.weight` (ปัจจุบันคำนวณสองชั้นระดับจุดประสงค์ ดู SRS CR-03) | — | — |
 | ~~**G-7**~~ | **ปิดแล้ว 2026-08-23** — OI-12 sign-off · `cloScore = null` เป็นสถานะที่สาม (CR-03.1) | — | — |
-| **G-8** | route จริงมี 4 endpoint (`/health` · `/auth/google` · `/users` · `/users/:id/approve`) จาก 68 ตัวใน §3 · ยังไม่มี `criteria` / `clos` / `activities` / `scores` / dashboard ในโค้ดจริง — ต้นแบบ `docs/pages/index-q.html` มีครบแล้วและเป็นต้นแบบของ contract นี้ | client ต่อ API ไม่ได้นอกจากหน้า login / users | ทำ route ตามลำดับ Sprint · ปิดช่องว่างข้อนี้ทีละ module |
+| **G-8** | route จริงมี 4 endpoint (`/health` · `/auth/google` · `/users` · `/users/:id/approve`) จาก 68 ตัวใน §3 · ยังไม่มี `criteria` / `clos` / `activities` / `scores` / dashboard ในโค้ดจริง — ต้นแบบ `docs/index-q/index-q.html` มีครบแล้วและเป็นต้นแบบของ contract นี้ | client ต่อ API ไม่ได้นอกจากหน้า login / users | ทำ route ตามลำดับ Sprint · ปิดช่องว่างข้อนี้ทีละ module |
 
 ---
 

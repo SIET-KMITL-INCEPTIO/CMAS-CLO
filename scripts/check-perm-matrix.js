@@ -2,7 +2,7 @@
 // Pulls the PERM block and the can() body out of the file rather than retyping
 // them — a copy would pass while the file was wrong, which proves nothing.
 const fs = require("fs")
-const src = fs.readFileSync("docs/pages/index-q.html", "utf8")
+const src = fs.readFileSync("docs/index-q/index-q.html", "utf8")
 
 const permSrc = src.slice(
   src.indexOf("const TEACH"),

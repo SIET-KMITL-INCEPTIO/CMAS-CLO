@@ -38,6 +38,7 @@
     "docker:build": "docker compose up --build",
     "docker:down": "docker compose down",
     "docs:build": "npm --prefix docs/_generator run build",
+    "docs:links": "python scripts/check-doc-links.py",
     "setup": "node scripts/setup.mjs",
     "test:unit": "npm run test:coverage -w app/client && npm run test:unit -w app/server -- --coverage",
     "test:e2e": "playwright test -c e2e/playwright.config.ts"

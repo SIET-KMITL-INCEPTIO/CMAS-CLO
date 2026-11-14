@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""UML use case diagram of docs/pages/index-q.html, as a draw.io file.
+"""UML use case diagram of docs/index-q/index-q.html, as a draw.io file.
 
    Output: docs/diagrams/usecase/index-q-usecase.drawio — four pages
      1 · ภาพรวมระบบ            summary level: actors, their generalization, nine packages
@@ -10,7 +10,10 @@
    Revised 2569-09-18 for D1 and D6. It drew six pages while index-q.html had
    the ผู้ช่วยสอน ◁ ผู้สอนร่วม ◁ ผู้ประสานงาน ladder; D1 collapsed that to one
    INSTRUCTOR role, so pages 3–5 became one. D6 added self-registration: a
-   ผู้ยังไม่มีบัญชี actor and use cases 9.3–9.5, which no PERM role performs.
+   ผู้ยังไม่มีบัญชี actor and use cases 9.2–9.3, which no PERM role performs.
+   2569-11-10: password removed from the system — UC 1.5 (reset password), 9.2
+   (change own password) and 9.4 (verify email, folded into the sign-in link) are gone,
+   and the numbers after them were closed up.
 
    NOTATION — UML 2.5, the way a software-engineering reviewer expects it:
      uc diagram frame · subject boundary · packages as folders · stick-figure
@@ -58,7 +61,7 @@ for _s in (sys.stdout, sys.stderr):
         _s.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = Path(__file__).resolve().parents[1]
-APP = ROOT / 'docs' / 'pages' / 'index-q.html'
+APP = ROOT / 'docs' / 'index-q' / 'index-q.html'
 OUT = ROOT / 'docs' / 'diagrams' / 'usecase' / 'index-q-usecase.drawio'
 
 # ══ read the prototype ═══════════════════════════════════════════════
@@ -85,7 +88,7 @@ PERM = {m.group(1): (ALIAS[m.group(2)] if m.group(2) in ALIAS
                      else re.findall(r"'([A-Z]+)'", m.group(2)))
         for m in re.finditer(r"'([a-z.]+)':\s*([A-Z][A-Z0-9_]*|\[[^\]]*\])", _pb)}
 
-assert len(UC_TEXT) == 34, 'expected 34 use cases in USE_CASES, found %d' % len(UC_TEXT)
+assert len(UC_TEXT) == 33, 'expected 33 use cases in USE_CASES, found %d' % len(UC_TEXT)
 assert len(PERM) >= 17, 'PERM matrix not found in index-q.html'
 assert all(PERM.values()), 'capabilities read as empty: %s — an alias was not resolved' % (
     [k for k, v in PERM.items() if not v],)
@@ -114,8 +117,9 @@ def lowest(cap):
 
 # ══ use cases index-q.html adds (not in UML.md / USE_CASES) ══════════
 NEW = {
-    '1.7': 'อนุมัติบัญชีที่รออนุมัติ',   # 2569-10-22 FR-08b — Google นอกโดเมนคณะ PENDING → ACTIVE
+    '1.6': 'อนุมัติบัญชีที่รออนุมัติ',   # 2569-10-22 FR-08b — Google หรือลิงก์อีเมลนอกโดเมนคณะ PENDING → ACTIVE
     '2.6': 'เพิ่ม / ถอดผู้สอนในรายวิชา',
+    '2.9': 'ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่',   # 2569-11-07 K1 — เลือกวิชาตามแผนการเรียนของหลักสูตร
     '5.6': 'ระบุนักศึกษาที่ต้องติดตาม',
     '5.7': 'บันทึกแผนพัฒนาผู้เรียนรายคน',   # 2569-10-19 ความเห็นอาจารย์ — ครูพิมพ์แผนช่วยเหลือต่อ (นักศึกษา × CLO)
     '6.6': 'แก้ไขคะแนนบนหน้าเว็บ',
@@ -124,14 +128,12 @@ NEW = {
     '8.2': 'ประมวลผลและตรึงเกรด',
     '8.3': 'ปรับเกรดรายบุคคล',
     '9.1': 'แก้ไขชื่อและอีเมลของตนเอง',
-    '9.2': 'เปลี่ยนรหัสผ่านของตนเอง',
     # D6 / D7 — self-registration. The actor is someone with NO account yet,
     # so these are the only use cases no role in PERM performs (GUEST below).
-    '9.3': 'ลงทะเบียนด้วยอีเมลคณะ',
-    '9.4': 'ยืนยันอีเมล',
-    '9.5': 'ลงทะเบียนด้วยบัญชี Google',   # 2569-10-22 — นอกโดเมนคณะก็ลงทะเบียนได้ แต่รออนุมัติ (1.7)
+    '9.2': 'ลงทะเบียนด้วยลิงก์อีเมล',   # 2569-11-10 — ไม่มีรหัสผ่าน · เปิดลิงก์ = ยืนยันอีเมลและเข้าสู่ระบบ · โดเมนอื่นรออนุมัติ (1.6)
+    '9.3': 'ลงทะเบียนด้วยบัญชี Google',   # 2569-10-22 — นอกโดเมนคณะก็ลงทะเบียนได้ แต่รออนุมัติ (1.6)
 }
-GUEST_UC = ['9.3', '9.4', '9.5']
+GUEST_UC = ['9.2', '9.3']
 GUEST_TH = 'ผู้ยังไม่มีบัญชี'
 PKG_TEXT.update({'8': 'ตัดเกรด', '9': 'บัญชีของฉัน'})
 
@@ -188,6 +190,7 @@ UNITS = [
     ('2', '2.2', 'course.settings', []),
     ('2', '2.5', 'course.settings', []),
     ('2', '2.6', 'staff.write', []),
+    ('2', '2.9', 'course.create', []),
     ('2', '2.3', 'course.delete', []),
     ('3', '3.1', 'clo.write', [('3.3', 'include', '3.1', 'clo.write')]),
     ('3', '3.2', 'clo.write', []),
@@ -425,9 +428,7 @@ def frame_and_subject(pg, x, y, w, h, subject_title, sx, sy, sw, sh):
 
 
 def title_block(pg, x, y, view, source):
-    rows = [('ไดอะแกรม', 'Use Case — ' + view), ('ระบบ', 'CMAS · ต้นแบบ docs/pages/index-q.html'),
-            ('ที่มา', source), ('สร้างโดย', 'scripts/build-usecase-drawio.py'),
-            ('ฉบับ', VERSION)]
+    rows = [('ไดอะแกรม', 'Use Case — ' + view), ('ที่มา', source), ('ฉบับ', VERSION)]
     body = ''.join('<tr><td style="padding:2px 8px;color:%s;border-bottom:1px solid #E4E5F0;white-space:nowrap">%s</td>'
                    '<td style="padding:2px 8px;border-bottom:1px solid #E4E5F0">%s</td></tr>'
                    % (MUTED, k, v) for k, v in rows)
@@ -478,17 +479,14 @@ def page_overview(pages):
         pg.edge(base if who == 'BASE' else A[who], P[code], S_ASSOC, kind='assoc')
     pg.edge(guest, P['9'], S_ASSOC, kind='assoc')
 
-    note = pg.vertex('ภาพนี้อยู่ระดับ <i>summary use case</i> — หนึ่งวงรีคือหนึ่งแพ็กเกจ '
-                     'รายละเอียดอยู่หน้า 2–3 และรายการครบทุกข้ออยู่หน้า 4<br><br>'
-                     'ในรายวิชามี<b>บทบาทเดียว</b> — ผู้สอนทุกคนของวิชามีสิทธิ์เท่ากัน (D1) · '
-                     'ผู้ดูแลระบบ<b>ไม่ทำงานในรายวิชา</b> — สร้าง ลบ และผูกผู้สอนเข้ากับรายวิชา '
-                     'แล้วงานในรายวิชาเป็นของผู้สอน · '
-                     'ผู้ยังไม่มีบัญชีลงทะเบียนเองได้ด้วยอีเมลคณะหรือ Google (D6)',
+    note = pg.vertex('<b>อ่านภาพนี้:</b> 1 วงรี = 1 แพ็กเกจ (รายละเอียดอยู่หน้า 2–4)<br><br>'
+                     'ผู้สอนทุกคนของวิชามีสิทธิ์เท่ากัน (D1)<br>'
+                     'ผู้ดูแลระบบสร้าง ลบ และผูกผู้สอนกับวิชา แต่<b>ไม่ทำงานในวิชา</b><br>'
+                     'ผู้ยังไม่มีบัญชีลงทะเบียนเองได้ (อีเมลคณะ หรือ Google · D6)',
                      S_NOTE, 1050, 110, 400, 124, role='note')
     # P14/P16/P17 · 2.1 create, 2.3 delete and staffing belong to admin AND instructor
-    issue = pg.vertex('แพ็กเกจ 2 · <b>สร้างและลบรายวิชา</b> (2.1 · 2.3) ทำได้ทั้งผู้ดูแลระบบ '
-                      'และผู้สอน (ลบได้เฉพาะวิชาที่ตนสอน) · <b>ผู้ดูแลระบบ</b> แต่งตั้งผู้สอน (2.4) · '
-                      '<b>ผู้สอน</b> เพิ่ม/ถอดเพื่อนผู้สอน (2.6 · 2.8) และแก้ข้อมูลวิชา (2.2 · 2.5)',
+    issue = pg.vertex('แพ็กเกจ 2 · ผู้ดูแลระบบและผู้สอนสร้าง (2.1) และลบ (2.3) วิชาได้ · '
+                      '<b>ผู้ดูแลระบบ</b> แต่งตั้งผู้สอน (2.4) · <b>ผู้สอน</b> จัดการวิชาของตน (2.2 · 2.5 · 2.6 · 2.8)',
                       S_NOTE, 1050, pg.shapes[P['2']]['y'] - 8, 400, 90, role='note')
     pg.edge(issue, P['2'], S_ANCHOR + 'entryX=1;entryY=0.5;entryDx=0;entryDy=0;', kind='anchor')
     legend(pg, 440, body_h + 140, inherited=False)
@@ -566,7 +564,7 @@ def dep(pg, ids, kid, rel, frm, cond_role=None, notes=None):
 def page_admin():
     pg = Page('CMAS · ผู้ดูแลระบบ')
     ncol, x0 = 2, 470
-    g1 = [['1.1', '1.4'], ['1.2'], ['1.3'], ['1.5'], ['1.6'], ['1.7']]
+    g1 = [['1.1', '1.4'], ['1.2'], ['1.3'], ['1.5'], ['1.6']]
     g2 = [['2.1', '2.4'], ['2.3']]
     # measure first, then draw — the frame and subject are sized from content
     probe = Page('probe')
@@ -578,7 +576,7 @@ def page_admin():
     i1, _ = package(pg, '1', '1 · ' + PKG_TEXT['1'], x0, 100, g1, ncol, {})
     i2, _ = package(pg, '2', '2 · ' + PKG_TEXT['2'], x0, 100 + h1 + 24, g2, ncol, {})
     admin = pg.vertex(role_label('ADMIN'), S_ACTOR, 180, 60 + (body + 60) // 2 - 40, 34, 64, role='actor')
-    for c in ('1.1', '1.2', '1.3', '1.5', '1.6', '1.7'):
+    for c in ('1.1', '1.2', '1.3', '1.5', '1.6'):
         pg.edge(admin, i1[c], S_ASSOC, kind='assoc')
     for c in ('2.1', '2.3'):
         pg.edge(admin, i2[c], S_ASSOC, kind='assoc')
@@ -586,16 +584,13 @@ def page_admin():
     dep(pg, i2, '2.4', 'include', '2.1')
 
     side = x0 + pw + 70
-    pg.vertex('กติกาที่ต้นแบบบังคับเพิ่ม<br>'
-              '· 1.3 — ระงับผู้ดูแลที่ใช้งานอยู่คนสุดท้ายไม่ได้<br>'
-              '· บัญชีผู้ดูแลระบบลบไม่ได้ ต้องลดบทบาทก่อน<br>'
-              '· 1.5 — ตั้ง mustChangePassword และบันทึก AuthEvent (FR-07)<br>'
-              '· 1.6 — อ่านจาก AuthEvent ซึ่งเสนอไว้ใน index-q.sql<br>'
-              '· 1.7 — User.status PENDING → ACTIVE ทางเดียว แยกจาก isActive (FR-08b)<br>'
-              '· 2.4 — ผู้สอนของวิชาก็เพิ่มผู้สอนได้เอง (2.6 · P14)<br>'
-              '· 2.1 สร้าง · 2.3 ลบรายวิชา — ผู้สอนทำได้เหมือนกัน (P17 · P16)<br>'
-              '· ผู้ดูแลระบบ<b>ไม่ทำงานในรายวิชา</b> — 2.2 และ 2.5 '
-              'เป็นของผู้สอน (P12) อยู่หน้า 3',
+    pg.vertex('<b>ข้อควรรู้</b><br>'
+              '· 1.3 — ระงับผู้ดูแลคนสุดท้ายไม่ได้<br>'
+              '· บัญชีผู้ดูแลลบไม่ได้ ต้องลดบทบาทก่อน<br>'
+              '· 1.5 — อ่านจากประวัติการเข้าใช้ (AuthEvent)<br>'
+              '· 1.6 — บัญชีรออนุมัติ → ใช้งานได้ (FR-08b)<br>'
+              '· 2.1 · 2.3 — ผู้สอนทำได้เหมือนกัน<br>'
+              '· 2.2 · 2.5 — เป็นงานของผู้สอน (หน้า 3)',
               S_NOTE, side, 100, 400, 152, role='note')
     legend(pg, side, 278, inherited=False)
     title_block(pg, side, body + 90, 'ผู้ดูแลระบบ', 'USE_CASES ใน index-q.html · include ตาม UML-Layer2')
@@ -697,13 +692,11 @@ def page_role(num, role, units, placed):
                   % (ROLE_TH[parent], num - 1), S_NOTE, side, ny, 330, 44, role='note')
         ny += 60
     if role == 'INSTRUCTOR':
-        pg.vertex('<b>บทบาทเดียวในรายวิชา (D1)</b> — ผู้สอนทุกคนของวิชาทำได้ทุกข้อในหน้านี้ '
-                  'เท่ากัน ไม่มีผู้ประสานงาน / ผู้สอนร่วม / ผู้ช่วยสอนอีกแล้ว<br>'
-                  'เงื่อนไขเดียวคือต้อง<b>สอนวิชานั้น</b> (CourseInstructor) — '
-                  'ตรวจกับวิชาที่ถูกกระทำ ไม่ใช่วิชาที่แสดงอยู่ (SEC-3)<br>'
-                  '2.1 สร้าง · 2.3 ลบรายวิชา ทำได้เหมือนผู้ดูแลระบบ (P17 · P16)',
-                  S_NOTE, side, ny, 330, 116, role='note')
-        ny += 132
+        pg.vertex('<b>ผู้สอนทุกคนของวิชามีสิทธิ์เท่ากัน</b> (D1)<br>'
+                  'ต้องเป็นผู้สอนวิชานั้นจึงทำได้ (SEC-3)<br>'
+                  '2.1 สร้าง · 2.3 ลบรายวิชา ทำได้เหมือนผู้ดูแลระบบ',
+                  S_NOTE, side, ny, 330, 90, role='note')
+        ny += 110
     legend(pg, side, ny + 10, inherited=any(plans[p][3] for p in pkgs))
     title_block(pg, side, max(ny + 90, frame_h - 150), ROLE_TH[role] + ' (' + role + ')',
                 'PERM ใน index-q.html · include/extend ตาม UML-Layer2')
@@ -723,7 +716,7 @@ def page_catalogue(placed):
             if r == 'extend' and point:
                 txt += ' @ ' + point
             rel[kid] = txt
-    rel.update({'1.4': '«include» จาก 1.1', '2.4': '«include» จาก 2.1', '9.4': '«include» จาก 9.3'})
+    rel.update({'1.4': '«include» จาก 1.1', '2.4': '«include» จาก 2.1'})
     cap_of = {uc: cap for _p, uc, cap, _k in UNITS}
     for _p, _uc, _c, kids in UNITS:
         for kid, _r, _f, kcap in kids:
@@ -780,8 +773,8 @@ def page_catalogue(placed):
     h = 28 + 19 * len(rows)
     pg.vertex('uc&nbsp;&nbsp;' + pg.title, S_FRAME.replace('{W}', str(thai_width(pg.title) + 60)), 20, 20, 1500, h + 230, role='frame')
     pg.vertex(table, S_TEXT, 50, 70, sum(widths), h, role='box')
-    pg.vertex('%d use case · %d จาก UML.md · %d ที่ต้นแบบเพิ่ม · %d แยกย่อยจากข้อที่มี "/" (แถวพื้นสีคือข้อที่ไม่อยู่ใน UML.md) · '
-              'actor หลักอ่านจากเมทริกซ์ PERM — ในรายวิชามีบทบาทเดียวคือผู้สอน (D1)'
+    pg.vertex('%d use case: %d จาก UML.md · %d เพิ่มโดยต้นแบบ · %d แยกย่อยจากข้อที่มี "/" (แถวพื้นสี = ไม่อยู่ใน UML.md) · '
+              'actor หลักอ่านจาก PERM'
               % (len(rows), len(UC_TEXT), len(NEW) - len(SPLITS), len(SPLITS)), S_TEXT + 'fontColor=' + MUTED + ';', 50, h + 90, 780, 34)
     title_block(pg, 50 + sum(widths) - 400, h + 90, 'รายการ use case', 'USE_CASES + PERM ใน index-q.html')
     return pg
