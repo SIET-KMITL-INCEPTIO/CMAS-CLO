@@ -28,7 +28,9 @@ async function checkDatabase() {
 }
 
 app
-  .listen({ port: env.PORT, host: "0.0.0.0" })
+  // "::" is dual-stack: Windows resolves `localhost` to ::1 first, and an IPv4-only
+  // listener made every browser request wait ~200 ms for that attempt to fail.
+  .listen({ port: env.PORT, host: "::" })
   .then(() => {
     app.log.info(`Server running on port ${env.PORT}`)
     return checkDatabase()

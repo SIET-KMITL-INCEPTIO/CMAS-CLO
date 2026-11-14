@@ -13,6 +13,8 @@ export async function dashboardRoutes(app: FastifyInstance) {
   app.get("/dashboard/overview", { config: { access: "authenticated" } }, c.overview)
   app.get("/courses/:courseId/dashboard/attainment", { config: { access: view } }, c.attainment)
   app.get("/courses/:courseId/dashboard/at-risk", { config: { access: view } }, c.atRisk)
+  app.get("/courses/:courseId/dashboard/summary", { config: { access: view } }, c.summary)
+  app.get("/courses/:courseId/dashboard/students", { config: { access: view } }, c.classResults)
   app.get(
     "/courses/:courseId/dashboard/students/:studentId",
     { config: { access: view } },

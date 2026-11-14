@@ -19,7 +19,7 @@ export class ScoreRepository {
       courseId,
       ...(enrolledOnly ? { status: "ENROLLED" } : {}),
     }
-    const [activities, total, students, progress, enrolled] = await prisma.$transaction([
+    const [activities, total, students, progress, enrolled] = await Promise.all([
       prisma.activity.findMany({
         where: { courseId },
         orderBy: { order: "asc" },
@@ -59,7 +59,7 @@ export class ScoreRepository {
 
   /** What a write must be checked against: the students and activities it names, inside this course. */
   async context(courseId: string, studentIds: string[], activityIds: string[]) {
-    const [students, activities] = await prisma.$transaction([
+    const [students, activities] = await Promise.all([
       prisma.student.findMany({
         where: { courseId, id: { in: studentIds } },
         select: { id: true, studentCode: true, status: true, grade: { select: { id: true } } },
@@ -194,7 +194,7 @@ export class ScoreRepository {
     take: number,
   ) {
     const where = { courseId, ...(kind ? { kind } : {}) }
-    const [total, rows] = await prisma.$transaction([
+    const [total, rows] = await Promise.all([
       prisma.scoreUploadLog.count({ where }),
       prisma.scoreUploadLog.findMany({
         where,
@@ -224,7 +224,7 @@ export class ScoreRepository {
   }
 
   async changes(where: Prisma.ScoreChangeWhereInput, skip: number, take: number) {
-    const [total, rows] = await prisma.$transaction([
+    const [total, rows] = await Promise.all([
       prisma.scoreChange.count({ where }),
       prisma.scoreChange.findMany({
         where,

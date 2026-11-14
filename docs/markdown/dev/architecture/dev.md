@@ -318,11 +318,12 @@ app/server/
 
 ```
 database/
-├── schema.prisma    # 13 models (migration 0001–0007): User, EmailVerificationToken,
-│                     # Course, CourseInstructor, CLO, BehavioralObjective, Activity,
-│                     # AssessmentCriteria, Student, Score, ScoreUploadLog,
-│                     # GradeBand, StudentGrade — Curriculum/Institution ถูกตัดแล้ว (2026-08-04)
-├── migrations/      # 0001_init … 0007_google_domain_account_status (0002–0007 เขียนมือทั้งหมด — ยังไม่ได้ตรวจกับ shadow DB ดูหัวแต่ละไฟล์)
+├── schema.prisma    # 19 models (migration 0001–0009): User, EmailVerificationToken, RefreshToken,
+│                     # AuthEvent, Course, CourseInstructor, CourseGroupWeight, CLO,
+│                     # BehavioralObjective, Activity, AssessmentCriteria, Student, Score,
+│                     # ScoreChange, ScoreUploadLog, UploadReject, RemediationPlan,
+│                     # GradeBand, StudentGrade — ไม่มีคอลัมน์รหัสผ่าน (0009_drop_password_columns)
+├── migrations/      # 0001_init … 0009 (มีสอง folder เลข 0009: drop_password_columns · lock_down_supabase_data_api — ห้ามเปลี่ยนชื่อ)
 ├── seed.ts
 └── .env.example
 ```

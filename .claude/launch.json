@@ -16,6 +16,13 @@
       "autoPort": false
     },
     {
+      "name": "client-preview-5173",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview", "-w", "app/client", "--", "--port", "5173", "--strictPort"],
+      "port": 5173,
+      "autoPort": false
+    },
+    {
       "name": "server-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "-w", "app/server"],

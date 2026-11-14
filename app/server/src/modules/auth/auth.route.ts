@@ -31,4 +31,5 @@ export async function authRoutes(app: FastifyInstance) {
   )
   app.post("/logout", { config: { access: "authenticated" } }, controller.logout)
   app.get("/me", { config: { access: "authenticated" } }, controller.me)
+  app.patch("/me", { config: { access: "authenticated" } }, controller.updateMe)
 }

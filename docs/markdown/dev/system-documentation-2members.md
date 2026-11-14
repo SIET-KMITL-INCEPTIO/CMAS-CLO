@@ -1,6 +1,7 @@
 # เอกสารสรุปโครงการระบบ (System Documentation)
 ## ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา — CMAS / CLO System
 
+> ⚠ **ภาพรวม ณ 26 กันยายน 2569** — สถานะปัจจุบัน (2026-11-14: 19 model · migration 0001–0009 · ทุกหน้าในรายวิชามีแล้ว · เข้าสู่ระบบด้วย Google ไม่มีรหัสผ่าน) ดู [[srs]] v2.7.0 และ [[features-pages]] ·
 > **อัปเดตตามโค้ด 26 กันยายน 2569** (migration 0001–0007 · 14 feature) · **จัดทำ:** 21 กันยายน 2569 · **สถานะโครงงาน:** CLO 3 (ออกแบบสถาปัตยกรรม) ใกล้ปิด · CLO 4 (พัฒนา) อยู่ใน Sprint 2
 > **ขอบเขตเอกสาร:** แบ่งตามความรับผิดชอบของสมาชิก 2 ท่าน — **นูรีน** (Technical & General Tasks) · **นัท** (System Design & Architecture)
 > **แหล่งอ้างอิง:** อ่านจากโค้ดและเอกสารจริงในรีโพซิทอรี ณ วันที่จัดทำ (ดูภาคผนวก ก)
@@ -43,7 +44,7 @@
 
 | ชั้น | มีแล้ว | ยังไม่มี |
 |---|---|---|
-| Server | Fastify 5 · Prisma 6 · Zod · jose (JWT) · argon2 · `auth.middleware.ts` · `rbac.middleware.ts` · `authorization.service.ts` · `GET /health` | endpoint ธุรกิจทั้งหมด (ยัง comment ไว้ใน `routes/index.ts`) |
+| Server | Fastify 5 · Prisma 6 · Zod · jose (JWT) · ~~argon2~~ (เลิกใช้ 2026-11-10) · `auth.middleware.ts` · `rbac.middleware.ts` · `authorization.service.ts` · `GET /health` | endpoint ธุรกิจทั้งหมด (ยัง comment ไว้ใน `routes/index.ts`) |
 | Client | React 19 · React Router 7 · TanStack Query · Zustand · หน้า `Home` `Login` `Users` `CourseList` | AppShell · component library · ทุกหน้าระดับรายวิชา |
 | Database | 13 model · migration 0001–0007 (รวม CHECK constraint + trigger + การตัดเกรด + ลำดับชั้น CLO → จุดประสงค์ → กิจกรรม + สถานะบัญชี PENDING/ACTIVE) | — (schema ปิดแล้ว รอ feature เรียกใช้) |
 | เอกสารออกแบบ | SRS · DFD L0–L2 · ER (Prisma + MySQL mirror) · API contract · Design System · ต้นแบบ `index-q.html` | — |
@@ -385,7 +386,7 @@ flowchart TB
         FST["Fastify 5 + Node 24 LTS"]
         SEC["helmet · cors · rate-limit · multipart"]
         JWT["jose 6 — JWT 15m / 7d"]
-        ARG["argon2"]
+        ARG["argon2 (ไม่ใช้แล้ว)"]
         ZOD["Zod"]
         XLS["SheetJS (parse + validate)"]
     end

@@ -26,6 +26,14 @@ export class DashboardController {
     return ok(reply, data, meta)
   }
 
+  summary = async (req: FastifyRequest, reply: FastifyReply) => {
+    return ok(reply, await this.service.summary(authorizedCourseId(req)))
+  }
+
+  classResults = async (req: FastifyRequest, reply: FastifyReply) => {
+    return ok(reply, await this.service.classResults(authorizedCourseId(req)))
+  }
+
   student = async (req: FastifyRequest, reply: FastifyReply) => {
     const { studentId } = studentParamsSchema.parse(req.params)
     return ok(reply, await this.service.student(authorizedCourseId(req), studentId))

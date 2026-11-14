@@ -32,6 +32,10 @@
 
 generator client {
   provider = "prisma-client-js"
+  // One SQL query per `include` (LATERAL JOIN) instead of one per relation.
+  // Through Supabase every query is a 0.1–0.4 s round trip, so GET /courses/:id
+  // went from 9 queries to a few. Schema-only: no migration.
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {

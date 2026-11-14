@@ -12,6 +12,7 @@ import {
   CourseNotFoundError,
   type Caller,
 } from "../authorization/authorization.service.js"
+import { blockers } from "../../lib/attainment.js"
 import type { CourseRepository, CourseRow } from "./course.repository.js"
 import type { CreateCourseInput, ListCoursesQuery, UpdateCourseInput } from "./courses.validator.js"
 
@@ -50,6 +51,38 @@ function checkGradingRules(scale: GradeScale, method: GradingMethod, passCriteri
 export class CourseService {
   constructor(private readonly courses: CourseRepository) {}
 
+  /**
+   * FR-84 per course: what still stops its numbers being computed. The list
+   * shows "N ข้อค้าง" or "พร้อม" from this, with the same rule the dashboard uses.
+   */
+  private async withReadiness<T extends { id: string }>(rows: T[]) {
+    if (rows.length === 0) return []
+    const inputs = await this.courses.readinessInputs(rows.map((r) => r.id))
+    return rows.map((r) => {
+      const objectives = inputs.objectives.filter((o) => o.clo.courseId === r.id)
+      return {
+        ...r,
+        readiness: {
+          blockers: blockers({
+            course: {
+              cloPassMark: 0,
+              classTarget: 0,
+              passCriteria: 0,
+              gradeScale: "LETTER",
+              gradeMethod: "CRITERION_REFERENCED",
+            },
+            clos: inputs.clos.filter((c) => c.courseId === r.id),
+            objectives,
+            activities: inputs.activities.filter((a) => a.courseId === r.id),
+            cells: inputs.cells.filter((c) => c.activity.courseId === r.id),
+            students: [],
+            scores: [],
+          }),
+        },
+      }
+    })
+  }
+
   async list(query: ListCoursesQuery, caller: Caller) {
     const [field, dir] = query.sort.split(":") as [string, "asc" | "desc"]
     const where: Prisma.CourseWhereInput = {
@@ -73,7 +106,7 @@ export class CourseService {
       query.perPage,
     )
     return {
-      data: rows.map(toCourseDto),
+      data: await this.withReadiness(rows.map(toCourseDto)),
       meta: { total, page: query.page, perPage: query.perPage },
     }
   }
@@ -81,7 +114,7 @@ export class CourseService {
   async get(courseId: string) {
     const row = await this.courses.findById(courseId)
     if (!row) throw new CourseNotFoundError()
-    return toCourseDto(row)
+    return (await this.withReadiness([toCourseDto(row)]))[0]!
   }
 
   /**

@@ -47,7 +47,7 @@ async function resplit(tx: Tx, courseId: string) {
 
 export class ActivityRepository {
   async list(courseId: string) {
-    const [activities, course, enrolled, scored] = await prisma.$transaction([
+    const [activities, course, enrolled, scored] = await Promise.all([
       prisma.activity.findMany({
         where: { courseId },
         orderBy: { order: "asc" },
@@ -173,8 +173,9 @@ export class ActivityRepository {
 
   // ── criteria matrix (design #39-#40) ──
 
+  // Reads only: side by side, not a batch transaction (one round trip, not six).
   matrix(courseId: string) {
-    return prisma.$transaction([
+    return Promise.all([
       prisma.behavioralObjective.findMany({
         where: { clo: { courseId } },
         orderBy: [{ clo: { number: "asc" } }, { number: "asc" }],
