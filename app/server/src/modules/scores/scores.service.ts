@@ -10,7 +10,7 @@ import {
 } from "../../lib/excel.js"
 import { savePreview, takePreview } from "../../lib/preview-store.js"
 import type { IncomingCell, ScoreRepository } from "./score.repository.js"
-import { cellOf, type CellValue } from "./score-writer.js"
+import { cellOf, type CellValue } from "./score-writer.repository.js"
 import type { PutScoresInput } from "./scores.validator.js"
 
 /** What the grid shows for a cell: a number, "EXCUSED", or null = not assessed yet (FR-62). */

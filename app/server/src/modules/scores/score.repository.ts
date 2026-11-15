@@ -1,7 +1,7 @@
 /** Score, ScoreUploadLog, UploadReject and ScoreChange reads; every write goes through writeCells (A-12). */
 import { Prisma, type ScoreChangeSource } from "@prisma/client"
 import { prisma } from "../../db/prisma.js"
-import { cellOf, writeCells, type CellValue, type CellWrite } from "./score-writer.js"
+import { cellOf, writeCells, type CellValue, type CellWrite } from "./score-writer.repository.js"
 
 /** `seen` is the cell as the client last showed it (D-3): a number, "EXCUSED" or null. */
 export type IncomingCell = {

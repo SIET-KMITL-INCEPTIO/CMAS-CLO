@@ -4,6 +4,7 @@
 > หน้าสารบัญต้นทาง: <https://learn.microsoft.com/en-us/office/vba/excel/concepts/miscellaneous/cells-and-ranges>
 > หน้า Overview ต้นทาง: <https://learn.microsoft.com/en-us/office/vba/api/overview/excel>
 > ต้นฉบับ Markdown (GitHub): <https://github.com/MicrosoftDocs/VBA-Docs/tree/main/excel/Concepts/Cells-and-Ranges>
+> สัญญาอนุญาต: ต้นฉบับ © Microsoft ใช้ [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (ตัวอย่างโค้ดใช้ MIT) · ไฟล์นี้เป็นงานแปล ไม่ใช่เอกสารทางการของ Microsoft
 >
 > หมายเหตุการแปล: แปลเนื้อหาและคอมเมนต์ในโค้ดเป็นไทย คงชื่อ object / property / method / ค่าคงที่ของ VBA เป็นภาษาอังกฤษตามต้นฉบับ
 > ทุกหัวข้อมีบรรทัด **อ้างอิง** ชี้กลับไปยังหน้าต้นฉบับ

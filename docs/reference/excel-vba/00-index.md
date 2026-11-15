@@ -5,6 +5,7 @@
 > หน้า Concepts: <https://learn.microsoft.com/en-us/office/vba/excel/concepts/miscellaneous/concepts-excel-vba-reference>
 > ต้นฉบับ Markdown: <https://github.com/MicrosoftDocs/VBA-Docs/tree/main/excel/Concepts>
 > แปลเมื่อ: 2026-11 | อ่านต้นฉบับเมื่อวันที่แปล (ต้นฉบับอาจเปลี่ยนภายหลัง)
+> สัญญาอนุญาต: ต้นฉบับ © Microsoft ใช้ [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (ตัวอย่างโค้ดใช้ MIT) · ฉบับนี้เป็นงานแปล (ดัดแปลง) จากต้นฉบับ ไม่ใช่เอกสารทางการของ Microsoft และใช้สัญญาอนุญาตเดียวกัน
 
 หน้าตั้งต้นที่ให้มาเป็นแค่หน้าสารบัญที่ชี้ไป 3 ส่วน:
 

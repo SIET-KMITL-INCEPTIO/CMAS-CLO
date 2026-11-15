@@ -3,6 +3,7 @@
 > ฉบับแปลภาษาไทยจาก Microsoft Learn ส่วน Concepts → Sparklines และ Working with other applications
 > สารบัญต้นทาง: <https://learn.microsoft.com/en-us/office/vba/excel/concepts/miscellaneous/sparklines> และ <https://learn.microsoft.com/en-us/office/vba/excel/concepts/miscellaneous/working-with-other-applications>
 > ต้นฉบับ Markdown: <https://github.com/MicrosoftDocs/VBA-Docs/tree/main/excel/Concepts/Sparklines> และ <https://github.com/MicrosoftDocs/VBA-Docs/tree/main/excel/Concepts/Working-with-Other-Applications>
+> สัญญาอนุญาต: ต้นฉบับ © Microsoft ใช้ [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (ตัวอย่างโค้ดใช้ MIT) · ไฟล์นี้เป็นงานแปล ไม่ใช่เอกสารทางการของ Microsoft
 > หน้า Overview: <https://learn.microsoft.com/en-us/office/vba/api/overview/excel>
 >
 > คงชื่อ object / property / method เป็นอังกฤษ ทุกหัวข้อมีบรรทัด **อ้างอิง**

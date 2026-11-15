@@ -1,6 +1,6 @@
 See also: [[dev]] · [[srs]] · [[Summary Project]] · [[concept-clo MOC]]
 
-# โครงสร้างฐานข้อมูล CMAS — 13 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง
+# โครงสร้างฐานข้อมูล CMAS — 19 ตาราง และเหตุผลที่ต้องมีแต่ละตาราง
 
 > ⚠️ **`database/schema.prisma` เป็น source of truth ของโครงสร้าง** ไฟล์นี้อธิบาย **"ทำไม"**
 > ไม่ใช่ **"อะไร"** — ถ้าสองไฟล์ขัดกันให้ยึด `schema.prisma` แล้วมาแก้ไฟล์นี้
@@ -10,7 +10,7 @@ See also: [[dev]] · [[srs]] · [[Summary Project]] · [[concept-clo MOC]]
 > [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) (MySQL — สำหรับทำ ER
 > ใน MySQL Workbench)
 >
-> **ฉบับปัจจุบัน: 19 ตาราง · migration `0001`–`0008`** (เนื้อหาตารางด้านล่างอธิบาย 13 ตารางของ `0007`; 6 ตารางของ `0008` — `AuthEvent` · `UploadReject` · `CourseGroupWeight` · `ScoreChange` · `RemediationPlan` · `RefreshToken` — ดูคำอธิบายใน [[mysql-dumps]] และ `index-q.sql` · อัปเดต 2026-11-10)
+> **ฉบับปัจจุบัน: 19 ตาราง · migration `0001`–`0009`** (`0009_drop_password_columns` ตัดคอลัมน์รหัสผ่านของ `User` · `0009_lock_down_supabase_data_api` เปิด RLS ไม่เพิ่มตาราง) (เนื้อหาตารางด้านล่างอธิบาย 13 ตารางของ `0007`; 6 ตารางของ `0008` — `AuthEvent` · `UploadReject` · `CourseGroupWeight` · `ScoreChange` · `RemediationPlan` · `RefreshToken` — ดูคำอธิบายใน [[mysql-dumps]] และ `index-q.sql` · อัปเดต 2026-11-10)
 >
 > | เวอร์ชัน | วันที่ | ตาราง | สิ่งที่เปลี่ยน |
 > |---|---|---:|---|
@@ -19,6 +19,8 @@ See also: [[dev]] · [[srs]] · [[Summary Project]] · [[concept-clo MOC]]
 > | v4 | 2026-09-14 | 14 | migration `0005` — เพิ่ม `EmailVerificationToken` · ตัด `CourseRole` (D1) · `CLO.soloLevel` (D4) · ลงทะเบียนเอง (D6) |
 > | **v5** | **2026-09-17** | **13** | migration `0006` — **ตัด `ObjectiveAssessment`** ยุบเข้า `AssessmentCriteria` (ผูก Activity ↔ จุดประสงค์ ไม่ใช่ CLO) · ตัด `CLO.threshold` → `Course.cloPassMark` · เพิ่ม `CLO.weight` / `BehavioralObjective.weight` / `Activity.type` · `assessmentMethod` · `criteriaNote` · `passMark` |
 > | v5.1 | 2026-09-23 | 13 | migration `0007` — `User.status` (`PENDING` / `ACTIVE`) รอผู้ดูแลอนุมัติ Google นอกโดเมน (FR-08) · `CLO.levelSource` เปลี่ยนความหมายเป็น AUTO/MANUAL ของ SOLO (O3) |
+> | v6 | 2026-10-22 | 19 | migration `0008` — เพิ่ม `AuthEvent` · `UploadReject` · `CourseGroupWeight` · `ScoreChange` · `RemediationPlan` · `RefreshToken` และคอลัมน์ที่ต้นแบบ `index-q.html` ใช้ |
+> | v6.1 | 2026-11-05 / 2026-11-12 | 19 | migration `0009_lock_down_supabase_data_api` (RLS) · `0009_drop_password_columns` (ตัด `passwordHash` · `mustChangePassword` · `pwResetAt` · `pwChangedAt` — เข้าสู่ระบบด้วย Google เท่านั้น) |
 >
 > ⚠️ เลขเวอร์ชันในตารางนี้ **ไม่ตรงกับเลขในชื่อไฟล์ MySQL** — ชื่อไฟล์ MySQL รุ่นเก่า (`cmas_app_mysql_v4.sql`, ลบแล้ว) คือ v3 ของตารางนี้ · ตารางเทียบเลขทั้งสองชุดกับเลข migration อยู่ที่ [`docs/VERSIONS.md`](../../VERSIONS.md)
 >
