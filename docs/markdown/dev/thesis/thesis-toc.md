@@ -200,6 +200,8 @@ See also: [[srs]] · [[theory]] · [[dfd]] · [[api-design]] · [[objectives-hyp
 | บทที่ 4 | [[objectives-hypotheses-evaluation]] §3 — ยังไม่มีผลจริง ต้องเก็บข้อมูลก่อน |
 | บทที่ 5 | [[project-plan]] · [[lessons-learned]] |
 
+รายการเว็บอ้างอิงสำหรับบรรณานุกรม (พร้อมหัวข้อที่ใช้และสถานะตรวจ URL): [[references-web]]
+
 ### ⚠ สิ่งที่ต้องมีก่อนจึงจะเขียนบทที่ 4 ได้
 
 | รหัส | ประเด็น | บล็อก |
