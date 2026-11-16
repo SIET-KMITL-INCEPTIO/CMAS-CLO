@@ -29,7 +29,7 @@ export default defineConfig({
       // Ratchet: what main measured on 2026-10-24 (one test file), 9/22/70 with F0–F6 merged, only
       // ever raised, toward dev.md §11.1 (client hooks 70%). Enforced by the
       // CI `unit` job. Lowering one needs a reason in the PR.
-      thresholds: { lines: 9, statements: 9, functions: 22, branches: 70 },
+      thresholds: { lines: 10, statements: 10, functions: 26, branches: 71 },
     },
   },
 })
