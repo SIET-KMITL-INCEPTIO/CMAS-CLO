@@ -14,7 +14,7 @@ docs/
 ├── diagrams/     ← ไดอะแกรม แยกตามประเภท: usecase/ · er/ · dfd/ · architecture/ · flowchart/ · develop/ · threat-model/
 ├── generated/    ← ไฟล์ที่ script สร้าง (gitignored)
 ├── excel/        ← แยกตามการใช้: planning/ · data-model/ · api/ · import-test/
-├── word/         ← .docx: ที่ script สร้าง (`thesis:ch2`, `tech-stack-docx.mjs`) + คู่มือรูปเล่มของภาควิชา
+├── word/         ← .docx: ร่างเล่มปริญญานิพนธ์ + ไฟล์ที่ script สร้าง (`thesis:ch2`, `tech-stack-docx.mjs`)
 ├── pdf/          ← เอกสารอ้างอิงภายนอก + ไฟล์ส่งมอบ
 ├── evidence/     ← หลักฐานผลทดสอบ/ภาพหน้าจอ แยกตามรายงาน (report-04/)
 ├── _generator/   ← ตัว build เอง
@@ -55,7 +55,7 @@ python -m http.server 8899 --directory docs/html
 | `reference/excel-vba/` | ฉบับแปลไทยของ Microsoft *Excel VBA reference* ส่วน Concepts (CC BY 4.0 ระบุที่มาทุกไฟล์) · ในเล่มให้อ้าง URL ต้นฉบับ | ✅ | ✅ |
 | `generated/` | `project-plan.csv` จาก `npm run plan:csv` | ❌ script ทับ | ❌ gitignored |
 | `excel/` | workbook ส่งมอบ — บางไฟล์สร้างจาก `scripts/build-*.py` | ⚠️ ดูตาราง | ✅ |
-| `word/` | `CMAS-Tech-Stack-Starter.docx` (สร้างจาก `scripts/tech-stack-docx.mjs`) · `ThesisManual-v3.2.docx` (คู่มือรูปเล่มปริญญานิพนธ์ ได้มาจากภาควิชา) · `CMAS-chapter-2-theory.docx` สร้างด้วย `npm run thesis:ch2` | ⚠️ ไฟล์ที่ script สร้าง ห้ามแก้มือ | ✅ ยกเว้นบทที่ 2 (สร้างใหม่ได้) |
+| `word/` | `CMAS-Tech-Stack-Starter.docx` (สร้างจาก `scripts/tech-stack-docx.mjs`) · `CMAS-Thesis-Draft.docx` (ร่างเล่มปริญญานิพนธ์ของทีม ทำบนแม่แบบคู่มือการจัดทำปริญญานิพนธ์ v3.0 แก้ด้วยมือได้) · `CMAS-chapter-2-theory.docx` สร้างด้วย `npm run thesis:ch2` | ⚠️ ร่างเล่มแก้ได้ · ไฟล์ที่ script สร้างห้ามแก้มือ | ✅ ยกเว้นบทที่ 2 (สร้างใหม่ได้) |
 | `pdf/` | เอกสารอ้างอิงภายนอก + ไฟล์ส่งมอบของทีม | ✅ | ⚠️ ไฟล์หลักสูตร 2567 (135 MB) ไม่ commit |
 | `evidence/` | ผลดิบและภาพหน้าจอที่รายงานความก้าวหน้าอ้างถึง แยกโฟลเดอร์ตามรายงาน (`report-04/` มี `README.md` อธิบายแต่ละไฟล์) | ❌ เก็บตามที่บันทึก | ✅ |
 | `_generator/` | ตัว build (`build.mjs`, `style.css`) | ✅ | ✅ |
