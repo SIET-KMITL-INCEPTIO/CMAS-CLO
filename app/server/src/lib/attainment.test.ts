@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest"
 import {
+  activityStats,
   analyse,
   bandFor,
   blockers,
   cloAttainment,
+  cloRawMax,
   computeGrades,
+  distribution,
   type CourseData,
 } from "./attainment.js"
 
@@ -179,5 +182,99 @@ describe("grading", () => {
     const g = computeGrades(d, analyse(d), LADDER)
     expect(g.grades.has("s2")).toBe(false)
     expect(g.warnings).toContain("นักศึกษา 1 คนคะแนนยังไม่ครบ จะยังไม่ได้เกรด")
+  })
+})
+
+describe("CR-03.2 — raw points per CLO (M5, the prototype's cloRaw)", () => {
+  // Two CLOs: A1 (max 10) is 60% on c1 and 40% on c2; A2 (max 50) is all c1.
+  const twoClos = (scores: CourseData["scores"]) =>
+    course(scores, {
+      clos: [
+        { id: "c1", number: 1, description: "", classTarget: null },
+        { id: "c2", number: 2, description: "", classTarget: null },
+      ],
+      objectives: [
+        { id: "o1", cloId: "c1", number: 1, weight: 100 },
+        { id: "o2", cloId: "c2", number: 1, weight: 100 },
+      ],
+      cells: [
+        { activityId: "a1", objectiveId: "o1", weight: 60 },
+        { activityId: "a1", objectiveId: "o2", weight: 40 },
+        { activityId: "a2", objectiveId: "o1", weight: 100 },
+      ],
+    })
+
+  it("splits an activity's points by the share it measures each CLO", () => {
+    const d = twoClos([
+      { studentId: "s1", activityId: "a1", score: 5, status: "SCORED" },
+      { studentId: "s1", activityId: "a2", score: 40, status: "SCORED" },
+    ])
+    const r = analyse(d).results[0]!
+    expect(r.raw.get("c1")).toEqual({
+      earned: 43,
+      maxScored: 56,
+      maxAll: 56,
+      missing: 0,
+      linked: 2,
+    })
+    expect(r.raw.get("c2")).toEqual({ earned: 2, maxScored: 4, maxAll: 4, missing: 0, linked: 1 })
+    expect(cloRawMax(d)).toEqual(
+      new Map([
+        ["c1", 56],
+        ["c2", 4],
+      ]),
+    )
+  })
+
+  it("an unscored activity counts toward maxAll only, never as 0 earned (FR-62)", () => {
+    const r = analyse(twoClos([{ studentId: "s1", activityId: "a1", score: 10, status: "SCORED" }]))
+      .results[0]!
+    expect(r.raw.get("c1")).toMatchObject({ earned: 6, maxScored: 6, maxAll: 56, missing: 1 })
+  })
+
+  it("an excused activity leaves both sides; a weight-0 activity is not in it (CR-05)", () => {
+    const d = twoClos([{ studentId: "s1", activityId: "a2", score: 0, status: "EXCUSED" }])
+    d.activities[0]!.weight = 0
+    const r = analyse(d).results[0]!
+    expect(r.raw.get("c1")).toEqual({ earned: 0, maxScored: 0, maxAll: 0, missing: 0, linked: 0 })
+    expect(cloRawMax(d).get("c1")).toBe(50)
+  })
+})
+
+describe("G2 — per activity and the distribution", () => {
+  it("counts pass, fail and missing against each activity's pass mark, over enrolled only", () => {
+    const d = course(
+      [
+        { studentId: "s1", activityId: "a1", score: 8, status: "SCORED" },
+        { studentId: "s2", activityId: "a1", score: 4, status: "SCORED" },
+        { studentId: "s3", activityId: "a1", score: 0, status: "SCORED" },
+        { studentId: "s1", activityId: "a2", score: 0, status: "EXCUSED" },
+      ],
+      {
+        students: [
+          { id: "s1", studentCode: "1", name: "one", status: "ENROLLED" },
+          { id: "s2", studentCode: "2", name: "two", status: "ENROLLED" },
+          { id: "s3", studentCode: "3", name: "gone", status: "WITHDRAWN" },
+        ],
+      },
+    )
+    const [a1, a2] = activityStats(d, analyse(d), new Map([["a1", 60]]))
+    expect(a1).toMatchObject({ passMark: 60, passCount: 1, failCount: 1, missingCount: 0 })
+    expect(a1!.averagePercent).toBeCloseTo(60, 10)
+    // Excused is not missing; no pass mark set falls back to 50.
+    expect(a2).toMatchObject({ passMark: 50, passCount: 0, failCount: 0, missingCount: 1 })
+    expect(a2!.averagePercent).toBeNull()
+  })
+
+  it("bins complete totals by ten, 100 in the last bin, incomplete left out (FR-84)", () => {
+    const d = course([
+      { studentId: "s1", activityId: "a1", score: 10, status: "SCORED" },
+      { studentId: "s1", activityId: "a2", score: 50, status: "SCORED" },
+      { studentId: "s2", activityId: "a1", score: 1, status: "SCORED" },
+    ])
+    const bins = distribution(analyse(d))
+    expect(bins).toHaveLength(10)
+    expect(bins[9]).toEqual({ from: 90, to: 100, count: 1 })
+    expect(bins.reduce((t, b) => t + b.count, 0)).toBe(1)
   })
 })

@@ -1,7 +1,10 @@
 import {
+  activityStats,
   analyse,
   cloAttainment,
+  cloRawMax,
   computeGrades,
+  distribution,
   NEAR_GAP,
   round,
   type StudentResult,
@@ -63,6 +66,7 @@ export class DashboardService {
 
   private attainmentOf(snap: CourseSnapshot, a: ReturnType<typeof analyse>) {
     const clos = cloAttainment(snap.data, a)
+    const rawMax = cloRawMax(snap.data)
     return {
       data: {
         classTarget: snap.course.classTarget,
@@ -71,7 +75,12 @@ export class DashboardService {
         helpCount: a.enrolled.filter((r) =>
           [...r.clos.values()].some((c) => c.status === "AT_RISK"),
         ).length,
-        clos: clos.map((c) => ({ ...c, attainment: r2(c.attainment) })),
+        // rawMax: the raw table's "เต็ม" per CLO (CR-03.2).
+        clos: clos.map((c) => ({
+          ...c,
+          attainment: r2(c.attainment),
+          rawMax: r2(rawMax.get(c.cloId)!),
+        })),
       },
       meta: {
         computable: a.blockers.length === 0,
@@ -169,28 +178,11 @@ export class DashboardService {
     const snap = await this.data.load(courseId)
     const a = analyse(snap.data)
     const complete = a.enrolled.filter((r) => r.complete && r.totalScore !== null)
-    const enrolled = new Set(a.enrolled.map((r) => r.student.id))
-    const activities = snap.data.activities.map((x) => {
-      const rows = snap.data.scores.filter(
-        (s) => s.activityId === x.id && enrolled.has(s.studentId) && s.status !== "EXCUSED",
-      )
-      const percents = rows
-        .filter((s) => s.score !== null)
-        .map((s) => (s.score! / x.maxScore) * 100)
-      const passMark = snap.passMarks.get(x.id) ?? 50
-      return {
-        activityId: x.id,
-        name: x.name,
-        passMark,
-        // Reported only — an activity's pass mark never decides a CLO (schema: passMark).
-        passCount: percents.filter((v) => v >= passMark).length,
-        failCount: percents.filter((v) => v < passMark).length,
-        missingCount: enrolled.size - rows.length,
-        averagePercent: percents.length
-          ? r2(percents.reduce((t, v) => t + v, 0) / percents.length)
-          : null,
-      }
-    })
+    // G2 — computed in lib/attainment.ts with everything else (FR-88).
+    const activities = activityStats(snap.data, a, snap.passMarks).map((x) => ({
+      ...x,
+      averagePercent: r2(x.averagePercent),
+    }))
     return {
       attainment: this.attainmentOf(snap, a),
       atRisk: this.atRiskOf(snap, a),
@@ -201,6 +193,7 @@ export class DashboardService {
         passedCount: complete.filter((r) => r.coursePassed === true).length,
         // FR-84: only complete totals — a missing score is not a 0.
         totals: complete.map((r) => r2(r.totalScore)!),
+        distribution: distribution(a),
       },
       activities,
     }
@@ -216,7 +209,23 @@ export class DashboardService {
       name: r.student.name,
       clos: snap.data.clos.map((c) => {
         const v = r.clos.get(c.id)!
-        return { cloId: c.id, score: r2(v.score), status: v.status, provisional: v.provisional }
+        const raw = r.raw.get(c.id)!
+        return {
+          cloId: c.id,
+          score: r2(v.score),
+          status: v.status,
+          provisional: v.provisional,
+          // CR-03.2 · M5 — points beside the percent; null when nothing measures the CLO yet.
+          raw:
+            raw.linked === 0
+              ? null
+              : {
+                  earned: r2(raw.earned)!,
+                  maxScored: r2(raw.maxScored)!,
+                  maxAll: r2(raw.maxAll)!,
+                  missing: raw.missing,
+                },
+        }
       }),
       totalScore: r2(r.totalScore),
     }))

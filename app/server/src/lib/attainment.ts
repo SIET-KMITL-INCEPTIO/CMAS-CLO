@@ -56,10 +56,29 @@ export const NEAR_GAP = 10
 /** Norm-referenced grading on fewer students than this warns (CR-10), it does not block. */
 export const MIN_SAMPLE_SIZE = 30
 
+/**
+ * SRS CR-03.2 (M5): the points behind a CLO's percent. An activity that measures
+ * the CLO with share p% (Σ of its cells on the CLO's objectives) puts score × p/100
+ * of its points into it, out of maxScore × p/100.
+ */
+export type CloRaw = {
+  earned: number
+  /** Full marks of the activities that have a score for this student. */
+  maxScored: number
+  /** Full marks of every counted activity on the CLO, scored or not (excused ones leave). */
+  maxAll: number
+  /** Counted activities on the CLO with no row for this student yet. */
+  missing: number
+  /** Counted, not-excused activities on the CLO. 0 = nothing measures it for this student. */
+  linked: number
+}
+
 export type StudentResult = {
   student: StudentIn
   objectives: Map<string, number | null>
   clos: Map<string, { score: number | null; status: CloStatus; provisional: boolean }>
+  /** CR-03.2 — raw points per CLO. */
+  raw: Map<string, CloRaw>
   /** CR-05, renormalised over the activities that count for this student (EXCUSED leaves both sides). */
   totalScore: number | null
   /** Every activity with weight > 0 has a row (a score or EXCUSED) for this student (CR-05). */
@@ -80,6 +99,7 @@ export function analyse(d: CourseData) {
   const objectivesByClo = new Map<string, ObjectiveIn[]>()
   for (const o of d.objectives)
     objectivesByClo.set(o.cloId, [...(objectivesByClo.get(o.cloId) ?? []), o])
+  const share = cloShares(d)
   const activitiesOfClo = new Map<string, Set<string>>()
   for (const o of d.objectives) {
     const set = activitiesOfClo.get(o.cloId) ?? new Set<string>()
@@ -140,6 +160,26 @@ export function analyse(d: CourseData) {
       clos.set(c.id, { score, status, provisional })
     }
 
+    // CR-03.2 — raw points. Never a percent: maxScored is only what has been assessed (FR-62).
+    const raw = new Map<string, CloRaw>()
+    for (const c of d.clos) {
+      const r: CloRaw = { earned: 0, maxScored: 0, maxAll: 0, missing: 0, linked: 0 }
+      for (const a of counted) {
+        const p = share.get(`${a.id}|${c.id}`)
+        const v = cell(a.id)
+        if (!p || (v && "excused" in v)) continue
+        r.linked++
+        r.maxAll += (a.maxScore * p) / 100
+        if (!v) {
+          r.missing++
+          continue
+        }
+        r.earned += (v.ratio * a.maxScore * p) / 100
+        r.maxScored += (a.maxScore * p) / 100
+      }
+      raw.set(c.id, r)
+    }
+
     // CR-05 — total over the activities that count for this student.
     let num = 0
     let den = 0
@@ -161,12 +201,85 @@ export function analyse(d: CourseData) {
     const coursePassed =
       complete && totalScore !== null ? totalScore >= d.course.passCriteria : null
 
-    return { student, objectives, clos, totalScore, complete, coursePassed, overdue }
+    return { student, objectives, clos, raw, totalScore, complete, coursePassed, overdue }
   })
 
   const enrolled = results.filter((r) => r.student.status === "ENROLLED") // R2: withdrawn leave every denominator
 
   return { results, enrolled, blockers: blockers(d), counted }
+}
+
+/** `activityId|cloId` → the % of the activity that measures the CLO (Σ of its cells on the CLO's objectives). */
+function cloShares(d: CourseData) {
+  const cloOf = new Map(d.objectives.map((o) => [o.id, o.cloId]))
+  const out = new Map<string, number>()
+  for (const c of d.cells) {
+    const clo = cloOf.get(c.objectiveId)
+    if (!clo) continue
+    const key = `${c.activityId}|${clo}`
+    out.set(key, (out.get(key) ?? 0) + c.weight)
+  }
+  return out
+}
+
+/** CR-03.2 — a CLO's full raw marks over every counted activity: the column header of the raw table. */
+export function cloRawMax(d: CourseData) {
+  const share = cloShares(d)
+  return new Map(
+    d.clos.map((c) => [
+      c.id,
+      d.activities
+        .filter((a) => a.weight > 0)
+        .reduce((t, a) => t + (a.maxScore * (share.get(`${a.id}|${c.id}`) ?? 0)) / 100, 0),
+    ]),
+  )
+}
+
+/**
+ * G2 — pass/fail per activity against its own pass mark, over enrolled students.
+ * Reported only: an activity's pass mark never decides a CLO (CR-03).
+ */
+export function activityStats(
+  d: CourseData,
+  a: ReturnType<typeof analyse>,
+  passMarks: Map<string, number>,
+) {
+  const enrolled = new Set(a.enrolled.map((r) => r.student.id))
+  return d.activities.map((x) => {
+    const rows = d.scores.filter((s) => s.activityId === x.id && enrolled.has(s.studentId))
+    const percents = rows
+      .filter((s) => s.status !== "EXCUSED" && s.score !== null)
+      .map((s) => (s.score! / x.maxScore) * 100)
+    const passMark = passMarks.get(x.id) ?? 50
+    return {
+      activityId: x.id,
+      name: x.name,
+      passMark,
+      passCount: percents.filter((v) => v >= passMark).length,
+      failCount: percents.filter((v) => v < passMark).length,
+      // CR-05.1: excused is not "missing".
+      missingCount: enrolled.size - rows.length,
+      averagePercent: percents.length
+        ? percents.reduce((t, v) => t + v, 0) / percents.length
+        : null,
+    }
+  })
+}
+
+/**
+ * G2 — totals in ten 10-point bins (the prototype's histogram); 100 falls in the last bin.
+ * Only complete totals (FR-84): a total over half the activities is not where a student sits.
+ */
+export function distribution(a: ReturnType<typeof analyse>) {
+  const bins = Array.from({ length: 10 }, (_, i) => ({
+    from: i * 10,
+    to: i === 9 ? 100 : i * 10 + 10,
+    count: 0,
+  }))
+  for (const r of a.enrolled)
+    if (r.complete && r.totalScore !== null)
+      bins[Math.min(9, Math.max(0, Math.floor(r.totalScore / 10)))]!.count++
+  return bins
 }
 
 /** FR-84: why the course's numbers cannot be trusted yet. Empty = computable. */
