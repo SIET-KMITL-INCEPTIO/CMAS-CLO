@@ -15,6 +15,8 @@ export type CloAttainment = {
   atRiskCount: number
   notEvaluatedCount: number
   provisionalCount: number
+  /** Full raw marks of the CLO over every counted activity — the raw table's "เต็ม" (CR-03.2). */
+  rawMax: number
 }
 export type Attainment = {
   classTarget: number
@@ -92,6 +94,8 @@ export type CourseSummary = {
     completeCount: number
     passedCount: number
     totals: number[]
+    /** The histogram: ten 10-point bins over the same complete totals; 100 is in the last. */
+    distribution: { from: number; to: number; count: number }[]
   }
   activities: {
     activityId: string
@@ -109,6 +113,13 @@ export type ClassResultRow = {
   studentId: string
   studentCode: string
   name: string
-  clos: { cloId: string; score: number | null; status: CloStatus; provisional: boolean }[]
+  clos: {
+    cloId: string
+    score: number | null
+    status: CloStatus
+    provisional: boolean
+    /** CR-03.2 · M5 — points behind the percent; null = no activity measures the CLO yet. */
+    raw: { earned: number; maxScored: number; maxAll: number; missing: number } | null
+  }[]
   totalScore: number | null
 }

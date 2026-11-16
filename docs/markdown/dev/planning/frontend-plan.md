@@ -92,8 +92,8 @@ See also: [[prototype-to-app]] · [[features-pages]] · [[user-flow]] · [[api-d
 | # | เพิ่มอะไร | ใช้ที่หน้า | หมายเหตุ |
 |---|---|---|---|
 | **G1** ✅ | `GET /users/instructors?q=` — ผู้สอนที่ใช้งานได้ (INSTRUCTOR · เปิดใช้ · ACTIVE) คืนแค่ id · ชื่อ · อีเมล สูงสุด 10 คน · สิทธิ์ `course.create` (ADMIN และผู้สอน) | ตั้งค่ารายวิชา › ผู้สอน | ไม่ส่งข้อมูลอื่นของบัญชี (A-9) |
-| **G2** | เพิ่มใน `GET …/dashboard/attainment`: `activities[{id, passed, failed, pending}]` และ `distribution[{from, to, count}]` | ภาพรวม | คำนวณใน `lib/attainment.ts` ตัวเดียว (FR-88) |
-| **G3** | `GET /courses/:courseId/dashboard/students` — ทุกคนในชั้น: คะแนนร้อยละและคะแนนดิบราย CLO · ผ่านกี่ CLO · คะแนนรวม · สถานะ | ผลรายนักศึกษา | ต้องนิยาม "คะแนนดิบราย CLO" จากต้นแบบ (`cloRaw`) ลง SRS ก่อน |
+| **G2** ✅ | `GET …/dashboard/summary` (หน้าภาพรวมทั้งหน้าใน response เดียว): `activities[{activityId, passCount, failCount, missingCount, averagePercent}]` และ `course.distribution[{from, to, count}]` 10 ช่วง | ภาพรวม | คำนวณใน `lib/attainment.ts` (`activityStats`, `distribution`) ตาม FR-88 · 2026-11-16 |
+| **G3** ✅ | `GET /courses/:courseId/dashboard/students` — ทุกคนในชั้น: คะแนนร้อยละและคะแนนดิบราย CLO (`clos[].raw`) · คะแนนรวม · สถานะ · คะแนนเต็มราย CLO อยู่ที่ `summary.attainment.data.clos[].rawMax` | ผลรายนักศึกษา | คะแนนดิบตาม [[srs]] CR-03.2 · 2026-11-16 |
 | **G4** | `GET /dashboard/overview` โหลดทุกวิชาในชุด query เดียว | หน้าแรกหลังล็อกอิน | ตอนนี้ราว 5 วินาทีต่อวิชา |
 
 ทุกข้อเพิ่มแถวในชีตออกแบบ API ก่อน (`scripts/build-api-endpoints-workbook.py`) แล้วจึงเขียนโค้ด ตามกติกาของ [[api-design-plan]]
@@ -129,6 +129,6 @@ F1 ถึง F4 ต่อกันตามลำดับ · F5 F6 F7 ทำข
 |---|---|---|
 | request ช้า 2–5 วินาที (`pgbouncer=true` + โตเกียว) | ตารางคะแนนรู้สึกค้าง | เปลี่ยน `DATABASE_URL` เป็นพอร์ต 5432 · บันทึกแบบ optimistic แล้วแก้กลับเมื่อ error · ปุ่มบันทึกแสดงสถานะ |
 | ตารางคะแนนซับซ้อนที่สุด (คีย์บอร์ด วาง เลิกทำ 409 ยกเว้น) | ใช้เวลาเกินขั้นอื่น | ทำ F4 ให้เสร็จก่อน F5–F7 · เขียน test ของตารางก่อนหน้าจอส่วนอื่น |
-| G3 ยังไม่มีนิยามใน SRS | ตัวเลขคะแนนดิบราย CLO ไม่ตรงต้นแบบ | อ่านสูตร `cloRaw` จากต้นแบบแล้วเขียนเป็นข้อใน SRS ก่อนเขียนโค้ด |
+| ~~G3 ยังไม่มีนิยามใน SRS~~ | ~~ตัวเลขคะแนนดิบราย CLO ไม่ตรงต้นแบบ~~ | ปิดแล้ว 2026-11-16 — [[srs]] CR-03.2 (ต่างจากต้นแบบเฉพาะกิจกรรมน้ำหนัก 0) |
 | สลับ design system ทั้งชุด | หน้าที่มีอยู่ (`Users`, `Login`) เพี้ยนชั่วคราว | ทำใน F0 ครั้งเดียว แล้วไล่ปรับสองหน้านั้นในขั้นเดียวกัน |
 | feature freeze อา. 13 ธ.ค. ([[sprint-plan-2026]]) | ไม่ทันครบ 7 ขั้น | ตัดตามลำดับ: F7 ค้นหา/ทางลัด → F5 histogram → F6 อิงกลุ่ม |
