@@ -51,7 +51,8 @@ test("an ADMIN approves a pending Google account", async ({ page }) => {
 
   const row = page.getByRole("row").filter({ hasText: PENDING_EMAIL })
   await expect(row).toBeVisible()
-  await row.getByRole("button", { name: "อนุมัติ" }).click()
+  // exact: PENDING_NAME contains "อนุมัติ", so the name button would match too.
+  await row.getByRole("button", { name: "อนุมัติ", exact: true }).click()
 
   await expect(page.getByText(`อนุมัติ ${PENDING_NAME} แล้ว`)).toBeVisible()
   await expect
