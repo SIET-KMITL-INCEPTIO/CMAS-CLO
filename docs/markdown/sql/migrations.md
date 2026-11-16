@@ -29,7 +29,7 @@ migration off it. One migration, one review, one mental model.
 Adding a hand-written `002` here "for consistency" would create a second,
 divergent source of truth for DDL that Prisma already owns.
 
-## Live migrations — `database/migrations/` (as of 2026-09-26)
+## Live migrations — `database/migrations/` (as of 2026-11-15)
 
 | Migration | Date | What it does | Hand-written |
 |---|---|---|---|
@@ -40,16 +40,18 @@ divergent source of truth for DDL that Prisma already owns.
 | `0005_single_course_role_solo_and_self_registration` | 2026-09-14 | Drops `CourseRole` + `uq_courseinstructor_lead` (D1) · `CLO.soloLevel` (D4) · `EmailVerificationToken` · `User.passwordHash` nullable, `authProvider`, `googleSub`, `emailVerifiedAt` (D6) · `classTarget` default 70 → 100 (D2) | **yes** |
 | `0006_clo_objective_activity_hierarchy` | 2026-09-17 | Drops `ObjectiveAssessment` and `CLO.threshold` · `AssessmentCriteria` re-keyed to `objectiveId` · `Course.cloPassMark` (average of the old thresholds) · `CLO.weight` · `BehavioralObjective.weight` · `Activity.type` / `assessmentMethod` / `criteriaNote` / `passMark` (drops `method`) | **yes** |
 | `0007_google_domain_account_status` | 2026-09-23 | `AccountStatus` enum · `User.status` (default `ACTIVE`) · index `User_status_idx` (FR-08) | **yes** |
+| `0008_index_q_additions_and_refresh_tokens` | 2026-10-22 | What `index-q.html` stores on top of `0007` (D-4): tables `CourseGroupWeight` · `UploadReject` · `RemediationPlan` · `ScoreChange` · `AuthEvent` · `RefreshToken` (D-2, SHA-256 only) · `Course.weightMode` · `Activity` `typeLabel` / `assessmentLabel` / `passScore` / `closedAt` · `ScoreUploadLog.kind` · `Student` `status` / `withdrawnAt` · `Score` `status` / `excuseReason`, `Score.score` NULLable · `User` `mustChangePassword` / `pwResetAt` / `pwChangedAt` (dropped again by `0009_drop_password_columns`) · `OTHER` / `CUSTOM` on `ActivityType` and `AssessmentMethod`. Sections 1–2 generated, section 3 (CHECKs) hand-written; all additive | **partly** |
 | `0009_drop_password_columns` | 2026-11-12 | Drops `User.passwordHash` · `mustChangePassword` · `pwResetAt` · `pwChangedAt` and CHECKs `chk_user_has_credential` · `chk_user_hash` (no passwords) | **yes** |
+| `0009_lock_down_supabase_data_api` | 2026-11-05 | RLS on every `public` table with no policies · revokes Supabase `anon` / `authenticated` grants, now and for future tables (guarded: plain Postgres has no such roles) · pins the trigger functions' `search_path` (Supabase lints 0011, 0013). The app connects as the table owner, so Prisma is unaffected | **yes** |
+
+**Two migrations share the number `0009`.** They were created on separate branches and both merged. Prisma orders by the full folder name, so `0009_drop_password_columns` runs before `0009_lock_down_supabase_data_api`. The names are recorded in every database's `_prisma_migrations` table, so **do not rename either one**. The next migration is `0010`.
 
 **Caveat, stated plainly:** `0002`–`0007` are hand-written, and each header says to compare them with
 `prisma migrate diff --from-migrations … --to-schema-datamodel …` against a shadow database before applying
 anywhere shared. **No note in the repo records that this was done** — until it is, treat migrations 0003–0007 as reviewed
 but not replayed.
 
-Still **not** in any migration (the `index-q.html` prototype uses them): `AuthEvent` · `UploadReject` · `CourseGroupWeight` ·
-`Course.weightMode` · `Activity.passScore` · `User.mustChangePassword` / `pwResetAt` / `pwChangedAt` · `ScoreUploadLog.kind`.
-They are the candidate content of a future `0008`; see [mysql-dumps.md](./mysql-dumps.md).
+Everything the `index-q.html` prototype stores is now in a migration: `0008` added it, and `0009_drop_password_columns` removed the password columns again (sign-in is Google only). See [mysql-dumps.md](./mysql-dumps.md) for the MySQL mirror.
 
 ## Where the hand-written DDL actually lives
 

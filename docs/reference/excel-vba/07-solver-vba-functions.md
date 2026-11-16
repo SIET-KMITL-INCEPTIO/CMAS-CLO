@@ -3,6 +3,7 @@
 > ฉบับแปลภาษาไทยจาก Microsoft Learn ส่วน Concepts → Functions (Solver)
 > สารบัญต้นทาง: <https://learn.microsoft.com/en-us/office/vba/excel/concepts/miscellaneous/functions-excel>
 > ต้นฉบับ Markdown: <https://github.com/MicrosoftDocs/VBA-Docs/tree/main/excel/Concepts/Functions>
+> สัญญาอนุญาต: ต้นฉบับ © Microsoft ใช้ [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (ตัวอย่างโค้ดใช้ MIT) · ไฟล์นี้เป็นงานแปล ไม่ใช่เอกสารทางการของ Microsoft
 > หน้า Overview: <https://learn.microsoft.com/en-us/office/vba/api/overview/excel>
 >
 > คงชื่อฟังก์ชัน/อาร์กิวเมนต์เป็นอังกฤษ ทุกหัวข้อมีบรรทัด **อ้างอิง**

@@ -4,6 +4,7 @@
 > สารบัญต้นทาง: <https://learn.microsoft.com/en-us/office/vba/excel/concepts/miscellaneous/concepts-excel-vba-reference>
 > หน้า Overview: <https://learn.microsoft.com/en-us/office/vba/api/overview/excel>
 > ต้นฉบับ Markdown: <https://github.com/MicrosoftDocs/VBA-Docs/tree/main/excel/Concepts> (ไฟล์ระดับบนสุดของโฟลเดอร์)
+> สัญญาอนุญาต: ต้นฉบับ © Microsoft ใช้ [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (ตัวอย่างโค้ดใช้ MIT) · ไฟล์นี้เป็นงานแปล ไม่ใช่เอกสารทางการของ Microsoft
 >
 > คงชื่อ object / property / method เป็นอังกฤษ ทุกหัวข้อมีบรรทัด **อ้างอิง**
 > **รูปภาพ** ในต้นฉบับไม่ได้คัดลอกมา ดูได้ที่หน้าต้นฉบับ

@@ -21,12 +21,12 @@
 | เขียนคะแนนเป็นชุด | มี `PUT /courses/:courseId/scores` (สิทธิ์ `score.edit`) | `scores.route.ts` |
 | ค่าที่ส่งได้ | เลข ≥ 0, `"EXCUSED"` หรือ `null`; มี `source` และ `reason` | `scores.validator.ts` |
 | อ่านตารางคะแนน | `GET /courses/:courseId/scores` (สิทธิ์ `course.view`) | `scores.route.ts` |
-| ประวัติแก้คะแนน | `ScoreChange` เขียนพร้อมคะแนนในธุรกรรมเดียว; เซลล์ที่ไม่เปลี่ยนไม่เขียน | `score-writer.ts` |
+| ประวัติแก้คะแนน | `ScoreChange` เขียนพร้อมคะแนนในธุรกรรมเดียว; เซลล์ที่ไม่เปลี่ยนไม่เขียน | `score-writer.repository.ts` |
 | ขอบเขตรายวิชา | คนไม่มีสิทธิ์ได้ 404 ไม่ใช่ 403 | `access.middleware.ts` |
 | CORS | origin เดียวจาก `CORS_ORIGIN`, `credentials: true`, วิธี GET/HEAD/POST/PUT/PATCH/DELETE | `app.ts` |
 | Refresh token | cookie `cmas_rt` แบบ `HttpOnly; SameSite=Strict` | `lib/cookie.ts` |
 | กลไก push (SSE/WebSocket) | **ไม่มี** หน้าเว็บใช้ TanStack Query `staleTime` 30 วินาที | `client/src/main.tsx` |
-| ตรวจแก้ชนกัน (version/updatedAt) | **ไม่พบใน `score-writer.ts`** (ใครเขียนทีหลังชนะ) | `score-writer.ts` |
+| ตรวจแก้ชนกัน (version/updatedAt) | **ไม่พบใน `score-writer.repository.ts`** (ใครเขียนทีหลังชนะ) | `score-writer.repository.ts` |
 
 ## 3. สถาปัตยกรรมที่เสนอ
 
@@ -92,7 +92,7 @@ Excel แก้ได้เฉพาะ **คะแนน** ถ้าเพิ�
 
 ## 6. ข้อควรระวัง (ความถูกต้องของข้อมูล)
 
-1. **แก้ชนกัน:** `score-writer.ts` ไม่มีการตรวจเวอร์ชัน อาจารย์แก้ในเว็บกับ Excel พร้อมกัน ฝั่งที่ส่งทีหลังทับ
+1. **แก้ชนกัน:** `score-writer.repository.ts` ไม่มีการตรวจเวอร์ชัน อาจารย์แก้ในเว็บกับ Excel พร้อมกัน ฝั่งที่ส่งทีหลังทับ
    ข้อเสนอ: ส่ง `updatedAt` ของเซลล์ที่อ่านมา แล้วให้ API ปฏิเสธเมื่อค่าเปลี่ยนไปแล้ว (ต้องเพิ่มใน validator และ writer)
 2. **ค่าว่าง:** การนำเข้าไฟล์ปัจจุบันถือว่า "ช่องว่าง = ไม่เขียนทับ" (FR-62) แต่ `PUT` รับ `null` ซึ่งหมายถึงล้างคะแนน
    Add-in ต้องไม่แปลงเซลล์ว่างเป็น `null` โดยอัตโนมัติ ต้องกำหนดกติกาชัดว่าลบเซลล์ = ล้างคะแนนหรือไม่ และแสดงให้อาจารย์เห็นก่อน

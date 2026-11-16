@@ -6,7 +6,7 @@
 import { Prisma } from "@prisma/client"
 import { prisma } from "../../db/prisma.js"
 import { splitGroupWeights } from "../../lib/weights.js"
-import { writeCells, type CellWrite } from "../scores/score-writer.js"
+import { writeCells, type CellWrite } from "../scores/score-writer.repository.js"
 
 export const ACTIVITY_SELECT = {
   id: true,

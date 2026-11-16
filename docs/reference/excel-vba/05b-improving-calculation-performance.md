@@ -3,6 +3,7 @@
 > ฉบับแปลภาษาไทยจาก Microsoft Learn ส่วน Concepts → Excel performance (บทความที่ 2 จาก 3)
 > **อ้างอิงหน้าต้นฉบับ:** <https://learn.microsoft.com/en-us/office/vba/excel/concepts/excel-performance/excel-improving-calculation-performance>
 > ต้นฉบับ Markdown: <https://github.com/MicrosoftDocs/VBA-Docs/blob/main/excel/Concepts/Excel-Performance/excel-improving-calculation-performance.md>
+> สัญญาอนุญาต: ต้นฉบับ © Microsoft ใช้ [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (ตัวอย่างโค้ดใช้ MIT) · ไฟล์นี้เป็นงานแปล ไม่ใช่เอกสารทางการของ Microsoft
 > หน้า Overview: <https://learn.microsoft.com/en-us/office/vba/api/overview/excel>
 >
 > **ใช้กับ:** Excel | Excel 2013 | Excel 2016 | VBA
