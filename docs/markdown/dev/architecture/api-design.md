@@ -114,6 +114,7 @@ client ต้องพก id ทุกชั้นติดตัวไปหม
 | `409` | ชนกับ unique constraint | `(code, semester, year, section)` ซ้ำ · `studentCode` ซ้ำในวิชา |
 | `422` | ผ่าน schema แล้วแต่ผิด **business rule** | `score > maxScore` · ลบผู้สอนคนสุดท้ายของรายวิชา |
 | `429` | Rate limit | login ผิดเกิน 5 ครั้ง/15 นาที (FR-04) |
+| `503` | บริการภายนอกที่ endpoint ต้องใช้ยังไม่ได้ตั้งค่า | `POST /auth/email-link` บน production ที่ไม่มี `SMTP_URL` (FR-07) |
 | `500` | ไม่คาดคิด | — |
 
 > **`403` vs `404` — จุดที่พลาดกันบ่อยที่สุดในระบบนี้**
@@ -162,16 +163,16 @@ Authorization: Bearer <accessToken>
 > `assertCourseAccess()` ตรวจ · ผู้สร้างต้องถูกเพิ่มเป็นผู้สอนของรายวิชาใหม่ **ใน transaction เดียวกับการสร้าง** ไม่อย่างนั้นจะเกิดวิชาที่ไม่มีใครดูแล ·
 > `DELETE /courses/:courseId` = ADMIN หรือผู้สอนของวิชานั้น (P16)
 
-### 3.1 Auth & Users — 13 endpoints (**implement แล้ว 3**)
+### 3.1 Auth & Users — 13 endpoints (**implement แล้ว 6 ตามตาราง**)
 
 > สถานะ: ✅ = มีใน `app/server/src/modules/` แล้ว · ⬜ = contract ยังไม่ทำ · ปัจจุบันเข้าสู่ระบบได้ทาง Google อย่างเดียว
-> (`POST /auth/google` — ตรวจ ID token ที่เซิร์ฟเวอร์ FR-08) · ลิงก์อีเมล (`/auth/email-link`) ยังไม่มี · ระบบไม่มีรหัสผ่าน (ตัด 2026-11-10)
+> (`POST /auth/google` — ตรวจ ID token ที่เซิร์ฟเวอร์ FR-08) · ลิงก์อีเมล (`/auth/email-link`) ✅ 2026-11-16 · ระบบไม่มีรหัสผ่าน (ตัด 2026-11-10)
 
 | | Method | Path | Role | Scope | FR |
 |---|---|---|---|---|---|
 | ✅ | POST | `/auth/google` | — | — | FR-01, FR-08 |
-| ⬜ | POST | `/auth/email-link` | — | — | FR-01, FR-07 |
-| ⬜ | POST | `/auth/email-link/verify` | — | — | FR-01, FR-07, FR-08 |
+| ✅ | POST | `/auth/email-link` | — | — | FR-01, FR-07 |
+| ✅ | POST | `/auth/email-link/verify` | — | — | FR-01, FR-07, FR-08 |
 | ⬜ | POST | `/auth/refresh` | — | — | FR-01 |
 | ⬜ | POST | `/auth/logout` | any | — | FR-01 |
 | ⬜ | GET | `/auth/me` | any | — | NFR-19 |
@@ -311,10 +312,14 @@ Authorization: Bearer <accessToken>
 | กรณี | ผลลัพธ์ |
 |---|---|
 | อีเมลรูปแบบผิด | `400` |
-| ขอซ้ำก่อน 60 วินาที / เกินเพดานต่อ IP | `429` (`@fastify/rate-limit` เฉพาะ route นี้) |
-| อีเมลโดเมนอื่น / ยังไม่มีบัญชี | `202` เหมือนกัน — ตัดสินสถานะตอนเปิดลิงก์ (FR-08) |
+| อีเมลโดเมนอื่น / ยังไม่มีบัญชี / ถูกระงับ | `200` ข้อความเดียวกัน — ยังไม่สร้างบัญชี ตัดสินสถานะตอนเปิดลิงก์ (FR-08) |
+| ขอซ้ำภายใน 60 วินาที | `200` ข้อความเดียวกัน แต่ไม่ส่งอีเมลฉบับที่สอง (FR-07) — ไม่ใช่ `429` เพราะคำตอบต่างกันจะบอกได้ว่ามีคนเพิ่งขอให้อีเมลนี้ |
+| เกินเพดานต่อ IP (5 ครั้ง / 15 นาที) | `429` (`@fastify/rate-limit` เฉพาะ route นี้ · FR-04) |
+| production ยังไม่ตั้ง `SMTP_URL` | `503` เหมือนกันทุกอีเมล |
 
-โทเคน 32 bytes เก็บเฉพาะ hash ใช้ครั้งเดียว อายุ 24 ชม. · ส่งอีเมลหลังตอบ client เพื่อไม่ให้เวลาตอบบอกว่าอีเมลมีบัญชีหรือไม่ ·
+โทเคน 32 bytes (base64url 43 ตัว) เก็บเฉพาะ SHA-256 ใน `EmailVerificationToken` (ผูกกับอีเมล · `userId` เมื่อมีบัญชีแล้ว · migration `0010`) ·
+ใช้ครั้งเดียว อายุ 24 ชม. · ลิงก์ใหม่ยกเลิกลิงก์เก่าของอีเมลเดียวกัน · ลิงก์คือ `<CORS_ORIGIN>/auth/link#<token>` โทเคนอยู่หลัง `#` จึงไม่เข้า log ของ server ·
+ส่งอีเมลหลังตอบ client (ไม่ await) เพื่อไม่ให้เวลาตอบบอกว่าอีเมลมีบัญชีหรือไม่ · ไม่ตั้ง `SMTP_URL` ใน development: พิมพ์ลิงก์ลง log ของ server แทน ·
 ผังตัดสินใจ: [CMAS-Flowchart-AuthMethods.drawio](../../../diagrams/flowchart/CMAS-Flowchart-AuthMethods.drawio)
 
 ### 4.2 `POST /auth/refresh`
@@ -337,12 +342,15 @@ v1 ใช้ stateless JWT จึงไม่มี token blacklist — endpoint
 ### 4.5 `POST /auth/email-link/verify` — FR-01, FR-07, FR-08
 
 ```jsonc
-{ "token": "..." }   // 200 | 401
+{ "token": "..." }   // 200 | 400 | 401 | 403
 // 200 ACTIVE  → { status: "ACTIVE", user: {...}, accessToken } + refresh cookie
-// 200 PENDING → { status: "PENDING", message }      ← รูปแบบเดียวกับ POST /auth/google
+// 200 PENDING → { status: "PENDING", email, message }   ← รูปแบบเดียวกับ POST /auth/google (+ email)
 ```
-`401` เมื่อโทเคนไม่มี / ใช้แล้ว / หมดอายุ / บัญชีถูกปิด (ข้อความเดียวกันทุกกรณี) ·
-ตัดสินสถานะด้วยฟังก์ชันตัวเดียวกับ `/auth/google`: โดเมนคณะ → `ACTIVE` · โดเมนอื่น → `PENDING` · ไม่มีบัญชี → สร้างเป็น `INSTRUCTOR`
+`400` โทเคนไม่ใช่ 43 ตัว base64url · `401` โทเคนไม่มี / ใช้แล้ว / หมดอายุ / ถูกแทนด้วยลิงก์ใหม่ (ข้อความเดียวกันทุกกรณี) ·
+`403` บัญชีถูกปิด — บอกได้เพราะการเปิดลิงก์คือการพิสูจน์ว่าเป็นเจ้าของอีเมล (SRS FR-03) ·
+ตัดสินสถานะตามกฎเดียวกับ `/auth/google`: โดเมนคณะ (ตรงตัว) → `ACTIVE` · โดเมนอื่น → `PENDING` · `ADMIN_EMAILS` → `ADMIN` ·
+ไม่มีบัญชี → สร้างเป็น `INSTRUCTOR` ชื่อ = ส่วนหน้า @ (แก้ได้ที่ `PATCH /auth/me`) · จับคู่บัญชีเดิมด้วยอีเมลแบบไม่สนตัวพิมพ์ ·
+บันทึก AuthEvent `REGISTER` (บัญชีใหม่) และ `LOGIN` · หน้าที่รับลิงก์ฝั่ง client คือ `/auth/link`
 
 ### 4.6 `GET /users` — FR-05
 

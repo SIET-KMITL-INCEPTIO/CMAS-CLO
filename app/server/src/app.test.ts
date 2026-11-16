@@ -140,6 +140,21 @@ describe("error mapping (S-3)", () => {
     expect(res.statusCode).toBe(400)
   })
 
+  it("refuses a malformed email or link before touching the database (FR-07)", async () => {
+    const ask = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/email-link",
+      payload: { email: "not-an-email" },
+    })
+    expect(ask.statusCode).toBe(400)
+    const open = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/email-link/verify",
+      payload: { token: "short" },
+    })
+    expect(open.statusCode).toBe(400)
+  })
+
   it("does not put an unexpected error's message in the response", async () => {
     const res = await app.inject({ method: "GET", url: "/api/v1/__test/bug" })
     expect(res.body).not.toContain(STUDENT_CODE)

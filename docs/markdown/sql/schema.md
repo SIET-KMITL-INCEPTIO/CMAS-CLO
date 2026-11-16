@@ -10,7 +10,7 @@ See also: [[dev]] · [[srs]] · [[Summary Project]] · [[concept-clo MOC]]
 > [`reference/db/mysql/index-q.sql`](../../reference/db/mysql/index-q.sql) (MySQL — สำหรับทำ ER
 > ใน MySQL Workbench)
 >
-> **ฉบับปัจจุบัน: 19 ตาราง · migration `0001`–`0009`** (`0009_drop_password_columns` ตัดคอลัมน์รหัสผ่านของ `User` · `0009_lock_down_supabase_data_api` เปิด RLS ไม่เพิ่มตาราง) (เนื้อหาตารางด้านล่างอธิบาย 13 ตารางของ `0007`; 6 ตารางของ `0008` — `AuthEvent` · `UploadReject` · `CourseGroupWeight` · `ScoreChange` · `RemediationPlan` · `RefreshToken` — ดูคำอธิบายใน [[mysql-dumps]] และ `index-q.sql` · อัปเดต 2026-11-10)
+> **ฉบับปัจจุบัน: 19 ตาราง · migration `0001`–`0010`** (`0009_drop_password_columns` ตัดคอลัมน์รหัสผ่านของ `User` · `0009_lock_down_supabase_data_api` เปิด RLS ไม่เพิ่มตาราง · `0010_email_link_sign_in` ให้ `EmailVerificationToken` ผูกกับอีเมล ไม่เพิ่มตาราง) (เนื้อหาตารางด้านล่างอธิบาย 13 ตารางของ `0007`; 6 ตารางของ `0008` — `AuthEvent` · `UploadReject` · `CourseGroupWeight` · `ScoreChange` · `RemediationPlan` · `RefreshToken` — ดูคำอธิบายใน [[mysql-dumps]] และ `index-q.sql` · อัปเดต 2026-11-10)
 >
 > | เวอร์ชัน | วันที่ | ตาราง | สิ่งที่เปลี่ยน |
 > |---|---|---:|---|

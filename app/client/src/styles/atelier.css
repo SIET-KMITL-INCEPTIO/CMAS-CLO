@@ -1105,6 +1105,26 @@ table.dt tbody tr.cgrouphead:hover td {
   gap: 14px;
 }
 
+.authlink {
+  color: var(--color-haze);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--color-faint);
+}
+.author::before,
+.author::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-edge);
+}
+
 /* ── reader settings: text size and row density, persisted ────────────── */
 html[data-scale="large"] {
   zoom: 1.125;

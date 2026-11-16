@@ -29,7 +29,7 @@ migration off it. One migration, one review, one mental model.
 Adding a hand-written `002` here "for consistency" would create a second,
 divergent source of truth for DDL that Prisma already owns.
 
-## Live migrations — `database/migrations/` (as of 2026-11-15)
+## Live migrations — `database/migrations/` (as of 2026-11-16)
 
 | Migration | Date | What it does | Hand-written |
 |---|---|---|---|
@@ -43,8 +43,9 @@ divergent source of truth for DDL that Prisma already owns.
 | `0008_index_q_additions_and_refresh_tokens` | 2026-10-22 | What `index-q.html` stores on top of `0007` (D-4): tables `CourseGroupWeight` · `UploadReject` · `RemediationPlan` · `ScoreChange` · `AuthEvent` · `RefreshToken` (D-2, SHA-256 only) · `Course.weightMode` · `Activity` `typeLabel` / `assessmentLabel` / `passScore` / `closedAt` · `ScoreUploadLog.kind` · `Student` `status` / `withdrawnAt` · `Score` `status` / `excuseReason`, `Score.score` NULLable · `User` `mustChangePassword` / `pwResetAt` / `pwChangedAt` (dropped again by `0009_drop_password_columns`) · `OTHER` / `CUSTOM` on `ActivityType` and `AssessmentMethod`. Sections 1–2 generated, section 3 (CHECKs) hand-written; all additive | **partly** |
 | `0009_drop_password_columns` | 2026-11-12 | Drops `User.passwordHash` · `mustChangePassword` · `pwResetAt` · `pwChangedAt` and CHECKs `chk_user_has_credential` · `chk_user_hash` (no passwords) | **yes** |
 | `0009_lock_down_supabase_data_api` | 2026-11-05 | RLS on every `public` table with no policies · revokes Supabase `anon` / `authenticated` grants, now and for future tables (guarded: plain Postgres has no such roles) · pins the trigger functions' `search_path` (Supabase lints 0011, 0013). The app connects as the table owner, so Prisma is unaffected | **yes** |
+| `0010_email_link_sign_in` | 2026-11-16 | `EmailVerificationToken.email` (backfilled from `User.email`, lower-cased) · `userId` NULLable — a sign-in link is asked for by email, and the account is created only when the link is opened (FR-07) · index `(email, createdAt)` for the 60-second resend limit · CHECK `chk_emailtoken_email_normalised` | **yes** |
 
-**Two migrations share the number `0009`.** They were created on separate branches and both merged. Prisma orders by the full folder name, so `0009_drop_password_columns` runs before `0009_lock_down_supabase_data_api`. The names are recorded in every database's `_prisma_migrations` table, so **do not rename either one**. The next migration is `0010`.
+**Two migrations share the number `0009`.** They were created on separate branches and both merged. Prisma orders by the full folder name, so `0009_drop_password_columns` runs before `0009_lock_down_supabase_data_api`. The names are recorded in every database's `_prisma_migrations` table, so **do not rename either one**. The next migration is `0011`.
 
 **Caveat, stated plainly:** `0002`–`0007` are hand-written, and each header says to compare them with
 `prisma migrate diff --from-migrations … --to-schema-datamodel …` against a shadow database before applying

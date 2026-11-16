@@ -1,6 +1,7 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from "react"
 
 const Login = lazy(() => import("./features/auth/Login.page.tsx"))
+const EmailLink = lazy(() => import("./features/auth/EmailLink.page.tsx"))
 const Home = lazy(() => import("./features/home/Home.page.tsx"))
 const CourseList = lazy(() => import("./features/courses/CourseList.page.tsx"))
 const Users = lazy(() => import("./features/users/Users.page.tsx"))
@@ -22,7 +23,11 @@ export type AppRoute = {
 // (#clos/c1) became paths (/courses/:courseId/clos).
 
 /** Reachable signed out. */
-export const publicRoutes: AppRoute[] = [{ path: "/auth/login", element: Login }]
+export const publicRoutes: AppRoute[] = [
+  { path: "/auth/login", element: Login },
+  // FR-07: the emailed link, /auth/link#<token>.
+  { path: "/auth/link", element: EmailLink },
+]
 
 /** Inside the app frame, signed in. */
 export const appRoutes: AppRoute[] = [

@@ -46,7 +46,7 @@ SQL_IQ = ROOT / 'docs' / 'reference' / 'db' / 'mysql' / 'index-q.sql'
 TEST_PLAN = ROOT / 'docs' / 'markdown' / 'dev' / 'planning' / 'system-test-plan.md'
 MODULES = ROOT / 'app' / 'server' / 'src' / 'modules'
 
-ALLOWED_STATUS = {200, 201, 400, 401, 403, 404, 409, 422, 429, 500}
+ALLOWED_STATUS = {200, 201, 400, 401, 403, 404, 409, 422, 429, 500, 503}
 READ, NO = 'อ่าน', '—'
 ROLE_ADMIN, ROLE_TEACH, ROLE_BOTH = 'ADMIN', 'ผู้สอนของรายวิชา', 'ADMIN · ผู้สอน'
 ROLE_PUBLIC, ROLE_LOGGED = 'ไม่ต้องล็อกอิน', 'ผู้ใช้ที่ล็อกอิน'

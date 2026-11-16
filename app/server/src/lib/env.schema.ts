@@ -33,6 +33,14 @@ export const envSchema = z
           .map((email) => email.trim().toLowerCase())
           .filter((email) => email.length > 0),
       ),
+    // FR-07: where sign-in links are sent from. smtp:// or smtps://user:pass@host:port.
+    // Unset in development: the link is printed to the server log instead.
+    // Unset in production: asking for a link answers 503 (nothing can be sent).
+    SMTP_URL: z
+      .string()
+      .regex(/^smtps?:\/\//, "SMTP_URL must start with smtp:// or smtps://")
+      .optional(),
+    MAIL_FROM: z.string().min(1).default("CMAS <no-reply@kmitl.ac.th>"),
     RATE_LIMIT_MAX: z.coerce.number().default(100),
     RATE_LIMIT_WINDOW: z.string().default("1 minute"),
   })

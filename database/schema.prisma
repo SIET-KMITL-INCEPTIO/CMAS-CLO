@@ -31,7 +31,7 @@
 // ============================================================================
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   // One SQL query per `include` (LATERAL JOIN) instead of one per relation.
   // Through Supabase every query is a 0.1–0.4 s round trip, so GET /courses/:id
   // went from 9 queries to a few. Schema-only: no migration.
@@ -215,11 +215,11 @@ enum AuthEventAction {
 // ---------------------------------------------------------------------------
 
 model User {
-  id           String  @id @default(cuid())
-  email        String  @unique
-  name         String
-  role         Role    @default(INSTRUCTOR)
-  isActive     Boolean @default(true) // account kill switch (FR-03)
+  id       String  @id @default(cuid())
+  email    String  @unique
+  name     String
+  role     Role    @default(INSTRUCTOR)
+  isActive Boolean @default(true) // account kill switch (FR-03)
 
   // FR-08: PENDING for a Google sign-in from outside the institution domain,
   // until an ADMIN approves it. Everyone else (EMAIL registrations, in-domain
@@ -253,20 +253,25 @@ model User {
   @@index([status]) // Admin's pending-approval list (FR-08)
 }
 
-// One-time email verification link (D6). Only the SHA-256 of the token is
-// stored, so a database read cannot be replayed as a link. Single use
-// (usedAt) and short-lived (expiresAt, 24 h); issuing a new link for a user
-// invalidates the older ones in the application layer.
+// One-time sign-in link (FR-07). Only the SHA-256 of the token is stored, so a
+// database read cannot be replayed as a link. Single use (usedAt) and
+// short-lived (expiresAt, 24 h); issuing a new link for an email invalidates
+// the older ones in the application layer.
+// Keyed on the lower-cased email, not a user: opening the link is what proves
+// the mailbox, so the account is created then, not when someone types an
+// address (0010). userId is set when the email already had an account.
 model EmailVerificationToken {
   id        String    @id @default(cuid())
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email     String
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   tokenHash String    @unique
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
 
   @@index([userId])
+  @@index([email, createdAt]) // FR-07: one link per email per 60 seconds
 }
 
 // ---------------------------------------------------------------------------
