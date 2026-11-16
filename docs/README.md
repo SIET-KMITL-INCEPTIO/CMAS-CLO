@@ -8,12 +8,15 @@ docs/
 ├── markdown/     ← source of truth — แก้ที่นี่เท่านั้น (.md ล้วน)
 ├── html/         ← generated — build ทับทุกครั้ง ห้ามแก้มือ (gitignored)
 ├── index-q/      ← หน้า HTML ที่เขียนมือ ไม่ได้มาจาก markdown
-├── reference/    ← artifact อ้างอิง (SQL dump, .mwb) ไม่ใช่เอกสาร
-│   └── db/  mysql/ (โมเดลแอป) · enterprise/ (โมเดลสถาบัน — แยกสาย) · migrations/ (ก่อน Prisma)
-├── diagrams/     ← ไดอะแกรม แยกตามประเภท: usecase/ · er/ · dfd/ · architecture/ · flowchart/ · threat-model/
+├── reference/    ← ของอ้างอิงที่ไม่ใช่เอกสารของทีม
+│   ├── db/         mysql/ (โมเดลแอป) · enterprise/ (โมเดลสถาบัน — แยกสาย) · migrations/ (ก่อน Prisma)
+│   └── excel-vba/  ฉบับแปลไทยของ Microsoft Excel VBA Concepts (CC BY 4.0)
+├── diagrams/     ← ไดอะแกรม แยกตามประเภท: usecase/ · er/ · dfd/ · architecture/ · flowchart/ · develop/ · threat-model/
 ├── generated/    ← ไฟล์ที่ script สร้าง (gitignored)
 ├── excel/        ← แยกตามการใช้: planning/ · data-model/ · api/ · import-test/
-├── pdf/          ← ไฟล์ส่งมอบ (word/ ถูกลบ 2026-11-09 · สร้างใหม่ด้วย `npm run thesis:ch2`)
+├── word/         ← .docx: ร่างเล่มปริญญานิพนธ์ + ไฟล์ที่ script สร้าง (`thesis:ch2`, `tech-stack-docx.mjs`)
+├── pdf/          ← เอกสารอ้างอิงภายนอก + ไฟล์ส่งมอบ
+├── evidence/     ← หลักฐานผลทดสอบ/ภาพหน้าจอ แยกตามรายงาน (report-04/)
 ├── _generator/   ← ตัว build เอง
 └── VERSIONS.md   ← ไฟล์ไหนเป็นฉบับปัจจุบัน ไฟล์ไหนเป็นรุ่นเก่า และเลขเวอร์ชันแต่ละชุดตรงกันอย่างไร
 ```
@@ -49,10 +52,12 @@ python -m http.server 8899 --directory docs/html
 | `index-q/` | หน้า HTML เขียนมือ — **`index-q.html` = ต้นแบบ UI ทั้งระบบ** (ไฟล์เดียว ใช้เป็นข้อกำหนดเชิงพฤติกรรมของแอปจริง) · `index-q-design-system.html` (สร้างจาก `index-q.html`) · `reports/` หน้าเอกสาร (evaluation-criteria, tech-stack-review, database-preview) · `assets/` CSS/JS ร่วมของ `reports/` · `excel-precheck-trial.html` หน้าทดลองตรวจไฟล์คะแนนก่อนนำเข้า (กฎเดียวกับ `app/server/src/lib/excel.ts`) · `video/` ภาพยนตร์สั้นแนะนำระบบ (HTML ไฟล์เดียว) · `archive/` หน้าที่เลิกใช้ (cs101-clo-tracking · ใช้ธีมเดียวกับต้นแบบแล้ว) · **ทุกหน้า HTML ใช้ธีม Nocturnal Atelier โหมดสว่างอย่างเดียว ตามค่าใน `index-q-design-system.html` ไม่มีโหมดมืด** | ✅ | ✅ |
 | `diagrams/` | ไดอะแกรม แยกตามประเภท — `usecase/` (UML use case) · `er/` · `dfd/` · `architecture/` (สถาปัตยกรรมและโครงสร้างสิทธิ์) · `flowchart/` · `develop/` (ผังงานวงจรพัฒนาระบบ `SDIC.drawio` + `SDIC.png` ที่ `thesis:ch2` ฝังลงบทที่ 2) · `threat-model/` (Threat Modeling Tool) · ชื่อที่ลงท้าย `-INDEX-Q` **สกัดจาก `index-q.html`** · ลงท้าย `_Handwritten` วาดมือ · ภาพรวมอยู่ที่ `diagrams/index-q-architecture.md` | ✅ | ✅ |
 | `reference/db/` | SQL dump, `.mwb`, ER PDF — artifact ที่เอกสารอ้างถึง | ✅ | ✅ |
+| `reference/excel-vba/` | ฉบับแปลไทยของ Microsoft *Excel VBA reference* ส่วน Concepts (CC BY 4.0 ระบุที่มาทุกไฟล์) · ในเล่มให้อ้าง URL ต้นฉบับ | ✅ | ✅ |
 | `generated/` | `project-plan.csv` จาก `npm run plan:csv` | ❌ script ทับ | ❌ gitignored |
 | `excel/` | workbook ส่งมอบ — บางไฟล์สร้างจาก `scripts/build-*.py` | ⚠️ ดูตาราง | ✅ |
-| `word/` | ไม่มีใน repo · `npm run thesis:ch2` สร้าง `CMAS-chapter-2-theory.docx` ให้ใหม่ | ❌ script ทับ | ❌ |
+| `word/` | `CMAS-Tech-Stack-Starter.docx` (สร้างจาก `scripts/tech-stack-docx.mjs`) · `CMAS-Thesis-Draft.docx` (ร่างเล่มปริญญานิพนธ์ของทีม ทำบนแม่แบบคู่มือการจัดทำปริญญานิพนธ์ v3.0 แก้ด้วยมือได้) · `CMAS-chapter-2-theory.docx` สร้างด้วย `npm run thesis:ch2` | ⚠️ ร่างเล่มแก้ได้ · ไฟล์ที่ script สร้างห้ามแก้มือ | ✅ ยกเว้นบทที่ 2 (สร้างใหม่ได้) |
 | `pdf/` | เอกสารอ้างอิงภายนอก + ไฟล์ส่งมอบของทีม | ✅ | ⚠️ ไฟล์หลักสูตร 2567 (135 MB) ไม่ commit |
+| `evidence/` | ผลดิบและภาพหน้าจอที่รายงานความก้าวหน้าอ้างถึง แยกโฟลเดอร์ตามรายงาน (`report-04/` มี `README.md` อธิบายแต่ละไฟล์) | ❌ เก็บตามที่บันทึก | ✅ |
 | `_generator/` | ตัว build (`build.mjs`, `style.css`) | ✅ | ✅ |
 
 ## ทำไม `markdown/` ต้องมีแต่ `.md`

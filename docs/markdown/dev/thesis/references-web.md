@@ -45,7 +45,7 @@ See also: [[theory]] · [[thesis-toc]] · [[srs]] · [[dev]]
 | Microsoft. *Excel VBA reference* (Concepts) | <https://learn.microsoft.com/en-us/office/vba/excel/concepts/miscellaneous/concepts-excel-vba-reference> | พฤติกรรมของ Excel ที่ครูใช้ทำไฟล์คะแนน: ค่า error ของเซลล์ · ชื่อชีตไม่เกิน 31 ตัวอักษร · ขีดจำกัดแถวของ XLS เทียบ XLSX | ✓ |
 | Microsoft. *Excel VBA object model overview* | <https://learn.microsoft.com/en-us/office/vba/api/overview/excel> | หน้าตั้งต้นของชุดเดียวกัน | ✓ |
 
-ฉบับแปลไทยของชุดนี้อยู่ในเครื่อง (`docs/reference/excel-vba/`, ไม่ได้ commit เพราะเป็นเนื้อหาลิขสิทธิ์ของ Microsoft) **ในเล่มให้อ้าง URL ต้นฉบับ ไม่อ้างฉบับแปล**
+ฉบับแปลไทยของชุดนี้อยู่ใน [`docs/reference/excel-vba/`](../../../reference/excel-vba/00-index.md) (commit แล้ว: ต้นฉบับ [MicrosoftDocs/VBA-Docs](https://github.com/MicrosoftDocs/VBA-Docs) ใช้สัญญาอนุญาต CC BY 4.0 ซึ่งยอมให้แปลได้ถ้าระบุที่มา บอกว่าแปล และแนบลิงก์สัญญาอนุญาต ทุกไฟล์ทำครบแล้ว) **ในเล่มให้อ้าง URL ต้นฉบับ ไม่อ้างฉบับแปล**
 
 ## 4. ไม่ใช้เป็นบรรณานุกรม (ใช้ในโปรเจกต์ ไม่ใช่แหล่งวิชาการ)
 

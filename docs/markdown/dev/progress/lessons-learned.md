@@ -2,7 +2,7 @@
 
 > **สร้าง:** 2026-10-25 · **ที่มา:** บทสนทนาใน Claude Code (session "ปัญหาและบทเรียนจากโปรเจกต์") ที่อ่านจาก
 > - git history 112 commit (2026-07-24 → 2026-10-23)
-> - เอกสารใน repo: fishbone, รายงานความก้าวหน้า 02/03, `api-design-plan.md`, `mockup-feedback-2569-10-19.md`, `diagrams/README.md`
+> - เอกสารใน repo: fishbone, รายงานความก้าวหน้า 02/03, `api-design-plan.md`, `mockup-feedback-2026-10-19.md`, `diagrams/README.md`
 > - transcript เต็มของ 6 session: Grading page review, CI/CD testing plan, สถานะโครงการหลัก, API endpoints + frontend F0–F4, Google Auth linking, Index-q and drawio planning
 > - snippet ของ session อื่น (ยังไม่ได้อ่านเต็ม ราว 15 session ช่วงวางแผน เช่น Chapter 3 report review, UML folder in docs)
 >

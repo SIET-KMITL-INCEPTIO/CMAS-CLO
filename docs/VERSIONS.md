@@ -148,7 +148,7 @@ later rewrite. The repo does not record which one was submitted.
 
 | Files | Why they are not versions |
 |---|---|
-| `markdown/graph/fishbone1.md` / `fishbone-4m.md` | Same problem, two analysis methods (5 Why vs 4M). Both current |
+| `markdown/graph/fishbone-5why.md` / `fishbone-4m.md` | Same problem, two analysis methods (5 Why vs 4M). Both current |
 | `markdown/dev/planning/*.md` | Four different plans (project, sprint, mockup feedback, page restyle) |
 | `word/CMAS-chapter-2-theory.docx` / `markdown/dev/thesis/theory.md` | The `.docx` is generated from the `.md` (`npm run thesis:ch2`) |
 
