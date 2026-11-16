@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --env-file=.env src/index.ts",
+    "dev": "tsx watch --env-file=.env --env-file-if-exists=.env.local src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "start:local": "node --env-file=.env dist/index.js",

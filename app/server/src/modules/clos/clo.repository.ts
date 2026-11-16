@@ -57,7 +57,7 @@ export class CloRepository {
 
   /** What CR-02 needs: activity weights and every criteria cell of the course. */
   async weightInputs(courseId: string) {
-    const [activities, cells, objectives, course] = await prisma.$transaction([
+    const [activities, cells, objectives, course] = await Promise.all([
       prisma.activity.findMany({ where: { courseId }, select: { id: true, weight: true } }),
       prisma.assessmentCriteria.findMany({
         where: { activity: { courseId } },
@@ -105,7 +105,7 @@ export class CloRepository {
 
   /** What deleting a CLO takes with it (FR-36). */
   async deleteImpact(cloId: string) {
-    const [objectives, criteria, activities] = await prisma.$transaction([
+    const [objectives, criteria, activities] = await Promise.all([
       prisma.behavioralObjective.count({ where: { cloId } }),
       prisma.assessmentCriteria.count({ where: { objective: { cloId } } }),
       prisma.activity.count({ where: { criteria: { some: { objective: { cloId } } } } }),

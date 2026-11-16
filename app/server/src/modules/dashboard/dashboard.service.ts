@@ -58,7 +58,10 @@ export class DashboardService {
   /** Design #73 · CR-04. */
   async attainment(courseId: string) {
     const snap = await this.data.load(courseId)
-    const a = analyse(snap.data)
+    return this.attainmentOf(snap, analyse(snap.data))
+  }
+
+  private attainmentOf(snap: CourseSnapshot, a: ReturnType<typeof analyse>) {
     const clos = cloAttainment(snap.data, a)
     return {
       data: {
@@ -134,7 +137,10 @@ export class DashboardService {
   /** Design #74 · CR-03.1: no scores yet is a third state, counted, never "at risk". */
   async atRisk(courseId: string) {
     const snap = await this.data.load(courseId)
-    const a = analyse(snap.data)
+    return this.atRiskOf(snap, analyse(snap.data))
+  }
+
+  private atRiskOf(snap: CourseSnapshot, a: ReturnType<typeof analyse>) {
     const order: Record<Level, number> = { COURSE_FAIL: 0, CLO_BELOW: 1, OVERDUE: 1 }
     const rows = a.enrolled
       .map((r) => this.atRiskRow(snap, r))
@@ -152,6 +158,68 @@ export class DashboardService {
         evaluatedCount: a.enrolled.length - notEvaluated,
       },
     }
+  }
+
+  /**
+   * The overview page in one response, from one snapshot: CLO attainment, the
+   * follow-up list, how the class did overall and per activity. Three separate
+   * calls each loaded the whole course again.
+   */
+  async summary(courseId: string) {
+    const snap = await this.data.load(courseId)
+    const a = analyse(snap.data)
+    const complete = a.enrolled.filter((r) => r.complete && r.totalScore !== null)
+    const enrolled = new Set(a.enrolled.map((r) => r.student.id))
+    const activities = snap.data.activities.map((x) => {
+      const rows = snap.data.scores.filter(
+        (s) => s.activityId === x.id && enrolled.has(s.studentId) && s.status !== "EXCUSED",
+      )
+      const percents = rows
+        .filter((s) => s.score !== null)
+        .map((s) => (s.score! / x.maxScore) * 100)
+      const passMark = snap.passMarks.get(x.id) ?? 50
+      return {
+        activityId: x.id,
+        name: x.name,
+        passMark,
+        // Reported only — an activity's pass mark never decides a CLO (schema: passMark).
+        passCount: percents.filter((v) => v >= passMark).length,
+        failCount: percents.filter((v) => v < passMark).length,
+        missingCount: enrolled.size - rows.length,
+        averagePercent: percents.length
+          ? r2(percents.reduce((t, v) => t + v, 0) / percents.length)
+          : null,
+      }
+    })
+    return {
+      attainment: this.attainmentOf(snap, a),
+      atRisk: this.atRiskOf(snap, a),
+      course: {
+        passCriteria: snap.course.passCriteria,
+        enrolledCount: a.enrolled.length,
+        completeCount: complete.length,
+        passedCount: complete.filter((r) => r.coursePassed === true).length,
+        // FR-84: only complete totals — a missing score is not a 0.
+        totals: complete.map((r) => r2(r.totalScore)!),
+      },
+      activities,
+    }
+  }
+
+  /** The results table: every enrolled student's CLO scores in one response (was one call per student). */
+  async classResults(courseId: string) {
+    const snap = await this.data.load(courseId)
+    const a = analyse(snap.data)
+    return a.enrolled.map((r) => ({
+      studentId: r.student.id,
+      studentCode: r.student.studentCode,
+      name: r.student.name,
+      clos: snap.data.clos.map((c) => {
+        const v = r.clos.get(c.id)!
+        return { cloId: c.id, score: r2(v.score), status: v.status, provisional: v.provisional }
+      }),
+      totalScore: r2(r.totalScore),
+    }))
   }
 
   /** Design #75 · FR-85/86: raw score beside the percent (M5); no letter for an S/U course (CR-06). */

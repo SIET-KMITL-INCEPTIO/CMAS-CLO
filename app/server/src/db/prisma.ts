@@ -10,6 +10,12 @@
 import { PrismaClient } from "@prisma/client"
 
 export const prisma = new PrismaClient({
+  // Prisma's default is 5 s per interactive transaction. A transaction that
+  // rewrites a course's activities is one query per row, and through
+  // Supabase's pooler a query costs 0.2–1 s, so the default fails with P2028
+  // (seen on PUT /group-weights). 30 s is the ceiling for a write that is
+  // all-or-nothing by design, not a licence for slow queries.
+  transactionOptions: { maxWait: 10_000, timeout: 30_000 },
   log: [
     { emit: "event", level: "query" },
     { emit: "event", level: "warn" },

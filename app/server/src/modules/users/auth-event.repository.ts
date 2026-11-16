@@ -13,7 +13,7 @@ export class AuthEventRepository {
 
   async list(userId: string, action: AuthEventAction | undefined, skip: number, take: number) {
     const where = { userId, ...(action ? { action } : {}) }
-    const [total, rows] = await prisma.$transaction([
+    const [total, rows] = await Promise.all([
       prisma.authEvent.count({ where }),
       prisma.authEvent.findMany({
         where,

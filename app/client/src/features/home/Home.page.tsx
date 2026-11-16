@@ -1,10 +1,13 @@
+import { Navigate } from "react-router-dom"
+import { byTerm, useCourseList } from "../courses/useCourses.ts"
+
+/**
+ * "รายวิชา" in the rail lands here: the newest course's overview, or the
+ * course manager when the caller has no course yet.
+ */
 export default function Home() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-2">
-      <h1 className="text-2xl font-semibold text-[--color-primary]">CLO System</h1>
-      <p className="text-sm text-gray-500">
-        Course Monitoring and Assessment System for Course Learning Outcomes
-      </p>
-    </div>
-  )
+  const { data, isLoading } = useCourseList()
+  if (isLoading) return <div className="cbody text-[14px] text-dim">กำลังโหลด…</div>
+  const first = [...(data?.courses ?? [])].sort(byTerm)[0]
+  return <Navigate to={first ? `/courses/${first.id}` : "/courses"} replace />
 }

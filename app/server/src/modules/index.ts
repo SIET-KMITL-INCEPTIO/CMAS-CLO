@@ -23,6 +23,7 @@ import { studentsRoutes } from "./students/students.route.js"
 import { scoresRoutes } from "./scores/scores.route.js"
 import { gradingRoutes } from "./grading/grading.route.js"
 import { dashboardRoutes } from "./dashboard/dashboard.route.js"
+import { eventsRoutes } from "./events/events.route.js"
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(healthRoutes)
@@ -35,4 +36,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(scoresRoutes)
   await app.register(gradingRoutes)
   await app.register(dashboardRoutes)
+  await app.register(eventsRoutes, { prefix: "/events" })
 }

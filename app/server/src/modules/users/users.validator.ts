@@ -46,3 +46,11 @@ export const authEventsQuerySchema = z
     perPage: z.coerce.number().int().min(1).max(100).default(20),
   })
   .strict()
+
+// G1: who can be put on a course — searched by name or email, a short list only.
+export const instructorSearchSchema = z
+  .object({
+    q: z.string().trim().min(1).max(100),
+    limit: z.coerce.number().int().min(1).max(10).default(8),
+  })
+  .strict()

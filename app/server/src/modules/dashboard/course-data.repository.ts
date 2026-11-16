@@ -9,7 +9,11 @@ import type { CourseData } from "../../lib/attainment.js"
 export class CourseDataRepository {
   async load(courseId: string) {
     const [course, clos, objectives, activities, cells, students, scores, bands, grades, plans] =
-      await prisma.$transaction([
+      // Promise.all, not $transaction([...]): a batch transaction runs its queries one
+      // after another on one connection plus BEGIN/COMMIT, ~12 round trips through
+      // Supabase's pooler. These are reads, and a batch transaction is READ COMMITTED
+      // anyway (no shared snapshot), so running them side by side loses nothing.
+      await Promise.all([
         prisma.course.findUniqueOrThrow({
           where: { id: courseId },
           select: {
@@ -39,7 +43,14 @@ export class CourseDataRepository {
         prisma.activity.findMany({
           where: { courseId },
           orderBy: { order: "asc" },
-          select: { id: true, name: true, weight: true, maxScore: true, closedAt: true },
+          select: {
+            id: true,
+            name: true,
+            weight: true,
+            maxScore: true,
+            closedAt: true,
+            passMark: true,
+          },
         }),
         prisma.assessmentCriteria.findMany({
           where: { activity: { courseId } },
@@ -69,7 +80,9 @@ export class CourseDataRepository {
         }),
       ])
     const data: CourseData = { course, clos, objectives, activities, cells, students, scores }
-    return { course, data, bands, grades, plans }
+    // passMark rides outside `data`: it is reported, never part of a formula.
+    const passMarks = new Map(activities.map((x) => [x.id, x.passMark]))
+    return { course, data, bands, grades, plans, passMarks }
   }
 
   /** Courses the dashboard overview covers (NFR-06: visibility in the query). */

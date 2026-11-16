@@ -175,6 +175,7 @@ Authorization: Bearer <accessToken>
 | ⬜ | POST | `/auth/refresh` | — | — | FR-01 |
 | ⬜ | POST | `/auth/logout` | any | — | FR-01 |
 | ⬜ | GET | `/auth/me` | any | — | NFR-19 |
+| ✅ | PATCH | `/auth/me` | any | — | FR-119 · แก้ชื่อของตัวเอง อีเมลแก้ไม่ได้ |
 | ✅ | GET | `/users` (`?status=PENDING` หรือ `ACTIVE`) | ADMIN | — | FR-05, FR-08b |
 | ✅ | PATCH | `/users/:id/approve` | ADMIN | — | FR-08b |
 | ⬜ | POST | `/users` | ADMIN | — | FR-05 |
@@ -269,6 +270,7 @@ Authorization: Bearer <accessToken>
 | Method | Path | Role | Scope | FR |
 |---|---|---|---|---|
 | GET | `/users/:userId/auth-events` | ADMIN | — | FR-22b, UC 1.6 |
+| GET | `/users/instructors` | ADMIN · INSTRUCTOR | — | FR-22 (G1, [[frontend-plan]]) |
 | POST | `/courses/:courseId/duplicate` | ADMIN · INSTRUCTOR | ✅ (ตรวจใน service) | ต้นแบบ |
 | POST | `/activities/:activityId/duplicate` | any | ✅ (resolve) | ต้นแบบ |
 | PUT | `/courses/:courseId/group-weights` | any | ✅ | ต้นแบบ N1/N2 |
@@ -286,6 +288,9 @@ Authorization: Bearer <accessToken>
 | PUT | `/students/:studentId/grade-override` | any | ✅ (resolve) | FR-95 |
 | DELETE | `/students/:studentId/grade-override` | any | ✅ (resolve) | FR-95 |
 | GET | `/courses/:courseId/grades/export` | any | ✅ | FR-87 |
+| GET | `/events` | any | filter ต่อผู้ฟัง (ส่งแค่ `courseId`) | อัปเดตสด (2026-10-23) |
+| GET | `/courses/:courseId/dashboard/summary` | any | ✅ | FR-81…FR-84 · หน้าภาพรวมในคำขอเดียว (2026-10-24) |
+| GET | `/courses/:courseId/dashboard/students` | any | ✅ | FR-85 · ตารางผลทั้งชั้นในคำขอเดียว (2026-10-24) |
 
 **รวม 57 endpoints** ใน §3.1–§3.7 (+ `/health` ที่มีแล้ว) · §3.8 นับแยก
 

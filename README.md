@@ -7,6 +7,13 @@ students on a dashboard.
 
 React 19 SPA · Fastify 5 API · Prisma 6 · PostgreSQL (Supabase)
 
+[![CMAS: 90-second walkthrough (click to play)](docs/index-q/video/cmas-film-90s.png)](https://htmlpreview.github.io/?https://github.com/SIET-KMITL-INCEPTIO/CMAS-CLO/blob/main/docs/index-q/video/cmas-film-90s.html)
+
+**90-second walkthrough.** Click the image to play it in the browser with sound,
+or open [`docs/index-q/video/cmas-film-90s.html`](docs/index-q/video/cmas-film-90s.html)
+locally. The film is a single HTML file with nothing to install. Keys: Space to
+play or pause, ← → to seek, F for fullscreen, M to mute.
+
 ---
 
 ## Quick start
@@ -29,7 +36,7 @@ Then fill in the `.env` files and go:
 # app/server/.env:                  GOOGLE_CLIENT_ID, ADMIN_EMAILS=you@example.com
 # app/client/.env:                  VITE_GOOGLE_CLIENT_ID (same OAuth client)
 npm run db:migrate:dev    # apply the schema
-npm run db:seed           # sample course, CLOs, students and scores
+npm run db:seed           # sample course + the 4 demo courses of index-q.html
 npm run dev               # client :5173 + server :3001
 ```
 
