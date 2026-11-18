@@ -107,7 +107,7 @@ E = [
     # ── 2 บัญชีผู้ใช้ ────────────────────────────────────────────────────────
     (G_USER, "GET", "/users", "รายการบัญชี กรองด้วย ?status=PENDING หรือ ACTIVE", ADMIN, NO, "user.manage", "FR-05, FR-08b", ST_DONE, "—", "", "", ""),
     (G_USER, "PATCH", "/users/:id/approve", "อนุมัติบัญชีที่รออนุมัติ", ADMIN, NO, "user.manage", "FR-08b", ST_DONE, "—", "", "", "โค้ดใช้ :id ไม่ใช่ :userId"),
-    (G_USER, "POST", "/users", "สร้างบัญชีผู้ใช้", ADMIN, NO, "user.manage", "FR-05", ST_LATER, "—", "", "", "รอ D-5"),
+    (G_USER, "POST", "/users", "สร้างบัญชีผู้ใช้ล่วงหน้า (ผู้ดูแลระบบระบุอีเมล ชื่อ บทบาท) · เข้าสู่ระบบครั้งแรกด้วย Google หรือลิงก์อีเมล", ADMIN, NO, "user.manage", "FR-05, UC 1.1, UC 1.4", ST_NEW, "P2", "", "", "ออกแบบใหม่ 2026-11-18 · D-5 ไม่มีรหัสผ่าน จึงไม่ต้องตั้งรหัสให้"),
     (G_USER, "GET", "/users/:userId", "รายละเอียดบัญชีหนึ่งคน", ADMIN, NO, "user.manage", "FR-05", ST_DONE, "P2", "", "", ""),
     (G_USER, "GET", "/users/instructors", "ค้นหาผู้สอนที่มอบหมายเข้ารายวิชาได้ ด้วยชื่อหรืออีเมล", BOTH, NO, "course.create", "FR-22", ST_DONE, "F1", "", "", "G1 ใน frontend-plan"),
     (G_USER, "PATCH", "/users/:userId", "แก้ชื่อหรือบทบาทของบัญชี", ADMIN, NO, "user.manage", "FR-05", ST_DONE, "P2", "", "", ""),
@@ -124,6 +124,8 @@ E = [
     (G_COURSE, "POST", "/courses/:courseId/instructors", "เพิ่มผู้สอนเข้ารายวิชา", BOTH, URL, "staff.write", "FR-22, FR-23", ST_DONE, "P2", "#6", "", ""),
     (G_COURSE, "DELETE", "/courses/:courseId/instructors/:userId", "เอาผู้สอนออก คนสุดท้ายเอาออกไม่ได้ (422)", BOTH, URL, "staff.write", "FR-23", ST_DONE, "P2", "#6", "", "S-9"),
     (G_COURSE, "POST", "/courses/:courseId/duplicate", "คัดลอกรายวิชาเป็นรายวิชาใหม่", BOTH, URL, "course.create", "ต้นแบบ", ST_DONE, "P2", "", "", ""),
+    (G_COURSE, "POST", "/courses/copy-level/preview", "เตรียมรายการยกโครงทั้งชั้นปี: วิชาตามแผนการเรียน จัดเป็นกลุ่ม พร้อมคำเตือนรายวิชา", BOTH, NO, "course.create", "UC 2.9", ST_NEW, "P2", "", "", "ออกแบบใหม่ 2026-11-18 · ไม่เขียนข้อมูล"),
+    (G_COURSE, "POST", "/courses/copy-level/commit", "ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่ ทำทีละวิชา ข้ามวิชาที่ซ้ำ", BOTH, NO, "course.create", "UC 2.9", ST_NEW, "P2", "", "", "ออกแบบใหม่ 2026-11-18 · ต้นแบบ copyLevelDo()"),
     # ── 4 CLO และจุดประสงค์ ─────────────────────────────────────────────────
     (G_CLO, "GET", "/courses/:courseId/clos", "รายการ CLO พร้อมจุดประสงค์", ANY, URL, READ, "FR-30, FR-32", ST_DONE, "P3", "#7", "", ""),
     (G_CLO, "POST", "/courses/:courseId/clos", "เพิ่ม CLO ต้องเลือกระดับ Bloom เอง ไม่มีค่าตั้งต้น", ANY, URL, "clo.write", "FR-30, FR-31, FR-99, FR-100", ST_DONE, "P3", "#7", "", ""),
@@ -152,6 +154,7 @@ E = [
     (G_STU, "PATCH", "/students/:studentId", "แก้ข้อมูลนักศึกษา", ANY, RESOLVE, "student.write", "FR-50", ST_DONE, "P5", "#8", "", ""),
     (G_STU, "DELETE", "/students/:studentId", "ลบนักศึกษาและคะแนนทั้งหมด", ANY, RESOLVE, "student.delete", "FR-53", ST_DONE, "P5", "#8", "", ""),
     (G_STU, "GET", "/courses/:courseId/students/template", "ดาวน์โหลดแบบฟอร์มรายชื่อ", ANY, URL, "score.export", "FR-52", ST_DONE, "P5", "#8", "", ""),
+    (G_STU, "GET", "/courses/:courseId/students/export", "ส่งออกรายชื่อนักศึกษาเป็น Excel", ANY, URL, "score.export", "UC 7.4", ST_NEW, "P2", "", "", "ออกแบบใหม่ 2026-11-18"),
     (G_STU, "POST", "/courses/:courseId/students/import/preview", "ตรวจไฟล์รายชื่อ ยังไม่บันทึก", ANY, URL, "student.write", "FR-52, FR-67", ST_DONE, "P5", "#8", "", "S-6"),
     (G_STU, "POST", "/courses/:courseId/students/import/commit", "บันทึกรายชื่อที่ตรวจผ่าน", ANY, URL, "student.write", "FR-52, FR-68", ST_DONE, "P5", "#8", "", "S-6"),
     (G_STU, "POST", "/students/:studentId/withdraw", "ถอนรายวิชา ออกจากตัวหารทุกตัว คะแนนยังเก็บไว้", ANY, RESOLVE, "student.write", "CR-05.1, CR-10", ST_DONE, "P5", "#8", "✓", ""),
@@ -289,6 +292,8 @@ def classify(method, path, role, cap, status):
         op = "อ่านสรุป/คำนวณ"
     elif method == "GET":
         op = "อ่านรายการเดียว" if by_id or p == "/auth/me" else "อ่านรายการ"
+    elif p.endswith("/copy-level/preview"):
+        op = "อ่านสรุป/คำนวณ"
     elif p.endswith("/import/preview") or p.endswith("/import/commit"):
         op = "นำเข้า"
     elif p.endswith("/reorder"):
@@ -496,7 +501,12 @@ DESIGN = [
      "401 · 403 · 404 \"ไม่พบผู้ใช้งานนี้\"",
      "เปลี่ยนเฉพาะ status ไม่แตะ isActive (ST-AUTH-03) · บันทึก AuthEvent APPROVE เมื่อมีตาราง (S-10, 0008)",
      "ST-AUTH-03"),
-    ("POST", "/users") + LATER_DESIGN,
+    ("POST", "/users", "—",
+     "email (string, อีเมลถูกรูปแบบ, แปลงเป็นตัวพิมพ์เล็ก) · name (string 1–200) · role: \"INSTRUCTOR\" | \"ADMIN\" · strict",
+     "201 · {id, email, name, role, status: \"ACTIVE\", isActive: true}",
+     "400 body ผิดรูป · 401 · 403 ไม่ใช่ ADMIN · 409 อีเมลซ้ำ (เทียบแบบไม่สนตัวพิมพ์) · 429",
+     "user.manage · สร้างเป็น ACTIVE เพราะผู้ดูแลระบบรับรองอีเมลแล้ว (ไม่ผ่านกฎโดเมน FR-08) · emailVerifiedAt = null จนกว่าเจ้าของเข้าสู่ระบบ · ผู้ใช้เข้าด้วย Google (ผูก googleSub ครั้งแรก) หรือลิงก์อีเมล (/auth/email-link จับคู่อีเมลแบบไม่สนตัวพิมพ์) · ไม่ส่งอีเมลเชิญอัตโนมัติ · เขียน AuthEvent · ไม่ตั้งรหัสผ่าน (D-5)",
+     "ST-AUTH-10"),
     ("GET", "/users/instructors", "q (ชื่อหรืออีเมล 1–100 ตัว) · limit=8 (≤ 10)", "—",
      "200 · [{id, name, email}] เฉพาะบัญชีผู้สอนที่ใช้งานได้ (ACTIVE และไม่ถูกปิด)",
      "401 ไม่มี token · 400 ไม่ส่ง q",
@@ -573,6 +583,18 @@ DESIGN = [
      "404 ไม่มีผู้สอนคนนี้ในวิชา · 422 \"รายวิชาต้องมีผู้สอนอย่างน้อย 1 คน\" (FR-23)",
      "ล็อกแถววิชา (SELECT … FOR UPDATE) ก่อนนับ กันลบพร้อมกันจนเหลือ 0 คน (S-9) · แก้แถวของตัวเองไม่ได้ (S-9)",
      "ST-COURSE-05"),
+    ("POST", "/courses/copy-level/preview", "—",
+     "year (int 1–4 ชั้นปี) · fromYear (int ปีการศึกษาต้นทาง) · toYear (int ค่าตั้งต้น fromYear + 1, ต้องมากกว่า fromYear) · strict",
+     "200 · {courses: [{courseId, code, name, section, selected, group: \"READY\" | \"EXISTS\" | \"NOT_FOUND\", warnings[]}], toYear} · ไม่เขียนข้อมูล",
+     "400 ปีไม่ถูกต้อง · 401 · 403 ไม่มี course.create · 429",
+     "course.create · แผนการเรียนอ่านจากไฟล์ค่าคงที่ฝั่งเซิร์ฟเวอร์ (lib/study-plan.ts, 40 รายวิชา จากหลักสูตรปรับปรุง 2567) ไม่ใช้ตารางใหม่ · ผู้สอนเห็นเฉพาะวิชาที่ตนสอน ADMIN เห็นทุกวิชา · EXISTS = ปลายทางมี (code, ภาค, ปี, sec) อยู่แล้ว ติ๊กออกให้ · เขียน AuthEvent ถ้าถูกปฏิเสธ (F1)",
+     "ST-COURSE-07"),
+    ("POST", "/courses/copy-level/commit", "—",
+     "year · fromYear · toYear (เหมือน preview) · courseIds: [uuid] 1–100 รายการ ที่ผู้ใช้ติ๊กเลือก · strict",
+     "201 · {created: [{fromCourseId, courseId}], skipped: [{courseId, reason: \"EXISTS\" | \"NO_ACCESS\" | \"NOT_IN_PLAN\"}]}",
+     "400 · 401 · 403 · 404 ไม่มีวิชาใดเข้าถึงได้เลย · 422 courseIds ว่าง หรือ toYear ไม่มากกว่า fromYear · 429",
+     "course.create · ตรวจสิทธิ์และตรวจซ้ำทีละวิชาตอนกดยืนยัน (S9) · คัดลอกทีละวิชา แต่ละวิชาใน transaction ของตัวเอง ใช้ตรรกะเดียวกับ /courses/:id/duplicate (CLO จุดประสงค์ กิจกรรม เกณฑ์ ช่วงเกรด ผู้สอน; ไม่คัดลอกนักศึกษา คะแนน เกรด) · ผู้สอนที่กดอยู่ในวิชาใหม่ (P17) · วิชาต้นทางไม่ถูกแก้ · วิชาที่ล้มไม่ทำให้วิชาที่เสร็จแล้วย้อนกลับ ผลรายวิชาบอกใน skipped",
+     "ST-COURSE-08"),
     ("POST", "/courses/:courseId/duplicate", ":courseId", "— (ไม่มี body)",
      "201 · รายวิชาใหม่ (Sec ถัดไปที่ว่าง)",
      "404 ผู้เรียกมองไม่เห็นวิชาต้นทาง (ตรวจใน service เพราะ course.create ไม่ผูกกับ :courseId) · 422 Sec ครบ 99",
@@ -715,6 +737,11 @@ DESIGN = [
      "403 (student.delete) · 404 · 422 มีคะแนนแต่ไม่ส่ง confirm → errors {scores, grades}",
      "cascade Score · StudentGrade · ScoreChange · RemediationPlan · การลงทะเบียนในวิชาอื่นของรหัสเดียวกันไม่ถูกแตะ",
      "ST-STU-05"),
+    ("GET", "/courses/:courseId/students/export", ":courseId", "—",
+     "200 · xlsx: รหัสนักศึกษา | ชื่อ-นามสกุล | สถานะ (ปกติ / ถอน) · เรียงตามรหัส",
+     "401 · 403 (score.export) · 404",
+     "คอลัมน์รหัสเป็นข้อความ (S-7) · รวมผู้ที่ถอน พร้อมระบุสถานะ · ไม่ส่งคะแนนหรือเกรด · ชื่อไฟล์ไม่มีรหัสนักศึกษา",
+     "ST-IMP-07"),
     ("GET", "/courses/:courseId/students/template", ":courseId", "—",
      "200 · xlsx: หัวเอกสาร + คอลัมน์ รหัสนักศึกษา | ชื่อ-นามสกุล",
      "403 ADMIN (score.export) · 404",
