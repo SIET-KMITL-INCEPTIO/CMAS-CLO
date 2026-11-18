@@ -1,8 +1,14 @@
 import type { FastifyReply, FastifyRequest } from "fastify"
 import { AuthService } from "./auth.service.js"
+import type { EmailLinkService } from "./email-link.service.js"
 import type { SessionService } from "./session.service.js"
 import { REFRESH_TTL_MS } from "./session.service.js"
-import { googleLoginSchema, updateMeSchema } from "./auth.validator.js"
+import {
+  emailLinkRequestSchema,
+  emailLinkVerifySchema,
+  googleLoginSchema,
+  updateMeSchema,
+} from "./auth.validator.js"
 import { env } from "../../lib/env.js"
 import {
   clearRefreshCookie,
@@ -17,6 +23,7 @@ export class AuthController {
   constructor(
     private readonly service: AuthService,
     private readonly sessions: SessionService,
+    private readonly emailLinks: EmailLinkService,
   ) {}
 
   loginWithGoogle = async (req: FastifyRequest, reply: FastifyReply) => {
@@ -35,6 +42,46 @@ export class AuthController {
       case "ok":
         // S-2: the refresh token goes to an httpOnly cookie, never into the body script can read.
         await this.sessions.start(result.user.id, result.refreshToken)
+        setRefreshCookie(reply, result.refreshToken, REFRESH_TTL_MS / 1000)
+        return ok(reply, {
+          status: "ACTIVE" as const,
+          user: result.user,
+          accessToken: result.accessToken,
+        })
+    }
+  }
+
+  /** FR-07: the same answer for every well-formed address (no account enumeration). */
+  requestEmailLink = async (req: FastifyRequest, reply: FastifyReply) => {
+    const { email } = emailLinkRequestSchema.parse(req.body)
+    const result = await this.emailLinks.request(email)
+    if (result.outcome === "unavailable")
+      return reply.status(503).send({
+        success: false,
+        message: "ยังส่งอีเมลไม่ได้ — เข้าสู่ระบบด้วย Google หรือติดต่อผู้ดูแลระบบ",
+      })
+    return ok(reply, { message: "ถ้าอีเมลนี้ลงทะเบียนได้ ระบบส่งลิงก์เข้าสู่ระบบไปแล้ว" })
+  }
+
+  verifyEmailLink = async (req: FastifyRequest, reply: FastifyReply) => {
+    const { token } = emailLinkVerifySchema.parse(req.body)
+    const result = await this.emailLinks.verify(token)
+    switch (result.outcome) {
+      case "invalid":
+        return unauthorized(reply, "ลิงก์นี้ใช้ไปแล้วหรือหมดอายุ — ขอลิงก์ใหม่")
+      case "suspended":
+        // FR-03: they proved the mailbox, so naming the suspension leaks nothing.
+        return forbidden(reply, "บัญชีนี้ถูกระงับการใช้งาน — ติดต่อผู้ดูแลระบบ")
+      case "pending":
+        if (result.registered) await this.sessions.registered(result.userId, true)
+        return ok(reply, {
+          status: "PENDING" as const,
+          email: result.email,
+          message: "บัญชีของคุณอยู่ระหว่างรอการอนุมัติจากผู้ดูแลระบบ",
+        })
+      case "ok":
+        if (result.registered) await this.sessions.registered(result.user.id, false)
+        await this.sessions.start(result.user.id, result.refreshToken, "LOGIN")
         setRefreshCookie(reply, result.refreshToken, REFRESH_TTL_MS / 1000)
         return ok(reply, {
           status: "ACTIVE" as const,

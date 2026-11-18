@@ -33,10 +33,31 @@ export class SessionService {
     private readonly events: AuthEventRepository,
   ) {}
 
-  /** A successful Google sign-in: store the refresh token's hash as a new family. */
-  async start(userId: string, refreshToken: string) {
+  /** A successful sign-in: store the refresh token's hash as a new family. */
+  async start(
+    userId: string,
+    refreshToken: string,
+    via: "LOGIN_GOOGLE" | "LOGIN" = "LOGIN_GOOGLE",
+  ) {
     await this.tokens.create(userId, refreshToken, null, new Date(Date.now() + REFRESH_TTL_MS))
-    await this.events.record(userId, userId, "LOGIN_GOOGLE")
+    await this.events.record(
+      userId,
+      userId,
+      via,
+      via === "LOGIN" ? "เข้าสู่ระบบด้วยลิงก์อีเมล" : undefined,
+    )
+  }
+
+  /** UC 1.6: an account made by opening an email link (FR-07). */
+  async registered(userId: string, pending: boolean) {
+    await this.events.record(
+      userId,
+      userId,
+      "REGISTER",
+      pending
+        ? "ลงทะเบียนด้วยลิงก์อีเมลนอกโดเมนคณะ · รอผู้ดูแลระบบอนุมัติ"
+        : "ลงทะเบียนด้วยลิงก์อีเมล",
+    )
   }
 
   async refresh(presented: string | undefined): Promise<RefreshResult> {

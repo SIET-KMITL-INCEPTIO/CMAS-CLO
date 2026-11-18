@@ -65,5 +65,10 @@ export async function verifyGoogleIdToken(idToken: string): Promise<GoogleIdToke
 export function isInstitutionDomain(payload: GoogleIdTokenPayload): boolean {
   const domain = env.INSTITUTION_EMAIL_DOMAIN.toLowerCase()
   if (payload.hd && payload.hd.toLowerCase() === domain) return true
-  return payload.email.toLowerCase().endsWith(`@${domain}`)
+  return isInstitutionEmail(payload.email)
+}
+
+/** FR-08: the exact domain — `x@it.kmitl.ac.th` is not `@kmitl.ac.th`. Also used by the email link (FR-07). */
+export function isInstitutionEmail(email: string): boolean {
+  return email.toLowerCase().endsWith(`@${env.INSTITUTION_EMAIL_DOMAIN.toLowerCase()}`)
 }

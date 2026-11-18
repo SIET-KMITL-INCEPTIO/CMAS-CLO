@@ -43,8 +43,8 @@
    "courseScope": "—",
    "capability": "—",
    "fr": "FR-01, FR-07",
-   "status": "new",
-   "phase": "P1",
+   "status": "done",
+   "phase": "—",
    "needs0008": false,
    "classification": {
     "operation": "ยืนยันตัวตน",
@@ -55,9 +55,9 @@
    "design": {
     "params": "—",
     "body": "email (string, อีเมลถูกรูปแบบ, ตัดช่องว่างและแปลงเป็นตัวพิมพ์เล็ก)",
-    "success": "200 · {message} ข้อความเดียวกันไม่ว่าอีเมลมีบัญชีหรือไม่ (FR-07)",
-    "errors": "400 body ผิดรูป · 429 ขอซ้ำก่อน 60 วินาที / เกินเพดานต่อ IP",
-    "rules": "สร้างโทเคน 32 bytes เก็บเฉพาะ hash · อายุ 24 ชม. · ใช้ครั้งเดียว · ส่งอีเมลหลังตอบ client ไม่ให้เวลาตอบบอกว่าอีเมลมีบัญชีหรือไม่ · ไม่ log อีเมลลงไฟล์",
+    "success": "200 · {message} ข้อความเดียวกันไม่ว่าอีเมลมีบัญชีหรือไม่ ถูกระงับ หรือขอซ้ำภายใน 60 วินาที (FR-07 · ขอซ้ำไม่ส่งอีเมลฉบับที่สอง)",
+    "errors": "400 body ผิดรูป · 429 เกินเพดานต่อ IP (5 ครั้ง / 15 นาที) · 503 ยังไม่ได้ตั้ง SMTP_URL ใน production",
+    "rules": "สร้างโทเคน 32 bytes (base64url) เก็บเฉพาะ hash · อายุ 24 ชม. · ใช้ครั้งเดียว · ลิงก์ใหม่ยกเลิกลิงก์เก่าของอีเมลเดียวกัน · โทเคนอยู่หลัง # ของลิงก์ (ไม่เข้า log ของ server) · ยังไม่สร้างบัญชีจนกว่าจะเปิดลิงก์ · ส่งอีเมลหลังตอบ client ไม่ให้เวลาตอบบอกว่าอีเมลมีบัญชีหรือไม่ · ไม่ log อีเมลลงไฟล์",
     "tests": "ST-AUTH-08"
    },
    "bodyFields": null,
@@ -74,8 +74,8 @@
    "courseScope": "—",
    "capability": "—",
    "fr": "FR-01, FR-07, FR-08",
-   "status": "new",
-   "phase": "P1",
+   "status": "done",
+   "phase": "—",
    "needs0008": false,
    "classification": {
     "operation": "ยืนยันตัวตน",
@@ -85,9 +85,9 @@
    },
    "design": {
     "params": "—",
-    "body": "token (string ≥ 1) — โทเคนจากลิงก์ในอีเมล",
-    "success": "200 · ACTIVE → {status:'ACTIVE', user{id, email, name, role}, accessToken} + refresh cookie · PENDING → {status:'PENDING', message}",
-    "errors": "400 body ผิดรูป · 401 โทเคนไม่มี / ใช้แล้ว / หมดอายุ / บัญชีถูกปิด (ข้อความเดียวกันทุกกรณี) · 429",
+    "body": "token (string 43 ตัว base64url) — โทเคนจากลิงก์ในอีเมล",
+    "success": "200 · ACTIVE → {status:'ACTIVE', user{id, email, name, role}, accessToken} + refresh cookie · PENDING → {status:'PENDING', email, message}",
+    "errors": "400 body ผิดรูป · 401 โทเคนไม่มี / ใช้แล้ว / หมดอายุ / ถูกแทนด้วยลิงก์ใหม่ (ข้อความเดียวกันทุกกรณี) · 403 บัญชีถูกปิด — บอกได้เพราะเปิดลิงก์แล้วคือพิสูจน์ว่าเป็นเจ้าของอีเมล (SRS FR-03) · 429",
     "rules": "ตัดสินบัญชีด้วยฟังก์ชันเดียวกับ /auth/google: โดเมนคณะ → ACTIVE · อื่น → PENDING (FR-08) · ไม่มีบัญชี → สร้างเป็น INSTRUCTOR · ทำเครื่องหมายใช้แล้วก่อนออก token · บันทึก AuthEvent",
     "tests": "ST-AUTH-09"
    },

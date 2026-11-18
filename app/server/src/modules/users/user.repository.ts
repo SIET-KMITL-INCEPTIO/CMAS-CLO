@@ -45,6 +45,32 @@ export class UserRepository {
     })
   }
 
+  /**
+   * First sign-in by email link (FR-07): opening the link proved the mailbox.
+   * The name is the part before @ until the person changes it (PATCH /auth/me).
+   */
+  createFromEmail(data: { email: string; role: Role; status: AccountStatus }): Promise<User> {
+    return prisma.user.create({
+      data: {
+        email: data.email,
+        name: data.email.split("@")[0]!,
+        authProvider: "EMAIL",
+        role: data.role,
+        status: data.status,
+        emailVerifiedAt: new Date(),
+      },
+    })
+  }
+
+  /** Emails are stored as Google or the person typed them; a link is keyed lower-case. */
+  findByEmailInsensitive(email: string): Promise<User | null> {
+    return prisma.user.findFirst({ where: { email: { equals: email, mode: "insensitive" } } })
+  }
+
+  markEmailVerified(id: string): Promise<User> {
+    return prisma.user.update({ where: { id }, data: { emailVerifiedAt: new Date() } })
+  }
+
   /** An existing EMAIL account signing in with Google for the first time. */
   linkGoogleSub(userId: string, googleSub: string): Promise<User> {
     return prisma.user.update({ where: { id: userId }, data: { googleSub } })

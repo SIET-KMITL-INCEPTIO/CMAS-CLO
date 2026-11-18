@@ -81,6 +81,11 @@
   --bg-a: #f3f3f9;
   --bg-b: #e9eaf4;
   --bg-c: #e3e5f0;
+  --pane: #fafafc;
+  --pane-list: #f7f7fb;
+  --pane-foot: #fafafd;
+  --th-bg: #f6f7fc;
+  --bad-wash: #f4e8e8;
   --shadow-soft: 0 1px 2px rgba(30, 35, 60, 0.03), 0 6px 20px -10px rgba(30, 35, 60, 0.1);
   --shadow-card: 0 1px 2px rgba(30, 35, 60, 0.04), 0 14px 44px -14px rgba(30, 35, 60, 0.13);
   --shadow-pop: 0 2px 6px rgba(30, 35, 60, 0.06), 0 24px 60px -18px rgba(30, 35, 60, 0.28);
@@ -110,6 +115,11 @@
   --bg-a: #151a30;
   --bg-b: #111528;
   --bg-c: #0d111f;
+  --pane: #151a30;
+  --pane-list: #1b2038;
+  --pane-foot: #1b2038;
+  --th-bg: #21263f;
+  --bad-wash: #3b2224;
   --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px -10px rgba(0, 0, 0, 0.5);
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 14px 44px -14px rgba(0, 0, 0, 0.6);
   --shadow-pop: 0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 60px -18px rgba(0, 0, 0, 0.7);

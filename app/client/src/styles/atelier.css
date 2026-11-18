@@ -146,7 +146,7 @@ table.dt thead th {
   padding-top: 8px;
   padding-bottom: 8px;
   color: var(--dim);
-  background: #f6f7fc;
+  background: var(--th-bg);
   white-space: nowrap;
   border-bottom-color: var(--edge);
   position: sticky;
@@ -202,7 +202,7 @@ textarea:focus-visible {
 .inp[aria-invalid="true"],
 select[aria-invalid="true"] {
   border-color: #b96f6e;
-  background: #fbf4f4;
+  background: var(--bad-wash);
 }
 /* U5 — a form error sits under the field that is wrong */
 .ferr {
@@ -611,7 +611,7 @@ select[aria-invalid="true"] {
 .listpane {
   grid-row: 2;
   position: relative;
-  background: #f7f7fb;
+  background: var(--pane-list);
   border-right: 1px solid var(--edge);
   display: flex;
   flex-direction: column;
@@ -784,7 +784,7 @@ body.resizing {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #fafafc;
+  background: var(--pane);
 }
 .chead {
   display: flex;
@@ -869,7 +869,7 @@ body.resizing {
   transition: background 0.14s;
 }
 .stp:hover {
-  background: #f5f6fb;
+  background: var(--tint);
 }
 .stp + .stp::before {
   content: "";
@@ -1034,7 +1034,7 @@ body.resizing {
   gap: 2px;
   padding: 6px 8px;
   border-top: 1px solid var(--edge2);
-  background: #fafafd;
+  background: var(--pane-foot);
 }
 .cact {
   display: inline-grid;
@@ -1052,7 +1052,7 @@ body.resizing {
   color: var(--ink);
 }
 .cact.is-danger:hover {
-  background: #f4e8e8;
+  background: var(--bad-wash);
   color: #a2504f;
 }
 .cact svg {
@@ -1069,7 +1069,7 @@ body.resizing {
   margin-top: 0;
 }
 table.dt tbody tr.cgrouphead td {
-  background: #f1f2f9;
+  background: var(--tint);
   padding-top: 8px;
   padding-bottom: 8px;
   border-bottom-color: var(--edge);
@@ -1078,7 +1078,7 @@ table.dt tbody tr.cgrouphead td {
   z-index: 4;
 }
 table.dt tbody tr.cgrouphead:hover td {
-  background: #f1f2f9;
+  background: var(--tint);
 }
 
 /* ── sign-in ──────────────────────────────────────────────────────────── */
@@ -1103,6 +1103,26 @@ table.dt tbody tr.cgrouphead:hover td {
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.authlink {
+  color: var(--color-haze);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--color-faint);
+}
+.author::before,
+.author::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-edge);
 }
 
 /* ── reader settings: text size and row density, persisted ────────────── */
@@ -1349,7 +1369,7 @@ html[data-density="comfortable"] {
 .cellinp.empty {
   border-style: dashed;
   border-color: #c9cde2;
-  background: #fcfcfe;
+  background: var(--pane-foot);
 }
 .cellinp::placeholder {
   color: #b4b9d2;

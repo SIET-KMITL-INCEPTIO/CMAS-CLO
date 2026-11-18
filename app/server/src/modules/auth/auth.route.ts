@@ -1,6 +1,9 @@
 import type { FastifyInstance } from "fastify"
 import { AuthController } from "./auth.controller.js"
 import { AuthService } from "./auth.service.js"
+import { EmailLinkRepository } from "./email-link.repository.js"
+import { EmailLinkService } from "./email-link.service.js"
+import { createMailer } from "../../lib/mailer.js"
 import { RefreshTokenRepository } from "./refresh-token.repository.js"
 import { SessionService } from "./session.service.js"
 import { AuthEventRepository } from "../users/auth-event.repository.js"
@@ -11,18 +14,30 @@ const LOGIN_LIMIT = { max: 5, timeWindow: "15 minutes" }
 // A refresh happens every 15 minutes per open tab; 5 would lock out a busy browser.
 const REFRESH_LIMIT = { max: 30, timeWindow: "15 minutes" }
 
-// /google and /refresh are unauthenticated on purpose — they ARE how a session starts (FR-08, S-2).
+// /google, /email-link* and /refresh are unauthenticated on purpose — they ARE how a session starts (FR-07, FR-08, S-2).
 export async function authRoutes(app: FastifyInstance) {
   const users = new UserRepository()
   const controller = new AuthController(
     new AuthService(users),
     new SessionService(new RefreshTokenRepository(), users, new AuthEventRepository()),
+    new EmailLinkService(users, new EmailLinkRepository(), createMailer()),
   )
 
   app.post(
     "/google",
     { config: { access: "public", rateLimit: LOGIN_LIMIT } },
     controller.loginWithGoogle,
+  )
+  // FR-04: the same per-IP limit as /google, on asking and on opening.
+  app.post(
+    "/email-link",
+    { config: { access: "public", rateLimit: LOGIN_LIMIT } },
+    controller.requestEmailLink,
+  )
+  app.post(
+    "/email-link/verify",
+    { config: { access: "public", rateLimit: LOGIN_LIMIT } },
+    controller.verifyEmailLink,
   )
   app.post(
     "/refresh",
