@@ -1,4 +1,5 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import { join } from "node:path"
 import { AxeBuilder } from "@axe-core/playwright"
 import { expect, test, type Page } from "@playwright/test"
 import { prisma, signInAs } from "../support/session"
@@ -16,8 +17,9 @@ import { prisma, signInAs } from "../support/session"
  * UPDATE_A11Y_BASELINE=1 npm run test:e2e -- a11y.
  */
 
-const BASELINE_FILE = new URL("../a11y-baseline.json", import.meta.url)
-const FOUND_DIR = new URL("../test-results/", import.meta.url)
+// __dirname, not import.meta: Playwright loads the e2e specs as CommonJS.
+const BASELINE_FILE = join(__dirname, "..", "a11y-baseline.json")
+const FOUND_DIR = join(__dirname, "..", "test-results")
 const UPDATE = process.env.UPDATE_A11Y_BASELINE === "1"
 const baseline: Record<string, string[]> = JSON.parse(readFileSync(BASELINE_FILE, "utf8"))
 const found: Record<string, string[]> = {}
@@ -61,7 +63,7 @@ test.afterAll(async () => {
   // Always kept with the run (CI uploads test-results on failure), so a
   // baseline can be read from a CI run when no local Postgres is at hand.
   mkdirSync(FOUND_DIR, { recursive: true })
-  writeFileSync(new URL("a11y-found.json", FOUND_DIR), json)
+  writeFileSync(join(FOUND_DIR, "a11y-found.json"), json)
   if (UPDATE) writeFileSync(BASELINE_FILE, json)
   await prisma.$disconnect()
 })
