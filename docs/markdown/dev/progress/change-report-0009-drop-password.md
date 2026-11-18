@@ -45,7 +45,7 @@
 1. **ยังไม่ได้รัน migration 0009 กับฐานข้อมูลจริง** (Docker ไม่ได้เปิดในเครื่องตอนทำ) ต้องรัน `npm run db:migrate:dev` บนฐานข้อมูลทดสอบ และชุดทดสอบที่ข้ามไป 64 ตัว ก่อน merge
 2. **ชื่อ migration ชนกับ `feature/frontend-index-q`** ซึ่งมี `0009_lock_down_supabase_data_api` อยู่แล้ว ต้องตกลงลำดับก่อนรวม branch ทั้งสอง (ห้ามเปลี่ยนชื่อโฟลเดอร์ migration หลัง apply)
 3. **ค่า enum `AuthEventAction`** (`PW_RESET` · `PW_CHANGE` · `VERIFY`) ยังอยู่ใน `schema.prisma` เพราะ Postgres ลบค่า enum ไม่ได้ง่าย ๆ ถ้าจะตัดต้องสร้าง type ใหม่ ไม่ได้ทำในงานนี้
-4. **dependency `argon2`** ใน `app/server/package.json` ไม่มีโค้ดใช้แล้ว ยังไม่ได้ถอด เพราะต้องแก้ `package-lock.json`
+4. **dependency `argon2`** ใน `app/server/package.json` ไม่มีโค้ดใช้แล้ว (ถอดแล้วใน PR sync-thesis-numbers)
 5. **ฐานข้อมูลเดิมที่มีผู้ใช้อยู่:** migration จะลบ hash ที่เก็บไว้ถาวร ไม่มีทางกู้คืน (ระบบไม่ได้ใช้ล็อกอินอยู่แล้ว)
 6. สคริปต์สร้าง Excel (`build-er-excel.py`, `build-tqf-presentation-workbook.py`, `build-ui-to-db-workbook.py`) ยังมีคอลัมน์ `passwordHash` ฝังในสคริปต์ ไม่ได้แก้เพราะผลลัพธ์ไม่ถูก commit
 7. `npm run test:unit` ฝั่ง client ไม่ผ่านเกณฑ์ coverage (1.24% < 2%) **เป็นเหมือนกันบน `develop`** ไม่เกี่ยวกับงานนี้
