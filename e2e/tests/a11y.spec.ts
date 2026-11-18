@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs"
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { AxeBuilder } from "@axe-core/playwright"
 import { expect, test, type Page } from "@playwright/test"
 import { prisma, signInAs } from "../support/session"
@@ -17,6 +17,7 @@ import { prisma, signInAs } from "../support/session"
  */
 
 const BASELINE_FILE = new URL("../a11y-baseline.json", import.meta.url)
+const FOUND_DIR = new URL("../test-results/", import.meta.url)
 const UPDATE = process.env.UPDATE_A11Y_BASELINE === "1"
 const baseline: Record<string, string[]> = JSON.parse(readFileSync(BASELINE_FILE, "utf8"))
 const found: Record<string, string[]> = {}
@@ -55,10 +56,13 @@ test.beforeAll(async () => {
 })
 
 test.afterAll(async () => {
-  if (UPDATE) {
-    const sorted = Object.fromEntries(Object.entries(found).sort(([a], [b]) => a.localeCompare(b)))
-    writeFileSync(BASELINE_FILE, `${JSON.stringify(sorted, null, 2)}\n`)
-  }
+  const sorted = Object.fromEntries(Object.entries(found).sort(([a], [b]) => a.localeCompare(b)))
+  const json = `${JSON.stringify(sorted, null, 2)}\n`
+  // Always kept with the run (CI uploads test-results on failure), so a
+  // baseline can be read from a CI run when no local Postgres is at hand.
+  mkdirSync(FOUND_DIR, { recursive: true })
+  writeFileSync(new URL("a11y-found.json", FOUND_DIR), json)
+  if (UPDATE) writeFileSync(BASELINE_FILE, json)
   await prisma.$disconnect()
 })
 
