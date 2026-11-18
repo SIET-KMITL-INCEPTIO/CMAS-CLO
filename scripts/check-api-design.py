@@ -51,7 +51,7 @@ READ, NO = 'อ่าน', '—'
 ROLE_ADMIN, ROLE_TEACH, ROLE_BOTH = 'ADMIN', 'ผู้สอนของรายวิชา', 'ADMIN · ผู้สอน'
 ROLE_PUBLIC, ROLE_LOGGED = 'ไม่ต้องล็อกอิน', 'ผู้ใช้ที่ล็อกอิน'
 FORBIDDEN_BODY = ['courseId', 'uploadedBy', 'changedBy', 'updatedBy', 'status']   # A-8
-ROLE_IN_BODY_OK = {('PATCH', '/users/:userId')}
+ROLE_IN_BODY_OK = {('PATCH', '/users/:userId'), ('POST', '/users')}   # ADMIN sets the role of an account it creates or edits
 
 fails, notes = [], []
 
