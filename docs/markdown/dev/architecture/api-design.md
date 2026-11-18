@@ -8,7 +8,7 @@ See also: [[srs]] · [[dev]] · [[features-pages]] · [[schema]] · [[dfd]] · [
 > **Baseline:** [[srs]] v2.4.0 (single-tenant) · `database/schema.prisma` (**19 models · migration 0001–0010**) ·
 > `app/server/src/` (Fastify 5 — **implement แล้ว 4 endpoint**: `GET /health` · `POST /auth/google` · `GET /users` · `PATCH /users/:id/approve` · ที่เหลือใน §3 ยังเป็น contract)
 > **สถานะ:** Draft — เป็น **contract** ระหว่าง client กับ server ก่อนเริ่ม implement Sprint 1
-> **2026-10-18:** รายการ endpoint ที่ใช้ออกแบบคือ [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) (74 endpoint) แทนตาราง §3 ซึ่งหยุดที่ 58 · เอกสารนี้ยังใช้สำหรับ convention §1–§2 และรายละเอียด endpoint ที่มีอยู่แล้ว ([[api-design-plan]] §1)
+> **2026-11-18 (แผน API ทั้งระบบ):** รายการ endpoint ฉบับใช้งานคือ [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) (**83 endpoint** · ทำแล้ว 79 · ออกแบบใหม่ 4 · สร้างจาก `scripts/build-api-endpoints-workbook.py`) · ตาราง §3.1–§3.8 เป็นรายการ ณ v1.1 และ §3.8 · ที่เพิ่มหลังจากนั้นอยู่ที่ §3.9 · ความสัมพันธ์ use case → endpoint ครบ 49 ข้ออยู่ที่ §3.10 · convention §1–§2 ใช้ตามเดิม ([[api-design-plan]] §1)
 >
 > **v1.1.0 (2026-09-26) — ตามโมเดลข้อมูลหลัง migration `0005`–`0007`:** ไม่มี `CourseRole` (ผู้สอนสิทธิ์เท่ากัน — D1) ·
 > เกณฑ์ผ่าน CLO อยู่ที่ `Course.cloPassMark` แทน `CLO.threshold` (E1) · `CLO` / `BehavioralObjective` มี `weight` กรอกเองได้ (E2) ·
@@ -163,9 +163,9 @@ Authorization: Bearer <accessToken>
 > `assertCourseAccess()` ตรวจ · ผู้สร้างต้องถูกเพิ่มเป็นผู้สอนของรายวิชาใหม่ **ใน transaction เดียวกับการสร้าง** ไม่อย่างนั้นจะเกิดวิชาที่ไม่มีใครดูแล ·
 > `DELETE /courses/:courseId` = ADMIN หรือผู้สอนของวิชานั้น (P16)
 
-### 3.1 Auth & Users — 13 endpoints (**implement แล้ว 6 ตามตาราง**)
+### 3.1 Auth & Users — 13 endpoints (**implement แล้ว 12 · ออกแบบแล้ว 1: `POST /users`**)
 
-> สถานะ: ✅ = มีใน `app/server/src/modules/` แล้ว · ⬜ = contract ยังไม่ทำ · ปัจจุบันเข้าสู่ระบบได้ทาง Google อย่างเดียว
+> สถานะ: ✅ = มีใน `app/server/src/modules/` แล้ว · 📝 = ออกแบบแล้ว ยังไม่เขียนโค้ด (§3.9) · ⬜ = contract ยังไม่ทำ · ปัจจุบันเข้าสู่ระบบได้ทาง Google อย่างเดียว
 > (`POST /auth/google` — ตรวจ ID token ที่เซิร์ฟเวอร์ FR-08) · ลิงก์อีเมล (`/auth/email-link`) ✅ 2026-11-16 · ระบบไม่มีรหัสผ่าน (ตัด 2026-11-10)
 
 | | Method | Path | Role | Scope | FR |
@@ -173,16 +173,16 @@ Authorization: Bearer <accessToken>
 | ✅ | POST | `/auth/google` | — | — | FR-01, FR-08 |
 | ✅ | POST | `/auth/email-link` | — | — | FR-01, FR-07 |
 | ✅ | POST | `/auth/email-link/verify` | — | — | FR-01, FR-07, FR-08 |
-| ⬜ | POST | `/auth/refresh` | — | — | FR-01 |
-| ⬜ | POST | `/auth/logout` | any | — | FR-01 |
-| ⬜ | GET | `/auth/me` | any | — | NFR-19 |
+| ✅ | POST | `/auth/refresh` | — | — | FR-01 |
+| ✅ | POST | `/auth/logout` | any | — | FR-01 |
+| ✅ | GET | `/auth/me` | any | — | NFR-19 |
 | ✅ | PATCH | `/auth/me` | any | — | FR-119 · แก้ชื่อของตัวเอง อีเมลแก้ไม่ได้ |
 | ✅ | GET | `/users` (`?status=PENDING` หรือ `ACTIVE`) | ADMIN | — | FR-05, FR-08b |
 | ✅ | PATCH | `/users/:id/approve` | ADMIN | — | FR-08b |
-| ⬜ | POST | `/users` | ADMIN | — | FR-05 |
-| ⬜ | GET | `/users/:userId` | ADMIN | — | FR-05 |
-| ⬜ | PATCH | `/users/:userId` | ADMIN | — | FR-05 |
-| ⬜ | PATCH | `/users/:userId/status` | ADMIN | — | FR-03, FR-06 |
+| 📝 | POST | `/users` | ADMIN | — | FR-05 |
+| ✅ | GET | `/users/:userId` | ADMIN | — | FR-05 |
+| ✅ | PATCH | `/users/:userId` | ADMIN | — | FR-05 |
+| ✅ | PATCH | `/users/:userId/status` | ADMIN | — | FR-03, FR-06 |
 
 > ที่ implement แล้วใช้ `:id` ไม่ใช่ `:userId` · ยังไม่มี prefix `/api/v1` (G-1)
 
@@ -294,6 +294,85 @@ Authorization: Bearer <accessToken>
 | GET | `/courses/:courseId/dashboard/students` | any | ✅ | FR-85 · ตารางผลทั้งชั้นในคำขอเดียว (2026-10-24) |
 
 **รวม 57 endpoints** ใน §3.1–§3.7 (+ `/health` ที่มีแล้ว) · §3.8 นับแยก
+
+### 3.9 Endpoint ที่ออกแบบเพิ่มจาก use case (2026-11-18) — ยังไม่เขียนโค้ด
+
+> ตรวจ use case 49 ข้อใน [index-q-usecase.drawio](../../../diagrams/usecase/index-q-usecase.drawio) กับ endpoint ที่มี พบ use case ที่ไม่มี endpoint รองรับ 3 ข้อ (1.1 · 2.9 · 7.4) ·
+> รายละเอียด request/response อยู่ในแผ่น `Design` ของ Excel · ทดสอบด้วย ST-AUTH-10 · ST-COURSE-07, 08 · ST-IMP-07 ใน [[system-test-plan]]
+
+| | Method | Path | Role | Scope | UC |
+|---|---|---|---|---|---|
+| 📝 | POST | `/users` (ย้ายจาก "หลัง v1" เพราะ UC 1.1 อยู่ในไดอะแกรม) | ADMIN | — | 1.1 · 1.4 |
+| 📝 | GET | `/courses/:courseId/students/export` | ผู้สอนของวิชา | ✅ | 7.4 |
+| 📝 | POST | `/courses/copy-level/preview` | ADMIN · ผู้สอน | — (กรองตามสิทธิ์ใน service) | 2.9 |
+| 📝 | POST | `/courses/copy-level/commit` | ADMIN · ผู้สอน | — (ตรวจทีละวิชา) | 2.9 |
+
+ข้อกำหนดของแต่ละตัว:
+
+- **`POST /users`** — ADMIN ระบุ `email` `name` `role` · บัญชีเป็น `ACTIVE` ทันที (ผู้ดูแลรับรองอีเมลแล้ว) · ไม่มีรหัสผ่านให้ตั้ง (D-5) · เจ้าของเข้าด้วย Google หรือลิงก์อีเมล ซึ่งจับคู่อีเมลแบบไม่สนตัวพิมพ์ จึงไม่เกิดบัญชีซ้ำ · อีเมลซ้ำ → 409
+- **`GET …/students/export`** — Excel รายชื่อ (รหัสเป็นข้อความ · สถานะปกติ/ถอน) ไม่มีคะแนน
+- **`POST /courses/copy-level/preview`** — รับชั้นปี 1–4 · ปีต้นทาง · ปีปลายทาง (ค่าตั้งต้นต้นทาง + 1) · คืนรายการวิชาตามแผนการเรียนพร้อมกลุ่มและคำเตือน ไม่เขียนข้อมูล · แผนการเรียน (40 วิชา) เป็นไฟล์ค่าคงที่ `lib/study-plan.ts` ไม่เพิ่มตาราง
+- **`POST /courses/copy-level/commit`** — รับรายการวิชาที่ผู้ใช้ติ๊ก · คัดลอกทีละวิชา (แต่ละวิชา 1 transaction) ด้วยตรรกะเดียวกับ `POST /courses/:id/duplicate` · ข้ามวิชาที่ซ้ำหรือไม่มีสิทธิ์พร้อมเหตุผล · ไม่คัดลอกนักศึกษา คะแนน เกรด · สิทธิ์ `course.create`
+
+**ยังต้องตัดสิน:** UC 9.1 เขียนว่าผู้ใช้ "แก้ไขชื่อและอีเมลของตนเอง" แต่ `PATCH /auth/me` แก้ได้แค่ชื่อ (อีเมลเป็นตัวระบุตัวตน ทั้ง Google และลิงก์อีเมลอ้างอิงอีเมลนี้) · ค่าที่ใช้ไปก่อน: **แก้ได้แค่ชื่อ** แล้วปรับไดอะแกรมให้ตรง
+
+### 3.10 Use case → Endpoint (49 ข้อ)
+
+> ตัวเลข = หมายเลขใน [index-q-usecase.drawio](../../../diagrams/usecase/index-q-usecase.drawio) · 📝 = ออกแบบแล้ว ยังไม่ทำ (§3.9) · ทุก use case ที่ไม่มี 📝 มี endpoint ที่ implement แล้ว
+
+| UC | Function | Endpoint |
+|---|---|---|
+| 1.1 | เพิ่มบัญชีผู้ใช้ | 📝 `POST /users` |
+| 1.2 | แก้ไขบัญชีผู้ใช้ | `GET /users` · `GET /users/:userId` · `PATCH /users/:userId` |
+| 1.3 | ระงับการใช้งานบัญชี | `PATCH /users/:userId/status` |
+| 1.4 | กำหนดบทบาทและสิทธิ์ | `PATCH /users/:userId` (`role`) · 📝 `POST /users` |
+| 1.5 | ตรวจสอบประวัติการใช้งาน | `GET /users/:userId/auth-events` |
+| 1.6 | อนุมัติบัญชีที่รออนุมัติ | `GET /users?status=PENDING` · `PATCH /users/:id/approve` |
+| 2.1 | สร้างรายวิชา | `POST /courses` · `GET /users/instructors` |
+| 2.2 | แก้ไขข้อมูลรายวิชา | `GET /courses/:courseId` · `PATCH /courses/:courseId` |
+| 2.3 | ลบรายวิชา | `GET /courses/:courseId/impact` · `DELETE /courses/:courseId` |
+| 2.4 | มอบหมายผู้สอนประจำรายวิชา | `GET /users/instructors` · `POST /courses/:courseId/instructors` |
+| 2.5 | กำหนด Sec / ภาคการศึกษา | `PATCH /courses/:courseId` · `POST /courses/:courseId/duplicate` |
+| 2.6 | เพิ่มผู้สอนในรายวิชา | `GET /courses/:courseId/instructors` · `POST /courses/:courseId/instructors` |
+| 2.8 | ถอดผู้สอนออกจากรายวิชา | `DELETE /courses/:courseId/instructors/:userId` |
+| 2.9 | ยกโครงทั้งชั้นปีไปปีใหม่ | 📝 `POST /courses/copy-level/preview` · 📝 `POST /courses/copy-level/commit` |
+| 3.1 | เพิ่ม CLO | `POST /courses/:courseId/clos` |
+| 3.2 | แก้ไข CLO | `PATCH /clos/:cloId` · `PATCH /courses/:courseId/clos/reorder` |
+| 3.3 | กำหนดเกณฑ์ผ่านของ CLO | `PATCH /courses/:courseId` (`cloPassMark`) |
+| 3.5 | ลบ CLO | `DELETE /clos/:cloId` |
+| 4.1 | เพิ่มวัตถุประสงค์เชิงพฤติกรรม | `GET` · `POST /clos/:cloId/objectives` |
+| 4.2 | เพิ่มวิธีการประเมิน | `POST /courses/:courseId/activities` · `PATCH /activities/:activityId` |
+| 4.3 | เพิ่มเกณฑ์การประเมิน | `GET` · `PUT /courses/:courseId/criteria` |
+| 4.4 | จับคู่วัตถุประสงค์กับ CLO | `POST /clos/:cloId/objectives` · `PUT /courses/:courseId/criteria` |
+| 4.5 | แก้ไขวัตถุประสงค์ | `PATCH /objectives/:objectiveId` |
+| 4.6 | ลบวัตถุประสงค์ | `DELETE /objectives/:objectiveId` |
+| 5.1 | วิเคราะห์และสรุปข้อมูล CLO | `GET /dashboard/overview` · `GET /courses/:courseId/dashboard/summary` · `…/attainment` |
+| 5.2 | คำนวณคะแนนตาม CLO | ใช้ร่วมกับ 5.1 (`lib/attainment.ts` ที่เดียว · FR-88) |
+| 5.3 | แสดงผลสรุประดับรายวิชา | `GET /courses/:courseId/dashboard/summary` |
+| 5.4 | ติดตามผู้เรียนรายบุคคล | `GET …/dashboard/students` · `GET …/dashboard/students/:studentId` |
+| 5.5 | ส่งออกรายงาน | `GET /courses/:courseId/dashboard/export` |
+| 5.6 | ระบุนักศึกษาที่ต้องติดตาม | `GET /courses/:courseId/dashboard/at-risk` |
+| 5.7 | บันทึกแผนพัฒนาผู้เรียนรายคน | `PUT` · `DELETE /students/:studentId/remediation-plans/:cloId` |
+| 6.1 | นำเข้าคะแนนกิจกรรม | `POST …/scores/import/preview` · `POST …/scores/import/commit` |
+| 6.2 | ดาวน์โหลดเทมเพลตคะแนน | `GET /courses/:courseId/scores/template` |
+| 6.3 | ตรวจสอบความถูกต้องของข้อมูล | `POST …/scores/import/preview` |
+| 6.4 | ส่งออกคะแนนกิจกรรม | `GET /courses/:courseId/scores/export` |
+| 6.5 | แสดงรายงานข้อผิดพลาดการนำเข้า | `GET /courses/:courseId/uploads` · `GET /uploads/:uploadId/errors` |
+| 6.6 | แก้ไขคะแนนบนหน้าเว็บ | `GET` · `PUT /courses/:courseId/scores` · `POST /activities/:id/close` · `…/reopen` · `GET …/score-changes` |
+| 7.1 | นำเข้ารายชื่อนักศึกษา | `POST /courses/:courseId/students` · `POST …/students/import/preview` · `…/commit` |
+| 7.2 | ดาวน์โหลดเทมเพลตรายชื่อ | `GET /courses/:courseId/students/template` |
+| 7.3 | ตรวจสอบรูปแบบและรายการซ้ำ | `POST …/students/import/preview` |
+| 7.4 | ส่งออกรายชื่อนักศึกษา | 📝 `GET /courses/:courseId/students/export` |
+| 7.5 | แสดงรายงานข้อผิดพลาดการนำเข้า | `GET /courses/:courseId/uploads` · `GET /uploads/:uploadId/errors` |
+| 7.6 | ลบนักศึกษาออกจากรายวิชา | `DELETE /students/:studentId` · `POST …/withdraw` · `POST …/restore` |
+| 8.1 | กำหนดขอบเขตเกรด | `PUT /courses/:courseId/grade-bands` |
+| 8.2 | ประมวลผลและตรึงเกรด | `GET /courses/:courseId/grading` · `POST …/grading/run` · `DELETE …/grading` · `GET …/grades/export` |
+| 8.3 | ปรับเกรดรายบุคคล | `PUT` · `DELETE /students/:studentId/grade-override` |
+| 9.1 | แก้ไขชื่อของตนเอง | `GET /auth/me` · `PATCH /auth/me` (ชื่ออย่างเดียว ดูข้อที่ต้องตัดสินใน §3.9) |
+| 9.2 | ลงทะเบียนด้วยลิงก์อีเมล | `POST /auth/email-link` · `POST /auth/email-link/verify` |
+| 9.3 | ลงทะเบียนด้วยบัญชี Google | `POST /auth/google` |
+
+ใช้ร่วมทุกบทบาท: `POST /auth/refresh` · `POST /auth/logout` · `GET /courses` · `GET /events` (อัปเดตสด) · `GET /health`
 
 ---
 
