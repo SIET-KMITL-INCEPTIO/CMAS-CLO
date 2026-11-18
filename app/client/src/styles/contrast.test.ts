@@ -48,15 +48,25 @@ function contrast(a: string, b: string): number {
   return (hi! + 0.05) / (lo! + 0.05)
 }
 
-/** Text tokens (Tailwind text-* and CSS color:) and the surfaces they are drawn on. */
-const TEXT = ["ink", "ink2", "ink-soft", "dim", "faint", "ok", "warn", "bad", "info"]
+/**
+ * Text tokens (Tailwind text-* and CSS color:) and the surfaces they are drawn
+ * on. `faint` is decoration only (lines, icons) since P1, so it is not here;
+ * theme.test.ts fails if it is used for text again.
+ */
+const TEXT = ["ink", "ink2", "ink-soft", "dim", "ok", "warn", "bad", "info", "danger"]
 const SURFACES = ["card", "wash", "pane", "pane-list"]
-/** Status text on its own tinted badge. */
+/** Text on its own filled background: status badges, buttons, chips. */
 const BADGES: [string, string][] = [
   ["ok", "okBg"],
   ["warn", "warnBg"],
   ["bad", "badBg"],
   ["info", "infoBg"],
+  ["on-primary", "primary"],
+  ["on-primary", "primary-hover"],
+  ["on-primary", "sel"],
+  ["on-danger", "danger"],
+  ["on-danger", "danger-hover"],
+  ["chip-ink", "chip"],
 ]
 
 type Pair = { theme: "light" | "dark"; fg: string; bg: string }
@@ -67,26 +77,10 @@ const PAIRS: Pair[] = (["light", "dark"] as const).flatMap((theme) => [
 const label = (p: Pair) => `${p.theme} ${p.fg} on ${p.bg}`
 
 /**
- * Pairs below 4.5:1 when this test was written (P0, 2026-11-18). P1 fixes the
- * tokens and empties this list; the test fails if a pair is added here that
- * passes, or if a pair not listed here fails, so the list can only shrink.
+ * Pairs below 4.5:1. P0 (2026-11-18) recorded 16; P1 fixed the tokens and
+ * emptied the list. A pair that drops below 4.5:1 now fails the build.
  */
-const KNOWN_FAILURES: string[] = [
-  "light dim on card",
-  "light dim on wash",
-  "light dim on pane",
-  "light dim on pane-list",
-  "light faint on card",
-  "light faint on wash",
-  "light faint on pane",
-  "light faint on pane-list",
-  "light ok on wash",
-  "light ok on pane-list",
-  "light ok on okBg",
-  "dark faint on card",
-  "dark faint on pane-list",
-  "dark faint on wash",
-]
+const KNOWN_FAILURES: string[] = []
 
 describe("text contrast (U-1, WCAG 2.2 AA 1.4.3)", () => {
   const failing = PAIRS.filter((p) => contrast(hex(p.fg, p.theme), hex(p.bg, p.theme)) < 4.5)

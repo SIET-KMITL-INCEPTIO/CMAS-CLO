@@ -26,7 +26,7 @@
   --color-edge2: #edeef6;
   --color-ink: #1e233c;
   --color-ink2: #4a5070;
-  --color-dim: #878cb4;
+  --color-dim: #646a8c; /* was #878cb4 (3.26:1): AA needs 4.5:1 (D-UI-2) */
   --color-faint: #9aa0be;
   --color-fgray: #b8bed7;
   --color-csub: #afaecc;
@@ -35,7 +35,7 @@
   --color-ev2: #44405a;
 
   /* status: text · background · border */
-  --color-ok: #4f7c68;
+  --color-ok: #43705c; /* was #4f7c68: 4.06:1 on okBg */
   --color-okBg: #e7efea;
   --color-okBd: #bcd3c6;
   --color-warn: #7d6430;
@@ -61,7 +61,7 @@
   --row-py: 10px; /* driven by the density setting */
   --ink: #1e233c;
   --ink2: #4a5070;
-  --dim: #878cb4;
+  --dim: #646a8c;
   --faint: #9aa0be;
   --cool: #878cb4;
   --edge: #e4e5f0;
@@ -86,6 +86,24 @@
   --pane-foot: #fafafd;
   --th-bg: #f6f7fc;
   --bad-wash: #f4e8e8;
+  /* controls that had fixed light colours in atelier.css (P1, U-2) */
+  --primary: #1e233c;
+  --primary-hover: #465078;
+  --on-primary: #ffffff;
+  --danger: #a2504f;
+  --danger-hover: #8c4241;
+  --danger-edge: #dcbaba;
+  --on-danger: #ffffff;
+  --bad-edge: #b96f6e;
+  --chip: #eaebf4;
+  --chip-ink: #5b6180;
+  --track: #e7e8f2;
+  --hover: #edeef6;
+  --edge-strong: #cfd3e4;
+  --edge-focus: #a8aecd;
+  --edge-empty: #c9cde2;
+  --scroll-thumb: #d5d7e6;
+  --muted-ink: #9aa0be;
   --shadow-soft: 0 1px 2px rgba(30, 35, 60, 0.03), 0 6px 20px -10px rgba(30, 35, 60, 0.1);
   --shadow-card: 0 1px 2px rgba(30, 35, 60, 0.04), 0 14px 44px -14px rgba(30, 35, 60, 0.13);
   --shadow-pop: 0 2px 6px rgba(30, 35, 60, 0.06), 0 24px 60px -18px rgba(30, 35, 60, 0.28);
@@ -99,7 +117,7 @@
   --ink2: #bcc1dd;
   --ink-soft: #a7adcf;
   --dim: #8f95c0;
-  --faint: #7c82ab;
+  --faint: #8a90b9;
   --cool: #8f95c0;
   --edge: #353b5d;
   --edge2: #2b3152;
@@ -120,6 +138,23 @@
   --pane-foot: #1b2038;
   --th-bg: #21263f;
   --bad-wash: #3b2224;
+  --primary: #b4bbf0;
+  --primary-hover: #c8cdeb;
+  --on-primary: #151a30;
+  --danger: #e49190;
+  --danger-hover: #f0a9a8;
+  --danger-edge: #6e3a3b;
+  --on-danger: #1b2038;
+  --bad-edge: #a35f5f;
+  --chip: #2b3152;
+  --chip-ink: #bcc1dd;
+  --track: #2b3152;
+  --hover: #262b49;
+  --edge-strong: #444b72;
+  --edge-focus: #5d6590;
+  --edge-empty: #3d4468;
+  --scroll-thumb: #3a4166;
+  --muted-ink: #7c82ab;
   --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px -10px rgba(0, 0, 0, 0.5);
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 14px 44px -14px rgba(0, 0, 0, 0.6);
   --shadow-pop: 0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 60px -18px rgba(0, 0, 0, 0.7);
@@ -127,7 +162,7 @@
   --color-ink: #e6e8f5;
   --color-ink2: #bcc1dd;
   --color-dim: #8f95c0;
-  --color-faint: #7c82ab;
+  --color-faint: #8a90b9;
   --color-card: #1b2038;
   --color-wash: #21263f;
   --color-tint: #262b49;

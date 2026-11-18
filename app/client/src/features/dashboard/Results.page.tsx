@@ -272,7 +272,7 @@ export default function Results() {
                   {acts.map((a) => (
                     <th key={a.id} className="num">
                       {a.name}
-                      <div className="tnum font-normal tracking-normal normal-case text-faint">
+                      <div className="tnum font-normal tracking-normal normal-case text-dim">
                         เต็ม {n2(a.maxScore)}
                       </div>
                     </th>

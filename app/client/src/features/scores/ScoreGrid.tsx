@@ -242,7 +242,7 @@ export function ScoreGrid({
                     <div className="max-w-[140px] truncate" title={a.name}>
                       {a.name}
                     </div>
-                    <div className="tnum text-[12px] font-normal tracking-normal text-faint normal-case">
+                    <div className="tnum text-[12px] font-normal tracking-normal text-dim normal-case">
                       เต็ม {n2(a.maxScore)}
                       {pr ? ` · ${pr.scored}/${pr.total}` : ""}
                     </div>

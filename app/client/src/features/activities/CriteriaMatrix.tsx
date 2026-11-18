@@ -172,7 +172,7 @@ export function CriteriaMatrix({
               {cols.map((c) => (
                 <th key={c.id} className="num" title={c.description}>
                   CLO {c.number}
-                  <div className="tnum font-normal tracking-normal text-faint normal-case">
+                  <div className="tnum font-normal tracking-normal text-dim normal-case">
                     % ของกิจกรรม
                   </div>
                 </th>

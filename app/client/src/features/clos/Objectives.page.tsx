@@ -193,7 +193,7 @@ export default function Objectives() {
                             <td className="wrapcell">
                               <div className="text-[14px]">{o.description}</div>
                               <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-                                <span className="text-[12.5px] text-faint">วัดด้วย</span>
+                                <span className="text-[12.5px] text-dim">วัดด้วย</span>
                                 {links.length ? (
                                   links.map((x) => (
                                     <Pill key={x.activityId}>

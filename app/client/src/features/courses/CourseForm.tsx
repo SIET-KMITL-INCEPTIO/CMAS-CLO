@@ -245,7 +245,7 @@ export function CourseForm({
             <div className="hair-t pt-4">
               <div className="over mb-2.5">
                 หน่วยกิตและชั่วโมง{" "}
-                <span className="tracking-normal text-faint normal-case">· ชั่วโมงต่อสัปดาห์</span>
+                <span className="tracking-normal text-dim normal-case">· ชั่วโมงต่อสัปดาห์</span>
               </div>
               <div className="grid grid-cols-2 items-start gap-3 sm:grid-cols-4">
                 {input("credits", "หน่วยกิต", { numeric: true })}
