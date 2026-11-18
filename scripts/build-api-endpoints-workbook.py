@@ -190,10 +190,90 @@ E = [
     (G_DASH, "GET", "/events", "แจ้งหน้าจออื่นเมื่อรายวิชาถูกแก้ (SSE) ให้โหลดใหม่เอง", LOGGED, FILTER, READ, "—", ST_DONE, "F7", "", "", "ส่งเฉพาะ courseId"),
 ]
 
+# Use case -> endpoint. Source: docs/diagrams/usecase/index-q-usecase.drawio (49 use cases).
+# Every (METHOD, path) here must be a row of E — build fails otherwise. A use case whose
+# endpoints are all ST_NEW is not built yet.
+G_UC = {1: "จัดการผู้ใช้งาน", 2: "จัดการรายวิชา", 3: "กำหนด CLO", 4: "วัตถุประสงค์เชิงพฤติกรรม",
+        5: "วิเคราะห์และสรุป CLO", 6: "นำเข้า-ส่งออกคะแนน", 7: "นำเข้า-ส่งออกรายชื่อ", 8: "ตัดเกรด",
+        9: "บัญชีของฉัน"}
+UC = [
+    ("1.1", "เพิ่มบัญชีผู้ใช้", "ADMIN", [("POST", "/users")]),
+    ("1.2", "แก้ไขบัญชีผู้ใช้", "ADMIN", [("GET", "/users"), ("GET", "/users/:userId"), ("PATCH", "/users/:userId")]),
+    ("1.3", "ระงับการใช้งานบัญชี", "ADMIN", [("PATCH", "/users/:userId/status")]),
+    ("1.4", "กำหนดบทบาทและสิทธิ์", "ADMIN", [("PATCH", "/users/:userId"), ("POST", "/users")]),
+    ("1.5", "ตรวจสอบประวัติการใช้งาน", "ADMIN", [("GET", "/users/:userId/auth-events")]),
+    ("1.6", "อนุมัติบัญชีที่รออนุมัติ", "ADMIN", [("GET", "/users"), ("PATCH", "/users/:id/approve")]),
+    ("2.1", "สร้างรายวิชา", "ADMIN · ผู้สอน", [("POST", "/courses"), ("GET", "/users/instructors")]),
+    ("2.2", "แก้ไขข้อมูลรายวิชา", "ผู้สอน", [("GET", "/courses/:courseId"), ("PATCH", "/courses/:courseId")]),
+    ("2.3", "ลบรายวิชา", "ADMIN · ผู้สอน", [("GET", "/courses/:courseId/impact"), ("DELETE", "/courses/:courseId")]),
+    ("2.4", "มอบหมายผู้สอนประจำรายวิชา", "ADMIN", [("GET", "/users/instructors"), ("POST", "/courses/:courseId/instructors")]),
+    ("2.5", "กำหนด Sec / ภาคการศึกษา", "ผู้สอน", [("PATCH", "/courses/:courseId"), ("POST", "/courses/:courseId/duplicate")]),
+    ("2.6", "เพิ่มผู้สอนในรายวิชา", "ผู้สอน", [("GET", "/courses/:courseId/instructors"), ("POST", "/courses/:courseId/instructors")]),
+    ("2.8", "ถอดผู้สอนออกจากรายวิชา", "ผู้สอน", [("DELETE", "/courses/:courseId/instructors/:userId")]),
+    ("2.9", "ยกโครงทั้งชั้นปีไปปีการศึกษาใหม่", "ผู้สอน", [("POST", "/courses/copy-level/preview"), ("POST", "/courses/copy-level/commit")]),
+    ("3.1", "เพิ่ม CLO", "ผู้สอน", [("POST", "/courses/:courseId/clos")]),
+    ("3.2", "แก้ไข CLO", "ผู้สอน", [("PATCH", "/clos/:cloId"), ("PATCH", "/courses/:courseId/clos/reorder")]),
+    ("3.3", "กำหนดเกณฑ์ผ่านของ CLO", "ผู้สอน", [("PATCH", "/courses/:courseId")]),
+    ("3.5", "ลบ CLO", "ผู้สอน", [("DELETE", "/clos/:cloId")]),
+    ("4.1", "เพิ่มวัตถุประสงค์เชิงพฤติกรรม", "ผู้สอน", [("GET", "/clos/:cloId/objectives"), ("POST", "/clos/:cloId/objectives")]),
+    ("4.2", "เพิ่มวิธีการประเมิน", "ผู้สอน", [("POST", "/courses/:courseId/activities"), ("PATCH", "/activities/:activityId")]),
+    ("4.3", "เพิ่มเกณฑ์การประเมิน", "ผู้สอน", [("GET", "/courses/:courseId/criteria"), ("PUT", "/courses/:courseId/criteria")]),
+    ("4.4", "จับคู่วัตถุประสงค์กับ CLO", "ผู้สอน", [("POST", "/clos/:cloId/objectives"), ("PUT", "/courses/:courseId/criteria")]),
+    ("4.5", "แก้ไขวัตถุประสงค์", "ผู้สอน", [("PATCH", "/objectives/:objectiveId")]),
+    ("4.6", "ลบวัตถุประสงค์", "ผู้สอน", [("DELETE", "/objectives/:objectiveId")]),
+    ("5.1", "วิเคราะห์และสรุปข้อมูล CLO", "ผู้สอน", [("GET", "/dashboard/overview"), ("GET", "/courses/:courseId/dashboard/summary"), ("GET", "/courses/:courseId/dashboard/attainment")]),
+    ("5.2", "คำนวณคะแนนตาม CLO", "ผู้สอน", [("GET", "/courses/:courseId/dashboard/attainment"), ("GET", "/courses/:courseId/dashboard/summary")]),
+    ("5.3", "แสดงผลสรุประดับรายวิชา", "ผู้สอน", [("GET", "/courses/:courseId/dashboard/summary")]),
+    ("5.4", "ติดตามผู้เรียนรายบุคคล", "ผู้สอน", [("GET", "/courses/:courseId/dashboard/students"), ("GET", "/courses/:courseId/dashboard/students/:studentId")]),
+    ("5.5", "ส่งออกรายงาน", "ผู้สอน", [("GET", "/courses/:courseId/dashboard/export")]),
+    ("5.6", "ระบุนักศึกษาที่ต้องติดตาม", "ผู้สอน", [("GET", "/courses/:courseId/dashboard/at-risk")]),
+    ("5.7", "บันทึกแผนพัฒนาผู้เรียนรายคน", "ผู้สอน", [("PUT", "/students/:studentId/remediation-plans/:cloId"), ("DELETE", "/students/:studentId/remediation-plans/:cloId")]),
+    ("6.1", "นำเข้าคะแนนกิจกรรม", "ผู้สอน", [("POST", "/courses/:courseId/scores/import/preview"), ("POST", "/courses/:courseId/scores/import/commit")]),
+    ("6.2", "ดาวน์โหลดเทมเพลตคะแนน", "ผู้สอน", [("GET", "/courses/:courseId/scores/template")]),
+    ("6.3", "ตรวจสอบความถูกต้องของข้อมูล", "ผู้สอน", [("POST", "/courses/:courseId/scores/import/preview")]),
+    ("6.4", "ส่งออกคะแนนกิจกรรม", "ผู้สอน", [("GET", "/courses/:courseId/scores/export")]),
+    ("6.5", "แสดงรายงานข้อผิดพลาดการนำเข้า", "ผู้สอน", [("GET", "/courses/:courseId/uploads"), ("GET", "/uploads/:uploadId/errors")]),
+    ("6.6", "แก้ไขคะแนนบนหน้าเว็บ", "ผู้สอน", [("GET", "/courses/:courseId/scores"), ("PUT", "/courses/:courseId/scores"), ("POST", "/activities/:activityId/close"), ("POST", "/activities/:activityId/reopen"), ("GET", "/courses/:courseId/score-changes")]),
+    ("7.1", "นำเข้ารายชื่อนักศึกษา", "ผู้สอน", [("POST", "/courses/:courseId/students"), ("POST", "/courses/:courseId/students/import/preview"), ("POST", "/courses/:courseId/students/import/commit")]),
+    ("7.2", "ดาวน์โหลดเทมเพลตรายชื่อ", "ผู้สอน", [("GET", "/courses/:courseId/students/template")]),
+    ("7.3", "ตรวจสอบรูปแบบและรายการซ้ำ", "ผู้สอน", [("POST", "/courses/:courseId/students/import/preview")]),
+    ("7.4", "ส่งออกรายชื่อนักศึกษา", "ผู้สอน", [("GET", "/courses/:courseId/students/export")]),
+    ("7.5", "แสดงรายงานข้อผิดพลาดการนำเข้า", "ผู้สอน", [("GET", "/courses/:courseId/uploads"), ("GET", "/uploads/:uploadId/errors")]),
+    ("7.6", "ลบนักศึกษาออกจากรายวิชา", "ผู้สอน", [("DELETE", "/students/:studentId"), ("POST", "/students/:studentId/withdraw"), ("POST", "/students/:studentId/restore")]),
+    ("8.1", "กำหนดขอบเขตเกรด", "ผู้สอน", [("PUT", "/courses/:courseId/grade-bands")]),
+    ("8.2", "ประมวลผลและตรึงเกรด", "ผู้สอน", [("GET", "/courses/:courseId/grading"), ("POST", "/courses/:courseId/grading/run"), ("DELETE", "/courses/:courseId/grading"), ("GET", "/courses/:courseId/grades/export")]),
+    ("8.3", "ปรับเกรดรายบุคคล", "ผู้สอน", [("PUT", "/students/:studentId/grade-override"), ("DELETE", "/students/:studentId/grade-override")]),
+    ("9.1", "แก้ไขชื่อของตนเอง", "ทุกบทบาท", [("GET", "/auth/me"), ("PATCH", "/auth/me")]),
+    ("9.2", "ลงทะเบียนด้วยลิงก์อีเมล", "ผู้ยังไม่มีบัญชี", [("POST", "/auth/email-link"), ("POST", "/auth/email-link/verify")]),
+    ("9.3", "ลงทะเบียนด้วยบัญชี Google", "ผู้ยังไม่มีบัญชี", [("POST", "/auth/google")]),
+]
+
+
+def _check_uc():
+    have = {(r[1], r[2]) for r in E}
+    bad = [(u[0], m, p) for u in UC for m, p in u[3] if (m, p) not in have]
+    if bad:
+        raise SystemExit("UC อ้าง endpoint ที่ไม่มีในรายการ E: %s" % bad)
+    if len({u[0] for u in UC}) != 49:
+        raise SystemExit("ต้องมี use case 49 ข้อ แต่มี %d" % len({u[0] for u in UC}))
+
+
+_check_uc()
+
+
+def uc_of(method, path):
+    return [u[0] for u in UC if (method, path) in u[3]]
+
+
+def uc_status(u):
+    st = [next(r[8] for r in E if (r[1], r[2]) == mp) for mp in u[3]]
+    return "ยังไม่ทำ" if all(x == ST_NEW for x in st) else ("ทำบางส่วน" if any(x == ST_NEW for x in st) else "ทำแล้ว")
+
+
 HEAD = ["#", "กลุ่ม", "Method", "Path", "ทำอะไร", "ใครเรียกได้", "ตรวจสิทธิ์รายวิชา", "Capability",
         "FR / CR", "สถานะ", "ช่วงงาน", "Issue", "ต้องมี 0008", "หมายเหตุ",
-        "ประเภทการทำงาน", "ผลต่อข้อมูล", "ประเภทสิทธิ์", "ระดับความระวัง"]
-WIDTH = [5, 22, 9, 54, 48, 20, 17, 16, 24, 11, 9, 7, 11, 36, 22, 24, 24, 12]
+        "ประเภทการทำงาน", "ผลต่อข้อมูล", "ประเภทสิทธิ์", "ระดับความระวัง", "Use Case"]
+WIDTH = [5, 22, 9, 54, 48, 20, 17, 16, 24, 11, 9, 7, 11, 36, 22, 24, 24, 12, 16]
 
 RULES = [
     ("A-1", "Resource เป็นคำนามพหูพจน์ kebab-case ไม่มี verb ใน URL ยกเว้น action ที่ไม่ใช่ CRUD", "api-design §1.1"),
@@ -212,17 +292,22 @@ RULES = [
 ]
 
 SECURITY = [
-    ("S-1", "token แยกชนิดด้วย claim typ · authMiddleware รับเฉพาะ access · /auth/refresh รับเฉพาะ refresh", "ต้องแก้ (F-2)"),
-    ("S-2", "refresh token เป็น cookie httpOnly, Secure, SameSite=Strict หมุนทุกครั้ง ใช้ซ้ำ = เพิกถอนทั้งสาย", "ยังไม่มี · รอ D-2"),
-    ("S-3", "map error ของโดเมนครบ: CourseNotFoundError → 404 · P2002 → 409 · business rule → 422", "ต้องแก้ (F-3)"),
-    ("S-4", "log ไม่มีข้อมูลนักศึกษา: redact ของ pino ไม่ log body log เฉพาะชื่อ error และ request id", "ต้องแก้ (F-4)"),
-    ("S-5", "rate limit ราย route: /auth/* 5 ครั้ง/15 นาที ต่อ IP · import 10 ครั้ง/นาที ต่อผู้ใช้", "ยังไม่มี · ตัวเลขเป็นค่าเสนอ"),
-    ("S-6", "ไฟล์นำเข้า: เฉพาะ .xlsx ตรวจ magic bytes · 10 MB · 2,000 แถว 5 ชีต · ไม่ประมวลผลสูตร · ไม่เก็บไฟล์", "มีแค่ขนาดไฟล์"),
-    ("S-7", "ไฟล์ส่งออก: เซลล์ที่ขึ้นต้นด้วย = + - @ ต้องถูกทำให้เป็นข้อความ", "ยังไม่มี"),
-    ("S-8", "test ข้ามรายวิชาแบบตาราง: ทุก route ถูกยิงด้วยผู้สอนของวิชาอื่น ต้องได้ 404", "ยังไม่มี"),
-    ("S-9", "ผู้สอนคนสุดท้ายเอาออกไม่ได้ (422) แก้แถวของตัวเองไม่ได้", "อยู่ใน contract"),
-    ("S-10", "การถูกปฏิเสธสิทธิ์บันทึกลง AuthEvent พร้อม capability และรายวิชา", "รอ D-4"),
-    ("S-11", "CORS allowlist ตรงตัว · helmet · ตรวจ Origin บน /auth/refresh", "CORS และ helmet มีแล้ว"),
+    ("S-1", "token แยกชนิดด้วย claim typ · authMiddleware รับเฉพาะ access · /auth/refresh รับเฉพาะ refresh", "ทำแล้ว (lib/jwt.ts)"),
+    ("S-2", "refresh token เป็น cookie httpOnly, Secure, SameSite=Strict หมุนทุกครั้ง ใช้ซ้ำ = เพิกถอนทั้งสาย", "ทำแล้ว · Secure เปิดเฉพาะ production (lib/cookie.ts) · เก็บเป็น hash ในตาราง RefreshToken"),
+    ("S-3", "map error ของโดเมนครบ: CourseNotFoundError → 404 · P2002 → 409 · business rule → 422", "ทำแล้ว (error-handler.middleware.ts)"),
+    ("S-4", "log ไม่มีข้อมูลนักศึกษา: redact ของ pino ไม่ log body log เฉพาะชื่อ error และ request id", "ทำแล้ว · มี test ใน app.test.ts"),
+    ("S-5", "rate limit ราย route: /auth/* 5 ครั้ง/15 นาที ต่อ IP · import จำกัดต่อนาที", "ทำแล้ว (auth.route.ts · scores.route.ts · students.route.ts)"),
+    ("S-6", "ไฟล์นำเข้า: เฉพาะ .xlsx ตรวจ magic bytes · 10 MB · 2,000 แถว 5 ชีต · ไม่ประมวลผลสูตร · ไม่เก็บไฟล์", "ทำแล้ว (lib/excel.ts)"),
+    ("S-7", "ไฟล์ส่งออก: เซลล์ที่ขึ้นต้นด้วย = + - @ ต้องถูกทำให้เป็นข้อความ", "ทำแล้ว (lib/excel.ts)"),
+    ("S-8", "test ข้ามรายวิชาแบบตาราง: ทุก route ถูกยิงด้วยผู้สอนของวิชาอื่น ต้องได้ 404", "มี test หลัก (course-scope.isolation.test.ts) · ต้องเพิ่มแถวสำหรับ endpoint ใหม่ 4 ตัวเมื่อเขียนโค้ด"),
+    ("S-9", "ผู้สอนคนสุดท้ายเอาออกไม่ได้ (422) แก้แถวของตัวเองไม่ได้", "ทำแล้ว"),
+    ("S-10", "การถูกปฏิเสธสิทธิ์บันทึกลง AuthEvent พร้อม capability และรายวิชา", "ทำแล้ว (access.middleware.ts)"),
+    ("S-11", "CORS allowlist ตรงตัว · helmet · ตรวจ Origin บน /auth/refresh", "ทำแล้ว"),
+    ("S-12", "ลิงก์อีเมล: เก็บเฉพาะ SHA-256 · ใช้ได้ครั้งเดียว · หมดอายุ 24 ชม. · โทเคนอยู่ใน URL fragment · ตอบเหมือนกันทุกอีเมล · ขอได้ 1 ครั้ง/60 วินาทีต่ออีเมล", "ทำแล้ว (PR #85 · email-link.service.ts)"),
+    ("S-13", "ฐานข้อมูล Supabase: เปิด RLS ทุกตาราง และ anon/authenticated ไม่มีสิทธิ์ (app ไม่ใช้ Data API)", "ทำแล้ว · ตรวจกับ CMAS-SITE 2026-11-18 (20 ตาราง)"),
+    ("S-14", "dependency ระดับ high ใน production ต้องเป็น 0: zod < 4.6.6 · react-router-dom 7.12–7.18.1 · prisma 6.x–7.10.0 (ต้องไปรุ่น 7.10.1 ขึ้นไป · เป็น major)", "ยังไม่ผ่าน · npm audit พบ 4 รายการ (2026-11-18)"),
+    ("S-15", "ไม่มี secret ใน git: .env ถูก ignore · gitleaks ต้องไม่พบรายการ", "ครึ่งเดียว · .env ไม่ถูกติดตาม · gitleaks ยังไม่ได้เปิดดูผล"),
+    ("S-16", "POST /users: ADMIN เท่านั้น · รับ role จาก body ได้เฉพาะ endpoint นี้และ PATCH /users/:userId · เขียน AuthEvent · ห้ามสร้างอีเมลซ้ำแบบไม่สนตัวพิมพ์", "ออกแบบแล้ว · ยังไม่เขียนโค้ด"),
 ]
 
 DECISIONS = [
@@ -424,11 +509,30 @@ def sheet_endpoints(wb):
         body_cell(ws, row, 14, note, zebra=z)
         for c, v in enumerate(classify(method, path, role, cap, status), 15):
             body_cell(ws, row, c, v, center=c == 18, zebra=z, tone=CAUTION_TONE.get(v) if c == 18 else None)
+        body_cell(ws, row, 19, " · ".join(uc_of(method, path)) or "—", center=True, zebra=z)
     set_widths(ws, WIDTH)
     ws.freeze_panes = "E2"
     ws.auto_filter.ref = "A1:%s%d" % (get_column_letter(len(HEAD)), len(E) + 1)
     ws.sheet_view.zoomScale = 110
     return ws
+
+
+def sheet_usecases(wb):
+    ws = wb.create_sheet("UseCases")
+    head_row(ws, 1, ["UC", "แพ็กเกจ", "Use case", "Actor หลัก", "สถานะ", "Endpoint"])
+    for i, u in enumerate(UC, 1):
+        row, z = i + 1, i % 2 == 0
+        pkg = int(u[0].split(".")[0])
+        body_cell(ws, row, 1, u[0], center=True, zebra=z)
+        body_cell(ws, row, 2, "%d · %s" % (pkg, G_UC[pkg]), zebra=z)
+        body_cell(ws, row, 3, u[1], zebra=z)
+        body_cell(ws, row, 4, u[2], zebra=z)
+        body_cell(ws, row, 5, uc_status(u), center=True, zebra=z)
+        body_cell(ws, row, 6, chr(10).join("%s %s" % mp for mp in u[3]), font=F_MONO, zebra=z)
+        ws.row_dimensions[row].height = 15 * max(1, len(u[3]))
+    set_widths(ws, [7, 30, 40, 18, 12, 70])
+    ws.freeze_panes = "D2"
+    ws.auto_filter.ref = "A1:F%d" % (len(UC) + 1)
 
 
 def sheet_table(wb, name, labels, rows, widths):
@@ -1039,8 +1143,8 @@ def sheet_readme(wb):
     meaning = {
         ST_DONE: "มีโค้ดใน app/server/src/modules แล้ว",
         ST_CONTRACT: "อยู่ใน api-design.md §3 ยังไม่มีโค้ด",
-        ST_NEW: "ต้นแบบ index-q.html มีแล้ว แต่ยังไม่อยู่ใน api-design.md — รอรับเข้า contract",
-        ST_LATER: "อยู่ใน contract แต่เสนอให้เลื่อนไปหลัง v1 (รอ D-5)",
+        ST_NEW: "ออกแบบแล้ว (แผ่น Design) ยังไม่มีโค้ด — มาจาก use case ที่ยังไม่มี endpoint หรือรอรับเข้า api-design.md §3",
+        ST_LATER: "เลื่อนไปหลัง v1 (ตอนนี้ไม่มีแถวสถานะนี้)",
     }
     first = row + 1
     for st in (ST_DONE, ST_CONTRACT, ST_NEW, ST_LATER):
@@ -1066,6 +1170,7 @@ def sheet_readme(wb):
         ("ช่วงงาน", "P0 ฐาน · P2 รายวิชา · P3 CLO และเกณฑ์ · P5 นักศึกษาและคะแนน · P6 ตัดเกรดและแดชบอร์ด (ดู api-design-plan.md §6)"),
         ("ต้องมี 0008", "ทำไม่ได้จนกว่า migration 0008 จะเพิ่มตารางหรือคอลัมน์ที่ต้นแบบเสนอ (D-4, D-2)"),
         ("ประเภท (O–R)", "ประเภทการทำงาน · ผลต่อข้อมูล · ประเภทสิทธิ์ · ระดับความระวัง — ความหมายและจำนวนอยู่แผ่น Classification"),
+        ("Use Case (คอลัมน์ S)", "เลขใน index-q-usecase.drawio ที่ endpoint นี้รองรับ · \"—\" = endpoint ใช้ร่วม (refresh · logout · รายการวิชา · อัปเดตสด) · ดูแผ่น UseCases ครบ 49 ข้อ"),
         ("แผ่น Design", "ออกแบบละเอียดรายตัว: query, body, คำตอบ, error, กฎ — ใช้เป็นแบบก่อนเขียนโค้ด · ครบทุก endpoint"),
     ]:
         row += 1
@@ -1113,6 +1218,7 @@ def write_json():
                 ("params", "body", "success", "errors", "rules", "tests"), d[2:])),
             "bodyFields": BODY_FIELDS.get((method, path)),
             "enumFields": ENUM_FIELDS.get((method, path)),
+            "uc": uc_of(method, path),
         })
     JSON_OUT.write_text(json.dumps({"prefix": PREFIX, "endpoints": rows}, ensure_ascii=False, indent=1) + chr(10),
                         encoding="utf-8", newline=chr(10))  # LF on every OS, so CI sees no diff
@@ -1127,6 +1233,7 @@ def main():
     sheet_endpoints(wb)
     sheet_classification(wb)
     sheet_design(wb)
+    sheet_usecases(wb)
     sheet_table(wb, "Rules", ["#", "กฎ", "ที่มา"], RULES, [7, 100, 18])
     sheet_table(wb, "Security", ["#", "มาตรการ", "สถานะ"], SECURITY, [7, 100, 28])
     wb.save(OUT)
