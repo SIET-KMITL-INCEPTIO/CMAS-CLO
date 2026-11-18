@@ -5,7 +5,7 @@ See also: [[srs]] · [[dev]] · [[features-pages]] · [[schema]] · [[dfd]] · [
 ## ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO System / CMAS)
 
 > **Version:** 1.1.0 (Draft) | **Created:** 2026-08-06 | **Updated:** 2026-09-26
-> **Baseline:** [[srs]] v2.4.0 (single-tenant) · `database/schema.prisma` (**13 models · migration 0001–0007**) ·
+> **Baseline:** [[srs]] v2.4.0 (single-tenant) · `database/schema.prisma` (**19 models · migration 0001–0010**) ·
 > `app/server/src/` (Fastify 5 — **implement แล้ว 4 endpoint**: `GET /health` · `POST /auth/google` · `GET /users` · `PATCH /users/:id/approve` · ที่เหลือใน §3 ยังเป็น contract)
 > **สถานะ:** Draft — เป็น **contract** ระหว่าง client กับ server ก่อนเริ่ม implement Sprint 1
 > **2026-11-18 (แผน API ทั้งระบบ):** รายการ endpoint ฉบับใช้งานคือ [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) (**83 endpoint** · ทำแล้ว 79 · ออกแบบใหม่ 4 · สร้างจาก `scripts/build-api-endpoints-workbook.py`) · ตาราง §3.1–§3.8 เป็นรายการ ณ v1.1 และ §3.8 · ที่เพิ่มหลังจากนั้นอยู่ที่ §3.9 · ความสัมพันธ์ use case → endpoint ครบ 49 ข้ออยู่ที่ §3.10 · convention §1–§2 ใช้ตามเดิม ([[api-design-plan]] §1)

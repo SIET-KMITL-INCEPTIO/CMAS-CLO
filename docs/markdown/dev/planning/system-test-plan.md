@@ -10,7 +10,7 @@ See also: [[srs]] · [[api-design-plan]] · [[prototype-to-app]] · [[objectives
 > (1) ออกแบบ API ตาม [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx)
 > (2) หน้าจอของแอปจริงใช้ตาม mock-up [`index-q.html`](../../../index-q/index-q.html)
 > (3) วางแผนทดสอบเป็น **system test แบบ gray box**
-> **ตรวจกับ:** `srs.md` v2.4.3 · Excel API 76 endpoint · `capabilities.ts` · `schema.prisma` (migration 0001–0007) · ไฟล์ทดสอบใน `docs/excel/import-test/`
+> **ตรวจกับ:** `srs.md` v2.4.3 · Excel API 83 endpoint · `capabilities.ts` · `schema.prisma` (19 models · migration 0001–0010) · ไฟล์ทดสอบใน `docs/excel/import-test/`
 
 ---
 
