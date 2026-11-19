@@ -84,3 +84,21 @@ export const addInstructorSchema = z.object({ userId: cuid }).strict()
 
 /** ?confirm=true on DELETE (FR-26). Anything else means "show me the impact first". */
 export const confirmQuerySchema = z.object({ confirm: z.enum(["true", "false"]).optional() })
+
+/** UC 2.9: copy year `level`'s courses from `fromYear` to a later `toYear`. */
+const copyLevelFields = {
+  level: z.number().int().min(1).max(4),
+  fromYear: z.number().int().min(2500).max(2600),
+  toYear: z.number().int().min(2500).max(2600),
+}
+const laterYear = (b: { fromYear: number; toYear: number }) => b.toYear > b.fromYear
+const LATER_YEAR = { message: "ปีปลายทางต้องอยู่หลังปีต้นทาง", path: ["toYear"] }
+
+export const copyLevelSchema = z.object(copyLevelFields).strict().refine(laterYear, LATER_YEAR)
+export type CopyLevelInput = z.infer<typeof copyLevelSchema>
+
+export const copyLevelCommitSchema = z
+  .object({ ...copyLevelFields, courseIds: z.array(cuid).min(1).max(100) })
+  .strict()
+  .refine(laterYear, LATER_YEAR)
+export type CopyLevelCommitInput = z.infer<typeof copyLevelCommitSchema>

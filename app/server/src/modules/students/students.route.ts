@@ -25,6 +25,11 @@ export async function studentsRoutes(app: FastifyInstance) {
     { config: { access: { cap: "score.export" } } },
     c.template,
   )
+  app.get(
+    "/courses/:courseId/students/export",
+    { config: { access: { cap: "score.export" } } },
+    c.exportRoster,
+  )
   app.post(
     "/courses/:courseId/students/import/preview",
     { config: { access: write, rateLimit: IMPORT_LIMIT } },
