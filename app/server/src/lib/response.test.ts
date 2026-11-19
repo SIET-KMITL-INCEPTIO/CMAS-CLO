@@ -1,12 +1,17 @@
 import { describe, expect, it, vi } from "vitest"
 import type { FastifyReply } from "fastify"
 import {
+  BAD_INPUT,
   badRequest,
   created,
   forbidden,
+  NOT_ALLOWED,
+  NOT_FOUND,
   notFound,
   ok,
+  SERVER_FAULT,
   serverError,
+  SIGN_IN_AGAIN,
   unauthorized,
 } from "./response.js"
 
@@ -52,14 +57,18 @@ describe("response helpers", () => {
     badRequest(reply, { number: ["Required"] })
 
     expect(reply.statusCode).toBe(400)
-    expect(reply.body).toEqual({ success: false, errors: { number: ["Required"] } })
+    expect(reply.body).toEqual({
+      success: false,
+      message: BAD_INPUT,
+      errors: { number: ["Required"] },
+    })
   })
 
   it.each([
-    ["unauthorized", unauthorized, 401, "Unauthorized"],
-    ["forbidden", forbidden, 403, "Forbidden"],
-    ["notFound", notFound, 404, "Not found"],
-    ["serverError", serverError, 500, "Internal server error"],
+    ["unauthorized", unauthorized, 401, SIGN_IN_AGAIN],
+    ["forbidden", forbidden, 403, NOT_ALLOWED],
+    ["notFound", notFound, 404, NOT_FOUND],
+    ["serverError", serverError, 500, SERVER_FAULT],
   ] as const)("%s() defaults to %i with its documented message", (_name, fn, code, message) => {
     const reply = mockReply()
     fn(reply)

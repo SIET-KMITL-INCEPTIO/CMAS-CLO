@@ -4,6 +4,7 @@ import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from "@ta
 import { toast } from "sonner"
 import App from "./App.tsx"
 import { ApiError } from "./lib/apiClient.ts"
+import { errorText } from "./lib/errorText.ts"
 import "./index.css"
 
 /**
@@ -14,7 +15,7 @@ import "./index.css"
 const showError = (err: unknown, meta: Record<string, unknown> | undefined) => {
   if (meta?.silent) return
   if (err instanceof ApiError && err.status === 401) return // the session guard sends the user to sign in
-  toast.error(err instanceof Error ? err.message : "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง")
+  toast.error(errorText(err))
 }
 
 const queryClient = new QueryClient({

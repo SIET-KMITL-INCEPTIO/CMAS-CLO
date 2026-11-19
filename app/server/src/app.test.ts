@@ -180,3 +180,29 @@ describe("logging (S-4)", () => {
     expect(logs.join("")).not.toContain("secret-token-value")
   })
 })
+
+describe("messages a user can read (NFR-10, UI-7)", () => {
+  it("answers a framework 4xx in Thai with what to do, not the framework's English", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/google",
+      headers: { "content-type": "application/json" },
+      payload: "{not json",
+    })
+    expect(res.statusCode).toBe(400)
+    expect(res.json().message).toMatch(/[฀-๿]/)
+    expect(res.json().message).not.toMatch(/JSON|Body|body/)
+  })
+
+  it("has no message in English for a missing token, a bad body or a 404", async () => {
+    const noToken = await app.inject({ method: "GET", url: "/api/v1/users" })
+    const badBody = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/email-link",
+      payload: { email: "nope" },
+    })
+    for (const res of [noToken, badBody]) {
+      expect(res.json().message).toMatch(/[฀-๿]/)
+    }
+  })
+})

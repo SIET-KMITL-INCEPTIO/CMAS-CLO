@@ -23,6 +23,7 @@ import {
   YAxis,
 } from "recharts"
 import { Band, ChartHead, Hollow, Stat } from "../../components/page/Blocks.tsx"
+import { PageState } from "../../components/page/PageState.tsx"
 import { Chip } from "../../components/ui/Badges.tsx"
 import { TONE, type Tone } from "../../components/ui/tone.ts"
 import { useCan } from "../../hooks/useCan.ts"
@@ -157,8 +158,10 @@ export default function CourseOverview() {
         </>
       }
     >
-      {loading ? (
-        <div className="text-[14px] text-dim">กำลังโหลด…</div>
+      {loading || q.error ? (
+        <PageState loading={loading} error={q.error} onRetry={() => void q.refetch()} what="ภาพรวม">
+          {null}
+        </PageState>
       ) : (
         <>
           <div className="statbar mb-4">

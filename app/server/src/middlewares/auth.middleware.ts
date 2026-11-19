@@ -33,7 +33,7 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
     const payload = await verifyAccessToken(token)
     userId = payload.sub
   } catch {
-    return unauthorized(reply, "Invalid or expired token")
+    return unauthorized(reply)
   }
 
   const user = await prisma.user.findUnique({

@@ -13,7 +13,15 @@ import { Prisma } from "@prisma/client"
 import { AppError } from "../lib/errors.js"
 import { env } from "../lib/env.js"
 import { CourseNotFoundError } from "../modules/authorization/authorization.service.js"
-import { badRequest, conflict, notFound, serverError } from "../lib/response.js"
+import { BAD_INPUT, badRequest, conflict, notFound, serverError } from "../lib/response.js"
+
+/** The framework's own 4xx, in Thai with what to do (NFR-10). */
+function clientErrorText(status: number) {
+  if (status === 413) return "ไฟล์หรือข้อมูลที่ส่งมีขนาดใหญ่เกินไป — ลดขนาดแล้วลองใหม่"
+  if (status === 429) return "ส่งคำขอถี่เกินไป — รอสักครู่แล้วลองใหม่"
+  if (status === 415 || status === 400) return BAD_INPUT
+  return "คำขอนี้ทำไม่ได้ — โหลดหน้าใหม่แล้วลองอีกครั้ง"
+}
 
 export function errorHandler(
   err: FastifyError | Error,
@@ -42,7 +50,7 @@ export function errorHandler(
   // their status. Their messages are the framework's, not the user's input.
   const status = (err as FastifyError).statusCode
   if (typeof status === "number" && status >= 400 && status < 500) {
-    return reply.status(status).send({ success: false, message: err.message })
+    return reply.status(status).send({ success: false, message: clientErrorText(status) })
   }
 
   const isPrisma = err.name.startsWith("PrismaClient")

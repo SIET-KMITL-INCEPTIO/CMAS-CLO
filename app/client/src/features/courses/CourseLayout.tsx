@@ -4,15 +4,26 @@
  * 404 exactly like one that does not exist (A-13), and so does this screen.
  */
 import { Link, Outlet, useParams } from "react-router-dom"
+import { PageState } from "../../components/page/PageState.tsx"
+import { ApiError } from "../../lib/apiClient.ts"
 import type { CourseContext } from "./useCourseContext.ts"
 import { useCourse } from "./useCourses.ts"
 
 export function CourseLayout() {
   const { courseId } = useParams()
-  const { data: course, isLoading, isError } = useCourse(courseId)
+  const { data: course, isLoading, error, refetch } = useCourse(courseId)
 
-  if (isLoading) return <div className="cbody text-[14px] text-dim">กำลังโหลด…</div>
-  if (isError || !course) {
+  const gone = error instanceof ApiError && error.status === 404
+  if (isLoading || (error && !gone)) {
+    return (
+      <div className="cbody">
+        <PageState loading={isLoading} error={error} onRetry={() => void refetch()} what="รายวิชา">
+          {null}
+        </PageState>
+      </div>
+    )
+  }
+  if (gone || !course) {
     return (
       <div className="cbody">
         <div className="card mx-auto mt-10 max-w-md p-6 text-center">
