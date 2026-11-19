@@ -26,6 +26,10 @@ export async function coursesRoutes(app: FastifyInstance) {
     { config: { access: { cap: "staff.write" } } },
     c.removeInstructor,
   )
+  // UC 2.9. Static paths, so they win over /:courseId; the service filters by visibility.
+  const create = { cap: "course.create" } as const
+  app.post("/copy-level/preview", { config: { access: create } }, c.copyLevelPreview)
+  app.post("/copy-level/commit", { config: { access: create } }, c.copyLevelCommit)
   // course.create is a system capability: the service checks the caller can see :courseId.
   app.post("/:courseId/duplicate", { config: { access: { cap: "course.create" } } }, c.duplicate)
 }

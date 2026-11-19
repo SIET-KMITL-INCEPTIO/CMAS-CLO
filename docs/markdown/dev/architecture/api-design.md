@@ -8,7 +8,7 @@ See also: [[srs]] · [[dev]] · [[features-pages]] · [[schema]] · [[dfd]] · [
 > **Baseline:** [[srs]] v2.4.0 (single-tenant) · `database/schema.prisma` (**19 models · migration 0001–0010**) ·
 > `app/server/src/` (Fastify 5 — **implement แล้ว 4 endpoint**: `GET /health` · `POST /auth/google` · `GET /users` · `PATCH /users/:id/approve` · ที่เหลือใน §3 ยังเป็น contract)
 > **สถานะ:** Draft — เป็น **contract** ระหว่าง client กับ server ก่อนเริ่ม implement Sprint 1
-> **2026-11-18 (แผน API ทั้งระบบ):** รายการ endpoint ฉบับใช้งานคือ [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) (**83 endpoint** · ทำแล้ว 79 · ออกแบบใหม่ 4 · สร้างจาก `scripts/build-api-endpoints-workbook.py`) · ตาราง §3.1–§3.8 เป็นรายการ ณ v1.1 และ §3.8 · ที่เพิ่มหลังจากนั้นอยู่ที่ §3.9 · ความสัมพันธ์ use case → endpoint ครบ 49 ข้ออยู่ที่ §3.10 · convention §1–§2 ใช้ตามเดิม ([[api-design-plan]] §1)
+> **2026-11-18 (แผน API ทั้งระบบ):** รายการ endpoint ฉบับใช้งานคือ [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) (**83 endpoint** · ทำแล้วครบ 83 (4 ตัวสุดท้าย 2026-11-19) · สร้างจาก `scripts/build-api-endpoints-workbook.py`) · ตาราง §3.1–§3.8 เป็นรายการ ณ v1.1 และ §3.8 · ที่เพิ่มหลังจากนั้นอยู่ที่ §3.9 · ความสัมพันธ์ use case → endpoint ครบ 49 ข้ออยู่ที่ §3.10 · convention §1–§2 ใช้ตามเดิม ([[api-design-plan]] §1)
 >
 > **v1.1.0 (2026-09-26) — ตามโมเดลข้อมูลหลัง migration `0005`–`0007`:** ไม่มี `CourseRole` (ผู้สอนสิทธิ์เท่ากัน — D1) ·
 > เกณฑ์ผ่าน CLO อยู่ที่ `Course.cloPassMark` แทน `CLO.threshold` (E1) · `CLO` / `BehavioralObjective` มี `weight` กรอกเองได้ (E2) ·
@@ -163,7 +163,7 @@ Authorization: Bearer <accessToken>
 > `assertCourseAccess()` ตรวจ · ผู้สร้างต้องถูกเพิ่มเป็นผู้สอนของรายวิชาใหม่ **ใน transaction เดียวกับการสร้าง** ไม่อย่างนั้นจะเกิดวิชาที่ไม่มีใครดูแล ·
 > `DELETE /courses/:courseId` = ADMIN หรือผู้สอนของวิชานั้น (P16)
 
-### 3.1 Auth & Users — 13 endpoints (**implement แล้ว 12 · ออกแบบแล้ว 1: `POST /users`**)
+### 3.1 Auth & Users — 13 endpoints (**implement แล้วครบ 13**)
 
 > สถานะ: ✅ = มีใน `app/server/src/modules/` แล้ว · 📝 = ออกแบบแล้ว ยังไม่เขียนโค้ด (§3.9) · ⬜ = contract ยังไม่ทำ · ปัจจุบันเข้าสู่ระบบได้ทาง Google อย่างเดียว
 > (`POST /auth/google` — ตรวจ ID token ที่เซิร์ฟเวอร์ FR-08) · ลิงก์อีเมล (`/auth/email-link`) ✅ 2026-11-16 · ระบบไม่มีรหัสผ่าน (ตัด 2026-11-10)
@@ -179,7 +179,7 @@ Authorization: Bearer <accessToken>
 | ✅ | PATCH | `/auth/me` | any | — | FR-119 · แก้ชื่อของตัวเอง อีเมลแก้ไม่ได้ |
 | ✅ | GET | `/users` (`?status=PENDING` หรือ `ACTIVE`) | ADMIN | — | FR-05, FR-08b |
 | ✅ | PATCH | `/users/:id/approve` | ADMIN | — | FR-08b |
-| 📝 | POST | `/users` | ADMIN | — | FR-05 |
+| ✅ | POST | `/users` | ADMIN | — | FR-05 |
 | ✅ | GET | `/users/:userId` | ADMIN | — | FR-05 |
 | ✅ | PATCH | `/users/:userId` | ADMIN | — | FR-05 |
 | ✅ | PATCH | `/users/:userId/status` | ADMIN | — | FR-03, FR-06 |
@@ -295,17 +295,17 @@ Authorization: Bearer <accessToken>
 
 **รวม 57 endpoints** ใน §3.1–§3.7 (+ `/health` ที่มีแล้ว) · §3.8 นับแยก
 
-### 3.9 Endpoint ที่ออกแบบเพิ่มจาก use case (2026-11-18) — ยังไม่เขียนโค้ด
+### 3.9 Endpoint ที่ออกแบบเพิ่มจาก use case (ออกแบบ 2026-11-18 · ทำแล้ว 2026-11-19)
 
 > ตรวจ use case 49 ข้อใน [index-q-usecase.drawio](../../../diagrams/usecase/index-q-usecase.drawio) กับ endpoint ที่มี พบ use case ที่ไม่มี endpoint รองรับ 3 ข้อ (1.1 · 2.9 · 7.4) ·
 > รายละเอียด request/response อยู่ในแผ่น `Design` ของ Excel · ทดสอบด้วย ST-AUTH-10 · ST-COURSE-07, 08 · ST-IMP-07 ใน [[system-test-plan]]
 
 | | Method | Path | Role | Scope | UC |
 |---|---|---|---|---|---|
-| 📝 | POST | `/users` (ย้ายจาก "หลัง v1" เพราะ UC 1.1 อยู่ในไดอะแกรม) | ADMIN | — | 1.1 · 1.4 |
-| 📝 | GET | `/courses/:courseId/students/export` | ผู้สอนของวิชา | ✅ | 7.4 |
-| 📝 | POST | `/courses/copy-level/preview` | ADMIN · ผู้สอน | — (กรองตามสิทธิ์ใน service) | 2.9 |
-| 📝 | POST | `/courses/copy-level/commit` | ADMIN · ผู้สอน | — (ตรวจทีละวิชา) | 2.9 |
+| ✅ | POST | `/users` (ย้ายจาก "หลัง v1" เพราะ UC 1.1 อยู่ในไดอะแกรม) | ADMIN | — | 1.1 · 1.4 |
+| ✅ | GET | `/courses/:courseId/students/export` | ผู้สอนของวิชา | ✅ | 7.4 |
+| ✅ | POST | `/courses/copy-level/preview` | ADMIN · ผู้สอน | — (กรองตามสิทธิ์ใน service) | 2.9 |
+| ✅ | POST | `/courses/copy-level/commit` | ADMIN · ผู้สอน | — (ตรวจทีละวิชา) | 2.9 |
 
 ข้อกำหนดของแต่ละตัว:
 
@@ -318,7 +318,7 @@ Authorization: Bearer <accessToken>
 
 ### 3.10 Use case → Endpoint (49 ข้อ)
 
-> ตัวเลข = หมายเลขใน [index-q-usecase.drawio](../../../diagrams/usecase/index-q-usecase.drawio) · 📝 = ออกแบบแล้ว ยังไม่ทำ (§3.9) · ทุก use case ที่ไม่มี 📝 มี endpoint ที่ implement แล้ว
+> ตัวเลข = หมายเลขใน [index-q-usecase.drawio](../../../diagrams/usecase/index-q-usecase.drawio) · 📝 = ออกแบบไว้ใน §3.9 และ implement แล้ว 2026-11-19 · ทุก use case มี endpoint ที่ implement แล้ว
 
 | UC | Function | Endpoint |
 |---|---|---|

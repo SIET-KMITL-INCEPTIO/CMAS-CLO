@@ -77,6 +77,11 @@ export class StudentController {
     return ok(reply, await this.service.deletePlan(studentId, cloId, authorizedCourseId(req)))
   }
 
+  exportRoster = async (req: FastifyRequest, reply: FastifyReply) => {
+    const { buffer, fileName } = await this.service.exportRoster(authorizedCourseId(req))
+    return file(reply, buffer, fileName, XLSX_TYPE)
+  }
+
   template = async (req: FastifyRequest, reply: FastifyReply) => {
     const { buffer, fileName } = await this.service.template(authorizedCourseId(req))
     return file(reply, buffer, fileName, XLSX_TYPE)

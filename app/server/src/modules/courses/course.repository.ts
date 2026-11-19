@@ -259,6 +259,32 @@ export class CourseRepository {
     return prisma.course.findMany({ where: { code, semester, year }, select: { section: true } })
   }
 
+  /** UC 2.9: the courses a copy can start from — one academic year, oldest term first. */
+  yearPool(where: Prisma.CourseWhereInput) {
+    return prisma.course.findMany({
+      where,
+      orderBy: [{ semester: "asc" }, { code: "asc" }, { section: "asc" }],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        semester: true,
+        section: true,
+        year: true,
+        instructors: { select: { userId: true } },
+      },
+    })
+  }
+
+  /** The (code, semester, section) keys already open in a year — a copy never overwrites one. */
+  async keysInYear(year: number) {
+    const rows = await prisma.course.findMany({
+      where: { year },
+      select: { code: true, semester: true, section: true },
+    })
+    return new Set(rows.map((r) => `${r.code}|${r.semester}|${r.section}`))
+  }
+
   /** Everything POST /courses/:courseId/duplicate copies — never students, scores or plans. */
   findTree(id: string) {
     return prisma.course.findUnique({
@@ -279,7 +305,7 @@ export class CourseRepository {
    */
   duplicate(
     tree: NonNullable<Awaited<ReturnType<CourseRepository["findTree"]>>>,
-    section: string,
+    at: { section: string; year?: number },
     instructorIds: string[],
   ): Promise<CourseRow> {
     return uniqueCourse(
@@ -299,7 +325,8 @@ export class CourseRepository {
           const course = await tx.course.create({
             data: {
               ...settings,
-              section,
+              section: at.section,
+              year: at.year ?? settings.year,
               instructors: { create: instructorIds.map((userId) => ({ userId })) },
               gradeBands: { create: gradeBands },
               groupWeights: { create: groupWeights },

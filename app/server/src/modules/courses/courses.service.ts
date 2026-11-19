@@ -14,7 +14,14 @@ import {
 } from "../authorization/authorization.service.js"
 import { blockers } from "../../lib/attainment.js"
 import type { CourseRepository, CourseRow } from "./course.repository.js"
-import type { CreateCourseInput, ListCoursesQuery, UpdateCourseInput } from "./courses.validator.js"
+import { STUDY_PLAN, studyPlanOf, termTh, type PlanCourse } from "../../lib/study-plan.js"
+import type {
+  CopyLevelCommitInput,
+  CopyLevelInput,
+  CreateCourseInput,
+  ListCoursesQuery,
+  UpdateCourseInput,
+} from "./courses.validator.js"
 
 const ACCOUNT_UNUSABLE = "บัญชีนี้ยังใช้งานไม่ได้"
 
@@ -242,17 +249,139 @@ export class CourseService {
     while (used.has(String(next).padStart(2, "0")) && next <= 99)
     if (next > 99) throw new BusinessRuleError("รายวิชานี้มี Sec ครบ 99 แล้วในภาคเรียนนี้")
 
-    // The original's instructors who can still teach, plus the caller (P17).
-    const original = await this.courses.findUsers(tree.instructors.map((i) => i.userId))
+    const ids = await this.teachersOfCopy(tree.instructors, caller)
+    if (ids.length === 0)
+      throw new BusinessRuleError("ต้นทางไม่มีผู้สอนที่ใช้งานได้ — เพิ่มผู้สอนก่อนคัดลอก")
+    return toCourseDto(
+      await this.courses.duplicate(tree, { section: String(next).padStart(2, "0") }, ids),
+    )
+  }
+
+  /** The original's instructors who can still teach, plus the caller (P17). */
+  private async teachersOfCopy(instructors: { userId: string }[], caller: Caller) {
+    const original = await this.courses.findUsers(instructors.map((i) => i.userId))
     const ids = new Set(
       original
         .filter((u) => u.role === "INSTRUCTOR" && u.isActive && u.status === "ACTIVE")
         .map((u) => u.id),
     )
     if (caller.role === "INSTRUCTOR") ids.add(caller.userId)
-    if (ids.size === 0)
-      throw new BusinessRuleError("ต้นทางไม่มีผู้สอนที่ใช้งานได้ — เพิ่มผู้สอนก่อนคัดลอก")
+    return [...ids]
+  }
 
-    return toCourseDto(await this.courses.duplicate(tree, String(next).padStart(2, "0"), [...ids]))
+  /**
+   * UC 2.9, step one (design: POST /courses/copy-level/preview). Writes nothing.
+   * planned = the year's courses by the study plan, ticked; offPlan = courses
+   * in the same terms that the plan does not name (electives), not ticked;
+   * missing = plan courses the source year did not open, so nothing to copy.
+   */
+  async copyLevelPreview(input: CopyLevelInput, caller: Caller) {
+    const pool = await this.courses.yearPool({
+      ...this.courses.visibleTo(caller),
+      year: input.fromYear,
+    })
+    const taken = await this.courses.keysInYear(input.toYear)
+    const levelTerms = new Set<number>(
+      STUDY_PLAN.filter((p) => p.level === input.level).map((p) => p.semester),
+    )
+    const users = await this.courses.findUsers([
+      ...new Set(pool.flatMap((c) => c.instructors.map((i) => i.userId))),
+    ])
+    const usable = new Set(
+      users
+        .filter((u) => u.role === "INSTRUCTOR" && u.isActive && u.status === "ACTIVE")
+        .map((u) => u.id),
+    )
+
+    const row = (c: (typeof pool)[number], plan: PlanCourse | null) => {
+      const exists = taken.has(`${c.code}|${c.semester}|${c.section}`)
+      const notes: { tone: "nil" | "warn" | "bad"; text: string }[] = []
+      if (exists)
+        notes.push({
+          tone: "nil",
+          text: `มีวิชานี้ใน ${termTh(c.semester)}/${input.toYear} Sec ${c.section} แล้ว — ข้าม ไม่เขียนทับ`,
+        })
+      if (plan && plan.semester !== c.semester)
+        notes.push({
+          tone: "warn",
+          text: `เปิด${termTh(c.semester)} แต่แผนการเรียนกำหนด${termTh(plan.semester)} — คงภาคเดิมไว้`,
+        })
+      if (plan && plan.name !== c.name)
+        notes.push({ tone: "warn", text: `ชื่อไม่ตรงหลักสูตร: “${plan.name}”` })
+      const staff = c.instructors.length
+      const ok = c.instructors.filter((i) => usable.has(i.userId)).length
+      if (ok < staff)
+        notes.push({
+          tone: "warn",
+          text: `ผู้สอนที่ถูกระงับหรือรออนุมัติ ${staff - ok} คนไม่ถูกคัดลอก`,
+        })
+      if (ok === 0 && caller.role === "ADMIN")
+        notes.push({ tone: "bad", text: "ไม่มีผู้สอนที่ใช้งานได้ — ต้องมอบหมายหลังคัดลอก" })
+      return {
+        courseId: c.id,
+        code: c.code,
+        name: c.name,
+        semester: c.semester,
+        section: c.section,
+        exists,
+        notes,
+      }
+    }
+
+    const planned = []
+    const offPlan = []
+    for (const c of pool) {
+      const plan = studyPlanOf(c.code)
+      if (plan && plan.level === input.level) planned.push(row(c, plan))
+      else if (!plan && levelTerms.has(c.semester)) offPlan.push(row(c, null))
+    }
+    const opened = new Set(pool.map((c) => c.code))
+    const missing = STUDY_PLAN.filter((p) => p.level === input.level && !opened.has(p.code)).map(
+      ({ code, name, semester }) => ({ code, name, semester }),
+    )
+    return { ...input, planned, offPlan, missing }
+  }
+
+  /**
+   * UC 2.9, step two (design: POST /courses/copy-level/commit). Each course is
+   * checked again here, not trusted from the preview (someone may have made the
+   * same course since), and copied in its own transaction: one failure does not
+   * undo the others, it is reported in `skipped`.
+   */
+  async copyLevelCommit(input: CopyLevelCommitInput, caller: Caller) {
+    const taken = await this.courses.keysInYear(input.toYear)
+    const created: { fromCourseId: string; courseId: string }[] = []
+    const skipped: { courseId: string; reason: "EXISTS" | "NO_ACCESS" | "NO_TEACHER" }[] = []
+
+    for (const courseId of input.courseIds) {
+      const tree = (await canSeeCourse(courseId, caller))
+        ? await this.courses.findTree(courseId)
+        : null
+      if (!tree || tree.year !== input.fromYear) {
+        skipped.push({ courseId, reason: "NO_ACCESS" })
+        continue
+      }
+      const key = `${tree.code}|${tree.semester}|${tree.section}`
+      if (taken.has(key)) {
+        skipped.push({ courseId, reason: "EXISTS" })
+        continue
+      }
+      const ids = await this.teachersOfCopy(tree.instructors, caller)
+      if (ids.length === 0) {
+        skipped.push({ courseId, reason: "NO_TEACHER" })
+        continue
+      }
+      const copy = await this.courses.duplicate(
+        tree,
+        { section: tree.section, year: input.toYear },
+        ids,
+      )
+      taken.add(key)
+      created.push({ fromCourseId: courseId, courseId: copy.id })
+    }
+    // Nothing the caller can see at all: the same 404 as any foreign course.
+    if (created.length === 0 && skipped.every((s) => s.reason === "NO_ACCESS"))
+      throw new CourseNotFoundError()
+    return { created, skipped }
   }
 }

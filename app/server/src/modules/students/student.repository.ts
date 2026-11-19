@@ -57,6 +57,15 @@ export class StudentRepository {
     })
   }
 
+  /** UC 7.4: the whole roster in code order, withdrawn included. No scores. */
+  rosterForExport(courseId: string) {
+    return prisma.student.findMany({
+      where: { courseId },
+      orderBy: { studentCode: "asc" },
+      select: { studentCode: true, name: true, status: true },
+    })
+  }
+
   codesInCourse(courseId: string) {
     return prisma.student.findMany({ where: { courseId }, select: { studentCode: true } })
   }

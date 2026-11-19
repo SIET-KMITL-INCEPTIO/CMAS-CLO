@@ -21,6 +21,23 @@ export const updateUserSchema = z
   .refine((body) => Object.keys(body).length > 0, "ต้องมีอย่างน้อย 1 ฟิลด์")
 export type UpdateUserInput = z.infer<typeof updateUserSchema>
 
+/**
+ * UC 1.1 / 1.4: ADMIN adds an account ahead of its owner's first sign-in.
+ * role is allowed here and in updateUserSchema only (A-8), both behind user.manage.
+ */
+export const createUserSchema = z
+  .object({
+    email: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .pipe(z.email({ message: "กรอกอีเมลให้ถูกต้อง" })),
+    name: z.string().trim().min(1).max(100),
+    role: z.enum(["ADMIN", "INSTRUCTOR"]),
+  })
+  .strict()
+export type CreateUserInput = z.infer<typeof createUserSchema>
+
 export const userStatusSchema = z.object({ isActive: z.boolean() }).strict()
 
 export const AUTH_EVENT_ACTIONS = [

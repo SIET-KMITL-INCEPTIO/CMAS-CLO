@@ -275,4 +275,91 @@ describe.skipIf(!RUN_DB_TESTS)("courses and accounts against the database", () =
       )
     })
   })
+
+  describe("copy a year level (UC 2.9) and add an account (UC 1.1)", () => {
+    let source: string
+
+    beforeAll(async () => {
+      const res = await post("teacherA", "/courses", courseBody("TEST-CL1", { year: 2569 }))
+      source = res.json().data.id
+      const clo = await post("teacherA", `/courses/${source}/clos`, {
+        number: 1,
+        description: "อธิบายหลักการ",
+        bloomLevel: "UNDERSTAND",
+      })
+      expect(clo.statusCode).toBe(201)
+    })
+
+    it("preview writes nothing and refuses a destination year that is not later (400)", async () => {
+      const before = await prisma.course.count()
+      const ok = await post("teacherA", "/courses/copy-level/preview", {
+        level: 1,
+        fromYear: 2569,
+        toYear: 2570,
+      })
+      expect(ok.statusCode).toBe(200)
+      expect(ok.json().data).toMatchObject({ level: 1, fromYear: 2569, toYear: 2570 })
+      expect(await prisma.course.count()).toBe(before)
+      const bad = await post("teacherA", "/courses/copy-level/preview", {
+        level: 1,
+        fromYear: 2569,
+        toYear: 2569,
+      })
+      expect(bad.statusCode).toBe(400)
+    })
+
+    it("copies structure to the later year, same section, no students; a repeat is skipped", async () => {
+      const body = { level: 1, fromYear: 2569, toYear: 2570, courseIds: [source] }
+      const first = await post("teacherA", "/courses/copy-level/commit", body)
+      expect(first.statusCode).toBe(201)
+      const { created, skipped } = first.json().data
+      expect(skipped).toEqual([])
+      const copy = await prisma.course.findUniqueOrThrow({
+        where: { id: created[0].courseId },
+        include: { clos: true, students: true, instructors: true },
+      })
+      const original = await prisma.course.findUniqueOrThrow({ where: { id: source } })
+      expect(copy).toMatchObject({ code: "TEST-CL1", year: 2570, section: original.section })
+      expect(copy.clos).toHaveLength(1)
+      expect(copy.students).toHaveLength(0)
+      expect(copy.instructors.map((i) => i.userId)).toContain(f.users.teacherA.id)
+
+      const again = await post("teacherA", "/courses/copy-level/commit", body)
+      expect(again.json().data).toEqual({
+        created: [],
+        skipped: [{ courseId: source, reason: "EXISTS" }],
+      })
+      expect((await prisma.course.findUniqueOrThrow({ where: { id: source } })).year).toBe(2569)
+    })
+
+    it("answers 404 when the caller can see none of the courses (S-8)", async () => {
+      // teacherB: active, and not on TEST-CL1 (teacherC was switched off by "accounts").
+      const res = await post("teacherB", "/courses/copy-level/commit", {
+        level: 1,
+        fromYear: 2569,
+        toYear: 2571,
+        courseIds: [source],
+      })
+      expect(res.statusCode).toBe(404)
+    })
+
+    it("ADMIN adds an ACTIVE account; the same email in another case is 409 (ST-AUTH-10)", async () => {
+      const email = `added-${Date.now()}@cmas.test`
+      const res = await post("admin", "/users", { email, name: "TEST added", role: "INSTRUCTOR" })
+      expect(res.statusCode).toBe(201)
+      expect(res.json().data).toMatchObject({ email, status: "ACTIVE", role: "INSTRUCTOR" })
+      const dup = await post("admin", "/users", {
+        email: email.toUpperCase(),
+        name: "x",
+        role: "INSTRUCTOR",
+      })
+      expect(dup.statusCode).toBe(409)
+      const teacher = await post("teacherA", "/users", {
+        email: "z@cmas.test",
+        name: "z",
+        role: "ADMIN",
+      })
+      expect(teacher.statusCode).toBe(403)
+    })
+  })
 })
