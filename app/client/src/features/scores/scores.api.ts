@@ -65,6 +65,9 @@ export const scoresApi = {
   close: (activityId: string, body: { blank: CloseBlank; reason?: string }) =>
     apiClient.post(`/activities/${activityId}/close`, body),
   reopen: (activityId: string) => apiClient.post(`/activities/${activityId}/reopen`),
+  /** UC 6.4: the score sheet as Excel. */
+  exportScores: (courseId: string) =>
+    apiClient.download(`/courses/${courseId}/scores/export`, "scores-export.xlsx"),
   template: (courseId: string) =>
     apiClient.download(`/courses/${courseId}/scores/template`, "scores.xlsx"),
   previewImport: (courseId: string, file: File) =>

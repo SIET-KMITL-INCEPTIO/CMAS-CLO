@@ -11,6 +11,8 @@ import { endSession } from "../../lib/session.ts"
 import { Icon } from "../Icon.tsx"
 import { CommandPalette } from "./CommandPalette.tsx"
 import { SettingsModal } from "./SettingsModal.tsx"
+import { ShortcutsModal } from "./ShortcutsModal.tsx"
+import { typingIn } from "./shortcuts.ts"
 
 const ROLE_TH = { ADMIN: "ผู้ดูแลระบบ", INSTRUCTOR: "ผู้สอน" } as const
 
@@ -50,6 +52,7 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [keysOpen, setKeysOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -59,6 +62,9 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault()
         setPaletteOpen(true)
+      } else if (e.key === "?" && !e.ctrlKey && !e.metaKey && !typingIn(e.target)) {
+        e.preventDefault()
+        setKeysOpen(true)
       }
     }
     document.addEventListener("keydown", onKey)
@@ -138,6 +144,17 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
             >
               ตั้งค่า
             </button>
+            <button
+              type="button"
+              role="menuitem"
+              className="acctitem"
+              onClick={() => {
+                setMenuOpen(false)
+                setKeysOpen(true)
+              }}
+            >
+              แป้นพิมพ์ลัด
+            </button>
             <button type="button" role="menuitem" className="acctitem" onClick={signOut}>
               ออกจากระบบ
             </button>
@@ -147,6 +164,7 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
 
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <ShortcutsModal open={keysOpen} onClose={() => setKeysOpen(false)} />
     </header>
   )
 }

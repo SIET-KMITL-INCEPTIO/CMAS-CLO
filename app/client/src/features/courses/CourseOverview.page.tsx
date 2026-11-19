@@ -132,10 +132,12 @@ export default function CourseOverview() {
     avg: x.averagePercent,
   }))
 
-  const bins = Array.from({ length: 10 }, (_, i) => ({
-    range: i === 9 ? "90–100" : `${i * 10}–${i * 10 + 9}`,
-    from: i * 10,
-    n: totals.filter((t) => (i === 9 ? t >= 90 : t >= i * 10 && t < i * 10 + 10)).length,
+  // FR-88: the bins come from the server (lib/attainment.ts distribution), not counted here.
+  const bins = (sum?.course.distribution ?? []).map((b) => ({
+    // Each bin holds [from, to); the last one also holds 100.
+    range: b.to === 100 ? `${b.from}–100` : `${b.from}–<${b.to}`,
+    from: b.from,
+    n: b.count,
   }))
 
   const loading = q.isLoading
