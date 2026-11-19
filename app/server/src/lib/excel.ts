@@ -2,14 +2,16 @@
  * Excel in and out (S-6, S-7). Shared by the roster and score imports and
  * every export, so the safety rules live in one place.
  *
- * In:  .xlsx only, recognised by its magic bytes (a ZIP), never by name or
- *      MIME · at most 5 sheets and 2,000 data rows · a formula anywhere is
+ * In:  .xlsx only, recognised by its magic bytes (a ZIP) and its contents
+ *      (xlsx-container.ts: no macros, no zip bomb), never by name or MIME ·
+ *      at most 5 sheets and 2,000 data rows · a formula in the first sheet is
  *      refused, not evaluated · the file is parsed in memory and never stored.
  * Out: a text cell that starts with = + - @ is prefixed with ' so a name a
  *      user typed cannot run as a formula when someone opens the export.
  */
 import * as XLSX from "xlsx"
 import { BadRequestError } from "./errors.js"
+import { inspectXlsxContainer, type ContainerProblem } from "./xlsx-container.js"
 
 export const XLSX_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 export const MAX_ROWS = 2000
@@ -21,6 +23,13 @@ export const NAME_HEADER = "ชื่อ-นามสกุล"
 
 /** A file the import refuses as a whole (400), before any row is looked at. */
 export class ExcelFileError extends BadRequestError {}
+
+const CONTAINER_MESSAGE: Record<ContainerProblem, string> = {
+  unreadable: "อ่านไฟล์ Excel ไม่ได้",
+  "not-xlsx": "ไฟล์ต้องเป็น Excel (.xlsx)",
+  macro: "ไฟล์มีมาโคร — บันทึกเป็น Excel Workbook (.xlsx) แล้วนำเข้าใหม่",
+  "too-large": "ไฟล์ใหญ่เกินไปหลังแตกไฟล์ — ตรวจว่าไม่มีรูปภาพหรือชีตที่ไม่ใช้",
+}
 
 const ZIP_MAGIC = [0x50, 0x4b, 0x03, 0x04]
 export const isXlsx = (buf: Buffer) => ZIP_MAGIC.every((b, i) => buf[i] === b)
@@ -39,6 +48,8 @@ export type Table = {
  */
 export function readTable(buf: Buffer): Table {
   if (!isXlsx(buf)) throw new ExcelFileError("ไฟล์ต้องเป็น Excel (.xlsx)")
+  const container = inspectXlsxContainer(buf)
+  if (!container.ok) throw new ExcelFileError(CONTAINER_MESSAGE[container.problem])
   let wb: XLSX.WorkBook
   try {
     wb = XLSX.read(buf, { type: "buffer", cellFormula: true, cellHTML: false, dense: true })

@@ -14,7 +14,7 @@
  */
 import type { FastifyReply, FastifyRequest, RouteOptions } from "fastify"
 import { z } from "zod"
-import { ForbiddenError } from "../lib/errors.js"
+import { ForbiddenError, NotFoundError } from "../lib/errors.js"
 import { AuthEventRepository } from "../modules/users/auth-event.repository.js"
 import { authMiddleware } from "./auth.middleware.js"
 import {
@@ -34,6 +34,12 @@ export type RouteAccess = "public" | "authenticated" | { cap: Capability }
 declare module "fastify" {
   interface FastifyContextConfig {
     access?: RouteAccess
+    /**
+     * A web-app session only: the Excel add-in's token is refused (404) even
+     * where its capability would allow it, e.g. approving a new add-in code,
+     * so one token can never mint the next.
+     */
+    webSessionOnly?: boolean
   }
   interface FastifyRequest {
     /** The course a course-capability route was authorized against: from :courseId or resolved from a leaf id (A-3). */
@@ -105,12 +111,23 @@ export async function accessHook(request: FastifyRequest, reply: FastifyReply): 
 
   await authMiddleware(request, reply)
   if (reply.sent) return
+
+  const excelCourseId = request.excelCourseId
+  // Checked before anything is resolved, so an add-in token learns nothing
+  // about routes it may not call: every refusal is the same 404.
+  if (
+    excelCourseId &&
+    (request.routeOptions.config.webSessionOnly || !excelTokenAllows(access, excelCourseId, null))
+  )
+    throw new NotFoundError()
   if (access === "authenticated") return
 
   const courseId =
     CAPABILITIES[access.cap].scope === "course"
       ? await courseOf(request.params as Record<string, unknown>)
       : null
+  if (excelCourseId && !excelTokenAllows(access, excelCourseId, courseId))
+    throw new CourseNotFoundError()
 
   // authMiddleware set both from the live User row, never from the token.
   try {
@@ -127,6 +144,26 @@ export async function accessHook(request: FastifyRequest, reply: FastifyReply): 
     throw err
   }
   if (courseId) request.courseId = courseId
+}
+
+/**
+ * What the Excel add-in's token may call: read its ONE course and write that
+ * course's scores. Not "authenticated" routes (approving codes, revoking
+ * links, the caller's profile), not system capabilities, not another course.
+ * `courseId` is null before the route's course is resolved, and is then
+ * checked again with the real one.
+ */
+export const EXCEL_TOKEN_CAPS: readonly Capability[] = ["course.view", "score.edit"]
+
+export function excelTokenAllows(
+  access: RouteAccess,
+  excelCourseId: string,
+  courseId: string | null,
+): boolean {
+  if (access === "public") return true
+  if (access === "authenticated") return false
+  if (!EXCEL_TOKEN_CAPS.includes(access.cap)) return false
+  return courseId === null || courseId === excelCourseId
 }
 
 /** Who is calling, as authMiddleware read it from the live User row. Only valid on a non-public route. */

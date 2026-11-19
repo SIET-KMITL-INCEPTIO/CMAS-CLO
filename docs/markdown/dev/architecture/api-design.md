@@ -314,6 +314,21 @@ Authorization: Bearer <accessToken>
 - **`POST /courses/copy-level/preview`** — รับชั้นปี 1–4 · ปีต้นทาง · ปีปลายทาง (ค่าตั้งต้นต้นทาง + 1) · คืนรายการวิชาตามแผนการเรียนพร้อมกลุ่มและคำเตือน ไม่เขียนข้อมูล · แผนการเรียน (40 วิชา) เป็นไฟล์ค่าคงที่ `lib/study-plan.ts` ไม่เพิ่มตาราง
 - **`POST /courses/copy-level/commit`** — รับรายการวิชาที่ผู้ใช้ติ๊ก · คัดลอกทีละวิชา (แต่ละวิชา 1 transaction) ด้วยตรรกะเดียวกับ `POST /courses/:id/duplicate` · ข้ามวิชาที่ซ้ำหรือไม่มีสิทธิ์พร้อมเหตุผล · ไม่คัดลอกนักศึกษา คะแนน เกรด · สิทธิ์ `course.create`
 
+### 3.9a Excel add-in (VBA) — เชื่อมต่อด้วยรหัสอุปกรณ์ (ทำแล้ว 2026-11-19 · migration 0011)
+
+> add-in ของ Excel (Windows และ Mac desktop) เข้าสู่ระบบแบบ device code: add-in ขอรหัส 8 ตัว → ผู้สอนกรอกในหน้าเว็บ `/excel/link` ที่ล็อกอินอยู่แล้วและเลือก **1 รายวิชา** → add-in รับ token
+> token ขึ้นต้น `cmasx_` ใช้ได้ 8 ชั่วโมง เฉพาะ `course.view` และ `score.edit` ของรายวิชานั้น · route อื่นทั้งหมดตอบ 404 (`excelTokenAllows` ใน access.middleware.ts) · เก็บเฉพาะ SHA-256 · ไม่อยู่ในไฟล์ Excel
+> แผน: [excel-vba-sync-plan](../planning/excel-vba-sync-plan.md)
+
+| | Method | Path | Role | Scope | หมายเหตุ |
+|---|---|---|---|---|---|
+| ✅ | POST | `/excel/device` | ไม่ต้องล็อกอิน | — | ขอ deviceCode + userCode · อายุ 10 นาที · 10 ครั้ง/15 นาทีต่อ IP |
+| ✅ | POST | `/excel/token` | ไม่ต้องล็อกอิน | — | add-in ถามทุก 5 วินาที · `pending` / `expired` / `ok` + token (ครั้งเดียว) |
+| ✅ | GET | `/excel/addin` | ไม่ต้องล็อกอิน | — | เวอร์ชันและ SHA-256 ของ add-in · ไม่ดาวน์โหลดโค้ดอัตโนมัติ |
+| ✅ | POST | `/courses/:courseId/excel-links` | ผู้สอนของวิชา | ✅ `score.edit` | body `{userCode}` · `webSessionOnly`: token ของ add-in ใช้ไม่ได้แม้เป็นวิชาเดียวกัน (token หนึ่งออก token ถัดไปไม่ได้) |
+| ✅ | GET | `/excel/links` | any | — (เฉพาะของตัวเอง) | การเชื่อมต่อที่ยังใช้ได้ |
+| ✅ | DELETE | `/excel/links/:linkId` | any | — (เฉพาะของตัวเอง) | ตัดการเชื่อมต่อทันที · ของคนอื่น → 404 |
+
 **ยังต้องตัดสิน:** UC 9.1 เขียนว่าผู้ใช้ "แก้ไขชื่อและอีเมลของตนเอง" แต่ `PATCH /auth/me` แก้ได้แค่ชื่อ (อีเมลเป็นตัวระบุตัวตน ทั้ง Google และลิงก์อีเมลอ้างอิงอีเมลนี้) · ค่าที่ใช้ไปก่อน: **แก้ได้แค่ชื่อ** แล้วปรับไดอะแกรมให้ตรง
 
 ### 3.10 Use case → Endpoint (49 ข้อ)
