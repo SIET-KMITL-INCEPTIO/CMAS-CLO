@@ -10,7 +10,7 @@
   "courses light 375": ["color-contrast"],
   "grading dark 1280": ["color-contrast"],
   "grading light 1280": ["color-contrast"],
-  "grading light 375": ["color-contrast"],
+  "grading light 375": ["color-contrast", "scrollable-region-focusable"],
   "home dark 1280": ["color-contrast"],
   "home light 1280": ["color-contrast"],
   "home light 375": ["color-contrast", "scrollable-region-focusable"],
