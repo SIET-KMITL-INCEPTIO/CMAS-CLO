@@ -5,6 +5,7 @@
  * edited afterwards do not move them until it is run again — and the page says
  * so wherever a frozen grade and today's scores disagree.
  */
+import { PageState } from "../../components/page/PageState.tsx"
 import { useState } from "react"
 import { toast } from "sonner"
 import { Tip } from "../../components/page/PageHeader.tsx"
@@ -133,8 +134,23 @@ export default function Grading() {
   )
 
   let body
-  if (q.isLoading) body = <div className="text-[14px] text-dim">กำลังโหลด…</div>
-  else if (!g) body = null
+  if (q.isLoading || q.error || !g)
+    body = (
+      <PageState
+        loading={q.isLoading}
+        error={q.error}
+        onRetry={() => void q.refetch()}
+        empty={!q.isLoading && !q.error && !g}
+        emptyState={
+          <div className="card px-6 py-10 text-center text-[14px] text-dim">
+            ยังไม่มีข้อมูลการตัดเกรดของรายวิชานี้ — ตั้งค่า CLO กิจกรรม และคะแนนก่อน
+          </div>
+        }
+        what="การตัดเกรด"
+      >
+        {null}
+      </PageState>
+    )
   else
     body = (
       <>
