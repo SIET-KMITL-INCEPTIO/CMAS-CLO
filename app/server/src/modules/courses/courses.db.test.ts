@@ -333,7 +333,8 @@ describe.skipIf(!RUN_DB_TESTS)("courses and accounts against the database", () =
     })
 
     it("answers 404 when the caller can see none of the courses (S-8)", async () => {
-      const res = await post("teacherC", "/courses/copy-level/commit", {
+      // teacherB: active, and not on TEST-CL1 (teacherC was switched off by "accounts").
+      const res = await post("teacherB", "/courses/copy-level/commit", {
         level: 1,
         fromYear: 2569,
         toYear: 2571,
