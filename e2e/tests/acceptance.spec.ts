@@ -55,12 +55,12 @@ test("UC 7.4 and 6.4 — the roster and the score sheet download as Excel (ST-IM
   await page.goto(`/courses/${await seededCourseId()}/roster`)
   await page.getByRole("button", { name: "Excel", exact: true }).click()
 
-  for (const [label, name] of [
-    ["ส่งออกรายชื่อ", /^roster-90641001-01-\d{12}\.xlsx$/],
-    ["ส่งออกคะแนน", /\.xlsx$/],
+  for (const [group, name] of [
+    ["รายชื่อนักศึกษา", /^roster-90641001-01-\d{12}\.xlsx$/],
+    ["คะแนน", /\.xlsx$/],
   ] as const) {
     const download = page.waitForEvent("download")
-    await page.getByRole("button", { name: label }).click()
+    await page.getByRole("group", { name: group }).getByRole("button", { name: "ส่งออก" }).click()
     expect((await download).suggestedFilename()).toMatch(name)
   }
 })
