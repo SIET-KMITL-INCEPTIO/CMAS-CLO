@@ -172,6 +172,20 @@ export default function Roster() {
                 >
                   ดาวน์โหลดเทมเพลตคะแนน
                 </button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => studentsApi.exportRoster(course.id).catch(failed)}
+                >
+                  ส่งออกรายชื่อ
+                </button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => scoresApi.exportScores(course.id).catch(failed)}
+                >
+                  ส่งออกคะแนน
+                </button>
               </>
             )}
             {canManage && (

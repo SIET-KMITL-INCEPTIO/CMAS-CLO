@@ -35,6 +35,8 @@ function useUserWrite<A, R>(fn: (args: A) => Promise<R>) {
   })
 }
 
+export const useCreateUser = () =>
+  useUserWrite((body: { email: string; name: string; role: Role }) => usersApi.create(body))
 export const useApproveUser = () => useUserWrite((id: string) => usersApi.approve(id))
 export const useUpdateUser = () =>
   useUserWrite(({ id, ...body }: { id: string; name?: string; role?: Role }) =>

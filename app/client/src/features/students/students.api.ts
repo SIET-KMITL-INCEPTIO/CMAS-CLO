@@ -11,6 +11,9 @@ export const studentsApi = {
     apiClient.delete<{ deleted: true }>(`/students/${studentId}?confirm=true`),
   withdraw: (studentId: string) => apiClient.post(`/students/${studentId}/withdraw`),
   restore: (studentId: string) => apiClient.post(`/students/${studentId}/restore`),
+  /** UC 7.4: the whole roster with status, codes as text, no scores. */
+  exportRoster: (courseId: string) =>
+    apiClient.download(`/courses/${courseId}/students/export`, "roster-export.xlsx"),
   template: (courseId: string) =>
     apiClient.download(`/courses/${courseId}/students/template`, "roster.xlsx"),
   previewImport: (courseId: string, file: File) =>

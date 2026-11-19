@@ -1,6 +1,9 @@
 import { apiClient } from "../../lib/apiClient.ts"
 import type { PageMeta } from "../../types/api.types.ts"
 import type {
+  CopyLevelInput,
+  CopyLevelPreview,
+  CopyLevelResult,
   Course,
   CourseImpact,
   CourseInput,
@@ -23,6 +26,11 @@ export const coursesApi = {
   impact: (courseId: string) => apiClient.get<CourseImpact>(`/courses/${courseId}/impact`),
   remove: (courseId: string) =>
     apiClient.delete<{ deleted: true }>(`/courses/${courseId}?confirm=true`),
+  /** UC 2.9: what copying a year level would do. Writes nothing. */
+  copyLevelPreview: (body: CopyLevelInput) =>
+    apiClient.post<CopyLevelPreview>("/courses/copy-level/preview", body),
+  copyLevelCommit: (body: CopyLevelInput & { courseIds: string[] }) =>
+    apiClient.post<CopyLevelResult>("/courses/copy-level/commit", body),
   duplicate: (courseId: string) => apiClient.post<Course>(`/courses/${courseId}/duplicate`),
   addInstructor: (courseId: string, userId: string) =>
     apiClient.post(`/courses/${courseId}/instructors`, { userId }),

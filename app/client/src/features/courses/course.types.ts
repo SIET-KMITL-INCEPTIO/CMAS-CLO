@@ -55,3 +55,24 @@ export type CourseImpact = {
 }
 
 export type InstructorHit = { id: string; name: string; email: string }
+
+/** POST /courses/copy-level/* — UC 2.9, copy a year level to a later academic year. */
+export type CopyLevelInput = { level: 1 | 2 | 3 | 4; fromYear: number; toYear: number }
+export type CopyLevelRow = {
+  courseId: string
+  code: string
+  name: string
+  semester: number
+  section: string
+  exists: boolean
+  notes: { tone: "nil" | "warn" | "bad"; text: string }[]
+}
+export type CopyLevelPreview = CopyLevelInput & {
+  planned: CopyLevelRow[]
+  offPlan: CopyLevelRow[]
+  missing: { code: string; name: string; semester: number }[]
+}
+export type CopyLevelResult = {
+  created: { fromCourseId: string; courseId: string }[]
+  skipped: { courseId: string; reason: "EXISTS" | "NO_ACCESS" | "NO_TEACHER" }[]
+}

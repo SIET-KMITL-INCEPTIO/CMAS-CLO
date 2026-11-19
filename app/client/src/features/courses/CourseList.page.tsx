@@ -12,6 +12,7 @@ import { Chip, Pill } from "../../components/ui/Badges.tsx"
 import { TONE } from "../../components/ui/tone.ts"
 import { useCan } from "../../hooks/useCan.ts"
 import type { Course, CourseWithReadiness } from "./course.types.ts"
+import { CopyLevel } from "./CopyLevel.tsx"
 import { CourseForm } from "./CourseForm.tsx"
 import {
   bucketsOf,
@@ -198,6 +199,7 @@ export default function CourseList() {
   const [filter, setFilter] = useState("")
   const [editing, setEditing] = useState<Course | null>(null)
   const [deleting, setDeleting] = useState<Course | null>(null)
+  const [copyingLevel, setCopyingLevel] = useState(false)
   const dup = useDuplicateCourse()
   const navigate = useNavigate()
   const creating = params.get("new") === "1"
@@ -296,6 +298,11 @@ export default function CourseList() {
               placeholder="ค้นหารหัส ชื่อ Sec หรือปี"
               aria-label="ค้นหารายวิชา"
             />
+            {can("course.create") && all.length > 0 && (
+              <button type="button" className="btn" onClick={() => setCopyingLevel(true)}>
+                ยกโครงทั้งชั้นปี
+              </button>
+            )}
             {can("course.create") && (
               <button type="button" className="btn btn-primary" onClick={openCreate}>
                 สร้างรายวิชา
@@ -306,7 +313,9 @@ export default function CourseList() {
         help={
           <>
             ผู้สอนเห็นเฉพาะรายวิชาที่ตนสอน ผู้ดูแลระบบเห็นทุกรายวิชา · ทำสำเนาจะได้ Sec ใหม่พร้อม
-            CLO จุดประสงค์ และกิจกรรม แต่ไม่รวมนักศึกษาและคะแนน
+            CLO จุดประสงค์ และกิจกรรม แต่ไม่รวมนักศึกษาและคะแนน ·
+            ยกโครงทั้งชั้นปีคัดลอกทุกวิชาของชั้นปีนั้นตามแผนการเรียนของหลักสูตร
+            ไปปีการศึกษาถัดไปในครั้งเดียว
           </>
         }
       />
@@ -400,6 +409,12 @@ export default function CourseList() {
         )}
       </div>
 
+      {copyingLevel && (
+        <CopyLevel
+          years={[...new Set(all.map((c) => c.year))]}
+          onClose={() => setCopyingLevel(false)}
+        />
+      )}
       {creating && (
         <CourseForm
           course={null}

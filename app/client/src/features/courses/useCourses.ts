@@ -96,6 +96,10 @@ export const useSaveCourse = () =>
     },
   )
 
+export const useCopyLevel = () =>
+  useCourseMutation((body: Parameters<typeof coursesApi.copyLevelCommit>[0]) =>
+    coursesApi.copyLevelCommit(body),
+  )
 export const useDuplicateCourse = () =>
   useCourseMutation((courseId: string) => coursesApi.duplicate(courseId))
 export const useDeleteCourse = () =>

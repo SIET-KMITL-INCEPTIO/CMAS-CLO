@@ -24,6 +24,9 @@ export type AuthEvent = {
 export const usersApi = {
   list: (status?: AccountStatus) =>
     apiClient.get<ListedUser[]>(`/users${status ? `?status=${status}` : ""}`),
+  /** UC 1.1: an account its owner will open with Google or an email link (no password). */
+  create: (body: { email: string; name: string; role: Role }) =>
+    apiClient.post<UserDetail>("/users", body),
   get: (userId: string) => apiClient.get<UserDetail>(`/users/${userId}`),
   approve: (id: string) => apiClient.patch<User>(`/users/${id}/approve`),
   update: (userId: string, body: { name?: string; role?: Role }) =>
