@@ -62,6 +62,15 @@ describe("CORS", () => {
     const allowed = String(res.headers["access-control-allow-methods"])
     for (const m of ["PUT", "PATCH", "DELETE"]) expect(allowed).toContain(m)
   })
+
+  it("lets the front end read an export's file name (Content-Disposition)", async () => {
+    const res = await app.inject({
+      method: "GET",
+      url: "/api/v1/health",
+      headers: { origin: process.env.CORS_ORIGIN ?? "http://localhost:5173" },
+    })
+    expect(String(res.headers["access-control-expose-headers"])).toContain("Content-Disposition")
+  })
 })
 
 describe("route access declarations (A-6)", () => {

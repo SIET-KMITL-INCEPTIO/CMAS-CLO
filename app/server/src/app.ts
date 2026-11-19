@@ -54,6 +54,9 @@ export async function buildApp(options: BuildOptions = {}) {
     origin: env.CORS_ORIGIN,
     credentials: true,
     methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+    // A cross-origin fetch hides every response header not listed here; without
+    // it the client never sees an export's file name and falls back to a generic one.
+    exposedHeaders: ["Content-Disposition"],
   })
   await app.register(rateLimit, { max: env.RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW })
   await app.register(multipart, { limits: { fileSize: 10 * 1024 * 1024 } }) // 10MB cap for Excel uploads
