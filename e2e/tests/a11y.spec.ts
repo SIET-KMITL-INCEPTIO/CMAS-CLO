@@ -21,8 +21,30 @@ import { prisma, signInAs } from "../support/session"
 const BASELINE_FILE = join(__dirname, "..", "a11y-baseline.json")
 const FOUND_DIR = join(__dirname, "..", "test-results")
 const UPDATE = process.env.UPDATE_A11Y_BASELINE === "1"
+const FOUND_FILE = join(FOUND_DIR, "a11y-found.json")
 const baseline: Record<string, string[]> = JSON.parse(readFileSync(BASELINE_FILE, "utf8"))
-const found: Record<string, string[]> = {}
+
+/**
+ * Adds one run's result to a11y-found.json on disk at once. Kept on disk, not
+ * in memory: Playwright replaces the worker after a failed test, which would
+ * drop everything recorded before it. CI uploads test-results on failure, so a
+ * baseline can be read from a CI run when there is no local Postgres.
+ */
+function record(key: string, problems: string[]) {
+  mkdirSync(FOUND_DIR, { recursive: true })
+  let all: Record<string, string[]> = {}
+  try {
+    all = JSON.parse(readFileSync(FOUND_FILE, "utf8")) as Record<string, string[]>
+  } catch {
+    /* first run of this suite */
+  }
+  if (problems.length) all[key] = problems
+  else delete all[key]
+  const sorted = Object.fromEntries(Object.entries(all).sort(([a], [b]) => a.localeCompare(b)))
+  const json = `${JSON.stringify(sorted, null, 2)}\n`
+  writeFileSync(FOUND_FILE, json)
+  if (UPDATE) writeFileSync(BASELINE_FILE, json)
+}
 
 const ADMIN = "admin@cmas.local"
 const INSTRUCTOR = "instructor1@cmas.local" // teaches the seeded course 90641001
@@ -58,13 +80,6 @@ test.beforeAll(async () => {
 })
 
 test.afterAll(async () => {
-  const sorted = Object.fromEntries(Object.entries(found).sort(([a], [b]) => a.localeCompare(b)))
-  const json = `${JSON.stringify(sorted, null, 2)}\n`
-  // Always kept with the run (CI uploads test-results on failure), so a
-  // baseline can be read from a CI run when no local Postgres is at hand.
-  mkdirSync(FOUND_DIR, { recursive: true })
-  writeFileSync(join(FOUND_DIR, "a11y-found.json"), json)
-  if (UPDATE) writeFileSync(BASELINE_FILE, json)
   await prisma.$disconnect()
 })
 
@@ -89,6 +104,9 @@ for (const target of PAGES) {
       // network never goes idle. Every page shows "กำลังโหลด…" until its data is in.
       await expect(page.getByText("กำลังโหลด")).toHaveCount(0, { timeout: 15_000 })
       await expect(page.locator("html")).toHaveAttribute("data-theme", run.theme)
+      // A failed session refresh lands on the login page, which would then be
+      // audited in place of the page this test names.
+      if (target.as) await expect(page).not.toHaveURL(/\/auth\/login/)
 
       const axe = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
@@ -102,13 +120,11 @@ for (const target of PAGES) {
       )
       if (sideways) problems.push("page-scrolls-sideways")
 
-      found[key] = [...new Set(problems)].sort()
-      if (found[key].length === 0) delete found[key]
+      const result = [...new Set(problems)].sort()
+      record(key, result)
       if (UPDATE) return
 
-      expect(found[key] ?? [], `${key}: compare with e2e/a11y-baseline.json`).toEqual(
-        baseline[key] ?? [],
-      )
+      expect(result, `${key}: compare with e2e/a11y-baseline.json`).toEqual(baseline[key] ?? [])
     })
   }
 }

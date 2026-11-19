@@ -43,6 +43,9 @@ export const envSchema = z
     MAIL_FROM: z.string().min(1).default("CMAS <no-reply@kmitl.ac.th>"),
     RATE_LIMIT_MAX: z.coerce.number().default(100),
     RATE_LIMIT_WINDOW: z.string().default("1 minute"),
+    // POST /auth/refresh per IP per 15 minutes. Only the E2E job raises it: its
+    // browser makes every page load from one IP.
+    AUTH_REFRESH_LIMIT_MAX: z.coerce.number().int().positive().default(30),
   })
   // Threat model "Data Flow Sniffing": in production every hop carrying
   // student data is encrypted — the database connection and the browser's.
