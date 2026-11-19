@@ -3,6 +3,7 @@ import { AuthController } from "./auth.controller.js"
 import { AuthService } from "./auth.service.js"
 import { EmailLinkRepository } from "./email-link.repository.js"
 import { EmailLinkService } from "./email-link.service.js"
+import { env } from "../../lib/env.js"
 import { createMailer } from "../../lib/mailer.js"
 import { RefreshTokenRepository } from "./refresh-token.repository.js"
 import { SessionService } from "./session.service.js"
@@ -12,7 +13,7 @@ import { UserRepository } from "../users/user.repository.js"
 // S-5: brute force and token-guessing get a tighter limit than the API as a whole.
 const LOGIN_LIMIT = { max: 5, timeWindow: "15 minutes" }
 // A refresh happens every 15 minutes per open tab; 5 would lock out a busy browser.
-const REFRESH_LIMIT = { max: 30, timeWindow: "15 minutes" }
+const REFRESH_LIMIT = { max: env.AUTH_REFRESH_LIMIT_MAX, timeWindow: "15 minutes" }
 
 // /google, /email-link* and /refresh are unauthenticated on purpose — they ARE how a session starts (FR-07, FR-08, S-2).
 export async function authRoutes(app: FastifyInstance) {
