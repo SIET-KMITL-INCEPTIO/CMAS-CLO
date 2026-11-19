@@ -94,6 +94,7 @@ URL, RESOLVE, FILTER, NO = "จาก URL", "resolve จาก id", "กรอ�
 G_AUTH, G_USER, G_COURSE = "1 เข้าสู่ระบบ", "2 บัญชีผู้ใช้", "3 รายวิชา"
 G_CLO, G_ACT, G_STU = "4 CLO และจุดประสงค์", "5 กิจกรรมและเกณฑ์", "6 นักศึกษา"
 G_SCORE, G_GRADE, G_DASH = "7 คะแนนและ Excel", "8 ตัดเกรด", "9 แดชบอร์ด"
+G_EXCEL = "10 Excel add-in"
 
 E = [
     # ── 1 เข้าสู่ระบบ ───────────────────────────────────────────────────────
@@ -188,6 +189,13 @@ E = [
     (G_DASH, "GET", "/courses/:courseId/dashboard/students/:studentId", "รายงานรายบุคคล", ANY, URL, READ, "FR-85, FR-86", ST_DONE, "P6", "#9", "", ""),
     (G_DASH, "GET", "/courses/:courseId/dashboard/export", "ส่งออกรายงานผลสัมฤทธิ์", ANY, URL, "results.export", "FR-87", ST_DONE, "P6", "#9", "", "S-7"),
     (G_DASH, "GET", "/events", "แจ้งหน้าจออื่นเมื่อรายวิชาถูกแก้ (SSE) ให้โหลดใหม่เอง", LOGGED, FILTER, READ, "—", ST_DONE, "F7", "", "", "ส่งเฉพาะ courseId"),
+    # ── 10 Excel add-in ─────────────────────────────────────────────────────
+    (G_EXCEL, "POST", "/excel/device", "add-in ของ Excel ขอรหัสเชื่อมต่อ (deviceCode + userCode 8 ตัว)", NONE, NO, NO, "FR-73", ST_DONE, "X2", "", "", "migration 0011 · อายุ 10 นาที"),
+    (G_EXCEL, "POST", "/excel/token", "add-in ถามว่าอนุมัติแล้วหรือยัง ได้ token ของ 1 รายวิชาครั้งเดียว", NONE, NO, NO, "FR-73", ST_DONE, "X2", "", "", "token cmasx_ · 8 ชม. · course.view + score.edit เท่านั้น"),
+    (G_EXCEL, "GET", "/excel/addin", "เวอร์ชันและ SHA-256 ของ add-in ล่าสุด", NONE, NO, NO, "FR-75", ST_DONE, "X2", "", "", "add-in แจ้งเตือนเท่านั้น ไม่ดาวน์โหลดโค้ด"),
+    (G_EXCEL, "POST", "/courses/:courseId/excel-links", "ผู้สอนอนุมัติรหัสจาก Excel สำหรับรายวิชานี้", ANY, URL, "score.edit", "FR-73", ST_DONE, "X2", "", "", "webSessionOnly: token ของ add-in เรียกไม่ได้แม้เป็นวิชาเดียวกัน"),
+    (G_EXCEL, "GET", "/excel/links", "การเชื่อมต่อ Excel ที่ยังใช้ได้ของตัวเอง", LOGGED, NO, READ, "FR-74", ST_DONE, "X2", "", "", ""),
+    (G_EXCEL, "DELETE", "/excel/links/:linkId", "ตัดการเชื่อมต่อ Excel ทันที", LOGGED, NO, NO, "FR-74", ST_DONE, "X2", "", "", "ของคนอื่น → 404"),
 ]
 
 # Use case -> endpoint. Source: docs/diagrams/usecase/index-q-usecase.drawio (49 use cases).
@@ -308,6 +316,7 @@ SECURITY = [
     ("S-14", "dependency ระดับ high ใน production ต้องเป็น 0: zod < 4.6.6 · react-router-dom 7.12–7.18.1 · prisma 6.x–7.10.0 (ต้องไปรุ่น 7.10.1 ขึ้นไป · เป็น major)", "ยังไม่ผ่าน · npm audit พบ 4 รายการ (2026-11-18)"),
     ("S-15", "ไม่มี secret ใน git: .env ถูก ignore · gitleaks ต้องไม่พบรายการ", "ครึ่งเดียว · .env ไม่ถูกติดตาม · gitleaks ยังไม่ได้เปิดดูผล"),
     ("S-16", "POST /users: ADMIN เท่านั้น · รับ role จาก body ได้เฉพาะ endpoint นี้และ PATCH /users/:userId · เขียน AuthEvent · ห้ามสร้างอีเมลซ้ำแบบไม่สนตัวพิมพ์", "ออกแบบแล้ว · ยังไม่เขียนโค้ด"),
+    ("S-17", "Excel add-in: device code แทนรหัสผ่านหรือ API key · token ของ 1 รายวิชา course.view + score.edit 8 ชม. เก็บเป็น SHA-256 ตัดได้จากเว็บ · route อื่นตอบ 404 · authMiddleware ยังอ่านแถว User สด · ไฟล์นำเข้าที่มีมาโครถูกปฏิเสธ", "ทำแล้ว (excel.service.ts · access.middleware.ts · xlsx-container.ts)"),
 ]
 
 DECISIONS = [
@@ -977,6 +986,38 @@ DESIGN = [
      "401",
      "ผู้สอนเห็นเฉพาะวิชาตน ADMIN เห็นทั้งหมด กรองใน query (NFR-06)",
      "ST-COURSE-04"),
+    ("POST", "/excel/device", "—", "— (ไม่มี body)",
+     "201 · {deviceCode (43 ตัว base64url), userCode 'ABCD-2345', verifyUrl, expiresIn 600, interval 5}",
+     "429 เกิน 10 ครั้ง / 15 นาที ต่อ IP",
+     "เก็บเฉพาะ SHA-256 ของ deviceCode · userCode 8 ตัวจากอักษรที่ไม่มี 0 O 1 I · ลบรหัสที่หมดอายุก่อนออกรหัสใหม่",
+     "ST-XL-01"),
+    ("POST", "/excel/token", "—",
+     "deviceCode (string 43 ตัว base64url)",
+     "200 · {status:'pending', interval} · {status:'expired'} (ไม่มี / หมดอายุ / รับไปแล้ว ตอบเหมือนกัน) · 201 · {status:'ok', token 'cmasx_…', expiresAt, course{id, code, name, section, semester, year}} · Cache-Control: no-store",
+     "400 body ผิดรูป · 429 เกิน 300 ครั้ง / 15 นาที ต่อ IP",
+     "รับ token ได้ครั้งเดียว: ทำเครื่องหมายใช้แล้วและสร้าง ExcelLink ใน transaction เดียว · token ใช้ได้ 8 ชม. เฉพาะ course.view และ score.edit ของวิชาที่อนุมัติ",
+     "ST-XL-01, 02"),
+    ("GET", "/excel/addin", "—", "—",
+     "200 · {version, sha256 (null จนกว่าจะมี build จริง), platforms ['windows','mac']}",
+     "—",
+     "add-in เทียบเวอร์ชันแล้วแจ้งผู้ใช้เท่านั้น ไม่ดาวน์โหลดหรือรันโค้ดจากเซิร์ฟเวอร์ · ไม่มีการเซ็นโค้ด จึงให้ผู้ใช้เทียบ SHA-256",
+     "ST-XL-05"),
+    ("POST", "/courses/:courseId/excel-links", ":courseId",
+     "userCode (string ≤ 20 · ตัดขีดและช่องว่าง แปลงเป็นตัวพิมพ์ใหญ่ · 8 ตัว) · .strict() รายวิชามาจาก path เท่านั้น (A-8)",
+     "201 · {approved:true}",
+     "400 body ผิดรูป · 401 · 403 ADMIN (D-1) · 404 วิชาที่มองไม่เห็น · 404 รหัสไม่ถูกต้องหรือหมดอายุ · 404 เรียกด้วย token ของ add-in (webSessionOnly) · 429 เกิน 10 ครั้ง / 15 นาที",
+     "score.edit ตรวจโดย access hook เหมือน route คะแนน · อนุมัติได้ครั้งเดียวต่อรหัส · token หนึ่งออก token ถัดไปไม่ได้",
+     "ST-XL-01, 03"),
+    ("GET", "/excel/links", "—", "—",
+     "200 · [{id, createdAt, lastUsedAt, expiresAt, course{id, code, name, section}}]",
+     "401 · 404 เรียกด้วย token ของ add-in",
+     "เฉพาะของผู้เรียก ที่ยังไม่หมดอายุและไม่ถูกตัด · lastUsedAt อัปเดตอย่างมากนาทีละครั้ง",
+     "ST-XL-04"),
+    ("DELETE", "/excel/links/:linkId", ":linkId (cuid)", "—",
+     "200 · {revoked:true}",
+     "400 linkId ผิดรูป · 401 · 404 ไม่มี / ของคนอื่น / ตัดไปแล้ว (ตอบเหมือนกัน) · 404 เรียกด้วย token ของ add-in",
+     "มีผลทันที: request ถัดไปของ add-in ได้ 401",
+     "ST-XL-04"),
     ("GET", "/events", "—", "—",
      "200 · text/event-stream · ทุกครั้งที่เขียนสำเร็จ: data: {courseId, origin?} · ping ทุก 25 วินาที · server ปิด stream ทุก 10 นาที",
      "401",

@@ -12,14 +12,24 @@ import type { FastifyReply, FastifyRequest } from "fastify"
 import { verifyAccessToken } from "../lib/jwt.js"
 import { prisma } from "../db/prisma.js"
 import { unauthorized } from "../lib/response.js"
+import { ExcelLinkRepository } from "../modules/excel/excel-link.repository.js"
+import { EXCEL_TOKEN_PREFIX } from "../modules/excel/excel.service.js"
 
 declare module "fastify" {
   interface FastifyRequest {
     userId?: string
     /** Read from the live User row by authMiddleware, never from the token. */
     userRole?: "ADMIN" | "INSTRUCTOR"
+    /**
+     * Set only when the caller is the Excel add-in: the ONE course its token
+     * was approved for. access.middleware then allows score routes of that
+     * course and nothing else (excelTokenAllows).
+     */
+    excelCourseId?: string
   }
 }
+
+const excelLinks = new ExcelLinkRepository()
 
 export async function authMiddleware(request: FastifyRequest, reply: FastifyReply) {
   const header = request.headers.authorization
@@ -28,12 +38,25 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
   if (!token) return unauthorized(reply)
 
   let userId: string
-  try {
-    // Access tokens only: a refresh token is rejected here (S-1).
-    const payload = await verifyAccessToken(token)
-    userId = payload.sub
-  } catch {
-    return unauthorized(reply)
+  if (token.startsWith(EXCEL_TOKEN_PREFIX)) {
+    // An add-in token: unknown, revoked and expired all read the same.
+    const link = await excelLinks.findLive(token)
+    if (!link) return unauthorized(reply)
+    userId = link.userId
+    request.excelCourseId = link.courseId
+    await excelLinks
+      .touch(link.id)
+      .catch((e: Error) =>
+        request.log.error({ err: { name: e.name } }, "could not touch ExcelLink"),
+      )
+  } else {
+    try {
+      // Access tokens only: a refresh token is rejected here (S-1).
+      const payload = await verifyAccessToken(token)
+      userId = payload.sub
+    } catch {
+      return unauthorized(reply)
+    }
   }
 
   const user = await prisma.user.findUnique({

@@ -25,6 +25,42 @@ import { useDeleteStudent, useRestoreStudent, useWithdrawStudent } from "./useSt
 
 const TITLE = "นักศึกษาและคะแนน"
 
+/** One kind of data, the same two actions: นำเข้า and ส่งออก. A group the caller may do neither in is not drawn. */
+function ExcelGroup({
+  label,
+  canImport,
+  canExport,
+  onImport,
+  onExport,
+}: {
+  label: string
+  canImport: boolean
+  canExport: boolean
+  onImport: () => void
+  onExport: () => void
+}) {
+  if (!canImport && !canExport) return null
+  return (
+    <div role="group" aria-label={label}>
+      <div className="mb-1.5 text-[13px] text-dim" aria-hidden="true">
+        {label}
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {canImport && (
+          <button type="button" className="btn btn-primary" onClick={onImport}>
+            นำเข้า
+          </button>
+        )}
+        {canExport && (
+          <button type="button" className="btn" onClick={onExport}>
+            ส่งออก
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function Roster() {
   const { course } = useCourseContext()
   const can = useCan(course)
@@ -155,63 +191,29 @@ export default function Roster() {
           title="นำเข้า / ส่งออก Excel"
           sub="ตรวจไฟล์ก่อนบันทึกเสมอ — ยังไม่เขียนอะไรจนกว่าจะยืนยัน"
         >
-          <div className="grid gap-2 sm:grid-cols-2">
-            {can("score.export") && (
-              <>
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => studentsApi.template(course.id).catch(failed)}
-                >
-                  ดาวน์โหลดเทมเพลตรายชื่อ
-                </button>
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => scoresApi.template(course.id).catch(failed)}
-                >
-                  ดาวน์โหลดเทมเพลตคะแนน
-                </button>
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => studentsApi.exportRoster(course.id).catch(failed)}
-                >
-                  ส่งออกรายชื่อ
-                </button>
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => scoresApi.exportScores(course.id).catch(failed)}
-                >
-                  ส่งออกคะแนน
-                </button>
-              </>
-            )}
-            {canManage && (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => {
-                  setExcel(false)
-                  setImporting("roster")
-                }}
-              >
-                นำเข้ารายชื่อ
-              </button>
-            )}
-            {can("score.import") && (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => {
-                  setExcel(false)
-                  setImporting("scores")
-                }}
-              >
-                นำเข้าคะแนน
-              </button>
-            )}
+          {/* Two things, each with the same two actions. The template is the
+              first step of the import window, so it has no button here. */}
+          <div className="grid gap-4">
+            <ExcelGroup
+              label="รายชื่อนักศึกษา"
+              canImport={canManage}
+              canExport={can("score.export")}
+              onImport={() => {
+                setExcel(false)
+                setImporting("roster")
+              }}
+              onExport={() => studentsApi.exportRoster(course.id).catch(failed)}
+            />
+            <ExcelGroup
+              label="คะแนน"
+              canImport={can("score.import")}
+              canExport={can("score.export")}
+              onImport={() => {
+                setExcel(false)
+                setImporting("scores")
+              }}
+              onExport={() => scoresApi.exportScores(course.id).catch(failed)}
+            />
           </div>
         </Modal>
       )}
