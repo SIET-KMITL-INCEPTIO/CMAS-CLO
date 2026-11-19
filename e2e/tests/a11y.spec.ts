@@ -85,7 +85,9 @@ for (const target of PAGES) {
       if (target.as) await signInAs(page, target.as)
 
       await page.goto(target.path(courseId))
-      await page.waitForLoadState("networkidle")
+      // Not "networkidle": the app holds /events open (live updates), so the
+      // network never goes idle. Every page shows "กำลังโหลด…" until its data is in.
+      await expect(page.getByText("กำลังโหลด")).toHaveCount(0, { timeout: 15_000 })
       await expect(page.locator("html")).toHaveAttribute("data-theme", run.theme)
 
       const axe = await new AxeBuilder({ page })
