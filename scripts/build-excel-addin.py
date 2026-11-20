@@ -3,7 +3,7 @@
     python scripts/build-excel-addin.py text            write src/modCmasText.bas from text/th.json
     python scripts/build-excel-addin.py text --check    exit 1 if modCmasText.bas is out of date
     python scripts/build-excel-addin.py check           static checks on src/ (CI runs this)
-    python scripts/build-excel-addin.py package IN.xlam [--out dist/CMAS.xlam]
+    python scripts/build-excel-addin.py package IN.xlam [--out release/CMAS.xlam]
                                                         add the ribbon to an .xlam built in Excel,
                                                         print its SHA-256 for addin-release.ts
 
@@ -284,7 +284,7 @@ def main() -> int:
     sub.add_parser("check")
     p = sub.add_parser("package")
     p.add_argument("xlam", type=Path)
-    p.add_argument("--out", type=Path, default=ADDIN / "dist" / "CMAS.xlam")
+    p.add_argument("--out", type=Path, default=ADDIN / "release" / "CMAS.xlam")
     args = parser.parse_args()
     if args.cmd == "text":
         return cmd_text(args.check)

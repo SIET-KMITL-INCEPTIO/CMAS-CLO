@@ -16,10 +16,12 @@
  * The userCode alone is useless: only the add-in holding the matching
  * deviceCode can collect the token.
  */
-import { randomBytes, randomInt } from "node:crypto"
+import { createHash, randomBytes, randomInt } from "node:crypto"
+import { readFile } from "node:fs/promises"
 import { Prisma } from "@prisma/client"
 import { env } from "../../lib/env.js"
 import { NotFoundError } from "../../lib/errors.js"
+import { ADDIN_FILE, ADDIN_RELEASE } from "./addin-release.js"
 import { CourseRevisionRepository } from "./course-revision.repository.js"
 import type { ExcelDeviceCodeRepository } from "./excel-device-code.repository.js"
 import type { ExcelLinkRepository } from "./excel-link.repository.js"
@@ -151,5 +153,23 @@ export class ExcelService {
 
   async revoke(userId: string, linkId: string): Promise<void> {
     if (!(await this.links.revoke(userId, linkId))) throw new NotFoundError()
+  }
+
+  /**
+   * The released CMAS.xlam. Served only when the release names a SHA-256 AND the file
+   * on disk still hashes to it: a swapped or half-written file is refused, so the hash
+   * the page shows is always the hash of what was downloaded.
+   */
+  async addinFile(source: URL = ADDIN_FILE, expected = ADDIN_RELEASE.sha256): Promise<Buffer> {
+    const missing = new NotFoundError("ยังไม่เปิดให้ดาวน์โหลด add-in")
+    if (!expected) throw missing
+    let bytes: Buffer
+    try {
+      bytes = await readFile(source)
+    } catch {
+      throw missing
+    }
+    if (createHash("sha256").update(bytes).digest("hex") !== expected) throw missing
+    return bytes
   }
 }

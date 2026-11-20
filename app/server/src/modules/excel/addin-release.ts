@@ -16,3 +16,8 @@ export const ADDIN_RELEASE = {
   /** Desktop only: Excel on the web cannot run VBA. */
   platforms: ["windows", "mac"] as const,
 }
+
+/** Where the released file lives in the repo (committed; `dist/` is git-ignored). */
+export const ADDIN_FILE = new URL("../../../../excel-addin/release/CMAS.xlam", import.meta.url)
+export const ADDIN_FILE_NAME = "CMAS.xlam"
+export const ADDIN_MIME = "application/vnd.ms-excel.addin.macroEnabled.12"

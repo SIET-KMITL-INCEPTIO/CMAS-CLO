@@ -1,3 +1,8 @@
+import { createHash } from "node:crypto"
+import { mkdtempSync, writeFileSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
+import { pathToFileURL } from "node:url"
 import { Prisma } from "@prisma/client"
 import { describe, expect, it, vi } from "vitest"
 import { NotFoundError } from "../../lib/errors.js"
@@ -160,5 +165,35 @@ describe("revoke", () => {
     links.revoke.mockResolvedValueOnce(false)
     await expect(service.revoke("u1", "l9")).rejects.toBeInstanceOf(NotFoundError)
     expect(links.revoke).toHaveBeenCalledWith("u1", "l9")
+  })
+})
+
+describe("addinFile (FR-75)", () => {
+  const bytes = Buffer.from("PK-pretend-xlam")
+  const sha = createHash("sha256").update(bytes).digest("hex")
+  const file = (name: string) => pathToFileURL(join(mkdtempSync(join(tmpdir(), "cmas-")), name))
+
+  it("refuses while the release names no SHA-256", async () => {
+    await expect(setup().service.addinFile(file("none.xlam"), null)).rejects.toBeInstanceOf(
+      NotFoundError,
+    )
+  })
+
+  it("refuses when the file is missing", async () => {
+    await expect(setup().service.addinFile(file("gone.xlam"), sha)).rejects.toBeInstanceOf(
+      NotFoundError,
+    )
+  })
+
+  it("refuses a file that no longer matches the published SHA-256", async () => {
+    const url = file("swapped.xlam")
+    writeFileSync(url, Buffer.from("something else"))
+    await expect(setup().service.addinFile(url, sha)).rejects.toBeInstanceOf(NotFoundError)
+  })
+
+  it("hands over exactly the bytes whose hash was published", async () => {
+    const url = file("ok.xlam")
+    writeFileSync(url, bytes)
+    expect(await setup().service.addinFile(url, sha)).toEqual(bytes)
   })
 })

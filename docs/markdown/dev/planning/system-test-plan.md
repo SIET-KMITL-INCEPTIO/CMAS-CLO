@@ -10,7 +10,7 @@ See also: [[srs]] · [[api-design-plan]] · [[prototype-to-app]] · [[objectives
 > (1) ออกแบบ API ตาม [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx)
 > (2) หน้าจอของแอปจริงใช้ตาม mock-up [`index-q.html`](../../../index-q/index-q.html)
 > (3) วางแผนทดสอบเป็น **system test แบบ gray box**
-> **ตรวจกับ:** `srs.md` v2.4.3 · Excel API 90 endpoint · `capabilities.ts` · `schema.prisma` (21 models · migration 0001–0012) · ไฟล์ทดสอบใน `docs/excel/import-test/`
+> **ตรวจกับ:** `srs.md` v2.4.3 · Excel API 91 endpoint · `capabilities.ts` · `schema.prisma` (21 models · migration 0001–0012) · ไฟล์ทดสอบใน `docs/excel/import-test/`
 
 ---
 
@@ -134,7 +134,7 @@ Unit test ที่มีอยู่ (`*.test.ts` ข้างไฟล์โ�
 | ST-XL-03 | อนุมัติด้วยรหัสผิด / หมดอายุ / ใช้แล้ว · ADMIN อนุมัติ · ผู้สอนวิชาอื่นอนุมัติ · token ของ add-in อนุมัติรหัสใหม่ · ส่ง `courseId` ใน body | FR-73 · A-8 | 404 · 403 · 404 · 404 · 400 ตามลำดับ · ไม่มี `ExcelLink` ใหม่ |
 | ST-XL-04 | `GET /excel/links` แล้ว `DELETE /excel/links/:linkId` ของตัวเอง / ของคนอื่น | FR-74 | ของตัวเอง → request ถัดไปของ token ได้ 401 · ของคนอื่น → 404 และ link ยังใช้ได้ |
 | ST-XL-06 | เขียนจากเว็บ / จาก add-in / อ่าน / เขียนที่ถูกปฏิเสธ แล้วดู `GET /courses/:courseId/revision` · add-in ส่ง `source` อะไรก็ได้ | FR-76 | เขียนสำเร็จ → เลขขยับ · อ่านหรือถูกปฏิเสธ → ไม่ขยับ · `Course.updatedAt` ไม่ขยับ · ประวัติเป็น `EXCEL` เสมอเมื่อมาจาก add-in · เว็บส่ง `EXCEL` → 400 |
-| ST-XL-05 | `GET /excel/addin` · นำเข้าไฟล์ `.xlsm` · zip bomb · `.ods` | FR-75 · NFR-20 | เวอร์ชันตรงกับ `addin-release.ts` · ไฟล์มีมาโคร / ใหญ่เกินหลังแตก / ไม่ใช่ .xlsx → 400 พร้อมข้อความไทย |
+| ST-XL-05 | `GET /excel/addin` · `GET /excel/addin/file` · นำเข้าไฟล์ `.xlsm` · zip bomb · `.ods` | FR-75 · NFR-20 | เวอร์ชันตรงกับ `addin-release.ts` · ไฟล์มีมาโคร / ใหญ่เกินหลังแตก / ไม่ใช่ .xlsx → 400 พร้อมข้อความไทย |
 
 ### 5.4 ST-COURSE รายวิชาและผู้สอน (Excel กลุ่ม 3 · ช่วง P2)
 
@@ -229,7 +229,7 @@ Unit test ที่มีอยู่ (`*.test.ts` ข้างไฟล์โ�
 
 | เกณฑ์ | ค่า |
 |---|---|
-| Endpoint ในขอบเขต (Excel) | 90 / 90 มีกรณีบวกอย่างน้อย 1 และกรณีลบอย่างน้อย 1 |
+| Endpoint ในขอบเขต (Excel) | 91 / 91 มีกรณีบวกอย่างน้อย 1 และกรณีลบอย่างน้อย 1 |
 | ตารางสิทธิ์ §5.2 | ทุกช่อง × ทุก endpoint ที่มี `:courseId` หรือ leaf id |
 | ชนิดกรณีทดสอบตามประเภทใน Excel | endpoint ที่ "ระดับความระวัง" = สูง (ลบ · ตัดเกรด · นำเข้า commit · จัดการบัญชี) ต้องมีกรณีลบ/ซ้ำ/ไม่มีสิทธิ์ครบ · "ผลต่อข้อมูล" = transaction ต้องมีกรณีล้มกลางทางแล้วไม่มีแถวค้าง · "ประเภทสิทธิ์" = งานสอน ต้องมีกรณี ADMIN ได้ 403 |
 | FR ระดับ MUST | ทุกข้อมีกรณีทดสอบอย่างน้อย 1 · ตารางย้อนรอยอยู่ใน §9 |

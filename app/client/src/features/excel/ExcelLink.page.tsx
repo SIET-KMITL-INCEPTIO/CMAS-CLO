@@ -14,12 +14,76 @@ import { PageState } from "../../components/page/PageState.tsx"
 import { Field } from "../../components/ui/Badges.tsx"
 import { useAuthStore } from "../auth/useAuthStore.ts"
 import { byTerm, useCourseList } from "../courses/useCourses.ts"
-import { formatUserCode, useApproveExcel, useExcelLinks, useRevokeExcel } from "./useExcel.ts"
+import { excelApi } from "./excel.api.ts"
+import {
+  formatUserCode,
+  useAddinRelease,
+  useApproveExcel,
+  useExcelLinks,
+  useRevokeExcel,
+} from "./useExcel.ts"
 
 const when = (iso: string | null) =>
   iso
     ? new Date(iso).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" })
     : "ยังไม่ได้ใช้"
+
+/** Step 0: get the add-in. Not code-signed, so the SHA-256 is shown next to the download (FR-75). */
+function AddinDownload() {
+  const release = useAddinRelease()
+  const [busy, setBusy] = useState(false)
+  const r = release.data
+  const download = async () => {
+    setBusy(true)
+    try {
+      await excelApi.downloadAddin()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "ดาวน์โหลดไม่สำเร็จ")
+    } finally {
+      setBusy(false)
+    }
+  }
+  return (
+    <div className="card grid max-w-xl gap-3 p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h2 className="text-[15px] font-semibold">ติดตั้ง add-in CMAS</h2>
+          <p className="text-[13px] text-dim">
+            Excel บนคอมพิวเตอร์ (Windows / Mac) · ไม่รองรับ Excel บนเว็บ
+          </p>
+        </div>
+        <button
+          type="button"
+          className="btn btn-primary shrink-0"
+          disabled={!r?.sha256 || busy}
+          onClick={() => void download()}
+        >
+          {busy ? "กำลังดาวน์โหลด…" : `ดาวน์โหลด v${r?.version ?? ""}`}
+        </button>
+      </div>
+      {r && !r.sha256 && (
+        <p className="text-[13px] text-dim">ยังไม่เปิดให้ดาวน์โหลด — รอผู้ดูแลเผยแพร่ไฟล์</p>
+      )}
+      {r?.sha256 && (
+        <>
+          <p className="break-all font-mono text-[12px] text-dim">SHA-256 {r.sha256}</p>
+          <ol className="list-decimal space-y-1 pl-5 text-[13px]">
+            <li>
+              ตรวจไฟล์ก่อนติดตั้ง: <code>Get-FileHash CMAS.xlam</code> (Windows) หรือ{" "}
+              <code>shasum -a 256 CMAS.xlam</code> (Mac) ต้องได้ค่าเท่ากับด้านบน
+            </li>
+            <li>Windows: คลิกขวาที่ไฟล์ → Properties → ติ๊ก Unblock → OK</li>
+            <li>
+              Excel → File → Options → Add-ins → Manage: Excel Add-ins → Go → Browse… เลือกไฟล์ →
+              ติ๊ก CMAS
+            </li>
+            <li>แท็บ CMAS → เชื่อมต่อ แล้วกรอกรหัสที่ได้ด้านล่าง</li>
+          </ol>
+        </>
+      )}
+    </div>
+  )
+}
 
 export default function ExcelLink() {
   const me = useAuthStore((s) => s.me)
@@ -73,6 +137,7 @@ export default function ExcelLink() {
         }
       />
       <div className="cbody grid gap-4">
+        <AddinDownload />
         <PageState
           loading={courses.isLoading}
           error={courses.error}

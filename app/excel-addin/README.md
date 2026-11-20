@@ -74,9 +74,12 @@ confirmed. Writes from Excel appear in the score history as **แก้ใน Ex
 4. Debug → Compile VBAProject — must finish with no error.
 5. Save As → **Excel Add-in (.xlam)** → `CMAS-raw.xlam`.
 6. `python scripts/build-excel-addin.py package CMAS-raw.xlam` → writes
-   `app/excel-addin/dist/CMAS.xlam` with the ribbon and prints its SHA-256.
+   `app/excel-addin/release/CMAS.xlam` with the ribbon and prints its SHA-256.
 7. Put that SHA-256 and the version into
-   `app/server/src/modules/excel/addin-release.ts`.
+   `app/server/src/modules/excel/addin-release.ts`, and commit
+   `release/CMAS.xlam` with it. The web page `/excel/link` then offers the
+   download (`GET /excel/addin/file`, sign-in required) and refuses to serve a
+   file whose hash is not the published one.
 8. Install with `install/install.ps1` or `install/install.sh`, passing that hash.
 
 **Re-importing after a change:** remove the old module first (right-click →

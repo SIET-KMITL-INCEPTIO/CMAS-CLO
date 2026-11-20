@@ -29,6 +29,9 @@ export async function excelRoutes(app: FastifyInstance) {
     controller.collect,
   )
   app.get("/excel/addin", { config: { access: "public" } }, controller.release)
+  // The file itself needs a web sign-in ("authenticated" refuses an add-in token): it is
+  // not code-signed, so it is handed out only from CMAS, next to its SHA-256.
+  app.get("/excel/addin/file", { config: { access: "authenticated" } }, controller.addinFile)
 
   // The instructor approves the code Excel shows, for this course. score.edit,
   // checked by the access hook: 404 for a course they cannot see, 403 for ADMIN (D-1).

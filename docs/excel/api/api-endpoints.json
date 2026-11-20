@@ -3097,6 +3097,38 @@
   {
    "n": 87,
    "group": "10 Excel add-in",
+   "method": "GET",
+   "path": "/excel/addin/file",
+   "fullPath": "/api/v1/excel/addin/file",
+   "what": "ดาวน์โหลดไฟล์ add-in CMAS.xlam (ต้องล็อกอินผ่านเว็บ)",
+   "role": "ผู้ใช้ที่ล็อกอิน",
+   "courseScope": "—",
+   "capability": "อ่าน",
+   "fr": "FR-75",
+   "status": "done",
+   "phase": "X2",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "ล็อกอินทั่วไป",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "200 · ไฟล์ CMAS.xlam (Content-Disposition: attachment)",
+    "errors": "401 ไม่ได้ล็อกอิน / ใช้ token ของ add-in · 404 ยังไม่เผยแพร่ ไม่มีไฟล์ หรือ hash ของไฟล์ไม่ตรงกับ SHA-256 ที่ประกาศ",
+    "rules": "ไม่เซ็นโค้ด จึงแจกเฉพาะจากหน้า CMAS ที่ล็อกอินแล้วพร้อม SHA-256 · ไม่ส่งไฟล์ที่ hash ไม่ตรง",
+    "tests": "ST-XL-05"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 88,
+   "group": "10 Excel add-in",
    "method": "POST",
    "path": "/courses/:courseId/excel-links",
    "fullPath": "/api/v1/courses/:courseId/excel-links",
@@ -3127,7 +3159,7 @@
    "uc": []
   },
   {
-   "n": 88,
+   "n": 89,
    "group": "10 Excel add-in",
    "method": "GET",
    "path": "/courses/:courseId/revision",
@@ -3159,7 +3191,7 @@
    "uc": []
   },
   {
-   "n": 89,
+   "n": 90,
    "group": "10 Excel add-in",
    "method": "GET",
    "path": "/excel/links",
@@ -3191,7 +3223,7 @@
    "uc": []
   },
   {
-   "n": 90,
+   "n": 91,
    "group": "10 Excel add-in",
    "method": "DELETE",
    "path": "/excel/links/:linkId",

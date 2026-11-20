@@ -325,6 +325,7 @@ Authorization: Bearer <accessToken>
 | ✅ | POST | `/excel/device` | ไม่ต้องล็อกอิน | — | ขอ deviceCode + userCode · อายุ 10 นาที · 10 ครั้ง/15 นาทีต่อ IP |
 | ✅ | POST | `/excel/token` | ไม่ต้องล็อกอิน | — | add-in ถามทุก 5 วินาที · `pending` / `expired` / `ok` + token (ครั้งเดียว) |
 | ✅ | GET | `/excel/addin` | ไม่ต้องล็อกอิน | — | เวอร์ชันและ SHA-256 ของ add-in · ไม่ดาวน์โหลดโค้ดอัตโนมัติ |
+| ✅ | GET | `/excel/addin/file` | ล็อกอินแล้ว (เว็บเท่านั้น) | — | ไฟล์ `CMAS.xlam` · 404 จนกว่าจะมี SHA-256 และไฟล์ตรงกับค่านั้น |
 | ✅ | POST | `/courses/:courseId/excel-links` | ผู้สอนของวิชา | ✅ `score.edit` | body `{userCode}` · `webSessionOnly`: token ของ add-in ใช้ไม่ได้แม้เป็นวิชาเดียวกัน (token หนึ่งออก token ถัดไปไม่ได้) |
 | ✅ | GET | `/courses/:courseId/revision` | ผู้สอนของวิชา · token ของ add-in | ✅ `course.view` | `{revision}` · add-in ถามทุก 10 วินาที · ขยับหลังการเขียนที่สำเร็จทุกครั้ง (migration 0012) |
 | ✅ | GET | `/excel/links` | any | — (เฉพาะของตัวเอง) | การเชื่อมต่อที่ยังใช้ได้ |

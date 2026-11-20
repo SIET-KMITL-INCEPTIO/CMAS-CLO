@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify"
-import { created, ok } from "../../lib/response.js"
+import { created, file, ok } from "../../lib/response.js"
 import { authorizedCourseId, callerOf } from "../../middlewares/access.middleware.js"
-import { ADDIN_RELEASE } from "./addin-release.js"
+import { ADDIN_FILE_NAME, ADDIN_MIME, ADDIN_RELEASE } from "./addin-release.js"
 import type { ExcelService } from "./excel.service.js"
 import { approveSchema, collectTokenSchema, linkParamsSchema } from "./excel.validator.js"
 
@@ -48,4 +48,8 @@ export class ExcelController {
 
   /** GET /excel/addin — the current release, for the add-in's "new version" notice. */
   release = async (_req: FastifyRequest, reply: FastifyReply) => ok(reply, ADDIN_RELEASE)
+
+  /** GET /excel/addin/file — the add-in itself, for a signed-in user (FR-75). */
+  addinFile = async (_req: FastifyRequest, reply: FastifyReply) =>
+    file(reply, await this.service.addinFile(), ADDIN_FILE_NAME, ADDIN_MIME)
 }
