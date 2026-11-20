@@ -241,6 +241,13 @@ def add_ribbon_relationship(rels: str) -> str:
     return rels.replace("</Relationships>", rel + "</Relationships>")
 
 
+def anonymise_core(xml: str) -> str:
+    """The published file must not carry the name of whoever saved it in Excel."""
+    for tag in ("dc:creator", "cp:lastModifiedBy"):
+        xml = re.sub(rf"<{tag}>[^<]*</{tag}>", f"<{tag}>CMAS</{tag}>", xml)
+    return xml
+
+
 def package(src: Path, out: Path) -> str:
     """Copy `src` to `out` with the ribbon added. Returns the SHA-256 of `out`."""
     with zipfile.ZipFile(src) as zin:
@@ -257,6 +264,8 @@ def package(src: Path, out: Path) -> str:
                 data = zin.read(info.filename)
                 if info.filename == "_rels/.rels":
                     data = add_ribbon_relationship(data.decode("utf-8")).encode("utf-8")
+                elif info.filename == "docProps/core.xml":
+                    data = anonymise_core(data.decode("utf-8")).encode("utf-8")
                 zout.writestr(info, data)
             zout.writestr(RIBBON_PART, RIBBON_XML.read_bytes())
     out.parent.mkdir(parents=True, exist_ok=True)

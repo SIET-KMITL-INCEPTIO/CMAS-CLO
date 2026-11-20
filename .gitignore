@@ -65,3 +65,6 @@ docs/pdf/01.*.pdf
 
 # MySQL Workbench autosave backups
 *.mwb.bak
+
+# Excel add-in: the raw Save-As from Excel; only release/CMAS.xlam is committed
+app/excel-addin/*.xlam

@@ -4,7 +4,7 @@ Two-way score sync between Excel desktop (Windows and Mac) and CMAS. Plan and
 the reasons behind each choice:
 [excel-vba-sync-plan.md](../../docs/markdown/dev/planning/excel-vba-sync-plan.md).
 
-**Status: written, not yet run in Excel.** Nothing outside Excel can compile
+**Status: 0.2.0 compiled and saved in Excel for Windows (`release/CMAS.xlam`); the checklist below has not been run yet.** Nothing outside Excel can compile
 VBA. `python scripts/build-excel-addin.py check` (a CI step) catches what it
 can; the checklist at the end is what only Excel can prove.
 

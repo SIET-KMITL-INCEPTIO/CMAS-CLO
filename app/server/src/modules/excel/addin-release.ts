@@ -12,7 +12,7 @@
  */
 export const ADDIN_RELEASE = {
   version: "0.2.0",
-  sha256: null as string | null,
+  sha256: "5936bd36baf629c46aa5dde81060829302e217aae3ec3664ba70b32b86d51291" as string | null,
   /** Desktop only: Excel on the web cannot run VBA. */
   platforms: ["windows", "mac"] as const,
 }
