@@ -137,6 +137,10 @@ FORBIDDEN = [
     ),
     (re.compile(r"\bTypeOf\b", re.I), "use TypeName(): TypeOf on a Variant is not portable across VBA versions"),
 ]
+# VBA's MsgBox / InputBox turn Thai into "?" on a Windows whose non-Unicode
+# language is not Thai; only modCmasUi may call them (and wraps them).
+ANSI_UI = re.compile(r"(?<![.\w])(MsgBox|InputBox)\b", re.I)
+ANSI_UI_ALLOWED = {"modCmasUi"}
 BLOCK_OPEN = re.compile(
     r"^\s*(?:(?:Public|Private|Friend)\s+)?(?:Static\s+)?(Sub|Function|Property\s+(?:Get|Let|Set))\s+\w+",
     re.I,
@@ -209,6 +213,8 @@ def check_sources() -> list[str]:
             for pattern, why in FORBIDDEN:
                 if not line.lstrip().startswith("'") and pattern.search(line):
                     problems.append(f"{rel}:{n}: {why}")
+            if path.stem not in ANSI_UI_ALLOWED and not line.lstrip().startswith("'") and ANSI_UI.search(line):
+                problems.append(f"{rel}:{n}: use CmasMsg / CmasAsk: MsgBox and InputBox show Thai as '?' on some Windows")
         if depth != 0:
             problems.append(f"{rel}: a procedure is never closed")
     if render_text_module(load_strings()) != (TEXT_BAS.read_bytes().decode("ascii") if TEXT_BAS.exists() else ""):

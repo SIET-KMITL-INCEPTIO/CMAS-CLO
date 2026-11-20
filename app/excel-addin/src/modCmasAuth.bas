@@ -41,7 +41,7 @@ End Sub
 Public Sub CmasConnect()
     Dim body As String, status As Long, root As Variant, address As String
     address = GetSetting(SETTINGS_APP, SETTINGS_SECTION, "BaseUrl", "")
-    address = InputBox(T("askUrl"), "CMAS", IIf(address = "", "https://", address))
+    address = CmasAsk(T("askUrl"), "CMAS", IIf(address = "", "https://", address))
     If Trim$(address) = "" Then Exit Sub
     address = Trim$(address)
     If Right$(address, 1) = "/" Then address = Left$(address, Len(address) - 1)
@@ -53,7 +53,7 @@ Public Sub CmasConnect()
     mToken = ""
     status = SafeRequest("POST", mBaseUrl & "/excel/device", "", "", body)
     If status <> 201 Then
-        MsgBox T("startFail", CStr(status)), vbExclamation, "CMAS"
+        CmasMsg T("startFail", CStr(status)), vbExclamation
         Exit Sub
     End If
     SaveSetting SETTINGS_APP, SETTINGS_SECTION, "BaseUrl", Replace(mBaseUrl, "/api/v1", "")
@@ -61,8 +61,8 @@ Public Sub CmasConnect()
     JsonParse body, root
     mDeviceCode = JPath(root, "data", "deviceCode")
     mDeadline = Now + TimeSerial(0, 10, 0)
-    MsgBox T("showCode", CStr(JPath(root, "data", "verifyUrl")), CStr(JPath(root, "data", "userCode"))), _
-           vbInformation, "CMAS"
+    CmasMsg T("showCode", CStr(JPath(root, "data", "verifyUrl")), CStr(JPath(root, "data", "userCode"))), _
+            vbInformation
     SchedulePoll
 End Sub
 
@@ -77,7 +77,7 @@ Public Sub CmasPollToken()
     If mDeviceCode = "" Then Exit Sub
     If Now > mDeadline Then
         mDeviceCode = ""
-        MsgBox T("expired"), vbExclamation, "CMAS"
+        CmasMsg T("expired"), vbExclamation
         Exit Sub
     End If
 
@@ -99,7 +99,7 @@ Public Sub CmasPollToken()
             Exit Sub
         Case "expired"
             mDeviceCode = ""
-            MsgBox T("expired"), vbExclamation, "CMAS"
+            CmasMsg T("expired"), vbExclamation
             Exit Sub
         End Select
     End If
@@ -125,7 +125,7 @@ Private Sub CheckVersion()
     latest = CStr(JPath(root, "data", "version"))
     On Error GoTo 0
     If latest <> "" And latest <> CMAS_ADDIN_VERSION Then
-        MsgBox T("newVersion", latest, CMAS_ADDIN_VERSION), vbInformation, "CMAS"
+        CmasMsg T("newVersion", latest, CMAS_ADDIN_VERSION), vbInformation
     End If
 End Sub
 

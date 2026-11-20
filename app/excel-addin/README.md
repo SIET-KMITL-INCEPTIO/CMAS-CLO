@@ -58,6 +58,7 @@ confirmed. Writes from Excel appear in the score history as **แก้ใน Ex
 | `src/clsCmasMap.cls`         | string-keyed map for both platforms                               |
 | `src/clsCmasAppEvents.cls`   | Application-level `SheetChange`                                   |
 | `src/modCmasRibbon.bas`      | callbacks for the CMAS tab                                        |
+| `src/modCmasUi.bas`          | message and input boxes that show Thai on any Windows locale      |
 | `src/modCmasText.bas`        | **generated** from `text/th.json` — do not edit                   |
 | `src/modCmasInfo.bas`        | the version; must equal `addin-release.ts` (a server test checks) |
 | `ribbon/customUI14.xml`      | the CMAS tab                                                      |
@@ -77,6 +78,11 @@ confirmed. Writes from Excel appear in the score history as **แก้ใน Ex
 7. Put that SHA-256 and the version into
    `app/server/src/modules/excel/addin-release.ts`.
 8. Install with `install/install.ps1` or `install/install.sh`, passing that hash.
+
+**Re-importing after a change:** remove the old module first (right-click →
+Remove → **No** to export), then import. Importing over a module that is still
+there makes a second copy named `clsCmasMap1` and the like, which breaks the
+build.
 
 To change Thai text: edit `text/th.json`, run
 `python scripts/build-excel-addin.py text`, re-import `modCmasText.bas`.

@@ -41,7 +41,7 @@ Private Const GREY As Long = 15921906  ' RGB(242, 242, 242)
 ' Base sheet layout (same coordinates as the visible sheet where it matters):
 '   A1 courseId     B1 <id>
 '   A2 sheet        B2 <visible sheet name>
-'   A3 shape        B3 <signature of activities and students>
+'   A3 shape        B3 <fingerprint of activities and students>
 '   row 1, col c >= FIRST_COL: maxScore     row 2: 1 if the activity is closed
 '   row 3, col c: activityId
 '   col A, row r >= FIRST_ROW: studentId    col B: 1 if withdrawn
@@ -152,7 +152,7 @@ End Sub
 
 ' Ribbon: send now, then reload whether or not the revision moved.
 Public Sub CmasSyncNow()
-    If Not Ready() Then MsgBox T("notConnected"), vbInformation, "CMAS": Exit Sub
+    If Not Ready() Then CmasMsg T("notConnected"), vbInformation: Exit Sub
     RunSync True
 End Sub
 
@@ -243,7 +243,25 @@ Private Function Signature(ByVal acts As Collection, ByVal studs As Collection) 
     For Each s In studs
         out = out & s("id") & "|" & s("studentCode") & "|" & s("name") & "|" & s("status") & ";"
     Next s
-    Signature = out
+    ' The full text passes a cell's 32,767-character limit at about 400 students,
+    ' so the base sheet keeps a fingerprint of it instead.
+    Signature = Fingerprint(out)
+End Function
+
+' Length and two independent polynomial hashes: short, and a change in names,
+' ids, statuses or activities moves it. Doubles stay exact below 2^53.
+Private Function Fingerprint(ByVal s As String) As String
+    Const M1 As Double = 2147483647#
+    Const M2 As Double = 1000000007#
+    Dim i As Long, code As Long, h1 As Double, h2 As Double
+    For i = 1 To Len(s)
+        code = AscW(Mid$(s, i, 1)) And &HFFFF&
+        h1 = h1 * 131 + code
+        h1 = h1 - Int(h1 / M1) * M1
+        h2 = h2 * 257 + code
+        h2 = h2 - Int(h2 / M2) * M2
+    Next i
+    Fingerprint = Len(s) & ":" & Format$(h1, "0") & ":" & Format$(h2, "0")
 End Function
 
 Private Sub Render(ByVal acts As Collection, ByVal studs As Collection)
@@ -258,7 +276,7 @@ Private Sub Render(ByVal acts As Collection, ByVal studs As Collection)
     If CStr(mBase.Range("B3").Value) <> sig Then
         If hadTable And mConflict.Count > 0 Then
             ' Red cells cannot be kept across a redraw; say so rather than drop them silently.
-            MsgBox T("structureChanged"), vbInformation, "CMAS"
+            CmasMsg T("structureChanged"), vbInformation
         End If
         DrawLayout acts, studs, sig
     End If
@@ -432,8 +450,8 @@ Public Sub OnSheetChange(ByVal Sh As Object, ByVal Target As Range)
         End If
     Next cell
 
-    If bad Then MsgBox T("badValue"), vbExclamation, T("badValueTitle")
-    If locked Then MsgBox T("locked"), vbExclamation, "CMAS"
+    If bad Then CmasMsg T("badValue"), vbExclamation, T("badValueTitle")
+    If locked Then CmasMsg T("locked"), vbExclamation
     If mDirty.Count > 0 Then ScheduleFlush
 End Sub
 
@@ -451,8 +469,8 @@ Private Sub Flush()
         If Norm(CellAt(k).Value) = "" And Norm(BaseAt(k).Value) <> "" Then clears.Add k
     Next k
     If clears.Count > 0 Then
-        If MsgBox(T("confirmClear", CStr(clears.Count)), _
-                  vbYesNo + vbExclamation + vbDefaultButton2, "CMAS") = vbNo Then
+        If CmasMsg(T("confirmClear", CStr(clears.Count)), _
+                   vbYesNo + vbExclamation + vbDefaultButton2) = vbNo Then
             For Each k In clears
                 RevertCell CellAt(k)
                 mDirty.Remove k
@@ -497,7 +515,7 @@ Private Sub Flush()
         SetStatus T("stOffline")   ' kept; the next tick tries again
         Exit Sub
     Case Else
-        MsgBox T("unexpected", CStr(status)), vbExclamation, "CMAS"
+        CmasMsg T("unexpected", CStr(status)), vbExclamation
         For Each k In sent
             RevertCell CellAt(k)
             mDirty.Remove k
@@ -525,7 +543,7 @@ Private Sub TakeConflicts(ByVal resp As String)
         End If
     Next c
     SetStatus T("stConflict", CStr(mConflict.Count))
-    If n > 0 Then MsgBox T("conflictMsg", CStr(n)), vbExclamation, "CMAS"
+    If n > 0 Then CmasMsg T("conflictMsg", CStr(n)), vbExclamation
 End Sub
 
 ' 422: nothing was written. The refused cells go back to CMAS's value, with the reasons.
@@ -546,7 +564,7 @@ Private Sub TakeRefusals(ByVal resp As String)
             End If
         End If
     Next x
-    If n > 0 Then MsgBox T("refusedMsg", CStr(n), reasons), vbExclamation, "CMAS"
+    If n > 0 Then CmasMsg T("refusedMsg", CStr(n), reasons), vbExclamation
 End Sub
 
 ' ---------------------------------------------------------------- red cells (ribbon)
@@ -554,7 +572,7 @@ End Sub
 ' "Use mine": CMAS's value is already the base, so sending now overwrites it on purpose.
 Public Sub CmasKeepMine()
     Dim cell As Range, k As String, n As Long
-    If Not Ready() Then MsgBox T("notConnected"), vbInformation, "CMAS": Exit Sub
+    If Not Ready() Then CmasMsg T("notConnected"), vbInformation: Exit Sub
     For Each cell In SelectedScoreCells()
         k = Key(cell.Row, cell.Column)
         If mConflict.Exists(k) Then
@@ -564,7 +582,7 @@ Public Sub CmasKeepMine()
             n = n + 1
         End If
     Next cell
-    If n = 0 Then MsgBox T("noConflictHere"), vbInformation, "CMAS": Exit Sub
+    If n = 0 Then CmasMsg T("noConflictHere"), vbInformation: Exit Sub
     CmasFlushNow
 End Sub
 
@@ -580,7 +598,7 @@ Public Sub CmasTakeServer()
             n = n + 1
         End If
     Next cell
-    If n = 0 Then MsgBox T("noConflictHere"), vbInformation, "CMAS": Exit Sub
+    If n = 0 Then CmasMsg T("noConflictHere"), vbInformation: Exit Sub
     If mConflict.Count = 0 Then SetLiveStatus Else SetStatus T("stConflict", CStr(mConflict.Count))
 End Sub
 
