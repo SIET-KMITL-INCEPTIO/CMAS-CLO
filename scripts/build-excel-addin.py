@@ -133,8 +133,37 @@ BLOCK_OPEN = re.compile(
 BLOCK_CLOSE = re.compile(r"^\s*End\s+(Sub|Function|Property)\b", re.I)
 
 
-def check_sources() -> list[str]:
+def check_content_type() -> list[str]:
+    """Content-Type must only be set together with a body.
+
+    A JSON Content-Type with an empty body is a 400 from the server, which
+    failed POST /excel/device, the first call of every sign-in. app.inject()
+    in the server's tests never sends the header without a body, so only this
+    check and a real client notice.
+    """
     problems: list[str] = []
+    http = ADDIN / "src" / "modCmasHttp.bas"
+    lines = http.read_bytes().decode("ascii").split("\r\n")
+    for n, line in enumerate(lines):
+        if "SetRequestHeader" in line and "Content-Type" in line and not line.lstrip().startswith("'"):
+            guard = next((l for l in reversed(lines[:n]) if re.match(r"^\s*(If|Else|ElseIf)\b", l)), "")
+            if not re.match(r"^\s*If Len\(body\) > 0 Then\s*$", guard):
+                problems.append(f"{http.relative_to(ROOT).as_posix()}:{n + 1}: Content-Type is set without a body; set it inside `If Len(body) > 0 Then`")
+    mac = ADDIN / "mac" / "CMAS.applescript"
+    inside = False
+    for n, line in enumerate(mac.read_text("utf-8").splitlines()):
+        s = line.strip()
+        if re.match(r'^if theBody is not "" then$', s):
+            inside = True
+        elif s == "end if":
+            inside = False
+        elif "Content-Type" in s and not s.startswith("--") and not inside:
+            problems.append(f"{mac.relative_to(ROOT).as_posix()}:{n + 1}: Content-Type is set without a body; set it inside `if theBody is not \"\" then`")
+    return problems
+
+
+def check_sources() -> list[str]:
+    problems: list[str] = check_content_type()
     files = sorted((ADDIN / "src").glob("*.bas")) + sorted((ADDIN / "src").glob("*.cls"))
     names: set[str] = set()
     for path in files:

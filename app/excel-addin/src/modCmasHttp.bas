@@ -68,10 +68,13 @@ Private Function WinRequest(ByVal method As String, ByVal url As String, ByVal b
     Set http = CreateObject("WinHttp.WinHttpRequest.5.1")
     http.SetTimeouts CMAS_TIMEOUT_MS, CMAS_TIMEOUT_MS, CMAS_TIMEOUT_MS, CMAS_TIMEOUT_MS
     http.Open method, url, False
-    http.SetRequestHeader "Content-Type", "application/json; charset=utf-8"
     http.SetRequestHeader "X-Client-Id", CLIENT_ID
     If Len(bearer) > 0 Then http.SetRequestHeader "Authorization", "Bearer " & bearer
     If Len(body) > 0 Then
+        ' Content-Type only with a body: the server answers 400 to a JSON
+        ' Content-Type with nothing in it, which failed POST /excel/device
+        ' (the first call of every sign-in).
+        http.SetRequestHeader "Content-Type", "application/json; charset=utf-8"
         http.Send body
     Else
         http.Send
