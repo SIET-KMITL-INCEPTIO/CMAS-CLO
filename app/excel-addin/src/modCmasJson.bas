@@ -29,7 +29,7 @@ Public Function JPath(ByVal root As Variant, ParamArray keys() As Variant) As Va
     If IsObject(root) Then Set cur = root Else cur = root
     For Each k In keys
         If Not IsObject(cur) Then JPath = Empty: Exit Function
-        If TypeOf cur Is clsCmasMap Then
+        If TypeName(cur) = "clsCmasMap" Then
             If Not cur.Exists(CStr(k)) Then JPath = Empty: Exit Function
             If IsObject(cur.Item(CStr(k))) Then Set cur = cur.Item(CStr(k)) Else cur = cur.Item(CStr(k))
         Else
@@ -112,7 +112,7 @@ Private Function ParseObject() As clsCmasMap
         mPos = mPos + 1
         v = Empty
         ParseValue v
-        map.Put key, v
+        map.Store key, v
         SkipSpace
         Select Case Mid$(mText, mPos, 1)
         Case ",": mPos = mPos + 1

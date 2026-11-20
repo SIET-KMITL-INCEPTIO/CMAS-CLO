@@ -125,6 +125,17 @@ FORBIDDEN = [
     (re.compile(r"(^|[^.\w])Shell\s*\(?", re.I), "no Shell: the add-in never runs programs"),
     (re.compile(r"SetOption|IgnoreCert|SslErrorIgnore|Option\(4\)", re.I), "never switch off certificate checks"),
     (re.compile(r"SaveSetting[^\n]*(Token|token)"), "the token must never be written anywhere"),
+    # `Put` as a method name failed to compile ("Method or data member not found"):
+    # these are VBA file-I/O statements, so never name a Sub, Function or property after one.
+    (
+        re.compile(
+            r"^\s*(?:(?:Public|Private|Friend)\s+)?(?:Static\s+)?(?:Sub|Function|Property\s+(?:Get|Let|Set))\s+"
+            r"(?:Put|Get|Open|Close|Print|Write|Input|Seek|Lock|Unlock|Reset|Name|Line|Width)\b",
+            re.I,
+        ),
+        "a procedure named like a VBA statement (Put, Get, Open, Close, ...) does not compile reliably; rename it",
+    ),
+    (re.compile(r"\bTypeOf\b", re.I), "use TypeName(): TypeOf on a Variant is not portable across VBA versions"),
 ]
 BLOCK_OPEN = re.compile(
     r"^\s*(?:(?:Public|Private|Friend)\s+)?(?:Static\s+)?(Sub|Function|Property\s+(?:Get|Let|Set))\s+\w+",

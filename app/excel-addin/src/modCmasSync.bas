@@ -298,7 +298,7 @@ Private Sub DrawLayout(ByVal acts As Collection, ByVal studs As Collection, ByVa
     j = 0
     For Each a In acts
         c = FIRST_COL + j
-        mColOf.Put a("id"), c
+        mColOf.Store a("id"), c
         mBase.Cells(1, c).Value = a("maxScore")
         closed(c) = Not IsNull(a("closedAt"))
         mBase.Cells(2, c).Value = IIf(closed(c), 1, 0)
@@ -310,7 +310,7 @@ Private Sub DrawLayout(ByVal acts As Collection, ByVal studs As Collection, ByVa
     i = 0
     For Each s In studs
         r = FIRST_ROW + i
-        mRowOf.Put s("id"), r
+        mRowOf.Store s("id"), r
         mBase.Cells(r, 1).Value = s("id")
         withdrawn(r) = (s("status") = "WITHDRAWN")
         mBase.Cells(r, 2).Value = IIf(withdrawn(r), 1, 0)
@@ -328,7 +328,7 @@ Private Sub DrawLayout(ByVal acts As Collection, ByVal studs As Collection, ByVa
         For r = FIRST_ROW To mLastRow
             For c = FIRST_COL To mLastCol
                 If closed(c) Or withdrawn(r) Then
-                    mLocked.Put Key(r, c), True
+                    mLocked.Store Key(r, c), True
                     mSheet.Cells(r, c).Locked = True
                     mSheet.Cells(r, c).Interior.Color = GREY
                 End If
@@ -350,7 +350,7 @@ End Sub
 ' where the instructor has an edit CMAS has not taken yet.
 Private Sub FillValues(ByVal acts As Collection, ByVal studs As Collection)
     Dim nA As Long, nS As Long, area As Range, baseArea As Range
-    Dim shown As Variant, base As Variant, i As Long, j As Long
+    Dim shown As Variant, baseVals As Variant, i As Long, j As Long
     Dim s As Variant, a As Variant, scores As Variant, v As Variant, k As String
     nA = acts.Count: nS = studs.Count
     If nA = 0 Or nS = 0 Then Exit Sub
@@ -358,7 +358,7 @@ Private Sub FillValues(ByVal acts As Collection, ByVal studs As Collection)
     Set area = mSheet.Range(mSheet.Cells(FIRST_ROW, FIRST_COL), mSheet.Cells(mLastRow, mLastCol))
     Set baseArea = mBase.Range(mBase.Cells(FIRST_ROW, FIRST_COL), mBase.Cells(mLastRow, mLastCol))
     shown = AsGrid(area.Value, nS, nA)
-    ReDim base(1 To nS, 1 To nA)
+    ReDim baseVals(1 To nS, 1 To nA)
 
     i = 0
     For Each s In studs
@@ -368,22 +368,22 @@ Private Sub FillValues(ByVal acts As Collection, ByVal studs As Collection)
         For Each a In acts
             j = j + 1
             If scores.Exists(CStr(a("id"))) Then v = scores(CStr(a("id"))) Else v = Null
-            base(i, j) = ToCell(v)
+            baseVals(i, j) = ToCell(v)
             k = Key(FIRST_ROW + i - 1, FIRST_COL + j - 1)
             If mConflict.Exists(k) Then
                 ' CMAS now holds what the instructor typed: nothing left to decide.
-                If Norm(shown(i, j)) = Norm(base(i, j)) Then
+                If Norm(shown(i, j)) = Norm(baseVals(i, j)) Then
                     mConflict.Remove k
                     ClearMark mSheet.Cells(FIRST_ROW + i - 1, FIRST_COL + j - 1)
                 End If
             ElseIf Not mDirty.Exists(k) Then
-                shown(i, j) = base(i, j)
+                shown(i, j) = baseVals(i, j)
             End If
         Next a
     Next s
 
     area.Value = shown
-    baseArea.Value = base
+    baseArea.Value = baseVals
 End Sub
 
 ' A Range.Value is a scalar for one cell and a 2-D array otherwise.
@@ -426,7 +426,7 @@ Public Sub OnSheetChange(ByVal Sh As Object, ByVal Target As Range)
                 If n = Norm(mBase.Cells(cell.Row, cell.Column).Value) Then
                     mDirty.Remove k
                 Else
-                    mDirty.Put k, True
+                    mDirty.Store k, True
                 End If
             End If
         End If
@@ -519,7 +519,7 @@ Private Sub TakeConflicts(ByVal resp As String)
         If k <> "" Then
             BaseAt(k).Value = ToCell(c("current"))
             mDirty.Remove k
-            mConflict.Put k, True
+            mConflict.Store k, True
             MarkConflict CellAt(k), c("current")
             n = n + 1
         End If
@@ -560,7 +560,7 @@ Public Sub CmasKeepMine()
         If mConflict.Exists(k) Then
             mConflict.Remove k
             ClearMark cell
-            If Norm(cell.Value) <> Norm(mBase.Cells(cell.Row, cell.Column).Value) Then mDirty.Put k, True
+            If Norm(cell.Value) <> Norm(mBase.Cells(cell.Row, cell.Column).Value) Then mDirty.Store k, True
             n = n + 1
         End If
     Next cell
@@ -659,19 +659,19 @@ Private Sub RebuildMaps()
     InitState
     c = FIRST_COL
     Do While CStr(mBase.Cells(ROW_HEAD, c).Value) <> ""
-        mColOf.Put CStr(mBase.Cells(ROW_HEAD, c).Value), c
+        mColOf.Store CStr(mBase.Cells(ROW_HEAD, c).Value), c
         c = c + 1
     Loop
     mLastCol = c - 1
     r = FIRST_ROW
     Do While CStr(mBase.Cells(r, 1).Value) <> ""
-        mRowOf.Put CStr(mBase.Cells(r, 1).Value), r
+        mRowOf.Store CStr(mBase.Cells(r, 1).Value), r
         r = r + 1
     Loop
     mLastRow = r - 1
     For r = FIRST_ROW To mLastRow
         For c = FIRST_COL To mLastCol
-            If mBase.Cells(2, c).Value = 1 Or mBase.Cells(r, 2).Value = 1 Then mLocked.Put Key(r, c), True
+            If mBase.Cells(2, c).Value = 1 Or mBase.Cells(r, 2).Value = 1 Then mLocked.Store Key(r, c), True
         Next c
     Next r
 End Sub
@@ -688,7 +688,7 @@ Private Sub CollectOfflineEdits()
                 If mLocked.Exists(k) Or Not IsAllowed(n, c) Then
                     RevertCell mSheet.Cells(r, c)
                 Else
-                    mDirty.Put k, True
+                    mDirty.Store k, True
                 End If
             End If
         Next c

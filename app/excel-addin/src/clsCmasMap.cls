@@ -46,7 +46,7 @@ Public Function Exists(ByVal key As String) As Boolean
 End Function
 
 ' Adds or replaces.
-Public Sub Put(ByVal key As String, ByVal value As Variant)
+Public Sub Store(ByVal key As String, ByVal value As Variant)
     Dim s As String
     s = Slot(key)
     If Exists(key) Then
