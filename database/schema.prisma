@@ -191,6 +191,7 @@ enum ScoreChangeSource {
   PASTE // pasted from a spreadsheet
   NOTE // only the excuse reason changed
   UNDO
+  EXCEL // typed in Excel and synced by the CMAS add-in (0012); set by the server, never taken from a body
 }
 
 // UC 1.6 account history. DENY records a refused action (FR-22b, S-10).
@@ -327,6 +328,12 @@ model Course {
   // 0008 N1: MANUAL = Activity.weight entered per activity · GROUP = one weight
   // per activity type in CourseGroupWeight, split by maxScore.
   weightMode WeightMode @default(MANUAL)
+
+  // 0012: goes up by one after every successful write to this course (scores,
+  // imports, students, activities, settings). The Excel add-in cannot hold a
+  // live stream, so it asks for this number every 10 seconds and reloads only
+  // when it moved. Bumped with raw SQL so updatedAt keeps meaning "settings changed".
+  revision Int @default(0)
 
   instructors      CourseInstructor[]
   clos             CLO[]

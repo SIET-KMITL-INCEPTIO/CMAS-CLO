@@ -17,6 +17,7 @@ const SOURCE_TH: Record<string, string> = {
   FILL_UNDO: "เลิกทำการเติม",
   UNDO: "เลิกทำ",
   CLOSE: "ตอนปิดรับคะแนน",
+  EXCEL: "แก้ใน Excel",
 }
 const show = (v: number | "EXCUSED" | null) =>
   v === null ? "ว่าง" : v === "EXCUSED" ? "ยกเว้น" : String(v)

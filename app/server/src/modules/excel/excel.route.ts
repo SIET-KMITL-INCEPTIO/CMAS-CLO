@@ -40,6 +40,13 @@ export async function excelRoutes(app: FastifyInstance) {
     },
     controller.approve,
   )
+  // FR-76: polled every 10 s by the add-in; reading the course is enough.
+  app.get(
+    "/courses/:courseId/revision",
+    { config: { access: { cap: "course.view" } } },
+    controller.revision,
+  )
+
   // The caller's own connections. "authenticated" already refuses an add-in token.
   app.get("/excel/links", { config: { access: "authenticated" } }, controller.list)
   app.delete("/excel/links/:linkId", { config: { access: "authenticated" } }, controller.revoke)

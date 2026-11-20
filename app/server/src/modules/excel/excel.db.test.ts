@@ -245,7 +245,12 @@ describe.skipIf(!RUN_DB_TESTS)("Excel add-in sign-in and token (FR-73, FR-74)", 
       const change = await prisma.scoreChange.findFirstOrThrow({
         where: { studentId: student, activityId: activity },
       })
-      expect(change).toMatchObject({ toScore: 15, changedBy: f.users.teacherA.id })
+      // …labelled EXCEL by the server, not by the add-in (0012).
+      expect(change).toMatchObject({
+        toScore: 15,
+        changedBy: f.users.teacherA.id,
+        source: "EXCEL",
+      })
     })
 
     it("meets the same conflict rule as the web page: a stale 'from' is a 409, nothing is written (D-3)", async () => {
@@ -316,6 +321,104 @@ describe.skipIf(!RUN_DB_TESTS)("Excel add-in sign-in and token (FR-73, FR-74)", 
       expect(
         (await prisma.excelLink.findUniqueOrThrow({ where: { id: linkId } })).lastUsedAt,
       ).not.toBeNull()
+    })
+  })
+
+  describe("two-way sync: the revision and the history label (FR-76, 0012)", () => {
+    let token: string
+    const revisionOf = async (id: string) =>
+      (await prisma.course.findUniqueOrThrow({ where: { id }, select: { revision: true } }))
+        .revision
+
+    beforeAll(async () => {
+      token = (await connect("teacherA", courseA)).token
+    })
+
+    it("moves after a write from the web page and after one from Excel, never after a read", async () => {
+      const r0 = await revisionOf(courseA)
+      await call("teacherA", "GET", `/courses/${courseA}/scores`)
+      await asAddin(token, "GET", `/courses/${courseA}/scores`)
+      expect(await revisionOf(courseA)).toBe(r0)
+
+      await call("teacherA", "POST", `/courses/${courseA}/students`, {
+        studentCode: "6602",
+        name: "นักศึกษา ข",
+      })
+      const r1 = await revisionOf(courseA)
+      expect(r1).toBeGreaterThan(r0)
+
+      const current = await prisma.score.findUnique({
+        where: { studentId_activityId: { studentId: student, activityId: activity } },
+      })
+      await asAddin(token, "PUT", `/courses/${courseA}/scores`, {
+        scores: [
+          { studentId: student, activityId: activity, score: 11, from: current?.score ?? null },
+        ],
+      })
+      expect(await revisionOf(courseA)).toBeGreaterThan(r1)
+    })
+
+    it("does not move after a refused write", async () => {
+      const r0 = await revisionOf(courseA)
+      const refused = await asAddin(token, "PUT", `/courses/${courseA}/scores`, {
+        scores: [{ studentId: student, activityId: activity, score: 99, from: null }],
+      })
+      expect([409, 422]).toContain(refused.statusCode)
+      expect(await revisionOf(courseA)).toBe(r0)
+    })
+
+    it("does not move Course.updatedAt, which means 'settings changed'", async () => {
+      const before = await prisma.course.findUniqueOrThrow({ where: { id: courseA } })
+      await call("teacherA", "POST", `/courses/${courseA}/students`, {
+        studentCode: "6603",
+        name: "นักศึกษา ค",
+      })
+      const after = await prisma.course.findUniqueOrThrow({ where: { id: courseA } })
+      expect(after.revision).toBeGreaterThan(before.revision)
+      expect(after.updatedAt.getTime()).toBe(before.updatedAt.getTime())
+    })
+
+    it("is readable by the add-in for its own course only", async () => {
+      const own = await asAddin(token, "GET", `/courses/${courseA}/revision`)
+      expect(own.statusCode).toBe(200)
+      expect(own.headers["cache-control"]).toBe("no-store")
+      expect(own.json().data).toEqual({ revision: await revisionOf(courseA) })
+      expect((await asAddin(token, "GET", `/courses/${courseB}/revision`)).statusCode).toBe(404)
+      expect((await call("teacherB", "GET", `/courses/${courseA}/revision`)).statusCode).toBe(404)
+    })
+
+    it("labels Excel writes EXCEL whatever the body claims, and web writes as sent", async () => {
+      const at = async () =>
+        (
+          await prisma.score.findUnique({
+            where: { studentId_activityId: { studentId: student, activityId: activity } },
+          })
+        )?.score ?? null
+      const latest = () =>
+        prisma.scoreChange.findFirstOrThrow({
+          where: { studentId: student, activityId: activity },
+          orderBy: { changedAt: "desc" },
+        })
+
+      await asAddin(token, "PUT", `/courses/${courseA}/scores`, {
+        scores: [{ studentId: student, activityId: activity, score: 12, from: await at() }],
+        source: "PASTE",
+      })
+      expect((await latest()).source).toBe("EXCEL")
+
+      await call("teacherA", "PUT", `/courses/${courseA}/scores`, {
+        scores: [{ studentId: student, activityId: activity, score: 13, from: await at() }],
+        source: "PASTE",
+      })
+      expect((await latest()).source).toBe("PASTE")
+    })
+
+    it("refuses EXCEL as a source from the web page (the label cannot be forged)", async () => {
+      const res = await call("teacherA", "PUT", `/courses/${courseA}/scores`, {
+        scores: [{ studentId: student, activityId: activity, score: 14, from: 13 }],
+        source: "EXCEL",
+      })
+      expect(res.statusCode).toBe(400)
     })
   })
 

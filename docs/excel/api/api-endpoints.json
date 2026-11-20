@@ -3130,6 +3130,38 @@
    "n": 88,
    "group": "10 Excel add-in",
    "method": "GET",
+   "path": "/courses/:courseId/revision",
+   "fullPath": "/api/v1/courses/:courseId/revision",
+   "what": "เลขรุ่นของรายวิชา add-in ถามทุก 10 วินาที โหลดใหม่เมื่อเลขขยับ",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-76",
+   "status": "done",
+   "phase": "X3",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · {revision} · Cache-Control: no-store",
+    "errors": "401 · 404 วิชาที่มองไม่เห็น หรือ token ของ add-in วิชาอื่น",
+    "rules": "ขยับ +1 หลังการเขียนที่สำเร็จทุกครั้งของรายวิชา (คะแนน นำเข้า นักศึกษา กิจกรรม ตั้งค่า) ใน onResponse ที่เดียวกับ SSE · ไม่แตะ Course.updatedAt · add-in โหลดตารางใหม่เมื่อเลขขยับ",
+    "tests": "ST-XL-06"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 89,
+   "group": "10 Excel add-in",
+   "method": "GET",
    "path": "/excel/links",
    "fullPath": "/api/v1/excel/links",
    "what": "การเชื่อมต่อ Excel ที่ยังใช้ได้ของตัวเอง",
@@ -3159,7 +3191,7 @@
    "uc": []
   },
   {
-   "n": 89,
+   "n": 90,
    "group": "10 Excel add-in",
    "method": "DELETE",
    "path": "/excel/links/:linkId",

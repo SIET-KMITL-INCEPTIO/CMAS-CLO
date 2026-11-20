@@ -1,5 +1,5 @@
 Attribute VB_Name = "modCmasHttp"
-' CMAS add-in for Excel - one HTTP call for Windows and Mac (P0 spike).
+' CMAS add-in for Excel - one HTTP call for Windows and Mac.
 '
 ' Windows: WinHttp.WinHttpRequest.5.1 (ActiveX).
 ' Mac:     Excel is sandboxed and has no ActiveX, so the call goes through
@@ -81,15 +81,3 @@ Private Function WinRequest(ByVal method As String, ByVal url As String, ByVal b
 End Function
 
 #End If
-
-' P0 only: reads "key":"value" from flat JSON. P4 replaces this with VBA-JSON
-' (and VBA-Dictionary on Mac, which has no Scripting.Dictionary).
-Public Function JsonText(ByVal json As String, ByVal key As String) As String
-    Dim marker As String, i As Long, j As Long
-    marker = """" & key & """:"""
-    i = InStr(1, json, marker, vbBinaryCompare)
-    If i = 0 Then Exit Function
-    i = i + Len(marker)
-    j = InStr(i, json, """", vbBinaryCompare)
-    If j > i Then JsonText = Mid$(json, i, j - i)
-End Function
