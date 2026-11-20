@@ -8,6 +8,7 @@
  * so the page is the code box first and everything else after.
  */
 import { useMemo, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { toast } from "sonner"
 import { PageHeader } from "../../components/page/PageHeader.tsx"
 import { PageState } from "../../components/page/PageState.tsx"
@@ -93,7 +94,9 @@ export default function ExcelLink() {
   const revoke = useRevokeExcel()
 
   const [code, setCode] = useState("")
-  const [courseId, setCourseId] = useState("")
+  // ?course= comes from the Excel dialog on a course's roster page.
+  const [params] = useSearchParams()
+  const [courseId, setCourseId] = useState(params.get("course") ?? "")
   const [error, setError] = useState<string | null>(null)
 
   // Only courses the caller teaches: the server checks score.edit anyway (ADMIN does no teaching, D-1).
@@ -104,7 +107,8 @@ export default function ExcelLink() {
         .sort(byTerm),
     [courses.data, me?.id],
   )
-  const chosen = courseId || teaching[0]?.id || ""
+  // A ?course= the caller doesn't teach falls back to the first one they do.
+  const chosen = teaching.some((c) => c.id === courseId) ? courseId : teaching[0]?.id || ""
 
   const submit = () => {
     const userCode = code.replace("-", "")
@@ -136,7 +140,8 @@ export default function ExcelLink() {
           </>
         }
       />
-      <div className="cbody grid gap-4">
+      {/* space-y, not grid: .cbody has a fixed height, and a grid shrinks an overflow-hidden card to 0 */}
+      <div className="cbody space-y-4">
         <AddinDownload />
         <PageState
           loading={courses.isLoading}

@@ -7,12 +7,14 @@
  * number and has one calculation, on the server (FR-88).
  */
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { toast } from "sonner"
 import { Modal } from "../../components/overlay/Sheet.tsx"
 import { useCan } from "../../hooks/useCan.ts"
 import { ConfirmDelete } from "../clos/ConfirmDelete.tsx"
 import { CoursePage } from "../courses/CoursePage.tsx"
 import { useCourseContext } from "../courses/useCourseContext.ts"
+import { excelApi } from "../excel/excel.api.ts"
 import type { GridStudent } from "../scores/score.types.ts"
 import { ChangesDrawer } from "../scores/ChangesDrawer.tsx"
 import { ImportExcel } from "../scores/ImportExcel.tsx"
@@ -214,6 +216,34 @@ export default function Roster() {
               }}
               onExport={() => scoresApi.exportScores(course.id).catch(failed)}
             />
+            {/* FR-73..75: the macros live in the add-in, never in the score file,
+                so the scores stay a plain .xlsx and CMAS never hands out a .xlsm. */}
+            {can("score.edit") && (
+              <div role="group" aria-label="กรอกคะแนนใน Excel แบบซิงก์ทันที">
+                <div className="mb-1.5 text-[13px] text-dim" aria-hidden="true">
+                  กรอกคะแนนใน Excel แบบซิงก์ทันที
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={() => excelApi.downloadAddin().catch(failed)}
+                  >
+                    ดาวน์โหลด add-in
+                  </button>
+                  <Link
+                    to={`/excel/link?course=${course.id}`}
+                    className="btn btn-primary"
+                    onClick={() => setExcel(false)}
+                  >
+                    เชื่อมต่อ Excel
+                  </Link>
+                </div>
+                <p className="mt-1.5 text-[12px] text-dim">
+                  ติดตั้งครั้งเดียว แล้วกด CMAS → เชื่อมต่อ ใน Excel
+                </p>
+              </div>
+            )}
           </div>
         </Modal>
       )}
