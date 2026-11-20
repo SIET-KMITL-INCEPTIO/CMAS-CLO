@@ -20,6 +20,7 @@ import { randomBytes, randomInt } from "node:crypto"
 import { Prisma } from "@prisma/client"
 import { env } from "../../lib/env.js"
 import { NotFoundError } from "../../lib/errors.js"
+import { CourseRevisionRepository } from "./course-revision.repository.js"
 import type { ExcelDeviceCodeRepository } from "./excel-device-code.repository.js"
 import type { ExcelLinkRepository } from "./excel-link.repository.js"
 import { USER_CODE_ALPHABET, USER_CODE_LENGTH } from "./excel.validator.js"
@@ -79,6 +80,10 @@ export class ExcelService {
     private readonly codes: Codes,
     private readonly links: Links,
     private readonly appUrl: string = env.CORS_ORIGIN,
+    private readonly revisions: Pick<
+      CourseRevisionRepository,
+      "read"
+    > = new CourseRevisionRepository(),
   ) {}
 
   async start(): Promise<StartResult> {
@@ -131,6 +136,13 @@ export class ExcelService {
     // Lost the race to another poll with the same deviceCode.
     if (!link) return { status: "expired" }
     return { status: "ok", token, expiresAt: link.expiresAt, course: link.course }
+  }
+
+  /** FR-76: the number the add-in polls. The access hook already found the course, so it exists. */
+  async revision(courseId: string): Promise<{ revision: number }> {
+    const revision = await this.revisions.read(courseId)
+    if (revision === null) throw new NotFoundError()
+    return { revision }
   }
 
   listLinks(userId: string) {

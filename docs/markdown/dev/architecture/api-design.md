@@ -326,6 +326,7 @@ Authorization: Bearer <accessToken>
 | ✅ | POST | `/excel/token` | ไม่ต้องล็อกอิน | — | add-in ถามทุก 5 วินาที · `pending` / `expired` / `ok` + token (ครั้งเดียว) |
 | ✅ | GET | `/excel/addin` | ไม่ต้องล็อกอิน | — | เวอร์ชันและ SHA-256 ของ add-in · ไม่ดาวน์โหลดโค้ดอัตโนมัติ |
 | ✅ | POST | `/courses/:courseId/excel-links` | ผู้สอนของวิชา | ✅ `score.edit` | body `{userCode}` · `webSessionOnly`: token ของ add-in ใช้ไม่ได้แม้เป็นวิชาเดียวกัน (token หนึ่งออก token ถัดไปไม่ได้) |
+| ✅ | GET | `/courses/:courseId/revision` | ผู้สอนของวิชา · token ของ add-in | ✅ `course.view` | `{revision}` · add-in ถามทุก 10 วินาที · ขยับหลังการเขียนที่สำเร็จทุกครั้ง (migration 0012) |
 | ✅ | GET | `/excel/links` | any | — (เฉพาะของตัวเอง) | การเชื่อมต่อที่ยังใช้ได้ |
 | ✅ | DELETE | `/excel/links/:linkId` | any | — (เฉพาะของตัวเอง) | ตัดการเชื่อมต่อทันที · ของคนอื่น → 404 |
 

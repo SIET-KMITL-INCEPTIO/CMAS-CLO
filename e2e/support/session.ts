@@ -1,4 +1,4 @@
-import { createHash, createHmac } from "node:crypto"
+import { createHash, createHmac, randomUUID } from "node:crypto"
 import { PrismaClient } from "@prisma/client"
 import type { Page } from "@playwright/test"
 
@@ -22,8 +22,17 @@ export function signToken(sub: string, role: Role, options: TokenOptions = {}): 
 
   const now = Math.floor(Date.now() / 1000)
   const header = base64url(JSON.stringify({ alg: "HS256" }))
+  // jti, as the server adds (jwt.ts): without it two sign-ins of one user in the
+  // same second mint the identical token, and RefreshToken.tokenHash is unique.
   const payload = base64url(
-    JSON.stringify({ sub, role, typ: options.typ ?? "access", iat: now, exp: now + 600 }),
+    JSON.stringify({
+      sub,
+      role,
+      typ: options.typ ?? "access",
+      jti: randomUUID(),
+      iat: now,
+      exp: now + 600,
+    }),
   )
   const signature = createHmac("sha256", secret).update(`${header}.${payload}`).digest("base64url")
   return `${header}.${payload}.${signature}`

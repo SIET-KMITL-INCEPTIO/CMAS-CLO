@@ -7,14 +7,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-' P0 spike: proves an add-in can hear edits in any open workbook
-' (Application-level WithEvents), on Windows and in the Mac sandbox.
-' P4 turns this into "collect changed cells, send them 2 seconds later".
+' Hears edits in every open workbook (Application-level WithEvents) and hands
+' them to modCmasSync, which ignores every sheet but the course sheet.
 Option Explicit
 
 Public WithEvents App As Application
 Attribute App.VB_VarHelpID = -1
 
 Private Sub App_SheetChange(ByVal Sh As Object, ByVal Target As Range)
-    Application.StatusBar = "CMAS spike: changed " & Sh.Name & "!" & Target.Address(False, False)
+    OnSheetChange Sh, Target
 End Sub

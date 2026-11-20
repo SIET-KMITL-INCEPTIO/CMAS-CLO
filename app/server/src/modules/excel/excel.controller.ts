@@ -29,6 +29,12 @@ export class ExcelController {
     return created(reply, { approved: true })
   }
 
+  /** GET /courses/:courseId/revision — the add-in polls this every 10 s (FR-76). */
+  revision = async (req: FastifyRequest, reply: FastifyReply) => {
+    reply.header("Cache-Control", "no-store")
+    return ok(reply, await this.service.revision(authorizedCourseId(req)))
+  }
+
   /** GET /excel/links — the caller's own live add-in connections. */
   list = async (req: FastifyRequest, reply: FastifyReply) =>
     ok(reply, await this.service.listLinks(callerOf(req).userId))

@@ -5,8 +5,10 @@ See also: [[dev]] · [[features-pages]] · [[schema]] · [[usecase]] · [[code-r
 ## ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO System / CMAS)
 
 > **Version:** 2.11.0 | **Updated:** 2026-11-19 | **Owner:** ทีมพัฒนา 67030098 / 67030110 / 67030120
-> **Baseline:** `database/schema.prisma` (**21 models — single-tenant**, migration `0001`–`0011`) + ต้นแบบ `docs/index-q/index-q.html`
+> **Baseline:** `database/schema.prisma` (**21 models — single-tenant**, migration `0001`–`0012`) + ต้นแบบ `docs/index-q/index-q.html`
 > **สถานะ:** Draft — §9 มีข้อตัดสินใจที่ยังค้าง ต้อง sign-off ก่อนเริ่ม implement module ที่เกี่ยวข้อง
+>
+> **v2.12.0 (2026-11-20) — Excel add-in เฟส P3–P5:** migration **`0012_course_revision_and_excel_source`** (`Course.revision` · `ScoreChangeSource.EXCEL`) · FR-76 ฝั่งเซิร์ฟเวอร์ ✅ · add-in เขียนครบแล้ว **ยังไม่เคยรันใน Excel**
 >
 > **v2.11.0 (2026-11-19) — Excel add-in (VBA) เฟส P0–P2 บน `feature/excel-vba-sync`:**
 > - เพิ่ม **FR-73–FR-76** และ **NFR-20** เพิ่มเงื่อนไขไม่มีมาโคร + จำกัดขนาดหลังแตกไฟล์ · แผน: [excel-vba-sync-plan](../planning/excel-vba-sync-plan.md)
@@ -662,7 +664,7 @@ FR-10 ถึง FR-15 ถูกยกเลิกพร้อมกับกา�
 | FR-73 | add-in CMAS ของ Excel (Windows · Mac desktop) เชื่อมต่อด้วย **รหัสอุปกรณ์**: add-in แสดงรหัส 8 ตัว ผู้สอนกรอกในหน้า `/excel/link` ที่ล็อกอินอยู่แล้วและเลือก **1 รายวิชา** ที่ตนสอน · ไม่มีรหัสผ่านหรือ API key ให้พิมพ์หรือคัดลอก · รหัสหมดอายุใน 10 นาที ใช้ได้ครั้งเดียว | SHOULD | Excel Link ✅ P2 |
 | FR-74 | token ของ add-in อ่านรายวิชานั้นและแก้คะแนนของรายวิชานั้นได้เท่านั้น (`course.view` · `score.edit`) นาน 8 ชั่วโมง · route อื่นตอบ 404 · อยู่ในหน่วยความจำของ add-in เท่านั้น ไม่อยู่ในไฟล์ · ผู้สอนเห็นและตัดการเชื่อมต่อได้ทันทีที่ `/excel/link` · บัญชีถูกระงับหรือถูกถอดจากรายวิชา = ใช้ไม่ได้ทันที | SHOULD | Excel Link ✅ P2 |
 | FR-75 | ไฟล์คะแนนเป็น `.xlsx` ไม่มีมาโครเสมอ โค้ดอยู่ใน add-in `CMAS.xlam` เท่านั้น · add-in ไม่เซ็นโค้ด จึงแจกจากหน้า CMAS ที่ต้องล็อกอินพร้อม SHA-256 · `GET /excel/addin` บอกเวอร์ชันล่าสุด add-in แจ้งเตือนเท่านั้น ไม่ดาวน์โหลดโค้ดเอง | SHOULD | ✅ endpoint · หน้าดาวน์โหลด ⬜ (ยังไม่มี build) |
-| FR-76 | ซิงก์สองทาง: Excel → CMAS ภายใน 3 วินาทีหลังแก้ช่อง · CMAS → Excel ภายในราว 12 วินาที (polling ทุก 10 วินาที) · ช่องที่ถูกแก้สองฝั่งพร้อมกันได้ 409 และแสดงค่าในระบบให้เลือก · ลบค่าต้องยืนยัน · Excel บนเว็บไม่รองรับ | SHOULD | ⬜ P3–P5 |
+| FR-76 | ซิงก์สองทาง: Excel → CMAS ภายใน 3 วินาทีหลังแก้ช่อง · CMAS → Excel ภายในราว 12 วินาที (polling ทุก 10 วินาที) · ช่องที่ถูกแก้สองฝั่งพร้อมกันได้ 409 และแสดงค่าในระบบให้เลือก · ลบค่าต้องยืนยัน · ประวัติการแก้ติดป้าย "แก้ใน Excel" · Excel บนเว็บไม่รองรับ | SHOULD | ✅ เซิร์ฟเวอร์ (migration 0012 · `GET /courses/:courseId/revision`) · ⬜ add-in เขียนแล้ว ยังไม่ได้ทดสอบใน Excel |
 
 ### 4.8 Dashboard & Reports
 

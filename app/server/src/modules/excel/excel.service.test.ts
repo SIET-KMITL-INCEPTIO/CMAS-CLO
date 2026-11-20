@@ -25,8 +25,9 @@ function setup(code: unknown = null) {
     })),
   }
   const links = { listLive: vi.fn(async () => []), revoke: vi.fn(async () => true) }
-  const service = new ExcelService(codes, links, "https://cmas.test")
-  return { service, codes, links }
+  const revisions = { read: vi.fn(async (): Promise<number | null> => 7) }
+  const service = new ExcelService(codes, links, "https://cmas.test", revisions)
+  return { service, codes, links, revisions }
 }
 
 const now = new Date("2026-11-19T10:00:00Z")
@@ -136,6 +137,20 @@ describe("collect", () => {
     const { service, codes } = setup(approved as never)
     codes.consumeAndLink.mockResolvedValueOnce(null as never)
     await expect(service.collect("d".repeat(43), now)).resolves.toEqual({ status: "expired" })
+  })
+})
+
+describe("revision", () => {
+  it("returns the course's number", async () => {
+    const { service, revisions } = setup()
+    await expect(service.revision("c1")).resolves.toEqual({ revision: 7 })
+    expect(revisions.read).toHaveBeenCalledWith("c1")
+  })
+
+  it("is 404 for a course that is gone", async () => {
+    const { service, revisions } = setup()
+    revisions.read.mockResolvedValueOnce(null)
+    await expect(service.revision("c1")).rejects.toBeInstanceOf(NotFoundError)
   })
 })
 

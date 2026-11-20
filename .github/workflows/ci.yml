@@ -106,6 +106,12 @@ jobs:
       - name: Markdown links resolve
         run: python3 scripts/check-doc-links.py
 
+      # Nothing compiles VBA outside Excel. This catches what review misses:
+      # non-ASCII source, LF endings, unclosed procedures, Mac-incompatible or
+      # unsafe calls, and a Thai text module that is out of date with th.json.
+      - name: Excel add-in sources
+        run: python3 scripts/build-excel-addin.py check
+
   unit:
     name: Unit tests + coverage
     needs: changes

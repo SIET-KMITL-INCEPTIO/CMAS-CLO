@@ -86,7 +86,11 @@ export class ScoreService {
    * collected first and returned together (422), so one round trip shows the
    * instructor every cell to fix; a cell someone else changed meanwhile is a 409.
    */
-  async put(courseId: string, input: PutScoresInput, userId: string) {
+  async put(
+    courseId: string,
+    input: Omit<PutScoresInput, "source"> & { source: PutScoresInput["source"] | "EXCEL" },
+    userId: string,
+  ) {
     const studentIds = [...new Set(input.scores.map((c) => c.studentId))]
     const activityIds = [...new Set(input.scores.map((c) => c.activityId))]
     const { students, activities } = await this.scores.context(courseId, studentIds, activityIds)

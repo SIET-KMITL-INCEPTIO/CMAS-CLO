@@ -24,6 +24,8 @@ vi.mock("../db/prisma.js", () => ({
     },
     user: { findUnique: vi.fn(async () => db.user) },
     course: { findFirst: vi.fn(async (q: { where: { id: string } }) => ({ id: q.where.id })) },
+    // live-updates bumps Course.revision after every successful write.
+    $executeRaw: vi.fn(async () => 1),
     authEvent: { create: vi.fn(async () => ({})) },
   },
 }))
