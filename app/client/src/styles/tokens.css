@@ -46,6 +46,15 @@
   --color-badBd: #dcbaba;
   --color-info: #4a5a86;
   --color-infoBg: #e9ecf6;
+  /* the fifth tone ("nil": not evaluated) and the bar/line colours of every tone;
+     components read them through components/ui/tone.ts, never as hex */
+  --color-nil: #878cb4;
+  --color-nilBg: #f1f2f8;
+  --color-okBar: #6e9c87;
+  --color-warnBar: #c7a860;
+  --color-badBar: #b96f6e;
+  --color-infoBar: #8c97be;
+  --color-nilBar: #c8cdeb;
 
   /* the prototype's radius scale; its bare `rounded` (14px) is rounded-md here */
   --radius-xs: 6px;
@@ -190,4 +199,11 @@
   --color-badBd: #6a3a3b;
   --color-info: #a6b3e3;
   --color-infoBg: #252c45;
+  --color-nil: #9a9eb8;
+  --color-nilBg: #262935;
+  --color-okBar: #5f9a82;
+  --color-warnBar: #b89a4e;
+  --color-badBar: #c2706a;
+  --color-infoBar: #7f8cbc;
+  --color-nilBar: #6d7290;
 }
