@@ -84,7 +84,6 @@ const KNOWN_FAILURES: string[] = [
   "light ok on pane-list",
   "light ok on okBg",
   "dark faint on card",
-  "dark faint on pane-list",
   "dark faint on wash",
 ]
 

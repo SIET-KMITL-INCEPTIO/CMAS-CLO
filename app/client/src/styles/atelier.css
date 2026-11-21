@@ -74,7 +74,7 @@ button {
 .meter {
   position: relative;
   height: 7px;
-  background: #e7e8f2;
+  background: var(--track);
   border-radius: 99px;
 }
 .meter > i {
@@ -96,7 +96,7 @@ button {
 .sharebar {
   display: flex;
   height: 7px;
-  background: #e7e8f2;
+  background: var(--track);
   border-radius: 99px;
   overflow: hidden;
 }
@@ -108,12 +108,12 @@ button {
 .scroll-x {
   overflow-x: auto;
   scrollbar-width: thin;
-  scrollbar-color: #d5d7e6 transparent;
+  scrollbar-color: var(--scroll) transparent;
 }
 .scroll-y {
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #d9dae8 transparent;
+  scrollbar-color: var(--scroll) transparent;
 }
 
 kbd {
@@ -121,7 +121,7 @@ kbd {
   font-size: 12px;
   padding: 2px 6px;
   border-radius: 5px;
-  background: #eaebf4;
+  background: var(--chip);
   color: var(--ink-soft);
   border: 1px solid var(--edge);
 }
@@ -186,7 +186,7 @@ html[data-density="compact"] table.dt td {
 }
 .inp:focus {
   outline: none;
-  border-color: #a8aecd;
+  border-color: var(--edge-strong);
 }
 /* One focus mark: the border itself changes colour. No outline and no ring —
    anything drawn outside the border read as a second border. */
@@ -207,7 +207,7 @@ select[aria-invalid="true"] {
 /* U5 — a form error sits under the field that is wrong */
 .ferr {
   font-size: 12.5px;
-  color: #a2504f;
+  color: var(--color-bad);
   margin-top: 5px;
   line-height: 1.45;
 }
@@ -224,17 +224,17 @@ select[aria-invalid="true"] {
 }
 .btn:hover {
   color: var(--ink);
-  border-color: #cfd3e4;
+  border-color: var(--edge-strong);
 }
 .btn-primary {
-  background: #1e233c;
-  color: #fff;
-  border-color: #1e233c;
+  background: var(--primary);
+  color: var(--primary-ink);
+  border-color: var(--primary);
 }
 .btn-primary:hover {
-  background: #465078;
-  border-color: #465078;
-  color: #fff;
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: var(--primary-ink);
 }
 .btn-quiet {
   background: transparent;
@@ -247,11 +247,11 @@ select[aria-invalid="true"] {
   border-color: transparent;
 }
 .btn-danger {
-  color: #a2504f;
+  color: var(--color-bad);
 }
 .btn-danger:hover {
-  color: #8c4241;
-  border-color: #dcbaba;
+  color: var(--color-bad);
+  border-color: var(--color-badBd);
 }
 .btn-solid-danger {
   background: #a2504f;
@@ -265,9 +265,9 @@ select[aria-invalid="true"] {
 }
 .btn:disabled,
 .btn:disabled:hover {
-  background: #eaebf4;
-  border-color: #eaebf4;
-  color: #9aa0be;
+  background: var(--chip);
+  border-color: var(--chip);
+  color: var(--faint);
   cursor: not-allowed;
 }
 
@@ -310,9 +310,9 @@ select[aria-invalid="true"] {
     color 0.15s;
 }
 .helpbtn:hover {
-  background: #1e233c;
-  color: #fff;
-  border-color: #1e233c;
+  background: var(--primary);
+  color: var(--primary-ink);
+  border-color: var(--primary);
 }
 .tipbtn {
   display: inline-grid;
@@ -326,8 +326,8 @@ select[aria-invalid="true"] {
   font-style: normal;
   font-weight: 500;
   vertical-align: middle;
-  color: #6b7194;
-  background: #eaebf4;
+  color: var(--ink-soft);
+  background: var(--chip);
   cursor: help;
   transition:
     background 0.14s,
@@ -336,7 +336,7 @@ select[aria-invalid="true"] {
 .tipbtn:hover,
 .tipbtn[aria-expanded="true"] {
   background: var(--sel);
-  color: #fff;
+  color: var(--primary-ink);
 }
 .tipbox {
   position: fixed;
@@ -344,8 +344,8 @@ select[aria-invalid="true"] {
   max-width: 320px;
   padding: 9px 12px;
   border-radius: 10px;
-  background: #1e233c;
-  color: #f1f2f8;
+  background: var(--popover);
+  color: var(--popover-ink);
   font-size: 14px;
   line-height: 1.6;
   white-space: pre-line;
@@ -428,8 +428,8 @@ select[aria-invalid="true"] {
 
 /* toasts — sonner renders these with `unstyled` */
 .toast {
-  background: #1e233c;
-  color: #edeef6;
+  background: var(--popover);
+  color: var(--popover-ink);
   padding: 12px 16px;
   border-radius: 13px;
   font-size: 14px;
@@ -504,8 +504,9 @@ select[aria-invalid="true"] {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: #465078;
-  color: #edeef6;
+  background: var(--chrome);
+  color: var(--chrome-ink);
+  border-bottom: 1px solid var(--chrome-line);
   padding-right: 14px;
 }
 .cmdbar .brand {
@@ -523,7 +524,7 @@ select[aria-invalid="true"] {
   display: flex;
   align-items: center;
   gap: 9px;
-  background: rgba(255, 255, 255, 0.16);
+  background: var(--chrome-search);
   border-radius: 7px;
   padding: 6px 11px;
   font-size: 14px;
@@ -532,7 +533,7 @@ select[aria-invalid="true"] {
   transition: background 0.15s;
 }
 .cmdsearch:hover {
-  background: rgba(255, 255, 255, 0.24);
+  background: var(--chrome-search-hover);
 }
 .cmdsearch > span:first-child {
   min-width: 0;
@@ -553,7 +554,8 @@ select[aria-invalid="true"] {
 
 .apprail {
   grid-row: 2;
-  background: #3c456a;
+  background: var(--chrome-rail);
+  border-right: 1px solid var(--chrome-line);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -566,7 +568,7 @@ select[aria-invalid="true"] {
   justify-items: center;
   gap: 3px;
   padding: 9px 4px 8px;
-  color: #c3c7e0;
+  color: var(--rail-ink);
   font-size: 12px;
   line-height: 1.2;
   text-align: center;
@@ -605,7 +607,7 @@ select[aria-invalid="true"] {
   height: 8px;
   border-radius: 50%;
   background: #f5a524;
-  box-shadow: 0 0 0 2px #3c456a;
+  box-shadow: 0 0 0 2px var(--chrome-rail);
 }
 
 .listpane {
@@ -637,13 +639,13 @@ select[aria-invalid="true"] {
   height: 30px;
   padding: 0 11px;
   border-radius: 8px;
-  background: #1e233c;
-  color: #fff;
+  background: var(--primary);
+  color: var(--primary-ink);
   font-size: 14px;
   white-space: nowrap;
 }
 .lpadd:hover {
-  background: #2c3354;
+  background: var(--primary-hover);
 }
 .lpsearch {
   margin: 0 10px 8px;
@@ -696,7 +698,7 @@ body.resizing {
   transition: background 0.14s;
 }
 .teamrow:hover {
-  background: #edeef6;
+  background: var(--hover);
 }
 .teamrow[aria-current="true"] .tname {
   font-weight: 500;
@@ -755,7 +757,7 @@ body.resizing {
   position: relative;
 }
 .chan:hover {
-  background: #edeef6;
+  background: var(--hover);
   color: var(--ink);
 }
 .chan[aria-current="page"] {
@@ -890,7 +892,7 @@ body.resizing {
   font-size: 12px;
   flex: none;
   font-variant-numeric: tabular-nums;
-  background: #eaebf4;
+  background: var(--chip);
   color: var(--ink-soft);
 }
 .stp .lb {
@@ -904,7 +906,7 @@ body.resizing {
 /* what to do next — a ring, so it can coexist with the position marker */
 .stp[data-now="1"] .num {
   box-shadow:
-    0 0 0 2px #fff,
+    0 0 0 2px var(--card),
     0 0 0 3.5px currentColor;
 }
 /* back / next at the foot of a setup page (index-q stepFooter) */
@@ -1048,12 +1050,12 @@ body.resizing {
     color 0.14s;
 }
 .cact:hover {
-  background: #edeef6;
+  background: var(--hover);
   color: var(--ink);
 }
 .cact.is-danger:hover {
   background: var(--bad-wash);
-  color: #a2504f;
+  color: var(--color-bad);
 }
 .cact svg {
   width: 16px;
@@ -1368,16 +1370,16 @@ html[data-density="comfortable"] {
 /* An empty cell is the one the user has to find: a dashed outline says "type here". */
 .cellinp.empty {
   border-style: dashed;
-  border-color: #c9cde2;
+  border-color: var(--edge-strong);
   background: var(--pane-foot);
 }
 .cellinp::placeholder {
-  color: #b4b9d2;
+  color: var(--faint);
 }
 .cellinp:hover,
 .cellinp:focus {
   outline: none;
-  border-color: #a8aecd;
+  border-color: var(--edge-strong);
   background: var(--card);
 }
 .cellinp:focus-visible {
