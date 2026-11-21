@@ -18,8 +18,9 @@ can; the checklist at the end is what only Excel can prove.
    in rows 1–3 (course code and name, credits, term/section and
    instructors come from the Course row, `data.course` of the grid, so no
    institution is named in the sheet), headers in row 4 (`กิจกรรมที่ n`,
-   name and `[id]`), full marks in row 5, one student per row from row 6 and
-   a `คะแนนรวม` SUM column. Grey cells cannot be edited (closed activity,
+   name; the ids stay in the hidden `_cmas` sheet), full marks in row 5, one student per row from row 6 and
+   a `คะแนนรวม` SUM column, in Tahoma (on every Windows and with Office for Mac;
+   TH Sarabun New is not installed by default and Excel's substitute misplaced Thai marks). Grey cells cannot be edited (closed activity,
    withdrawn student).
 3. **Typing a score** sends it about 1 second later. **x** means excused.
    **Clearing a cell** deletes the score, after a yes/no question.

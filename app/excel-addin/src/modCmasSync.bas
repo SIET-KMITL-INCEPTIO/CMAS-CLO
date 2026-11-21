@@ -55,8 +55,11 @@ Private Const COL_TEACHERS As Long = 7
 Private Const COL_STATUS As Long = 4
 ' Bumped when the rows or columns above move: a workbook drawn in another
 ' layout is redrawn from CMAS instead of being read with the wrong coordinates.
-Private Const LAYOUT As String = "form-5"
-Private Const FORM_FONT As String = "TH Sarabun New"
+Private Const LAYOUT As String = "form-6"
+' Tahoma: on every Windows and shipped with Office for Mac, and it draws Thai
+' vowels and tone marks in place. TH Sarabun New (the paper form's font) is not
+' installed by default; Excel then substitutes a font that misplaces them.
+Private Const FORM_FONT As String = "Tahoma"
 Private Const HEAD_FILL As Long = 12874308  ' RGB(68, 114, 196)
 Private Const MAX_FILL As Long = 13431551   ' RGB(255, 242, 204)
 Private Const PER_PAGE As Long = 200
@@ -103,6 +106,7 @@ Private mTickPending As Boolean
 Private mTickAt As Date          ' when the pending tick runs
 Private mActiveUntil As Date     ' poll every POLL_ACTIVE seconds until then
 Private mBusy As Boolean
+Private mStep As String          ' what the sync was doing, for the status row when it fails
 
 ' ---------------------------------------------------------------- start / stop
 
@@ -209,12 +213,13 @@ Public Sub CmasFlushNow()
     If mBusy Then ScheduleFlush: Exit Sub
     mBusy = True
     On Error GoTo failed
+    mStep = T("stepSend")
     Flush
     mBusy = False
     Exit Sub
 failed:
     mBusy = False
-    SetStatus T("stOffline")
+    ShowFault
 End Sub
 
 ' Ribbon: send now, then reload whether or not the revision moved.
@@ -227,6 +232,7 @@ Private Sub RunSync(ByVal forcePull As Boolean)
     If mBusy Then Exit Sub
     mBusy = True
     On Error GoTo failed
+    mStep = T("stepSend")
     Flush
     ' Never redraw over edits that are not in CMAS yet.
     If mDirty.Count = 0 Then PullIfChanged forcePull
@@ -234,7 +240,25 @@ Private Sub RunSync(ByVal forcePull As Boolean)
     Exit Sub
 failed:
     mBusy = False
-    SetStatus T("stOffline")
+    ShowFault
+End Sub
+
+' A VBA error, not the network: say which step and what Excel said, so a
+' screenshot of the status row is enough to find it.
+Private Sub ShowFault()
+    Dim what As String
+    what = Err.Number & " " & Err.Description
+    Err.Clear
+    SetStatus T("stError", mStep, what)
+End Sub
+
+' A request that got an answer CMAS should not give, or none at all.
+Private Sub ShowHttp(ByVal status As Long)
+    If status = 0 Then
+        SetStatus T("stOffline")
+    Else
+        SetStatus T("stHttp", CStr(status), mStep)
+    End If
 End Sub
 
 ' ---------------------------------------------------------------- CMAS -> Excel
@@ -253,7 +277,7 @@ Private Function Usable(ByVal status As Long) As Boolean
         CmasForgetToken
         SetStatus T("stLost")
     Case Else
-        SetStatus T("stOffline")
+        ShowHttp status
     End Select
 End Function
 
@@ -261,6 +285,7 @@ Private Sub PullIfChanged(ByVal force As Boolean)
     Dim status As Long, body As String, root As Variant, rev As Long
     Dim acts As Collection, studs As Collection
 
+    mStep = T("stepCheck")
     status = SafeRequest("GET", Url("/revision"), "", CmasToken, body)
     If Not Usable(status) Then Exit Sub
     JsonParse body, root
@@ -272,7 +297,9 @@ Private Sub PullIfChanged(ByVal force As Boolean)
 
     ' Not on the first load: opening the file is not activity on the course.
     If mRevision <> -1 Then MarkActive
+    mStep = T("stepLoad")
     If Not FetchGrid(acts, studs) Then Exit Sub
+    mStep = T("stepDraw")
     Render acts, studs
     ' Read before the grid: a write that lands during the fetch moves the
     ' number again, and the next tick reloads. Never the other way round.
@@ -314,8 +341,8 @@ Private Sub ReadCourseHeader(ByVal root As Variant)
     nameEn = CStr(JPath(root, "data", "course", "nameEn"))   ' null in JSON: stays ""
     If nameEn <> "" Then mHdrName = mHdrName & " (" & nameEn & ")"
     mHdrCredits = CStr(JPath(root, "data", "course", "credits"))
-    mHdrTerm = CStr(JPath(root, "data", "course", "semester")) & "/" & CStr(JPath(root, "data", "course", "year")) & _
-               " " & ChrW(183) & " Sec " & CStr(JPath(root, "data", "course", "section"))
+    mHdrTerm = T("formTerm", CStr(JPath(root, "data", "course", "semester")), CStr(JPath(root, "data", "course", "year"))) & _
+               " Sec " & CStr(JPath(root, "data", "course", "section"))
     Set names = JPath(root, "data", "course", "instructors")   ' stays Empty when the server sends none
     If IsObject(names) Then
         For Each n In names
@@ -419,8 +446,9 @@ Private Sub DrawLayout(ByVal acts As Collection, ByVal studs As Collection, ByVa
         closed(c) = Not IsNull(a("closedAt"))
         mBase.Cells(2, c).Value = IIf(closed(c), 1, 0)
         mBase.Cells(ROW_HEAD, c).Value = a("id")
-        ' "[id]" is what the web import matches a column by, as in the form CMAS exports.
-        WriteText mSheet.Cells(ROW_HEAD, c), T("hdrActivity", CStr(j + 1)) & vbLf & a("name") & " [" & a("id") & "]"
+        ' The name only: the id lives in the hidden _cmas sheet (row ROW_HEAD), which is
+        ' what the sync reads. In a 14-wide column a 25-character id wrapped over the name.
+        WriteText mSheet.Cells(ROW_HEAD, c), T("hdrActivity", CStr(j + 1)) & vbLf & a("name")
         mSheet.Cells(ROW_MAX, c).Value = a("maxScore")
         j = j + 1
     Next a
@@ -470,16 +498,16 @@ Private Sub DrawFormHeader()
     WriteText mSheet.Cells(ROW_TITLE, COL_FORM), T("formTitle")
     WriteText mSheet.Cells(ROW_INFO, COL_FORM), T("formCode", mHdrCode)
     WriteText mSheet.Cells(ROW_INFO, COL_CREDITS), T("formCredits", mHdrCredits)
-    WriteText mSheet.Cells(ROW_INFO, COL_TERM), T("formTerm", mHdrTerm)
+    WriteText mSheet.Cells(ROW_INFO, COL_TERM), mHdrTerm
     WriteText mSheet.Cells(ROW_TEACH, COL_FORM), T("formName", mHdrName)
     WriteText mSheet.Cells(ROW_TEACH, COL_TEACHERS), T("formTeachers", mHdrTeachers)
     With mSheet.Range(mSheet.Cells(ROW_TITLE, 1), mSheet.Cells(ROW_TEACH, COL_TERM + 3))
         .Font.Name = FORM_FONT
-        .Font.Size = 14
+        .Font.Size = 11
         .VerticalAlignment = xlCenter
     End With
     With mSheet.Cells(ROW_TITLE, COL_FORM).Font
-        .Size = 18
+        .Size = 14
         .Bold = True
     End With
     mSheet.Rows(ROW_TITLE).RowHeight = 21.75
@@ -493,7 +521,7 @@ Private Sub FormatTable(ByVal colTotal As Long, ByVal lastRow As Long)
     Set table = mSheet.Range(mSheet.Cells(ROW_HEAD, 1), mSheet.Cells(lastRow, colTotal))
     With table
         .Font.Name = FORM_FONT
-        .Font.Size = 13
+        .Font.Size = 10
         .Borders.LineStyle = xlContinuous
         .Borders.Weight = xlThin
         .Borders.Color = 0
@@ -673,7 +701,7 @@ Private Sub Flush()
         SetStatus T("stLost")
         Exit Sub
     Case 0, 429, 500 To 599
-        SetStatus T("stOffline")   ' kept; the next tick tries again
+        ShowHttp status            ' kept; the next tick tries again
         Exit Sub
     Case Else
         CmasMsg T("unexpected", CStr(status)), vbExclamation
@@ -737,7 +765,7 @@ Private Sub TakeRefusals(ByVal resp As String)
             mDirty.Remove k
             n = n + 1
             If n <= 5 Then
-                reasons = reasons & "- " & mSheet.Cells(RowOf(k), COL_CODE).Value & ": " & x("reason") & vbLf
+                reasons = reasons & mSheet.Cells(RowOf(k), COL_CODE).Value & "  " & x("reason") & vbLf
             End If
         End If
     Next x
@@ -1090,12 +1118,12 @@ Private Sub SetStatus(ByVal text As String)
     WriteText mSheet.Cells(ROW_TITLE, COL_STATUS), text
     With mSheet.Cells(ROW_TITLE, COL_STATUS).Font
         .Name = FORM_FONT
-        .Size = 13
+        .Size = 10
         .Italic = True
     End With
     mApplying = was
     ' The status row is what works on both platforms; the status bar is a bonus.
-    Application.StatusBar = "CMAS: " & text
+    Application.StatusBar = "CMAS  " & text
 End Sub
 
 Private Sub SetLiveStatus()

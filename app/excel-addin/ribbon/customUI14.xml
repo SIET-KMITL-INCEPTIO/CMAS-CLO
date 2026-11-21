@@ -7,20 +7,20 @@
       <tab id="cmasTab" label="CMAS">
         <group id="cmasConnectGroup" label="เชื่อมต่อ">
           <button id="cmasConnect" label="เชื่อมต่อ" size="large" imageMso="HyperlinkInsert"
-                  screentip="เชื่อมต่อกับ CMAS" supertip="เชื่อมต่อไฟล์นี้กับ CMAS: กรอกรหัส 8 ตัวในหน้าเว็บ หรือกด เชื่อมต่อ ในหน้าที่เบราว์เซอร์เปิดให้"
+                  screentip="เชื่อมต่อกับ CMAS" supertip="เชื่อมต่อไฟล์นี้กับ CMAS แล้วกดปุ่มเชื่อมต่อในหน้าเว็บที่เปิดขึ้น หรือกรอกรหัส 8 ตัวที่ Excel แสดง"
                   onAction="CmasRibbonConnect"/>
           <button id="cmasDisconnect" label="ตัดการเชื่อมต่อ" imageMso="Cancel"
                   onAction="CmasRibbonDisconnect"/>
         </group>
         <group id="cmasSyncGroup" label="คะแนน">
           <button id="cmasSyncNow" label="ซิงก์ตอนนี้" size="large" imageMso="Refresh"
-                  supertip="ส่งช่องที่แก้ แล้วโหลดค่าล่าสุดจาก CMAS (ปกติทำเองทุก 3–10 วินาที)"
+                  supertip="ส่งคะแนนที่แก้และโหลดคะแนนล่าสุดจาก CMAS ทันที ปกติระบบทำให้เองทุก 3 ถึง 10 วินาที"
                   onAction="CmasRibbonSync"/>
           <button id="cmasKeepMine" label="ใช้ค่าของฉัน"
-                  supertip="ช่องสีแดงที่เลือก: บันทึกค่าที่คุณกรอกทับค่าใน CMAS"
+                  supertip="ใช้กับช่องสีแดงที่เลือก บันทึกค่าที่คุณกรอกทับค่าใน CMAS"
                   onAction="CmasRibbonKeepMine"/>
           <button id="cmasTakeServer" label="ใช้ค่าใน CMAS"
-                  supertip="ช่องสีแดงที่เลือก: ทิ้งค่าที่คุณกรอก ใช้ค่าใน CMAS"
+                  supertip="ใช้กับช่องสีแดงที่เลือก ทิ้งค่าที่คุณกรอกแล้วใช้ค่าใน CMAS แทน"
                   onAction="CmasRibbonTakeServer"/>
         </group>
       </tab>
