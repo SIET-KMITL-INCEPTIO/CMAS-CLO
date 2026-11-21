@@ -45,8 +45,12 @@ export function customPropertiesXml(props: Record<string, string>): string {
   )
 }
 
+/** True when a relationship of exactly this type is there (the Type attribute, compared whole). */
+const hasRelationshipType = (rels: string, type: string) =>
+  [...rels.matchAll(/ Type="([^"]*)"/g)].some((m) => m[1] === type)
+
 export function addCustomRelationship(rels: string): string {
-  if (rels.includes(CUSTOM_REL_TYPE)) return rels
+  if (hasRelationshipType(rels, CUSTOM_REL_TYPE)) return rels
   if (!rels.includes("</Relationships>")) throw new Error("_rels/.rels has no </Relationships>")
   const rel = `<Relationship Id="cmasCustomProps" Type="${CUSTOM_REL_TYPE}" Target="${CUSTOM_PART}"/>`
   return rels.replace("</Relationships>", rel + "</Relationships>")
