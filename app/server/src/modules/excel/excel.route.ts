@@ -43,6 +43,16 @@ export async function excelRoutes(app: FastifyInstance) {
     },
     controller.approve,
   )
+  // The score workbook (.xlsm) for this course, with a one-time ticket that signs the
+  // file in when it opens: like approving a code, so score.edit, a web session, and the
+  // approve rate limit (each download creates an approved code).
+  app.get(
+    "/courses/:courseId/excel-workbook",
+    {
+      config: { access: { cap: "score.edit" }, webSessionOnly: true, rateLimit: APPROVE_LIMIT },
+    },
+    controller.workbook,
+  )
   // FR-76: polled every 10 s by the add-in; reading the course is enough.
   app.get(
     "/courses/:courseId/revision",

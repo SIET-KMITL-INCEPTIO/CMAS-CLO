@@ -68,3 +68,7 @@ docs/pdf/01.*.pdf
 
 # Excel add-in: the raw Save-As from Excel; only release/CMAS.xlam is committed
 app/excel-addin/*.xlam
+app/excel-addin/*.xlsm
+
+# ...except the released score workbook template (its SHA-256 is in addin-release.ts)
+!app/excel-addin/release/CMAS-template.xlsm

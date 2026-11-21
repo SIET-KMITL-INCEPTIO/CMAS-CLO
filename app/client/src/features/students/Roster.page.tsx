@@ -15,6 +15,7 @@ import { ConfirmDelete } from "../clos/ConfirmDelete.tsx"
 import { CoursePage } from "../courses/CoursePage.tsx"
 import { useCourseContext } from "../courses/useCourseContext.ts"
 import { excelApi } from "../excel/excel.api.ts"
+import { useAddinRelease } from "../excel/useExcel.ts"
 import type { GridStudent } from "../scores/score.types.ts"
 import { ChangesDrawer } from "../scores/ChangesDrawer.tsx"
 import { ImportExcel } from "../scores/ImportExcel.tsx"
@@ -73,6 +74,8 @@ export default function Roster() {
   const [excel, setExcel] = useState(false)
   const [importing, setImporting] = useState<"roster" | "scores" | null>(null)
   const [history, setHistory] = useState(false)
+  const [downloading, setDownloading] = useState(false)
+  const release = useAddinRelease()
   const withdraw = useWithdrawStudent()
   const restore = useRestoreStudent()
   const remove = useDeleteStudent()
@@ -216,31 +219,39 @@ export default function Roster() {
               }}
               onExport={() => scoresApi.exportScores(course.id).catch(failed)}
             />
-            {/* FR-73..75: the macros live in the add-in, never in the score file,
-                so the scores stay a plain .xlsx and CMAS never hands out a .xlsm. */}
+            {/* FR-73..76: one .xlsm per course with the sync VBA inside. It is handed
+                out only here, behind a sign-in, and connects itself when opened. */}
             {can("score.edit") && (
               <div role="group" aria-label="กรอกคะแนนใน Excel แบบซิงก์ทันที">
                 <div className="mb-1.5 text-[13px] text-dim" aria-hidden="true">
                   กรอกคะแนนใน Excel แบบซิงก์ทันที
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    className="btn"
-                    onClick={() => excelApi.downloadAddin().catch(failed)}
-                  >
-                    ดาวน์โหลด add-in
-                  </button>
+                <button
+                  type="button"
+                  className="btn btn-primary w-full"
+                  disabled={!release.data?.workbook.available || downloading}
+                  onClick={() => {
+                    setDownloading(true)
+                    excelApi
+                      .downloadWorkbook(course.id)
+                      .catch(failed)
+                      .finally(() => setDownloading(false))
+                  }}
+                >
+                  {downloading ? "กำลังดาวน์โหลด…" : "ดาวน์โหลดไฟล์กรอกคะแนน (.xlsm)"}
+                </button>
+                <p className="mt-1.5 text-[12px] text-dim">
+                  {release.data && !release.data.workbook.available
+                    ? "ยังไม่เปิดให้ดาวน์โหลด — รอผู้ดูแลเผยแพร่ไฟล์"
+                    : "เปิดภายใน 10 นาทีแล้วเชื่อมต่อเอง · ครั้งแรกบน Windows: คลิกขวาที่ไฟล์ → Properties → Unblock"}
+                  {" · "}
                   <Link
                     to={`/excel/link?course=${course.id}`}
-                    className="btn btn-primary"
+                    className="underline"
                     onClick={() => setExcel(false)}
                   >
-                    เชื่อมต่อ Excel
+                    ใช้ add-in แทน
                   </Link>
-                </div>
-                <p className="mt-1.5 text-[12px] text-dim">
-                  ติดตั้งครั้งเดียว แล้วกด CMAS → เชื่อมต่อ ใน Excel
                 </p>
               </div>
             )}

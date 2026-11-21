@@ -4,7 +4,7 @@ Two-way score sync between Excel desktop (Windows and Mac) and CMAS. Plan and
 the reasons behind each choice:
 [excel-vba-sync-plan.md](../../docs/markdown/dev/planning/excel-vba-sync-plan.md).
 
-**Status: 0.2.0 compiled and saved in Excel for Windows (`release/CMAS.xlam`); the checklist below has not been run yet.** Nothing outside Excel can compile
+**Status: add-in 0.2.0 compiled and saved in Excel for Windows (`release/CMAS.xlam`). The score workbook 0.3.0 (same VBA, saved as `.xlsm`) is written but has not been built in Excel yet, so its download is off (`WORKBOOK_RELEASE.sha256` is null). The checklist below has not been run.** Nothing outside Excel can compile
 VBA. `python scripts/build-excel-addin.py check` (a CI step) catches what it
 can; the checklist at the end is what only Excel can prove.
 
@@ -13,8 +13,13 @@ can; the checklist at the end is what only Excel can prove.
 1. **CMAS → เชื่อมต่อ.** The add-in asks for the CMAS address once, then shows
    an 8-character code. The instructor opens `/excel/link` in the CMAS web app,
    types the code and picks one course.
-2. A new workbook opens with the course sheet: student codes, names, one
-   column per activity. Grey cells cannot be edited (closed activity,
+2. A new workbook opens with the course sheet, laid out like the faculty's
+   score form that CMAS exports (index-q.html `scoreSheet`): the form header
+   in rows 1–3 (course code and name, credits, term/section and
+   instructors come from the Course row, `data.course` of the grid, so no
+   institution is named in the sheet), headers in row 4 (`กิจกรรมที่ n`,
+   name and `[id]`), full marks in row 5, one student per row from row 6 and
+   a `คะแนนรวม` SUM column. Grey cells cannot be edited (closed activity,
    withdrawn student).
 3. **Typing a score** sends it about 2 seconds later. **x** means excused.
    **Clearing a cell** deletes the score, after a yes/no question.
@@ -28,6 +33,27 @@ can; the checklist at the end is what only Excel can prove.
 The workbook is a plain `.xlsx` — save it anywhere. It has no macros and no
 token. A very hidden `_cmas` sheet holds the ids and the last values CMAS
 confirmed. Writes from Excel appear in the score history as **แก้ใน Excel**.
+
+## Two ways to ship the same VBA
+
+|                          | Add-in `CMAS.xlam`                | Score workbook `.xlsm`                                             |
+| ------------------------ | --------------------------------- | ------------------------------------------------------------------ |
+| Install                  | once per machine (Add-ins dialog) | none: download and open                                            |
+| Where                    | `/excel/link`                     | roster page → Excel → ดาวน์โหลดไฟล์กรอกคะแนน                       |
+| Course                   | picked on the web per connect     | stamped into the file (`CmasCourseId`)                             |
+| First connect            | type the 8-character code         | none: the file's one-time ticket                                   |
+| Later connects           | type the code                     | the browser opens with code and course filled in; press เชื่อมต่อ  |
+| Data                     | a new plain `.xlsx`               | the downloaded file itself                                         |
+| Blocked macros (Windows) | Unblock once                      | Unblock each downloaded file, or keep them in one Trusted Location |
+
+The server stamps every workbook download (`GET /courses/:courseId/excel-workbook`,
+score.edit, web sign-in only) with custom document properties: `CmasApi`,
+`CmasCourseId`, `CmasCourseLabel` and `CmasTicket`. The ticket is a device code
+the server approved for the downloader and that course: `/excel/token` turns
+it into a token once, within 10 minutes. `modCmasWorkbook.Auto_Open` does this
+when the file opens and deletes the ticket property. No token is ever written to
+the file. Don't install the add-in and open a score workbook in the same
+Excel: both would hear every edit.
 
 ## Rules the add-in keeps
 
@@ -58,6 +84,7 @@ confirmed. Writes from Excel appear in the score history as **แก้ใน Ex
 | `src/clsCmasMap.cls`         | string-keyed map for both platforms                               |
 | `src/clsCmasAppEvents.cls`   | Application-level `SheetChange`                                   |
 | `src/modCmasRibbon.bas`      | callbacks for the CMAS tab                                        |
+| `src/modCmasWorkbook.bas`    | score workbook only: its stamped properties, `Auto_Open`          |
 | `src/modCmasUi.bas`          | message and input boxes that show Thai on any Windows locale      |
 | `src/modCmasText.bas`        | **generated** from `text/th.json` — do not edit                   |
 | `src/modCmasInfo.bas`        | the version; must equal `addin-release.ts` (a server test checks) |
@@ -86,6 +113,18 @@ confirmed. Writes from Excel appear in the score history as **แก้ใน Ex
 Remove → **No** to export), then import. Importing over a module that is still
 there makes a second copy named `clsCmasMap1` and the like, which breaks the
 build.
+
+### Build the score workbook template
+
+Same modules, saved as a workbook instead of an add-in:
+
+1. Steps 1–4 above in a **new blank workbook** (one sheet, nothing typed in it).
+2. Save As → **Excel Macro-Enabled Workbook (.xlsm)** → `CMAS-raw.xlsm`.
+3. `python scripts/build-excel-addin.py package-workbook CMAS-raw.xlsm` →
+   writes `release/CMAS-template.xlsm` and prints its SHA-256. It refuses an
+   add-in and a downloaded (stamped) workbook.
+4. Put the SHA-256 into `WORKBOOK_RELEASE` in `addin-release.ts` and commit
+   `release/CMAS-template.xlsm` with it. The roster page's button turns on.
 
 To change Thai text: edit `text/th.json`, run
 `python scripts/build-excel-addin.py text`, re-import `modCmasText.bas`.

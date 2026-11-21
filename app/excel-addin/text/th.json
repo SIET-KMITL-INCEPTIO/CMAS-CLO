@@ -2,7 +2,6 @@
   "_comment": "Every Thai string the add-in shows. VBA source must stay ASCII (it is stored in the machine's code page), so scripts/build-excel-addin.py turns this file into src/modCmasText.bas. Edit here, then run: python scripts/build-excel-addin.py text",
   "hdrCode": "รหัสนักศึกษา",
   "hdrName": "ชื่อ-นามสกุล",
-  "hdrMax": "(เต็ม {0})",
   "askUrl": "ที่อยู่ของ CMAS (ถามผู้ดูแลระบบ)",
   "showCode": "เปิด {0}\nแล้วกรอกรหัสนี้ เลือกรายวิชา แล้วกดเชื่อมต่อ:\n\n{1}\n\nรหัสใช้ได้ 10 นาที",
   "startFail": "เริ่มเชื่อมต่อไม่ได้ (HTTP {0}) — ตรวจที่อยู่ของ CMAS และอินเทอร์เน็ต",
@@ -26,5 +25,17 @@
   "noConflictHere": "เลือกช่องสีแดงก่อน",
   "structureChanged": "รายชื่อหรือกิจกรรมใน CMAS เปลี่ยน — วาดตารางใหม่แล้ว",
   "excused": "ยกเว้น",
-  "empty": "ว่าง"
+  "empty": "ว่าง",
+  "wbApprove": "เบราว์เซอร์จะเปิดหน้า CMAS ให้กด เชื่อมต่อ แล้วกลับมาที่ไฟล์นี้\n\nถ้าเบราว์เซอร์ไม่เปิด ไปที่ {0}\nแล้วกรอกรหัส {1} (ใช้ได้ 10 นาที)",
+  "wbWrongCourse": "ไฟล์นี้เป็นของวิชา {0} แต่ที่เว็บเลือกวิชาอื่น — กด CMAS > เชื่อมต่อ ใหม่ แล้วเลือกวิชานี้",
+  "newWorkbook": "มีไฟล์กรอกคะแนนรุ่นใหม่ ({0}) — ไฟล์นี้รุ่น {1}\nดาวน์โหลดใหม่ได้ที่หน้า นักศึกษาและคะแนน > Excel ในเว็บ CMAS (คะแนนอยู่ใน CMAS แล้ว ไม่หาย)",
+  "hdrActivity": "กิจกรรมที่ {0}",
+  "hdrMaxRow": "คะแนนเต็ม",
+  "hdrTotal": "คะแนนรวม",
+  "formTitle": "แบบฟอร์มบันทึกคะแนน",
+  "formTerm": "ปีการศึกษา {0}",
+  "formCredits": "หน่วยกิต {0}",
+  "formTeachers": "ผู้สอน {0}",
+  "formCode": "รหัสวิชา {0}",
+  "formName": "ชื่อวิชา {0}"
 }

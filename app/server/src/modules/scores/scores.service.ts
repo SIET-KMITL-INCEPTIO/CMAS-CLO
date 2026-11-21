@@ -36,6 +36,41 @@ type ScorePreview = {
   rejects: { row: number; studentCode: string; field: string; value: string; reason: string }[]
 }
 
+type CourseRow = {
+  code: string
+  name: string
+  nameEn: string | null
+  section: string
+  semester: number
+  year: number
+  credits: { toString(): string }
+  lectureHours: { toString(): string }
+  practiceHours: { toString(): string }
+  selfStudyHours: { toString(): string }
+  instructors: { user: { name: string } }[]
+}
+
+/** "3" for 3.0, "1.5" for 1.5: the way the faculty prints credits and hours. */
+const plain = (d: { toString(): string }) => String(Number(d.toString()))
+
+/**
+ * The course's own facts, for the header of a score sheet (the Excel form). All of it comes
+ * from the Course row and its instructors; nothing here is institution-specific, so the
+ * same sheet reads right for any school. `credits` is the faculty's "3 (2-2-5)".
+ */
+export function courseHeader(c: CourseRow) {
+  return {
+    code: c.code,
+    name: c.name,
+    nameEn: c.nameEn,
+    section: c.section,
+    semester: c.semester,
+    year: c.year,
+    credits: `${plain(c.credits)} (${plain(c.lectureHours)}-${plain(c.practiceHours)}-${plain(c.selfStudyHours)})`,
+    instructors: c.instructors.map((i) => i.user.name).sort((a, b) => a.localeCompare(b, "th")),
+  }
+}
+
 export class ScoreService {
   constructor(private readonly scores: ScoreRepository) {}
 
@@ -44,7 +79,7 @@ export class ScoreService {
     courseId: string,
     query: { status: "ALL" | "ENROLLED"; page: number; perPage: number },
   ) {
-    const { activities, total, students, progress, enrolled } = await this.scores.grid(
+    const { activities, total, students, progress, enrolled, course } = await this.scores.grid(
       courseId,
       query.status === "ENROLLED",
       (query.page - 1) * query.perPage,
@@ -55,6 +90,7 @@ export class ScoreService {
     )
     return {
       data: {
+        course: courseHeader(course),
         activities: activities.map((a) => ({
           id: a.id,
           name: a.name,

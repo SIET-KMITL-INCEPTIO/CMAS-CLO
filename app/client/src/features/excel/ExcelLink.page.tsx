@@ -93,9 +93,10 @@ export default function ExcelLink() {
   const approve = useApproveExcel()
   const revoke = useRevokeExcel()
 
-  const [code, setCode] = useState("")
-  // ?course= comes from the Excel dialog on a course's roster page.
+  // ?code= and ?course= come from a score workbook, which opens this page on its
+  // own code; ?course= alone from the Excel dialog on a course's roster page.
   const [params] = useSearchParams()
+  const [code, setCode] = useState(() => formatUserCode(params.get("code") ?? ""))
   const [courseId, setCourseId] = useState(params.get("course") ?? "")
   const [error, setError] = useState<string | null>(null)
 

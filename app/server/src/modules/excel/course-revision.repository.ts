@@ -21,4 +21,12 @@ export class CourseRevisionRepository {
     })
     return row?.revision ?? null
   }
+
+  /** What the score workbook is named and titled after. */
+  async label(courseId: string) {
+    return prisma.course.findUnique({
+      where: { id: courseId },
+      select: { code: true, name: true, section: true, semester: true, year: true },
+    })
+  }
 }

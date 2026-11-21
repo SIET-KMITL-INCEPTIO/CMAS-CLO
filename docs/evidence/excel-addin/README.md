@@ -2,7 +2,7 @@
 
 ทดสอบ 20 พ.ย. 2569 บนเครื่องพัฒนา (Windows 11, Excel Microsoft 365) กับ dev server
 (`localhost:5173` เว็บ, `localhost:3001` API) ฐานข้อมูล Supabase ของทีม
-add-in รุ่น 0.2.0 · SHA-256 `5936bd36baf629c46aa5dde81060829302e217aae3ec3664ba70b32b86d51291`
+add-in รุ่น 0.2.0 (ไฟล์ถูก build ใหม่ 21 พ.ย. เพื่อเอา path โฟลเดอร์ของเครื่อง build ออก) · SHA-256 `414418a6cf7ec758164dbe6d58c25abfa52dfe5c3c8e3522804bf6f1fd766aff`
 
 คู่มือสำหรับอาจารย์: [excel-addin-guide.md](../../markdown/user/excel-addin-guide.md)
 

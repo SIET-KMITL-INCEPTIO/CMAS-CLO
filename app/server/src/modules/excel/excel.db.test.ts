@@ -22,6 +22,7 @@ import {
   type Fixture,
 } from "../../test/db-fixture.js"
 import { hashToken } from "../auth/refresh-token.repository.js"
+import { WORKBOOK_RELEASE } from "./addin-release.js"
 import { EXCEL_TOKEN_PREFIX, LINK_TTL_MS } from "./excel.service.js"
 
 type Who = Parameters<Fixture["call"]>[0]
@@ -525,6 +526,37 @@ describe.skipIf(!RUN_DB_TESTS)("Excel add-in sign-in and token (FR-73, FR-74)", 
 
     it("needs a sign-in", async () => {
       expect((await call(null, "GET", "/excel/addin/file")).statusCode).toBe(401)
+    })
+  })
+
+  describe("downloading the score workbook (FR-75, ST-XL-05)", () => {
+    it("says whether the workbook can be downloaded", async () => {
+      const data = (await call(null, "GET", "/excel/addin")).json().data as {
+        workbook: { version: string; available: boolean }
+      }
+      expect(data.workbook).toEqual({
+        version: WORKBOOK_RELEASE.version,
+        available: WORKBOOK_RELEASE.sha256 !== null,
+      })
+    })
+
+    it.skipIf(WORKBOOK_RELEASE.sha256 !== null)(
+      "is a 404 with a reason while no template is published, and makes no ticket",
+      async () => {
+        const before = await prisma.excelDeviceCode.count()
+        const res = await call("teacherA", "GET", `/courses/${courseA}/excel-workbook`)
+        expect(res.statusCode).toBe(404)
+        expect(res.json().message).toContain("ไฟล์กรอกคะแนน")
+        expect(await prisma.excelDeviceCode.count()).toBe(before)
+      },
+    )
+
+    it("needs a sign-in, and is a 404 for a course the caller cannot see", async () => {
+      expect((await call(null, "GET", `/courses/${courseA}/excel-workbook`)).statusCode).toBe(401)
+      const foreign = await call("teacherB", "GET", `/courses/${courseA}/excel-workbook`)
+      const missing = await call("teacherB", "GET", `/courses/${UNUSED_ID}/excel-workbook`)
+      expect(foreign.statusCode).toBe(404)
+      expect(foreign.body).toBe(missing.body)
     })
   })
 

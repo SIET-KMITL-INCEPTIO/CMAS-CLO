@@ -324,9 +324,10 @@ Authorization: Bearer <accessToken>
 |---|---|---|---|---|---|
 | ✅ | POST | `/excel/device` | ไม่ต้องล็อกอิน | — | ขอ deviceCode + userCode · อายุ 10 นาที · 10 ครั้ง/15 นาทีต่อ IP |
 | ✅ | POST | `/excel/token` | ไม่ต้องล็อกอิน | — | add-in ถามทุก 5 วินาที · `pending` / `expired` / `ok` + token (ครั้งเดียว) |
-| ✅ | GET | `/excel/addin` | ไม่ต้องล็อกอิน | — | เวอร์ชันและ SHA-256 ของ add-in · ไม่ดาวน์โหลดโค้ดอัตโนมัติ |
+| ✅ | GET | `/excel/addin` | ไม่ต้องล็อกอิน | — | เวอร์ชันและ SHA-256 ของ add-in · `workbook {version, available}` ของไฟล์กรอกคะแนน · ไม่ดาวน์โหลดโค้ดอัตโนมัติ |
 | ✅ | GET | `/excel/addin/file` | ล็อกอินแล้ว (เว็บเท่านั้น) | — | ไฟล์ `CMAS.xlam` · 404 จนกว่าจะมี SHA-256 และไฟล์ตรงกับค่านั้น |
 | ✅ | POST | `/courses/:courseId/excel-links` | ผู้สอนของวิชา | ✅ `score.edit` | body `{userCode}` · `webSessionOnly`: token ของ add-in ใช้ไม่ได้แม้เป็นวิชาเดียวกัน (token หนึ่งออก token ถัดไปไม่ได้) |
+| ✅ | GET | `/courses/:courseId/excel-workbook` | ผู้สอนของวิชา | ✅ `score.edit` | ไฟล์กรอกคะแนน `.xlsm` ของวิชานี้ (VBA ชุดเดียวกับ add-in) ประทับ custom properties: ที่อยู่ API (จาก Host ของคำขอ), courseId, ชื่อวิชา และตั๋วเชื่อมต่อ (deviceCode ที่อนุมัติแล้ว ใช้ครั้งเดียว 10 นาที) · `webSessionOnly` · 10 ครั้ง/15 นาที · `Cache-Control: no-store` · 404 จนกว่า template จะมี SHA-256 และตรงกัน |
 | ✅ | GET | `/courses/:courseId/revision` | ผู้สอนของวิชา · token ของ add-in | ✅ `course.view` | `{revision}` · add-in ถามทุก 10 วินาที · ขยับหลังการเขียนที่สำเร็จทุกครั้ง (migration 0012) |
 | ✅ | GET | `/excel/links` | any | — (เฉพาะของตัวเอง) | การเชื่อมต่อที่ยังใช้ได้ |
 | ✅ | DELETE | `/excel/links/:linkId` | any | — (เฉพาะของตัวเอง) | ตัดการเชื่อมต่อทันที · ของคนอื่น → 404 |
@@ -770,6 +771,8 @@ POST /courses/:courseId/students/import/commit     { "previewToken": "..." }
 {
   "success": true,
   "data": {
+    "course": { "code": "90641001", "name": "…", "nameEn": null, "section": "01", "semester": 2, "year": 2569,
+                "credits": "3 (2-2-5)", "instructors": ["…"] },   // หัวฟอร์มคะแนนใน Excel · มาจากแถว Course ล้วน ไม่มีชื่อสถาบัน
     "activities": [{ "id": "cla1", "name": "สอบกลางภาค", "maxScore": 100, "order": 1 }],
     "students": [{
       "id": "cls1", "studentCode": "6703001", "name": "สมศักดิ์ เรียนดี",

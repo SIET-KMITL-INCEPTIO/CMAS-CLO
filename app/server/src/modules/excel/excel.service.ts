@@ -21,8 +21,9 @@ import { readFile } from "node:fs/promises"
 import { Prisma } from "@prisma/client"
 import { env } from "../../lib/env.js"
 import { NotFoundError } from "../../lib/errors.js"
-import { ADDIN_FILE, ADDIN_RELEASE } from "./addin-release.js"
+import { ADDIN_FILE, ADDIN_RELEASE, WORKBOOK_RELEASE, WORKBOOK_TEMPLATE } from "./addin-release.js"
 import { CourseRevisionRepository } from "./course-revision.repository.js"
+import { stampWorkbook } from "./workbook-stamp.js"
 import type { ExcelDeviceCodeRepository } from "./excel-device-code.repository.js"
 import type { ExcelLinkRepository } from "./excel-link.repository.js"
 import { USER_CODE_ALPHABET, USER_CODE_LENGTH } from "./excel.validator.js"
@@ -84,11 +85,22 @@ export class ExcelService {
     private readonly appUrl: string = env.CORS_ORIGIN,
     private readonly revisions: Pick<
       CourseRevisionRepository,
-      "read"
+      "read" | "label"
     > = new CourseRevisionRepository(),
   ) {}
 
   async start(): Promise<StartResult> {
+    const { deviceCode, userCode } = await this.newCode()
+    return {
+      deviceCode,
+      userCode: `${userCode.slice(0, 4)}-${userCode.slice(4)}`,
+      verifyUrl: `${this.appUrl}/excel/link`,
+      expiresIn: DEVICE_CODE_TTL_MS / 1000,
+      interval: POLL_INTERVAL_S,
+    }
+  }
+
+  private async newCode(): Promise<{ deviceCode: string; userCode: string }> {
     await this.codes.sweepExpired()
     const deviceCode = randomBytes(32).toString("base64url")
     const expiresAt = new Date(Date.now() + DEVICE_CODE_TTL_MS)
@@ -98,16 +110,47 @@ export class ExcelService {
       const userCode = newUserCode()
       try {
         await this.codes.create(deviceCode, userCode, expiresAt)
-        return {
-          deviceCode,
-          userCode: `${userCode.slice(0, 4)}-${userCode.slice(4)}`,
-          verifyUrl: `${this.appUrl}/excel/link`,
-          expiresIn: DEVICE_CODE_TTL_MS / 1000,
-          interval: POLL_INTERVAL_S,
-        }
+        return { deviceCode, userCode }
       } catch (err) {
         if (!isUniqueViolation(err) || attempt >= CREATE_ATTEMPTS) throw err
       }
+    }
+  }
+
+  /**
+   * The score workbook for one course, ready to open. Its one-time ticket is a
+   * device code approved here for the caller and this course, so the file's
+   * VBA collects a token with it through /excel/token like any device code:
+   * single use, dead after DEVICE_CODE_TTL_MS. A file opened later, or a second
+   * time, signs in with an ordinary device code instead.
+   *
+   * `courseId` is the one the access hook authorized for score.edit. `apiOrigin` is
+   * where the file reaches this server, which is not the web app's address.
+   */
+  async workbook(
+    userId: string,
+    courseId: string,
+    apiOrigin: string,
+    template: URL = WORKBOOK_TEMPLATE,
+    expected = WORKBOOK_RELEASE.sha256,
+  ): Promise<{ bytes: Buffer; fileName: string }> {
+    const missing = new NotFoundError("ยังไม่เปิดให้ดาวน์โหลดไฟล์กรอกคะแนน")
+    const bytes = await verifiedFile(template, expected, missing)
+    const course = await this.revisions.label(courseId)
+    if (!course) throw new NotFoundError()
+
+    const { deviceCode, userCode } = await this.newCode()
+    if (!(await this.codes.approve(userCode, userId, courseId))) throw missing
+
+    const label = `${course.code} ${course.name} Sec ${course.section}`
+    return {
+      bytes: stampWorkbook(bytes, {
+        CmasApi: apiOrigin,
+        CmasCourseId: courseId,
+        CmasCourseLabel: label,
+        CmasTicket: deviceCode,
+      }),
+      fileName: `CMAS ${course.code} Sec ${course.section} ${course.semester}-${course.year}.xlsm`,
     }
   }
 
@@ -160,16 +203,20 @@ export class ExcelService {
    * on disk still hashes to it: a swapped or half-written file is refused, so the hash
    * the page shows is always the hash of what was downloaded.
    */
-  async addinFile(source: URL = ADDIN_FILE, expected = ADDIN_RELEASE.sha256): Promise<Buffer> {
-    const missing = new NotFoundError("ยังไม่เปิดให้ดาวน์โหลด add-in")
-    if (!expected) throw missing
-    let bytes: Buffer
-    try {
-      bytes = await readFile(source)
-    } catch {
-      throw missing
-    }
-    if (createHash("sha256").update(bytes).digest("hex") !== expected) throw missing
-    return bytes
+  addinFile(source: URL = ADDIN_FILE, expected = ADDIN_RELEASE.sha256): Promise<Buffer> {
+    return verifiedFile(source, expected, new NotFoundError("ยังไม่เปิดให้ดาวน์โหลด add-in"))
   }
+}
+
+/** The file's bytes, only when a SHA-256 is published AND the file still hashes to it. */
+async function verifiedFile(source: URL, expected: string | null, missing: Error): Promise<Buffer> {
+  if (!expected) throw missing
+  let bytes: Buffer
+  try {
+    bytes = await readFile(source)
+  } catch {
+    throw missing
+  }
+  if (createHash("sha256").update(bytes).digest("hex") !== expected) throw missing
+  return bytes
 }

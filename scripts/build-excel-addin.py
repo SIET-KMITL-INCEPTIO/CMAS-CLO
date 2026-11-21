@@ -6,6 +6,9 @@
     python scripts/build-excel-addin.py package IN.xlam [--out release/CMAS.xlam]
                                                         add the ribbon to an .xlam built in Excel,
                                                         print its SHA-256 for addin-release.ts
+    python scripts/build-excel-addin.py package-workbook IN.xlsm [--out release/CMAS-template.xlsm]
+                                                        the same for the score workbook template;
+                                                        print its SHA-256 for WORKBOOK_RELEASE
 
 Why a generator: the VBA editor stores a module in the machine's code page, so
 Thai written straight into a .bas file turns into question marks on another
@@ -248,6 +251,14 @@ def anonymise_core(xml: str) -> str:
     return xml
 
 
+ABS_PATH = re.compile(r"<mc:AlternateContent[^>]*>(?:(?!</mc:AlternateContent>).)*?<x15ac:absPath .*?</mc:AlternateContent>", re.S)
+
+
+def anonymise_workbook(xml: str) -> str:
+    """Excel records the folder the file was saved in (under the user's profile) in workbook.xml."""
+    return ABS_PATH.sub("", xml)
+
+
 def package(src: Path, out: Path) -> str:
     """Copy `src` to `out` with the ribbon added. Returns the SHA-256 of `out`."""
     with zipfile.ZipFile(src) as zin:
@@ -266,11 +277,36 @@ def package(src: Path, out: Path) -> str:
                     data = add_ribbon_relationship(data.decode("utf-8")).encode("utf-8")
                 elif info.filename == "docProps/core.xml":
                     data = anonymise_core(data.decode("utf-8")).encode("utf-8")
+                elif info.filename == "xl/workbook.xml":
+                    data = anonymise_workbook(data.decode("utf-8")).encode("utf-8")
                 zout.writestr(info, data)
             zout.writestr(RIBBON_PART, RIBBON_XML.read_bytes())
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(buf.getvalue())
     return hashlib.sha256(out.read_bytes()).hexdigest()
+
+
+WORKBOOK_MAIN = "application/vnd.ms-excel.sheet.macroEnabled.main+xml"
+STAMPED = "docProps/custom.xml"
+
+
+def cmd_package_workbook(src: Path, out: Path) -> int:
+    """The score workbook template: an ordinary .xlsm, never a stamped download."""
+    if not src.exists():
+        raise SystemExit(f"{src} not found")
+    with zipfile.ZipFile(src) as z:
+        types = z.read("[Content_Types].xml").decode("utf-8")
+        if WORKBOOK_MAIN not in types:
+            raise SystemExit(f"{src} is not a macro-enabled workbook: Save As > Excel Macro-Enabled Workbook (*.xlsm)")
+        if STAMPED in z.namelist() and "CmasTicket" in z.read(STAMPED).decode("utf-8"):
+            raise SystemExit(f"{src} is a downloaded workbook (it carries a ticket); build the template from a fresh one")
+    if src.resolve() == out.resolve():
+        shutil.copyfile(src, src.with_suffix(".orig.xlsm"))
+    digest = package(src, out)
+    print(f"wrote {out}")
+    print(f"sha256 {digest}")
+    print("next: put this sha256 in WORKBOOK_RELEASE in app/server/src/modules/excel/addin-release.ts")
+    return 0
 
 
 def cmd_package(src: Path, out: Path) -> int:
@@ -294,11 +330,16 @@ def main() -> int:
     p = sub.add_parser("package")
     p.add_argument("xlam", type=Path)
     p.add_argument("--out", type=Path, default=ADDIN / "release" / "CMAS.xlam")
+    w = sub.add_parser("package-workbook")
+    w.add_argument("xlsm", type=Path)
+    w.add_argument("--out", type=Path, default=ADDIN / "release" / "CMAS-template.xlsm")
     args = parser.parse_args()
     if args.cmd == "text":
         return cmd_text(args.check)
     if args.cmd == "check":
         return cmd_check()
+    if args.cmd == "package-workbook":
+        return cmd_package_workbook(args.xlsm, args.out)
     return cmd_package(args.xlam, args.out)
 
 

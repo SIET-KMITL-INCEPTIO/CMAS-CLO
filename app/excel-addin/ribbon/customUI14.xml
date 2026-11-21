@@ -7,7 +7,7 @@
       <tab id="cmasTab" label="CMAS">
         <group id="cmasConnectGroup" label="เชื่อมต่อ">
           <button id="cmasConnect" label="เชื่อมต่อ" size="large" imageMso="HyperlinkInsert"
-                  screentip="เชื่อมต่อกับ CMAS" supertip="ขอรหัส 8 ตัว กรอกในหน้าเว็บ CMAS แล้วเลือกรายวิชา"
+                  screentip="เชื่อมต่อกับ CMAS" supertip="เชื่อมต่อไฟล์นี้กับ CMAS: กรอกรหัส 8 ตัวในหน้าเว็บ หรือกด เชื่อมต่อ ในหน้าที่เบราว์เซอร์เปิดให้"
                   onAction="CmasRibbonConnect"/>
           <button id="cmasDisconnect" label="ตัดการเชื่อมต่อ" imageMso="Cancel"
                   onAction="CmasRibbonDisconnect"/>

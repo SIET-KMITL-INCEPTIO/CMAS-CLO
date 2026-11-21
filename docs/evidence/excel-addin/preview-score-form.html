@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ภาพจำลองชีตคะแนนของ CMAS</title>
+<style>
+  :root { --ink:#1e233c; --dim:#6b7192; --line:#000; --head:#4472c4; --max:#fff2cc; --grey:#f2f2f2; --red:#ffc7ce; --bg:#fff; --gridline:#d4d4d4; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1b1d27; --ink:#e8e9f1; --dim:#9aa0c0; } }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans Thai","Inter",system-ui,sans-serif; }
+  h1 { font-size:16px; margin:0 0 4px; }
+  p.note { margin:0 0 12px; font-size:13px; color:var(--dim); max-width:900px; }
+  .wrap { overflow-x:auto; border:1px solid var(--gridline); background:#fff; }
+  table.xl { border-collapse:collapse; font-family:"TH Sarabun New","Sarabun","Tahoma",sans-serif; font-size:16px; color:#000; background:#fff; min-width:980px; }
+  .xl th.ch, .xl td.rh { background:#e6e6e6; color:#444; font:12px "Inter",sans-serif; text-align:center; border:1px solid #bbb; padding:0 6px; }
+  .xl td { border:1px solid var(--gridline); padding:1px 6px; height:22px; white-space:nowrap; }
+  .xl tr.r1 td { height:26px; } .xl tr.r2 td { height:22px; } .xl tr.r3 td { height:24px; }
+  .title { font-size:22px; font-weight:700; }
+  .info { font-size:17px; }
+  .status { font-size:16px; font-style:italic; color:#333; }
+  .hd td.cell { background:var(--head); color:#fff; font-weight:700; text-align:center; vertical-align:middle; white-space:pre-line; border:1px solid var(--line); height:56px; line-height:1.15; }
+  .mx td.cell { background:var(--max); font-weight:700; text-align:center; border:1px solid var(--line); }
+  .st td.cell { border:1px solid var(--line); text-align:center; }
+  .st td.name { text-align:left; }
+  .st td.grey { background:var(--grey); color:#888; }
+  .st td.red { background:var(--red); outline:2px solid #c00; outline-offset:-2px; }
+  .legend { font-size:13px; color:var(--dim); margin-top:10px; max-width:900px; line-height:1.6; }
+  .legend b { color:var(--ink); }
+  .sw { display:inline-block; width:12px; height:12px; vertical-align:-1px; margin-right:4px; border:1px solid #888; }
+</style>
+</head>
+<body>
+<h1>ภาพจำลองชีตคะแนนที่ CMAS วาดใน Excel (layout form-5)</h1>
+<p class="note">หัวฟอร์มมาจากแถว Course ล้วน (รหัสวิชา · ชื่อวิชา · หน่วยกิต · ภาค/ปี/Sec · ผู้สอน) ไม่มีชื่อสถาบันตายตัว จึงใช้ได้กับทุกโรงเรียนหรือสถาบัน · จำลองจากโค้ด VBA ไม่ใช่ภาพจาก Excel จริง · ข้อมูลเป็นตัวอย่าง · ฟอนต์จริงคือ TH Sarabun New</p>
+
+<div class="wrap">
+<table class="xl">
+  <tr><th class="ch"></th><th class="ch">A</th><th class="ch">B</th><th class="ch">C</th><th class="ch">D</th><th class="ch">E</th><th class="ch">F</th><th class="ch">G</th><th class="ch">H</th><th class="ch">I</th></tr>
+  <tr class="r1"><td class="rh">1</td>
+    <td class="title" colspan="3">แบบฟอร์มบันทึกคะแนน</td>
+    <td class="status" colspan="6">เชื่อมต่อกับ CMAS · ตรวจล่าสุด 14:14:33</td></tr>
+  <tr class="r2"><td class="rh">2</td>
+    <td class="info" colspan="3">รหัสวิชา 158</td>
+    <td class="info" colspan="3">หน่วยกิต 3 (2-2-5)</td>
+    <td class="info" colspan="3">ปีการศึกษา 2/2569 · Sec 01</td></tr>
+  <tr class="r3"><td class="rh">3</td>
+    <td class="info" colspan="6">ชื่อวิชา sd</td>
+    <td class="info" colspan="3">ผู้สอน อาจารย์ ตัวอย่าง, อาจารย์ ทดสอบ</td></tr>
+  <tr class="hd"><td class="rh">4</td>
+    <td class="cell">รหัสนักศึกษา</td><td class="cell">ชื่อ-นามสกุล</td>
+    <td class="cell">กิจกรรมที่ 1
+สอบกลางภาค [cm…a1]</td>
+    <td class="cell">กิจกรรมที่ 2
+รายงาน [cm…a2]</td>
+    <td class="cell">กิจกรรมที่ 3
+สอบปลายภาค [cm…a3]</td>
+    <td class="cell">คะแนนรวม</td><td colspan="3"></td></tr>
+  <tr class="mx"><td class="rh">5</td>
+    <td class="cell"></td><td class="cell">คะแนนเต็ม</td>
+    <td class="cell">30</td><td class="cell">20</td><td class="cell">50</td><td class="cell">100</td><td colspan="3"></td></tr>
+  <tr class="st"><td class="rh">6</td>
+    <td class="cell">528</td><td class="cell name">fdgdfg</td>
+    <td class="cell">25</td><td class="cell">18</td><td class="cell">12</td><td class="cell">55</td><td colspan="3"></td></tr>
+  <tr class="st"><td class="rh">7</td>
+    <td class="cell">529</td><td class="cell name">ตัวอย่าง นักศึกษา สอง</td>
+    <td class="cell">30</td><td class="cell">ยกเว้น</td><td class="cell red">40</td><td class="cell">70</td><td colspan="3"></td></tr>
+  <tr class="st"><td class="rh">8</td>
+    <td class="cell">530</td><td class="cell name">ตัวอย่าง นักศึกษา สาม</td>
+    <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell">0</td><td colspan="3"></td></tr>
+  <tr class="st"><td class="rh">9</td>
+    <td class="cell grey">531</td><td class="cell name grey">ตัวอย่าง (ถอนรายวิชา)</td>
+    <td class="cell grey">20</td><td class="cell grey">10</td><td class="cell grey"></td><td class="cell grey">30</td><td colspan="3"></td></tr>
+</table>
+</div>
+
+<div class="legend">
+  <span class="sw" style="background:var(--head)"></span><b>แถว 4</b> หัวตารางพื้นน้ำเงิน ตัวขาว &nbsp;
+  <span class="sw" style="background:var(--max)"></span><b>แถว 5</b> คะแนนเต็มพื้นเหลือง &nbsp;
+  <span class="sw" style="background:var(--grey)"></span><b>ช่องเทา</b> แก้ไม่ได้ (นักศึกษาถอนวิชา หรือกิจกรรมปิด) &nbsp;
+  <span class="sw" style="background:var(--red);border-color:#c00"></span><b>ช่องแดง</b> มีคนแก้บนเว็บไปก่อน<br>
+  <b>ว่าง</b> = ยังไม่ประเมิน · <b>ยกเว้น / x</b> = ไม่นับ · <b>คะแนนรวม</b> เป็น =SUM ในไฟล์เท่านั้น (ว่างและยกเว้นนับเป็น 0) ระบบไม่นำเข้าคอลัมน์นี้ และคำนวณผลจริงตามน้ำหนักเอง
+</div>
+</body>
+</html>

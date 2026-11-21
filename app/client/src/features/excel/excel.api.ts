@@ -10,12 +10,21 @@ export type ExcelLink = {
 }
 
 /** GET /excel/addin — the add-in release. sha256 is null until a build has been published. */
-export type AddinRelease = { version: string; sha256: string | null; platforms: string[] }
+export type AddinRelease = {
+  version: string
+  sha256: string | null
+  platforms: string[]
+  /** The score workbook (.xlsm); `available` is false until its template is published. */
+  workbook: { version: string; available: boolean }
+}
 
 export const excelApi = {
   release: () => apiClient.get<AddinRelease>("/excel/addin"),
   /** The add-in file itself; needs a web sign-in, so it is fetched, not linked. */
   downloadAddin: () => apiClient.download("/excel/addin/file", "CMAS.xlam"),
+  /** This course's score workbook; it connects itself when opened (score.edit). */
+  downloadWorkbook: (courseId: string) =>
+    apiClient.download(`/courses/${courseId}/excel-workbook`, "CMAS.xlsm"),
   /** The code Excel shows, typed here, for ONE course the caller teaches. */
   approve: ({ userCode, courseId }: { userCode: string; courseId: string }) =>
     apiClient.post<{ approved: true }>(`/courses/${courseId}/excel-links`, { userCode }),

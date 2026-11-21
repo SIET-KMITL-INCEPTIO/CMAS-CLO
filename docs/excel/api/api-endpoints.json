@@ -3085,7 +3085,7 @@
    "design": {
     "params": "—",
     "body": "—",
-    "success": "200 · {version, sha256 (null จนกว่าจะมี build จริง), platforms ['windows','mac']}",
+    "success": "200 · {version, sha256 (null จนกว่าจะมี build จริง), platforms ['windows','mac'], workbook {version, available}}",
     "errors": "—",
     "rules": "add-in เทียบเวอร์ชันแล้วแจ้งผู้ใช้เท่านั้น ไม่ดาวน์โหลดหรือรันโค้ดจากเซิร์ฟเวอร์ · ไม่มีการเซ็นโค้ด จึงให้ผู้ใช้เทียบ SHA-256",
     "tests": "ST-XL-05"
@@ -3162,6 +3162,38 @@
    "n": 89,
    "group": "10 Excel add-in",
    "method": "GET",
+   "path": "/courses/:courseId/excel-workbook",
+   "fullPath": "/api/v1/courses/:courseId/excel-workbook",
+   "what": "ดาวน์โหลดไฟล์กรอกคะแนน .xlsm ของรายวิชา ที่เชื่อมต่อเองเมื่อเปิด",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "score.edit",
+   "fr": "FR-75, FR-76",
+   "status": "done",
+   "phase": "X3",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "งานสอน",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · ไฟล์ CMAS <code> Sec <section> <ภาค>-<ปี>.xlsm · custom properties CmasApi, CmasCourseId, CmasCourseLabel, CmasTicket · Cache-Control: no-store",
+    "errors": "401 · 403 ADMIN (D-1) · 404 วิชาที่มองไม่เห็น · 404 เรียกด้วย token ของ add-in (webSessionOnly) · 404 ยังไม่เผยแพร่ template หรือ hash ไม่ตรง · 429 เกิน 10 ครั้ง / 15 นาที",
+    "rules": "ตั๋วคือ deviceCode ที่อนุมัติให้ผู้ดาวน์โหลดและวิชานี้แล้ว รับ token ผ่าน /excel/token ได้ครั้งเดียว · ไม่มี token อยู่ในไฟล์ · template ต้องตรง SHA-256 ก่อนประทับทุกครั้ง",
+    "tests": "ST-XL-05"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 90,
+   "group": "10 Excel add-in",
+   "method": "GET",
    "path": "/courses/:courseId/revision",
    "fullPath": "/api/v1/courses/:courseId/revision",
    "what": "เลขรุ่นของรายวิชา add-in ถามทุก 10 วินาที โหลดใหม่เมื่อเลขขยับ",
@@ -3191,7 +3223,7 @@
    "uc": []
   },
   {
-   "n": 90,
+   "n": 91,
    "group": "10 Excel add-in",
    "method": "GET",
    "path": "/excel/links",
@@ -3223,7 +3255,7 @@
    "uc": []
   },
   {
-   "n": 91,
+   "n": 92,
    "group": "10 Excel add-in",
    "method": "DELETE",
    "path": "/excel/links/:linkId",
