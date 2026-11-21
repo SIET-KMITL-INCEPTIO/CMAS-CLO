@@ -167,6 +167,13 @@ table.dt th.num {
 tr.rowlink {
   cursor: pointer;
 }
+/* Tracking is a Latin small-caps device. In Thai it pulls vowels and tone
+   marks away from their consonants (ก ิ จ ก ร ร ม), so Thai labels set none. */
+:lang(th) .over,
+:lang(th) table.dt thead th,
+:lang(th) .changroup {
+  letter-spacing: 0;
+}
 html[data-density="compact"] table.dt td {
   font-size: 14px;
 }

@@ -111,77 +111,83 @@
 }
 
 /* Dark theme (user setting). The same names, re-pointed: both the plain
-   variables and Tailwind's --color-* copies, so utilities follow too. */
+   variables and Tailwind's --color-* copies, so utilities follow too.
+   Tuned for long sessions; the reasons and sources are in
+   docs/markdown/dev/architecture/dark-theme.md:
+   - near-neutral grey surfaces, never pure black (halation, Material dark theme)
+   - off-white text at about 12:1, not white at 19:1; every text token >= 4.5:1
+   - desaturated accents, and the primary is a mid-tone fill, not a bright one
+   - depth by lighter surfaces: chrome < pane < list < card < popover */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --ink: #e6e8f5;
-  --ink2: #bcc1dd;
-  --ink-soft: #a7adcf;
-  --dim: #8f95c0;
-  --faint: #7c82ab;
-  --cool: #8f95c0;
-  --edge: #33384f;
-  --edge2: #2a2e45;
-  --tint: #262a42;
-  --card: #1c2035;
-  --wash: #21253b;
-  --sel: #b4bbf0;
-  --sel-bg: #2b3152;
-  --focus: #b4bbf0;
-  --bg-auth: #2a3158;
-  --bg-glow: #1c2035;
-  --bg-glow2: #171a2d;
-  --bg-a: #13172a;
-  --bg-b: #10131f;
-  --bg-c: #0c0f1a;
-  --pane: #13172a;
-  --pane-list: #171b2e;
-  --pane-foot: #1c2035;
-  --th-bg: #1f2338;
-  --bad-wash: #3b2224;
+  --ink: #dcdee8;
+  --ink2: #b8bbcc;
+  --ink-soft: #a6a9be;
+  --dim: #9a9eb8;
+  --faint: #8a8ea8;
+  --cool: #9a9eb8;
+  --edge: #333644;
+  --edge2: #2a2c38;
+  --tint: #262935;
+  --card: #1d1f29;
+  --wash: #22242f;
+  --sel: #a9b1e6;
+  --sel-bg: #2a2e45;
+  --focus: #a9b1e6;
+  --bg-auth: #262b45;
+  --bg-glow: #1d1f29;
+  --bg-glow2: #181a22;
+  --bg-a: #15161d;
+  --bg-b: #131419;
+  --bg-c: #101116;
+  --pane: #15161d;
+  --pane-list: #181a22;
+  --pane-foot: #1d1f29;
+  --th-bg: #20222c;
+  --bad-wash: #3a2324;
   /* the chrome is the darkest layer, so the content reads as the lit surface */
-  --chrome: #0e1120;
-  --chrome-rail: #0e1120;
-  --chrome-ink: #d5d8ec;
-  --chrome-line: #232740;
-  --rail-ink: #a3a8cc;
-  --chrome-search: rgba(255, 255, 255, 0.07);
-  --chrome-search-hover: rgba(255, 255, 255, 0.11);
-  /* primary flips to the light accent: a dark fill would vanish into the cards */
-  --primary: #b4bbf0;
-  --primary-hover: #cdd2f6;
-  --primary-ink: #141829;
-  --popover: #2c3150;
-  --popover-ink: #e6e8f5;
-  --chip: #2a2e47;
-  --hover: #242840;
-  --track: #2a2e45;
-  --scroll: #3a3f5c;
-  --edge-strong: #4a5072;
+  --chrome: #111218;
+  --chrome-rail: #111218;
+  --chrome-ink: #d0d2de;
+  --chrome-line: #24262f;
+  --rail-ink: #a6a9be;
+  --chrome-search: rgba(255, 255, 255, 0.06);
+  --chrome-search-hover: rgba(255, 255, 255, 0.1);
+  /* a mid-tone primary: visible on a card (1.7:1) without a bright patch of glare */
+  --primary: #3a4270;
+  --primary-hover: #454e82;
+  --primary-ink: #e8eaf4;
+  --popover: #2b2e3b;
+  --popover-ink: #dcdee8;
+  --chip: #2a2c38;
+  --hover: #23252f;
+  --track: #2a2c38;
+  --scroll: #3a3d4c;
+  --edge-strong: #4a4e62;
   --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px -10px rgba(0, 0, 0, 0.5);
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 14px 44px -14px rgba(0, 0, 0, 0.6);
   --shadow-pop: 0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 60px -18px rgba(0, 0, 0, 0.7);
 
-  --color-ink: #e6e8f5;
-  --color-ink2: #bcc1dd;
-  --color-dim: #8f95c0;
-  --color-faint: #7c82ab;
-  --color-card: #1c2035;
-  --color-wash: #21253b;
-  --color-tint: #262a42;
-  --color-edge: #33384f;
-  --color-edge2: #2a2e45;
-  --color-field: #13172a;
-  --color-haze: #aab2e8;
-  --color-ok: #8cc0a8;
-  --color-okBg: #1f3329;
-  --color-okBd: #35614c;
-  --color-warn: #e0c477;
-  --color-warnBg: #3a3119;
-  --color-warnBd: #6d5a28;
-  --color-bad: #e49190;
-  --color-badBg: #3b2224;
-  --color-badBd: #6e3a3b;
-  --color-info: #9fb0ea;
-  --color-infoBg: #263054;
+  --color-ink: #dcdee8;
+  --color-ink2: #b8bbcc;
+  --color-dim: #9a9eb8;
+  --color-faint: #8a8ea8;
+  --color-card: #1d1f29;
+  --color-wash: #22242f;
+  --color-tint: #262935;
+  --color-edge: #333644;
+  --color-edge2: #2a2c38;
+  --color-field: #15161d;
+  --color-haze: #a9b1e6;
+  --color-ok: #8fbfa8;
+  --color-okBg: #1d3328;
+  --color-okBd: #335c48;
+  --color-warn: #d6bf7f;
+  --color-warnBg: #352e1b;
+  --color-warnBd: #665527;
+  --color-bad: #e3928f;
+  --color-badBg: #3a2324;
+  --color-badBd: #6a3a3b;
+  --color-info: #a6b3e3;
+  --color-infoBg: #252c45;
 }
