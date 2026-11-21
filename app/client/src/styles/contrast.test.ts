@@ -83,8 +83,6 @@ const KNOWN_FAILURES: string[] = [
   "light ok on wash",
   "light ok on pane-list",
   "light ok on okBg",
-  "dark faint on card",
-  "dark faint on wash",
 ]
 
 describe("text contrast (U-1, WCAG 2.2 AA 1.4.3)", () => {
