@@ -4,7 +4,7 @@ Two-way score sync between Excel desktop (Windows and Mac) and CMAS. Plan and
 the reasons behind each choice:
 [excel-vba-sync-plan.md](../../docs/markdown/dev/planning/excel-vba-sync-plan.md).
 
-**Status: add-in 0.2.0 compiled and saved in Excel for Windows (`release/CMAS.xlam`). The score workbook 0.3.0 (same VBA, saved as `.xlsm`) is written but has not been built in Excel yet, so its download is off (`WORKBOOK_RELEASE.sha256` is null). The checklist below has not been run.** Nothing outside Excel can compile
+**Status: add-in 0.2.0 compiled and saved in Excel for Windows (`release/CMAS.xlam`). The score workbook 0.3.0 (same VBA, saved as `.xlsm`) compiled in Excel for Windows on 21 Nov 2026 (`release/CMAS-template.xlsm`, download on); a downloaded workbook connected itself on first open. The rest of the checklist below has not been run.** Nothing outside Excel can compile
 VBA. `python scripts/build-excel-addin.py check` (a CI step) catches what it
 can; the checklist at the end is what only Excel can prove.
 
