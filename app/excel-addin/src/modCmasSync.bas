@@ -309,8 +309,9 @@ End Sub
 
 Private Function FetchGrid(ByRef acts As Collection, ByRef studs As Collection) As Boolean
     Dim page As Long, status As Long, body As String, root As Variant
-    Dim pageStudents As Collection, s As Variant, total As Long
+    Dim pageStudents As Collection, s As Variant, total As Long, seen As clsCmasMap
     Set studs = New Collection
+    Set seen = New clsCmasMap
     page = 1
     Do
         status = SafeRequest("GET", Url("/scores?status=ALL&perPage=" & PER_PAGE & "&page=" & page), _
@@ -320,11 +321,17 @@ Private Function FetchGrid(ByRef acts As Collection, ByRef studs As Collection) 
         Set acts = JPath(root, "data", "activities")
         If page = 1 Then ReadCourseHeader root
         Set pageStudents = JPath(root, "data", "students")
+        ' A student added or removed between two pages shifts the paging, so one may
+        ' come twice; two rows for one student would both be sent. The revision moved
+        ' too, so the next tick reloads and picks up anyone this pass skipped.
         For Each s In pageStudents
-            studs.Add s
+            If Not seen.Exists(CStr(s("id"))) Then
+                seen.Store CStr(s("id")), True
+                studs.Add s
+            End If
         Next s
         total = CLng(JPath(root, "meta", "total"))
-        If studs.Count >= total Or pageStudents.Count = 0 Then Exit Do
+        If studs.Count >= total Or pageStudents.Count < PER_PAGE Then Exit Do
         page = page + 1
     Loop
     FetchGrid = True
@@ -395,7 +402,11 @@ Private Sub Render(ByVal acts As Collection, ByVal studs As Collection)
     mApplying = True
     On Error GoTo finish
     Unprotect
-    If CStr(mBase.Range("B3").Value) <> sig Then
+    ' Also when the sheet's size is not the grid's: FillValues sizes its arrays from
+    ' the grid and writes them into the sheet's area, and the two must be the same.
+    If CStr(mBase.Range("B3").Value) <> sig _
+       Or mLastCol <> FIRST_COL + acts.Count - 1 _
+       Or mLastRow <> FIRST_ROW + studs.Count - 1 Then
         If hadTable And mConflict.Count > 0 Then
             ' Red cells cannot be kept across a redraw; say so rather than drop them silently.
             CmasMsg T("structureChanged"), vbInformation
@@ -406,6 +417,13 @@ Private Sub Render(ByVal acts As Collection, ByVal studs As Collection)
 finish:
     ' Saved first: the On Error inside Protect clears Err.
     errNo = Err.Number: errSrc = Err.Source: errDesc = Err.Description
+    If errNo <> 0 Then
+        ' Whatever failed, the next pull draws the whole sheet again instead of
+        ' filling values into a table it can no longer trust.
+        On Error Resume Next
+        mBase.Range("B3").Value = ""
+        Err.Clear
+    End If
     Protect
     mApplying = False
     Application.ScreenUpdating = True
@@ -423,7 +441,9 @@ Private Sub DrawLayout(ByVal acts As Collection, ByVal studs As Collection, ByVa
 
     mBase.Range("A1").Value = "courseId": mBase.Range("B1").Value = mCourseId
     mBase.Range("A2").Value = "sheet": mBase.Range("B2").Value = mSheet.Name
-    mBase.Range("A3").Value = "shape": mBase.Range("B3").Value = sig
+    ' The shape is recorded last (end of this Sub): a draw that fails halfway must
+    ' not leave a sheet that looks up to date and is never drawn again.
+    mBase.Range("A3").Value = "shape": mBase.Range("B3").Value = ""
     mBase.Range("A4").Value = "layout": mBase.Range("B4").Value = LAYOUT
 
     DrawFormHeader
@@ -491,6 +511,7 @@ Private Sub DrawLayout(ByVal acts As Collection, ByVal studs As Collection, ByVa
         Next r
     End If
     FormatTable colTotal, IIf(studs.Count > 0, mLastRow, ROW_MAX)
+    mBase.Range("B3").Value = sig
 End Sub
 
 ' Rows 1-3 of the faculty's form. Nothing here is read back.
@@ -569,7 +590,8 @@ Private Sub FillValues(ByVal acts As Collection, ByVal studs As Collection)
     i = 0
     For Each s In studs
         i = i + 1
-        Set scores = s("scores")
+        ' A student with no scores yet may come with no "scores" object at all.
+        If IsObject(s("scores")) Then Set scores = s("scores") Else Set scores = New clsCmasMap
         j = 0
         For Each a In acts
             j = j + 1
