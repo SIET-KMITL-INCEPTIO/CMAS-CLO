@@ -33,7 +33,7 @@ export const ADDIN_MIME = "application/vnd.ms-excel.addin.macroEnabled.12"
  */
 export const WORKBOOK_RELEASE = {
   version: "0.3.0",
-  sha256: "3c3ee15fe7792838694efc308b1a1b09c89febce57e2d4916cdb4ee120ac5c92" as string | null,
+  sha256: "7aa9827c9e1e8592dddefb8360143f2a7329d505cafd62591af35c2d080dd24e" as string | null,
 }
 export const WORKBOOK_TEMPLATE = new URL(
   "../../../../excel-addin/release/CMAS-template.xlsm",
