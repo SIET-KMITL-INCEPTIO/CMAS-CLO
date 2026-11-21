@@ -53,7 +53,7 @@ export async function excelRoutes(app: FastifyInstance) {
     },
     controller.workbook,
   )
-  // FR-76: polled every 10 s by the add-in; reading the course is enough.
+  // FR-76: polled every 3 s (in use) to 10 s (idle) by the add-in; reading the course is enough.
   app.get(
     "/courses/:courseId/revision",
     { config: { access: { cap: "course.view" } } },

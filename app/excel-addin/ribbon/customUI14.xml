@@ -14,7 +14,7 @@
         </group>
         <group id="cmasSyncGroup" label="คะแนน">
           <button id="cmasSyncNow" label="ซิงก์ตอนนี้" size="large" imageMso="Refresh"
-                  supertip="ส่งช่องที่แก้ แล้วโหลดค่าล่าสุดจาก CMAS (ปกติทำเองทุก 10 วินาที)"
+                  supertip="ส่งช่องที่แก้ แล้วโหลดค่าล่าสุดจาก CMAS (ปกติทำเองทุก 3–10 วินาที)"
                   onAction="CmasRibbonSync"/>
           <button id="cmasKeepMine" label="ใช้ค่าของฉัน"
                   supertip="ช่องสีแดงที่เลือก: บันทึกค่าที่คุณกรอกทับค่าใน CMAS"

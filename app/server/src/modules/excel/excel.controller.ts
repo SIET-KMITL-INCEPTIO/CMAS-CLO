@@ -43,7 +43,7 @@ export class ExcelController {
     return created(reply, { approved: true })
   }
 
-  /** GET /courses/:courseId/revision — the add-in polls this every 10 s (FR-76). */
+  /** GET /courses/:courseId/revision — the add-in polls this every 3 s in use, 10 s idle (FR-76). */
   revision = async (req: FastifyRequest, reply: FastifyReply) => {
     reply.header("Cache-Control", "no-store")
     return ok(reply, await this.service.revision(authorizedCourseId(req)))

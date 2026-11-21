@@ -1,9 +1,13 @@
 Attribute VB_Name = "modCmasSync"
 ' CMAS add-in for Excel - two-way score sync (FR-76).
 '
-'   CMAS -> Excel   every 10 s: GET /courses/:id/revision; when it moved,
-'                   reload the grid (all pages) and redraw the values.
-'   Excel -> CMAS   2 s after the last edit: PUT /courses/:id/scores with
+'   CMAS -> Excel   GET /courses/:id/revision every 3 s for 2 minutes after
+'                   anything happened (an edit here, or the number moved),
+'                   every 10 s otherwise; when it moved, reload the grid (all
+'                   pages) and redraw the values. Each request holds Excel for
+'                   its length (WinHttp and AppleScriptTask wait), which is why
+'                   an idle workbook does not ask faster.
+'   Excel -> CMAS   1 s after the last edit: PUT /courses/:id/scores with
 '                   `from` = the value CMAS last confirmed for each cell.
 '
 ' From the add-in the data workbook is a plain .xlsx with no macros; a score
@@ -56,8 +60,10 @@ Private Const FORM_FONT As String = "TH Sarabun New"
 Private Const HEAD_FILL As Long = 12874308  ' RGB(68, 114, 196)
 Private Const MAX_FILL As Long = 13431551   ' RGB(255, 242, 204)
 Private Const PER_PAGE As Long = 200
-Private Const POLL_SECONDS As Long = 10
-Private Const FLUSH_SECONDS As Long = 2
+Private Const POLL_ACTIVE As Long = 3      ' seconds between polls while in use
+Private Const POLL_IDLE As Long = 10       ' seconds between polls when nothing happens
+Private Const ACTIVE_SECONDS As Long = 120 ' how long "in use" lasts after the last event
+Private Const FLUSH_SECONDS As Long = 1
 Private Const BATCH As Long = 500
 Private Const RED As Long = 13551615   ' RGB(255, 199, 206)
 Private Const GREY As Long = 15921906  ' RGB(242, 242, 242)
@@ -94,6 +100,8 @@ Private mConflict As clsCmasMap
 Private mApplying As Boolean
 Private mFlushPending As Boolean
 Private mTickPending As Boolean
+Private mTickAt As Date          ' when the pending tick runs
+Private mActiveUntil As Date     ' poll every POLL_ACTIVE seconds until then
 Private mBusy As Boolean
 
 ' ---------------------------------------------------------------- start / stop
@@ -153,10 +161,30 @@ Private Function Q(ByVal macro As String) As String
     Q = "'" & ThisWorkbook.Name & "'!" & macro
 End Function
 
+' One pending tick at a time. A tick due sooner than the pending one (the
+' workbook just became active) replaces it, so the faster pace starts at once.
 Private Sub ScheduleTick()
-    If mTickPending Then Exit Sub
+    Dim due As Date
+    If Now < mActiveUntil Then
+        due = Now + TimeSerial(0, 0, POLL_ACTIVE)
+    Else
+        due = Now + TimeSerial(0, 0, POLL_IDLE)
+    End If
+    If mTickPending Then
+        If due >= mTickAt Then Exit Sub
+        On Error Resume Next
+        Application.OnTime mTickAt, Q("CmasTick"), , False
+        On Error GoTo 0
+    End If
     mTickPending = True
-    Application.OnTime Now + TimeSerial(0, 0, POLL_SECONDS), Q("CmasTick")
+    mTickAt = due
+    Application.OnTime due, Q("CmasTick")
+End Sub
+
+' Something happened: an edit here, or CMAS changed. Poll fast for a while.
+Private Sub MarkActive()
+    mActiveUntil = Now + TimeSerial(0, 0, ACTIVE_SECONDS)
+    If Ready() Then ScheduleTick
 End Sub
 
 Private Sub ScheduleFlush()
@@ -166,6 +194,9 @@ Private Sub ScheduleFlush()
 End Sub
 
 Public Sub CmasTick()
+    ' A tick that was replaced by a sooner one but could not be cancelled:
+    ' the newer one is still pending, so let it run alone.
+    If mTickPending And Now < mTickAt - TimeSerial(0, 0, 1) Then Exit Sub
     mTickPending = False
     If Not Ready() Then Exit Sub        ' disconnected or the workbook closed: stop polling
     RunSync False
@@ -239,6 +270,8 @@ Private Sub PullIfChanged(ByVal force As Boolean)
         Exit Sub
     End If
 
+    ' Not on the first load: opening the file is not activity on the course.
+    If mRevision <> -1 Then MarkActive
     If Not FetchGrid(acts, studs) Then Exit Sub
     Render acts, studs
     ' Read before the grid: a write that lands during the fetch moves the
@@ -579,7 +612,7 @@ Public Sub OnSheetChange(ByVal Sh As Object, ByVal Target As Range)
 
     If bad Then CmasMsg T("badValue"), vbExclamation, T("badValueTitle")
     If locked Then CmasMsg T("locked"), vbExclamation
-    If mDirty.Count > 0 Then ScheduleFlush
+    If mDirty.Count > 0 Then MarkActive: ScheduleFlush
 End Sub
 
 Private Sub Flush()
@@ -629,6 +662,7 @@ Private Sub Flush()
             BaseAt(k).Value = ToCell(FromNorm(Norm(CellAt(k).Value)))
             mDirty.Remove k
         Next k
+        AdoptOwnRevision resp
         SetLiveStatus
     Case 409
         TakeConflicts resp
@@ -650,10 +684,26 @@ Private Sub Flush()
     End Select
 
     ' A batch limit, or the cells that were fine in a refused batch: send the rest soon.
-    If mDirty.Count > 0 Then ScheduleFlush
+    If mDirty.Count > 0 Then MarkActive: ScheduleFlush
 End Sub
 
 ' 409: nothing was written. The cells somebody else changed turn red; the rest go again.
+' PUT answers with the revision this write produced. One more than the grid we
+' hold means nobody else wrote in between: the sheet already shows CMAS, so the
+' next tick need not reload it. Anything else (someone else wrote too, or no
+' number at all) leaves mRevision alone and the next tick reloads as before.
+Private Sub AdoptOwnRevision(ByVal resp As String)
+    Dim root As Variant, rev As Variant
+    If mRevision < 0 Then Exit Sub
+    On Error Resume Next
+    JsonParse resp, root
+    rev = JPath(root, "data", "revision")
+    If Err.Number = 0 And Not IsEmpty(rev) And Not IsNull(rev) Then
+        If CLng(rev) = mRevision + 1 Then mRevision = CLng(rev)
+    End If
+    Err.Clear
+End Sub
+
 Private Sub TakeConflicts(ByVal resp As String)
     Dim root As Variant, list As Variant, c As Variant, k As String, n As Long
     JsonParse resp, root

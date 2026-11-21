@@ -8,10 +8,13 @@ export class CourseRevisionRepository {
   /**
    * Raw SQL on purpose: a Prisma update would also move Course.updatedAt
    * (@updatedAt), which means "the course's settings changed". A course that
-   * no longer exists (just deleted) updates no row, which is fine.
+   * no longer exists (just deleted) updates no row, which is fine. Returns the new
+   * number (null for a course that is gone).
    */
-  async bump(courseId: string): Promise<void> {
-    await prisma.$executeRaw`UPDATE "Course" SET "revision" = "revision" + 1 WHERE "id" = ${courseId}`
+  async bump(courseId: string): Promise<number | null> {
+    const rows = await prisma.$queryRaw<{ revision: number }[]>`
+      UPDATE "Course" SET "revision" = "revision" + 1 WHERE "id" = ${courseId} RETURNING "revision"`
+    return rows[0]?.revision ?? null
   }
 
   async read(courseId: string): Promise<number | null> {

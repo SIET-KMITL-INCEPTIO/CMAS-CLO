@@ -21,9 +21,11 @@ can; the checklist at the end is what only Excel can prove.
    name and `[id]`), full marks in row 5, one student per row from row 6 and
    a `คะแนนรวม` SUM column. Grey cells cannot be edited (closed activity,
    withdrawn student).
-3. **Typing a score** sends it about 2 seconds later. **x** means excused.
+3. **Typing a score** sends it about 1 second later. **x** means excused.
    **Clearing a cell** deletes the score, after a yes/no question.
-4. **Changes made on the web** appear within about 10 seconds.
+4. **Changes made on the web** appear within about 4 seconds while the
+   course is in use (polled every 3 s for 2 minutes after any change), about
+   12 seconds when it is idle (every 10 s).
 5. **Somebody else changed the cell first:** it turns red, with CMAS's value
    in a note. **ใช้ค่าของฉัน** sends yours over it; **ใช้ค่าใน CMAS** drops
    yours.
@@ -75,23 +77,23 @@ Excel: both would hear every edit.
 
 ## Folder
 
-| Path                         | What                                                              |
-| ---------------------------- | ----------------------------------------------------------------- |
-| `src/modCmasHttp.bas`        | one HTTP call: WinHttp on Windows, AppleScriptTask + curl on Mac  |
-| `src/modCmasAuth.bas`        | device-code sign-in, token in memory, version notice              |
-| `src/modCmasSync.bas`        | the sheet, pull every 10 s, push 2 s after an edit, red cells     |
-| `src/modCmasJson.bas`        | JSON reader/writer for both platforms                             |
-| `src/clsCmasMap.cls`         | string-keyed map for both platforms                               |
-| `src/clsCmasAppEvents.cls`   | Application-level `SheetChange`                                   |
-| `src/modCmasRibbon.bas`      | callbacks for the CMAS tab                                        |
-| `src/modCmasWorkbook.bas`    | score workbook only: its stamped properties, `Auto_Open`          |
-| `src/modCmasUi.bas`          | message and input boxes that show Thai on any Windows locale      |
-| `src/modCmasText.bas`        | **generated** from `text/th.json` — do not edit                   |
-| `src/modCmasInfo.bas`        | the version; must equal `addin-release.ts` (a server test checks) |
-| `ribbon/customUI14.xml`      | the CMAS tab                                                      |
-| `mac/CMAS.applescript`       | Mac only: runs `curl` with the token in a 600 config file         |
-| `install/install.ps1`, `.sh` | check SHA-256, remove the download mark, copy into place          |
-| `spike/modCmasSpike.bas`     | P0 checks; **not** part of the add-in                             |
+| Path                         | What                                                                                |
+| ---------------------------- | ----------------------------------------------------------------------------------- |
+| `src/modCmasHttp.bas`        | one HTTP call: WinHttp on Windows, AppleScriptTask + curl on Mac                    |
+| `src/modCmasAuth.bas`        | device-code sign-in, token in memory, version notice                                |
+| `src/modCmasSync.bas`        | the sheet, pull every 3 s (active) / 10 s (idle), push 1 s after an edit, red cells |
+| `src/modCmasJson.bas`        | JSON reader/writer for both platforms                                               |
+| `src/clsCmasMap.cls`         | string-keyed map for both platforms                                                 |
+| `src/clsCmasAppEvents.cls`   | Application-level `SheetChange`                                                     |
+| `src/modCmasRibbon.bas`      | callbacks for the CMAS tab                                                          |
+| `src/modCmasWorkbook.bas`    | score workbook only: its stamped properties, `Auto_Open`                            |
+| `src/modCmasUi.bas`          | message and input boxes that show Thai on any Windows locale                        |
+| `src/modCmasText.bas`        | **generated** from `text/th.json` — do not edit                                     |
+| `src/modCmasInfo.bas`        | the version; must equal `addin-release.ts` (a server test checks)                   |
+| `ribbon/customUI14.xml`      | the CMAS tab                                                                        |
+| `mac/CMAS.applescript`       | Mac only: runs `curl` with the token in a 600 config file                           |
+| `install/install.ps1`, `.sh` | check SHA-256, remove the download mark, copy into place                            |
+| `spike/modCmasSpike.bas`     | P0 checks; **not** part of the add-in                                               |
 
 ## Build (needs Excel, Windows or Mac)
 
@@ -135,21 +137,21 @@ Run on **both** Windows and Mac, record ✅ / ❌ and the Excel version. The
 server side of every row is covered by `excel.db.test.ts`; these prove the
 Excel side.
 
-| #   | Check                                                                                 | Windows | Mac |
-| --- | ------------------------------------------------------------------------------------- | ------- | --- |
-| S1  | Unsigned `.xlam` installed by the script loads with no macro warning; CMAS tab shows  |         |     |
-| S2  | A freshly downloaded copy **without** the script is blocked (S1 means something)      |         |     |
-| S3  | Connect: code shown, approved at `/excel/link`, course sheet opens                    |         |     |
-| S4  | Type a score → web page shows it within ~3 s; history says แก้ใน Excel                |         |     |
-| S5  | Change a score on the web → Excel shows it within ~12 s                               |         |     |
-| S6  | Type `x` → web shows ยกเว้น; type `25` in a max-20 column → refused, value restored   |         |     |
-| S7  | Clear a cell → asked first; No restores the value                                     |         |     |
-| S8  | Change the same cell on web and Excel → red cell with CMAS's value; both buttons work |         |     |
-| S9  | Paste a block of 20 scores → all sent in one request                                  |         |     |
-| S10 | Grey cells (closed activity, withdrawn student) cannot be edited                      |         |     |
-| S11 | Add a student on the web → Excel redraws with the new row                             |         |     |
-| S12 | Disconnect, edit, save, close; reopen, connect → edits sent                           |         |     |
-| S13 | Cut the link at `/excel/link` → Excel says disconnected within ~10 s; edits kept      |         |     |
-| S14 | A student named `=HYPERLINK("x")` shows as text                                       |         |     |
-| S15 | Mac: the token never appears in `ps -axww` while syncing                              | n/a     |     |
-| S16 | After closing Excel, no `cmasx_` in the workbook, `%APPDATA%` or `~/Library`          |         |     |
+| #   | Check                                                                                             | Windows | Mac |
+| --- | ------------------------------------------------------------------------------------------------- | ------- | --- |
+| S1  | Unsigned `.xlam` installed by the script loads with no macro warning; CMAS tab shows              |         |     |
+| S2  | A freshly downloaded copy **without** the script is blocked (S1 means something)                  |         |     |
+| S3  | Connect: code shown, approved at `/excel/link`, course sheet opens                                |         |     |
+| S4  | Type a score → web page shows it within ~3 s; history says แก้ใน Excel                            |         |     |
+| S5  | Change a score on the web → Excel shows it within ~12 s                                           |         |     |
+| S6  | Type `x` → web shows ยกเว้น; type `25` in a max-20 column → refused, value restored               |         |     |
+| S7  | Clear a cell → asked first; No restores the value                                                 |         |     |
+| S8  | Change the same cell on web and Excel → red cell with CMAS's value; both buttons work             |         |     |
+| S9  | Paste a block of 20 scores → all sent in one request                                              |         |     |
+| S10 | Grey cells (closed activity, withdrawn student) cannot be edited                                  |         |     |
+| S11 | Add a student on the web → Excel redraws with the new row                                         |         |     |
+| S12 | Disconnect, edit, save, close; reopen, connect → edits sent                                       |         |     |
+| S13 | Cut the link at `/excel/link` → Excel says disconnected within ~10 s (~3 s if in use); edits kept |         |     |
+| S14 | A student named `=HYPERLINK("x")` shows as text                                                   |         |     |
+| S15 | Mac: the token never appears in `ps -axww` while syncing                                          | n/a     |     |
+| S16 | After closing Excel, no `cmasx_` in the workbook, `%APPDATA%` or `~/Library`                      |         |     |

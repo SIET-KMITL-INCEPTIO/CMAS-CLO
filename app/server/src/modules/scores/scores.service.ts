@@ -1,3 +1,4 @@
+import { CourseRevisionRepository } from "../excel/course-revision.repository.js"
 import { BusinessRuleError, ConflictError } from "../../lib/errors.js"
 import {
   activityHeader,
@@ -72,7 +73,14 @@ export function courseHeader(c: CourseRow) {
 }
 
 export class ScoreService {
-  constructor(private readonly scores: ScoreRepository) {}
+  constructor(
+    private readonly scores: ScoreRepository,
+    // The course's change counter (FR-76), owned by the Excel module that polls it.
+    private readonly revisions: Pick<
+      CourseRevisionRepository,
+      "bump"
+    > = new CourseRevisionRepository(),
+  ) {}
 
   /** Design #56. */
   async grid(
@@ -164,7 +172,13 @@ export class ScoreService {
         cells: result.conflicts.map((c) => ({ ...c, current: toGrid(c.current) })),
       })
     }
-    return { written: result.written, unchanged: input.scores.length - result.written }
+    // Moved here, not after the response (live-updates.middleware), so the writer learns
+    // the number its own write produced. The Excel add-in compares it with the one it
+    // last loaded: one more means nobody else wrote, and it need not reload the grid.
+    // The scores are already saved: a failed bump must not turn that into a 500. With
+    // null the response hook moves the number instead, and the add-in simply reloads.
+    const revision = await this.revisions.bump(courseId).catch(() => null)
+    return { written: result.written, unchanged: input.scores.length - result.written, revision }
   }
 
   // ── Excel (design #58-#60) ──
