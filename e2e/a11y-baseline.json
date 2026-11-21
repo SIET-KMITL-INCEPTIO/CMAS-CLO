@@ -14,7 +14,6 @@
   "home dark 1280": ["color-contrast"],
   "home light 1280": ["color-contrast"],
   "home light 375": ["color-contrast", "scrollable-region-focusable"],
-  "login dark 1280": ["color-contrast"],
   "login light 1280": ["color-contrast"],
   "login light 375": ["color-contrast"],
   "objectives dark 1280": ["color-contrast"],
