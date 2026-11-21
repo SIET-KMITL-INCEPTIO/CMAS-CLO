@@ -19,7 +19,7 @@ export class ScoreRepository {
       courseId,
       ...(enrolledOnly ? { status: "ENROLLED" } : {}),
     }
-    const [activities, total, students, progress, enrolled] = await Promise.all([
+    const [activities, total, students, progress, enrolled, course] = await Promise.all([
       prisma.activity.findMany({
         where: { courseId },
         orderBy: { order: "asc" },
@@ -53,8 +53,24 @@ export class ScoreRepository {
         orderBy: { activityId: "asc" },
       }),
       prisma.student.count({ where: { courseId, status: "ENROLLED" } }),
+      prisma.course.findUniqueOrThrow({
+        where: { id: courseId },
+        select: {
+          code: true,
+          name: true,
+          nameEn: true,
+          section: true,
+          semester: true,
+          year: true,
+          credits: true,
+          lectureHours: true,
+          practiceHours: true,
+          selfStudyHours: true,
+          instructors: { select: { user: { select: { name: true } } } },
+        },
+      }),
     ])
-    return { activities, total, students, progress, enrolled }
+    return { activities, total, students, progress, enrolled, course }
   }
 
   /** What a write must be checked against: the students and activities it names, inside this course. */

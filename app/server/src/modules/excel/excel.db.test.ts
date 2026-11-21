@@ -9,7 +9,7 @@
  * from the one address app.inject() would otherwise use. The limits themselves
  * are tested at the end, from one fixed address.
  */
-import { randomBytes } from "node:crypto"
+import { createHash, randomBytes } from "node:crypto"
 import type { Prisma } from "@prisma/client"
 import type { InjectOptions } from "fastify"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
@@ -22,6 +22,7 @@ import {
   type Fixture,
 } from "../../test/db-fixture.js"
 import { hashToken } from "../auth/refresh-token.repository.js"
+import { WORKBOOK_RELEASE } from "./addin-release.js"
 import { EXCEL_TOKEN_PREFIX, LINK_TTL_MS } from "./excel.service.js"
 
 type Who = Parameters<Fixture["call"]>[0]
@@ -298,6 +299,7 @@ describe.skipIf(!RUN_DB_TESTS)("Excel add-in sign-in and token (FR-73, FR-74)", 
         ["GET", "/auth/me"],
         ["GET", "/courses"],
         ["GET", "/excel/links"],
+        ["GET", "/excel/addin/file"],
       ] as const) {
         expect((await asAddin(token, method, url)).statusCode, `${method} ${url}`).toBe(404)
       }
@@ -509,6 +511,52 @@ describe.skipIf(!RUN_DB_TESTS)("Excel add-in sign-in and token (FR-73, FR-74)", 
       expect((await call("teacherA", "DELETE", `/excel/links/${linkId}`)).statusCode).toBe(200)
       // Cutting twice is a 404, not a second success.
       expect((await call("teacherA", "DELETE", `/excel/links/${linkId}`)).statusCode).toBe(404)
+    })
+  })
+
+  describe("downloading the add-in (FR-75, ST-XL-05)", () => {
+    it("hands a signed-in user exactly the file whose SHA-256 the release publishes", async () => {
+      const release = (await call(null, "GET", "/excel/addin")).json().data as { sha256: string }
+      const res = await call("teacherA", "GET", "/excel/addin/file")
+      expect(res.statusCode).toBe(200)
+      expect(res.headers["content-type"]).toBe("application/vnd.ms-excel.addin.macroEnabled.12")
+      expect(res.headers["content-disposition"]).toContain('filename="CMAS.xlam"')
+      expect(createHash("sha256").update(res.rawPayload).digest("hex")).toBe(release.sha256)
+    })
+
+    it("needs a sign-in", async () => {
+      expect((await call(null, "GET", "/excel/addin/file")).statusCode).toBe(401)
+    })
+  })
+
+  describe("downloading the score workbook (FR-75, ST-XL-05)", () => {
+    it("says whether the workbook can be downloaded", async () => {
+      const data = (await call(null, "GET", "/excel/addin")).json().data as {
+        workbook: { version: string; available: boolean }
+      }
+      expect(data.workbook).toEqual({
+        version: WORKBOOK_RELEASE.version,
+        available: WORKBOOK_RELEASE.sha256 !== null,
+      })
+    })
+
+    it.skipIf(WORKBOOK_RELEASE.sha256 !== null)(
+      "is a 404 with a reason while no template is published, and makes no ticket",
+      async () => {
+        const before = await prisma.excelDeviceCode.count()
+        const res = await call("teacherA", "GET", `/courses/${courseA}/excel-workbook`)
+        expect(res.statusCode).toBe(404)
+        expect(res.json().message).toContain("ไฟล์กรอกคะแนน")
+        expect(await prisma.excelDeviceCode.count()).toBe(before)
+      },
+    )
+
+    it("needs a sign-in, and is a 404 for a course the caller cannot see", async () => {
+      expect((await call(null, "GET", `/courses/${courseA}/excel-workbook`)).statusCode).toBe(401)
+      const foreign = await call("teacherB", "GET", `/courses/${courseA}/excel-workbook`)
+      const missing = await call("teacherB", "GET", `/courses/${UNUSED_ID}/excel-workbook`)
+      expect(foreign.statusCode).toBe(404)
+      expect(foreign.body).toBe(missing.body)
     })
   })
 

@@ -5,6 +5,9 @@ export const excelKeys = {
   links: ["excel", "links"] as const,
 }
 
+export const useAddinRelease = () =>
+  useQuery({ queryKey: ["excel", "addin"] as const, queryFn: () => excelApi.release() })
+
 export const useExcelLinks = () =>
   useQuery({ queryKey: excelKeys.links, queryFn: () => excelApi.links() })
 

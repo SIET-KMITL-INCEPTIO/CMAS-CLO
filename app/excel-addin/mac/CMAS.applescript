@@ -31,10 +31,14 @@ on cmasRequest(payload)
 
 	set cfgText to "request = " & my q(theMethod) & linefeed & ¬
 		"url = " & my q(theUrl) & linefeed & ¬
-		"header = " & my q("Content-Type: application/json; charset=utf-8") & linefeed & ¬
 		"header = " & my q("X-Client-Id: excel-addin") & linefeed
 	if theBearer is not "" then set cfgText to cfgText & "header = " & my q("Authorization: Bearer " & theBearer) & linefeed
-	if theBody is not "" then set cfgText to cfgText & "data-binary = " & my q(theBody) & linefeed
+	-- Content-Type only with a body: the server answers 400 to a JSON Content-Type
+	-- with nothing in it, which failed POST /excel/device (the first call of every sign-in).
+	if theBody is not "" then
+		set cfgText to cfgText & "header = " & my q("Content-Type: application/json; charset=utf-8") & linefeed
+		set cfgText to cfgText & "data-binary = " & my q(theBody) & linefeed
+	end if
 
 	set fh to open for access (POSIX file cfg) with write permission
 	try

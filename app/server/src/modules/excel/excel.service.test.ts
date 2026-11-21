@@ -1,3 +1,8 @@
+import { createHash } from "node:crypto"
+import { mkdtempSync, writeFileSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
+import { pathToFileURL } from "node:url"
 import { Prisma } from "@prisma/client"
 import { describe, expect, it, vi } from "vitest"
 import { NotFoundError } from "../../lib/errors.js"
@@ -9,6 +14,9 @@ import {
   newUserCode,
 } from "./excel.service.js"
 import { USER_CODE_ALPHABET, approveSchema, collectTokenSchema } from "./excel.validator.js"
+import { fakeXlsm } from "../../test/fake-xlsm.js"
+import { apiOriginOf } from "./excel.controller.js"
+import { readCustomProperties } from "./workbook-stamp.js"
 
 const course = { id: "c1", code: "90641001", name: "วิชา", section: "01", semester: 1, year: 2569 }
 
@@ -25,7 +33,10 @@ function setup(code: unknown = null) {
     })),
   }
   const links = { listLive: vi.fn(async () => []), revoke: vi.fn(async () => true) }
-  const revisions = { read: vi.fn(async (): Promise<number | null> => 7) }
+  const revisions = {
+    read: vi.fn(async (): Promise<number | null> => 7),
+    label: vi.fn(async () => course as typeof course | null),
+  }
   const service = new ExcelService(codes, links, "https://cmas.test", revisions)
   return { service, codes, links, revisions }
 }
@@ -160,5 +171,96 @@ describe("revoke", () => {
     links.revoke.mockResolvedValueOnce(false)
     await expect(service.revoke("u1", "l9")).rejects.toBeInstanceOf(NotFoundError)
     expect(links.revoke).toHaveBeenCalledWith("u1", "l9")
+  })
+})
+
+describe("addinFile (FR-75)", () => {
+  const bytes = Buffer.from("PK-pretend-xlam")
+  const sha = createHash("sha256").update(bytes).digest("hex")
+  const file = (name: string) => pathToFileURL(join(mkdtempSync(join(tmpdir(), "cmas-")), name))
+
+  it("refuses while the release names no SHA-256", async () => {
+    await expect(setup().service.addinFile(file("none.xlam"), null)).rejects.toBeInstanceOf(
+      NotFoundError,
+    )
+  })
+
+  it("refuses when the file is missing", async () => {
+    await expect(setup().service.addinFile(file("gone.xlam"), sha)).rejects.toBeInstanceOf(
+      NotFoundError,
+    )
+  })
+
+  it("refuses a file that no longer matches the published SHA-256", async () => {
+    const url = file("swapped.xlam")
+    writeFileSync(url, Buffer.from("something else"))
+    await expect(setup().service.addinFile(url, sha)).rejects.toBeInstanceOf(NotFoundError)
+  })
+
+  it("hands over exactly the bytes whose hash was published", async () => {
+    const url = file("ok.xlam")
+    writeFileSync(url, bytes)
+    expect(await setup().service.addinFile(url, sha)).toEqual(bytes)
+  })
+})
+
+describe("workbook (the score workbook, connected on open)", () => {
+  const API = "https://api.cmas.test"
+  const template = fakeXlsm()
+  const sha = createHash("sha256").update(template).digest("hex")
+  const saved = () => {
+    const url = pathToFileURL(join(mkdtempSync(join(tmpdir(), "cmas-")), "t.xlsm"))
+    writeFileSync(url, template)
+    return url
+  }
+
+  it("refuses while the release names no SHA-256, and creates no ticket", async () => {
+    const { service, codes } = setup()
+    await expect(service.workbook("u1", "c1", API, saved(), null)).rejects.toBeInstanceOf(
+      NotFoundError,
+    )
+    expect(codes.create).not.toHaveBeenCalled()
+  })
+
+  it("refuses a template that no longer matches its SHA-256", async () => {
+    const { service, codes } = setup()
+    await expect(service.workbook("u1", "c1", API, saved(), "0".repeat(64))).rejects.toBeInstanceOf(
+      NotFoundError,
+    )
+    expect(codes.create).not.toHaveBeenCalled()
+  })
+
+  it("stamps the course, the address and a ticket approved for this caller and course", async () => {
+    const { service, codes } = setup()
+    const { bytes, fileName } = await service.workbook("u1", "c1", API, saved(), sha)
+
+    const props = readCustomProperties(bytes)
+    expect(props).toMatchObject({
+      CmasApi: API,
+      CmasCourseId: "c1",
+      CmasCourseLabel: "90641001 วิชา Sec 01",
+    })
+    // The ticket is the device code whose user code was approved for u1 on c1.
+    const [deviceCode, userCode] = codes.create.mock.calls[0]!
+    expect(props.CmasTicket).toBe(deviceCode)
+    expect(collectTokenSchema.safeParse({ deviceCode }).success).toBe(true)
+    expect(codes.approve).toHaveBeenCalledWith(userCode, "u1", "c1")
+    expect(fileName).toBe("CMAS 90641001 Sec 01 1-2569.xlsm")
+  })
+
+  it("hands every download its own ticket", async () => {
+    const { service } = setup()
+    const a = readCustomProperties((await service.workbook("u1", "c1", API, saved(), sha)).bytes)
+    const b = readCustomProperties((await service.workbook("u1", "c1", API, saved(), sha)).bytes)
+    expect(a.CmasTicket).not.toBe(b.CmasTicket)
+  })
+})
+
+describe("apiOriginOf", () => {
+  it("is http only on localhost, as the VBA allows, and https everywhere else", () => {
+    expect(apiOriginOf("localhost:3001")).toBe("http://localhost:3001")
+    expect(apiOriginOf("127.0.0.1:3001")).toBe("http://127.0.0.1:3001")
+    expect(apiOriginOf("cmas.example.ac.th")).toBe("https://cmas.example.ac.th")
+    expect(apiOriginOf("localhost.evil.test")).toBe("https://localhost.evil.test")
   })
 })

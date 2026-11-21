@@ -18,8 +18,18 @@ describe("envSchema", () => {
     expect(env.CORS_ORIGIN).toBe("http://localhost:5173")
     expect(env.RATE_LIMIT_MAX).toBe(100)
     expect(env.RATE_LIMIT_WINDOW).toBe("1 minute")
+    expect(env.RATE_LIMIT_EXCEL_MAX).toBe(1200)
+    expect(env.TRUST_PROXY).toBe(false)
     expect(env.INSTITUTION_EMAIL_DOMAIN).toBe("kmitl.ac.th")
     expect(env.ADMIN_EMAILS).toEqual([])
+  })
+
+  it("reads TRUST_PROXY as Fastify's trustProxy: a flag, a hop count or addresses", () => {
+    const read = (TRUST_PROXY: string) => envSchema.parse({ ...valid, TRUST_PROXY }).TRUST_PROXY
+    expect(read("true")).toBe(true)
+    expect(read("false")).toBe(false)
+    expect(read("1")).toBe(1)
+    expect(read(" 10.0.0.0/8,127.0.0.1 ")).toBe("10.0.0.0/8,127.0.0.1")
   })
 
   it("splits ADMIN_EMAILS into trimmed, lower-case addresses", () => {

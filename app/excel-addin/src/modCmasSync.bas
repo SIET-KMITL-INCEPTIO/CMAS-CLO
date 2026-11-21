@@ -1,12 +1,17 @@
 Attribute VB_Name = "modCmasSync"
 ' CMAS add-in for Excel - two-way score sync (FR-76).
 '
-'   CMAS -> Excel   every 10 s: GET /courses/:id/revision; when it moved,
-'                   reload the grid (all pages) and redraw the values.
-'   Excel -> CMAS   2 s after the last edit: PUT /courses/:id/scores with
+'   CMAS -> Excel   GET /courses/:id/revision every 3 s for 2 minutes after
+'                   anything happened (an edit here, or the number moved),
+'                   every 10 s otherwise; when it moved, reload the grid (all
+'                   pages) and redraw the values. Each request holds Excel for
+'                   its length (WinHttp and AppleScriptTask wait), which is why
+'                   an idle workbook does not ask faster.
+'   Excel -> CMAS   1 s after the last edit: PUT /courses/:id/scores with
 '                   `from` = the value CMAS last confirmed for each cell.
 '
-' The data workbook is a plain .xlsx with no macros. Next to the visible sheet
+' From the add-in the data workbook is a plain .xlsx with no macros; a score
+' workbook (modCmasWorkbook) is its own data workbook. Next to the visible sheet
 ' it holds a very hidden sheet "_cmas": the ids and the last value CMAS
 ' confirmed for every cell (the "base"). Nothing secret is in it. Because the
 ' base survives a save, edits made while disconnected are found on the next
@@ -24,16 +29,44 @@ Attribute VB_Name = "modCmasSync"
 Option Explicit
 
 Private Const SHEET_BASE As String = "_cmas"
+' The faculty's score form, as index-q.html's scoreSheet() writes it:
+'   rows 1-3  the form header, from column A
+'             A1 form title
+'             row 2: A2 course code   D2 credits   G2 term and section
+'             row 3: A3 course name                G3 instructors
+'             D1 the connection status (not on the paper form)
+'             Everything in C2..C3 is the course's own data (Course row, data.course
+'             of the grid), so the sheet names no institution and fits any school.
+'   row 4     headers: code, name, "activity n" + name + [id], total
+'   row 5     full marks, row 6 on: one student per row, total = SUM
 Private Const ROW_TITLE As Long = 1
-Private Const ROW_STATUS As Long = 2
-Private Const ROW_HEAD As Long = 3
-Private Const FIRST_ROW As Long = 4
+Private Const ROW_INFO As Long = 2
+Private Const ROW_TEACH As Long = 3
+Private Const ROW_HEAD As Long = 4
+Private Const ROW_MAX As Long = 5
+Private Const FIRST_ROW As Long = 6
 Private Const COL_CODE As Long = 1
 Private Const COL_NAME As Long = 2
 Private Const FIRST_COL As Long = 3
+Private Const COL_FORM As Long = 1
+Private Const COL_CREDITS As Long = 4
+Private Const COL_TERM As Long = 7
+Private Const COL_TEACHERS As Long = 7
+Private Const COL_STATUS As Long = 4
+' Bumped when the rows or columns above move: a workbook drawn in another
+' layout is redrawn from CMAS instead of being read with the wrong coordinates.
+Private Const LAYOUT As String = "form-6"
+' Tahoma: on every Windows and shipped with Office for Mac, and it draws Thai
+' vowels and tone marks in place. TH Sarabun New (the paper form's font) is not
+' installed by default; Excel then substitutes a font that misplaces them.
+Private Const FORM_FONT As String = "Tahoma"
+Private Const HEAD_FILL As Long = 12874308  ' RGB(68, 114, 196)
+Private Const MAX_FILL As Long = 13431551   ' RGB(255, 242, 204)
 Private Const PER_PAGE As Long = 200
-Private Const POLL_SECONDS As Long = 10
-Private Const FLUSH_SECONDS As Long = 2
+Private Const POLL_ACTIVE As Long = 3      ' seconds between polls while in use
+Private Const POLL_IDLE As Long = 10       ' seconds between polls when nothing happens
+Private Const ACTIVE_SECONDS As Long = 120 ' how long "in use" lasts after the last event
+Private Const FLUSH_SECONDS As Long = 1
 Private Const BATCH As Long = 500
 Private Const RED As Long = 13551615   ' RGB(255, 199, 206)
 Private Const GREY As Long = 15921906  ' RGB(242, 242, 242)
@@ -41,7 +74,8 @@ Private Const GREY As Long = 15921906  ' RGB(242, 242, 242)
 ' Base sheet layout (same coordinates as the visible sheet where it matters):
 '   A1 courseId     B1 <id>
 '   A2 sheet        B2 <visible sheet name>
-'   A3 shape        B3 <signature of activities and students>
+'   A3 shape        B3 <fingerprint of activities and students>
+'   A4 layout       B4 <LAYOUT>
 '   row 1, col c >= FIRST_COL: maxScore     row 2: 1 if the activity is closed
 '   row 3, col c: activityId
 '   col A, row r >= FIRST_ROW: studentId    col B: 1 if withdrawn
@@ -52,6 +86,12 @@ Private mBook As Workbook
 Private mSheet As Worksheet
 Private mBase As Worksheet
 Private mCourseId As String
+' The form header, as the last grid said it (see ReadCourseHeader).
+Private mHdrCode As String      ' course code
+Private mHdrName As String      ' course name, with the English name after it when there is one
+Private mHdrCredits As String   ' "3 (2-2-5)"
+Private mHdrTerm As String      ' "2/2569 - Sec 01"
+Private mHdrTeachers As String  ' instructors, comma separated
 Private mRevision As Long
 Private mLastRow As Long
 Private mLastCol As Long
@@ -63,7 +103,10 @@ Private mConflict As clsCmasMap
 Private mApplying As Boolean
 Private mFlushPending As Boolean
 Private mTickPending As Boolean
+Private mTickAt As Date          ' when the pending tick runs
+Private mActiveUntil As Date     ' poll every POLL_ACTIVE seconds until then
 Private mBusy As Boolean
+Private mStep As String          ' what the sync was doing, for the status row when it fails
 
 ' ---------------------------------------------------------------- start / stop
 
@@ -75,7 +118,12 @@ Public Sub CmasStartSync(ByVal courseId As String, ByVal courseLabel As String)
     Set mEvents = New clsCmasAppEvents
     Set mEvents.App = Application
 
-    If Not AttachExistingBook(courseId) Then CreateBook courseLabel
+    If CmasIsWorkbook() Then
+        ' A score workbook draws into itself, never into another open file.
+        If Not AttachBook(ThisWorkbook, courseId) Then CreateBook courseLabel, ThisWorkbook
+    ElseIf Not AttachExistingBook(courseId) Then
+        CreateBook courseLabel, Nothing
+    End If
     CollectOfflineEdits
     RunSync True
     ScheduleTick
@@ -117,10 +165,30 @@ Private Function Q(ByVal macro As String) As String
     Q = "'" & ThisWorkbook.Name & "'!" & macro
 End Function
 
+' One pending tick at a time. A tick due sooner than the pending one (the
+' workbook just became active) replaces it, so the faster pace starts at once.
 Private Sub ScheduleTick()
-    If mTickPending Then Exit Sub
+    Dim due As Date
+    If Now < mActiveUntil Then
+        due = Now + TimeSerial(0, 0, POLL_ACTIVE)
+    Else
+        due = Now + TimeSerial(0, 0, POLL_IDLE)
+    End If
+    If mTickPending Then
+        If due >= mTickAt Then Exit Sub
+        On Error Resume Next
+        Application.OnTime mTickAt, Q("CmasTick"), , False
+        On Error GoTo 0
+    End If
     mTickPending = True
-    Application.OnTime Now + TimeSerial(0, 0, POLL_SECONDS), Q("CmasTick")
+    mTickAt = due
+    Application.OnTime due, Q("CmasTick")
+End Sub
+
+' Something happened: an edit here, or CMAS changed. Poll fast for a while.
+Private Sub MarkActive()
+    mActiveUntil = Now + TimeSerial(0, 0, ACTIVE_SECONDS)
+    If Ready() Then ScheduleTick
 End Sub
 
 Private Sub ScheduleFlush()
@@ -130,6 +198,9 @@ Private Sub ScheduleFlush()
 End Sub
 
 Public Sub CmasTick()
+    ' A tick that was replaced by a sooner one but could not be cancelled:
+    ' the newer one is still pending, so let it run alone.
+    If mTickPending And Now < mTickAt - TimeSerial(0, 0, 1) Then Exit Sub
     mTickPending = False
     If Not Ready() Then Exit Sub        ' disconnected or the workbook closed: stop polling
     RunSync False
@@ -142,17 +213,18 @@ Public Sub CmasFlushNow()
     If mBusy Then ScheduleFlush: Exit Sub
     mBusy = True
     On Error GoTo failed
+    mStep = T("stepSend")
     Flush
     mBusy = False
     Exit Sub
 failed:
     mBusy = False
-    SetStatus T("stOffline")
+    ShowFault
 End Sub
 
 ' Ribbon: send now, then reload whether or not the revision moved.
 Public Sub CmasSyncNow()
-    If Not Ready() Then MsgBox T("notConnected"), vbInformation, "CMAS": Exit Sub
+    If Not Ready() Then CmasMsg T("notConnected"), vbInformation: Exit Sub
     RunSync True
 End Sub
 
@@ -160,6 +232,7 @@ Private Sub RunSync(ByVal forcePull As Boolean)
     If mBusy Then Exit Sub
     mBusy = True
     On Error GoTo failed
+    mStep = T("stepSend")
     Flush
     ' Never redraw over edits that are not in CMAS yet.
     If mDirty.Count = 0 Then PullIfChanged forcePull
@@ -167,7 +240,25 @@ Private Sub RunSync(ByVal forcePull As Boolean)
     Exit Sub
 failed:
     mBusy = False
-    SetStatus T("stOffline")
+    ShowFault
+End Sub
+
+' A VBA error, not the network: say which step and what Excel said, so a
+' screenshot of the status row is enough to find it.
+Private Sub ShowFault()
+    Dim what As String
+    what = Err.Number & " " & Err.Description
+    Err.Clear
+    SetStatus T("stError", mStep, what)
+End Sub
+
+' A request that got an answer CMAS should not give, or none at all.
+Private Sub ShowHttp(ByVal status As Long)
+    If status = 0 Then
+        SetStatus T("stOffline")
+    Else
+        SetStatus T("stHttp", CStr(status), mStep)
+    End If
 End Sub
 
 ' ---------------------------------------------------------------- CMAS -> Excel
@@ -186,7 +277,7 @@ Private Function Usable(ByVal status As Long) As Boolean
         CmasForgetToken
         SetStatus T("stLost")
     Case Else
-        SetStatus T("stOffline")
+        ShowHttp status
     End Select
 End Function
 
@@ -194,6 +285,7 @@ Private Sub PullIfChanged(ByVal force As Boolean)
     Dim status As Long, body As String, root As Variant, rev As Long
     Dim acts As Collection, studs As Collection
 
+    mStep = T("stepCheck")
     status = SafeRequest("GET", Url("/revision"), "", CmasToken, body)
     If Not Usable(status) Then Exit Sub
     JsonParse body, root
@@ -203,7 +295,11 @@ Private Sub PullIfChanged(ByVal force As Boolean)
         Exit Sub
     End If
 
+    ' Not on the first load: opening the file is not activity on the course.
+    If mRevision <> -1 Then MarkActive
+    mStep = T("stepLoad")
     If Not FetchGrid(acts, studs) Then Exit Sub
+    mStep = T("stepDraw")
     Render acts, studs
     ' Read before the grid: a write that lands during the fetch moves the
     ' number again, and the next tick reloads. Never the other way round.
@@ -222,6 +318,7 @@ Private Function FetchGrid(ByRef acts As Collection, ByRef studs As Collection) 
         If Not Usable(status) Then Exit Function
         JsonParse body, root
         Set acts = JPath(root, "data", "activities")
+        If page = 1 Then ReadCourseHeader root
         Set pageStudents = JPath(root, "data", "students")
         For Each s In pageStudents
             studs.Add s
@@ -233,8 +330,33 @@ Private Function FetchGrid(ByRef acts As Collection, ByRef studs As Collection) 
     FetchGrid = True
 End Function
 
+' The form header from data.course. A server without it leaves the lines empty.
+Private Sub ReadCourseHeader(ByVal root As Variant)
+    Dim names As Variant, n As Variant
+    Dim nameEn As String
+    mHdrCode = "": mHdrName = "": mHdrCredits = "": mHdrTerm = "": mHdrTeachers = ""
+    On Error Resume Next
+    mHdrCode = CStr(JPath(root, "data", "course", "code"))
+    mHdrName = CStr(JPath(root, "data", "course", "name"))
+    nameEn = CStr(JPath(root, "data", "course", "nameEn"))   ' null in JSON: stays ""
+    If nameEn <> "" Then mHdrName = mHdrName & " (" & nameEn & ")"
+    mHdrCredits = CStr(JPath(root, "data", "course", "credits"))
+    mHdrTerm = T("formTerm", CStr(JPath(root, "data", "course", "semester")), CStr(JPath(root, "data", "course", "year"))) & _
+               " Sec " & CStr(JPath(root, "data", "course", "section"))
+    Set names = JPath(root, "data", "course", "instructors")   ' stays Empty when the server sends none
+    If IsObject(names) Then
+        For Each n In names
+            If mHdrTeachers <> "" Then mHdrTeachers = mHdrTeachers & ", "
+            mHdrTeachers = mHdrTeachers & CStr(n)
+        Next n
+    End If
+    On Error GoTo 0
+End Sub
+
 Private Function Signature(ByVal acts As Collection, ByVal studs As Collection) As String
     Dim a As Variant, s As Variant, out As String
+    ' The header is part of the shape: a renamed course or a new instructor redraws the sheet.
+    out = mHdrCode & "|" & mHdrName & "|" & mHdrCredits & "|" & mHdrTerm & "|" & mHdrTeachers & "#"
     For Each a In acts
         out = out & a("id") & "|" & a("name") & "|" & JsonNum(a("maxScore")) & "|" & _
               IIf(IsNull(a("closedAt")), "", "c") & ";"
@@ -243,7 +365,25 @@ Private Function Signature(ByVal acts As Collection, ByVal studs As Collection) 
     For Each s In studs
         out = out & s("id") & "|" & s("studentCode") & "|" & s("name") & "|" & s("status") & ";"
     Next s
-    Signature = out
+    ' The full text passes a cell's 32,767-character limit at about 400 students,
+    ' so the base sheet keeps a fingerprint of it instead.
+    Signature = Fingerprint(out)
+End Function
+
+' Length and two independent polynomial hashes: short, and a change in names,
+' ids, statuses or activities moves it. Doubles stay exact below 2^53.
+Private Function Fingerprint(ByVal s As String) As String
+    Const M1 As Double = 2147483647#
+    Const M2 As Double = 1000000007#
+    Dim i As Long, code As Long, h1 As Double, h2 As Double
+    For i = 1 To Len(s)
+        code = AscW(Mid$(s, i, 1)) And &HFFFF&
+        h1 = h1 * 131 + code
+        h1 = h1 - Int(h1 / M1) * M1
+        h2 = h2 * 257 + code
+        h2 = h2 - Int(h2 / M2) * M2
+    Next i
+    Fingerprint = Len(s) & ":" & Format$(h1, "0") & ":" & Format$(h2, "0")
 End Function
 
 Private Sub Render(ByVal acts As Collection, ByVal studs As Collection)
@@ -258,7 +398,7 @@ Private Sub Render(ByVal acts As Collection, ByVal studs As Collection)
     If CStr(mBase.Range("B3").Value) <> sig Then
         If hadTable And mConflict.Count > 0 Then
             ' Red cells cannot be kept across a redraw; say so rather than drop them silently.
-            MsgBox T("structureChanged"), vbInformation, "CMAS"
+            CmasMsg T("structureChanged"), vbInformation
         End If
         DrawLayout acts, studs, sig
     End If
@@ -274,9 +414,8 @@ End Sub
 
 Private Sub DrawLayout(ByVal acts As Collection, ByVal studs As Collection, ByVal sig As String)
     Dim j As Long, i As Long, a As Variant, s As Variant, r As Long, c As Long
-    Dim closed() As Boolean, withdrawn() As Boolean, title As String
+    Dim closed() As Boolean, withdrawn() As Boolean, colTotal As Long
 
-    title = CStr(mSheet.Cells(ROW_TITLE, 1).Value)
     mSheet.Cells.Clear
     mSheet.Cells.ClearComments
     mBase.Cells.Clear
@@ -285,32 +424,39 @@ Private Sub DrawLayout(ByVal acts As Collection, ByVal studs As Collection, ByVa
     mBase.Range("A1").Value = "courseId": mBase.Range("B1").Value = mCourseId
     mBase.Range("A2").Value = "sheet": mBase.Range("B2").Value = mSheet.Name
     mBase.Range("A3").Value = "shape": mBase.Range("B3").Value = sig
+    mBase.Range("A4").Value = "layout": mBase.Range("B4").Value = LAYOUT
 
-    WriteText mSheet.Cells(ROW_TITLE, 1), title
+    DrawFormHeader
     WriteText mSheet.Cells(ROW_HEAD, COL_CODE), T("hdrCode")
     WriteText mSheet.Cells(ROW_HEAD, COL_NAME), T("hdrName")
+    WriteText mSheet.Cells(ROW_MAX, COL_NAME), T("hdrMaxRow")
 
     mLastCol = FIRST_COL + acts.Count - 1
     mLastRow = FIRST_ROW + studs.Count - 1
+    colTotal = mLastCol + 1
+    WriteText mSheet.Cells(ROW_HEAD, colTotal), T("hdrTotal")
     If acts.Count > 0 Then ReDim closed(FIRST_COL To mLastCol)
     If studs.Count > 0 Then ReDim withdrawn(FIRST_ROW To mLastRow)
 
     j = 0
     For Each a In acts
         c = FIRST_COL + j
-        mColOf.Put a("id"), c
+        mColOf.Store a("id"), c
         mBase.Cells(1, c).Value = a("maxScore")
         closed(c) = Not IsNull(a("closedAt"))
         mBase.Cells(2, c).Value = IIf(closed(c), 1, 0)
         mBase.Cells(ROW_HEAD, c).Value = a("id")
-        WriteText mSheet.Cells(ROW_HEAD, c), a("name") & " " & T("hdrMax", JsonNum(a("maxScore")))
+        ' The name only: the id lives in the hidden _cmas sheet (row ROW_HEAD), which is
+        ' what the sync reads. In a 14-wide column a 25-character id wrapped over the name.
+        WriteText mSheet.Cells(ROW_HEAD, c), T("hdrActivity", CStr(j + 1)) & vbLf & a("name")
+        mSheet.Cells(ROW_MAX, c).Value = a("maxScore")
         j = j + 1
     Next a
 
     i = 0
     For Each s In studs
         r = FIRST_ROW + i
-        mRowOf.Put s("id"), r
+        mRowOf.Store s("id"), r
         mBase.Cells(r, 1).Value = s("id")
         withdrawn(r) = (s("status") = "WITHDRAWN")
         mBase.Cells(r, 2).Value = IIf(withdrawn(r), 1, 0)
@@ -328,7 +474,7 @@ Private Sub DrawLayout(ByVal acts As Collection, ByVal studs As Collection, ByVa
         For r = FIRST_ROW To mLastRow
             For c = FIRST_COL To mLastCol
                 If closed(c) Or withdrawn(r) Then
-                    mLocked.Put Key(r, c), True
+                    mLocked.Store Key(r, c), True
                     mSheet.Cells(r, c).Locked = True
                     mSheet.Cells(r, c).Interior.Color = GREY
                 End If
@@ -336,21 +482,81 @@ Private Sub DrawLayout(ByVal acts As Collection, ByVal studs As Collection, ByVa
         Next r
     End If
 
-    mSheet.Rows(ROW_HEAD).Font.Bold = True
-    mSheet.Rows(ROW_TITLE).Font.Bold = True
-    mSheet.Columns(COL_CODE).ColumnWidth = 14
-    mSheet.Columns(COL_NAME).ColumnWidth = 28
-    If mLastCol >= FIRST_COL Then
-        mSheet.Range(mSheet.Columns(FIRST_COL), mSheet.Columns(mLastCol)).ColumnWidth = 14
-        mSheet.Rows(ROW_HEAD).WrapText = True
+    ' Totals: a plain SUM, as on the paper form. CMAS works out the weighted
+    ' result itself; this column is never sent ("x" and blanks count as 0 here).
+    If acts.Count > 0 Then
+        For r = ROW_MAX To IIf(studs.Count > 0, mLastRow, ROW_MAX)
+            mSheet.Cells(r, colTotal).Formula = "=SUM(" & mSheet.Cells(r, FIRST_COL).Address(False, False) & _
+                                                ":" & mSheet.Cells(r, mLastCol).Address(False, False) & ")"
+        Next r
     End If
+    FormatTable colTotal, IIf(studs.Count > 0, mLastRow, ROW_MAX)
+End Sub
+
+' Rows 1-3 of the faculty's form. Nothing here is read back.
+Private Sub DrawFormHeader()
+    WriteText mSheet.Cells(ROW_TITLE, COL_FORM), T("formTitle")
+    WriteText mSheet.Cells(ROW_INFO, COL_FORM), T("formCode", mHdrCode)
+    WriteText mSheet.Cells(ROW_INFO, COL_CREDITS), T("formCredits", mHdrCredits)
+    WriteText mSheet.Cells(ROW_INFO, COL_TERM), mHdrTerm
+    WriteText mSheet.Cells(ROW_TEACH, COL_FORM), T("formName", mHdrName)
+    WriteText mSheet.Cells(ROW_TEACH, COL_TEACHERS), T("formTeachers", mHdrTeachers)
+    With mSheet.Range(mSheet.Cells(ROW_TITLE, 1), mSheet.Cells(ROW_TEACH, COL_TERM + 3))
+        .Font.Name = FORM_FONT
+        .Font.Size = 11
+        .VerticalAlignment = xlCenter
+    End With
+    With mSheet.Cells(ROW_TITLE, COL_FORM).Font
+        .Size = 14
+        .Bold = True
+    End With
+    mSheet.Rows(ROW_TITLE).RowHeight = 21.75
+    mSheet.Rows(ROW_INFO).RowHeight = 18
+    mSheet.Rows(ROW_TEACH).RowHeight = 22
+End Sub
+
+' Fonts, fills, borders and widths of rows 4 down, as on the form.
+Private Sub FormatTable(ByVal colTotal As Long, ByVal lastRow As Long)
+    Dim table As Range
+    Set table = mSheet.Range(mSheet.Cells(ROW_HEAD, 1), mSheet.Cells(lastRow, colTotal))
+    With table
+        .Font.Name = FORM_FONT
+        .Font.Size = 10
+        .Borders.LineStyle = xlContinuous
+        .Borders.Weight = xlThin
+        .Borders.Color = 0
+    End With
+    With mSheet.Range(mSheet.Cells(ROW_HEAD, 1), mSheet.Cells(ROW_HEAD, colTotal))
+        .Interior.Color = HEAD_FILL
+        .Font.Color = 16777215
+        .Font.Bold = True
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .WrapText = True
+    End With
+    With mSheet.Range(mSheet.Cells(ROW_MAX, 1), mSheet.Cells(ROW_MAX, colTotal))
+        .Interior.Color = MAX_FILL
+        .Font.Bold = True
+        .HorizontalAlignment = xlCenter
+    End With
+    If lastRow >= FIRST_ROW Then
+        mSheet.Range(mSheet.Cells(FIRST_ROW, COL_CODE), mSheet.Cells(lastRow, COL_CODE)).HorizontalAlignment = xlCenter
+        mSheet.Range(mSheet.Cells(FIRST_ROW, FIRST_COL), mSheet.Cells(lastRow, colTotal)).HorizontalAlignment = xlCenter
+    End If
+    mSheet.Rows(ROW_HEAD).RowHeight = 48
+    mSheet.Columns(COL_CODE).ColumnWidth = 14
+    mSheet.Columns(COL_NAME).ColumnWidth = 30
+    If colTotal > FIRST_COL Then
+        mSheet.Range(mSheet.Columns(FIRST_COL), mSheet.Columns(colTotal - 1)).ColumnWidth = 14
+    End If
+    mSheet.Columns(colTotal).ColumnWidth = 11
 End Sub
 
 ' Server values into the base everywhere, and into the visible sheet except
 ' where the instructor has an edit CMAS has not taken yet.
 Private Sub FillValues(ByVal acts As Collection, ByVal studs As Collection)
     Dim nA As Long, nS As Long, area As Range, baseArea As Range
-    Dim shown As Variant, base As Variant, i As Long, j As Long
+    Dim shown As Variant, baseVals As Variant, i As Long, j As Long
     Dim s As Variant, a As Variant, scores As Variant, v As Variant, k As String
     nA = acts.Count: nS = studs.Count
     If nA = 0 Or nS = 0 Then Exit Sub
@@ -358,7 +564,7 @@ Private Sub FillValues(ByVal acts As Collection, ByVal studs As Collection)
     Set area = mSheet.Range(mSheet.Cells(FIRST_ROW, FIRST_COL), mSheet.Cells(mLastRow, mLastCol))
     Set baseArea = mBase.Range(mBase.Cells(FIRST_ROW, FIRST_COL), mBase.Cells(mLastRow, mLastCol))
     shown = AsGrid(area.Value, nS, nA)
-    ReDim base(1 To nS, 1 To nA)
+    ReDim baseVals(1 To nS, 1 To nA)
 
     i = 0
     For Each s In studs
@@ -368,22 +574,22 @@ Private Sub FillValues(ByVal acts As Collection, ByVal studs As Collection)
         For Each a In acts
             j = j + 1
             If scores.Exists(CStr(a("id"))) Then v = scores(CStr(a("id"))) Else v = Null
-            base(i, j) = ToCell(v)
+            baseVals(i, j) = ToCell(v)
             k = Key(FIRST_ROW + i - 1, FIRST_COL + j - 1)
             If mConflict.Exists(k) Then
                 ' CMAS now holds what the instructor typed: nothing left to decide.
-                If Norm(shown(i, j)) = Norm(base(i, j)) Then
+                If Norm(shown(i, j)) = Norm(baseVals(i, j)) Then
                     mConflict.Remove k
                     ClearMark mSheet.Cells(FIRST_ROW + i - 1, FIRST_COL + j - 1)
                 End If
             ElseIf Not mDirty.Exists(k) Then
-                shown(i, j) = base(i, j)
+                shown(i, j) = baseVals(i, j)
             End If
         Next a
     Next s
 
     area.Value = shown
-    baseArea.Value = base
+    baseArea.Value = baseVals
 End Sub
 
 ' A Range.Value is a scalar for one cell and a 2-D array otherwise.
@@ -426,15 +632,15 @@ Public Sub OnSheetChange(ByVal Sh As Object, ByVal Target As Range)
                 If n = Norm(mBase.Cells(cell.Row, cell.Column).Value) Then
                     mDirty.Remove k
                 Else
-                    mDirty.Put k, True
+                    mDirty.Store k, True
                 End If
             End If
         End If
     Next cell
 
-    If bad Then MsgBox T("badValue"), vbExclamation, T("badValueTitle")
-    If locked Then MsgBox T("locked"), vbExclamation, "CMAS"
-    If mDirty.Count > 0 Then ScheduleFlush
+    If bad Then CmasMsg T("badValue"), vbExclamation, T("badValueTitle")
+    If locked Then CmasMsg T("locked"), vbExclamation
+    If mDirty.Count > 0 Then MarkActive: ScheduleFlush
 End Sub
 
 Private Sub Flush()
@@ -451,8 +657,8 @@ Private Sub Flush()
         If Norm(CellAt(k).Value) = "" And Norm(BaseAt(k).Value) <> "" Then clears.Add k
     Next k
     If clears.Count > 0 Then
-        If MsgBox(T("confirmClear", CStr(clears.Count)), _
-                  vbYesNo + vbExclamation + vbDefaultButton2, "CMAS") = vbNo Then
+        If CmasMsg(T("confirmClear", CStr(clears.Count)), _
+                   vbYesNo + vbExclamation + vbDefaultButton2) = vbNo Then
             For Each k In clears
                 RevertCell CellAt(k)
                 mDirty.Remove k
@@ -484,6 +690,7 @@ Private Sub Flush()
             BaseAt(k).Value = ToCell(FromNorm(Norm(CellAt(k).Value)))
             mDirty.Remove k
         Next k
+        AdoptOwnRevision resp
         SetLiveStatus
     Case 409
         TakeConflicts resp
@@ -494,10 +701,10 @@ Private Sub Flush()
         SetStatus T("stLost")
         Exit Sub
     Case 0, 429, 500 To 599
-        SetStatus T("stOffline")   ' kept; the next tick tries again
+        ShowHttp status            ' kept; the next tick tries again
         Exit Sub
     Case Else
-        MsgBox T("unexpected", CStr(status)), vbExclamation, "CMAS"
+        CmasMsg T("unexpected", CStr(status)), vbExclamation
         For Each k In sent
             RevertCell CellAt(k)
             mDirty.Remove k
@@ -505,10 +712,26 @@ Private Sub Flush()
     End Select
 
     ' A batch limit, or the cells that were fine in a refused batch: send the rest soon.
-    If mDirty.Count > 0 Then ScheduleFlush
+    If mDirty.Count > 0 Then MarkActive: ScheduleFlush
 End Sub
 
 ' 409: nothing was written. The cells somebody else changed turn red; the rest go again.
+' PUT answers with the revision this write produced. One more than the grid we
+' hold means nobody else wrote in between: the sheet already shows CMAS, so the
+' next tick need not reload it. Anything else (someone else wrote too, or no
+' number at all) leaves mRevision alone and the next tick reloads as before.
+Private Sub AdoptOwnRevision(ByVal resp As String)
+    Dim root As Variant, rev As Variant
+    If mRevision < 0 Then Exit Sub
+    On Error Resume Next
+    JsonParse resp, root
+    rev = JPath(root, "data", "revision")
+    If Err.Number = 0 And Not IsEmpty(rev) And Not IsNull(rev) Then
+        If CLng(rev) = mRevision + 1 Then mRevision = CLng(rev)
+    End If
+    Err.Clear
+End Sub
+
 Private Sub TakeConflicts(ByVal resp As String)
     Dim root As Variant, list As Variant, c As Variant, k As String, n As Long
     JsonParse resp, root
@@ -519,13 +742,13 @@ Private Sub TakeConflicts(ByVal resp As String)
         If k <> "" Then
             BaseAt(k).Value = ToCell(c("current"))
             mDirty.Remove k
-            mConflict.Put k, True
+            mConflict.Store k, True
             MarkConflict CellAt(k), c("current")
             n = n + 1
         End If
     Next c
     SetStatus T("stConflict", CStr(mConflict.Count))
-    If n > 0 Then MsgBox T("conflictMsg", CStr(n)), vbExclamation, "CMAS"
+    If n > 0 Then CmasMsg T("conflictMsg", CStr(n)), vbExclamation
 End Sub
 
 ' 422: nothing was written. The refused cells go back to CMAS's value, with the reasons.
@@ -542,11 +765,11 @@ Private Sub TakeRefusals(ByVal resp As String)
             mDirty.Remove k
             n = n + 1
             If n <= 5 Then
-                reasons = reasons & "- " & mSheet.Cells(RowOf(k), COL_CODE).Value & ": " & x("reason") & vbLf
+                reasons = reasons & mSheet.Cells(RowOf(k), COL_CODE).Value & "  " & x("reason") & vbLf
             End If
         End If
     Next x
-    If n > 0 Then MsgBox T("refusedMsg", CStr(n), reasons), vbExclamation, "CMAS"
+    If n > 0 Then CmasMsg T("refusedMsg", CStr(n), reasons), vbExclamation
 End Sub
 
 ' ---------------------------------------------------------------- red cells (ribbon)
@@ -554,17 +777,17 @@ End Sub
 ' "Use mine": CMAS's value is already the base, so sending now overwrites it on purpose.
 Public Sub CmasKeepMine()
     Dim cell As Range, k As String, n As Long
-    If Not Ready() Then MsgBox T("notConnected"), vbInformation, "CMAS": Exit Sub
+    If Not Ready() Then CmasMsg T("notConnected"), vbInformation: Exit Sub
     For Each cell In SelectedScoreCells()
         k = Key(cell.Row, cell.Column)
         If mConflict.Exists(k) Then
             mConflict.Remove k
             ClearMark cell
-            If Norm(cell.Value) <> Norm(mBase.Cells(cell.Row, cell.Column).Value) Then mDirty.Put k, True
+            If Norm(cell.Value) <> Norm(mBase.Cells(cell.Row, cell.Column).Value) Then mDirty.Store k, True
             n = n + 1
         End If
     Next cell
-    If n = 0 Then MsgBox T("noConflictHere"), vbInformation, "CMAS": Exit Sub
+    If n = 0 Then CmasMsg T("noConflictHere"), vbInformation: Exit Sub
     CmasFlushNow
 End Sub
 
@@ -580,7 +803,7 @@ Public Sub CmasTakeServer()
             n = n + 1
         End If
     Next cell
-    If n = 0 Then MsgBox T("noConflictHere"), vbInformation, "CMAS": Exit Sub
+    If n = 0 Then CmasMsg T("noConflictHere"), vbInformation: Exit Sub
     If mConflict.Count = 0 Then SetLiveStatus Else SetStatus T("stConflict", CStr(mConflict.Count))
 End Sub
 
@@ -602,24 +825,36 @@ End Function
 
 ' Reuse an open workbook that already holds this course (edits made offline included).
 Private Function AttachExistingBook(ByVal courseId As String) As Boolean
-    Dim wb As Workbook, ws As Worksheet
+    Dim wb As Workbook
     For Each wb In Application.Workbooks
-        Set ws = Nothing
-        On Error Resume Next
-        Set ws = wb.Worksheets(SHEET_BASE)
-        On Error GoTo 0
-        If Not ws Is Nothing Then
-            If CStr(ws.Range("B1").Value) = courseId Then
-                Set mBook = wb
-                Set mBase = ws
-                Set mSheet = VisibleSheet(wb, CStr(ws.Range("B2").Value))
-                RebuildMaps
-                Protect
-                AttachExistingBook = True
-                Exit Function
-            End If
+        If AttachBook(wb, courseId) Then
+            AttachExistingBook = True
+            Exit Function
         End If
     Next wb
+End Function
+
+' True when `wb` holds this course's base sheet; it then becomes the workbook synced.
+Private Function AttachBook(ByVal wb As Workbook, ByVal courseId As String) As Boolean
+    Dim ws As Worksheet
+    On Error Resume Next
+    Set ws = wb.Worksheets(SHEET_BASE)
+    On Error GoTo 0
+    If ws Is Nothing Then Exit Function
+    If CStr(ws.Range("B1").Value) <> courseId Then Exit Function
+    Set mBook = wb
+    Set mBase = ws
+    Set mSheet = VisibleSheet(wb, CStr(ws.Range("B2").Value))
+    If CStr(ws.Range("B4").Value) <> LAYOUT Then
+        ' Another layout: its coordinates mean something else. Keep who it is
+        ' for and let the next pull draw it afresh (edits not yet sent are lost).
+        ws.Cells.Clear
+        ws.Range("A1").Value = "courseId": ws.Range("B1").Value = courseId
+        ws.Range("A2").Value = "sheet": ws.Range("B2").Value = mSheet.Name
+    End If
+    RebuildMaps
+    Protect
+    AttachBook = True
 End Function
 
 ' The course sheet by the name recorded, or the first visible sheet if it was renamed.
@@ -636,8 +871,10 @@ Private Function VisibleSheet(ByVal wb As Workbook, ByVal recorded As String) As
     Set VisibleSheet = ws
 End Function
 
-Private Sub CreateBook(ByVal courseLabel As String)
-    Set mBook = Application.Workbooks.Add(xlWBATWorksheet)
+' Lays the course out in `wb`, or in a new workbook when it is Nothing.
+Private Sub CreateBook(ByVal courseLabel As String, ByVal wb As Workbook)
+    If wb Is Nothing Then Set wb = Application.Workbooks.Add(xlWBATWorksheet)
+    Set mBook = wb
     Set mSheet = mBook.Worksheets(1)
     mSheet.Name = SafeSheetName(courseLabel)
     Set mBase = mBook.Worksheets.Add(After:=mSheet)
@@ -646,7 +883,7 @@ Private Sub CreateBook(ByVal courseLabel As String)
     mBase.Range("A2").Value = "sheet": mBase.Range("B2").Value = mSheet.Name
     mBase.Visible = xlSheetVeryHidden
     mApplying = True
-    WriteText mSheet.Cells(ROW_TITLE, 1), courseLabel
+    DrawFormHeader
     mApplying = False
     mSheet.Activate
     ActiveWindow.FreezePanes = False
@@ -659,19 +896,19 @@ Private Sub RebuildMaps()
     InitState
     c = FIRST_COL
     Do While CStr(mBase.Cells(ROW_HEAD, c).Value) <> ""
-        mColOf.Put CStr(mBase.Cells(ROW_HEAD, c).Value), c
+        mColOf.Store CStr(mBase.Cells(ROW_HEAD, c).Value), c
         c = c + 1
     Loop
     mLastCol = c - 1
     r = FIRST_ROW
     Do While CStr(mBase.Cells(r, 1).Value) <> ""
-        mRowOf.Put CStr(mBase.Cells(r, 1).Value), r
+        mRowOf.Store CStr(mBase.Cells(r, 1).Value), r
         r = r + 1
     Loop
     mLastRow = r - 1
     For r = FIRST_ROW To mLastRow
         For c = FIRST_COL To mLastCol
-            If mBase.Cells(2, c).Value = 1 Or mBase.Cells(r, 2).Value = 1 Then mLocked.Put Key(r, c), True
+            If mBase.Cells(2, c).Value = 1 Or mBase.Cells(r, 2).Value = 1 Then mLocked.Store Key(r, c), True
         Next c
     Next r
 End Sub
@@ -688,7 +925,7 @@ Private Sub CollectOfflineEdits()
                 If mLocked.Exists(k) Or Not IsAllowed(n, c) Then
                     RevertCell mSheet.Cells(r, c)
                 Else
-                    mDirty.Put k, True
+                    mDirty.Store k, True
                 End If
             End If
         Next c
@@ -878,11 +1115,15 @@ Private Sub SetStatus(ByVal text As String)
     On Error Resume Next
     was = mApplying
     mApplying = True
-    WriteText mSheet.Cells(ROW_STATUS, 1), text
-    mSheet.Cells(ROW_STATUS, 1).Font.Italic = True
+    WriteText mSheet.Cells(ROW_TITLE, COL_STATUS), text
+    With mSheet.Cells(ROW_TITLE, COL_STATUS).Font
+        .Name = FORM_FONT
+        .Size = 10
+        .Italic = True
+    End With
     mApplying = was
     ' The status row is what works on both platforms; the status bar is a bonus.
-    Application.StatusBar = "CMAS: " & text
+    Application.StatusBar = "CMAS  " & text
 End Sub
 
 Private Sub SetLiveStatus()

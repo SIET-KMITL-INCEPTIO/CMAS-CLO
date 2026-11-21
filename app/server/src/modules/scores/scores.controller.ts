@@ -29,10 +29,13 @@ export class ScoreController {
     // FR-76: a write by the Excel add-in is labelled EXCEL in the history. Set
     // here from the token, never taken from the body, so the label is true.
     const source = req.excelCourseId ? ("EXCEL" as const) : body.source
-    return ok(
-      reply,
-      await this.service.put(authorizedCourseId(req), { ...body, source }, callerOf(req).userId),
+    const result = await this.service.put(
+      authorizedCourseId(req),
+      { ...body, source },
+      callerOf(req).userId,
     )
+    req.revisionBumped = result.revision !== null
+    return ok(reply, result)
   }
 
   template = async (req: FastifyRequest, reply: FastifyReply) => {

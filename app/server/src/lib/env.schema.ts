@@ -43,6 +43,25 @@ export const envSchema = z
     MAIL_FROM: z.string().min(1).default("CMAS <no-reply@kmitl.ac.th>"),
     RATE_LIMIT_MAX: z.coerce.number().default(100),
     RATE_LIMIT_WINDOW: z.string().default("1 minute"),
+    // Requests carrying an Excel add-in token, per IP per RATE_LIMIT_WINDOW, in a bucket of
+    // their own (middlewares/rate-limit.ts). One workbook polls every 3 s while in use (about
+    // 25 requests a minute with its writes), so 1200 lets ~45 instructors share one campus IP.
+    RATE_LIMIT_EXCEL_MAX: z.coerce.number().int().positive().default(1200),
+    // Fastify's trustProxy. Unset: X-Forwarded-* is ignored and req.ip is the socket's
+    // address, which behind a reverse proxy is the proxy itself, so every user would share
+    // one rate-limit bucket. Set it to what sits in front: "true" (any), a hop count ("1"),
+    // or the proxy's addresses / CIDRs ("10.0.0.0/8,127.0.0.1"). Never "true" on a server
+    // reachable without the proxy: a client could then claim any IP.
+    TRUST_PROXY: z
+      .string()
+      .optional()
+      .transform((v): boolean | number | string => {
+        const s = v?.trim() ?? ""
+        if (s === "" || s === "false") return false
+        if (s === "true") return true
+        if (/^\d+$/.test(s)) return Number(s)
+        return s
+      }),
     // POST /auth/refresh per IP per 15 minutes. Only the E2E job raises it: its
     // browser makes every page load from one IP.
     AUTH_REFRESH_LIMIT_MAX: z.coerce.number().int().positive().default(30),

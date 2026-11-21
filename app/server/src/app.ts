@@ -15,6 +15,7 @@ import { env } from "./lib/env.js"
 import { errorHandler } from "./middlewares/error-handler.middleware.js"
 import { accessHook, assertRouteDeclaresAccess } from "./middlewares/access.middleware.js"
 import { captureCreatedCourse, publishCourseChange } from "./middlewares/live-updates.middleware.js"
+import { rateLimitKey, rateLimitMax } from "./middlewares/rate-limit.js"
 import { registerRoutes } from "./modules/index.js"
 
 /** SRS §5.2 · G-1: every route lives under this prefix, including /health. */
@@ -41,7 +42,19 @@ type BuildOptions = {
 }
 
 export async function buildApp(options: BuildOptions = {}) {
-  const app = Fastify({ logger: options.logger ?? defaultLogger() })
+  // Typed up front: a union-typed trustProxy otherwise steers Fastify's overloads to HTTP/2.
+  const serverOptions: FastifyServerOptions = {
+    logger: options.logger ?? defaultLogger(),
+    // A hop count is given as a function: Fastify's types take no number.
+    trustProxy:
+      typeof env.TRUST_PROXY === "number"
+        ? (
+            (hops: number) => (_address: string, hop: number) =>
+              hop < hops
+          )(env.TRUST_PROXY)
+        : env.TRUST_PROXY,
+  }
+  const app = Fastify(serverOptions)
 
   // Registered before any route so it sees every one of them (A-6).
   app.addHook("onRoute", assertRouteDeclaresAccess)
@@ -58,7 +71,11 @@ export async function buildApp(options: BuildOptions = {}) {
     // it the client never sees an export's file name and falls back to a generic one.
     exposedHeaders: ["Content-Disposition"],
   })
-  await app.register(rateLimit, { max: env.RATE_LIMIT_MAX, timeWindow: env.RATE_LIMIT_WINDOW })
+  await app.register(rateLimit, {
+    keyGenerator: rateLimitKey,
+    max: rateLimitMax(env.RATE_LIMIT_MAX, env.RATE_LIMIT_EXCEL_MAX),
+    timeWindow: env.RATE_LIMIT_WINDOW,
+  })
   await app.register(multipart, { limits: { fileSize: 10 * 1024 * 1024 } }) // 10MB cap for Excel uploads
 
   app.setErrorHandler(errorHandler)

@@ -19,7 +19,7 @@ Public Sub SpikeStopListening()
     Application.StatusBar = False
 End Sub
 
-' S5: Application.OnTime keeps firing every 10 seconds (the polling interval).
+' S5: Application.OnTime keeps firing on schedule (the add-in polls every 3-10 seconds).
 Public Sub SpikeTimer()
     mTicks = 0
     SpikeTick

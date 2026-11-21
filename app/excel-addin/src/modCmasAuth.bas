@@ -6,6 +6,10 @@ Attribute VB_Name = "modCmasAuth"
 '   3. CmasPollToken asks every 5 seconds (Application.OnTime) until the
 '      server hands over a token for that one course, then sync starts.
 '
+' In a score workbook (modCmasWorkbook) the first open skips steps 1-2:
+' the file's ticket is a code CMAS approved when it was downloaded. Later
+' opens get a fresh code, and the browser opens on it with the course chosen.
+'
 ' The token lives in this module's memory ONLY: never in a cell, a name, a
 ' document property, a file or the registry. Closing Excel ends it; the
 ' instructor can also cut it from the web page at any time. The CMAS address
@@ -20,6 +24,8 @@ Private mDeviceCode As String
 Private mDeadline As Date
 Private mToken As String
 Private mCourseId As String
+' The device code came from a score workbook's ticket, not from /excel/device.
+Private mFromTicket As Boolean
 
 Public Property Get CmasBaseUrl() As String
     CmasBaseUrl = mBaseUrl
@@ -39,32 +45,77 @@ Public Sub CmasForgetToken()
 End Sub
 
 Public Sub CmasConnect()
-    Dim body As String, status As Long, root As Variant, address As String
-    address = GetSetting(SETTINGS_APP, SETTINGS_SECTION, "BaseUrl", "")
-    address = InputBox(T("askUrl"), "CMAS", IIf(address = "", "https://", address))
-    If Trim$(address) = "" Then Exit Sub
-    address = Trim$(address)
-    If Right$(address, 1) = "/" Then address = Left$(address, Len(address) - 1)
-    ' People paste the web page's address; the API lives under /api/v1.
-    If Right$(LCase$(address), 7) <> "/api/v1" Then address = address & "/api/v1"
-    mBaseUrl = address
-
-    CmasStopSync
-    mToken = ""
-    status = SafeRequest("POST", mBaseUrl & "/excel/device", "", "", body)
-    If status <> 201 Then
-        MsgBox T("startFail", CStr(status)), vbExclamation, "CMAS"
+    Dim address As String
+    If CmasIsWorkbook() Then
+        ConnectWorkbook
         Exit Sub
     End If
-    SaveSetting SETTINGS_APP, SETTINGS_SECTION, "BaseUrl", Replace(mBaseUrl, "/api/v1", "")
+    address = GetSetting(SETTINGS_APP, SETTINGS_SECTION, "BaseUrl", "")
+    address = CmasAsk(T("askUrl"), "CMAS", IIf(address = "", "https://", address))
+    If Trim$(address) = "" Then Exit Sub
+    mBaseUrl = ApiUrl(address)
+    CmasStopSync
+    mToken = ""
+    If StartDeviceCode(False) Then
+        SaveSetting SETTINGS_APP, SETTINGS_SECTION, "BaseUrl", Replace(mBaseUrl, "/api/v1", "")
+    End If
+End Sub
 
+' A score workbook knows its CMAS and its course. On the first open its ticket
+' signs it in with no code at all; after that the browser opens on the approve
+' page with the code and the course already filled in.
+Private Sub ConnectWorkbook()
+    Dim ticket As String
+    mBaseUrl = ApiUrl(CmasProp("CmasApi"))
+    CmasStopSync
+    mToken = ""
+    ticket = CmasProp("CmasTicket")
+    If ticket <> "" Then
+        CmasForgetTicket
+        mDeviceCode = ticket
+        mDeadline = Now + TimeSerial(0, 10, 0)
+        mFromTicket = True
+        CmasPollToken
+        Exit Sub
+    End If
+    StartDeviceCode True
+End Sub
+
+' People paste the web page's address; the API lives under /api/v1.
+Private Function ApiUrl(ByVal address As String) As String
+    address = Trim$(address)
+    If Right$(address, 1) = "/" Then address = Left$(address, Len(address) - 1)
+    If Right$(LCase$(address), 7) <> "/api/v1" Then address = address & "/api/v1"
+    ApiUrl = address
+End Function
+
+' Asks CMAS for a code, shows it (or opens the browser on it) and starts polling.
+Private Function StartDeviceCode(ByVal openBrowser As Boolean) As Boolean
+    Dim body As String, status As Long, root As Variant
+    Dim verifyUrl As String, userCode As String
+    mFromTicket = False
+    status = SafeRequest("POST", mBaseUrl & "/excel/device", "", "", body)
+    If status <> 201 Then
+        CmasMsg T("startFail", CStr(status)), vbExclamation
+        Exit Function
+    End If
     JsonParse body, root
     mDeviceCode = JPath(root, "data", "deviceCode")
+    verifyUrl = CStr(JPath(root, "data", "verifyUrl"))
+    userCode = CStr(JPath(root, "data", "userCode"))
     mDeadline = Now + TimeSerial(0, 10, 0)
-    MsgBox T("showCode", CStr(JPath(root, "data", "verifyUrl")), CStr(JPath(root, "data", "userCode"))), _
-           vbInformation, "CMAS"
+    If openBrowser Then
+        CmasMsg T("wbApprove", verifyUrl, userCode), vbInformation
+        On Error Resume Next
+        ThisWorkbook.FollowHyperlink verifyUrl & "?code=" & userCode & "&course=" & CmasProp("CmasCourseId")
+        Err.Clear
+        On Error GoTo 0
+    Else
+        CmasMsg T("showCode", verifyUrl, userCode), vbInformation
+    End If
     SchedulePoll
-End Sub
+    StartDeviceCode = True
+End Function
 
 Private Sub SchedulePoll()
     ' Qualified with the add-in's name: an unqualified name may resolve to a
@@ -77,7 +128,7 @@ Public Sub CmasPollToken()
     If mDeviceCode = "" Then Exit Sub
     If Now > mDeadline Then
         mDeviceCode = ""
-        MsgBox T("expired"), vbExclamation, "CMAS"
+        CmasMsg T("expired"), vbExclamation
         Exit Sub
     End If
 
@@ -94,12 +145,26 @@ Public Sub CmasPollToken()
             label = JPath(root, "data", "course", "code") & " " & JPath(root, "data", "course", "name") & _
                     " Sec " & JPath(root, "data", "course", "section")
             mDeviceCode = ""
+            mFromTicket = False
+            ' A score workbook belongs to one course; the approve page lets a
+            ' person pick another, which must not be drawn into this file.
+            If CmasIsWorkbook() And mCourseId <> CmasProp("CmasCourseId") Then
+                mToken = ""
+                mCourseId = ""
+                CmasMsg T("wbWrongCourse", CmasProp("CmasCourseLabel")), vbExclamation
+                Exit Sub
+            End If
             CheckVersion
             CmasStartSync mCourseId, label
             Exit Sub
         Case "expired"
             mDeviceCode = ""
-            MsgBox T("expired"), vbExclamation, "CMAS"
+            ' An old or already used ticket: sign in with a fresh code instead.
+            If mFromTicket Then
+                StartDeviceCode True
+                Exit Sub
+            End If
+            CmasMsg T("expired"), vbExclamation
             Exit Sub
         End Select
     End If
@@ -113,6 +178,7 @@ Public Sub CmasDisconnect()
     mToken = ""
     mCourseId = ""
     mDeviceCode = ""
+    mFromTicket = False
     Application.StatusBar = False
 End Sub
 
@@ -122,10 +188,17 @@ Private Sub CheckVersion()
     If SafeRequest("GET", mBaseUrl & "/excel/addin", "", "", body) <> 200 Then Exit Sub
     On Error Resume Next
     JsonParse body, root
-    latest = CStr(JPath(root, "data", "version"))
+    If CmasIsWorkbook() Then
+        latest = CStr(JPath(root, "data", "workbook", "version"))
+    Else
+        latest = CStr(JPath(root, "data", "version"))
+    End If
     On Error GoTo 0
-    If latest <> "" And latest <> CMAS_ADDIN_VERSION Then
-        MsgBox T("newVersion", latest, CMAS_ADDIN_VERSION), vbInformation, "CMAS"
+    If latest = "" Or latest = CMAS_ADDIN_VERSION Then Exit Sub
+    If CmasIsWorkbook() Then
+        CmasMsg T("newWorkbook", latest, CMAS_ADDIN_VERSION), vbInformation
+    Else
+        CmasMsg T("newVersion", latest, CMAS_ADDIN_VERSION), vbInformation
     End If
 End Sub
 

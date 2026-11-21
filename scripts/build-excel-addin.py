@@ -3,9 +3,12 @@
     python scripts/build-excel-addin.py text            write src/modCmasText.bas from text/th.json
     python scripts/build-excel-addin.py text --check    exit 1 if modCmasText.bas is out of date
     python scripts/build-excel-addin.py check           static checks on src/ (CI runs this)
-    python scripts/build-excel-addin.py package IN.xlam [--out dist/CMAS.xlam]
+    python scripts/build-excel-addin.py package IN.xlam [--out release/CMAS.xlam]
                                                         add the ribbon to an .xlam built in Excel,
                                                         print its SHA-256 for addin-release.ts
+    python scripts/build-excel-addin.py package-workbook IN.xlsm [--out release/CMAS-template.xlsm]
+                                                        the same for the score workbook template;
+                                                        print its SHA-256 for WORKBOOK_RELEASE
 
 Why a generator: the VBA editor stores a module in the machine's code page, so
 Thai written straight into a .bas file turns into question marks on another
@@ -125,7 +128,22 @@ FORBIDDEN = [
     (re.compile(r"(^|[^.\w])Shell\s*\(?", re.I), "no Shell: the add-in never runs programs"),
     (re.compile(r"SetOption|IgnoreCert|SslErrorIgnore|Option\(4\)", re.I), "never switch off certificate checks"),
     (re.compile(r"SaveSetting[^\n]*(Token|token)"), "the token must never be written anywhere"),
+    # `Put` as a method name failed to compile ("Method or data member not found"):
+    # these are VBA file-I/O statements, so never name a Sub, Function or property after one.
+    (
+        re.compile(
+            r"^\s*(?:(?:Public|Private|Friend)\s+)?(?:Static\s+)?(?:Sub|Function|Property\s+(?:Get|Let|Set))\s+"
+            r"(?:Put|Get|Open|Close|Print|Write|Input|Seek|Lock|Unlock|Reset|Name|Line|Width)\b",
+            re.I,
+        ),
+        "a procedure named like a VBA statement (Put, Get, Open, Close, ...) does not compile reliably; rename it",
+    ),
+    (re.compile(r"\bTypeOf\b", re.I), "use TypeName(): TypeOf on a Variant is not portable across VBA versions"),
 ]
+# VBA's MsgBox / InputBox turn Thai into "?" on a Windows whose non-Unicode
+# language is not Thai; only modCmasUi may call them (and wraps them).
+ANSI_UI = re.compile(r"(?<![.\w])(MsgBox|InputBox)\b", re.I)
+ANSI_UI_ALLOWED = {"modCmasUi"}
 BLOCK_OPEN = re.compile(
     r"^\s*(?:(?:Public|Private|Friend)\s+)?(?:Static\s+)?(Sub|Function|Property\s+(?:Get|Let|Set))\s+\w+",
     re.I,
@@ -133,8 +151,37 @@ BLOCK_OPEN = re.compile(
 BLOCK_CLOSE = re.compile(r"^\s*End\s+(Sub|Function|Property)\b", re.I)
 
 
-def check_sources() -> list[str]:
+def check_content_type() -> list[str]:
+    """Content-Type must only be set together with a body.
+
+    A JSON Content-Type with an empty body is a 400 from the server, which
+    failed POST /excel/device, the first call of every sign-in. app.inject()
+    in the server's tests never sends the header without a body, so only this
+    check and a real client notice.
+    """
     problems: list[str] = []
+    http = ADDIN / "src" / "modCmasHttp.bas"
+    lines = http.read_bytes().decode("ascii").split("\r\n")
+    for n, line in enumerate(lines):
+        if "SetRequestHeader" in line and "Content-Type" in line and not line.lstrip().startswith("'"):
+            guard = next((l for l in reversed(lines[:n]) if re.match(r"^\s*(If|Else|ElseIf)\b", l)), "")
+            if not re.match(r"^\s*If Len\(body\) > 0 Then\s*$", guard):
+                problems.append(f"{http.relative_to(ROOT).as_posix()}:{n + 1}: Content-Type is set without a body; set it inside `If Len(body) > 0 Then`")
+    mac = ADDIN / "mac" / "CMAS.applescript"
+    inside = False
+    for n, line in enumerate(mac.read_text("utf-8").splitlines()):
+        s = line.strip()
+        if re.match(r'^if theBody is not "" then$', s):
+            inside = True
+        elif s == "end if":
+            inside = False
+        elif "Content-Type" in s and not s.startswith("--") and not inside:
+            problems.append(f"{mac.relative_to(ROOT).as_posix()}:{n + 1}: Content-Type is set without a body; set it inside `if theBody is not \"\" then`")
+    return problems
+
+
+def check_sources() -> list[str]:
+    problems: list[str] = check_content_type()
     files = sorted((ADDIN / "src").glob("*.bas")) + sorted((ADDIN / "src").glob("*.cls"))
     names: set[str] = set()
     for path in files:
@@ -169,6 +216,8 @@ def check_sources() -> list[str]:
             for pattern, why in FORBIDDEN:
                 if not line.lstrip().startswith("'") and pattern.search(line):
                     problems.append(f"{rel}:{n}: {why}")
+            if path.stem not in ANSI_UI_ALLOWED and not line.lstrip().startswith("'") and ANSI_UI.search(line):
+                problems.append(f"{rel}:{n}: use CmasMsg / CmasAsk: MsgBox and InputBox show Thai as '?' on some Windows")
         if depth != 0:
             problems.append(f"{rel}: a procedure is never closed")
     if render_text_module(load_strings()) != (TEXT_BAS.read_bytes().decode("ascii") if TEXT_BAS.exists() else ""):
@@ -195,6 +244,21 @@ def add_ribbon_relationship(rels: str) -> str:
     return rels.replace("</Relationships>", rel + "</Relationships>")
 
 
+def anonymise_core(xml: str) -> str:
+    """The published file must not carry the name of whoever saved it in Excel."""
+    for tag in ("dc:creator", "cp:lastModifiedBy"):
+        xml = re.sub(rf"<{tag}>[^<]*</{tag}>", f"<{tag}>CMAS</{tag}>", xml)
+    return xml
+
+
+ABS_PATH = re.compile(r"<mc:AlternateContent[^>]*>(?:(?!</mc:AlternateContent>).)*?<x15ac:absPath .*?</mc:AlternateContent>", re.S)
+
+
+def anonymise_workbook(xml: str) -> str:
+    """Excel records the folder the file was saved in (under the user's profile) in workbook.xml."""
+    return ABS_PATH.sub("", xml)
+
+
 def package(src: Path, out: Path) -> str:
     """Copy `src` to `out` with the ribbon added. Returns the SHA-256 of `out`."""
     with zipfile.ZipFile(src) as zin:
@@ -211,11 +275,38 @@ def package(src: Path, out: Path) -> str:
                 data = zin.read(info.filename)
                 if info.filename == "_rels/.rels":
                     data = add_ribbon_relationship(data.decode("utf-8")).encode("utf-8")
+                elif info.filename == "docProps/core.xml":
+                    data = anonymise_core(data.decode("utf-8")).encode("utf-8")
+                elif info.filename == "xl/workbook.xml":
+                    data = anonymise_workbook(data.decode("utf-8")).encode("utf-8")
                 zout.writestr(info, data)
             zout.writestr(RIBBON_PART, RIBBON_XML.read_bytes())
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(buf.getvalue())
     return hashlib.sha256(out.read_bytes()).hexdigest()
+
+
+WORKBOOK_MAIN = "application/vnd.ms-excel.sheet.macroEnabled.main+xml"
+STAMPED = "docProps/custom.xml"
+
+
+def cmd_package_workbook(src: Path, out: Path) -> int:
+    """The score workbook template: an ordinary .xlsm, never a stamped download."""
+    if not src.exists():
+        raise SystemExit(f"{src} not found")
+    with zipfile.ZipFile(src) as z:
+        types = z.read("[Content_Types].xml").decode("utf-8")
+        if WORKBOOK_MAIN not in types:
+            raise SystemExit(f"{src} is not a macro-enabled workbook: Save As > Excel Macro-Enabled Workbook (*.xlsm)")
+        if STAMPED in z.namelist() and "CmasTicket" in z.read(STAMPED).decode("utf-8"):
+            raise SystemExit(f"{src} is a downloaded workbook (it carries a ticket); build the template from a fresh one")
+    if src.resolve() == out.resolve():
+        shutil.copyfile(src, src.with_suffix(".orig.xlsm"))
+    digest = package(src, out)
+    print(f"wrote {out}")
+    print(f"sha256 {digest}")
+    print("next: put this sha256 in WORKBOOK_RELEASE in app/server/src/modules/excel/addin-release.ts")
+    return 0
 
 
 def cmd_package(src: Path, out: Path) -> int:
@@ -238,12 +329,17 @@ def main() -> int:
     sub.add_parser("check")
     p = sub.add_parser("package")
     p.add_argument("xlam", type=Path)
-    p.add_argument("--out", type=Path, default=ADDIN / "dist" / "CMAS.xlam")
+    p.add_argument("--out", type=Path, default=ADDIN / "release" / "CMAS.xlam")
+    w = sub.add_parser("package-workbook")
+    w.add_argument("xlsm", type=Path)
+    w.add_argument("--out", type=Path, default=ADDIN / "release" / "CMAS-template.xlsm")
     args = parser.parse_args()
     if args.cmd == "text":
         return cmd_text(args.check)
     if args.cmd == "check":
         return cmd_check()
+    if args.cmd == "package-workbook":
+        return cmd_package_workbook(args.xlsm, args.out)
     return cmd_package(args.xlam, args.out)
 
 

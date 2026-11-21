@@ -24,6 +24,7 @@ export type GridMeta = {
   progress: Record<string, { scored: number; total: number }>
 }
 export type Grid = { activities: GridActivity[]; students: GridStudent[]; meta: GridMeta }
+// `data.course` (the header of the Excel form) is read by the add-in only; the web app ignores it.
 
 export type CellWrite = {
   studentId: string

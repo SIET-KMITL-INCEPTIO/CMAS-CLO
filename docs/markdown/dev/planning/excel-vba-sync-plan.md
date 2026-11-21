@@ -14,7 +14,7 @@ See also: [[srs]] · [[api-design]] · [[code-rule]]
 | ตรวจชนกัน | ใช้ `from` ของ PUT ที่มีอยู่ (D-3) | ไม่ต้องเพิ่ม `Score.version`: PUT ตอบ 409 ทั้งชุดเมื่อค่าในฐานข้อมูลไม่ตรงกับ `from` อยู่แล้ว (ค่าเดิมซ้ำแบบ A→B→A ถือว่าไม่ชน ซึ่งปลอดภัยเพราะค่าเท่ากัน) |
 | ตรวจการเปลี่ยนแปลง | `Course.revision` | ขยับที่ `publishCourseChange` จุดเดียว ซึ่งทุกการเขียนที่สำเร็จผ่านอยู่แล้ว · ไม่ต้องตามแก้ทุก service |
 | เซ็นโค้ด | ไม่มี certificate | แจกจากหน้า CMAS ที่ต้องล็อกอิน + SHA-256 · สคริปต์ติดตั้งลบ MOTW / quarantine · "CMAS ไม่ส่ง add-in ทางอีเมล" |
-| real time | polling ทุก 10 วินาที | VBA รับ SSE ไม่ได้ · CMAS → Excel ≈ 12 วินาที · Excel → CMAS ≤ 3 วินาที |
+| real time | polling ทุก 3 วินาทีขณะใช้งาน (2 นาทีหลังมีการแก้ฝั่งใดฝั่งหนึ่ง) · ทุก 10 วินาทีเมื่อว่าง (ปรับ 21 พ.ย. 2569 จากเดิมทุก 10 วินาที) | VBA รับ SSE ไม่ได้ และคำขอแต่ละครั้งทำให้ Excel ค้างชั่วครู่ จึงไม่ถามถี่ตลอดเวลา · CMAS → Excel ≈ 4 วินาทีขณะใช้งาน, ≈ 12 วินาทีเมื่อว่าง · Excel → CMAS ≤ 2 วินาที · คำขอที่มีโทเคน Excel นับ rate limit แยกจากหน้าเว็บ (ต่อ IP, `RATE_LIMIT_EXCEL_MAX` 1200/นาที) ไม่งั้นหลายเครื่องหลัง NAT เดียวจะกินโควตา 100/นาทีของหน้าเว็บ · หลัง reverse proxy ต้องตั้ง `TRUST_PROXY` · PUT คะแนนตอบเลข revision ของการเขียนนั้น Excel จึงไม่โหลดตารางซ้ำหลังเขียนเอง |
 | แยกโค้ดจากข้อมูล | `CMAS.xlam` + `.xlsx` | ไฟล์คะแนนไม่มีมาโคร จึงไม่ต้องกด Enable Content · ปฏิเสธ `.xlsm` ตอนนำเข้าได้เหมือนเดิม |
 | การเข้าสู่ระบบ | device code | ไม่มีความลับให้พิมพ์หรือคัดลอก จึงไม่หลุดไปอยู่ในเซลล์ อีเมล หรือภาพหน้าจอ |
 
@@ -26,7 +26,7 @@ See also: [[srs]] · [[api-design]] · [[code-rule]]
 | **P1** นำเข้าแน่นขึ้น | `lib/xlsx-container.ts`: ปฏิเสธมาโคร · ZIP ที่ไม่ใช่ .xlsx · zip bomb (วัดขนาดจริงตอนแตก) | ✅ unit test 18 ข้อ |
 | **P2** auth | `modules/excel/*` · migration 0011 · `excelTokenAllows` · หน้า `/excel/link` | ✅ unit test · ✅ migration ผ่าน CI · ⬜ เทสต์ DB ใหม่ (`excel.db.test.ts`, isolation) ยังไม่เคยรัน |
 | **P3** สัญญาการซิงก์ | migration 0012: `Course.revision` + `ScoreChangeSource.EXCEL` · `GET /courses/:courseId/revision` · ขยับเลขใน `publishCourseChange` · PUT จาก token ติดป้าย `EXCEL` เอง | ✅ unit test · ⬜ เทสต์ DB ยังไม่เคยรัน |
-| **P4** add-in (Windows) | `modCmasSync`: ชีตรายวิชา · ดึงทุก 10 วิ · ส่ง 2 วิหลังแก้ · ช่องแดงเมื่อชน · ยืนยันการลบ · ช่องเทาแก้ไม่ได้ · แก้ตอนออฟไลน์แล้วส่งภายหลัง · ribbon · ข้อความไทยจาก `text/th.json` | ✅ เขียนแล้ว · ✅ `build-excel-addin.py check` (CI) · ⬜ **ยังไม่เคยคอมไพล์หรือรันใน Excel** |
+| **P4** add-in (Windows) | `modCmasSync`: ชีตรายวิชา · ดึงทุก 3 วิขณะใช้งาน / 10 วิเมื่อว่าง · ส่ง 1 วิหลังแก้ · ช่องแดงเมื่อชน · ยืนยันการลบ · ช่องเทาแก้ไม่ได้ · แก้ตอนออฟไลน์แล้วส่งภายหลัง · ribbon · ข้อความไทยจาก `text/th.json` | ✅ เขียนแล้ว · ✅ `build-excel-addin.py check` (CI) · ⬜ **ยังไม่เคยคอมไพล์หรือรันใน Excel** |
 | **P5** add-in (Mac) | โค้ดชุดเดียวกับ P4 (ไม่มี ActiveX ไม่มี Dictionary) · HTTP ผ่าน `CMAS.applescript` · `install.sh` | ✅ เขียนแล้ว · ⬜ **ยังไม่เคยรันบน Mac** |
 
 ## 3. ข้อจำกัดของ VBA และวิธีแก้ (ที่ทำแล้วใน P0–P5)
