@@ -71,3 +71,10 @@ export const useReopenActivity = () =>
 
 export const useCommitScoreImport = (courseId: string) =>
   useScoreWrite((previewToken: string) => scoresApi.commitImport(courseId, previewToken))
+
+/** One page of the score change log (A-12): newest first, read-only. */
+export const useScoreChanges = (courseId: string, page: number) =>
+  useQuery({
+    queryKey: [...courseKeys.one(courseId), "score-changes", page],
+    queryFn: () => scoresApi.changes(courseId, page),
+  })
