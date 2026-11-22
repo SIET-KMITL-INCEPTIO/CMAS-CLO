@@ -31,13 +31,13 @@ export default defineConfig({
       // files, which this job does not run. Aim:
       // toward dev.md §11.1 (computation 90% · services 80% · validators 90%).
       // Lowering one needs a reason in the PR (ci-cd-plan.md §5.3).
-      // 2026-11-22 (refactor-plan.md P0): dashboard, scores and courses service tests
-      // took the unit run from 45.3 / 86.8 / 33.7 to 59.0 / 88.7 / 43.4 (lines / branches / functions).
+      // 2026-11-22 (refactor-plan.md P0): characterization tests for the services took the
+      // unit run from 45.3 / 86.8 / 33.7 to 69.5 / 91.1 / 54.2 (lines / branches / functions).
       thresholds: {
-        lines: 58,
-        statements: 58,
-        functions: 42,
-        branches: 88,
+        lines: 68,
+        statements: 68,
+        functions: 53,
+        branches: 90,
         // jwt, env, response, errors; attainment and weights join when they land.
         "src/lib/**": { lines: 70, statements: 70, functions: 56, branches: 87 },
       },

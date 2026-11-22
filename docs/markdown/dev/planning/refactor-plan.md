@@ -2,7 +2,7 @@
 
 See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 
-> **สร้าง:** 2026-11-22 · **สถานะ:** P0 กำลังทำบน branch `refactor/characterization-tests`
+> **สร้าง:** 2026-11-22 · **สถานะ:** P0 เสร็จบน branch `refactor/characterization-tests` (รอ PR)
 > **ตรวจกับ:** `develop` ที่ `1eb52a9` (สแกนด้วย grep/wc ณ วันที่สร้าง)
 
 ---
@@ -52,4 +52,6 @@ See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 | วันที่ | เฟส | สิ่งที่ทำ |
 |---|---|---|
 | 2026-11-22 | P0 | สร้าง branch และแผนนี้ |
-| 2026-11-22 | P0 | test ของ `dashboard` (18) · `scores` (16) · `courses` (23) แต่ละไฟล์ fail เมื่อใส่ bug ทดลองหนึ่งจุด · unit coverage server จาก 45.3 / 86.8 / 33.7 เป็น 59.0 / 88.7 / 43.4 (lines / branches / functions) · เกณฑ์ขึ้นเป็น 58 / 88 / 42 · ที่เหลือของ P0: `activities` · `clos` · `grading` · `students` · `session` |
+| 2026-11-22 | P0 | test ของ `dashboard` (18) · `scores` (16) · `courses` (23) แต่ละไฟล์ fail เมื่อใส่ bug ทดลองหนึ่งจุด · unit coverage server จาก 45.3 / 86.8 / 33.7 เป็น 59.0 / 88.7 / 43.4 (lines / branches / functions) |
+| 2026-11-22 | P0 เสร็จ | เพิ่ม test ของ `grading` (28) · `students` (18) · `activities` (26) · `clos` (19) · `session` (24) ทดลองใส่ bug ทีละ service แล้ว fail ทุกตัว · ทั้ง 8 service ครอบคลุม 98–100% ของบรรทัด · unit coverage server 69.5 / 91.1 / 54.2 · เกณฑ์ขึ้นเป็น 68 / 90 / 53 |
+| 2026-11-22 | P0 พบ | `reorder` ของ `clos` และ `activities` ตรวจแค่จำนวนและสมาชิก ไม่ตรวจว่าซ้ำ → ส่ง `["c1","c1"]` ผ่านเมื่อวิชามี 2 CLO · ยังไม่แก้ (P0 ห้ามเปลี่ยนพฤติกรรม) · มี test แบบ `it.fails` ล็อกไว้ ถอด `.fails` ตอนแก้ |
