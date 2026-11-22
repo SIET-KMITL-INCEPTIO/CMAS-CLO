@@ -46,7 +46,7 @@ See also: [[srs]] · [[dev]] · [[features-pages]] · [[schema]] · [[dfd]] · [
 | # | กฎ | ที่มา |
 |---|---|---|
 | **A-1** | **Resource-based, noun plural, kebab-case** — ห้ามมี verb ใน URL (`/getCourse` ❌) ยกเว้น action endpoint ที่ไม่ใช่ CRUD จริง ๆ (`/clos/reorder`, `/scores/import/preview`) | [[dev]] §4.5 |
-| **A-2** | **ทุก route ที่รับ `:courseId` ต้องเรียก `assertCourseAccess()` ก่อนแตะข้อมูลใด ๆ** — ผิดแล้วได้ **404 ไม่ใช่ 403** | NFR-07 · `services/authorization.service.ts` |
+| **A-2** | **ทุก route ที่รับ `:courseId` ต้องเรียก `assertCourseAccess()` ก่อนแตะข้อมูลใด ๆ** — ผิดแล้วได้ **404 ไม่ใช่ 403** | NFR-07 · `modules/authorization/authorization.service.ts` · route ประกาศ `config.access` แล้ว `middlewares/access.middleware.ts` เรียก `authorize()` ให้ |
 | **A-3** | **Leaf resource (`:cloId`, `:activityId`, `:studentId`, ...) ต้อง resolve หา `courseId` ก่อน แล้วจึง `assertCourseAccess()`** — id ที่ client ส่งมาไม่เคยเป็นหลักฐานว่ามีสิทธิ์ | NFR-07 |
 | **A-4** | **ทุก request body / query / params ผ่าน Zod** ก่อนถึง service ห้ามเชื่อ input ดิบ | NFR-13 · SRS §5.2 |
 | **A-5** | **ทุกการเขียนหลายแถวอยู่ใน `prisma.$transaction` เดียว** — สำเร็จทั้งหมดหรือไม่สำเร็จเลย (ยกเว้น import ที่ FR-68 บังคับให้ commit เฉพาะแถวที่ผ่าน) | NFR-11 · FR-63 |

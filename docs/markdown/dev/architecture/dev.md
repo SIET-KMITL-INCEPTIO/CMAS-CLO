@@ -286,30 +286,34 @@ app/client/
 ```
 app/server/
 ├── src/
-│   ├── index.ts                    # Fastify app + register plugins (helmet, cors, rate-limit, multipart)
+│   ├── index.ts                    # boot: buildApp() + listen()
+│   ├── app.ts                      # buildApp(): plugins (helmet, cors, rate-limit, multipart) + routes — tests inject() into it
 │   ├── modules/                    # 1 โฟลเดอร์ต่อ feature — ดู modules/README.md
 │   │   ├── index.ts                # registerRoutes() — รวมทุก module
-│   │   ├── health/
-│   │   │   └── health.route.ts     # GET /health
-│   │   ├── authorization/
-│   │   │   └── authorization.service.ts  # assertCourseAccess() — course-scope guard (NFR-07)
-│   │   ├── auth/                   # (TODO) auth.route.ts · auth.controller.ts · auth.service.ts · user.repository.ts · auth.validator.ts
-│   │   ├── users/                  # (TODO)
-│   │   ├── courses/                # (TODO)
-│   │   ├── clos/                   # (TODO)
-│   │   ├── excel/                  # (TODO)
-│   │   └── dashboard/              # (TODO)
+│   │   ├── health/                 # GET /health
+│   │   ├── auth/                   # sign-in link, Google, session · email-link / refresh-token repositories
+│   │   ├── authorization/          # course-scope guard (NFR-07): authorization.service.ts · capabilities.ts · course-access.repository.ts
+│   │   ├── users/  courses/  clos/  activities/  students/
+│   │   ├── scores/                 # score grid, import · score / score-writer repositories
+│   │   ├── grading/                # grade bands, freeze, override
+│   │   ├── dashboard/              # read models (dashboard.service.ts) · Excel exports (dashboard-export.service.ts)
+│   │   ├── excel/                  # Excel add-in: device code, link, workbook stamp
+│   │   └── events/                 # live updates (SSE)
+│   ├── repositories/               # repository ที่ใช้มากกว่าหนึ่ง module
+│   │   ├── course-data.repository.ts      # snapshot ของรายวิชาสำหรับ lib/attainment (dashboard, grading)
+│   │   └── course-revision.repository.ts  # Course.revision (excel, scores, live-updates)
 │   ├── middlewares/
-│   │   ├── auth.middleware.ts      # JWT verify → request.userId / request.userRole
-│   │   ├── rbac.middleware.ts      # rbac("ADMIN" | "INSTRUCTOR")
+│   │   ├── access.middleware.ts    # config.access → authMiddleware + authorize() (404, ไม่ใช่ 403)
+│   │   ├── auth.middleware.ts      # JWT verify → อ่านแถว User ล่าสุด
+│   │   ├── live-updates.middleware.ts
+│   │   ├── rate-limit.ts
 │   │   └── error-handler.middleware.ts  # ZodError / Prisma error → standardized response
 │   ├── db/
-│   │   └── prisma.ts               # PrismaClient singleton — ใช้ใน *.repository.ts
-│   └── lib/
-│       ├── env.ts                  # Zod-validated process.env, fail-fast on boot
-│       ├── jwt.ts                  # signAccessToken / signRefreshToken / verifyToken (jose)
-│       └── response.ts             # ok / created / badRequest / unauthorized / forbidden / notFound / serverError
-├── eslint.config.ts
+│   │   └── prisma.ts               # PrismaClient singleton — ใช้ใน *.repository.ts เท่านั้น
+│   ├── lib/                        # ไม่มี state: attainment · weights · grade-ladder · study-plan · excel · xlsx-container · env · jwt · response · errors · mailer …
+│   └── test/                       # setup-env · db-fixture · fake-xlsm
+├── eslint.config.ts                # มี ratchet max-lines / complexity (ดู §11)
+├── vitest.config.ts                # coverage threshold (ดู §11)
 ├── package.json
 └── tsconfig.json
 ```
@@ -948,7 +952,17 @@ try {
 
 ## 11. Testing Standards
 
-> **สถานะปัจจุบัน: ยังไม่ implement** — ส่วนนี้เป็นแผนที่ตกลงกันไว้ ไม่ใช่สิ่งที่มีอยู่จริงในโค้ดตอนนี้ อย่าอ้างอิงว่า "มี test" จนกว่าจะติดตั้งจริง
+> **สถานะปัจจุบัน (2026-11-22):** Vitest ทั้งสองฝั่ง · test อยู่ข้างไฟล์ที่ทดสอบ · server แยก unit (`npm run test:unit`) กับ `*.db.test.ts` / `*.isolation.test.ts` ที่ต้องมีฐานข้อมูล
+>
+> | ฝั่ง | เกณฑ์ที่ CI บังคับ (lines / branches / functions) | ที่ตั้ง |
+> | --- | --- | --- |
+> | client | 22 / 81 / 40 | `app/client/vitest.config.ts` |
+> | server (unit) | 70 / 91 / 54 · `src/lib/**` 70 / 87 / 56 | `app/server/vitest.config.ts` |
+>
+> เกณฑ์เป็น **ratchet**: ขึ้นได้ ลงต้องมีเหตุผลใน PR · ESLint มีกฎ `max-lines` และ `complexity` ระดับ error ที่เพดานปัจจุบัน
+> (client 390 บรรทัด / 35 · server 410 / 34 · ยกเว้นไฟล์ test) · service ทุกตัวมี characterization test
+> และ `app/client/src/lib/domain-parity.test.ts` ป้อน input เดียวกันให้กฎที่ client กับ server มีคนละสำเนา
+> ([[refactor-plan]]) · ตาราง Coverage Targets ข้างล่างคือเป้า ไม่ใช่ค่าปัจจุบัน
 
 ### 11.1 แผน — Unit Tests (Vitest)
 
@@ -967,7 +981,7 @@ describe("computeCloScore", () => {
 })
 ```
 
-**Coverage Targets (เมื่อเริ่ม implement):**
+**Coverage Targets (เป้าหมาย):**
 
 | Layer | Min Coverage |
 | --- | --- |

@@ -2,7 +2,7 @@
 
 See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 
-> **สร้าง:** 2026-11-22 · **สถานะ:** P0 เสร็จ (PR #100) · P1 และ P2 เสร็จ (PR #101) · P3 เสร็จ (PR #102) · P4 และ P5 ทำรวมใน branch `refactor/parity-and-ratchet`
+> **สร้าง:** 2026-11-22 · **สถานะ:** **เสร็จทุกเฟส** · P0 (PR #100) · P1 และ P2 (PR #101) · P3 (PR #102) · P4 และ P5 (PR #103) · ดู §5
 > **ตรวจกับ:** `develop` ที่ `1eb52a9` (สแกนด้วย grep/wc ณ วันที่สร้าง)
 
 ---
@@ -64,3 +64,21 @@ See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 | 2026-11-22 | P4 แก้แผน | `sameValue` ไม่ใช่สำเนา: client เทียบค่าในช่องตาราง (`number` / `"EXCUSED"` / `null`) ส่วน server เทียบ object ของคะแนนพร้อมเหตุผลการยกเว้น จึงไม่ใส่ใน parity test · ชื่อ type ยังต่างกัน (`GradeMethod` กับ `GradingMethod`) แต่ test บังคับให้ค่าตรงกัน จึงไม่เปลี่ยนชื่อ |
 | 2026-11-22 | P5 | ESLint ทั้งสองฝั่งมีกฎ `max-lines` และ `complexity` ระดับ error (CI จึงบังคับ) ตั้งที่เพดานของวันนี้: client 390 บรรทัด / 35 (ไฟล์ใหญ่สุด `ActivityForm.tsx` 386 · `CourseOverview.page.tsx` 35) · server 410 / 34 (`lib/attainment.ts` 406 · 34) · ยกเว้นไฟล์ test · ลองลดเกณฑ์แล้วกฎแจ้งจริง · ขึ้นเกณฑ์ coverage client เป็น 22 / 81 / 40 และ server เป็น 70 / 91 / 54 (lines / branches / functions) |
 | 2026-11-22 | P5 แก้แผน | เป้า "ไม่มีไฟล์เกิน ~250 บรรทัด" ยังไม่ถึง: client มี 8 ไฟล์ และ server มี 8 ไฟล์ที่เกิน 280 · ตั้งกฎเป็น ratchet ที่เพดานปัจจุบันแทนการบังคับ 250 ซึ่งจะทำให้ CI แดงทันที · ลดเกณฑ์ลงเมื่อแยกไฟล์เหล่านั้น |
+
+## 5. ผลรวม และงานที่ค้าง
+
+| วัด | ก่อน | หลัง |
+|---|---|---|
+| test unit (client / server) | 82 / 390 | 190 / 570 |
+| coverage ที่บังคับ client (lines / branches / functions) | 10 / 71 / 26 | 22 / 81 / 40 |
+| coverage ที่บังคับ server | 35 / 84 / 24 | 70 / 91 / 54 |
+| ไฟล์ใหญ่สุดฝั่ง client | `Grading.page.tsx` 494 | `ActivityForm.tsx` 386 |
+| service ที่ไม่มี test | 8 จาก 14 | 0 |
+| service ที่เรียก `prisma` ตรง | 1 | 0 |
+
+**ค้าง (ยังไม่ทำ):**
+
+1. `reorder` ของ `clos` และ `activities` รับ id ซ้ำ — มี test `it.fails` ล็อกไว้ ถอด `.fails` เมื่อแก้
+2. ไฟล์ที่เกิน ~250 บรรทัด: 8 ไฟล์ต่อฝั่ง (ใหญ่สุด `ActivityForm.tsx` 386 · `lib/attainment.ts` 406) · แยกแล้วลดเพดาน `max-lines`
+3. หน้าที่แยกใน P2 ยังไม่ได้เปิดดูในเบราว์เซอร์ด้วยข้อมูลจริง · ยืนยันด้วย test render และ E2E smoke เท่านั้น
+4. `excel.db.test.ts` ("moves after a write from the web page and after one from Excel") ล้มหนึ่งครั้งบน PR #101 โดยไม่มีโค้ดที่เกี่ยว · ถ้าล้มซ้ำให้ตรวจลำดับ test

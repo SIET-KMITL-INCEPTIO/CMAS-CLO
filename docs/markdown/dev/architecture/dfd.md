@@ -575,7 +575,7 @@ flowchart TB
 > **สิ่งที่ยังไม่ถูก implement (ณ 2026-08-05):** ทุก process ที่ทำเครื่องหมาย 🕐 — คือ 1.0–8.0 และ 10.0
 > route ยังถูก comment ไว้ใน `app/server/src/modules/index.ts` มีเพียง ✅ 9.0 `/health` ที่ทำงานจริง
 > DFD นี้จึงเป็น **target-state model** ใช้ทำ threat modeling **ก่อน** implement ไม่ใช่หลัง
-> (ข้อยกเว้น: `modules/authorization/authorization.service.ts` เขียนเสร็จแล้ว แต่ยังไม่มี route เรียกใช้)
+> (บันทึกนี้เป็นสถานะ ณ 2026-08-05 · ปัจจุบันทุก route ผ่าน `modules/authorization/authorization.service.ts` ทาง `middlewares/access.middleware.ts`)
 
 ### 3.1 ตารางเทียบ process ↔ ข้อกำหนด ↔ โค้ด
 
