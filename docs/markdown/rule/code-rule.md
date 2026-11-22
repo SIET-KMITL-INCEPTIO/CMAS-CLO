@@ -79,6 +79,11 @@ Route (ลงทะเบียน path)
       → Repository class (คุยกับ Prisma เท่านั้น — ไม่มี business rule)
 ```
 
+- repository อยู่ในโฟลเดอร์ module ที่ใช้มัน · ถ้ามี **มากกว่าหนึ่ง module** ใช้ ให้ย้ายไป `app/server/src/repositories/`
+  (ปัจจุบัน `course-data` และ `course-revision`) ห้าม module หนึ่ง import repository จากโฟลเดอร์ของอีก module
+- service ไม่เรียก `prisma` ตรง ไม่มีข้อยกเว้น (`authorization.service.ts` ผ่าน `course-access.repository.ts` ตั้งแต่ 2026-11-22)
+- ขนาดไฟล์และความซับซ้อนมี ratchet ใน ESLint (`max-lines`, `complexity`) — ไฟล์ที่ชนเพดานให้แยก อย่าขยับเพดานขึ้น
+
 ```typescript
 // modules/courses/course.repository.ts — 1 class, คุยกับ DB อย่างเดียว
 export class CourseRepository {
