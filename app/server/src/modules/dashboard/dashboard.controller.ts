@@ -2,6 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify"
 import { authorizedCourseId, callerOf } from "../../middlewares/access.middleware.js"
 import { file, ok } from "../../lib/response.js"
 import { XLSX_TYPE } from "../../lib/excel.js"
+import type { DashboardExportService } from "./dashboard-export.service.js"
 import type { DashboardService } from "./dashboard.service.js"
 import {
   dashboardExportQuerySchema,
@@ -10,7 +11,10 @@ import {
 } from "./dashboard.validator.js"
 
 export class DashboardController {
-  constructor(private readonly service: DashboardService) {}
+  constructor(
+    private readonly service: DashboardService,
+    private readonly exports: DashboardExportService,
+  ) {}
 
   overview = async (req: FastifyRequest, reply: FastifyReply) => {
     return ok(reply, await this.service.overview(callerOf(req)))
@@ -41,18 +45,18 @@ export class DashboardController {
 
   scoresExport = async (req: FastifyRequest, reply: FastifyReply) => {
     const { type } = scoresExportQuerySchema.parse(req.query)
-    const { buffer, fileName } = await this.service.scoresExport(authorizedCourseId(req), type)
+    const { buffer, fileName } = await this.exports.scoresExport(authorizedCourseId(req), type)
     return file(reply, buffer, fileName, XLSX_TYPE)
   }
 
   gradesExport = async (req: FastifyRequest, reply: FastifyReply) => {
-    const { buffer, fileName } = await this.service.gradesExport(authorizedCourseId(req))
+    const { buffer, fileName } = await this.exports.gradesExport(authorizedCourseId(req))
     return file(reply, buffer, fileName, XLSX_TYPE)
   }
 
   dashboardExport = async (req: FastifyRequest, reply: FastifyReply) => {
     const { scope, studentId } = dashboardExportQuerySchema.parse(req.query)
-    const { buffer, fileName } = await this.service.dashboardExport(
+    const { buffer, fileName } = await this.exports.dashboardExport(
       authorizedCourseId(req),
       scope,
       studentId,

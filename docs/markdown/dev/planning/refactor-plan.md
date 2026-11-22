@@ -2,7 +2,7 @@
 
 See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 
-> **สร้าง:** 2026-11-22 · **สถานะ:** P0 เสร็จ (PR #100) · P1 และ P2 ทำเสร็จรวมใน branch เดียว `refactor/client-cleanup` (ตัดจากปลาย P0)
+> **สร้าง:** 2026-11-22 · **สถานะ:** P0 เสร็จ (PR #100) · P1 และ P2 เสร็จ (PR #101) · P3 อยู่ใน `refactor/server-boundaries`
 > **ตรวจกับ:** `develop` ที่ `1eb52a9` (สแกนด้วย grep/wc ณ วันที่สร้าง)
 
 ---
@@ -10,7 +10,7 @@ See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 ## 0. สรุปสั้น
 
 โค้ด**สะอาดอยู่แล้วในภาพรวม**: ไม่มี `any`, `@ts-ignore`, `eslint-disable`, TODO หรือ FIXME ใน `app/`
-และทุก service เรียก repository ยกเว้น `authorization.service.ts` ที่ CLAUDE.md บันทึกไว้แล้ว
+และทุก service เรียก repository (ข้อยกเว้นเดิมของ `authorization.service.ts` ปิดแล้วใน P3)
 งานนี้จึงเป็นการแก้เฉพาะจุด ไม่ใช่เขียนใหม่ และ**ห้ามเปลี่ยนพฤติกรรม**ของระบบในทุกเฟส
 
 ทุกเฟสคือหนึ่ง branch `refactor/*` ตัดจาก `develop` และ merge กลับเข้า `develop` (git-rule)
@@ -59,3 +59,4 @@ See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 | 2026-11-22 | P1 แก้แผน | `when` ใน `ExcelLink` กับ `UserDrawer` **ไม่ใช่ฟังก์ชันซ้ำ**: ตัวหนึ่งจัดวันที่แบบไทยและคืน "ยังไม่ได้ใช้" เมื่อ null อีกตัวตัด ISO string — รวมกันจะเปลี่ยนสิ่งที่เห็นบนจอ จึงไม่รวม |
 | 2026-11-22 | P2 | แยก `Grading.page` (494→204) · `CourseOverview.page` (466→128) · `CourseList.page` (443→225) · `Activities.page` (437→236) · `ActivityForm` (464→386) เป็น component ย่อยในโฟลเดอร์ feature เดิม · ย้ายตรรกะบริสุทธิ์ออกมาเขียน test: `gradingView` · `overviewView` · `activityValidation` · `coursePrefs` · `courseListParts` · ใส่ test render ให้ component ที่แยก แล้วทดลองทำพังทีละตัวเพื่อดูว่า fail · client 82→174 test · เกณฑ์ coverage client ขึ้นเป็น 21 / 80 / 39 |
 | 2026-11-22 | P2 แก้แผน | "inline style tone" ไม่ใช่ปัญหา: `TONE` เป็น CSS variable อยู่แล้ว (PR #97) จึงไม่แตะ · `ActivityForm` ยังเกิน 250 บรรทัด (386) เพราะส่วนใหญ่เป็น markup ของช่องกรอก ไม่แยกต่อ · ยังไม่ได้เปิดหน้าจริงในเบราว์เซอร์ (ต้องล็อกอินกับฐานข้อมูล) จึงยืนยันด้วย test render แทน |
+| 2026-11-22 | P3 | `authorization.service.ts` ไม่เรียก `prisma` แล้ว: ย้ายเป็น `course-access.repository.ts` (+ test 8 ข้อ ทดลองทำพังแล้ว fail) · ย้าย `course-data` และ `course-revision` ไป `src/repositories/` · แยก Excel export ออกจาก `dashboard.service.ts` (523→305) ไปเป็น `dashboard-export.service.ts` (230) + `dashboard-format.ts` · test เดิมของ P0 ผ่านครบ มีแก้เฉพาะ path ของ import และย้าย test ของ export ไปไฟล์ใหม่พร้อม fixture ร่วม · เติมการยืนยันข้อความสถานะใน export รายบุคคล (ทดลองเปลี่ยนคำแล้ว test เดิมไม่จับ) |
