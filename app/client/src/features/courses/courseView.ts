@@ -7,6 +7,9 @@ import type { Course } from "./course.types.ts"
 export const SCALE_TH = { LETTER: "A–F", PASS_FAIL: "ผ่าน / ไม่ผ่าน" } as const
 export const METHOD_TH = { CRITERION_REFERENCED: "อิงเกณฑ์", NORM_REFERENCED: "อิงกลุ่ม" } as const
 
+/** "ภาค 1", or "ภาคพิเศษ" for the summer term (3). Same as the server's lib/study-plan.ts. */
+export const termTh = (s: number) => (s === 3 ? "ภาคพิเศษ" : `ภาค ${s}`)
+
 /** "3 (2-2-5)" — the way a course's credits are printed in มคอ. */
 export const creditLabel = (c: Course) =>
   `${Number(c.credits)} (${Number(c.lectureHours)}-${Number(c.practiceHours)}-${Number(c.selfStudyHours)})`

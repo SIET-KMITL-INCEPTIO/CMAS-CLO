@@ -17,7 +17,8 @@ export const READY: Record<StepState, { tone: "ok" | "warn" | "bad" | "info"; la
 }
 
 const r2 = (v: number) => String(Math.round(v * 100) / 100)
-const near = (a: number, b: number) => Math.abs(a - b) < 0.01
+/** Two weights this close are equal. Same tolerance as the server's lib/weights.ts. */
+export const near = (a: number, b: number) => Math.abs(a - b) < 0.01
 
 export type StepInputs = {
   clos: Clo[]
