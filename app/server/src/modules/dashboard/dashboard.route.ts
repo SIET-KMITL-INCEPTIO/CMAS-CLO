@@ -1,12 +1,15 @@
 import type { FastifyInstance } from "fastify"
-import { CourseDataRepository } from "./course-data.repository.js"
+import { CourseDataRepository } from "../../repositories/course-data.repository.js"
 import { DashboardController } from "./dashboard.controller.js"
+import { DashboardExportService } from "./dashboard-export.service.js"
 import { DashboardService } from "./dashboard.service.js"
 
 // Design rows #72-#76, plus the two exports that read the same analysis:
 // #61 scores and #71 grades (FR-88 — one service, so the numbers cannot disagree).
 export async function dashboardRoutes(app: FastifyInstance) {
-  const c = new DashboardController(new DashboardService(new CourseDataRepository()))
+  const data = new CourseDataRepository()
+  const dashboard = new DashboardService(data)
+  const c = new DashboardController(dashboard, new DashboardExportService(data, dashboard))
   const view = { cap: "course.view" } as const
   const results = { cap: "results.export" } as const
 

@@ -1,4 +1,4 @@
-import { CourseRevisionRepository } from "../excel/course-revision.repository.js"
+import { CourseRevisionRepository } from "../../repositories/course-revision.repository.js"
 import { BusinessRuleError, ConflictError } from "../../lib/errors.js"
 import {
   activityHeader,

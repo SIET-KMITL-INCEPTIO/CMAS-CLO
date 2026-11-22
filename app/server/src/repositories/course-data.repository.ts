@@ -1,10 +1,10 @@
 /**
  * Loads one course's rows in the shape lib/attainment.ts computes over (FR-88).
  * The only reader the dashboard, the grading page and every export use, so
- * they cannot disagree about which rows count. Shared by modules/grading.
+ * they cannot disagree about which rows count. Shared by modules/dashboard and modules/grading, so it lives in repositories/.
  */
-import { prisma } from "../../db/prisma.js"
-import type { CourseData } from "../../lib/attainment.js"
+import { prisma } from "../db/prisma.js"
+import type { CourseData } from "../lib/attainment.js"
 
 export class CourseDataRepository {
   async load(courseId: string) {
