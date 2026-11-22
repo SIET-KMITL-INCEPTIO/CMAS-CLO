@@ -3,11 +3,9 @@
  * what, and where it came from (typed, pasted, imported, filled, closing). The
  * list only grows; nothing here edits a score (A-12).
  */
-import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { Drawer } from "../../components/overlay/Sheet.tsx"
-import { courseKeys } from "../courses/useCourses.ts"
-import { scoresApi } from "./scores.api.ts"
+import { useScoreChanges } from "./useScores.ts"
 
 const SOURCE_TH: Record<string, string> = {
   MANUAL: "พิมพ์เอง",
@@ -24,10 +22,7 @@ const show = (v: number | "EXCUSED" | null) =>
 
 export function ChangesDrawer({ courseId, onClose }: { courseId: string; onClose: () => void }) {
   const [page, setPage] = useState(1)
-  const list = useQuery({
-    queryKey: [...courseKeys.one(courseId), "score-changes", page],
-    queryFn: () => scoresApi.changes(courseId, page),
-  })
+  const list = useScoreChanges(courseId, page)
   const total = list.data?.total ?? 0
   const pages = Math.max(1, Math.ceil(total / 30))
   return (

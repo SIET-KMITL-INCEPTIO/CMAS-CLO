@@ -51,6 +51,7 @@ export class EmailLinkService {
     private readonly adminEmails: readonly string[] = env.ADMIN_EMAILS,
     private readonly appUrl: string = env.CORS_ORIGIN,
     // Never the address or the link: a send failure is logged without either.
+    // authRoutes passes the Fastify logger; this fallback only serves code built without one.
     private readonly onMailError: (err: unknown) => void = (err) =>
       console.error("sign-in link email failed:", (err as Error).message),
   ) {}

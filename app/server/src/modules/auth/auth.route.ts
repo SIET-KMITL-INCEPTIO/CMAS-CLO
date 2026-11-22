@@ -21,7 +21,15 @@ export async function authRoutes(app: FastifyInstance) {
   const controller = new AuthController(
     new AuthService(users),
     new SessionService(new RefreshTokenRepository(), users, new AuthEventRepository()),
-    new EmailLinkService(users, new EmailLinkRepository(), createMailer()),
+    new EmailLinkService(
+      users,
+      new EmailLinkRepository(),
+      createMailer(),
+      undefined,
+      undefined,
+      // Never the address or the link: the message only (see EmailLinkService).
+      (err) => app.log.error("sign-in link email failed: %s", (err as Error).message),
+    ),
   )
 
   app.post(

@@ -4,7 +4,6 @@
  * (FR-69); an empty cell in the file never overwrites a score (FR-62); the rows
  * that failed come back as a file to correct (FR-65).
  */
-import { useMutation } from "@tanstack/react-query"
 import { useRef, useState } from "react"
 import { toast } from "sonner"
 import { Modal } from "../../components/overlay/Sheet.tsx"
@@ -12,22 +11,8 @@ import { Chip } from "../../components/ui/Badges.tsx"
 import { studentsApi } from "../students/students.api.ts"
 import { useCommitRosterImport } from "../students/useStudents.ts"
 import { scoresApi } from "./scores.api.ts"
+import { useImportPreview, type ImportKind as Kind } from "./useImportPreview.ts"
 import { useCommitScoreImport } from "./useScores.ts"
-
-type Kind = "roster" | "scores"
-type Row = {
-  row: number
-  studentCode: string
-  status: string
-  message: string | null
-  extra?: string
-}
-type Preview = {
-  previewToken: string
-  summary: { total: number; ok: number; failed: number }
-  rows: Row[]
-  notes: string[]
-}
 
 const COPY: Record<Kind, { title: string; template: string; okWord: string }> = {
   roster: {
@@ -56,41 +41,7 @@ export function ImportExcel({
   const commitRoster = useCommitRosterImport(courseId)
   const commitScores = useCommitScoreImport(courseId)
 
-  const check = useMutation({
-    meta: { silent: true },
-    mutationFn: async (f: File): Promise<Preview> => {
-      if (kind === "roster") {
-        const r = await studentsApi.previewImport(courseId, f)
-        return {
-          previewToken: r.previewToken,
-          summary: { total: r.summary.total, ok: r.summary.add, failed: r.summary.failed },
-          rows: r.rows.map((x) => ({
-            row: x.row,
-            studentCode: x.studentCode,
-            status: x.status === "ERROR" ? "ERROR" : x.status === "EXISTS" ? "SKIP" : "OK",
-            message: x.message,
-            extra: x.name,
-          })),
-          notes: [],
-        }
-      }
-      const r = await scoresApi.previewImport(courseId, f)
-      return {
-        previewToken: r.previewToken,
-        summary: r.summary,
-        rows: r.rows.map((x) => ({
-          row: x.row,
-          studentCode: x.studentCode,
-          status: x.status,
-          message: x.message,
-          extra: `${Object.keys(x.values).length} ช่อง`,
-        })),
-        notes: r.columns
-          .filter((c) => !c.matched)
-          .map((c) => `คอลัมน์ “${c.header}” ไม่ตรงกับกิจกรรมใด`),
-      }
-    },
-  })
+  const check = useImportPreview(kind, courseId)
   const preview = check.data
   const committing = commitRoster.isPending || commitScores.isPending
 

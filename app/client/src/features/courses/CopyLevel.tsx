@@ -4,13 +4,11 @@
  * plan (POST /courses/copy-level/preview, writes nothing); the user ticks and
  * confirms (…/commit). Structure only: never students, scores or grades.
  */
-import { useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import { Modal } from "../../components/overlay/Sheet.tsx"
 import type { CopyLevelInput, CopyLevelRow } from "./course.types.ts"
-import { coursesApi } from "./courses.api.ts"
-import { useCopyLevel } from "./useCourses.ts"
+import { useCopyLevel, useCopyLevelPreview } from "./useCourses.ts"
 
 const termTh = (s: number) => (s === 3 ? "ภาคพิเศษ" : `ภาค ${s}`)
 const TONE: Record<CopyLevelRow["notes"][number]["tone"], string> = {
@@ -29,10 +27,7 @@ export function CopyLevel({ years, onClose }: { years: number[]; onClose: () => 
   const [st, setSt] = useState<CopyLevelInput>({ level: 1, fromYear: newest, toYear: newest + 1 })
   // Ticks the user changed; untouched rows follow the default (planned ✓, off-plan ✗).
   const [ticks, setTicks] = useState<Record<string, boolean>>({})
-  const preview = useQuery({
-    queryKey: ["courses", "copy-level", st],
-    queryFn: () => coursesApi.copyLevelPreview(st),
-  })
+  const preview = useCopyLevelPreview(st)
   const commit = useCopyLevel()
 
   const picked = useMemo(() => {
