@@ -5,7 +5,7 @@
  */
 import type { FastifyReply, FastifyRequest } from "fastify"
 import { events } from "../modules/events/events.service.js"
-import { CourseRevisionRepository } from "../modules/excel/course-revision.repository.js"
+import { CourseRevisionRepository } from "../repositories/course-revision.repository.js"
 
 const revisions = new CourseRevisionRepository()
 

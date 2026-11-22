@@ -4,7 +4,10 @@
  */
 import { describe, expect, it, vi } from "vitest"
 import { BusinessRuleError, NotFoundError } from "../../lib/errors.js"
-import type { CourseDataRepository, CourseSnapshot } from "../dashboard/course-data.repository.js"
+import type {
+  CourseDataRepository,
+  CourseSnapshot,
+} from "../../repositories/course-data.repository.js"
 import type { GradingRepository } from "./grading.repository.js"
 import { GradingService } from "./grading.service.js"
 

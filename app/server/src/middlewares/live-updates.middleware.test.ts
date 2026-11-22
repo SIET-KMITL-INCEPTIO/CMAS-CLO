@@ -8,7 +8,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 const bump = vi.hoisted(() => vi.fn(async (_courseId: string) => {}))
 const courseChanged = vi.hoisted(() => vi.fn(async () => {}))
 
-vi.mock("../modules/excel/course-revision.repository.js", () => ({
+vi.mock("../repositories/course-revision.repository.js", () => ({
   CourseRevisionRepository: class {
     bump = bump
   },

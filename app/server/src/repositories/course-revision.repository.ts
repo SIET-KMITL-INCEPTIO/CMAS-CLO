@@ -2,7 +2,7 @@
  * Course.revision (0012): one number that moves after every successful write
  * to a course, so the Excel add-in can poll cheaply and reload only on change.
  */
-import { prisma } from "../../db/prisma.js"
+import { prisma } from "../db/prisma.js"
 
 export class CourseRevisionRepository {
   /**

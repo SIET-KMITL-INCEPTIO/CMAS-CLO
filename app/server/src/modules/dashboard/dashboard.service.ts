@@ -12,7 +12,10 @@ import {
 import { buildWorkbook, fileStamp, NAME_HEADER, STUDENT_CODE_HEADER } from "../../lib/excel.js"
 import { NotFoundError } from "../../lib/errors.js"
 import type { Caller } from "../authorization/authorization.service.js"
-import type { CourseDataRepository, CourseSnapshot } from "./course-data.repository.js"
+import type {
+  CourseDataRepository,
+  CourseSnapshot,
+} from "../../repositories/course-data.repository.js"
 
 const r2 = (n: number | null) => (n === null ? null : round(n))
 const STATUS_TH = {

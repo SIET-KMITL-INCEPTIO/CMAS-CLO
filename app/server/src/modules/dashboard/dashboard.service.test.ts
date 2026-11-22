@@ -5,7 +5,10 @@
 import * as XLSX from "xlsx"
 import { describe, expect, it, vi } from "vitest"
 import { NotFoundError } from "../../lib/errors.js"
-import type { CourseDataRepository, CourseSnapshot } from "./course-data.repository.js"
+import type {
+  CourseDataRepository,
+  CourseSnapshot,
+} from "../../repositories/course-data.repository.js"
 import { DashboardService } from "./dashboard.service.js"
 
 /**

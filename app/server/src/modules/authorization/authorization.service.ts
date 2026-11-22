@@ -8,13 +8,12 @@
  *
  * Leaf rows (CLO, Activity, Score, ...) whose scope arrives as a caller-supplied
  * parent id: resolve the course first, then authorize against it.
- *
- * Still queries prisma directly — it predates the repository rule (code-rule §3)
- * and is the one exception CLAUDE.md names.
  */
-import { prisma } from "../../db/prisma.js"
 import { ForbiddenError } from "../../lib/errors.js"
 import { CAPABILITIES, type Capability, type Role } from "./capabilities.js"
+import { CourseAccessRepository, type LeafParam } from "./course-access.repository.js"
+
+const access = new CourseAccessRepository()
 
 export type Caller = {
   userId: string
@@ -32,14 +31,7 @@ export class CourseNotFoundError extends Error {
 
 /** ADMIN sees every course; an INSTRUCTOR sees the ones they hold a CourseInstructor row for. */
 export async function canSeeCourse(courseId: string, caller: Caller): Promise<boolean> {
-  const course = await prisma.course.findFirst({
-    where:
-      caller.role === "ADMIN"
-        ? { id: courseId }
-        : { id: courseId, instructors: { some: { userId: caller.userId } } },
-    select: { id: true },
-  })
-  return course !== null
+  return access.isVisible(courseId, caller.userId, caller.role === "ADMIN")
 }
 
 /**
@@ -71,29 +63,18 @@ export async function authorize(
  * access hook tries them, so /students/:studentId/remediation-plans/:cloId is
  * scoped by the student and the service checks the CLO belongs to the same course.
  */
-export const LEAF_PARAMS = ["studentId", "activityId", "objectiveId", "cloId", "uploadId"] as const
-export type LeafParam = (typeof LEAF_PARAMS)[number]
+export const LEAF_PARAMS = [
+  "studentId",
+  "activityId",
+  "objectiveId",
+  "cloId",
+  "uploadId",
+] as const satisfies readonly LeafParam[]
+export type { LeafParam }
 
 /** The course a leaf row belongs to, or null when there is no such row. */
-export async function resolveCourseId(param: LeafParam, id: string): Promise<string | null> {
-  const select = { courseId: true } as const
-  switch (param) {
-    case "cloId":
-      return (await prisma.cLO.findUnique({ where: { id }, select }))?.courseId ?? null
-    case "activityId":
-      return (await prisma.activity.findUnique({ where: { id }, select }))?.courseId ?? null
-    case "studentId":
-      return (await prisma.student.findUnique({ where: { id }, select }))?.courseId ?? null
-    case "uploadId":
-      return (await prisma.scoreUploadLog.findUnique({ where: { id }, select }))?.courseId ?? null
-    case "objectiveId": {
-      const row = await prisma.behavioralObjective.findUnique({
-        where: { id },
-        select: { clo: { select } },
-      })
-      return row?.clo.courseId ?? null
-    }
-  }
+export function resolveCourseId(param: LeafParam, id: string): Promise<string | null> {
+  return access.courseIdOf(param, id)
 }
 
 /** Read access to one course. Kept under this name because docs and CLAUDE.md cite it. */
