@@ -21,24 +21,16 @@ import type {
   Method,
 } from "./activity.types.ts"
 import { ACTIVITY_TYPES, METHODS } from "./activity.types.ts"
+import {
+  linksUnchanged,
+  NEW,
+  parseChoice,
+  validateActivity,
+  type ActivityErrors,
+} from "./activityValidation.ts"
 import { DEFAULT_MAX, DEFAULT_METHOD, METHOD_TH, TYPE_TH } from "./activityView.ts"
+import { ObjectivePicker } from "./ObjectivePicker.tsx"
 import { useSaveActivity } from "./useActivities.ts"
-
-const NEW = "+" // the "+ กำหนดเอง…" option
-type Errors = Partial<
-  Record<
-    "name" | "typeLabel" | "assessmentLabel" | "weight" | "maxScore" | "passScore" | "links",
-    string
-  >
->
-
-/** A choice is a built-in key, "CUSTOM:<name>" for one the course already has, or "+" for a new name. */
-const parseChoice = <K extends string>(v: string, label: string): { key: K; label: string } =>
-  v === NEW
-    ? { key: "CUSTOM" as K, label: label.trim() }
-    : v.startsWith("CUSTOM:")
-      ? { key: "CUSTOM" as K, label: v.slice(7) }
-      : { key: v as K, label: "" }
 
 export function ActivityForm({
   courseId,
@@ -88,14 +80,14 @@ export function ActivityForm({
   const [ticked, setTicked] = useState<Record<string, string>>(() =>
     Object.fromEntries(mine.map((c) => [c.objectiveId, String(c.weight)])),
   )
-  const [errors, setErrors] = useState<Errors>({})
+  const [errors, setErrors] = useState<ActivityErrors>({})
   const save = useSaveActivity(courseId)
 
   const groups = clos
     .map((c) => ({ clo: c, objs: criteria.objectives.filter((o) => o.cloId === c.id) }))
     .filter((g) => g.objs.length)
   const hasObjectives = groups.length > 0
-  const clear = (k: keyof Errors) => setErrors((x) => ({ ...x, [k]: undefined }))
+  const clear = (k: keyof ActivityErrors) => setErrors((x) => ({ ...x, [k]: undefined }))
 
   const pickType = (v: string) => {
     setType(v)
@@ -117,41 +109,15 @@ export function ActivityForm({
   }
 
   const submit = () => {
-    const e: Errors = {}
+    const e = validateActivity(
+      { name, type, typeLabel, method, methodLabel, weight, maxScore, passScore, ticked },
+      { byGroup, others, left, hasObjectives },
+    )
     const t = parseChoice<ActivityKind>(type, typeLabel)
     const m = parseChoice<Method>(method, methodLabel)
     const max = Number(maxScore)
     const w = Number(weight)
-    if (!name.trim()) e.name = "กรอกชื่อกิจกรรมก่อน"
-    if (type === NEW && !typeLabel.trim()) e.typeLabel = "พิมพ์ชื่อประเภทใหม่"
-    if (method === NEW && !methodLabel.trim()) e.assessmentLabel = "พิมพ์ชื่อวิธีประเมินใหม่"
-    if (maxScore.trim() === "" || !Number.isFinite(max) || max <= 0)
-      e.maxScore = "คะแนนเต็มต้องมากกว่า 0"
-    if (passScore.trim() !== "") {
-      const p = Number(passScore)
-      if (!Number.isFinite(p) || p < 0) e.passScore = "คะแนนที่ถือว่าผ่านต้องเป็นตัวเลขไม่ติดลบ"
-      else if (!e.maxScore && p > max) e.passScore = "คะแนนที่ถือว่าผ่านมากกว่าคะแนนเต็มไม่ได้"
-    }
-    if (!byGroup) {
-      if (weight.trim() === "")
-        e.weight = `กรอกร้อยละของสัดส่วนคะแนนในวิชา (เหลือ ${n2(left)}% · ใส่ 0 ได้ถ้ายังไม่เข้าการคำนวณ)`
-      else if (!Number.isFinite(w) || w < 0 || w > 100)
-        e.weight = "ร้อยละของสัดส่วนคะแนนต้องอยู่ระหว่าง 0–100"
-      else if (others + w > 100 + 1e-9)
-        e.weight = `กิจกรรมอื่นรวม ${n2(others)}% แล้ว — ใส่ได้ไม่เกิน ${n2(left)}%`
-    }
     const links = Object.entries(ticked).map(([id, v]) => [id, Number(v)] as const)
-    if (hasObjectives) {
-      if (links.length === 0)
-        e.links = "เลือกจุดประสงค์ที่กิจกรรมนี้วัดอย่างน้อย 1 ข้อ — ทุกกิจกรรมต้องเชื่อมกับ CLO"
-      else if (links.some(([, v]) => !Number.isFinite(v) || v <= 0 || v > 100))
-        e.links = "สัดส่วนของแต่ละจุดประสงค์ต้องเป็นตัวเลขมากกว่า 0 และไม่เกิน 100"
-      else {
-        const sum = links.reduce((s, [, v]) => s + v, 0)
-        if (Math.abs(sum - 100) >= 0.01)
-          e.links = `สัดส่วนของจุดประสงค์ต้องรวมได้ 100% (ตอนนี้ ${n2(sum)}%)`
-      }
-    }
     setErrors(e)
     if (Object.keys(e).length) return
 
@@ -166,12 +132,7 @@ export function ActivityForm({
       ...(!byGroup ? { weight: w } : {}),
     }
     // Links are sent only when they changed: it costs a read and a replace of the whole matrix.
-    const same =
-      activity !== null &&
-      mine.length === links.length &&
-      links.every(([id, v]) =>
-        mine.some((c) => c.objectiveId === id && Math.abs(c.weight - v) < 0.005),
-      )
+    const same = activity !== null && linksUnchanged(mine, links)
     save.mutate(
       {
         activityId: activity?.id ?? null,
@@ -229,7 +190,6 @@ export function ActivityForm({
     ...meta.customMethods.map((l): [string, string] => [`CUSTOM:${l}`, l]),
     [NEW, "+ กำหนดเอง…"],
   ]
-  const sum = Object.values(ticked).reduce((s, v) => s + (Number(v) || 0), 0)
 
   return (
     <Modal
@@ -385,55 +345,17 @@ export function ActivityForm({
         </div>
 
         {hasObjectives && (
-          <fieldset>
-            <legend className="mb-1.5 text-[14px] text-ink2">
-              วัดจุดประสงค์ข้อใด และสัดส่วนของกิจกรรม (%) <span className="text-bad">*</span>
-            </legend>
-            <div className="space-y-3 rounded-sm border border-edge p-3">
-              {groups.map((g) => (
-                <div key={g.clo.id}>
-                  <div className="mb-1 text-[13px] text-dim">CLO {g.clo.number}</div>
-                  {g.objs.map((o) => {
-                    const on = o.id in ticked
-                    return (
-                      <div key={o.id} className="flex items-center gap-2 py-0.5">
-                        <label className="flex min-w-0 flex-1 items-start gap-2 text-[14px]">
-                          <input
-                            type="checkbox"
-                            className="mt-1"
-                            checked={on}
-                            onChange={() => toggle(o.id)}
-                          />
-                          <span className="min-w-0">
-                            <span className="tnum text-dim">{o.label}</span>{" "}
-                            {objectiveText.get(o.id) ?? ""}
-                          </span>
-                        </label>
-                        {on && (
-                          <input
-                            className="inp tnum !w-20 !px-2 !py-1 text-right text-[14px]"
-                            inputMode="decimal"
-                            value={ticked[o.id]}
-                            aria-label={`สัดส่วนของ ${o.label} (%)`}
-                            onChange={(e) => {
-                              setTicked((x) => ({ ...x, [o.id]: e.target.value }))
-                              clear("links")
-                            }}
-                          />
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              ))}
-              <div
-                className={`tnum text-[13px] ${Math.abs(sum - 100) < 0.01 ? "text-ok" : "text-dim"}`}
-              >
-                รวม {n2(sum)}%{Math.abs(sum - 100) < 0.01 ? " ✓" : " — ต้องรวมได้ 100%"}
-              </div>
-            </div>
-            {errors.links && <div className="ferr">{errors.links}</div>}
-          </fieldset>
+          <ObjectivePicker
+            groups={groups}
+            ticked={ticked}
+            objectiveText={objectiveText}
+            error={errors.links}
+            onToggle={toggle}
+            onShare={(id, value) => {
+              setTicked((x) => ({ ...x, [id]: value }))
+              clear("links")
+            }}
+          />
         )}
 
         <div className="hair-t pt-4">

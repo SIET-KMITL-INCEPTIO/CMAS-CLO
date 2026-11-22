@@ -2,7 +2,7 @@
 
 See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 
-> **สร้าง:** 2026-11-22 · **สถานะ:** P0 เสร็จบน branch `refactor/characterization-tests` (รอ PR)
+> **สร้าง:** 2026-11-22 · **สถานะ:** P0 เสร็จ (PR #100) · P1 และ P2 ทำเสร็จรวมใน branch เดียว `refactor/client-cleanup` (ตัดจากปลาย P0)
 > **ตรวจกับ:** `develop` ที่ `1eb52a9` (สแกนด้วย grep/wc ณ วันที่สร้าง)
 
 ---
@@ -55,3 +55,7 @@ See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 | 2026-11-22 | P0 | test ของ `dashboard` (18) · `scores` (16) · `courses` (23) แต่ละไฟล์ fail เมื่อใส่ bug ทดลองหนึ่งจุด · unit coverage server จาก 45.3 / 86.8 / 33.7 เป็น 59.0 / 88.7 / 43.4 (lines / branches / functions) |
 | 2026-11-22 | P0 เสร็จ | เพิ่ม test ของ `grading` (28) · `students` (18) · `activities` (26) · `clos` (19) · `session` (24) ทดลองใส่ bug ทีละ service แล้ว fail ทุกตัว · ทั้ง 8 service ครอบคลุม 98–100% ของบรรทัด · unit coverage server 69.5 / 91.1 / 54.2 · เกณฑ์ขึ้นเป็น 68 / 90 / 53 |
 | 2026-11-22 | P0 พบ | `reorder` ของ `clos` และ `activities` ตรวจแค่จำนวนและสมาชิก ไม่ตรวจว่าซ้ำ → ส่ง `["c1","c1"]` ผ่านเมื่อวิชามี 2 CLO · ยังไม่แก้ (P0 ห้ามเปลี่ยนพฤติกรรม) · มี test แบบ `it.fails` ล็อกไว้ ถอด `.fails` ตอนแก้ |
+| 2026-11-22 | P1 | ย้าย query ของ `CopyLevel` · `ChangesDrawer` · `ImportExcel` เข้า `useCopyLevelPreview` · `useScoreChanges` · `useImportPreview` · ส่ง `app.log` ให้ `EmailLinkService` แทน `console.error` (เหลือ console เป็น fallback ตอนสร้างโดยไม่มี logger) |
+| 2026-11-22 | P1 แก้แผน | `when` ใน `ExcelLink` กับ `UserDrawer` **ไม่ใช่ฟังก์ชันซ้ำ**: ตัวหนึ่งจัดวันที่แบบไทยและคืน "ยังไม่ได้ใช้" เมื่อ null อีกตัวตัด ISO string — รวมกันจะเปลี่ยนสิ่งที่เห็นบนจอ จึงไม่รวม |
+| 2026-11-22 | P2 | แยก `Grading.page` (494→204) · `CourseOverview.page` (466→128) · `CourseList.page` (443→225) · `Activities.page` (437→236) · `ActivityForm` (464→386) เป็น component ย่อยในโฟลเดอร์ feature เดิม · ย้ายตรรกะบริสุทธิ์ออกมาเขียน test: `gradingView` · `overviewView` · `activityValidation` · `coursePrefs` · `courseListParts` · ใส่ test render ให้ component ที่แยก แล้วทดลองทำพังทีละตัวเพื่อดูว่า fail · client 82→174 test · เกณฑ์ coverage client ขึ้นเป็น 21 / 80 / 39 |
+| 2026-11-22 | P2 แก้แผน | "inline style tone" ไม่ใช่ปัญหา: `TONE` เป็น CSS variable อยู่แล้ว (PR #97) จึงไม่แตะ · `ActivityForm` ยังเกิน 250 บรรทัด (386) เพราะส่วนใหญ่เป็น markup ของช่องกรอก ไม่แยกต่อ · ยังไม่ได้เปิดหน้าจริงในเบราว์เซอร์ (ต้องล็อกอินกับฐานข้อมูล) จึงยืนยันด้วย test render แทน |
