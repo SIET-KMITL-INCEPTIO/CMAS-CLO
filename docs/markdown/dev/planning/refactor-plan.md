@@ -2,7 +2,7 @@
 
 See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 
-> **สร้าง:** 2026-11-22 · **สถานะ:** P0 เสร็จ (PR #100) · P1 และ P2 เสร็จ (PR #101) · P3 อยู่ใน `refactor/server-boundaries`
+> **สร้าง:** 2026-11-22 · **สถานะ:** P0 เสร็จ (PR #100) · P1 และ P2 เสร็จ (PR #101) · P3 เสร็จ (PR #102) · P4 และ P5 ทำรวมใน branch `refactor/parity-and-ratchet`
 > **ตรวจกับ:** `develop` ที่ `1eb52a9` (สแกนด้วย grep/wc ณ วันที่สร้าง)
 
 ---
@@ -60,3 +60,7 @@ See also: [[code-rule]] · [[dev]] · [[ci-cd-plan]] · [[system-test-plan]]
 | 2026-11-22 | P2 | แยก `Grading.page` (494→204) · `CourseOverview.page` (466→128) · `CourseList.page` (443→225) · `Activities.page` (437→236) · `ActivityForm` (464→386) เป็น component ย่อยในโฟลเดอร์ feature เดิม · ย้ายตรรกะบริสุทธิ์ออกมาเขียน test: `gradingView` · `overviewView` · `activityValidation` · `coursePrefs` · `courseListParts` · ใส่ test render ให้ component ที่แยก แล้วทดลองทำพังทีละตัวเพื่อดูว่า fail · client 82→174 test · เกณฑ์ coverage client ขึ้นเป็น 21 / 80 / 39 |
 | 2026-11-22 | P2 แก้แผน | "inline style tone" ไม่ใช่ปัญหา: `TONE` เป็น CSS variable อยู่แล้ว (PR #97) จึงไม่แตะ · `ActivityForm` ยังเกิน 250 บรรทัด (386) เพราะส่วนใหญ่เป็น markup ของช่องกรอก ไม่แยกต่อ · ยังไม่ได้เปิดหน้าจริงในเบราว์เซอร์ (ต้องล็อกอินกับฐานข้อมูล) จึงยืนยันด้วย test render แทน |
 | 2026-11-22 | P3 | `authorization.service.ts` ไม่เรียก `prisma` แล้ว: ย้ายเป็น `course-access.repository.ts` (+ test 8 ข้อ ทดลองทำพังแล้ว fail) · ย้าย `course-data` และ `course-revision` ไป `src/repositories/` · แยก Excel export ออกจาก `dashboard.service.ts` (523→305) ไปเป็น `dashboard-export.service.ts` (230) + `dashboard-format.ts` · test เดิมของ P0 ผ่านครบ มีแก้เฉพาะ path ของ import และย้าย test ของ export ไปไฟล์ใหม่พร้อม fixture ร่วม · เติมการยืนยันข้อความสถานะใน export รายบุคคล (ทดลองเปลี่ยนคำแล้ว test เดิมไม่จับ) |
+| 2026-11-22 | P4 | เพิ่ม `app/client/src/lib/domain-parity.test.ts` (16 ข้อ) import ไฟล์ฝั่ง server ตรง ๆ (`grade-ladder` · `weights` · `study-plan` ไม่มี import ของตัวเอง) แล้วป้อน input ชุดเดียวกันให้ `defaultBands` · `groupKey` · `near` · `termTh` · ตรวจตอน compile ว่า `GradeScale` / `GradeMethod` ของ client ตรงกับ `GradeScale` / `GradingMethod` ของ server · ย้าย `termTh` ของ client จาก `CopyLevel.tsx` ไป `courseView.ts` และ export `near` จาก `setupSteps.ts` เพื่อให้ test เรียกได้ · ทดลองทำพัง 6 แบบ (ทั้งสองฝั่ง) ถูกจับครบ |
+| 2026-11-22 | P4 แก้แผน | `sameValue` ไม่ใช่สำเนา: client เทียบค่าในช่องตาราง (`number` / `"EXCUSED"` / `null`) ส่วน server เทียบ object ของคะแนนพร้อมเหตุผลการยกเว้น จึงไม่ใส่ใน parity test · ชื่อ type ยังต่างกัน (`GradeMethod` กับ `GradingMethod`) แต่ test บังคับให้ค่าตรงกัน จึงไม่เปลี่ยนชื่อ |
+| 2026-11-22 | P5 | ESLint ทั้งสองฝั่งมีกฎ `max-lines` และ `complexity` ระดับ error (CI จึงบังคับ) ตั้งที่เพดานของวันนี้: client 390 บรรทัด / 35 (ไฟล์ใหญ่สุด `ActivityForm.tsx` 386 · `CourseOverview.page.tsx` 35) · server 410 / 34 (`lib/attainment.ts` 406 · 34) · ยกเว้นไฟล์ test · ลองลดเกณฑ์แล้วกฎแจ้งจริง · ขึ้นเกณฑ์ coverage client เป็น 22 / 81 / 40 และ server เป็น 70 / 91 / 54 (lines / branches / functions) |
+| 2026-11-22 | P5 แก้แผน | เป้า "ไม่มีไฟล์เกิน ~250 บรรทัด" ยังไม่ถึง: client มี 8 ไฟล์ และ server มี 8 ไฟล์ที่เกิน 280 · ตั้งกฎเป็น ratchet ที่เพดานปัจจุบันแทนการบังคับ 250 ซึ่งจะทำให้ CI แดงทันที · ลดเกณฑ์ลงเมื่อแยกไฟล์เหล่านั้น |

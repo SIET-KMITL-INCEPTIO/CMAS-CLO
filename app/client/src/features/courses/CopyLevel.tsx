@@ -8,9 +8,9 @@ import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import { Modal } from "../../components/overlay/Sheet.tsx"
 import type { CopyLevelInput, CopyLevelRow } from "./course.types.ts"
+import { termTh } from "./courseView.ts"
 import { useCopyLevel, useCopyLevelPreview } from "./useCourses.ts"
 
-const termTh = (s: number) => (s === 3 ? "ภาคพิเศษ" : `ภาค ${s}`)
 const TONE: Record<CopyLevelRow["notes"][number]["tone"], string> = {
   nil: "text-dim",
   warn: "text-warn",
