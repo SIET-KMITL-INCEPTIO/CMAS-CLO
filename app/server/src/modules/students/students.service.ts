@@ -153,6 +153,34 @@ export class StudentService {
     return { buffer, fileName: `roster-${c.code}-${c.section}-${fileStamp()}.xlsx` }
   }
 
+  /**
+   * UC 7.4 (design: GET /courses/:id/students/export). Codes stay text (S-7);
+   * no score or grade leaves through this file, and the file name carries no code.
+   */
+  async exportRoster(courseId: string) {
+    const c = await this.students.courseHeader(courseId)
+    const rows = await this.students.rosterForExport(courseId)
+    const buffer = buildWorkbook([
+      {
+        name: "รายชื่อ",
+        title: "รายชื่อนักศึกษา",
+        info: [
+          ["รายวิชา", `${c.code} ${c.name}`],
+          ["Sec", c.section],
+          ["ภาค/ปีการศึกษา", `${c.semester}/${c.year}`],
+          ["จำนวน", String(rows.length)],
+        ],
+        head: [STUDENT_CODE_HEADER, NAME_HEADER, "สถานะ"],
+        rows: rows.map((s) => [
+          s.studentCode,
+          s.name,
+          s.status === "WITHDRAWN" ? "ถอนรายวิชา" : "ปกติ",
+        ]),
+      },
+    ])
+    return { buffer, fileName: `roster-${c.code}-${c.section}-${fileStamp()}.xlsx` }
+  }
+
   /** Design #50: validates every row and writes nothing. An existing code keeps its stored name. */
   async previewImport(courseId: string, userId: string, file: Buffer, fileName: string) {
     const table = readTable(file)

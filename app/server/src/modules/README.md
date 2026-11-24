@@ -29,7 +29,8 @@ validator, and the singular model name for the repository. The file exports a
 own: it is the course-scope guard that every course-scoped service calls.
 
 Shared code stays outside `modules/`: `middlewares/` (auth, route access, error handler),
-`lib/` (env, jwt, response helpers), `db/` (the single `PrismaClient`).
+`lib/` (env, jwt, response helpers), `db/` (the single `PrismaClient`), `repositories/` (a
+repository that two or more modules use: `course-data`, `course-revision`).
 
 ---
 

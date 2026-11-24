@@ -4,6 +4,8 @@ import { created, ok, unprocessable } from "../../lib/response.js"
 import type { CourseService } from "./courses.service.js"
 import {
   addInstructorSchema,
+  copyLevelCommitSchema,
+  copyLevelSchema,
   confirmQuerySchema,
   courseParamsSchema,
   createCourseSchema,
@@ -67,6 +69,16 @@ export class CourseController {
       reply,
       await this.service.removeInstructor(authorizedCourseId(req), userId, callerOf(req)),
     )
+  }
+
+  copyLevelPreview = async (req: FastifyRequest, reply: FastifyReply) => {
+    const body = copyLevelSchema.parse(req.body)
+    return ok(reply, await this.service.copyLevelPreview(body, callerOf(req)))
+  }
+
+  copyLevelCommit = async (req: FastifyRequest, reply: FastifyReply) => {
+    const body = copyLevelCommitSchema.parse(req.body)
+    return created(reply, await this.service.copyLevelCommit(body, callerOf(req)))
   }
 
   duplicate = async (req: FastifyRequest, reply: FastifyReply) => {

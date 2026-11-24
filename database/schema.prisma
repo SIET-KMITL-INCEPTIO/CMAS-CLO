@@ -191,6 +191,7 @@ enum ScoreChangeSource {
   PASTE // pasted from a spreadsheet
   NOTE // only the excuse reason changed
   UNDO
+  EXCEL // typed in Excel and synced by the CMAS add-in (0012); set by the server, never taken from a body
 }
 
 // UC 1.6 account history. DENY records a refused action (FR-22b, S-10).
@@ -248,6 +249,8 @@ model User {
   remediationPlans   RemediationPlan[]
   authEvents         AuthEvent[]              @relation("AuthEventUser")
   authEventsActed    AuthEvent[]              @relation("AuthEventActor")
+  excelDeviceCodes   ExcelDeviceCode[]
+  excelLinks         ExcelLink[]
 
   @@index([role, isActive])
   @@index([status]) // Admin's pending-approval list (FR-08)
@@ -326,13 +329,21 @@ model Course {
   // per activity type in CourseGroupWeight, split by maxScore.
   weightMode WeightMode @default(MANUAL)
 
-  instructors  CourseInstructor[]
-  clos         CLO[]
-  activities   Activity[]
-  students     Student[]
-  uploadLogs   ScoreUploadLog[]
-  gradeBands   GradeBand[]
-  groupWeights CourseGroupWeight[]
+  // 0012: goes up by one after every successful write to this course (scores,
+  // imports, students, activities, settings). The Excel add-in cannot hold a
+  // live stream, so it asks for this number every 10 seconds and reloads only
+  // when it moved. Bumped with raw SQL so updatedAt keeps meaning "settings changed".
+  revision Int @default(0)
+
+  instructors      CourseInstructor[]
+  clos             CLO[]
+  activities       Activity[]
+  students         Student[]
+  uploadLogs       ScoreUploadLog[]
+  gradeBands       GradeBand[]
+  groupWeights     CourseGroupWeight[]
+  excelDeviceCodes ExcelDeviceCode[]
+  excelLinks       ExcelLink[]
 
   // FR-21. One faculty, so the code alone is meaningful — the error message is
   // "รหัสวิชานี้มีอยู่แล้ว" with no institution qualifier.
@@ -753,4 +764,52 @@ model RefreshToken {
 
   @@index([userId])
   @@index([familyId])
+}
+
+// ---------------------------------------------------------------------------
+// EXCEL ADD-IN SIGN-IN (0011). The CMAS add-in for Excel (VBA) signs in with a
+// device code, like a TV app: the add-in asks for a short userCode, the
+// instructor types it into the CMAS web app they are already signed in to and
+// picks ONE course, and the add-in then collects a token. The token never sits
+// in a workbook: the add-in keeps it in memory only.
+// ---------------------------------------------------------------------------
+
+// One sign-in attempt from the add-in. Lives 10 minutes. Only the SHA-256 of
+// the deviceCode (the add-in's secret) is stored; userCode is short and typed
+// by a person, so it is stored as is and is useless without the deviceCode.
+model ExcelDeviceCode {
+  id             String    @id @default(cuid())
+  deviceCodeHash String    @unique
+  userCode       String    @unique // 8 characters, upper case, no dash
+  expiresAt      DateTime
+  // Set together when an instructor approves the code in the web app.
+  approvedAt     DateTime?
+  userId         String?
+  user           User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId       String?
+  course         Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  // Set when the add-in collects its token: a code yields one token, once.
+  consumedAt     DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@index([expiresAt]) // expired codes are swept before a new one is issued
+}
+
+// The add-in's token: one user, ONE course, scores only, 8 hours. Revocable
+// from the web app. Only the SHA-256 is stored. The access hook still re-reads
+// the live User row and re-checks the course on every request, so a
+// deactivated account or an instructor taken off the course loses access at once.
+model ExcelLink {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId   String
+  course     Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  lastUsedAt DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
 }

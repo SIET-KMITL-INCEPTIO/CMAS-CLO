@@ -58,7 +58,7 @@ scripts/                          setup.mjs · build-*.py (diagram/workbook gene
    can't see: a 403 confirms the id exists. ADMIN sees every course but does no teaching work (D-1).
 2. **`authMiddleware` re-reads the live User row.** Don't "optimize" it into trusting the JWT role claim.
 3. **Services don't call `prisma` directly**; they go through a repository (code-rule §3).
-   `authorization.service.ts` predates that rule and still does.
+   Repositories two modules share live in `app/server/src/repositories/`.
 4. **Never rename or hand-edit a folder in `database/migrations/`.** Prisma records the names in
    the database. `0002_constraints_and_triggers` is hand-written SQL (CHECKs and triggers), and so is
    `0009_lock_down_supabase_data_api` (RLS on, no grants for Supabase's `anon`/`authenticated`: the

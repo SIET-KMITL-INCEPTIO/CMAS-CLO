@@ -3,9 +3,9 @@
  * Google sign-in from outside the faculty domain, edit a name or system role,
  * switch an account off or on, and open its history.
  *
- * Not here, on purpose: "เพิ่มผู้ใช้" and "รีเซ็ตรหัสผ่าน" — accounts come from
- * Google sign-in, which has no password (D-5) — and "ลบบัญชี": an account is
- * switched off, never removed (FR-06, no DELETE /users).
+ * "เพิ่มบัญชี" (UC 1.1) makes an account ahead of its owner's first sign-in.
+ * Not here, on purpose: "รีเซ็ตรหัสผ่าน" — there are no passwords (D-5) — and
+ * "ลบบัญชี": an account is switched off, never removed (FR-06, no DELETE /users).
  */
 import { useState } from "react"
 import { toast } from "sonner"
@@ -14,10 +14,12 @@ import { Chip, Pill } from "../../components/ui/Badges.tsx"
 import { useAuthStore } from "../auth/useAuthStore.ts"
 import { ConfirmDelete } from "../clos/ConfirmDelete.tsx"
 import { UserDrawer } from "./UserDrawer.tsx"
+import { NewUserForm } from "./NewUserForm.tsx"
 import { UserForm } from "./UserForm.tsx"
 import type { ListedUser } from "./users.api.ts"
 import { ROLE_TH } from "./userView.ts"
 import { useApproveUser, useSetUserActive, useUsers } from "./useUsers.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 type Group = "all" | "PENDING" | "INSTRUCTOR" | "ADMIN" | "off"
 const isPending = (u: ListedUser) => u.status === "PENDING"
@@ -40,6 +42,7 @@ export default function Users() {
   const [detail, setDetail] = useState<string | null>(null)
   const [editing, setEditing] = useState<ListedUser | null>(null)
   const [suspending, setSuspending] = useState<ListedUser | null>(null)
+  const [adding, setAdding] = useState(false)
 
   const users = q.data ?? []
   const count = (g: Group) => users.filter(IN_GROUP[g]).length
@@ -79,18 +82,24 @@ export default function Users() {
         title="จัดการผู้ใช้งาน"
         sub="ระดับระบบ"
         tools={
-          <input
-            className="inp !w-64"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            placeholder="ค้นหาชื่อหรืออีเมล"
-            aria-label="ค้นหาผู้ใช้"
-          />
+          <>
+            <button type="button" className="btn btn-primary" onClick={() => setAdding(true)}>
+              + เพิ่มบัญชี
+            </button>
+            <input
+              className="inp !w-64"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              placeholder="ค้นหาชื่อหรืออีเมล"
+              aria-label="ค้นหาผู้ใช้"
+            />
+          </>
         }
         help={
           <>
             กดชื่อผู้ใช้เพื่อตรวจสอบว่าบัญชีนั้นผูกกับรายวิชาใด อัปโหลดอะไรไว้
-            และเกิดอะไรขึ้นกับบัญชีบ้าง · บัญชีเข้าสู่ระบบด้วย Google จึงไม่มีรหัสผ่านให้รีเซ็ต ·
+            และเกิดอะไรขึ้นกับบัญชีบ้าง · “เพิ่มบัญชี” สร้างบัญชีที่ใช้งานได้ทันที
+            เจ้าของเข้าสู่ระบบครั้งแรกด้วย Google หรือลิงก์ทางอีเมล · ระบบไม่มีรหัสผ่าน ·
             บัญชีลบไม่ได้ ใช้ “ระงับการใช้งาน” แทน ·
             ผู้ดูแลที่ใช้งานอยู่คนสุดท้ายจะถูกระงับหรือลดบทบาทไม่ได้ · สมัครด้วย Google
             นอกโดเมนคณะต้องได้รับการอนุมัติก่อน
@@ -103,7 +112,7 @@ export default function Users() {
       <div className="cbody">
         <div className="card scroll-x overflow-hidden">
           {q.isLoading ? (
-            <p className="px-4 py-6 text-[14px] text-dim">กำลังโหลด…</p>
+            <Loading className="px-4 py-6" />
           ) : list.length === 0 ? (
             <p className="px-4 py-10 text-center text-[14px] text-dim">
               {needle ? "ไม่พบผู้ใช้ที่ตรงกับคำค้น" : "ไม่มีผู้ใช้ในกลุ่มนี้"}
@@ -224,6 +233,7 @@ export default function Users() {
       </div>
 
       <UserDrawer userId={detail} onClose={() => setDetail(null)} />
+      {adding && <NewUserForm onClose={() => setAdding(false)} />}
       {editing && (
         <UserForm user={editing} self={editing.id === me?.id} onClose={() => setEditing(null)} />
       )}

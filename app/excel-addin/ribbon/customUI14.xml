@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The CMAS tab. Added to CMAS.xlam by `python scripts/build-excel-addin.py package`.
+     Callbacks live in src/modCmasRibbon.bas. Labels are Thai: this is XML, not VBA source. -->
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui">
+  <ribbon>
+    <tabs>
+      <tab id="cmasTab" label="CMAS">
+        <group id="cmasConnectGroup" label="เชื่อมต่อ">
+          <button id="cmasConnect" label="เชื่อมต่อ" size="large" imageMso="HyperlinkInsert"
+                  screentip="เชื่อมต่อกับ CMAS" supertip="เชื่อมต่อไฟล์นี้กับ CMAS แล้วกดปุ่มเชื่อมต่อในหน้าเว็บที่เปิดขึ้น หรือกรอกรหัส 8 ตัวที่ Excel แสดง"
+                  onAction="CmasRibbonConnect"/>
+          <button id="cmasDisconnect" label="ตัดการเชื่อมต่อ" imageMso="Cancel"
+                  onAction="CmasRibbonDisconnect"/>
+        </group>
+        <group id="cmasSyncGroup" label="คะแนน">
+          <button id="cmasSyncNow" label="ซิงก์ตอนนี้" size="large" imageMso="Refresh"
+                  supertip="ส่งคะแนนที่แก้และโหลดคะแนนล่าสุดจาก CMAS ทันที ปกติระบบทำให้เองทุก 3 ถึง 10 วินาที"
+                  onAction="CmasRibbonSync"/>
+          <button id="cmasKeepMine" label="ใช้ค่าของฉัน"
+                  supertip="ใช้กับช่องสีแดงที่เลือก บันทึกค่าที่คุณกรอกทับค่าใน CMAS"
+                  onAction="CmasRibbonKeepMine"/>
+          <button id="cmasTakeServer" label="ใช้ค่าใน CMAS"
+                  supertip="ใช้กับช่องสีแดงที่เลือก ทิ้งค่าที่คุณกรอกแล้วใช้ค่าใน CMAS แทน"
+                  onAction="CmasRibbonTakeServer"/>
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

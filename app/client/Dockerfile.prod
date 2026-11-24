@@ -25,7 +25,9 @@ RUN npm run build -w app/client
 # Stage 2: Serve via lightweight nginx
 # 1.30 is nginx's stable line; 1.27 stopped getting Alpine rebuilds and carried
 # OpenSSL 3.3.3 with CRITICAL CVEs (Grype, PR #38).
-FROM nginx:1.30-alpine@sha256:47928bf67eb62a1863cb08d9ecb52d3e704304ba614eaee17884204677702951
+# 1.30.7 (2026-11-18) fixes CVE-2026-113425, -121810, -123007, -123633, -123634
+# (CRITICAL, in nginx itself, so `apk upgrade` below cannot reach them).
+FROM nginx:1.30.7-alpine@sha256:bef154735288bc38d99fac41ae63730684bcc661503673a04a0f9bc526ba8598
 
 # Alpine ships fixes before the nginx image is rebuilt (brotli-libs CVE-2026-111497
 # was fixed in 1.2.1-r0 two days after nginx:1.30-alpine was published).

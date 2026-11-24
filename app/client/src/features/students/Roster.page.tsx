@@ -7,12 +7,15 @@
  * number and has one calculation, on the server (FR-88).
  */
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { toast } from "sonner"
 import { Modal } from "../../components/overlay/Sheet.tsx"
 import { useCan } from "../../hooks/useCan.ts"
 import { ConfirmDelete } from "../clos/ConfirmDelete.tsx"
 import { CoursePage } from "../courses/CoursePage.tsx"
 import { useCourseContext } from "../courses/useCourseContext.ts"
+import { excelApi } from "../excel/excel.api.ts"
+import { useAddinRelease } from "../excel/useExcel.ts"
 import type { GridStudent } from "../scores/score.types.ts"
 import { ChangesDrawer } from "../scores/ChangesDrawer.tsx"
 import { ImportExcel } from "../scores/ImportExcel.tsx"
@@ -22,8 +25,45 @@ import { useScoreGrid } from "../scores/useScores.ts"
 import { StudentForm } from "./StudentForm.tsx"
 import { studentsApi } from "./students.api.ts"
 import { useDeleteStudent, useRestoreStudent, useWithdrawStudent } from "./useStudents.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 const TITLE = "นักศึกษาและคะแนน"
+
+/** One kind of data, the same two actions: นำเข้า and ส่งออก. A group the caller may do neither in is not drawn. */
+function ExcelGroup({
+  label,
+  canImport,
+  canExport,
+  onImport,
+  onExport,
+}: {
+  label: string
+  canImport: boolean
+  canExport: boolean
+  onImport: () => void
+  onExport: () => void
+}) {
+  if (!canImport && !canExport) return null
+  return (
+    <div role="group" aria-label={label}>
+      <div className="mb-1.5 text-[13px] text-dim" aria-hidden="true">
+        {label}
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {canImport && (
+          <button type="button" className="btn btn-primary" onClick={onImport}>
+            นำเข้า
+          </button>
+        )}
+        {canExport && (
+          <button type="button" className="btn" onClick={onExport}>
+            ส่งออก
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
 
 export default function Roster() {
   const { course } = useCourseContext()
@@ -35,6 +75,8 @@ export default function Roster() {
   const [excel, setExcel] = useState(false)
   const [importing, setImporting] = useState<"roster" | "scores" | null>(null)
   const [history, setHistory] = useState(false)
+  const [downloading, setDownloading] = useState(false)
+  const release = useAddinRelease()
   const withdraw = useWithdrawStudent()
   const restore = useRestoreStudent()
   const remove = useDeleteStudent()
@@ -70,7 +112,7 @@ export default function Roster() {
   )
 
   let body
-  if (grid.isLoading) body = <div className="text-[14px] text-dim">กำลังโหลด…</div>
+  if (grid.isLoading) body = <Loading />
   else if (!data) body = null
   else if (data.students.length === 0)
     body = (
@@ -155,48 +197,64 @@ export default function Roster() {
           title="นำเข้า / ส่งออก Excel"
           sub="ตรวจไฟล์ก่อนบันทึกเสมอ — ยังไม่เขียนอะไรจนกว่าจะยืนยัน"
         >
-          <div className="grid gap-2 sm:grid-cols-2">
-            {can("score.export") && (
-              <>
+          {/* Two things, each with the same two actions. The template is the
+              first step of the import window, so it has no button here. */}
+          <div className="grid gap-4">
+            <ExcelGroup
+              label="รายชื่อนักศึกษา"
+              canImport={canManage}
+              canExport={can("score.export")}
+              onImport={() => {
+                setExcel(false)
+                setImporting("roster")
+              }}
+              onExport={() => studentsApi.exportRoster(course.id).catch(failed)}
+            />
+            <ExcelGroup
+              label="คะแนน"
+              canImport={can("score.import")}
+              canExport={can("score.export")}
+              onImport={() => {
+                setExcel(false)
+                setImporting("scores")
+              }}
+              onExport={() => scoresApi.exportScores(course.id).catch(failed)}
+            />
+            {/* FR-73..76: one .xlsm per course with the sync VBA inside. It is handed
+                out only here, behind a sign-in, and connects itself when opened. */}
+            {can("score.edit") && (
+              <div role="group" aria-label="กรอกคะแนนใน Excel แบบซิงก์ทันที">
+                <div className="mb-1.5 text-[13px] text-dim" aria-hidden="true">
+                  กรอกคะแนนใน Excel แบบซิงก์ทันที
+                </div>
                 <button
                   type="button"
-                  className="btn"
-                  onClick={() => studentsApi.template(course.id).catch(failed)}
+                  className="btn btn-primary w-full"
+                  disabled={!release.data?.workbook.available || downloading}
+                  onClick={() => {
+                    setDownloading(true)
+                    excelApi
+                      .downloadWorkbook(course.id)
+                      .catch(failed)
+                      .finally(() => setDownloading(false))
+                  }}
                 >
-                  ดาวน์โหลดเทมเพลตรายชื่อ
+                  {downloading ? "กำลังดาวน์โหลด…" : "ดาวน์โหลดไฟล์กรอกคะแนน (.xlsm)"}
                 </button>
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => scoresApi.template(course.id).catch(failed)}
-                >
-                  ดาวน์โหลดเทมเพลตคะแนน
-                </button>
-              </>
-            )}
-            {canManage && (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => {
-                  setExcel(false)
-                  setImporting("roster")
-                }}
-              >
-                นำเข้ารายชื่อ
-              </button>
-            )}
-            {can("score.import") && (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => {
-                  setExcel(false)
-                  setImporting("scores")
-                }}
-              >
-                นำเข้าคะแนน
-              </button>
+                <p className="mt-1.5 text-[12px] text-dim">
+                  {release.data && !release.data.workbook.available
+                    ? "ยังไม่เปิดให้ดาวน์โหลด — รอผู้ดูแลเผยแพร่ไฟล์"
+                    : "เปิดภายใน 10 นาทีแล้วเชื่อมต่อเอง · ครั้งแรกบน Windows: คลิกขวาที่ไฟล์ → Properties → Unblock"}
+                  {" · "}
+                  <Link
+                    to={`/excel/link?course=${course.id}`}
+                    className="underline"
+                    onClick={() => setExcel(false)}
+                  >
+                    ใช้ add-in แทน
+                  </Link>
+                </p>
+              </div>
             )}
           </div>
         </Modal>

@@ -315,7 +315,7 @@
    "courseScope": "—",
    "capability": "user.manage",
    "fr": "FR-05, UC 1.1, UC 1.4",
-   "status": "new",
+   "status": "done",
    "phase": "P2",
    "needs0008": false,
    "classification": {
@@ -326,8 +326,8 @@
    },
    "design": {
     "params": "—",
-    "body": "email (string, อีเมลถูกรูปแบบ, แปลงเป็นตัวพิมพ์เล็ก) · name (string 1–200) · role: \"INSTRUCTOR\" | \"ADMIN\" · strict",
-    "success": "201 · {id, email, name, role, status: \"ACTIVE\", isActive: true}",
+    "body": "email (string, อีเมลถูกรูปแบบ, แปลงเป็นตัวพิมพ์เล็ก) · name (string 1–100) · role: \"INSTRUCTOR\" | \"ADMIN\" · strict",
+    "success": "201 · {id, email, name, role, status: \"ACTIVE\", isActive: true, authProvider: \"EMAIL\", createdAt, courses: [], uploadCount: 0} (รูปเดียวกับ GET /users/:userId)",
     "errors": "400 body ผิดรูป · 401 · 403 ไม่ใช่ ADMIN · 409 อีเมลซ้ำ (เทียบแบบไม่สนตัวพิมพ์) · 429",
     "rules": "user.manage · สร้างเป็น ACTIVE เพราะผู้ดูแลระบบรับรองอีเมลแล้ว (ไม่ผ่านกฎโดเมน FR-08) · emailVerifiedAt = null จนกว่าเจ้าของเข้าสู่ระบบ · ผู้ใช้เข้าด้วย Google (ผูก googleSub ครั้งแรก) หรือลิงก์อีเมล (/auth/email-link จับคู่อีเมลแบบไม่สนตัวพิมพ์) · ไม่ส่งอีเมลเชิญอัตโนมัติ · เขียน AuthEvent · ไม่ตั้งรหัสผ่าน (D-5)",
     "tests": "ST-AUTH-10"
@@ -919,7 +919,7 @@
    "courseScope": "—",
    "capability": "course.create",
    "fr": "UC 2.9",
-   "status": "new",
+   "status": "done",
    "phase": "P2",
    "needs0008": false,
    "classification": {
@@ -930,8 +930,8 @@
    },
    "design": {
     "params": "—",
-    "body": "year (int 1–4 ชั้นปี) · fromYear (int ปีการศึกษาต้นทาง) · toYear (int ค่าตั้งต้น fromYear + 1, ต้องมากกว่า fromYear) · strict",
-    "success": "200 · {courses: [{courseId, code, name, section, selected, group: \"READY\" | \"EXISTS\" | \"NOT_FOUND\", warnings[]}], toYear} · ไม่เขียนข้อมูล",
+    "body": "level (int 1–4 ชั้นปี) · fromYear (int ปีการศึกษาต้นทาง 2500–2600) · toYear (int ต้องมากกว่า fromYear) · strict",
+    "success": "200 · {level, fromYear, toYear, planned: [Row], offPlan: [Row], missing: [{code, name, semester}]} · Row = {courseId, code, name, semester, section, exists, notes: [{tone: \"nil\" | \"warn\" | \"bad\", text}]} · ไม่เขียนข้อมูล",
     "errors": "400 ปีไม่ถูกต้อง · 401 · 403 ไม่มี course.create · 429",
     "rules": "course.create · แผนการเรียนอ่านจากไฟล์ค่าคงที่ฝั่งเซิร์ฟเวอร์ (lib/study-plan.ts, 40 รายวิชา จากหลักสูตรปรับปรุง 2567) ไม่ใช้ตารางใหม่ · ผู้สอนเห็นเฉพาะวิชาที่ตนสอน ADMIN เห็นทุกวิชา · EXISTS = ปลายทางมี (code, ภาค, ปี, sec) อยู่แล้ว ติ๊กออกให้ · เขียน AuthEvent ถ้าถูกปฏิเสธ (F1)",
     "tests": "ST-COURSE-07"
@@ -953,7 +953,7 @@
    "courseScope": "—",
    "capability": "course.create",
    "fr": "UC 2.9",
-   "status": "new",
+   "status": "done",
    "phase": "P2",
    "needs0008": false,
    "classification": {
@@ -964,9 +964,9 @@
    },
    "design": {
     "params": "—",
-    "body": "year · fromYear · toYear (เหมือน preview) · courseIds: [uuid] 1–100 รายการ ที่ผู้ใช้ติ๊กเลือก · strict",
-    "success": "201 · {created: [{fromCourseId, courseId}], skipped: [{courseId, reason: \"EXISTS\" | \"NO_ACCESS\" | \"NOT_IN_PLAN\"}]}",
-    "errors": "400 · 401 · 403 · 404 ไม่มีวิชาใดเข้าถึงได้เลย · 422 courseIds ว่าง หรือ toYear ไม่มากกว่า fromYear · 429",
+    "body": "level · fromYear · toYear (เหมือน preview) · courseIds: [cuid] 1–100 รายการ ที่ผู้ใช้ติ๊กเลือก · strict",
+    "success": "201 · {created: [{fromCourseId, courseId}], skipped: [{courseId, reason: \"EXISTS\" | \"NO_ACCESS\" | \"NO_TEACHER\"}]}",
+    "errors": "400 body ผิดรูป · courseIds ว่าง · toYear ไม่มากกว่า fromYear · 401 · 403 · 404 ไม่มีวิชาใดเข้าถึงได้เลย · 429",
     "rules": "course.create · ตรวจสิทธิ์และตรวจซ้ำทีละวิชาตอนกดยืนยัน (S9) · คัดลอกทีละวิชา แต่ละวิชาใน transaction ของตัวเอง ใช้ตรรกะเดียวกับ /courses/:id/duplicate (CLO จุดประสงค์ กิจกรรม เกณฑ์ ช่วงเกรด ผู้สอน; ไม่คัดลอกนักศึกษา คะแนน เกรด) · ผู้สอนที่กดอยู่ในวิชาใหม่ (P17) · วิชาต้นทางไม่ถูกแก้ · วิชาที่ล้มไม่ทำให้วิชาที่เสร็จแล้วย้อนกลับ ผลรายวิชาบอกใน skipped",
     "tests": "ST-COURSE-08"
    },
@@ -1927,7 +1927,7 @@
    "courseScope": "จาก URL",
    "capability": "score.export",
    "fr": "UC 7.4",
-   "status": "new",
+   "status": "done",
    "phase": "P2",
    "needs0008": false,
    "classification": {
@@ -2993,6 +2993,294 @@
     "errors": "401",
     "rules": "ส่งเฉพาะ courseId ให้ผู้สอนของวิชานั้นและ ADMIN (A-13) · ข้อมูลจริงยังอ่านผ่าน GET ที่ตรวจสิทธิ์ · token ส่งใน header ไม่ใช่ URL · origin คือ X-Client-Id ของแท็บที่เขียน",
     "tests": "ST-ACL-06"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 84,
+   "group": "10 Excel add-in",
+   "method": "POST",
+   "path": "/excel/device",
+   "fullPath": "/api/v1/excel/device",
+   "what": "add-in ของ Excel ขอรหัสเชื่อมต่อ (deviceCode + userCode 8 ตัว)",
+   "role": "ไม่ต้องล็อกอิน",
+   "courseScope": "—",
+   "capability": "—",
+   "fr": "FR-73",
+   "status": "done",
+   "phase": "X2",
+   "needs0008": false,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนแถวเดียว",
+    "access": "สาธารณะ",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": "—",
+    "body": "— (ไม่มี body)",
+    "success": "201 · {deviceCode (43 ตัว base64url), userCode 'ABCD-2345', verifyUrl, expiresIn 600, interval 5}",
+    "errors": "429 เกิน 10 ครั้ง / 15 นาที ต่อ IP",
+    "rules": "เก็บเฉพาะ SHA-256 ของ deviceCode · userCode 8 ตัวจากอักษรที่ไม่มี 0 O 1 I · ลบรหัสที่หมดอายุก่อนออกรหัสใหม่",
+    "tests": "ST-XL-01"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 85,
+   "group": "10 Excel add-in",
+   "method": "POST",
+   "path": "/excel/token",
+   "fullPath": "/api/v1/excel/token",
+   "what": "add-in ถามว่าอนุมัติแล้วหรือยัง ได้ token ของ 1 รายวิชาครั้งเดียว",
+   "role": "ไม่ต้องล็อกอิน",
+   "courseScope": "—",
+   "capability": "—",
+   "fr": "FR-73",
+   "status": "done",
+   "phase": "X2",
+   "needs0008": false,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนแถวเดียว",
+    "access": "สาธารณะ",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": "—",
+    "body": "deviceCode (string 43 ตัว base64url)",
+    "success": "200 · {status:'pending', interval} · {status:'expired'} (ไม่มี / หมดอายุ / รับไปแล้ว ตอบเหมือนกัน) · 201 · {status:'ok', token 'cmasx_…', expiresAt, course{id, code, name, section, semester, year}} · Cache-Control: no-store",
+    "errors": "400 body ผิดรูป · 429 เกิน 300 ครั้ง / 15 นาที ต่อ IP",
+    "rules": "รับ token ได้ครั้งเดียว: ทำเครื่องหมายใช้แล้วและสร้าง ExcelLink ใน transaction เดียว · token ใช้ได้ 8 ชม. เฉพาะ course.view และ score.edit ของวิชาที่อนุมัติ",
+    "tests": "ST-XL-01, 02"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 86,
+   "group": "10 Excel add-in",
+   "method": "GET",
+   "path": "/excel/addin",
+   "fullPath": "/api/v1/excel/addin",
+   "what": "เวอร์ชันและ SHA-256 ของ add-in ล่าสุด",
+   "role": "ไม่ต้องล็อกอิน",
+   "courseScope": "—",
+   "capability": "—",
+   "fr": "FR-75",
+   "status": "done",
+   "phase": "X2",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "สาธารณะ",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "200 · {version, sha256 (null จนกว่าจะมี build จริง), platforms ['windows','mac'], workbook {version, available}}",
+    "errors": "—",
+    "rules": "add-in เทียบเวอร์ชันแล้วแจ้งผู้ใช้เท่านั้น ไม่ดาวน์โหลดหรือรันโค้ดจากเซิร์ฟเวอร์ · ไม่มีการเซ็นโค้ด จึงให้ผู้ใช้เทียบ SHA-256",
+    "tests": "ST-XL-05"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 87,
+   "group": "10 Excel add-in",
+   "method": "GET",
+   "path": "/excel/addin/file",
+   "fullPath": "/api/v1/excel/addin/file",
+   "what": "ดาวน์โหลดไฟล์ add-in CMAS.xlam (ต้องล็อกอินผ่านเว็บ)",
+   "role": "ผู้ใช้ที่ล็อกอิน",
+   "courseScope": "—",
+   "capability": "อ่าน",
+   "fr": "FR-75",
+   "status": "done",
+   "phase": "X2",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "ล็อกอินทั่วไป",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "200 · ไฟล์ CMAS.xlam (Content-Disposition: attachment)",
+    "errors": "401 ไม่ได้ล็อกอิน / ใช้ token ของ add-in · 404 ยังไม่เผยแพร่ ไม่มีไฟล์ หรือ hash ของไฟล์ไม่ตรงกับ SHA-256 ที่ประกาศ",
+    "rules": "ไม่เซ็นโค้ด จึงแจกเฉพาะจากหน้า CMAS ที่ล็อกอินแล้วพร้อม SHA-256 · ไม่ส่งไฟล์ที่ hash ไม่ตรง",
+    "tests": "ST-XL-05"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 88,
+   "group": "10 Excel add-in",
+   "method": "POST",
+   "path": "/courses/:courseId/excel-links",
+   "fullPath": "/api/v1/courses/:courseId/excel-links",
+   "what": "ผู้สอนอนุมัติรหัสจาก Excel สำหรับรายวิชานี้",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "score.edit",
+   "fr": "FR-73",
+   "status": "done",
+   "phase": "X2",
+   "needs0008": false,
+   "classification": {
+    "operation": "สร้าง",
+    "effect": "เขียนแถวเดียว",
+    "access": "งานสอน",
+    "caution": "กลาง"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "userCode (string ≤ 20 · ตัดขีดและช่องว่าง แปลงเป็นตัวพิมพ์ใหญ่ · 8 ตัว) · .strict() รายวิชามาจาก path เท่านั้น (A-8)",
+    "success": "201 · {approved:true}",
+    "errors": "400 body ผิดรูป · 401 · 403 ADMIN (D-1) · 404 วิชาที่มองไม่เห็น · 404 รหัสไม่ถูกต้องหรือหมดอายุ · 404 เรียกด้วย token ของ add-in (webSessionOnly) · 429 เกิน 10 ครั้ง / 15 นาที",
+    "rules": "score.edit ตรวจโดย access hook เหมือน route คะแนน · อนุมัติได้ครั้งเดียวต่อรหัส · token หนึ่งออก token ถัดไปไม่ได้",
+    "tests": "ST-XL-01, 03"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 89,
+   "group": "10 Excel add-in",
+   "method": "GET",
+   "path": "/courses/:courseId/excel-workbook",
+   "fullPath": "/api/v1/courses/:courseId/excel-workbook",
+   "what": "ดาวน์โหลดไฟล์กรอกคะแนน .xlsm ของรายวิชา ที่เชื่อมต่อเองเมื่อเปิด",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "score.edit",
+   "fr": "FR-75, FR-76",
+   "status": "done",
+   "phase": "X3",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "งานสอน",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · ไฟล์ CMAS <code> Sec <section> <ภาค>-<ปี>.xlsm · custom properties CmasApi, CmasCourseId, CmasCourseLabel, CmasTicket · Cache-Control: no-store",
+    "errors": "401 · 403 ADMIN (D-1) · 404 วิชาที่มองไม่เห็น · 404 เรียกด้วย token ของ add-in (webSessionOnly) · 404 ยังไม่เผยแพร่ template หรือ hash ไม่ตรง · 429 เกิน 10 ครั้ง / 15 นาที",
+    "rules": "ตั๋วคือ deviceCode ที่อนุมัติให้ผู้ดาวน์โหลดและวิชานี้แล้ว รับ token ผ่าน /excel/token ได้ครั้งเดียว · ไม่มี token อยู่ในไฟล์ · template ต้องตรง SHA-256 ก่อนประทับทุกครั้ง",
+    "tests": "ST-XL-05"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 90,
+   "group": "10 Excel add-in",
+   "method": "GET",
+   "path": "/courses/:courseId/revision",
+   "fullPath": "/api/v1/courses/:courseId/revision",
+   "what": "เลขรุ่นของรายวิชา add-in ถามทุก 10 วินาที โหลดใหม่เมื่อเลขขยับ",
+   "role": "ผู้สอนของรายวิชา",
+   "courseScope": "จาก URL",
+   "capability": "อ่าน",
+   "fr": "FR-76",
+   "status": "done",
+   "phase": "X3",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "อ่านรายวิชา",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": ":courseId",
+    "body": "—",
+    "success": "200 · {revision} · Cache-Control: no-store",
+    "errors": "401 · 404 วิชาที่มองไม่เห็น หรือ token ของ add-in วิชาอื่น",
+    "rules": "ขยับ +1 หลังการเขียนที่สำเร็จทุกครั้งของรายวิชา (คะแนน นำเข้า นักศึกษา กิจกรรม ตั้งค่า) ใน onResponse ที่เดียวกับ SSE · ไม่แตะ Course.updatedAt · add-in โหลดตารางใหม่เมื่อเลขขยับ",
+    "tests": "ST-XL-06"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 91,
+   "group": "10 Excel add-in",
+   "method": "GET",
+   "path": "/excel/links",
+   "fullPath": "/api/v1/excel/links",
+   "what": "การเชื่อมต่อ Excel ที่ยังใช้ได้ของตัวเอง",
+   "role": "ผู้ใช้ที่ล็อกอิน",
+   "courseScope": "—",
+   "capability": "อ่าน",
+   "fr": "FR-74",
+   "status": "done",
+   "phase": "X2",
+   "needs0008": false,
+   "classification": {
+    "operation": "อ่านรายการ",
+    "effect": "อ่านอย่างเดียว",
+    "access": "ล็อกอินทั่วไป",
+    "caution": "ต่ำ"
+   },
+   "design": {
+    "params": "—",
+    "body": "—",
+    "success": "200 · [{id, createdAt, lastUsedAt, expiresAt, course{id, code, name, section}}]",
+    "errors": "401 · 404 เรียกด้วย token ของ add-in",
+    "rules": "เฉพาะของผู้เรียก ที่ยังไม่หมดอายุและไม่ถูกตัด · lastUsedAt อัปเดตอย่างมากนาทีละครั้ง",
+    "tests": "ST-XL-04"
+   },
+   "bodyFields": null,
+   "enumFields": null,
+   "uc": []
+  },
+  {
+   "n": 92,
+   "group": "10 Excel add-in",
+   "method": "DELETE",
+   "path": "/excel/links/:linkId",
+   "fullPath": "/api/v1/excel/links/:linkId",
+   "what": "ตัดการเชื่อมต่อ Excel ทันที",
+   "role": "ผู้ใช้ที่ล็อกอิน",
+   "courseScope": "—",
+   "capability": "—",
+   "fr": "FR-74",
+   "status": "done",
+   "phase": "X2",
+   "needs0008": false,
+   "classification": {
+    "operation": "ลบ",
+    "effect": "ลบข้อมูล",
+    "access": "ล็อกอินทั่วไป",
+    "caution": "สูง"
+   },
+   "design": {
+    "params": ":linkId (cuid)",
+    "body": "—",
+    "success": "200 · {revoked:true}",
+    "errors": "400 linkId ผิดรูป · 401 · 404 ไม่มี / ของคนอื่น / ตัดไปแล้ว (ตอบเหมือนกัน) · 404 เรียกด้วย token ของ add-in",
+    "rules": "มีผลทันที: request ถัดไปของ add-in ได้ 401",
+    "tests": "ST-XL-04"
    },
    "bodyFields": null,
    "enumFields": null,

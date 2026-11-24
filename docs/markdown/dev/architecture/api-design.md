@@ -8,7 +8,7 @@ See also: [[srs]] · [[dev]] · [[features-pages]] · [[schema]] · [[dfd]] · [
 > **Baseline:** [[srs]] v2.4.0 (single-tenant) · `database/schema.prisma` (**19 models · migration 0001–0010**) ·
 > `app/server/src/` (Fastify 5 — **implement แล้ว 4 endpoint**: `GET /health` · `POST /auth/google` · `GET /users` · `PATCH /users/:id/approve` · ที่เหลือใน §3 ยังเป็น contract)
 > **สถานะ:** Draft — เป็น **contract** ระหว่าง client กับ server ก่อนเริ่ม implement Sprint 1
-> **2026-11-18 (แผน API ทั้งระบบ):** รายการ endpoint ฉบับใช้งานคือ [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) (**83 endpoint** · ทำแล้ว 79 · ออกแบบใหม่ 4 · สร้างจาก `scripts/build-api-endpoints-workbook.py`) · ตาราง §3.1–§3.8 เป็นรายการ ณ v1.1 และ §3.8 · ที่เพิ่มหลังจากนั้นอยู่ที่ §3.9 · ความสัมพันธ์ use case → endpoint ครบ 49 ข้ออยู่ที่ §3.10 · convention §1–§2 ใช้ตามเดิม ([[api-design-plan]] §1)
+> **2026-11-18 (แผน API ทั้งระบบ):** รายการ endpoint ฉบับใช้งานคือ [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx) (**83 endpoint** · ทำแล้วครบ 83 (4 ตัวสุดท้าย 2026-11-19) · สร้างจาก `scripts/build-api-endpoints-workbook.py`) · ตาราง §3.1–§3.8 เป็นรายการ ณ v1.1 และ §3.8 · ที่เพิ่มหลังจากนั้นอยู่ที่ §3.9 · ความสัมพันธ์ use case → endpoint ครบ 49 ข้ออยู่ที่ §3.10 · convention §1–§2 ใช้ตามเดิม ([[api-design-plan]] §1)
 >
 > **v1.1.0 (2026-09-26) — ตามโมเดลข้อมูลหลัง migration `0005`–`0007`:** ไม่มี `CourseRole` (ผู้สอนสิทธิ์เท่ากัน — D1) ·
 > เกณฑ์ผ่าน CLO อยู่ที่ `Course.cloPassMark` แทน `CLO.threshold` (E1) · `CLO` / `BehavioralObjective` มี `weight` กรอกเองได้ (E2) ·
@@ -46,7 +46,7 @@ See also: [[srs]] · [[dev]] · [[features-pages]] · [[schema]] · [[dfd]] · [
 | # | กฎ | ที่มา |
 |---|---|---|
 | **A-1** | **Resource-based, noun plural, kebab-case** — ห้ามมี verb ใน URL (`/getCourse` ❌) ยกเว้น action endpoint ที่ไม่ใช่ CRUD จริง ๆ (`/clos/reorder`, `/scores/import/preview`) | [[dev]] §4.5 |
-| **A-2** | **ทุก route ที่รับ `:courseId` ต้องเรียก `assertCourseAccess()` ก่อนแตะข้อมูลใด ๆ** — ผิดแล้วได้ **404 ไม่ใช่ 403** | NFR-07 · `services/authorization.service.ts` |
+| **A-2** | **ทุก route ที่รับ `:courseId` ต้องเรียก `assertCourseAccess()` ก่อนแตะข้อมูลใด ๆ** — ผิดแล้วได้ **404 ไม่ใช่ 403** | NFR-07 · `modules/authorization/authorization.service.ts` · route ประกาศ `config.access` แล้ว `middlewares/access.middleware.ts` เรียก `authorize()` ให้ |
 | **A-3** | **Leaf resource (`:cloId`, `:activityId`, `:studentId`, ...) ต้อง resolve หา `courseId` ก่อน แล้วจึง `assertCourseAccess()`** — id ที่ client ส่งมาไม่เคยเป็นหลักฐานว่ามีสิทธิ์ | NFR-07 |
 | **A-4** | **ทุก request body / query / params ผ่าน Zod** ก่อนถึง service ห้ามเชื่อ input ดิบ | NFR-13 · SRS §5.2 |
 | **A-5** | **ทุกการเขียนหลายแถวอยู่ใน `prisma.$transaction` เดียว** — สำเร็จทั้งหมดหรือไม่สำเร็จเลย (ยกเว้น import ที่ FR-68 บังคับให้ commit เฉพาะแถวที่ผ่าน) | NFR-11 · FR-63 |
@@ -163,7 +163,7 @@ Authorization: Bearer <accessToken>
 > `assertCourseAccess()` ตรวจ · ผู้สร้างต้องถูกเพิ่มเป็นผู้สอนของรายวิชาใหม่ **ใน transaction เดียวกับการสร้าง** ไม่อย่างนั้นจะเกิดวิชาที่ไม่มีใครดูแล ·
 > `DELETE /courses/:courseId` = ADMIN หรือผู้สอนของวิชานั้น (P16)
 
-### 3.1 Auth & Users — 13 endpoints (**implement แล้ว 12 · ออกแบบแล้ว 1: `POST /users`**)
+### 3.1 Auth & Users — 13 endpoints (**implement แล้วครบ 13**)
 
 > สถานะ: ✅ = มีใน `app/server/src/modules/` แล้ว · 📝 = ออกแบบแล้ว ยังไม่เขียนโค้ด (§3.9) · ⬜ = contract ยังไม่ทำ · ปัจจุบันเข้าสู่ระบบได้ทาง Google อย่างเดียว
 > (`POST /auth/google` — ตรวจ ID token ที่เซิร์ฟเวอร์ FR-08) · ลิงก์อีเมล (`/auth/email-link`) ✅ 2026-11-16 · ระบบไม่มีรหัสผ่าน (ตัด 2026-11-10)
@@ -179,7 +179,7 @@ Authorization: Bearer <accessToken>
 | ✅ | PATCH | `/auth/me` | any | — | FR-119 · แก้ชื่อของตัวเอง อีเมลแก้ไม่ได้ |
 | ✅ | GET | `/users` (`?status=PENDING` หรือ `ACTIVE`) | ADMIN | — | FR-05, FR-08b |
 | ✅ | PATCH | `/users/:id/approve` | ADMIN | — | FR-08b |
-| 📝 | POST | `/users` | ADMIN | — | FR-05 |
+| ✅ | POST | `/users` | ADMIN | — | FR-05 |
 | ✅ | GET | `/users/:userId` | ADMIN | — | FR-05 |
 | ✅ | PATCH | `/users/:userId` | ADMIN | — | FR-05 |
 | ✅ | PATCH | `/users/:userId/status` | ADMIN | — | FR-03, FR-06 |
@@ -295,17 +295,17 @@ Authorization: Bearer <accessToken>
 
 **รวม 57 endpoints** ใน §3.1–§3.7 (+ `/health` ที่มีแล้ว) · §3.8 นับแยก
 
-### 3.9 Endpoint ที่ออกแบบเพิ่มจาก use case (2026-11-18) — ยังไม่เขียนโค้ด
+### 3.9 Endpoint ที่ออกแบบเพิ่มจาก use case (ออกแบบ 2026-11-18 · ทำแล้ว 2026-11-19)
 
 > ตรวจ use case 49 ข้อใน [index-q-usecase.drawio](../../../diagrams/usecase/index-q-usecase.drawio) กับ endpoint ที่มี พบ use case ที่ไม่มี endpoint รองรับ 3 ข้อ (1.1 · 2.9 · 7.4) ·
 > รายละเอียด request/response อยู่ในแผ่น `Design` ของ Excel · ทดสอบด้วย ST-AUTH-10 · ST-COURSE-07, 08 · ST-IMP-07 ใน [[system-test-plan]]
 
 | | Method | Path | Role | Scope | UC |
 |---|---|---|---|---|---|
-| 📝 | POST | `/users` (ย้ายจาก "หลัง v1" เพราะ UC 1.1 อยู่ในไดอะแกรม) | ADMIN | — | 1.1 · 1.4 |
-| 📝 | GET | `/courses/:courseId/students/export` | ผู้สอนของวิชา | ✅ | 7.4 |
-| 📝 | POST | `/courses/copy-level/preview` | ADMIN · ผู้สอน | — (กรองตามสิทธิ์ใน service) | 2.9 |
-| 📝 | POST | `/courses/copy-level/commit` | ADMIN · ผู้สอน | — (ตรวจทีละวิชา) | 2.9 |
+| ✅ | POST | `/users` (ย้ายจาก "หลัง v1" เพราะ UC 1.1 อยู่ในไดอะแกรม) | ADMIN | — | 1.1 · 1.4 |
+| ✅ | GET | `/courses/:courseId/students/export` | ผู้สอนของวิชา | ✅ | 7.4 |
+| ✅ | POST | `/courses/copy-level/preview` | ADMIN · ผู้สอน | — (กรองตามสิทธิ์ใน service) | 2.9 |
+| ✅ | POST | `/courses/copy-level/commit` | ADMIN · ผู้สอน | — (ตรวจทีละวิชา) | 2.9 |
 
 ข้อกำหนดของแต่ละตัว:
 
@@ -314,11 +314,29 @@ Authorization: Bearer <accessToken>
 - **`POST /courses/copy-level/preview`** — รับชั้นปี 1–4 · ปีต้นทาง · ปีปลายทาง (ค่าตั้งต้นต้นทาง + 1) · คืนรายการวิชาตามแผนการเรียนพร้อมกลุ่มและคำเตือน ไม่เขียนข้อมูล · แผนการเรียน (40 วิชา) เป็นไฟล์ค่าคงที่ `lib/study-plan.ts` ไม่เพิ่มตาราง
 - **`POST /courses/copy-level/commit`** — รับรายการวิชาที่ผู้ใช้ติ๊ก · คัดลอกทีละวิชา (แต่ละวิชา 1 transaction) ด้วยตรรกะเดียวกับ `POST /courses/:id/duplicate` · ข้ามวิชาที่ซ้ำหรือไม่มีสิทธิ์พร้อมเหตุผล · ไม่คัดลอกนักศึกษา คะแนน เกรด · สิทธิ์ `course.create`
 
+### 3.9a Excel add-in (VBA) — เชื่อมต่อด้วยรหัสอุปกรณ์ (ทำแล้ว 2026-11-19 · migration 0011)
+
+> add-in ของ Excel (Windows และ Mac desktop) เข้าสู่ระบบแบบ device code: add-in ขอรหัส 8 ตัว → ผู้สอนกรอกในหน้าเว็บ `/excel/link` ที่ล็อกอินอยู่แล้วและเลือก **1 รายวิชา** → add-in รับ token
+> token ขึ้นต้น `cmasx_` ใช้ได้ 8 ชั่วโมง เฉพาะ `course.view` และ `score.edit` ของรายวิชานั้น · route อื่นทั้งหมดตอบ 404 (`excelTokenAllows` ใน access.middleware.ts) · เก็บเฉพาะ SHA-256 · ไม่อยู่ในไฟล์ Excel
+> แผน: [excel-vba-sync-plan](../planning/excel-vba-sync-plan.md)
+
+| | Method | Path | Role | Scope | หมายเหตุ |
+|---|---|---|---|---|---|
+| ✅ | POST | `/excel/device` | ไม่ต้องล็อกอิน | — | ขอ deviceCode + userCode · อายุ 10 นาที · 10 ครั้ง/15 นาทีต่อ IP |
+| ✅ | POST | `/excel/token` | ไม่ต้องล็อกอิน | — | add-in ถามทุก 5 วินาที · `pending` / `expired` / `ok` + token (ครั้งเดียว) |
+| ✅ | GET | `/excel/addin` | ไม่ต้องล็อกอิน | — | เวอร์ชันและ SHA-256 ของ add-in · `workbook {version, available}` ของไฟล์กรอกคะแนน · ไม่ดาวน์โหลดโค้ดอัตโนมัติ |
+| ✅ | GET | `/excel/addin/file` | ล็อกอินแล้ว (เว็บเท่านั้น) | — | ไฟล์ `CMAS.xlam` · 404 จนกว่าจะมี SHA-256 และไฟล์ตรงกับค่านั้น |
+| ✅ | POST | `/courses/:courseId/excel-links` | ผู้สอนของวิชา | ✅ `score.edit` | body `{userCode}` · `webSessionOnly`: token ของ add-in ใช้ไม่ได้แม้เป็นวิชาเดียวกัน (token หนึ่งออก token ถัดไปไม่ได้) |
+| ✅ | GET | `/courses/:courseId/excel-workbook` | ผู้สอนของวิชา | ✅ `score.edit` | ไฟล์กรอกคะแนน `.xlsm` ของวิชานี้ (VBA ชุดเดียวกับ add-in) ประทับ custom properties: ที่อยู่ API (จาก Host ของคำขอ), courseId, ชื่อวิชา และตั๋วเชื่อมต่อ (deviceCode ที่อนุมัติแล้ว ใช้ครั้งเดียว 10 นาที) · `webSessionOnly` · 10 ครั้ง/15 นาที · `Cache-Control: no-store` · 404 จนกว่า template จะมี SHA-256 และตรงกัน |
+| ✅ | GET | `/courses/:courseId/revision` | ผู้สอนของวิชา · token ของ add-in | ✅ `course.view` | `{revision}` · add-in ถามทุก 3 วินาทีขณะใช้งาน ทุก 10 วินาทีเมื่อว่าง · คำขอจาก Excel นับ rate limit แยกถัง (`RATE_LIMIT_EXCEL_MAX`) · ขยับหลังการเขียนที่สำเร็จทุกครั้ง (migration 0012) |
+| ✅ | GET | `/excel/links` | any | — (เฉพาะของตัวเอง) | การเชื่อมต่อที่ยังใช้ได้ |
+| ✅ | DELETE | `/excel/links/:linkId` | any | — (เฉพาะของตัวเอง) | ตัดการเชื่อมต่อทันที · ของคนอื่น → 404 |
+
 **ยังต้องตัดสิน:** UC 9.1 เขียนว่าผู้ใช้ "แก้ไขชื่อและอีเมลของตนเอง" แต่ `PATCH /auth/me` แก้ได้แค่ชื่อ (อีเมลเป็นตัวระบุตัวตน ทั้ง Google และลิงก์อีเมลอ้างอิงอีเมลนี้) · ค่าที่ใช้ไปก่อน: **แก้ได้แค่ชื่อ** แล้วปรับไดอะแกรมให้ตรง
 
 ### 3.10 Use case → Endpoint (49 ข้อ)
 
-> ตัวเลข = หมายเลขใน [index-q-usecase.drawio](../../../diagrams/usecase/index-q-usecase.drawio) · 📝 = ออกแบบแล้ว ยังไม่ทำ (§3.9) · ทุก use case ที่ไม่มี 📝 มี endpoint ที่ implement แล้ว
+> ตัวเลข = หมายเลขใน [index-q-usecase.drawio](../../../diagrams/usecase/index-q-usecase.drawio) · 📝 = ออกแบบไว้ใน §3.9 และ implement แล้ว 2026-11-19 · ทุก use case มี endpoint ที่ implement แล้ว
 
 | UC | Function | Endpoint |
 |---|---|---|
@@ -753,6 +771,8 @@ POST /courses/:courseId/students/import/commit     { "previewToken": "..." }
 {
   "success": true,
   "data": {
+    "course": { "code": "90641001", "name": "…", "nameEn": null, "section": "01", "semester": 2, "year": 2569,
+                "credits": "3 (2-2-5)", "instructors": ["…"] },   // หัวฟอร์มคะแนนใน Excel · มาจากแถว Course ล้วน ไม่มีชื่อสถาบัน
     "activities": [{ "id": "cla1", "name": "สอบกลางภาค", "maxScore": 100, "order": 1 }],
     "students": [{
       "id": "cls1", "studentCode": "6703001", "name": "สมศักดิ์ เรียนดี",
@@ -779,6 +799,7 @@ POST /courses/:courseId/students/import/commit     { "previewToken": "..." }
 ```
 
 - **upsert ทั้งชุดใน transaction เดียว** — สำเร็จทั้งหมดหรือไม่สำเร็จเลย (FR-63, NFR-11)
+- ตอบ `200 { written, unchanged, revision }` · `revision` คือเลข `Course.revision` หลังการเขียนนี้ (ขยับใน service ไม่ใช่ใน hook หลังตอบ) · add-in Excel เห็นว่าเท่ากับเลขที่ตัวเองโหลดไว้ +1 แปลว่าไม่มีใครเขียนแทรก จึงไม่ต้องโหลดตารางซ้ำ · `null` ถ้าขยับไม่สำเร็จ (คะแนนบันทึกแล้ว hook ขยับแทน)
 - `score: null` → `prisma.score.deleteMany` ไม่ใช่เขียน 0 (FR-62)
 - validate `0 ≤ score ≤ maxScore` ที่ API ก่อน (FR-61, NFR-12) → `422` พร้อมรายแถวที่ผิด:
 

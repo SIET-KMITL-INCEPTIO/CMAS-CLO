@@ -8,6 +8,7 @@ import { Chip } from "../../components/ui/Badges.tsx"
 import { n2 } from "../clos/useClos.ts"
 import type { StudentResult } from "./dashboard.types.ts"
 import { useStudentResult } from "./useDashboard.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 const CLO_TONE = { PASS: "ok", AT_RISK: "bad", NOT_EVALUATED: "nil" } as const
 const CLO_TH = { PASS: "ผ่าน", AT_RISK: "ยังไม่ผ่าน", NOT_EVALUATED: "ยังไม่มีคะแนน" } as const
@@ -132,7 +133,7 @@ export function StudentDrawer({
       sub={q.data?.student.studentCode}
     >
       {q.isLoading ? (
-        <div className="text-[14px] text-dim">กำลังโหลด…</div>
+        <Loading />
       ) : q.isError ? (
         <div className="text-[14px] text-bad">{q.error.message}</div>
       ) : (

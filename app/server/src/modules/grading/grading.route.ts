@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify"
-import { CourseDataRepository } from "../dashboard/course-data.repository.js"
+import { CourseDataRepository } from "../../repositories/course-data.repository.js"
 import { GradingController } from "./grading.controller.js"
 import { GradingRepository } from "./grading.repository.js"
 import { GradingService } from "./grading.service.js"

@@ -9,7 +9,8 @@
  * caller cannot see — single-tenant means course scope is the only data
  * boundary left.
  *
- * /health and /auth/* (the login routes themselves) are the only
+ * /health, /auth/* (the login routes themselves) and the Excel add-in's
+ * sign-in (/excel/device, /excel/token, /excel/addin) are the only
  * legitimately public routes.
  */
 import type { FastifyInstance } from "fastify"
@@ -24,6 +25,7 @@ import { scoresRoutes } from "./scores/scores.route.js"
 import { gradingRoutes } from "./grading/grading.route.js"
 import { dashboardRoutes } from "./dashboard/dashboard.route.js"
 import { eventsRoutes } from "./events/events.route.js"
+import { excelRoutes } from "./excel/excel.route.js"
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(healthRoutes)
@@ -37,4 +39,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(gradingRoutes)
   await app.register(dashboardRoutes)
   await app.register(eventsRoutes, { prefix: "/events" })
+  await app.register(excelRoutes)
 }

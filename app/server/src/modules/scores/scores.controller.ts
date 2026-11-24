@@ -26,7 +26,16 @@ export class ScoreController {
   // NFR-08: the body holds student data — it is parsed, never logged.
   put = async (req: FastifyRequest, reply: FastifyReply) => {
     const body = putScoresSchema.parse(req.body)
-    return ok(reply, await this.service.put(authorizedCourseId(req), body, callerOf(req).userId))
+    // FR-76: a write by the Excel add-in is labelled EXCEL in the history. Set
+    // here from the token, never taken from the body, so the label is true.
+    const source = req.excelCourseId ? ("EXCEL" as const) : body.source
+    const result = await this.service.put(
+      authorizedCourseId(req),
+      { ...body, source },
+      callerOf(req).userId,
+    )
+    req.revisionBumped = result.revision !== null
+    return ok(reply, result)
   }
 
   template = async (req: FastifyRequest, reply: FastifyReply) => {

@@ -62,6 +62,16 @@ export class UserRepository {
     })
   }
 
+  /**
+   * UC 1.1: an account an ADMIN vouches for, so ACTIVE at once (no domain rule).
+   * Not verified until its owner signs in with Google or an email link.
+   */
+  createByAdmin(data: { email: string; name: string; role: Role }): Promise<User> {
+    return prisma.user.create({
+      data: { ...data, authProvider: "EMAIL", status: "ACTIVE", emailVerifiedAt: null },
+    })
+  }
+
   /** Emails are stored as Google or the person typed them; a link is keyed lower-case. */
   findByEmailInsensitive(email: string): Promise<User | null> {
     return prisma.user.findFirst({ where: { email: { equals: email, mode: "insensitive" } } })

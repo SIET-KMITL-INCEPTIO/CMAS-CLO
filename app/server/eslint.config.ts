@@ -17,4 +17,16 @@ export default tseslint.config(
   {
     ignores: ["dist/**", "coverage/**"],
   },
+  // Ratchet (refactor-plan.md P5, 2026-11-22): no source file or function may grow past
+  // the largest one today: lib/attainment.ts, 406 lines; a function in the same file, complexity 34.
+  // Lower these as files are split, never raise them without a reason in the PR.
+  // Tests are exempt: a long table of cases is fine.
+  {
+    files: ["src/**/*.ts"],
+    ignores: ["src/**/*.test.ts"],
+    rules: {
+      "max-lines": ["error", { max: 410, skipBlankLines: false, skipComments: false }],
+      complexity: ["error", 34],
+    },
+  },
 )

@@ -4,9 +4,16 @@ See also: [[dev]] · [[features-pages]] · [[schema]] · [[usecase]] · [[code-r
 
 ## ระบบติดตามและประเมินผลลัพธ์การเรียนรู้ที่คาดหวังระดับรายวิชา (CLO System / CMAS)
 
-> **Version:** 2.10.0 | **Updated:** 2026-11-16 | **Owner:** ทีมพัฒนา 67030098 / 67030110 / 67030120
-> **Baseline:** `database/schema.prisma` (**19 models — single-tenant**, migration `0001`–`0010`) + ต้นแบบ `docs/index-q/index-q.html`
+> **Version:** 2.11.0 | **Updated:** 2026-11-19 | **Owner:** ทีมพัฒนา 67030098 / 67030110 / 67030120
+> **Baseline:** `database/schema.prisma` (**21 models — single-tenant**, migration `0001`–`0012`) + ต้นแบบ `docs/index-q/index-q.html`
 > **สถานะ:** Draft — §9 มีข้อตัดสินใจที่ยังค้าง ต้อง sign-off ก่อนเริ่ม implement module ที่เกี่ยวข้อง
+>
+> **v2.12.0 (2026-11-20) — Excel add-in เฟส P3–P5:** migration **`0012_course_revision_and_excel_source`** (`Course.revision` · `ScoreChangeSource.EXCEL`) · FR-76 ฝั่งเซิร์ฟเวอร์ ✅ · add-in เขียนครบแล้ว **ยังไม่เคยรันใน Excel**
+>
+> **v2.11.0 (2026-11-19) — Excel add-in (VBA) เฟส P0–P2 บน `feature/excel-vba-sync`:**
+> - เพิ่ม **FR-73–FR-76** และ **NFR-20** เพิ่มเงื่อนไขไม่มีมาโคร + จำกัดขนาดหลังแตกไฟล์ · แผน: [excel-vba-sync-plan](../planning/excel-vba-sync-plan.md)
+> - migration **`0011_excel_addin_sign_in`**: `ExcelDeviceCode` · `ExcelLink` · **ยังไม่ได้ apply กับฐานข้อมูลใด**
+> - **มีในแอปเท่านั้น ต้นแบบยังไม่มี** หน้า `/excel/link` — ต้องเพิ่มใน `index-q.html` ตามกติกา "ต้นแบบนำหน้าแอป"
 >
 > **v2.10.0 (2026-11-16) — ลิงก์เข้าสู่ระบบทางอีเมล (FR-07) ทำแล้ว:**
 > - `POST /auth/email-link` · `POST /auth/email-link/verify` · หน้า `/auth/link` · หน้าเข้าสู่ระบบมีทั้ง Google และอีเมลตามต้นแบบ
@@ -654,6 +661,10 @@ FR-10 ถึง FR-15 ถูกยกเลิกพร้อมกับกา�
 | FR-70 | ส่งออกคะแนนดิบและผลสรุป CLO เป็น Excel | MUST | Import/Export |
 | FR-71 | ทุกการอัปโหลดต้องบันทึก `ScoreUploadLog` (ไฟล์ / ผู้อัปโหลด / เวลา / recordsOk / recordsFail) แม้จะล้มเหลวทั้งไฟล์ | MUST | Upload Log |
 | FR-72 | หน้า Upload Log ต้องแสดง **recordsOk และ recordsFail แยกคอลัมน์** และกดดูรายละเอียดข้อผิดพลาดได้ | MUST | Upload Log **(ต้องแก้ — F9)** |
+| FR-73 | add-in CMAS ของ Excel (Windows · Mac desktop) เชื่อมต่อด้วย **รหัสอุปกรณ์**: add-in แสดงรหัส 8 ตัว ผู้สอนกรอกในหน้า `/excel/link` ที่ล็อกอินอยู่แล้วและเลือก **1 รายวิชา** ที่ตนสอน · ไม่มีรหัสผ่านหรือ API key ให้พิมพ์หรือคัดลอก · รหัสหมดอายุใน 10 นาที ใช้ได้ครั้งเดียว | SHOULD | Excel Link ✅ P2 |
+| FR-74 | token ของ add-in อ่านรายวิชานั้นและแก้คะแนนของรายวิชานั้นได้เท่านั้น (`course.view` · `score.edit`) นาน 8 ชั่วโมง · route อื่นตอบ 404 · อยู่ในหน่วยความจำของ add-in เท่านั้น ไม่อยู่ในไฟล์ · ผู้สอนเห็นและตัดการเชื่อมต่อได้ทันทีที่ `/excel/link` · บัญชีถูกระงับหรือถูกถอดจากรายวิชา = ใช้ไม่ได้ทันที | SHOULD | Excel Link ✅ P2 |
+| FR-75 | ไฟล์ที่ **อัปโหลด** เข้า CMAS เป็น `.xlsx` ไม่มีมาโครเสมอ · VBA แจกได้ 2 แบบ: add-in `CMAS.xlam` หรือไฟล์กรอกคะแนน `.xlsm` ของแต่ละรายวิชา (ตัดสิน 20 พ.ย. 2569: อาจารย์เก็บไฟล์ไว้ในเครื่องหรือ OneDrive ของตนเอง ไม่ส่งต่อ) · ไม่เซ็นโค้ด จึงแจกเฉพาะจากหน้า CMAS ที่ต้องล็อกอิน · ไม่มี token ในไฟล์ · `GET /excel/addin` บอกเวอร์ชันล่าสุด add-in แจ้งเตือนเท่านั้น ไม่ดาวน์โหลดโค้ดเอง | SHOULD | ✅ endpoint · ✅ หน้าดาวน์โหลด `/excel/link` (`GET /excel/addin/file`) · ✅ `CMAS.xlam` 0.2.0 build บน Windows (ยังไม่ได้ทดสอบบน Mac) · 🟡 ไฟล์กรอกคะแนน `.xlsm` ต่อรายวิชา (VBA ชุดเดียวกัน ประทับวิชาและตั๋วเชื่อมต่อครั้งเดียว) `GET /courses/:courseId/excel-workbook` เขียนแล้ว รอ build template ใน Excel |
+| FR-76 | ซิงก์สองทาง: Excel → CMAS ภายใน 2 วินาทีหลังแก้ช่อง · CMAS → Excel ภายในราว 4 วินาทีขณะใช้งาน (ถามทุก 3 วินาที นาน 2 นาทีหลังมีการแก้) และราว 12 วินาทีเมื่อว่าง (ถามทุก 10 วินาที) · ช่องที่ถูกแก้สองฝั่งพร้อมกันได้ 409 และแสดงค่าในระบบให้เลือก · ลบค่าต้องยืนยัน · ประวัติการแก้ติดป้าย "แก้ใน Excel" · Excel บนเว็บไม่รองรับ | SHOULD | ✅ เซิร์ฟเวอร์ (migration 0012 · `GET /courses/:courseId/revision`) · ⬜ add-in เขียนแล้ว ยังไม่ได้ทดสอบใน Excel |
 
 ### 4.8 Dashboard & Reports
 
@@ -774,7 +785,7 @@ FR-10 ถึง FR-15 ถูกยกเลิกพร้อมกับกา�
 | ~~NFR-17~~ | ~~Security~~ | ❌ **ยกเลิก 2026-08-04** — ข้อกำหนดแยกข้อมูลระดับสถาบัน ไม่มีความหมายในระบบ single-tenant ส่วนที่ยังต้องทดสอบถูกรวมเข้ากับ NFR-07 แล้ว |
 | ~~NFR-18~~ | ~~Security~~ | ❌ **ยกเลิก 2026-08-04** — `TENANT_FILTER` และ tenant guard ถูกลบออกจากโค้ดพร้อมกับ `Institution` |
 | NFR-19 | Security | `role` ต้องอ่านจากแถว `User` สด ๆ ทุก request ไม่ใช่เชื่อค่าใน JWT — บัญชีที่ถูกปิดหรือลดสิทธิ์ต้องมีผลทันที ไม่ใช่รอ access token หมดอายุ 15 นาที |
-| NFR-20 | Performance · Security | ไฟล์นำเข้า Excel (.xlsx) ไม่เกิน **10 MB · 5 ชีต · 2,000 แถวข้อมูล** และต้องไม่มีสูตร เพราะ Node.js ทำงานบนเธรดเดียวและ SheetJS อ่านทั้งไฟล์ในหน่วยความจำ (OWASP, 2023) · อ่านและตรวจที่เซิร์ฟเวอร์ ฝั่งหน้าจอแสดงตัวอย่างอย่างเดียว (`lib/excel.ts`) |
+| NFR-20 | Performance · Security | ไฟล์นำเข้า Excel (.xlsx) ไม่เกิน **10 MB · 5 ชีต · 2,000 แถวข้อมูล** และต้องไม่มีสูตรในชีตแรก ไม่มีมาโคร (`vbaProject.bin`) และแตกไฟล์แล้วรวมไม่เกิน **100 MB · 500 ไฟล์ภายใน** (`lib/xlsx-container.ts` วัดขนาดจริงตอนแตก ไม่เชื่อขนาดที่ไฟล์ประกาศ) เพราะ Node.js ทำงานบนเธรดเดียวและ SheetJS อ่านทั้งไฟล์ในหน่วยความจำ (OWASP, 2023) · อ่านและตรวจที่เซิร์ฟเวอร์ ฝั่งหน้าจอแสดงตัวอย่างอย่างเดียว (`lib/excel.ts`) |
 | NFR-21 | Deployability | ติดตั้งระบบทั้งหมดด้วย Docker Compose ด้วยคำสั่งชุดเดียว สำหรับสภาพแวดล้อมทดลองใช้งานจริง (เล่ม §2.4.4.4 · ตารางที่ 3.1 ระยะที่ 6) — `docker-compose.yml` · `docker-compose.prod.yml` |
 
 ---

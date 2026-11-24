@@ -2,6 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify"
 import { UsersService } from "./users.service.js"
 import {
   authEventsQuerySchema,
+  createUserSchema,
   instructorSearchSchema,
   listUsersQuerySchema,
   updateUserSchema,
@@ -9,7 +10,7 @@ import {
   userParamsSchema,
   userStatusSchema,
 } from "./users.validator.js"
-import { notFound, ok } from "../../lib/response.js"
+import { created, notFound, ok } from "../../lib/response.js"
 import { callerOf } from "../../middlewares/access.middleware.js"
 
 export class UsersController {
@@ -18,6 +19,11 @@ export class UsersController {
   list = async (req: FastifyRequest, reply: FastifyReply) => {
     const { status } = listUsersQuerySchema.parse(req.query)
     return ok(reply, await this.service.list(status))
+  }
+
+  create = async (req: FastifyRequest, reply: FastifyReply) => {
+    const body = createUserSchema.parse(req.body)
+    return created(reply, await this.service.create(body, callerOf(req).userId))
   }
 
   approve = async (req: FastifyRequest, reply: FastifyReply) => {

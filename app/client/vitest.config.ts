@@ -29,7 +29,10 @@ export default defineConfig({
       // Ratchet: what main measured on 2026-10-24 (one test file), 9/22/70 with F0–F6 merged, only
       // ever raised, toward dev.md §11.1 (client hooks 70%). Enforced by the
       // CI `unit` job. Lowering one needs a reason in the PR.
-      thresholds: { lines: 10, statements: 10, functions: 26, branches: 71 },
+      // 2026-11-22 (refactor-plan.md P2): tests for the pieces split out of the five large pages took the
+      // run from 10 / 71 / 26 to 22.8 / 81.3 / 40.5 (lines / branches / functions).
+      // 2026-11-22 (P5): with the P4 parity test, 22.8 / 81.4 / 40.7; raised to the floor of that.
+      thresholds: { lines: 22, statements: 22, functions: 40, branches: 81 },
     },
   },
 })

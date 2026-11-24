@@ -93,7 +93,11 @@ export class AuthController {
 
   refresh = async (req: FastifyRequest, reply: FastifyReply) => {
     // S-11: the cookie is sent automatically, so only our own front end may trigger a refresh.
-    if (req.headers.origin !== env.CORS_ORIGIN) return forbidden(reply, "Origin not allowed")
+    if (req.headers.origin !== env.CORS_ORIGIN)
+      return forbidden(
+        reply,
+        "คำขอนี้มาจากเว็บไซต์ที่ไม่ได้รับอนุญาต — เปิดระบบจากที่อยู่ปกติของ CMAS",
+      )
 
     const result = await this.sessions.refresh(readCookie(req, REFRESH_COOKIE))
     if (result.outcome === "invalid") {

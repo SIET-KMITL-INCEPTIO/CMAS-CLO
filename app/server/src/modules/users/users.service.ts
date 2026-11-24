@@ -1,8 +1,8 @@
 import type { AccountStatus, AuthEventAction } from "@prisma/client"
-import { BusinessRuleError, NotFoundError } from "../../lib/errors.js"
+import { BusinessRuleError, ConflictError, NotFoundError } from "../../lib/errors.js"
 import type { AuthEventRepository } from "./auth-event.repository.js"
 import { UserRepository } from "./user.repository.js"
-import type { UpdateUserInput } from "./users.validator.js"
+import type { CreateUserInput, UpdateUserInput } from "./users.validator.js"
 
 const USER_NOT_FOUND = "ไม่พบผู้ใช้งานนี้"
 const LAST_ADMIN = "ต้องมีผู้ดูแลระบบที่ใช้งานอยู่อย่างน้อย 1 คน"
@@ -31,6 +31,19 @@ export class UsersService {
     const approved = await this.users.approve(id)
     if (actorId) await this.events?.record(id, actorId, "ACTIVATE", "approved")
     return approved
+  }
+
+  /**
+   * UC 1.1 (design: POST /users). No password and no invitation mail: the owner
+   * signs in with Google or an email link, both of which find this row by email.
+   */
+  async create(input: CreateUserInput, actorId: string) {
+    if (await this.users.findByEmailInsensitive(input.email)) {
+      throw new ConflictError("มีบัญชีที่ใช้อีเมลนี้แล้ว — ค้นหาแล้วแก้ไขบัญชีเดิมแทน")
+    }
+    const user = await this.users.createByAdmin(input)
+    await this.events?.record(user.id, actorId, "CREATE", input.role)
+    return this.get(user.id)
   }
 
   /** G1: the course form's instructor picker. */

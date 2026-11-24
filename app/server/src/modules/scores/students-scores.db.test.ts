@@ -166,7 +166,13 @@ describe.skipIf(!RUN_DB_TESTS)("students and scores against the database", () =>
         ],
       })
       expect(good.statusCode).toBe(200)
-      expect(good.json().data).toEqual({ written: 3, unchanged: 0 })
+      // `revision` is the course's change counter after this write, which the Excel add-in
+      // compares with the one it holds (FR-76): it must be what the database now says.
+      const course = await prisma.course.findUniqueOrThrow({
+        where: { id: courseId },
+        select: { revision: true },
+      })
+      expect(good.json().data).toEqual({ written: 3, unchanged: 0, revision: course.revision })
       expect(
         await prisma.scoreChange.count({ where: { activityId: quiz, source: "MANUAL" } }),
       ).toBe(3)

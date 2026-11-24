@@ -1,3 +1,4 @@
+import { CourseRevisionRepository } from "../../repositories/course-revision.repository.js"
 import { BusinessRuleError, ConflictError } from "../../lib/errors.js"
 import {
   activityHeader,
@@ -36,15 +37,57 @@ type ScorePreview = {
   rejects: { row: number; studentCode: string; field: string; value: string; reason: string }[]
 }
 
+type CourseRow = {
+  code: string
+  name: string
+  nameEn: string | null
+  section: string
+  semester: number
+  year: number
+  credits: { toString(): string }
+  lectureHours: { toString(): string }
+  practiceHours: { toString(): string }
+  selfStudyHours: { toString(): string }
+  instructors: { user: { name: string } }[]
+}
+
+/** "3" for 3.0, "1.5" for 1.5: the way the faculty prints credits and hours. */
+const plain = (d: { toString(): string }) => String(Number(d.toString()))
+
+/**
+ * The course's own facts, for the header of a score sheet (the Excel form). All of it comes
+ * from the Course row and its instructors; nothing here is institution-specific, so the
+ * same sheet reads right for any school. `credits` is the faculty's "3 (2-2-5)".
+ */
+export function courseHeader(c: CourseRow) {
+  return {
+    code: c.code,
+    name: c.name,
+    nameEn: c.nameEn,
+    section: c.section,
+    semester: c.semester,
+    year: c.year,
+    credits: `${plain(c.credits)} (${plain(c.lectureHours)}-${plain(c.practiceHours)}-${plain(c.selfStudyHours)})`,
+    instructors: c.instructors.map((i) => i.user.name).sort((a, b) => a.localeCompare(b, "th")),
+  }
+}
+
 export class ScoreService {
-  constructor(private readonly scores: ScoreRepository) {}
+  constructor(
+    private readonly scores: ScoreRepository,
+    // The course's change counter (FR-76), owned by the Excel module that polls it.
+    private readonly revisions: Pick<
+      CourseRevisionRepository,
+      "bump"
+    > = new CourseRevisionRepository(),
+  ) {}
 
   /** Design #56. */
   async grid(
     courseId: string,
     query: { status: "ALL" | "ENROLLED"; page: number; perPage: number },
   ) {
-    const { activities, total, students, progress, enrolled } = await this.scores.grid(
+    const { activities, total, students, progress, enrolled, course } = await this.scores.grid(
       courseId,
       query.status === "ENROLLED",
       (query.page - 1) * query.perPage,
@@ -55,6 +98,7 @@ export class ScoreService {
     )
     return {
       data: {
+        course: courseHeader(course),
         activities: activities.map((a) => ({
           id: a.id,
           name: a.name,
@@ -86,7 +130,11 @@ export class ScoreService {
    * collected first and returned together (422), so one round trip shows the
    * instructor every cell to fix; a cell someone else changed meanwhile is a 409.
    */
-  async put(courseId: string, input: PutScoresInput, userId: string) {
+  async put(
+    courseId: string,
+    input: Omit<PutScoresInput, "source"> & { source: PutScoresInput["source"] | "EXCEL" },
+    userId: string,
+  ) {
     const studentIds = [...new Set(input.scores.map((c) => c.studentId))]
     const activityIds = [...new Set(input.scores.map((c) => c.activityId))]
     const { students, activities } = await this.scores.context(courseId, studentIds, activityIds)
@@ -124,7 +172,13 @@ export class ScoreService {
         cells: result.conflicts.map((c) => ({ ...c, current: toGrid(c.current) })),
       })
     }
-    return { written: result.written, unchanged: input.scores.length - result.written }
+    // Moved here, not after the response (live-updates.middleware), so the writer learns
+    // the number its own write produced. The Excel add-in compares it with the one it
+    // last loaded: one more means nobody else wrote, and it need not reload the grid.
+    // The scores are already saved: a failed bump must not turn that into a 500. With
+    // null the response hook moves the number instead, and the add-in simply reloads.
+    const revision = await this.revisions.bump(courseId).catch(() => null)
+    return { written: result.written, unchanged: input.scores.length - result.written, revision }
   }
 
   // ── Excel (design #58-#60) ──

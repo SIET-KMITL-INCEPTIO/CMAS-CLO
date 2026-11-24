@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { coursesApi } from "./courses.api.ts"
-import type { CourseInput } from "./course.types.ts"
+import type { CopyLevelInput, CourseInput } from "./course.types.ts"
 
 export const courseKeys = {
   all: ["courses"] as const,
@@ -96,6 +96,17 @@ export const useSaveCourse = () =>
     },
   )
 
+/** UC 2.9 step one: what the copy would do. Writes nothing, so it refetches freely as the form changes. */
+export const useCopyLevelPreview = (input: CopyLevelInput) =>
+  useQuery({
+    queryKey: [...courseKeys.all, "copy-level", input],
+    queryFn: () => coursesApi.copyLevelPreview(input),
+  })
+
+export const useCopyLevel = () =>
+  useCourseMutation((body: Parameters<typeof coursesApi.copyLevelCommit>[0]) =>
+    coursesApi.copyLevelCommit(body),
+  )
 export const useDuplicateCourse = () =>
   useCourseMutation((courseId: string) => coursesApi.duplicate(courseId))
 export const useDeleteCourse = () =>

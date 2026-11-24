@@ -5,11 +5,20 @@
  */
 import type { FastifyReply, FastifyRequest } from "fastify"
 import { events } from "../modules/events/events.service.js"
+import { CourseRevisionRepository } from "../repositories/course-revision.repository.js"
+
+const revisions = new CourseRevisionRepository()
 
 declare module "fastify" {
   interface FastifyRequest {
     /** A new course's id, read from the response of a route that creates one. */
     createdCourseId?: string
+    /**
+     * The route moved the revision itself and told the caller the new number
+     * (PUT /courses/:courseId/scores, so the Excel add-in can tell its own write
+     * from someone else's). Moving it again here would hide that.
+     */
+    revisionBumped?: boolean
   }
 }
 
@@ -43,11 +52,20 @@ export async function captureCreatedCourse(
   return payload
 }
 
-/** onResponse: tell every other tab that may see the course. */
+/**
+ * onResponse: move the course's revision (the Excel add-in polls it, FR-76),
+ * then tell every other tab that may see the course. Every write route goes
+ * through the access hook, which sets request.courseId, so this one place
+ * covers scores, imports, students, activities and settings alike.
+ */
 export async function publishCourseChange(request: FastifyRequest, reply: FastifyReply) {
   if (!succeededWrite(request, reply) || !request.userId) return
   const courseId = request.courseId ?? request.createdCourseId
   if (!courseId) return
+  if (!request.revisionBumped)
+    await revisions
+      .bump(courseId)
+      .catch((e: Error) => request.log.error({ err: { name: e.name } }, "could not bump revision"))
   const header = request.headers["x-client-id"]
   const origin = typeof header === "string" && CLIENT_ID.test(header) ? header : undefined
   await events

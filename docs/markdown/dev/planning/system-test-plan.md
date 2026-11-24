@@ -10,7 +10,7 @@ See also: [[srs]] · [[api-design-plan]] · [[prototype-to-app]] · [[objectives
 > (1) ออกแบบ API ตาม [CMAS-API-Endpoints.xlsx](../../../excel/api/CMAS-API-Endpoints.xlsx)
 > (2) หน้าจอของแอปจริงใช้ตาม mock-up [`index-q.html`](../../../index-q/index-q.html)
 > (3) วางแผนทดสอบเป็น **system test แบบ gray box**
-> **ตรวจกับ:** `srs.md` v2.4.3 · Excel API 83 endpoint · `capabilities.ts` · `schema.prisma` (19 models · migration 0001–0010) · ไฟล์ทดสอบใน `docs/excel/import-test/`
+> **ตรวจกับ:** `srs.md` v2.4.3 · Excel API 92 endpoint · `capabilities.ts` · `schema.prisma` (21 models · migration 0001–0012) · ไฟล์ทดสอบใน `docs/excel/import-test/`
 
 ---
 
@@ -125,6 +125,17 @@ Unit test ที่มีอยู่ (`*.test.ts` ข้างไฟล์โ�
 | ST-AUTH-09 | `POST /auth/email-link/verify` ด้วยโทเคนถูก / ใช้ซ้ำ / หมดอายุ / ปลอม | FR-07, FR-08 | ถูก: ครั้งแรกได้ token ครั้งที่สอง 401 · โดเมนคณะ → `ACTIVE` · โดเมนอื่น → `PENDING` ไม่ออก token · บัญชีใหม่ถูกสร้างเป็น `INSTRUCTOR` |
 | ST-AUTH-10 | `POST /users` ด้วยอีเมลใหม่ / อีเมลซ้ำต่างตัวพิมพ์ / ผู้เรียกที่ไม่ใช่ ADMIN · แล้วเจ้าของเข้าด้วยลิงก์อีเมล | FR-05 · UC 1.1 | ใหม่ → 201 `ACTIVE` ไม่มีรหัสผ่าน · ซ้ำ → 409 · ไม่ใช่ ADMIN → 403 · ลิงก์อีเมลจับคู่บัญชีเดิม ไม่สร้างแถวที่สอง |
 
+### 5.3a ST-XL Excel add-in (Excel กลุ่ม 10 · FR-73–FR-76)
+
+| รหัส | กรณี | FR | ตรวจภายใน |
+|---|---|---|---|
+| ST-XL-01 | `POST /excel/device` → ผู้สอนกรอก userCode ที่ `POST /courses/:courseId/excel-links` → `POST /excel/token` | FR-73 | ก่อนอนุมัติ `pending` · หลังอนุมัติ 201 + token ครั้งเดียว ครั้งที่สอง `expired` · DB มีแต่ SHA-256 ของ deviceCode และ token |
+| ST-XL-02 | ใช้ token ที่ได้: `GET /courses/<วิชาที่อนุมัติ>/scores` · วิชาอื่น · `GET /auth/me` · `POST …/scores/import/commit` | FR-74 | วิชาที่อนุมัติ 200 · ที่เหลือ 404 ทั้งหมด (ไม่ใช่ 403) · token หมดอายุหรือบัญชีถูกระงับ → 401 |
+| ST-XL-03 | อนุมัติด้วยรหัสผิด / หมดอายุ / ใช้แล้ว · ADMIN อนุมัติ · ผู้สอนวิชาอื่นอนุมัติ · token ของ add-in อนุมัติรหัสใหม่ · ส่ง `courseId` ใน body | FR-73 · A-8 | 404 · 403 · 404 · 404 · 400 ตามลำดับ · ไม่มี `ExcelLink` ใหม่ |
+| ST-XL-04 | `GET /excel/links` แล้ว `DELETE /excel/links/:linkId` ของตัวเอง / ของคนอื่น | FR-74 | ของตัวเอง → request ถัดไปของ token ได้ 401 · ของคนอื่น → 404 และ link ยังใช้ได้ |
+| ST-XL-06 | เขียนจากเว็บ / จาก add-in / อ่าน / เขียนที่ถูกปฏิเสธ แล้วดู `GET /courses/:courseId/revision` · add-in ส่ง `source` อะไรก็ได้ | FR-76 | เขียนสำเร็จ → เลขขยับ · อ่านหรือถูกปฏิเสธ → ไม่ขยับ · `Course.updatedAt` ไม่ขยับ · ประวัติเป็น `EXCEL` เสมอเมื่อมาจาก add-in · เว็บส่ง `EXCEL` → 400 |
+| ST-XL-05 | `GET /excel/addin` · `GET /excel/addin/file` · `GET /courses/:courseId/excel-workbook` · นำเข้าไฟล์ `.xlsm` · zip bomb · `.ods` | FR-75 · NFR-20 | เวอร์ชันตรงกับ `addin-release.ts` · ไฟล์มีมาโคร / ใหญ่เกินหลังแตก / ไม่ใช่ .xlsx → 400 พร้อมข้อความไทย |
+
 ### 5.4 ST-COURSE รายวิชาและผู้สอน (Excel กลุ่ม 3 · ช่วง P2)
 
 | รหัส | กรณี | FR | ตรวจภายใน |
@@ -218,7 +229,7 @@ Unit test ที่มีอยู่ (`*.test.ts` ข้างไฟล์โ�
 
 | เกณฑ์ | ค่า |
 |---|---|
-| Endpoint ในขอบเขต (Excel) | 83 / 83 มีกรณีบวกอย่างน้อย 1 และกรณีลบอย่างน้อย 1 |
+| Endpoint ในขอบเขต (Excel) | 92 / 92 มีกรณีบวกอย่างน้อย 1 และกรณีลบอย่างน้อย 1 |
 | ตารางสิทธิ์ §5.2 | ทุกช่อง × ทุก endpoint ที่มี `:courseId` หรือ leaf id |
 | ชนิดกรณีทดสอบตามประเภทใน Excel | endpoint ที่ "ระดับความระวัง" = สูง (ลบ · ตัดเกรด · นำเข้า commit · จัดการบัญชี) ต้องมีกรณีลบ/ซ้ำ/ไม่มีสิทธิ์ครบ · "ผลต่อข้อมูล" = transaction ต้องมีกรณีล้มกลางทางแล้วไม่มีแถวค้าง · "ประเภทสิทธิ์" = งานสอน ต้องมีกรณี ADMIN ได้ 403 |
 | FR ระดับ MUST | ทุกข้อมีกรณีทดสอบอย่างน้อย 1 · ตารางย้อนรอยอยู่ใน §9 |

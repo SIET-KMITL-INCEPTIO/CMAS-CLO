@@ -20,6 +20,10 @@
 *.sql   text eol=lf
 *.prisma text eol=lf
 
+# VBA modules: the VBA editor's Import mangles Attribute lines in LF-only files
+*.bas   text eol=crlf
+*.cls   text eol=crlf
+
 # Shell scripts must be LF or they fail to execute in containers
 *.sh    text eol=lf
 Dockerfile*     text eol=lf
@@ -40,6 +44,7 @@ Dockerfile*     text eol=lf
 *.bak   binary
 *.xlsx  binary
 *.xlsm  binary
+*.xlam  binary
 
 # Generated / vendored — collapse in diffs and exclude from language stats
 package-lock.json   linguist-generated=true -diff

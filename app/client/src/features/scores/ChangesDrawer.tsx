@@ -3,11 +3,10 @@
  * what, and where it came from (typed, pasted, imported, filled, closing). The
  * list only grows; nothing here edits a score (A-12).
  */
-import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { Drawer } from "../../components/overlay/Sheet.tsx"
-import { courseKeys } from "../courses/useCourses.ts"
-import { scoresApi } from "./scores.api.ts"
+import { useScoreChanges } from "./useScores.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 const SOURCE_TH: Record<string, string> = {
   MANUAL: "พิมพ์เอง",
@@ -17,16 +16,14 @@ const SOURCE_TH: Record<string, string> = {
   FILL_UNDO: "เลิกทำการเติม",
   UNDO: "เลิกทำ",
   CLOSE: "ตอนปิดรับคะแนน",
+  EXCEL: "แก้ใน Excel",
 }
 const show = (v: number | "EXCUSED" | null) =>
   v === null ? "ว่าง" : v === "EXCUSED" ? "ยกเว้น" : String(v)
 
 export function ChangesDrawer({ courseId, onClose }: { courseId: string; onClose: () => void }) {
   const [page, setPage] = useState(1)
-  const list = useQuery({
-    queryKey: [...courseKeys.one(courseId), "score-changes", page],
-    queryFn: () => scoresApi.changes(courseId, page),
-  })
+  const list = useScoreChanges(courseId, page)
   const total = list.data?.total ?? 0
   const pages = Math.max(1, Math.ceil(total / 30))
   return (
@@ -37,7 +34,7 @@ export function ChangesDrawer({ courseId, onClose }: { courseId: string; onClose
       sub={total ? `${total} รายการ · ล่าสุดก่อน` : undefined}
     >
       {list.isLoading ? (
-        <div className="text-[14px] text-dim">กำลังโหลด…</div>
+        <Loading />
       ) : (list.data?.changes.length ?? 0) === 0 ? (
         <div className="text-[14px] text-dim">ยังไม่มีการแก้คะแนน</div>
       ) : (

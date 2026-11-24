@@ -13,5 +13,6 @@ is the overview doc and links out to the rest.
 | `ux/` | `user-flow.md`, `index-q-ux-pass.md` |
 
 `system-documentation-2members.md` stays at the top level as the entry-point summary.
+`getting-started.md` (Thai) walks a new member from `git clone` to a running dev server.
 
 File names use English kebab-case and Gregorian dates (`YYYY-MM-DD`), even when the content is in Thai.

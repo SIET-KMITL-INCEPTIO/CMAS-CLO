@@ -15,6 +15,14 @@
 import { API_URL } from "./app.constants.ts"
 import { useAuthStore } from "../features/auth/useAuthStore.ts"
 
+/** A reply with no message of its own (a proxy's page, an empty body): Thai, with what to do. */
+export function messageFor(status: number): string {
+  if (status === 403) return "คุณไม่มีสิทธิ์ทำรายการนี้ — ติดต่อผู้ดูแลระบบ"
+  if (status === 404) return "ไม่พบข้อมูลที่ระบุ — ข้อมูลอาจถูกลบหรือคุณไม่มีสิทธิ์เข้าถึง"
+  if (status >= 500) return "ระบบขัดข้อง — ลองใหม่อีกครั้ง หากยังไม่หายแจ้งผู้ดูแลระบบ"
+  return "ทำรายการไม่สำเร็จ — ตรวจข้อมูลแล้วลองใหม่"
+}
+
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -92,7 +100,7 @@ async function envelope<T>(path: string, options: Options = {}): Promise<Envelop
     errors?: unknown
   } | null
   if (!res.ok) {
-    throw new ApiError(res.status, json?.message ?? "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง", json?.errors)
+    throw new ApiError(res.status, json?.message || messageFor(res.status), json?.errors)
   }
   return { data: json?.data as T, meta: json?.meta }
 }
@@ -123,7 +131,7 @@ export const apiClient = {
     const res = await send(path, {})
     if (!res.ok) {
       const json = (await res.json().catch(() => null)) as { message?: string } | null
-      throw new ApiError(res.status, json?.message ?? "ดาวน์โหลดไม่สำเร็จ")
+      throw new ApiError(res.status, json?.message || messageFor(res.status))
     }
     const url = URL.createObjectURL(await res.blob())
     const a = Object.assign(document.createElement("a"), {

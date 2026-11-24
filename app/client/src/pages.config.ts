@@ -12,6 +12,7 @@ const Activities = lazy(() => import("./features/activities/Activities.page.tsx"
 const Roster = lazy(() => import("./features/students/Roster.page.tsx"))
 const Results = lazy(() => import("./features/dashboard/Results.page.tsx"))
 const Grading = lazy(() => import("./features/grading/Grading.page.tsx"))
+const ExcelLink = lazy(() => import("./features/excel/ExcelLink.page.tsx"))
 
 export type AppRoute = {
   path: string
@@ -34,6 +35,8 @@ export const appRoutes: AppRoute[] = [
   { path: "/", element: Home },
   { path: "/courses", element: CourseList },
   { path: "/admin/users", element: Users },
+  // FR-73: the CMAS add-in for Excel sends the instructor here with a code to type.
+  { path: "/excel/link", element: ExcelLink },
 ]
 
 /** Inside one course: relative to /courses/:courseId, the course loaded by CourseLayout. */
