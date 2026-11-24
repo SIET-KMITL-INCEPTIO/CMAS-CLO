@@ -11,6 +11,7 @@ import type { Course } from "../../features/courses/course.types.ts"
 import { useCan } from "../../hooks/useCan.ts"
 import { Icon } from "../Icon.tsx"
 import { useDisplay } from "./display.ts"
+import { ALL, effectiveTerm, inTerm, termLabel, termsOf, useTermFilter } from "./termFilter.ts"
 import { Loading } from "../page/Loading.tsx"
 
 /** Which course and which of its pages the URL is on. */
@@ -86,6 +87,9 @@ export function CoursePane({ onNavigate }: { onNavigate: () => void }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
   const { listw, set } = useDisplay()
   const rsz = useRef<HTMLDivElement>(null)
+  const { term: saved, setTerm } = useTermFilter()
+  const terms = useMemo(() => termsOf(data?.courses ?? []), [data])
+  const term = effectiveTerm(saved, terms)
 
   // The course in the URL is open in the tree unless the user folded it.
   const isOpen = (id: string) => expanded[id] ?? id === courseId
@@ -94,6 +98,7 @@ export function CoursePane({ onNavigate }: { onNavigate: () => void }) {
     const q = filter.trim().toLowerCase()
     const rows = [...(data?.courses ?? [])]
       .sort(byTerm)
+      .filter(inTerm(term))
       .filter((c) => !q || `${c.code} ${c.name} ${c.section} ${c.year}`.toLowerCase().includes(q))
     const out: { term: string; courses: Course[] }[] = []
     for (const c of rows) {
@@ -102,7 +107,7 @@ export function CoursePane({ onNavigate }: { onNavigate: () => void }) {
       out.at(-1)!.courses.push(c)
     }
     return out
-  }, [data, filter])
+  }, [data, filter, term])
 
   const startResize = (e: React.PointerEvent) => {
     const startX = e.clientX
@@ -136,14 +141,29 @@ export function CoursePane({ onNavigate }: { onNavigate: () => void }) {
           </button>
         )}
       </div>
-      <div className="lpsearch">
+      <div className="lpsearch flex gap-1.5">
         <input
-          className="inp !py-1.5 text-[14px]"
+          className="inp min-w-0 flex-1 !py-1.5 text-[14px]"
           placeholder="กรองรายการ"
           aria-label="กรองรายการ"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />
+        {terms.length > 1 && (
+          <select
+            className="inp !w-auto shrink-0 !py-1.5 text-[14px]"
+            aria-label="ภาคการศึกษา"
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+          >
+            <option value={ALL}>ทุกภาค</option>
+            {terms.map((t) => (
+              <option key={t} value={t}>
+                {termLabel(t)}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
       <div className="lplist">
         {isLoading && <Loading className="justify-center px-3 py-8" />}
