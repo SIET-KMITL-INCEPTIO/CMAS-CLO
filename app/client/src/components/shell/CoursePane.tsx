@@ -12,6 +12,7 @@ import { useCan } from "../../hooks/useCan.ts"
 import { Icon } from "../Icon.tsx"
 import { useDisplay } from "./display.ts"
 import { ALL, effectiveTerm, inTerm, termLabel, termsOf, useTermFilter } from "./termFilter.ts"
+import { Loading } from "../page/Loading.tsx"
 
 /** Which course and which of its pages the URL is on. */
 function useHere() {
@@ -165,7 +166,7 @@ export function CoursePane({ onNavigate }: { onNavigate: () => void }) {
         )}
       </div>
       <div className="lplist">
-        {isLoading && <div className="px-3 py-8 text-center text-[14px] text-dim">กำลังโหลด…</div>}
+        {isLoading && <Loading className="justify-center px-3 py-8" />}
         {!isLoading && total === 0 && (
           <div className="px-4 py-8 text-center text-[14px] leading-relaxed text-dim">
             ยังไม่มีรายวิชาในความดูแลของคุณ

@@ -10,6 +10,7 @@ import { Modal } from "../../components/overlay/Sheet.tsx"
 import type { CopyLevelInput, CopyLevelRow } from "./course.types.ts"
 import { termTh } from "./courseView.ts"
 import { useCopyLevel, useCopyLevelPreview } from "./useCourses.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 const TONE: Record<CopyLevelRow["notes"][number]["tone"], string> = {
   nil: "text-dim",
@@ -165,7 +166,7 @@ export function CopyLevel({ years, onClose }: { years: number[]; onClose: () => 
       </div>
 
       {preview.isLoading ? (
-        <div className="text-[14px] text-dim">กำลังโหลด…</div>
+        <Loading />
       ) : preview.isError ? (
         <div className="text-[14px] text-bad" role="alert">
           โหลดรายการไม่สำเร็จ — {preview.error.message} · ลองเปลี่ยนปีแล้วลองใหม่

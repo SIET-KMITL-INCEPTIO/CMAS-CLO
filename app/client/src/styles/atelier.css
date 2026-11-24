@@ -1355,6 +1355,31 @@ html[data-density="comfortable"] {
     background: var(--card);
   }
 }
+/* Loading: a small ring that turns beside the text (components/page/Loading.tsx).
+   In the components layer so a caller's utility (text-[13px], px-4) still wins. */
+@layer components {
+  .loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--dim);
+  }
+  .spinner {
+    flex: none;
+    width: 1em;
+    height: 1em;
+    border: 2px solid var(--edge2);
+    border-top-color: var(--ink2);
+    border-radius: 50%;
+    animation: loadingSpin 0.8s linear infinite;
+  }
+}
+@keyframes loadingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;

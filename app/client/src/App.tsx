@@ -7,17 +7,16 @@ import { CourseLayout } from "./features/courses/CourseLayout.tsx"
 import { useLiveUpdates } from "./features/events/useLiveUpdates.ts"
 import { resumeSession } from "./lib/session.ts"
 import { appRoutes, courseRoutes, publicRoutes } from "./pages.config.ts"
+import { Loading } from "./components/page/Loading.tsx"
 
-const Loading = () => (
-  <div className="grid min-h-screen place-items-center text-[14px] text-dim">กำลังโหลด…</div>
-)
+const FullLoading = () => <Loading className="min-h-screen justify-center" />
 
 /** Signed-in routes only. A reload resumes the session from the refresh cookie first. */
 function RequireSession() {
   const status = useAuthStore((s) => s.status)
   const location = useLocation()
   useLiveUpdates()
-  if (status === "checking") return <Loading />
+  if (status === "checking") return <FullLoading />
   if (status === "out")
     return <Navigate to="/auth/login" replace state={{ from: location.pathname }} />
   return <Outlet />
@@ -34,7 +33,7 @@ export default function App() {
         position="bottom-right"
         toastOptions={{ unstyled: true, classNames: { toast: "toast", error: "bad" } }}
       />
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<FullLoading />}>
         <Routes>
           {publicRoutes.map(({ path, element: Page }) => (
             <Route key={path} path={path} element={<Page />} />
