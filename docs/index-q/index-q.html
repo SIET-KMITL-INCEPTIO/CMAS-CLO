@@ -901,6 +901,12 @@ const n2x = function(v){
   if (v === null || v === undefined || isNaN(v)) return '—';
   return String(Math.round(v * 100) / 100);
 };
+/* W2 — บรรทัดเดียวใต้ช่องน้ำหนัก: เหลือเท่าไร หรือครบแล้ว · ยอดรวมข้ออื่นแสดงเฉพาะตอนเกิน 100% ซึ่งต้องไปแก้ */
+const weightLeftHint = function(others){
+  if (others > 100.005) return 'ข้ออื่นรวม ' + n2x(others) + '% — เกิน 100%';
+  if (Math.abs(others - 100) < 0.01) return 'ครบ 100% แล้ว';
+  return 'เหลือ ' + n2x(100 - others) + '%';
+};
 
 /* O3 (2569-09-23) — ระดับ Bloom/SOLO ของ CLO ผู้สอนเลือกได้สองแบบ (Course CLO.levelSource):
      AUTO   ผู้สอนเลือก Bloom แล้ว SOLO ตามมาจากตารางนี้ทันที (เลือก SOLO เองไม่ได้)
@@ -5419,11 +5425,11 @@ const FORMS = {
       const others = d.clos.reduce(function(t, c){ return t + (r && c.id === r.id ? 0 : (c.weight || 0)); }, 0);
       const left = Math.max(0, 100 - others);
       return [
-        { id:'number', label:'ลำดับ (เลขข้อ)', type:'num', col:1, req:true, def:next },
+        { id:'number', label:'ข้อที่', type:'num', col:1, req:true, def:next },
         /* U3 (2569-10-02) — น้ำหนักเริ่มว่างและบอกยอดที่เหลือในช่อง (placeholder) แทนการเติมค่าให้ · เดิมข้อแรกขึ้น 100
            ซึ่งกด "บันทึกแล้วเพิ่มต่อ" รัว ๆ ได้ค่าที่ไม่มีใครตั้งใจ และข้อถัดไปขึ้น 0 */
-        { id:'weight', label:'น้ำหนักตามแผน (%)', type:'num', col:1, req:true, def:'', ph:'เหลือ ' + n2x(+left.toFixed(2)),
-          hint:'CLO ข้ออื่นรวม ' + n2(others) + '% · เหลือ ' + n2x(+left.toFixed(2)) + '%' },
+        { id:'weight', label:'น้ำหนักตามแผน (%)', type:'num', col:1, req:true, def:'',
+          hint: weightLeftHint(others) },
         { id:'levelSource', label:'ระดับ Bloom / SOLO', type:'select', col:2, def:'AUTO',
           options:[['AUTO','อัตโนมัติ — SOLO ตาม Bloom'],['MANUAL','กำหนดเองทั้งสองระดับ']] },
         { id:'description', label:'CLO (ผลลัพธ์การเรียนรู้ระดับรายวิชา)', type:'area', col:4, req:true, def:'',
@@ -5495,9 +5501,9 @@ const FORMS = {
       return [
         { id:'cloId', label:'อยู่ใต้ CLO', type:'select', col:4, def:cloId,
           options: D().clos.map(function(c){ return [c.id, 'CLO ' + c.number + ' · ' + c.description.slice(0, 48)]; }) },
-        { id:'number', label:'ลำดับ (เลขข้อ)', type:'num', col:2, req:true, def:next },
-        { id:'weight', label:'น้ำหนักใน CLO (%)', type:'num', col:2, req:true, def:'', ph:'เหลือ ' + n2x(+left.toFixed(2)),
-          hint:'ข้ออื่นใต้ CLO นี้รวม ' + n2(others) + '% · เหลือ ' + n2x(+left.toFixed(2)) + '%' },
+        { id:'number', label:'ข้อที่', type:'num', col:2, req:true, def:next },
+        { id:'weight', label:'น้ำหนักใน CLO (%)', type:'num', col:2, req:true, def:'',
+          hint: weightLeftHint(others) },
         { id:'description', label:'จุดประสงค์ (พฤติกรรมที่วัดได้)', type:'area', col:4, req:true, def:'', rows:2,
           ph:'เช่น เขียน Use Case Diagram จากโจทย์ที่กำหนด' }
       ];
@@ -5565,7 +5571,6 @@ const FORMS = {
             .concat([['+', '+ กำหนดเอง…']]) },
         { id:'typeLabel', label:'ชื่อประเภทใหม่', type:'text', col:2, def:'', ph:'เช่น กรณีศึกษา', hidden:true },
         { id:'assessmentMethod', label:'วิธีประเมิน', type:'select', col:2, def:'EXAM',
-          hint:'ระบบเลือกให้ตามประเภท · เปลี่ยนเองได้',
           options: Object.keys(ASSESS_TH).map(function(k){ return [k, ASSESS_TH[k]]; })
             .concat(customLabels(d.course.id, 'assessmentLabel', 'assessmentMethod').map(function(l){ return ['CUSTOM:' + l, l]; }))
             .concat([['+', '+ กำหนดเอง…']]) },
@@ -5576,12 +5581,11 @@ const FORMS = {
         d.course.weightMode === 'GROUP'
           ? { id:'weight', label:'ร้อยละของสัดส่วนคะแนนในวิชา', type:'info', col:4,
               value: r ? n2x(r.weight) + '% (จากน้ำหนักกลุ่ม)' : 'จากน้ำหนักกลุ่ม',
-              hint:'น้ำหนักของกลุ่มประเภทนี้ แบ่งให้กิจกรรมในกลุ่มตามสัดส่วนคะแนนเต็ม · ตั้งน้ำหนักกลุ่มที่หัวกลุ่มในตารางกิจกรรม' }
-          : { id:'weight', label:'ร้อยละของสัดส่วนคะแนนในวิชา', type:'num', col:4, req:true, def:'', ph:'เหลือ ' + n2x(Math.max(0, left)),
-              hint: 'กิจกรรมอื่นรวม ' + n2(others) + '% · ' + (left > 0 ? 'ใส่ได้ไม่เกิน ' + n2(left) + '%' : 'ครบ 100% แล้ว') },
+              hint:'ตั้งที่หัวกลุ่มในตาราง' }
+          : { id:'weight', label:'ร้อยละของสัดส่วนคะแนนในวิชา', type:'num', col:4, req:true, def:'',
+              hint: weightLeftHint(others) },
         { id:'maxScore', label:'คะแนนเต็ม', type:'num', col:2, req:true,
-          def: r ? r.maxScore : ACT_DEFAULT_MAX.TEST,
-          hint:'ค่าตั้งต้นตามประเภท · ลดได้ไม่ต่ำกว่าคะแนนที่กรอกไว้แล้ว' },
+          def: r ? r.maxScore : ACT_DEFAULT_MAX.TEST },
         { id:'objectives', label:'วัดจุดประสงค์ข้อใด และสัดส่วนของกิจกรรม (%)', type:'checks', col:4, req:true, def:[],
           weighted:true,
           weights: r ? db.assessmentCriteria.filter(function(c){ return c.activityId === r.id; })
@@ -6387,7 +6391,6 @@ function modalCourse(mode, courseId){
   if (editing && !c) return;
   openModal(modalFrame(editing ? 'ตั้งค่ารายวิชา — ' + c.code + ' Sec ' + c.section : 'สร้างรายวิชา',
     '<div class="space-y-5">' +
-      '<div class="text-[13px] text-dim -mb-2"><span style="color:' + TONE.bad.tx + '">*</span> = ต้องกรอก</div>' +
       '<div class="grid grid-cols-[130px_minmax(0,1fr)] gap-3">' +
         '<div><label class="text-[14px] text-ink2 block mb-1.5" for="f-code">รหัสวิชา ' + REQ + '</label>' +
           '<input class="inp tnum" id="f-code" value="' + esc(c.code) + '"></div>' +

@@ -10,7 +10,7 @@ import { toast } from "sonner"
 import { Modal } from "../../components/overlay/Sheet.tsx"
 import { Field } from "../../components/ui/Badges.tsx"
 import { ApiError } from "../../lib/apiClient.ts"
-import { evenShares, n2 } from "../clos/useClos.ts"
+import { evenShares, n2, weightLeftHint } from "../clos/useClos.ts"
 import type { Clo } from "../clos/clo.types.ts"
 import type {
   Activity,
@@ -253,11 +253,7 @@ export function ActivityForm({
             )}
           </div>
           <div className="space-y-2">
-            <Field
-              label="วิธีประเมิน"
-              htmlFor="a-method"
-              hint="ระบบเลือกให้ตามประเภท · เปลี่ยนเองได้"
-            >
+            <Field label="วิธีประเมิน" htmlFor="a-method">
               {select(
                 "a-method",
                 method,
@@ -294,7 +290,7 @@ export function ActivityForm({
             <Field
               label="ร้อยละของสัดส่วนคะแนนในวิชา"
               htmlFor="a-weight"
-              hint="น้ำหนักของกลุ่มประเภทนี้ แบ่งให้กิจกรรมในกลุ่มตามคะแนนเต็ม · ตั้งที่หัวกลุ่มในตาราง"
+              hint="ตั้งที่หัวกลุ่มในตาราง"
             >
               <div id="a-weight" className="inp tnum !bg-wash text-dim">
                 {activity ? `${n2(activity.weight)}% (จากน้ำหนักกลุ่ม)` : "จากน้ำหนักกลุ่ม"}
@@ -305,14 +301,13 @@ export function ActivityForm({
               label="ร้อยละของสัดส่วนคะแนนในวิชา"
               htmlFor="a-weight"
               required
-              hint={`กิจกรรมอื่นรวม ${n2(others)}% · ${left > 0 ? `ใส่ได้ไม่เกิน ${n2(left)}%` : "ครบ 100% แล้ว"}`}
+              hint={weightLeftHint(others)}
               error={errors.weight}
             >
               <input
                 id="a-weight"
                 className="inp tnum"
                 inputMode="decimal"
-                placeholder={`เหลือ ${n2(left)}`}
                 value={weight}
                 onChange={(e) => {
                   setWeight(e.target.value)
@@ -322,13 +317,7 @@ export function ActivityForm({
               />
             </Field>
           )}
-          <Field
-            label="คะแนนเต็ม"
-            htmlFor="a-max"
-            required
-            hint="ค่าตั้งต้นตามประเภท · ลดได้ไม่ต่ำกว่าคะแนนที่กรอกไว้แล้ว"
-            error={errors.maxScore}
-          >
+          <Field label="คะแนนเต็ม" htmlFor="a-max" required error={errors.maxScore}>
             <input
               id="a-max"
               className="inp tnum"

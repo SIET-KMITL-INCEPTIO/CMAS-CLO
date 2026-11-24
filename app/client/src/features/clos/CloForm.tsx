@@ -9,7 +9,15 @@ import { Modal } from "../../components/overlay/Sheet.tsx"
 import { Field } from "../../components/ui/Badges.tsx"
 import { ApiError } from "../../lib/apiClient.ts"
 import { BLOOM, SOLO, type Bloom, type Clo, type CloInput, type Solo } from "./clo.types.ts"
-import { BLOOM_TH, BLOOM_TO_SOLO, n2, SOLO_HINT, SOLO_TH, useSaveClo } from "./useClos.ts"
+import {
+  BLOOM_TH,
+  BLOOM_TO_SOLO,
+  n2,
+  SOLO_HINT,
+  SOLO_TH,
+  useSaveClo,
+  weightLeftHint,
+} from "./useClos.ts"
 
 type Draft = {
   number: string
@@ -150,7 +158,7 @@ export function CloForm({
         }}
       >
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Field label="ลำดับ (เลขข้อ)" htmlFor="f-number" required error={errors.number}>
+          <Field label="ข้อที่" htmlFor="f-number" required error={errors.number}>
             <input
               id="f-number"
               className="inp tnum"
@@ -164,14 +172,13 @@ export function CloForm({
             label="น้ำหนักตามแผน (%)"
             htmlFor="f-weight"
             required
-            hint={`CLO ข้ออื่นรวม ${n2(others)}% · เหลือ ${n2(left)}%`}
+            hint={weightLeftHint(others)}
             error={errors.weight}
           >
             <input
               id="f-weight"
               className="inp tnum"
               inputMode="decimal"
-              placeholder={`เหลือ ${n2(left)}`}
               value={d.weight}
               onChange={(e) => set("weight", e.target.value)}
               aria-invalid={errors.weight ? true : undefined}
@@ -214,12 +221,7 @@ export function CloForm({
               ...BLOOM.map((k): [string, string] => [k, `${k} · ${BLOOM_TH[k]}`]),
             ])}
           </Field>
-          <Field
-            label="ระดับ SOLO"
-            htmlFor="f-solo"
-            hint={auto ? "ตามระดับ Bloom ให้เอง" : undefined}
-            error={errors.soloLevel}
-          >
+          <Field label="ระดับ SOLO" htmlFor="f-solo" error={errors.soloLevel}>
             {select(
               "f-solo",
               solo,

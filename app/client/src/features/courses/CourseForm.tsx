@@ -216,9 +216,6 @@ export function CourseForm({
       >
         {settings ? (
           <>
-            <div className="text-[13px] text-dim">
-              <span className="text-bad">*</span> = ต้องกรอก
-            </div>
             <div className="grid grid-cols-[130px_minmax(0,1fr)] gap-3">
               {input("code", "รหัสวิชา", { required: true, numeric: true })}
               {input("name", "ชื่อรายวิชา (ไทย)", { required: true })}
