@@ -9,6 +9,7 @@ import { Drawer } from "../../components/overlay/Sheet.tsx"
 import { Chip, Pill } from "../../components/ui/Badges.tsx"
 import { ROLE_TH } from "./userView.ts"
 import { useAuthEvents, useUser } from "./useUsers.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 const ACTION_TH: Record<string, string> = {
   CREATE: "สร้างบัญชี",
@@ -33,7 +34,7 @@ function History({ userId }: { userId: string }) {
   const q = useAuthEvents(userId, page)
   const total = q.data?.total ?? 0
   const pages = Math.max(1, Math.ceil(total / PER_PAGE))
-  if (q.isLoading) return <div className="text-[14px] text-dim">กำลังโหลด…</div>
+  if (q.isLoading) return <Loading />
   if (!q.data?.events.length) return <div className="text-[14px] text-dim">ยังไม่มีประวัติ</div>
   return (
     <>
@@ -89,7 +90,7 @@ export function UserDrawer({ userId, onClose }: { userId: string | null; onClose
       sub={u?.email}
     >
       {q.isLoading || !u ? (
-        <div className="text-[14px] text-dim">กำลังโหลด…</div>
+        <Loading />
       ) : (
         <div className="space-y-5">
           <div className="flex flex-wrap items-center gap-2">

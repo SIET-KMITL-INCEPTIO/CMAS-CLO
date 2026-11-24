@@ -17,6 +17,7 @@ import { readPref, writePref, type View } from "./coursePrefs.ts"
 import { bucketsOf, COURSE_GROUPBY, currentTerm, type GroupBy } from "./courseView.ts"
 import { DeleteCourse } from "./DeleteCourse.tsx"
 import { byTerm, useCourseList, useDuplicateCourse } from "./useCourses.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 export default function CourseList() {
   const list = useCourseList()
@@ -139,7 +140,7 @@ export default function CourseList() {
       />
       <div className="cbody space-y-4">
         {list.isLoading ? (
-          <div className="text-[14px] text-dim">กำลังโหลดรายวิชา…</div>
+          <Loading what="รายวิชา" />
         ) : all.length === 0 ? (
           <div className="card px-6 py-10 text-center">
             <div className="text-[16px] text-ink">ยังไม่มีรายวิชาในความดูแลของคุณ</div>

@@ -23,6 +23,7 @@ import {
   useExcelLinks,
   useRevokeExcel,
 } from "./useExcel.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 const when = (iso: string | null) =>
   iso
@@ -204,7 +205,7 @@ export default function ExcelLink() {
 
         <div className="card scroll-x overflow-hidden">
           {links.isLoading ? (
-            <p className="px-4 py-6 text-[14px] text-dim">กำลังโหลด…</p>
+            <Loading className="px-4 py-6" />
           ) : (links.data ?? []).length === 0 ? (
             <p className="px-4 py-6 text-[14px] text-dim">ไม่มี Excel ที่เชื่อมต่ออยู่</p>
           ) : (
