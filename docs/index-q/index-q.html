@@ -19,9 +19,9 @@ tailwind.config = {
         peri:'#C8CDEB', cool:'#878CB4', haze:'#465078', mid:'#1E233C', char:'#0A0F19',
         field:'#E9EAF4', card:'#FFFFFF', wash:'#F4F5FA', tint:'#EEEFF8',
         edge:'#E4E5F0', edge2:'#EDEEF6',
-        ink:'#1E233C', ink2:'#4A5070', dim:'#878CB4', faint:'#9AA0BE',
+        ink:'#1E233C', ink2:'#4A5070', dim:'#646A8C', faint:'#9AA0BE',
         fgray:'#B8BED7', csub:'#AFAECC', mount:'#85758F', ev1:'#524E68', ev2:'#44405A',
-        ok:'#4F7C68', okBg:'#E7EFEA', okBd:'#BCD3C6',
+        ok:'#43705C', okBg:'#E7EFEA', okBd:'#BCD3C6',
         warn:'#7D6430', warnBg:'#F4EEE1', warnBd:'#DFCFA6',
         bad:'#A2504F', badBg:'#F4E8E8', badBd:'#DCBABA',
         info:'#4A5A86', infoBg:'#E9ECF6'
@@ -44,7 +44,7 @@ tailwind.config = {
 :root{
   --listw:296px;            /* list pane, user-resizable and persisted */
   --row-py:10px;            /* driven by the density toggle */
-  --ink:#1E233C; --ink2:#4A5070; --dim:#878CB4; --faint:#9AA0BE;
+  --ink:#1E233C; --ink2:#4A5070; --dim:#646A8C; --faint:#9AA0BE;
   --edge:#E4E5F0; --edge2:#EDEEF6; --tint:#EEEFF8;
   /* Surface tokens. These mirror the Tailwind `card`/`wash` colours so CSS
      written outside a utility class does not have to hard-code the hex. */
@@ -53,7 +53,7 @@ tailwind.config = {
      เคยมี 6 แบบ ต่างสี ต่างความหนา ต่างวิธีวาด — ตอนนี้แก้ที่เดียว */
   --sel:#465078; --sel-bg:#E9EBF5; --focus:#465078;
   /* ตัวหนังสือที่ต้องอ่าน แต่ไม่ใช่เนื้อหาหลัก (คำแนะนำ ชื่อแท็บ รายการในแถบซ้าย)
-     --dim (#878CB4) บนขาวได้แค่ 3.26:1 จึงใช้กับป้ายรองได้ แต่ไม่ใช่กับคำแนะนำ — ค่านี้ 6.06:1 */
+     --dim เดิม (#878CB4) บนขาวได้แค่ 3.26:1 · เปลี่ยนเป็น #646A8C (5.27:1) แล้ว 2026-11-18 (D-UI-2) จึงใช้กับป้ายรองได้ แต่ไม่ใช่กับคำแนะนำ — ค่านี้ 6.06:1 */
   --ink-soft:#5B6180;
   --shadow-soft: 0 1px 2px rgba(30,35,60,.03), 0 6px 20px -10px rgba(30,35,60,.10);
   --shadow-card: 0 1px 2px rgba(30,35,60,.04), 0 14px 44px -14px rgba(30,35,60,.13);
@@ -244,7 +244,7 @@ kbd{ font-family:'Inter',sans-serif; font-size:12px; padding:2px 6px; border-rad
 .step{ display:flex; gap:12px; align-items:flex-start; }
 .step .dot{ width:22px; height:22px; border-radius:99px; flex:none; display:grid; place-items:center;
             font-size:12.5px; background:#EAEBF4; color:var(--ink-soft); }
-.step.done .dot{ background:#E7EFEA; color:#4F7C68; }
+.step.done .dot{ background:#E7EFEA; color:#43705C; }
 .step.now  .dot{ background:#1E233C; color:#fff; }
 
 /* ══ Teams-shaped frame ═══════════════════════════════════════════════
@@ -1999,7 +1999,7 @@ function derive(courseId){
 
 /* ── status register, desaturated into the palette ─────────────────── */
 const TONE = {
-  ok:  { bg:'#E7EFEA', tx:'#4F7C68', bar:'#6E9C87' },
+  ok:  { bg:'#E7EFEA', tx:'#43705C', bar:'#6E9C87' },
   warn:{ bg:'#F4EEE1', tx:'#7D6430', bar:'#C7A860' },
   bad: { bg:'#F4E8E8', tx:'#A2504F', bar:'#B96F6E' },
   info:{ bg:'#E9ECF6', tx:'#4A5A86', bar:'#8C97BE' },

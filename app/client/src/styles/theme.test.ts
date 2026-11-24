@@ -50,3 +50,43 @@ describe("atelier.css", () => {
     },
   )
 })
+
+describe("fixed colours (U-2)", () => {
+  /**
+   * The only rules still allowed a hex value: chrome drawn dark in both themes
+   * (top bar, rail, tooltip, toast, avatar) and white text on that chrome.
+   */
+  const CHROME = [
+    ".tipbox {",
+    ".toast {",
+    ".toast.bad {",
+    ".cmdbar {",
+    ".cmdbar .brand {",
+    ".cmdsearch {",
+    ".cmdsearch kbd {",
+    ".apprail {",
+    ".arl {",
+    ".arl:hover {",
+    '.arl[aria-current="page"] {',
+    '.arl[aria-current="page"]::before {',
+    ".arl .arl-dot {",
+    ".rsz.drag::after {",
+    ".tavatar {",
+  ]
+
+  it("atelier.css uses a hex value only in the always-dark chrome", () => {
+    let rule = ""
+    const offenders: string[] = []
+    for (const line of atelier.split("\n")) {
+      if (line.trimEnd().endsWith("{")) rule = line.trim()
+      if (/#[0-9a-fA-F]{3,8}\b/.test(line) && !CHROME.includes(rule)) {
+        offenders.push(`${rule} ${line.trim()}`)
+      }
+    }
+    expect(offenders).toEqual([])
+  })
+
+  it("faint is decoration only: never the colour of text", () => {
+    expect(atelier).not.toMatch(/(^|[\s;])color:\s*var\(--faint\)/m)
+  })
+})
