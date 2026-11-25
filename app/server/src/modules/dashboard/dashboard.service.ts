@@ -21,25 +21,28 @@ type Level = "COURSE_FAIL" | "CLO_BELOW" | "OVERDUE"
 export class DashboardService {
   constructor(private readonly data: CourseDataRepository) {}
 
-  /** Design #72 — every course the caller can see, each through the same analysis. */
+  /**
+   * Design #72 — every course the caller can see, each through the same analysis.
+   * G4: the rows come in one batch (loadMany), not one course at a time.
+   */
   async overview(caller: Caller) {
     const ids = await this.data.visibleCourseIds(caller)
+    const all = await this.data.loadMany(ids)
     let studentCount = 0
     let cloCompleted = 0
     let cloTotal = 0
     let scored = 0
     let expected = 0
-    for (const id of ids) {
-      const snap = await this.data.load(id)
-      const a = analyse(snap.data)
+    for (const data of all.values()) {
+      const a = analyse(data)
       studentCount += a.enrolled.length
-      const clos = cloAttainment(snap.data, a)
+      const clos = cloAttainment(data, a)
       cloTotal += clos.length
       cloCompleted += clos.filter((c) => c.status === "ACHIEVED").length
       const counted = new Set(a.counted.map((x) => x.id))
       const enrolled = new Set(a.enrolled.map((r) => r.student.id))
       expected += counted.size * enrolled.size
-      scored += snap.data.scores.filter(
+      scored += data.scores.filter(
         (s) => counted.has(s.activityId) && enrolled.has(s.studentId),
       ).length
     }

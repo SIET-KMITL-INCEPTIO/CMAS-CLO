@@ -10,7 +10,9 @@ describe("overview", () => {
   it("sums students, achieved CLOs and score progress over every visible course", async () => {
     const { service, data } = setup(snapshot(), ["k1", "k2"])
     const r = await service.overview({ userId: "u1", role: "INSTRUCTOR" } as never)
-    expect(data.load).toHaveBeenCalledTimes(2)
+    // G4: one batch for every course, never a load per course.
+    expect(data.loadMany).toHaveBeenCalledExactlyOnceWith(["k1", "k2"])
+    expect(data.load).not.toHaveBeenCalled()
     expect(r).toEqual({
       courseCount: 2,
       studentCount: 8,
@@ -24,6 +26,7 @@ describe("overview", () => {
     const { service, data } = setup(snapshot(), [])
     const r = await service.overview({ userId: "u1", role: "INSTRUCTOR" } as never)
     expect(data.load).not.toHaveBeenCalled()
+    expect(r.studentCount).toBe(0)
     expect(r.courseCount).toBe(0)
     expect(r.scoreProgress).toEqual({ scored: 0, expected: 0 })
   })

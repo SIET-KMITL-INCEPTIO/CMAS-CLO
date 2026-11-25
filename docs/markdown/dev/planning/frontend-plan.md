@@ -85,7 +85,7 @@ See also: [[prototype-to-app]] · [[features-pages]] · [[user-flow]] · [[api-d
 | **จัดการผู้ใช้งาน** (`viewUsers`) · `userDrawer` | `GET /users` · `GET`/`PATCH /users/:id` · `PATCH …/status` · `PATCH …/approve` · `GET …/auth-events` | — |
 | `modalProfile` บัญชีของฉัน | `GET /auth/me` · `POST /auth/logout` | `modalPwChange` / `modalPwReset` ไม่ทำ (D-5) |
 | `modalPalette` ค้นหา (Ctrl K) | `GET /courses?q=` + route ในแอป | ค้นนักศึกษาข้ามวิชาไม่ได้ — ค้นเฉพาะรายวิชาที่เปิดอยู่ (`GET …/students?q=`) ยอมรับได้ |
-| แดชบอร์ดรวมทุกวิชา | `GET /dashboard/overview` | ช้าตามจำนวนวิชา (โหลดทีละวิชา) — **G4** |
+| แดชบอร์ดรวมทุกวิชา | `GET /dashboard/overview` | ✅ **G4** ปิดแล้ว: โหลดทุกวิชาใน 7 query (`CourseDataRepository.loadMany`) |
 
 ### 4.1 ช่องว่างของ API ที่ต้องปิดก่อนทำหน้านั้น
 
@@ -94,7 +94,7 @@ See also: [[prototype-to-app]] · [[features-pages]] · [[user-flow]] · [[api-d
 | **G1** ✅ | `GET /users/instructors?q=` — ผู้สอนที่ใช้งานได้ (INSTRUCTOR · เปิดใช้ · ACTIVE) คืนแค่ id · ชื่อ · อีเมล สูงสุด 10 คน · สิทธิ์ `course.create` (ADMIN และผู้สอน) | ตั้งค่ารายวิชา › ผู้สอน | ไม่ส่งข้อมูลอื่นของบัญชี (A-9) |
 | **G2** ✅ | `GET …/dashboard/summary` (หน้าภาพรวมทั้งหน้าใน response เดียว): `activities[{activityId, passCount, failCount, missingCount, averagePercent}]` และ `course.distribution[{from, to, count}]` 10 ช่วง | ภาพรวม | คำนวณใน `lib/attainment.ts` (`activityStats`, `distribution`) ตาม FR-88 · 2026-11-16 |
 | **G3** ✅ | `GET /courses/:courseId/dashboard/students` — ทุกคนในชั้น: คะแนนร้อยละและคะแนนดิบราย CLO (`clos[].raw`) · คะแนนรวม · สถานะ · คะแนนเต็มราย CLO อยู่ที่ `summary.attainment.data.clos[].rawMax` | ผลรายนักศึกษา | คะแนนดิบตาม [[srs]] CR-03.2 · 2026-11-16 |
-| **G4** | `GET /dashboard/overview` โหลดทุกวิชาในชุด query เดียว | หน้าแรกหลังล็อกอิน | ตอนนี้ราว 5 วินาทีต่อวิชา |
+| **G4** ✅ | `GET /dashboard/overview` โหลดทุกวิชาในชุด query เดียว | หน้าแรกหลังล็อกอิน | ทำแล้ว: 7 query ไม่ว่ามีกี่วิชา (เดิม 7 query ต่อวิชา ทีละวิชา) · ยังไม่ได้วัดเวลาบน Supabase |
 
 ทุกข้อเพิ่มแถวในชีตออกแบบ API ก่อน (`scripts/build-api-endpoints-workbook.py`) แล้วจึงเขียนโค้ด ตามกติกาของ [[api-design-plan]]
 
