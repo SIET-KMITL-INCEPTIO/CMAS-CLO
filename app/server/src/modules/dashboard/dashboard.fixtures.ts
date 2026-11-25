@@ -90,6 +90,7 @@ export function snapshot(over: Partial<CourseSnapshot["course"]> = {}): CourseSn
 export function setup(snap: CourseSnapshot = snapshot(), ids = ["k1"]) {
   const data = {
     load: vi.fn(async () => snap),
+    loadMany: vi.fn(async (ids: string[]) => new Map(ids.map((id) => [id, snap.data]))),
     visibleCourseIds: vi.fn(async () => ids),
   }
   const repo = data as unknown as CourseDataRepository

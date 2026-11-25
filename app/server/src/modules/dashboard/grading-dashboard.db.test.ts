@@ -12,6 +12,7 @@
  */
 import * as XLSX from "xlsx"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
+import { CourseDataRepository } from "../../repositories/course-data.repository.js"
 import { courseBody, RUN_DB_TESTS, setupFixture, type Fixture } from "../../test/db-fixture.js"
 
 describe.skipIf(!RUN_DB_TESTS)("grading and dashboard against the database", () => {
@@ -265,5 +266,11 @@ describe.skipIf(!RUN_DB_TESTS)("grading and dashboard against the database", () 
     })
     const b = (await req("teacherB", "GET", "/dashboard/overview")).json().data
     expect(b).toMatchObject({ courseCount: 0, studentCount: 0 })
+  })
+
+  it("G4: the batch load gives each course exactly what loading it alone gives", async () => {
+    const repo = new CourseDataRepository()
+    const many = await repo.loadMany([courseId])
+    expect(many.get(courseId)).toEqual((await repo.load(courseId)).data)
   })
 })
