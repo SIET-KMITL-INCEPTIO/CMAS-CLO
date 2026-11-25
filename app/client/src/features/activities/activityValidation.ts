@@ -5,33 +5,25 @@
  */
 import { n2 } from "../clos/useClos.ts"
 
-export const NEW = "+" // the "+ กำหนดเอง…" option
+/** The server's limit on a custom type or method name (activities.validator.ts). */
+export const LABEL_MAX = 100
+
+/** The key a name the instructor typed is held under: "CUSTOM:<name>". */
+export const customKey = (name: string) => `CUSTOM:${name}`
 
 export type ActivityErrors = Partial<
-  Record<
-    "name" | "typeLabel" | "assessmentLabel" | "weight" | "maxScore" | "passScore" | "links",
-    string
-  >
+  Record<"name" | "weight" | "maxScore" | "passScore" | "links", string>
 >
 
-/** A choice is a built-in key, "CUSTOM:<name>" for one the course already has, or "+" for a new name. */
-export const parseChoice = <K extends string>(
-  v: string,
-  label: string,
-): { key: K; label: string } =>
-  v === NEW
-    ? { key: "CUSTOM" as K, label: label.trim() }
-    : v.startsWith("CUSTOM:")
-      ? { key: "CUSTOM" as K, label: v.slice(7) }
-      : { key: v as K, label: "" }
+/** A choice is a built-in key, or "CUSTOM:<name>" for a name the instructor typed or the course already has. */
+export const parseChoice = <K extends string>(v: string): { key: K; label: string } =>
+  v.startsWith("CUSTOM:")
+    ? { key: "CUSTOM" as K, label: v.slice(7).trim() }
+    : { key: v as K, label: "" }
 
 /** What the user has typed, as the form holds it: strings, not yet numbers. */
 export type ActivityDraft = {
   name: string
-  type: string
-  typeLabel: string
-  method: string
-  methodLabel: string
   weight: string
   maxScore: string
   passScore: string
@@ -56,8 +48,6 @@ export function validateActivity(d: ActivityDraft, ctx: ActivityContext): Activi
   const max = Number(d.maxScore)
   const w = Number(d.weight)
   if (!d.name.trim()) e.name = "กรอกชื่อกิจกรรมก่อน"
-  if (d.type === NEW && !d.typeLabel.trim()) e.typeLabel = "พิมพ์ชื่อประเภทใหม่"
-  if (d.method === NEW && !d.methodLabel.trim()) e.assessmentLabel = "พิมพ์ชื่อวิธีประเมินใหม่"
   if (d.maxScore.trim() === "" || !Number.isFinite(max) || max <= 0)
     e.maxScore = "คะแนนเต็มต้องมากกว่า 0"
   if (d.passScore.trim() !== "") {

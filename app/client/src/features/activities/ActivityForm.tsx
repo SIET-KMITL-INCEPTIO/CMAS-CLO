@@ -9,6 +9,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Modal } from "../../components/overlay/Sheet.tsx"
 import { Field } from "../../components/ui/Badges.tsx"
+import { Combobox, type ComboOption } from "../../components/ui/Combobox.tsx"
 import { ApiError } from "../../lib/apiClient.ts"
 import { evenShares, n2, weightLeftHint } from "../clos/useClos.ts"
 import type { Clo } from "../clos/clo.types.ts"
@@ -22,8 +23,9 @@ import type {
 } from "./activity.types.ts"
 import { ACTIVITY_TYPES, METHODS } from "./activity.types.ts"
 import {
+  customKey,
+  LABEL_MAX,
   linksUnchanged,
-  NEW,
   parseChoice,
   validateActivity,
   type ActivityErrors,
@@ -69,9 +71,7 @@ export function ActivityForm({
     : "EXAM"
   const [name, setName] = useState(activity?.name ?? "")
   const [type, setType] = useState<string>(startType)
-  const [typeLabel, setTypeLabel] = useState("")
   const [method, setMethod] = useState<string>(startMethod)
-  const [methodLabel, setMethodLabel] = useState("")
   const [methodTouched, setMethodTouched] = useState(false)
   const [weight, setWeight] = useState(activity ? String(activity.weight) : "")
   const [maxScore, setMaxScore] = useState(String(activity?.maxScore ?? DEFAULT_MAX.TEST))
@@ -91,10 +91,9 @@ export function ActivityForm({
 
   const pickType = (v: string) => {
     setType(v)
-    clear("typeLabel")
-    const k = parseChoice<ActivityKind>(v, "").key
+    const k = parseChoice<ActivityKind>(v).key
     // The method and the full score follow the type until the instructor sets them.
-    if (!methodTouched && k !== "CUSTOM" && v !== NEW)
+    if (!methodTouched && k !== "CUSTOM")
       setMethod(DEFAULT_METHOD[k as Exclude<ActivityKind, "CUSTOM">])
     if (!maxTouched && !activity) setMaxScore(String(DEFAULT_MAX[k]))
   }
@@ -110,11 +109,11 @@ export function ActivityForm({
 
   const submit = () => {
     const e = validateActivity(
-      { name, type, typeLabel, method, methodLabel, weight, maxScore, passScore, ticked },
+      { name, weight, maxScore, passScore, ticked },
       { byGroup, others, left, hasObjectives },
     )
-    const t = parseChoice<ActivityKind>(type, typeLabel)
-    const m = parseChoice<Method>(method, methodLabel)
+    const t = parseChoice<ActivityKind>(type)
+    const m = parseChoice<Method>(method)
     const max = Number(maxScore)
     const w = Number(weight)
     const links = Object.entries(ticked).map(([id, v]) => [id, Number(v)] as const)
@@ -160,35 +159,19 @@ export function ActivityForm({
     )
   }
 
-  const select = (
-    id: string,
-    value: string,
-    onChange: (v: string) => void,
-    options: [string, string][],
-  ) => (
-    <select id={id} className="inp" value={value} onChange={(e) => onChange(e.target.value)}>
-      {options.map(([v, l]) => (
-        <option key={v} value={v}>
-          {l}
-        </option>
-      ))}
-    </select>
-  )
-  const typeOptions: [string, string][] = [
-    ...ACTIVITY_TYPES.filter((k) => k !== "CUSTOM").map((k): [string, string] => [
-      k,
-      TYPE_TH[k as keyof typeof TYPE_TH],
-    ]),
-    ...meta.customTypes.map((l): [string, string] => [`CUSTOM:${l}`, l]),
-    [NEW, "+ กำหนดเอง…"],
+  const typeOptions: ComboOption[] = [
+    ...ACTIVITY_TYPES.filter((k) => k !== "CUSTOM").map((k) => ({
+      key: k,
+      label: TYPE_TH[k as keyof typeof TYPE_TH],
+    })),
+    ...meta.customTypes.map((l) => ({ key: customKey(l), label: l })),
   ]
-  const methodOptions: [string, string][] = [
-    ...METHODS.filter((k) => k !== "CUSTOM").map((k): [string, string] => [
-      k,
-      METHOD_TH[k as keyof typeof METHOD_TH],
-    ]),
-    ...meta.customMethods.map((l): [string, string] => [`CUSTOM:${l}`, l]),
-    [NEW, "+ กำหนดเอง…"],
+  const methodOptions: ComboOption[] = [
+    ...METHODS.filter((k) => k !== "CUSTOM").map((k) => ({
+      key: k,
+      label: METHOD_TH[k as keyof typeof METHOD_TH],
+    })),
+    ...meta.customMethods.map((l) => ({ key: customKey(l), label: l })),
   ]
 
   return (
@@ -233,57 +216,31 @@ export function ActivityForm({
           />
         </Field>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Field label="ประเภทกิจกรรม" htmlFor="a-type">
-              {select("a-type", type, pickType, typeOptions)}
-            </Field>
-            {type === NEW && (
-              <Field label="ชื่อประเภทใหม่" htmlFor="a-typelabel" error={errors.typeLabel}>
-                <input
-                  id="a-typelabel"
-                  className="inp"
-                  placeholder="เช่น กรณีศึกษา"
-                  value={typeLabel}
-                  onChange={(e) => {
-                    setTypeLabel(e.target.value)
-                    clear("typeLabel")
-                  }}
-                />
-              </Field>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Field label="วิธีประเมิน" htmlFor="a-method">
-              {select(
-                "a-method",
-                method,
-                (v) => {
-                  setMethod(v)
-                  setMethodTouched(true)
-                  clear("assessmentLabel")
-                },
-                methodOptions,
-              )}
-            </Field>
-            {method === NEW && (
-              <Field
-                label="ชื่อวิธีประเมินใหม่"
-                htmlFor="a-methodlabel"
-                error={errors.assessmentLabel}
-              >
-                <input
-                  id="a-methodlabel"
-                  className="inp"
-                  placeholder="เช่น สัมภาษณ์"
-                  value={methodLabel}
-                  onChange={(e) => {
-                    setMethodLabel(e.target.value)
-                    clear("assessmentLabel")
-                  }}
-                />
-              </Field>
-            )}
-          </div>
+          <Field label="ประเภทกิจกรรม" htmlFor="a-type">
+            <Combobox
+              id="a-type"
+              value={type}
+              options={typeOptions}
+              onChange={pickType}
+              create={customKey}
+              maxLength={LABEL_MAX}
+              placeholder="เลือก หรือพิมพ์ประเภทใหม่"
+            />
+          </Field>
+          <Field label="วิธีประเมิน" htmlFor="a-method">
+            <Combobox
+              id="a-method"
+              value={method}
+              options={methodOptions}
+              onChange={(v) => {
+                setMethod(v)
+                setMethodTouched(true)
+              }}
+              create={customKey}
+              maxLength={LABEL_MAX}
+              placeholder="เลือก หรือพิมพ์วิธีใหม่"
+            />
+          </Field>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {byGroup ? (

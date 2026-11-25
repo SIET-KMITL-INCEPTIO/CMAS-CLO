@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
+  customKey,
   linksUnchanged,
-  NEW,
   parseChoice,
   validateActivity,
   type ActivityContext,
@@ -10,10 +10,6 @@ import {
 
 const draft = (over: Partial<ActivityDraft> = {}): ActivityDraft => ({
   name: "Quiz 1",
-  type: "TEST",
-  typeLabel: "",
-  method: "EXAM",
-  methodLabel: "",
   weight: "20",
   maxScore: "10",
   passScore: "",
@@ -29,10 +25,10 @@ const ctx = (over: Partial<ActivityContext> = {}): ActivityContext => ({
 })
 
 describe("parseChoice", () => {
-  it("reads a built-in key, a course's own custom name, and a new one", () => {
-    expect(parseChoice("LAB", "")).toEqual({ key: "LAB", label: "" })
-    expect(parseChoice("CUSTOM:กรณีศึกษา", "")).toEqual({ key: "CUSTOM", label: "กรณีศึกษา" })
-    expect(parseChoice(NEW, "  ใหม่ ")).toEqual({ key: "CUSTOM", label: "ใหม่" })
+  it("reads a built-in key and a custom name, however it got there", () => {
+    expect(parseChoice("LAB")).toEqual({ key: "LAB", label: "" })
+    expect(parseChoice("CUSTOM:กรณีศึกษา")).toEqual({ key: "CUSTOM", label: "กรณีศึกษา" })
+    expect(parseChoice(customKey("  ใหม่ "))).toEqual({ key: "CUSTOM", label: "ใหม่" })
   })
 })
 
@@ -41,15 +37,8 @@ describe("validateActivity", () => {
     expect(validateActivity(draft(), ctx())).toEqual({})
   })
 
-  it("needs a name, and a name for a new type or method", () => {
-    expect(validateActivity(draft({ name: "  ", type: NEW, method: NEW }), ctx())).toMatchObject({
-      name: "กรอกชื่อกิจกรรมก่อน",
-      typeLabel: "พิมพ์ชื่อประเภทใหม่",
-      assessmentLabel: "พิมพ์ชื่อวิธีประเมินใหม่",
-    })
-    expect(
-      validateActivity(draft({ type: NEW, typeLabel: "กรณีศึกษา" }), ctx()).typeLabel,
-    ).toBeUndefined()
+  it("needs a name", () => {
+    expect(validateActivity(draft({ name: "  " }), ctx()).name).toBe("กรอกชื่อกิจกรรมก่อน")
   })
 
   it.each(["", "  ", "0", "-3", "abc"])("refuses a full score of %j", (maxScore) => {

@@ -1355,6 +1355,55 @@ html[data-density="comfortable"] {
     background: var(--card);
   }
 }
+/* Combobox (components/ui/Combobox.tsx): a text field that is also a select. */
+.combo {
+  position: relative;
+}
+.combo .inp {
+  padding-right: 34px;
+}
+.combo-caret {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  color: var(--dim);
+  pointer-events: none;
+}
+.combo-list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  right: 0;
+  left: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 4px;
+  background: var(--card);
+  border: 1px solid var(--edge-strong);
+  border-radius: 10px;
+  box-shadow: var(--shadow-pop);
+}
+.combo-opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.combo-opt[data-active="true"] {
+  background: var(--wash);
+}
+.combo-opt[aria-selected="true"] {
+  color: var(--sel);
+}
+
 /* Loading: a small ring that turns beside the text (components/page/Loading.tsx).
    In the components layer so a caller's utility (text-[13px], px-4) still wins. */
 @layer components {
