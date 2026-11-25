@@ -54,6 +54,10 @@ function fakeUsers() {
     },
     grantAdmin: vi.fn((id: string) => update(id, { role: "ADMIN", status: "ACTIVE" })),
     update: vi.fn((id: string, data: Partial<User>) => update(id, data)),
+    findProfile: (id: string) => {
+      const row = rows.find((r) => r.id === id)
+      return Promise.resolve(row ? { ...row, courseAssignments: [] } : null) as never
+    },
   }
 }
 
@@ -149,12 +153,37 @@ describe("Google sign-in — ADMIN_EMAILS (FR-05a)", () => {
 })
 
 describe("rename (PATCH /auth/me)", () => {
-  it("changes only the name, never the role or status", async () => {
+  const events = { record: vi.fn(async () => {}) }
+  beforeEach(() => {
+    events.record.mockClear()
+    service = new AuthService(users, [ADMIN], events)
     users.add("somchai@kmitl.ac.th", "INSTRUCTOR", "ACTIVE")
+    users.rows[0]!.name = "สมชาย"
+  })
 
-    await service.rename("u1", "สมชาย ใจดี")
+  it("changes only the name, never the role or status", async () => {
+    const me = await service.rename("u1", "สมชาย ใจดี")
 
     expect(users.update).toHaveBeenCalledWith("u1", { name: "สมชาย ใจดี" })
     expect(users.rows[0]).toMatchObject({ role: "INSTRUCTOR", status: "ACTIVE" })
+    expect(me).toMatchObject({ name: "สมชาย ใจดี", courseCount: 0 })
+  })
+
+  it("records the change in the account's own history, by the owner (UC 1.6)", async () => {
+    await service.rename("u1", "สมชาย ใจดี")
+
+    expect(events.record).toHaveBeenCalledWith("u1", "u1", "EDIT", "เจ้าของบัญชีแก้ไขชื่อด้วยตนเอง")
+  })
+
+  it("saving the same name writes nothing", async () => {
+    await service.rename("u1", "สมชาย")
+
+    expect(users.update).not.toHaveBeenCalled()
+    expect(events.record).not.toHaveBeenCalled()
+  })
+
+  it("an account that is gone gives null, and nothing is written", async () => {
+    expect(await service.rename("missing", "ใคร")).toBeNull()
+    expect(events.record).not.toHaveBeenCalled()
   })
 })

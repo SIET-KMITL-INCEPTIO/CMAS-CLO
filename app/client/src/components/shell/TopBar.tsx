@@ -5,16 +5,17 @@
 import { useEffect, useRef, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
+import { ProfileModal } from "../../features/auth/ProfileModal.tsx"
 import { useAuthStore } from "../../features/auth/useAuthStore.ts"
 import { loadPicture } from "../../lib/avatar.ts"
 import { endSession } from "../../lib/session.ts"
+import { ROLE_TH } from "../../types/user.types.ts"
 import { Icon } from "../Icon.tsx"
+import { Pill } from "../ui/Badges.tsx"
 import { CommandPalette } from "./CommandPalette.tsx"
 import { SettingsModal } from "./SettingsModal.tsx"
 import { ShortcutsModal } from "./ShortcutsModal.tsx"
 import { typingIn } from "./shortcuts.ts"
-
-const ROLE_TH = { ADMIN: "ผู้ดูแลระบบ", INSTRUCTOR: "ผู้สอน" } as const
 
 /** "ผศ.ดร. สมชาย ใจดี" → "สม": the first name, past any title (index-q paintShell). */
 const initials = (name: string) =>
@@ -51,6 +52,7 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
   const me = useAuthStore((s) => s.me)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [keysOpen, setKeysOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -131,8 +133,22 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
             <div className="px-2.5 pt-1.5 pb-2">
               <div className="text-[14px] text-ink">{me.name}</div>
               <div className="truncate text-[12.5px] text-dim">{me.email}</div>
+              <div className="mt-1.5">
+                <Pill>{ROLE_TH[me.role]}</Pill>
+              </div>
             </div>
             <div className="hair mb-1" />
+            <button
+              type="button"
+              role="menuitem"
+              className="acctitem"
+              onClick={() => {
+                setMenuOpen(false)
+                setProfileOpen(true)
+              }}
+            >
+              แก้ไขบัญชีของฉัน
+            </button>
             <button
               type="button"
               role="menuitem"
@@ -142,7 +158,7 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
                 setSettingsOpen(true)
               }}
             >
-              ตั้งค่า
+              การแสดงผล
             </button>
             <button
               type="button"
@@ -163,6 +179,7 @@ export function TopBar({ onTogglePane }: { onTogglePane: () => void }) {
       </div>
 
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+      <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} />
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       <ShortcutsModal open={keysOpen} onClose={() => setKeysOpen(false)} />
     </header>

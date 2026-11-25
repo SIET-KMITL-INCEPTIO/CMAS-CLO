@@ -7,8 +7,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Modal } from "../../components/overlay/Sheet.tsx"
 import { Field } from "../../components/ui/Badges.tsx"
-import type { Role, User } from "../../types/user.types.ts"
-import { ROLE_TH } from "./userView.ts"
+import { ROLE_TH, type Role, type User } from "../../types/user.types.ts"
 import { useUpdateUser } from "./useUsers.ts"
 
 export function UserForm({

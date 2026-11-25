@@ -7,7 +7,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Drawer } from "../../components/overlay/Sheet.tsx"
 import { Chip, Pill } from "../../components/ui/Badges.tsx"
-import { ROLE_TH } from "./userView.ts"
+import { ROLE_TH } from "../../types/user.types.ts"
 import { useAuthEvents, useUser } from "./useUsers.ts"
 import { Loading } from "../../components/page/Loading.tsx"
 
