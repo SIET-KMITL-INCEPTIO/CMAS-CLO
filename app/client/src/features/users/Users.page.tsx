@@ -17,7 +17,7 @@ import { UserDrawer } from "./UserDrawer.tsx"
 import { NewUserForm } from "./NewUserForm.tsx"
 import { UserForm } from "./UserForm.tsx"
 import type { ListedUser } from "./users.api.ts"
-import { ROLE_TH } from "./userView.ts"
+import { ROLE_TH } from "../../types/user.types.ts"
 import { useApproveUser, useSetUserActive, useUsers } from "./useUsers.ts"
 import { Loading } from "../../components/page/Loading.tsx"
 

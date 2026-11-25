@@ -2,6 +2,7 @@ import type { User } from "@prisma/client"
 import { env } from "../../lib/env.js"
 import { isInstitutionDomain, verifyGoogleIdToken } from "../../lib/google.js"
 import { signAccessToken, signRefreshToken } from "../../lib/jwt.js"
+import type { AuthEventRepository } from "../users/auth-event.repository.js"
 import type { UserRepository } from "../users/user.repository.js"
 
 export type PublicUser = Pick<User, "id" | "email" | "name" | "role" | "isActive" | "status">
@@ -44,6 +45,8 @@ export class AuthService {
     private readonly users: AuthUsers,
     // Lower-cased, from env.ADMIN_EMAILS (FR-05a). A parameter so tests can pass their own.
     private readonly adminEmails: readonly string[] = env.ADMIN_EMAILS,
+    // UC 1.6: where a self-rename is recorded. Optional so sign-in tests need not pass one.
+    private readonly events?: Pick<AuthEventRepository, "record">,
   ) {}
 
   async loginWithGoogle(idToken: string): Promise<GoogleLoginResult> {
@@ -92,9 +95,18 @@ export class AuthService {
     return { outcome: "ok", user: toPublicUser(user), accessToken, refreshToken }
   }
 
-  /** PATCH /auth/me — the caller renames themselves; role and status are not reachable here. */
+  /**
+   * PATCH /auth/me — the caller renames themselves; role and status are not reachable here.
+   * A real change goes into the account history (UC 1.6), as index-q saveProfile() does;
+   * saving the same name writes nothing.
+   */
   async rename(userId: string, name: string) {
-    await this.users.update(userId, { name })
+    const before = await this.users.findProfile?.(userId)
+    if (!before) return null
+    if (before.name !== name) {
+      await this.users.update(userId, { name })
+      await this.events?.record(userId, userId, "EDIT", "เจ้าของบัญชีแก้ไขชื่อด้วยตนเอง")
+    }
     return this.me(userId)
   }
 

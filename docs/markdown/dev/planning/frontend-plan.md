@@ -83,7 +83,7 @@ See also: [[prototype-to-app]] · [[features-pages]] · [[user-flow]] · [[api-d
 | **ผลรายนักศึกษา** (`viewDashboard`) ตารางทั้งชั้น ร้อยละราย CLO · คะแนนดิบราย CLO · ส่งออกตารางสอบทาน | `GET …/dashboard/export` | ไม่มี endpoint ตารางทั้งชั้น (มีแต่รายคนและเฉพาะคนที่เสี่ยง) และไม่มี "คะแนนดิบราย CLO" — **G3** |
 | **การตัดเกรด** (`viewGrading`) · `modalGrading` · `modalOverride` | `GET …/grading` · `PUT …/grade-bands` · `POST …/grading/run` · `DELETE …/grading` · `PUT`/`DELETE /students/:id/grade-override` · `GET …/grades/export` | — |
 | **จัดการผู้ใช้งาน** (`viewUsers`) · `userDrawer` | `GET /users` · `GET`/`PATCH /users/:id` · `PATCH …/status` · `PATCH …/approve` · `GET …/auth-events` | — |
-| `modalProfile` บัญชีของฉัน | `GET /auth/me` · `POST /auth/logout` | `modalPwChange` / `modalPwReset` ไม่ทำ (D-5) |
+| `modalProfile` บัญชีของฉัน ✅ (`features/auth/ProfileModal.tsx`) | `GET /auth/me` · `PATCH /auth/me` (ชื่อ → บันทึก `EDIT` ในประวัติบัญชี) · `POST /auth/logout` | อีเมลแก้ไม่ได้ในแอป (ต้นแบบแก้ได้) เพราะเป็นตัวเข้าสู่ระบบ · `modalPwChange` / `modalPwReset` ไม่ทำ (D-5) |
 | `modalPalette` ค้นหา (Ctrl K) | `GET /courses?q=` + route ในแอป | ค้นนักศึกษาข้ามวิชาไม่ได้ — ค้นเฉพาะรายวิชาที่เปิดอยู่ (`GET …/students?q=`) ยอมรับได้ |
 | แดชบอร์ดรวมทุกวิชา | `GET /dashboard/overview` | ช้าตามจำนวนวิชา (โหลดทีละวิชา) — **G4** |
 

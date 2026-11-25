@@ -18,9 +18,10 @@ const REFRESH_LIMIT = { max: env.AUTH_REFRESH_LIMIT_MAX, timeWindow: "15 minutes
 // /google, /email-link* and /refresh are unauthenticated on purpose — they ARE how a session starts (FR-07, FR-08, S-2).
 export async function authRoutes(app: FastifyInstance) {
   const users = new UserRepository()
+  const events = new AuthEventRepository()
   const controller = new AuthController(
-    new AuthService(users),
-    new SessionService(new RefreshTokenRepository(), users, new AuthEventRepository()),
+    new AuthService(users, undefined, events),
+    new SessionService(new RefreshTokenRepository(), users, events),
     new EmailLinkService(
       users,
       new EmailLinkRepository(),

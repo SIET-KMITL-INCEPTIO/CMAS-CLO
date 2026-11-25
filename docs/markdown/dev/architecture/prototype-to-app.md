@@ -45,7 +45,7 @@ See also: [[srs]] · [[features-pages]] · [[user-flow]] · [[api-design]] · [[
 | หน้า `dashboard` (ผลรายนักศึกษา) | `features/dashboard/` | `dashboard/` |
 | หน้า `grading` | `features/grading/` | `grading/` |
 | หน้า `users` | `features/users/` ✅ บางส่วน | `users/` ✅ บางส่วน |
-| ฟอร์มเข้าสู่ระบบและบัญชีของฉัน | `features/auth/` ✅ บางส่วน | `auth/` ✅ บางส่วน |
+| ฟอร์มเข้าสู่ระบบและบัญชีของฉัน | `features/auth/` ✅ | `auth/` ✅ |
 | `ROUTES` · `SUBTABS` · `STEP_HOME` | `pages.config.ts` | — |
 | `PERM` · `capOf()` | ซ่อนปุ่มตาม capability | `authorize(cap, courseId)` ทุก route (A-6) |
 | `tailwind.config` · `:root` · `TONE` · `PAL` | `styles/tokens.css` | — |

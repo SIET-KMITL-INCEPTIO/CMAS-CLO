@@ -7,8 +7,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Modal } from "../../components/overlay/Sheet.tsx"
 import { Field } from "../../components/ui/Badges.tsx"
-import type { Role } from "../../types/user.types.ts"
-import { ROLE_TH } from "./userView.ts"
+import { ROLE_TH, type Role } from "../../types/user.types.ts"
 import { useCreateUser } from "./useUsers.ts"
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/

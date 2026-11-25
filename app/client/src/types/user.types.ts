@@ -1,4 +1,7 @@
 export type Role = "ADMIN" | "INSTRUCTOR"
+
+/** The role as the screens say it: the account menu, "บัญชีของฉัน" and the users page. */
+export const ROLE_TH: Record<Role, string> = { ADMIN: "ผู้ดูแลระบบ", INSTRUCTOR: "ผู้สอน" }
 export type AccountStatus = "PENDING" | "ACTIVE"
 
 export type User = {
