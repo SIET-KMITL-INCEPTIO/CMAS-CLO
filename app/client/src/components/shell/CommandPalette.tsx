@@ -1,14 +1,16 @@
 /**
- * Ctrl K (`modalPalette`): type, pick, go. Searches the courses the caller can
- * see and the pages of each, plus the system pages — nothing is fetched here
- * that the list pane has not already loaded.
+ * Ctrl K (`modalPalette`): type, pick, go. Searches the caller's own courses
+ * in the term the list pane shows, the pages of each, and the system pages —
+ * nothing is fetched here that the list pane has not already loaded. An empty
+ * box lists the courses only; their pages appear once something is typed.
  */
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "../../features/auth/useAuthStore.ts"
 import { COURSE_SECTIONS } from "../../features/courses/sections.ts"
-import { useCourseList } from "../../features/courses/useCourses.ts"
+import { byTerm, useCourseList } from "../../features/courses/useCourses.ts"
 import { Modal } from "../overlay/Sheet.tsx"
+import { ALL, effectiveTerm, inTerm, termLabel, termsOf, useTermFilter } from "./termFilter.ts"
 
 type Hit = { key: string; label: string; meta: string; to: string }
 
@@ -18,21 +20,27 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   const { data } = useCourseList()
   const me = useAuthStore((s) => s.me)
   const navigate = useNavigate()
+  const saved = useTermFilter((s) => s.term)
+
+  const term = effectiveTerm(saved, termsOf(data?.courses ?? []))
 
   const hits = useMemo<Hit[]>(() => {
+    const needle = q.trim().toLowerCase()
+    const courses = data?.courses ?? []
     const all: Hit[] = [
       { key: "manage", label: "จัดการรายวิชา", meta: "ระบบ", to: "/courses" },
       ...(me?.role === "ADMIN"
         ? [{ key: "users", label: "จัดการผู้ใช้งาน", meta: "ระบบ", to: "/admin/users" }]
         : []),
     ]
-    for (const c of data?.courses ?? []) {
+    for (const c of [...courses].filter(inTerm(term)).sort(byTerm)) {
       all.push({
         key: c.id,
         label: `${c.code} ${c.name}`,
         meta: `Sec ${c.section} · ${c.semester}/${c.year}`,
         to: `/courses/${c.id}`,
       })
+      if (!needle) continue
       for (const s of COURSE_SECTIONS.slice(1)) {
         all.push({
           key: `${c.id}-${s.id}`,
@@ -42,11 +50,10 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
         })
       }
     }
-    const needle = q.trim().toLowerCase()
     return (
       needle ? all.filter((h) => `${h.label} ${h.meta}`.toLowerCase().includes(needle)) : all
     ).slice(0, 30)
-  }, [data, me, q])
+  }, [data, me, q, term])
 
   const go = (h: Hit | undefined) => {
     if (!h) return
@@ -74,6 +81,11 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
           e.preventDefault()
         }}
       />
+      {term !== ALL && (
+        <p className="mt-2 text-[12.5px] text-dim">
+          แสดงเฉพาะ{termLabel(term)} · เปลี่ยนได้ที่รายการรายวิชาด้านซ้าย
+        </p>
+      )}
       <ul className="mt-3 grid gap-0.5" role="listbox" aria-label="ผลการค้นหา">
         {hits.map((h, i) => (
           <li key={h.key}>

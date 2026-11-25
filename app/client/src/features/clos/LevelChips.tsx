@@ -6,9 +6,13 @@ import { TONE } from "../../components/ui/tone.ts"
 import { BLOOM, SOLO, type Bloom, type Solo } from "./clo.types.ts"
 import { BLOOM_TH, SOLO_HINT, SOLO_TH } from "./useClos.ts"
 
-/** Light → dark with the level (PAL.bloom / PAL.solo in the prototype). */
-const BLOOM_SHADE = ["#F1F2F8", "#E6E8F4", "#D6DAEE", "#C8CDEB", "#AFAECC", "#85758F"]
-const SOLO_SHADE = ["#E6E8F4", "#C8CDEB", "#85758F"]
+/**
+ * Light → dark with the level (PAL.bloom / PAL.solo in the prototype). CSS variables,
+ * not hex, so the dark theme can re-point them (styles/tokens.css); a hex here
+ * stays light under --ink's light text in the dark theme.
+ */
+const BLOOM_SHADE = [1, 2, 3, 4, 5, 6].map((n) => `var(--bloom-${n})`)
+const SOLO_SHADE = [1, 2, 3].map((n) => `var(--solo-${n})`)
 
 const missing = (what: string) => (
   <span

@@ -27,6 +27,7 @@ import {
   useSetCloPassMark,
   useSetCloWeights,
 } from "./useClos.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 const TITLE = "ผลลัพธ์การเรียนรู้ระดับรายวิชา (CLO)"
 const GAP = 0.5 // E2: planned and computed this far apart or more warns
@@ -93,7 +94,7 @@ export default function Clos() {
   )
 
   let body
-  if (list.isLoading) body = <div className="text-[14px] text-dim">กำลังโหลด CLO…</div>
+  if (list.isLoading) body = <Loading what=" CLO" />
   else if (clos.length === 0)
     body = (
       <div className="card px-6 py-10 text-center">

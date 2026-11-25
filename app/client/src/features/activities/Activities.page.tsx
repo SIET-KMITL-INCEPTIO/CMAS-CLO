@@ -28,6 +28,7 @@ import {
   useSetWeightMode,
 } from "./useActivities.ts"
 import { WeightFooter } from "./WeightFooter.tsx"
+import { Loading } from "../../components/page/Loading.tsx"
 
 type View = "list" | "matrix"
 const TABS = [
@@ -126,7 +127,7 @@ export default function Activities() {
     )
 
   let body
-  if (!ready) body = <div className="text-[14px] text-dim">กำลังโหลด…</div>
+  if (!ready) body = <Loading />
   else if (view === "matrix")
     body = (
       <CriteriaMatrix

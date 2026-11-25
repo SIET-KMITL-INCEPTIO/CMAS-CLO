@@ -26,7 +26,7 @@
   --color-edge2: #edeef6;
   --color-ink: #1e233c;
   --color-ink2: #4a5070;
-  --color-dim: #878cb4;
+  --color-dim: #646a8c; /* was #878cb4 (3.26:1): AA needs 4.5:1 (D-UI-2) */
   --color-faint: #9aa0be;
   --color-fgray: #b8bed7;
   --color-csub: #afaecc;
@@ -35,7 +35,7 @@
   --color-ev2: #44405a;
 
   /* status: text · background · border */
-  --color-ok: #4f7c68;
+  --color-ok: #43705c; /* was #4f7c68: 4.06:1 on okBg */
   --color-okBg: #e7efea;
   --color-okBd: #bcd3c6;
   --color-warn: #7d6430;
@@ -70,7 +70,7 @@
   --row-py: 10px; /* driven by the density setting */
   --ink: #1e233c;
   --ink2: #4a5070;
-  --dim: #878cb4;
+  --dim: #646a8c;
   --faint: #9aa0be;
   --cool: #878cb4;
   --edge: #e4e5f0;
@@ -80,6 +80,7 @@
   --wash: #f4f5fa;
   /* one marker for "you are here" (sel) and one for keyboard focus */
   --sel: #465078;
+  --on-sel: #ffffff; /* text on a --sel fill: the help button on hover */
   --sel-bg: #e9ebf5;
   --focus: #465078;
   /* text that must be read but is not the content itself — --dim is only 3.26:1 on white */
@@ -114,6 +115,26 @@
   --track: #e7e8f2;
   --scroll: #d5d7e6;
   --edge-strong: #c4c9de;
+  /* Bloom L1–L6 and SOLO S1–S3 chips, light → dark with the level (PAL.bloom / PAL.solo) */
+  --bloom-1: #f1f2f8;
+  --bloom-2: #e6e8f4;
+  --bloom-3: #d6daee;
+  --bloom-4: #c8cdeb;
+  --bloom-5: #afaecc;
+  --bloom-6: #85758f;
+  --solo-1: #e6e8f4;
+  --solo-2: #c8cdeb;
+  --solo-3: #85758f;
+  /* controls that had fixed light colours in atelier.css (P1, U-2) */
+  --danger: #a2504f;
+  --danger-hover: #8c4241;
+  --danger-edge: #dcbaba;
+  --on-danger: #ffffff;
+  --bad-edge: #b96f6e;
+  --chip-ink: #5b6180;
+  --edge-focus: #a8aecd;
+  --edge-empty: #c9cde2;
+  --muted-ink: #9aa0be;
   --shadow-soft: 0 1px 2px rgba(30, 35, 60, 0.03), 0 6px 20px -10px rgba(30, 35, 60, 0.1);
   --shadow-card: 0 1px 2px rgba(30, 35, 60, 0.04), 0 14px 44px -14px rgba(30, 35, 60, 0.13);
   --shadow-pop: 0 2px 6px rgba(30, 35, 60, 0.06), 0 24px 60px -18px rgba(30, 35, 60, 0.28);
@@ -141,6 +162,7 @@
   --card: #1d1f29;
   --wash: #22242f;
   --sel: #a9b1e6;
+  --on-sel: #15161d;
   --sel-bg: #2a2e45;
   --focus: #a9b1e6;
   --bg-auth: #262b45;
@@ -173,6 +195,26 @@
   --track: #2a2c38;
   --scroll: #3a3d4c;
   --edge-strong: #4a4e62;
+  /* level chips: dark → brighter with the level, so the scale still reads and --ink stays legible */
+  --bloom-1: #2a2c38;
+  --bloom-2: #2e3146;
+  --bloom-3: #343956;
+  --bloom-4: #3b4268;
+  --bloom-5: #4d4b72;
+  --bloom-6: #6a5878;
+  --solo-1: #2e3146;
+  --solo-2: #3b4268;
+  --solo-3: #6a5878;
+  /* the same controls on the grey surfaces: tones match the status colours below */
+  --danger: #e3928f;
+  --danger-hover: #f0a9a8;
+  --danger-edge: #6a3a3b;
+  --on-danger: #1d1f29;
+  --bad-edge: #a8605f;
+  --chip-ink: #b8bbcc;
+  --edge-focus: #6b6f88;
+  --edge-empty: #565a70;
+  --muted-ink: #858aa3;
   --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px -10px rgba(0, 0, 0, 0.5);
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 14px 44px -14px rgba(0, 0, 0, 0.6);
   --shadow-pop: 0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 60px -18px rgba(0, 0, 0, 0.7);

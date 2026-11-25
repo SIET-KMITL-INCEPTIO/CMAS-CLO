@@ -20,6 +20,7 @@ import { dashboardApi } from "./dashboard.api.ts"
 import type { ClassResultRow } from "./dashboard.types.ts"
 import { StudentDrawer } from "./StudentDrawer.tsx"
 import { useAttainment, useClassResults } from "./useDashboard.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 // SUBTABS.dashboard of index-q.html
 const TABS = [
@@ -103,7 +104,7 @@ export default function Results() {
   )
 
   const body = () => {
-    if (att.isLoading) return <div className="text-[14px] text-dim">กำลังโหลด…</div>
+    if (att.isLoading) return <Loading />
     if (att.data && !att.data.meta.computable)
       return (
         <div className="card overflow-hidden">
@@ -158,7 +159,7 @@ export default function Results() {
           }
           right={
             pending ? (
-              <span className="text-[13px] text-dim">กำลังโหลด…</span>
+              <Loading className="text-[13px]" />
             ) : (
               <Chip tone={below ? "bad" : "ok"}>ต่ำกว่าเกณฑ์ {below} คน</Chip>
             )
@@ -260,7 +261,7 @@ export default function Results() {
           right={<Chip tone="info">คะแนนเต็มรวม {n2(totalMax)}</Chip>}
         />
         {grid.isLoading ? (
-          <div className="px-4 py-6 text-[14px] text-dim">กำลังโหลด…</div>
+          <Loading className="px-4 py-6" />
         ) : students.length === 0 ? (
           <Hollow>ไม่พบนักศึกษาที่ตรงกับคำค้น</Hollow>
         ) : (
@@ -272,7 +273,7 @@ export default function Results() {
                   {acts.map((a) => (
                     <th key={a.id} className="num">
                       {a.name}
-                      <div className="tnum font-normal tracking-normal normal-case text-faint">
+                      <div className="tnum font-normal tracking-normal normal-case text-dim">
                         เต็ม {n2(a.maxScore)}
                       </div>
                     </th>

@@ -5,6 +5,7 @@
  */
 import type { ReactNode } from "react"
 import { errorText } from "../../lib/errorText.ts"
+import { Loading } from "./Loading.tsx"
 
 type Props = {
   loading: boolean
@@ -29,13 +30,7 @@ export function PageState({
   what = "",
   children,
 }: Props) {
-  if (loading) {
-    return (
-      <div role="status" className="text-[14px] text-dim">
-        กำลังโหลด{what}…
-      </div>
-    )
-  }
+  if (loading) return <Loading what={what} />
   if (error) {
     return (
       <div role="alert" className="card px-6 py-8 text-center">

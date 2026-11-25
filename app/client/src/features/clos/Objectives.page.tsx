@@ -24,6 +24,7 @@ import {
   useObjectivesOf,
   useSetObjectiveWeights,
 } from "./useClos.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 const TITLE = "จุดประสงค์เชิงพฤติกรรม"
 
@@ -78,7 +79,7 @@ export default function Objectives() {
   )
 
   let body
-  if (list.isLoading) body = <div className="text-[14px] text-dim">กำลังโหลด…</div>
+  if (list.isLoading) body = <Loading />
   else if (clos.length === 0)
     body = (
       <div className="card px-6 py-10 text-center">
@@ -160,8 +161,8 @@ export default function Objectives() {
                   <tbody>
                     {q?.isLoading ? (
                       <tr>
-                        <td colSpan={4} className="py-4 text-[14px] text-dim">
-                          กำลังโหลด…
+                        <td colSpan={4} className="py-4">
+                          <Loading />
                         </td>
                       </tr>
                     ) : objs.length === 0 ? (
@@ -193,7 +194,7 @@ export default function Objectives() {
                             <td className="wrapcell">
                               <div className="text-[14px]">{o.description}</div>
                               <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-                                <span className="text-[12.5px] text-faint">วัดด้วย</span>
+                                <span className="text-[12.5px] text-dim">วัดด้วย</span>
                                 {links.length ? (
                                   links.map((x) => (
                                     <Pill key={x.activityId}>

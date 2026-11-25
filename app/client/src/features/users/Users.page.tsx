@@ -19,6 +19,7 @@ import { UserForm } from "./UserForm.tsx"
 import type { ListedUser } from "./users.api.ts"
 import { ROLE_TH } from "./userView.ts"
 import { useApproveUser, useSetUserActive, useUsers } from "./useUsers.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 type Group = "all" | "PENDING" | "INSTRUCTOR" | "ADMIN" | "off"
 const isPending = (u: ListedUser) => u.status === "PENDING"
@@ -111,7 +112,7 @@ export default function Users() {
       <div className="cbody">
         <div className="card scroll-x overflow-hidden">
           {q.isLoading ? (
-            <p className="px-4 py-6 text-[14px] text-dim">กำลังโหลด…</p>
+            <Loading className="px-4 py-6" />
           ) : list.length === 0 ? (
             <p className="px-4 py-10 text-center text-[14px] text-dim">
               {needle ? "ไม่พบผู้ใช้ที่ตรงกับคำค้น" : "ไม่มีผู้ใช้ในกลุ่มนี้"}

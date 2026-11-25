@@ -6,6 +6,7 @@
 import { useState } from "react"
 import { Drawer } from "../../components/overlay/Sheet.tsx"
 import { useScoreChanges } from "./useScores.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 const SOURCE_TH: Record<string, string> = {
   MANUAL: "พิมพ์เอง",
@@ -33,7 +34,7 @@ export function ChangesDrawer({ courseId, onClose }: { courseId: string; onClose
       sub={total ? `${total} รายการ · ล่าสุดก่อน` : undefined}
     >
       {list.isLoading ? (
-        <div className="text-[14px] text-dim">กำลังโหลด…</div>
+        <Loading />
       ) : (list.data?.changes.length ?? 0) === 0 ? (
         <div className="text-[14px] text-dim">ยังไม่มีการแก้คะแนน</div>
       ) : (

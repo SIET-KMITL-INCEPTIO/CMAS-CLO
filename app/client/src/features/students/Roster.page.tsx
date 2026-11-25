@@ -25,6 +25,7 @@ import { useScoreGrid } from "../scores/useScores.ts"
 import { StudentForm } from "./StudentForm.tsx"
 import { studentsApi } from "./students.api.ts"
 import { useDeleteStudent, useRestoreStudent, useWithdrawStudent } from "./useStudents.ts"
+import { Loading } from "../../components/page/Loading.tsx"
 
 const TITLE = "นักศึกษาและคะแนน"
 
@@ -111,7 +112,7 @@ export default function Roster() {
   )
 
   let body
-  if (grid.isLoading) body = <div className="text-[14px] text-dim">กำลังโหลด…</div>
+  if (grid.isLoading) body = <Loading />
   else if (!data) body = null
   else if (data.students.length === 0)
     body = (
