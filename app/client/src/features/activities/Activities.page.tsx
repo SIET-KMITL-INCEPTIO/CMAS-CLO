@@ -1,14 +1,14 @@
 /**
- * กิจกรรมและวิธีประเมิน — viewActivities of index-q.html. Two tabs on one
+ * กิจกรรมและวิธีประเมิน — viewActivities of index-q.html. Two views on one
  * page because they are edited alternately until the weights reach 100%
  * (UX-01): the list (`?view=list`) and the matrix that checks the links
- * (`?view=matrix`). The list groups by type; in GROUP mode a group's weight is
+ * (`?view=matrix`). The step bar above is what switches between them (steps 3
+ * and 4), so the page carries no tabs of its own. The list groups by type; in GROUP mode a group's weight is
  * typed at its head and shared out by full score (N1).
  */
 import { useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { toast } from "sonner"
-import { SubTabs } from "../../components/page/PageHeader.tsx"
 import { useCan } from "../../hooks/useCan.ts"
 import { ConfirmDelete } from "../clos/ConfirmDelete.tsx"
 import { near100, useCloList, useObjectivesOf, useSetCloWeights } from "../clos/useClos.ts"
@@ -31,16 +31,12 @@ import { WeightFooter } from "./WeightFooter.tsx"
 import { Loading } from "../../components/page/Loading.tsx"
 
 type View = "list" | "matrix"
-const TABS = [
-  { id: "list", label: "กิจกรรมและวิธีประเมิน" },
-  { id: "matrix", label: "ตรวจการเชื่อมกับ CLO" },
-] as const
 
 export default function Activities() {
   const { course } = useCourseContext()
   const can = useCan(course)
   const write = can("activity.write")
-  const [params, setParams] = useSearchParams()
+  const [params] = useSearchParams()
   const view: View = params.get("view") === "matrix" ? "matrix" : "list"
 
   const list = useActivityList(course.id)
@@ -195,12 +191,7 @@ export default function Activities() {
 
   return (
     <CoursePage title={title} tools={addButton} help={help}>
-      <SubTabs
-        tabs={TABS}
-        value={view}
-        onChange={(v) => setParams(v === "list" ? {} : { view: v }, { replace: true })}
-      />
-      <div className="mt-4">{body}</div>
+      {body}
       {form && ready && (
         <ActivityForm
           courseId={course.id}

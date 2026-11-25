@@ -9,7 +9,7 @@ import { Modal } from "../../components/overlay/Sheet.tsx"
 import { Field } from "../../components/ui/Badges.tsx"
 import { ApiError } from "../../lib/apiClient.ts"
 import type { Clo, Objective } from "./clo.types.ts"
-import { n2, useSaveObjective } from "./useClos.ts"
+import { useSaveObjective, weightLeftHint } from "./useClos.ts"
 
 type Errors = Partial<Record<"number" | "weight" | "description", string>>
 
@@ -29,7 +29,6 @@ export function ObjectiveForm({
   const [cloId, setCloId] = useState(objective?.cloId ?? startClo)
   const sibs = objectivesOf(cloId)
   const others = sibs.reduce((t, o) => t + (o.id === objective?.id ? 0 : (o.weight ?? 0)), 0)
-  const left = Math.max(0, 100 - others)
   const next = sibs.length ? Math.max(...sibs.map((o) => o.number)) + 1 : 1
   const [number, setNumber] = useState(String(objective?.number ?? next))
   const [weight, setWeight] = useState(
@@ -38,7 +37,6 @@ export function ObjectiveForm({
   const [description, setDescription] = useState(objective?.description ?? "")
   const [errors, setErrors] = useState<Errors>({})
   const save = useSaveObjective()
-  const clo = clos.find((c) => c.id === cloId)
 
   const submit = () => {
     const e: Errors = {}
@@ -77,7 +75,6 @@ export function ObjectiveForm({
       open
       onClose={onClose}
       title={objective ? "แก้ไขจุดประสงค์เชิงพฤติกรรม" : "เพิ่มจุดประสงค์เชิงพฤติกรรม"}
-      sub={clo ? `CLO ${clo.number} · ${clo.description}` : undefined}
       footer={
         <>
           <button type="button" className="btn" onClick={onClose}>
@@ -121,7 +118,7 @@ export function ObjectiveForm({
           </select>
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="ลำดับ (เลขข้อ)" htmlFor="f-onum" required error={errors.number}>
+          <Field label="ข้อที่" htmlFor="f-onum" required error={errors.number}>
             <input
               id="f-onum"
               className="inp tnum"
@@ -135,14 +132,13 @@ export function ObjectiveForm({
             label="น้ำหนักใน CLO (%)"
             htmlFor="f-oweight"
             required
-            hint={`ข้ออื่นใต้ CLO นี้รวม ${n2(others)}% · เหลือ ${n2(left)}%`}
+            hint={weightLeftHint(others)}
             error={errors.weight}
           >
             <input
               id="f-oweight"
               className="inp tnum"
               inputMode="decimal"
-              placeholder={`เหลือ ${n2(left)}`}
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               aria-invalid={errors.weight ? true : undefined}

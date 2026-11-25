@@ -182,6 +182,17 @@ export const n2 = (v: number) => String(Math.round(v * 100) / 100)
 export const near100 = (v: number) => Math.abs(v - 100) < 0.01
 
 /**
+ * The one line under a weight field: what is left, or that nothing is. The
+ * total of the others is shown only when it is over 100 — the one case that
+ * asks the teacher to fix something elsewhere.
+ */
+export function weightLeftHint(others: number) {
+  if (others > 100.005) return `ข้ออื่นรวม ${n2(others)}% — เกิน 100%`
+  if (near100(others)) return "ครบ 100% แล้ว"
+  return `เหลือ ${n2(100 - others)}%`
+}
+
+/**
  * "แบ่งเท่ากัน": n shares of 100 to two decimals, the last one taking the
  * rounding remainder so the sum is exactly 100.
  */
