@@ -1,4 +1,4 @@
-import { ApiError } from "./apiClient.ts"
+import { ApiError, NETWORK_MESSAGE } from "./apiClient.ts"
 
 /**
  * What to show for any failure (NFR-10, UI-7): Thai, and what to do next. The
@@ -8,7 +8,7 @@ import { ApiError } from "./apiClient.ts"
 export function errorText(err: unknown): string {
   // ApiError always carries a Thai message: the server's own, or messageFor(status).
   if (err instanceof ApiError) return err.message
-  // fetch() rejects with a TypeError when the server cannot be reached at all.
-  if (err instanceof TypeError) return "เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ — ตรวจอินเทอร์เน็ตแล้วลองใหม่"
+  // A raw fetch() outside apiClient rejects with a TypeError when the server cannot be reached.
+  if (err instanceof TypeError) return NETWORK_MESSAGE
   return "เกิดข้อผิดพลาด — ลองใหม่อีกครั้ง"
 }

@@ -8,6 +8,10 @@
  *   `errors` detail, and shows nothing itself: a 422 belongs under its field,
  *   a 409 on the cells that collided. Unhandled errors are toasted once, by the
  *   QueryClient in main.tsx.
+ * - A request that never reaches the server (offline, server down, blocked)
+ *   throws ApiError with status 0 and NETWORK_MESSAGE, never the browser's
+ *   English "Failed to fetch" (NFR-10, #69). A cancelled request (AbortError)
+ *   is passed on as it is.
  * - The access token lives in memory only. On a 401 the client asks
  *   POST /auth/refresh once (the refresh token is an httpOnly cookie, S-2) and
  *   retries; every request that 401s meanwhile waits for that same refresh.
@@ -22,6 +26,10 @@ export function messageFor(status: number): string {
   if (status >= 500) return "ระบบขัดข้อง — ลองใหม่อีกครั้ง หากยังไม่หายแจ้งผู้ดูแลระบบ"
   return "ทำรายการไม่สำเร็จ — ตรวจข้อมูลแล้วลองใหม่"
 }
+
+/** Status 0: no reply at all, so the cause is the connection, not the request. */
+export const NETWORK_STATUS = 0
+export const NETWORK_MESSAGE = "เชื่อมต่อระบบไม่ได้ — ตรวจอินเทอร์เน็ตแล้วลองใหม่"
 
 export class ApiError extends Error {
   constructor(
@@ -67,6 +75,12 @@ export function refreshSession(): Promise<boolean> {
   return refreshing
 }
 
+/** fetch() rejects only when no reply came: say so in Thai. A cancel stays a cancel. */
+function offline(err: unknown) {
+  if (err instanceof DOMException && err.name === "AbortError") return err
+  return new ApiError(NETWORK_STATUS, NETWORK_MESSAGE)
+}
+
 const isBodyInit = (b: Body): b is BodyInit =>
   b instanceof FormData || b instanceof Blob || typeof b === "string"
 
@@ -76,12 +90,17 @@ async function send(path: string, { method = "GET", body, retried }: Options): P
   if (token) headers.Authorization = `Bearer ${token}`
   if (body !== undefined && !isBodyInit(body)) headers["Content-Type"] = "application/json"
 
-  const res = await fetch(`${API_URL}${path}`, {
-    method,
-    credentials: "include",
-    headers,
-    body: body === undefined ? undefined : isBodyInit(body) ? body : JSON.stringify(body),
-  })
+  let res: Response
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      method,
+      credentials: "include",
+      headers,
+      body: body === undefined ? undefined : isBodyInit(body) ? body : JSON.stringify(body),
+    })
+  } catch (err) {
+    throw offline(err)
+  }
 
   // The sign-in routes answer 401 for a bad credential; that is not an expired session.
   if (res.status === 401 && !retried && !path.startsWith("/auth/")) {
@@ -133,7 +152,11 @@ export const apiClient = {
       const json = (await res.json().catch(() => null)) as { message?: string } | null
       throw new ApiError(res.status, json?.message || messageFor(res.status))
     }
-    const url = URL.createObjectURL(await res.blob())
+    // The body streams after the headers: the connection can still drop here.
+    const blob = await res.blob().catch((err: unknown) => {
+      throw offline(err)
+    })
+    const url = URL.createObjectURL(blob)
     const a = Object.assign(document.createElement("a"), {
       href: url,
       download: fileNameOf(res, fallbackName),

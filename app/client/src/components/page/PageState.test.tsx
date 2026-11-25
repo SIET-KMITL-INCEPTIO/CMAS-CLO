@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { ApiError, messageFor } from "../../lib/apiClient.ts"
+import { ApiError, messageFor, NETWORK_MESSAGE } from "../../lib/apiClient.ts"
 import { errorText } from "../../lib/errorText.ts"
 import { PageState } from "./PageState.tsx"
 
@@ -72,7 +72,7 @@ describe("PageState", () => {
       </PageState>,
     )
     expect(screen.queryByText("ข้อมูล")).toBeNull()
-    expect(screen.getByRole("alert").textContent).toContain("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้")
+    expect(screen.getByRole("alert").textContent).toContain(NETWORK_MESSAGE)
   })
 })
 
