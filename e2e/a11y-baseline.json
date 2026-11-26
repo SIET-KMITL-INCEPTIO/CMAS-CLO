@@ -28,7 +28,7 @@
   "roster dark 1280": [],
   "roster light 1280": ["color-contrast"],
   "roster light 375": ["color-contrast"],
-  "users dark 1280": ["label-content-name-mismatch"],
-  "users light 1280": ["color-contrast", "label-content-name-mismatch"],
-  "users light 375": ["color-contrast", "label-content-name-mismatch"]
+  "users dark 1280": [],
+  "users light 1280": ["color-contrast"],
+  "users light 375": ["color-contrast"]
 }
