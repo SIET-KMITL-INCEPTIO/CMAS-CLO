@@ -49,10 +49,16 @@ function record(key: string, problems: string[]) {
 const ADMIN = "admin@cmas.local"
 const INSTRUCTOR = "instructor1@cmas.local" // teaches the seeded course 90641001
 
-type Target = { name: string; path: (courseId: string) => string; as: string | null }
+/** lands: where a page that redirects ends up; the audit waits for it (see the test). */
+type Target = {
+  name: string
+  path: (courseId: string) => string
+  as: string | null
+  lands?: RegExp
+}
 const PAGES: Target[] = [
   { name: "login", path: () => "/auth/login", as: null },
-  { name: "home", path: () => "/", as: INSTRUCTOR },
+  { name: "home", path: () => "/", as: INSTRUCTOR, lands: /\/courses\/[^/]+$/ },
   { name: "courses", path: () => "/courses", as: INSTRUCTOR },
   { name: "users", path: () => "/admin/users", as: ADMIN },
   { name: "overview", path: (c) => `/courses/${c}`, as: INSTRUCTOR },
@@ -100,6 +106,10 @@ for (const target of PAGES) {
       if (target.as) await signInAs(page, target.as)
 
       await page.goto(target.path(courseId))
+      // "/" loads the course list, then redirects to the course overview, which
+      // loads again. Between the two no "กำลังโหลด" is on screen, so without this
+      // wait axe sometimes audits the empty page in between.
+      if (target.lands) await expect(page).toHaveURL(target.lands, { timeout: 15_000 })
       // Not "networkidle": the app holds /events open (live updates), so the
       // network never goes idle. Every page shows "กำลังโหลด…" until its data is in.
       await expect(page.getByText("กำลังโหลด")).toHaveCount(0, { timeout: 15_000 })
