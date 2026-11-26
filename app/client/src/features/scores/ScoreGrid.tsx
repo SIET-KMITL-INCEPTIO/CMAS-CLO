@@ -32,6 +32,8 @@ import type {
 } from "./score.types.ts"
 import { useReopenActivity, usePutScores } from "./useScores.ts"
 import { CloseActivity } from "./CloseActivity.tsx"
+import { TotalCell } from "./TotalCell.tsx"
+import type { ClassResultRow } from "../dashboard/dashboard.types.ts"
 
 type Batch = { writes: CellWrite[]; source: WriteSource }
 type StudentActions = {
@@ -113,12 +115,18 @@ export function ScoreGrid({
   canEdit,
   canManage,
   actions,
+  totals,
+  passCriteria,
 }: {
   courseId: string
   grid: Grid
   canEdit: boolean
   canManage: boolean
   actions: StudentActions
+  /** studentId → the server's total (#33). Absent while it loads: the column shows "–". */
+  totals?: Map<string, ClassResultRow>
+  /** The course pass mark (%), for the colour of a final total. */
+  passCriteria: number
 }) {
   const { activities, students, meta } = grid
   const put = usePutScores(courseId)
@@ -284,6 +292,9 @@ export function ScoreGrid({
                   </th>
                 )
               })}
+              <th className="num" style={{ width: 96 }}>
+                รวม (%)
+              </th>
               <th style={{ width: 150 }}>สถานะ</th>
               {canManage && <th className="no-print" style={{ width: 170 }} />}
             </tr>
@@ -313,6 +324,12 @@ export function ScoreGrid({
                       />
                     </td>
                   ))}
+                  <td className="num">
+                    <TotalCell
+                      row={withdrawn ? undefined : totals?.get(s.id)}
+                      passCriteria={passCriteria}
+                    />
+                  </td>
                   <td>
                     {withdrawn ? (
                       <Chip tone="nil">ถอนรายวิชา</Chip>
