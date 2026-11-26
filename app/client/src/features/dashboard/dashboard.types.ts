@@ -121,5 +121,12 @@ export type ClassResultRow = {
     /** CR-03.2 · M5 — points behind the percent; null = no activity measures the CLO yet. */
     raw: { earned: number; maxScored: number; maxAll: number; missing: number } | null
   }[]
+  /** Over the weight assessed so far (CR-05); null = nothing scored yet, never 0. */
   totalScore: number | null
+  /** Every counted activity has a score or is excused: the total is final. */
+  complete: boolean
+  /** Only when complete (FR-84). */
+  coursePassed: boolean | null
+  /** How much of the course (% weight) the total rests on — "ประเมินแล้ว N%". */
+  assessedWeight: number
 }

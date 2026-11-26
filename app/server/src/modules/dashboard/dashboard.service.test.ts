@@ -115,6 +115,30 @@ describe("classResults", () => {
     expect(r[2]!.clos[0]).toMatchObject({ score: null, status: "NOT_EVALUATED" })
     expect(r[2]!.totalScore).toBeNull()
   })
+
+  it("says whether each total is final and how much of the course it rests on (#33)", async () => {
+    const snap = snapshot()
+    // s5 has a1 only: half the course assessed, so the total is not final yet.
+    snap.data.scores = snap.data.scores.filter(
+      (x) => !(x.studentId === "s5" && x.activityId === "a2"),
+    )
+    const { service } = setup(snap)
+    const r = new Map((await service.classResults("k1")).map((x) => [x.studentId, x]))
+    expect(r.get("s1")).toMatchObject({ complete: true, assessedWeight: 100, coursePassed: true })
+    expect(r.get("s2")).toMatchObject({ complete: true, assessedWeight: 100 })
+    expect(r.get("s5")).toMatchObject({
+      totalScore: 20,
+      complete: false,
+      coursePassed: null,
+      assessedWeight: 50,
+    })
+    expect(r.get("s3")).toMatchObject({
+      totalScore: null,
+      complete: false,
+      coursePassed: null,
+      assessedWeight: 0,
+    })
+  })
 })
 
 describe("student", () => {

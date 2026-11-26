@@ -225,6 +225,10 @@ export class DashboardService {
         }
       }),
       totalScore: r2(r.totalScore),
+      // The score table's "รวม (%)" (#33): whether the total is final, and how much it rests on.
+      complete: r.complete,
+      coursePassed: r.coursePassed,
+      assessedWeight: r2(r.assessedWeight)!,
     }))
   }
 

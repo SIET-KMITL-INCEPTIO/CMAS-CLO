@@ -81,6 +81,8 @@ export type StudentResult = {
   raw: Map<string, CloRaw>
   /** CR-05, renormalised over the activities that count for this student (EXCUSED leaves both sides). */
   totalScore: number | null
+  /** The course weight (%) totalScore rests on: scored, counted activities (EXCUSED leaves). */
+  assessedWeight: number
   /** Every activity with weight > 0 has a row (a score or EXCUSED) for this student (CR-05). */
   complete: boolean
   coursePassed: boolean | null
@@ -201,7 +203,9 @@ export function analyse(d: CourseData) {
     const coursePassed =
       complete && totalScore !== null ? totalScore >= d.course.passCriteria : null
 
-    return { student, objectives, clos, raw, totalScore, complete, coursePassed, overdue }
+    // assessedWeight (den): index-q "ประเมินแล้ว N%" beside a total that is not final yet.
+    const r = { student, objectives, clos, raw, totalScore, complete, coursePassed, overdue }
+    return { ...r, assessedWeight: den }
   })
 
   const enrolled = results.filter((r) => r.student.status === "ENROLLED") // R2: withdrawn leave every denominator

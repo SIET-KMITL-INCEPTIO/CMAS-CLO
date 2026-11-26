@@ -21,6 +21,7 @@ import { ChangesDrawer } from "../scores/ChangesDrawer.tsx"
 import { ImportExcel } from "../scores/ImportExcel.tsx"
 import { scoresApi } from "../scores/scores.api.ts"
 import { ScoreGrid } from "../scores/ScoreGrid.tsx"
+import { useClassResults } from "../dashboard/useDashboard.ts"
 import { useScoreGrid } from "../scores/useScores.ts"
 import { StudentForm } from "./StudentForm.tsx"
 import { studentsApi } from "./students.api.ts"
@@ -70,6 +71,9 @@ export default function Roster() {
   const can = useCan(course)
   const [page, setPage] = useState(1)
   const grid = useScoreGrid(course.id, page)
+  // "รวม (%)" (#33): the server's totals, one request for the whole class.
+  const results = useClassResults(course.id)
+  const totals = new Map((results.data ?? []).map((r) => [r.studentId, r]))
   const [form, setForm] = useState<GridStudent | "new" | null>(null)
   const [deleting, setDeleting] = useState<GridStudent | null>(null)
   const [excel, setExcel] = useState(false)
@@ -145,6 +149,8 @@ export default function Roster() {
           grid={data}
           canEdit={can("score.edit")}
           canManage={canManage}
+          totals={totals}
+          passCriteria={course.passCriteria}
           actions={{
             edit: setForm,
             withdraw: (s) =>

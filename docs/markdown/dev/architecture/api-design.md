@@ -291,7 +291,7 @@ Authorization: Bearer <accessToken>
 | GET | `/courses/:courseId/grades/export` | any | ✅ | FR-87 |
 | GET | `/events` | any | filter ต่อผู้ฟัง (ส่งแค่ `courseId`) | อัปเดตสด (2026-10-23) |
 | GET | `/courses/:courseId/dashboard/summary` | any | ✅ | FR-81…FR-84 · หน้าภาพรวมในคำขอเดียว (2026-10-24) |
-| GET | `/courses/:courseId/dashboard/students` | any | ✅ | FR-85 · ตารางผลทั้งชั้นในคำขอเดียว (2026-10-24) |
+| GET | `/courses/:courseId/dashboard/students` | any | ✅ | FR-85 · ตารางผลทั้งชั้นในคำขอเดียว (2026-10-24) · ต่อคน: `totalScore` `complete` `coursePassed` `assessedWeight` ให้คอลัมน์ "รวม (%)" ของตารางคะแนน (#33) |
 
 **รวม 57 endpoints** ใน §3.1–§3.7 (+ `/health` ที่มีแล้ว) · §3.8 นับแยก
 
