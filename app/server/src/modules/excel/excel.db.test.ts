@@ -346,8 +346,9 @@ describe.skipIf(!RUN_DB_TESTS)("Excel add-in sign-in and token (FR-73, FR-74)", 
         studentCode: "6602",
         name: "นักศึกษา ข",
       })
+      // The bump runs on onResponse, after inject() already has its answer: wait for it.
+      await expect.poll(() => revisionOf(courseA)).toBeGreaterThan(r0)
       const r1 = await revisionOf(courseA)
-      expect(r1).toBeGreaterThan(r0)
 
       const current = await prisma.score.findUnique({
         where: { studentId_activityId: { studentId: student, activityId: activity } },
@@ -375,8 +376,8 @@ describe.skipIf(!RUN_DB_TESTS)("Excel add-in sign-in and token (FR-73, FR-74)", 
         studentCode: "6603",
         name: "นักศึกษา ค",
       })
+      await expect.poll(() => revisionOf(courseA)).toBeGreaterThan(before.revision)
       const after = await prisma.course.findUniqueOrThrow({ where: { id: courseA } })
-      expect(after.revision).toBeGreaterThan(before.revision)
       expect(after.updatedAt.getTime()).toBe(before.updatedAt.getTime())
     })
 
