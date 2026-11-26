@@ -5,6 +5,11 @@ name: Nightly
 # the tests on src/lib would notice a wrong line. Any failure opens (or
 # comments on) one "Nightly CI failed" issue.
 # Plan: docs/markdown/dev/planning/ci-cd-plan.md §5.7
+#
+# Every job checks out develop, not the default branch: a schedule runs on
+# main, which only moves at a release, so the night kept re-scanning code from
+# the last release (244 commits behind on 2026-11-26) and reporting failures
+# that develop had already fixed, or missing new ones.
 
 on:
   schedule:
@@ -35,6 +40,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          ref: develop
           fetch-depth: 0
       - name: Scan every commit
         run: |
@@ -57,14 +63,21 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          ref: develop
       - uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           languages: javascript-typescript
           build-mode: none
           queries: security-extended
+      - name: Which commit was analysed
+        id: head
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           category: /language:javascript-typescript/nightly
+          # Results belong to develop, the code that was checked out.
+          ref: refs/heads/develop
+          sha: ${{ steps.head.outputs.sha }}
 
   image-scan:
     name: Image scan (${{ matrix.image }})
@@ -87,6 +100,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          ref: develop
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       # No cache: the point is a fresh install against today's registry.
       - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
@@ -121,6 +135,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          ref: develop
       - name: Compare the locked version with xlsx-latest
         run: |
           locked=$(jq -r '.packages["node_modules/xlsx"].version' package-lock.json)
@@ -148,6 +163,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          ref: develop
       - uses: $/.github/actions/setup
       - name: Run Stryker on app/server/src/lib
         run: npm run test:mutation -w app/server
@@ -175,6 +191,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          ref: develop
       - run: python3 scripts/check-diagrams.py
 
   report:
