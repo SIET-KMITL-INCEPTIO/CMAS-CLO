@@ -121,14 +121,15 @@ export default function Users() {
             <table className="dt">
               <thead>
                 <tr>
-                  <th>
+                  {/* The visible name is the accessible name (WCAG 2.5.3); aria-sort says the order. */}
+                  <th aria-sort={sortDir === "asc" ? "ascending" : "descending"}>
                     <button
                       type="button"
                       className="hover:text-ink"
                       onClick={() => setSortDir(sortDir === "asc" ? "desc" : "asc")}
-                      aria-label="เรียงตามชื่อ"
+                      title="เรียงตามชื่อ"
                     >
-                      ผู้ใช้ {sortDir === "asc" ? "▲" : "▼"}
+                      ผู้ใช้ <span aria-hidden="true">{sortDir === "asc" ? "▲" : "▼"}</span>
                     </button>
                   </th>
                   <th>บทบาทระบบ</th>
