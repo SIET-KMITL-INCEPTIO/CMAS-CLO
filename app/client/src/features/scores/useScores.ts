@@ -23,19 +23,31 @@ function useScoreWrite<A, R>(fn: (args: A) => Promise<R>) {
   })
 }
 
+/** A course's structure: a score never changes it, so a cell does not reload it. */
+const SCORES_LEAVE_ALONE = new Set<unknown>(["clos", "objectives", "criteria"])
+
 /**
  * Writing cells: the grid shows the new values at once (every cached page),
  * and is reloaded when the server has answered — whatever it answered. A
  * refused or conflicting write therefore snaps back to what the database has.
+ *
+ * NFR-01, typing down a column: only what a score can change is reloaded (this
+ * course, minus its settings and structure), and only after the last pending
+ * write — an earlier reload would put the old value back under the next cell.
  */
 export function usePutScores(courseId: string) {
   const queryClient = useQueryClient()
-  const prefix = [...courseKeys.one(courseId), "scores"]
+  const course = courseKeys.one(courseId)
+  const prefix = [...course, "scores"]
+  const mutationKey = ["put-scores", courseId]
   return useMutation({
+    mutationKey,
     mutationFn: (a: { scores: CellWrite[]; source: WriteSource }) =>
       scoresApi.put(courseId, a.scores, a.source),
     meta: { silent: true },
     onMutate: (a) => {
+      // A reload still on its way would answer with the values from before this write.
+      void queryClient.cancelQueries({ queryKey: prefix })
       const by = new Map(a.scores.map((w) => [`${w.studentId}|${w.activityId}`, w.score]))
       queryClient.setQueriesData<Grid>(
         { queryKey: prefix },
@@ -57,7 +69,15 @@ export function usePutScores(courseId: string) {
           },
       )
     },
-    onSettled: () => void queryClient.invalidateQueries({ queryKey: courseKeys.all }),
+    onSettled: () => {
+      // This write still counts as pending here: more than one means another follows.
+      if (queryClient.isMutating({ mutationKey }) > 1) return
+      void queryClient.invalidateQueries({
+        queryKey: course,
+        // key[2] is the kind of query; the course itself (settings and counts) has none.
+        predicate: (q) => q.queryKey.length > 2 && !SCORES_LEAVE_ALONE.has(q.queryKey[2]),
+      })
+    },
   })
 }
 
