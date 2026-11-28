@@ -8,10 +8,10 @@ export const SHORTCUTS: [string, string][] = [
   ["Tab", "ไปช่องถัดไป"],
 ]
 
-/** True when a key press belongs to a field the user is typing in. */
+/** True when a key press belongs to a field the user is typing in, or a dropdown's open list. */
 export const typingIn = (target: EventTarget | null) => {
   const el = target as HTMLElement | null
   return Boolean(
-    el && (el.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName)),
+    el && (el.isContentEditable || ["INPUT", "TEXTAREA", "SELECT", "OPTION"].includes(el.tagName)),
   )
 }
