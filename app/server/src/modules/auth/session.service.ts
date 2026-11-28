@@ -22,7 +22,7 @@ export function durationMs(value: string): number {
 export const REFRESH_TTL_MS = durationMs(env.JWT_REFRESH_EXPIRES_IN)
 
 type RefreshResult =
-  | { outcome: "ok"; accessToken: string; refreshToken: string }
+  | { outcome: "ok"; userId: string; accessToken: string; refreshToken: string }
   // One answer for every failure: missing, forged, expired, revoked, reused, account off.
   | { outcome: "invalid" }
 
@@ -99,7 +99,7 @@ export class SessionService {
       await this.tokens.revokeFamily(row.familyId) // lost a race with the same token: reuse
       return { outcome: "invalid" }
     }
-    return { outcome: "ok", accessToken, refreshToken }
+    return { outcome: "ok", userId: user.id, accessToken, refreshToken }
   }
 
   /** Revokes this browser's refresh token. Access tokens already issued run out on their own. */

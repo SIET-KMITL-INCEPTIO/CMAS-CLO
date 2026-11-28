@@ -6,7 +6,7 @@ import { useAuthStore } from "./features/auth/useAuthStore.ts"
 import { CourseLayout } from "./features/courses/CourseLayout.tsx"
 import { useLiveUpdates } from "./features/events/useLiveUpdates.ts"
 import { resumeSession } from "./lib/session.ts"
-import { appRoutes, courseRoutes, publicRoutes } from "./pages.config.ts"
+import { appRoutes, courseRoutes, preloadPage, publicRoutes } from "./pages.config.ts"
 import { Loading } from "./components/page/Loading.tsx"
 
 const FullLoading = () => <Loading className="min-h-screen justify-center" />
@@ -24,6 +24,7 @@ function RequireSession() {
 
 export default function App() {
   useEffect(() => {
+    preloadPage(window.location.pathname)
     void resumeSession()
   }, [])
 

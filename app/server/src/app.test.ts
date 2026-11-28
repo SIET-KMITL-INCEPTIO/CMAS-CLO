@@ -71,6 +71,33 @@ describe("CORS", () => {
     })
     expect(String(res.headers["access-control-expose-headers"])).toContain("Content-Disposition")
   })
+
+  it("lets the browser keep a preflight for 10 minutes, not send one before every request (NFR-01)", async () => {
+    const res = await app.inject({
+      method: "OPTIONS",
+      url: "/api/v1/courses/x/scores",
+      headers: {
+        origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
+        "access-control-request-method": "GET",
+        "access-control-request-headers": "authorization",
+      },
+    })
+    expect(res.statusCode).toBe(204)
+    expect(res.headers["access-control-max-age"]).toBe("600")
+  })
+
+  it("answers no other site's preflight, however long it is kept", async () => {
+    const res = await app.inject({
+      method: "OPTIONS",
+      url: "/api/v1/courses/x",
+      headers: { origin: "https://evil.example", "access-control-request-method": "DELETE" },
+    })
+    // A fixed origin is always named back; the browser refuses it for any other site.
+    expect(res.headers["access-control-allow-origin"]).not.toBe("https://evil.example")
+    expect(res.headers["access-control-allow-origin"]).toBe(
+      process.env.CORS_ORIGIN ?? "http://localhost:5173",
+    )
+  })
 })
 
 describe("route access declarations (A-6)", () => {

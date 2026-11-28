@@ -70,6 +70,9 @@ export async function buildApp(options: BuildOptions = {}) {
     // A cross-origin fetch hides every response header not listed here; without
     // it the client never sees an export's file name and falls back to a generic one.
     exposedHeaders: ["Content-Disposition"],
+    // Every call carries Authorization, so each URL costs a preflight round trip
+    // first. The browser may keep one for 10 minutes (Chrome caps it at 2 hours).
+    maxAge: 600,
   })
   await app.register(rateLimit, {
     keyGenerator: rateLimitKey,

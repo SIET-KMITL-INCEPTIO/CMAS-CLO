@@ -18,6 +18,7 @@
  */
 import { API_URL } from "./app.constants.ts"
 import { useAuthStore } from "../features/auth/useAuthStore.ts"
+import type { Me } from "../types/user.types.ts"
 
 /** A reply with no message of its own (a proxy's page, an empty body): Thai, with what to do. */
 export function messageFor(status: number): string {
@@ -52,19 +53,25 @@ type Options = { method?: string; body?: Body; retried?: boolean }
  */
 export const TAB_ID = crypto.randomUUID()
 
-let refreshing: Promise<boolean> | null = null
+/**
+ * What a refresh got: false, or the live account the server read with it
+ * (null from an older server, which sent the token alone).
+ */
+export type Refreshed = false | { me: Me | null }
+
+let refreshing: Promise<Refreshed> | null = null
 
 /** Single-flight: ten requests that 401 together cause one refresh. */
-export function refreshSession(): Promise<boolean> {
+export function refreshSession(): Promise<Refreshed> {
   refreshing ??= (async () => {
     try {
       const res = await fetch(`${API_URL}/auth/refresh`, { method: "POST", credentials: "include" })
       if (!res.ok) return false
-      const json = (await res.json()) as { data?: { accessToken?: string } }
+      const json = (await res.json()) as { data?: { accessToken?: string; user?: Me | null } }
       const token = json.data?.accessToken
       if (!token) return false
       useAuthStore.getState().setAccessToken(token)
-      return true
+      return { me: json.data?.user ?? null }
     } catch {
       return false
     } finally {
