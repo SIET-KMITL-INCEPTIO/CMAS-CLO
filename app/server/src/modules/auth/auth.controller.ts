@@ -105,7 +105,10 @@ export class AuthController {
       return unauthorized(reply)
     }
     setRefreshCookie(reply, result.refreshToken, REFRESH_TTL_MS / 1000)
-    return ok(reply, { accessToken: result.accessToken })
+    // The account as GET /auth/me gives it, read live (NFR-19): a reload then
+    // needs one round trip to start, not two (NFR-01).
+    const user = await this.service.me(result.userId)
+    return ok(reply, { accessToken: result.accessToken, user })
   }
 
   logout = async (req: FastifyRequest, reply: FastifyReply) => {

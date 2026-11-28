@@ -1,7 +1,8 @@
 /**
  * Starting and ending a session. A reload has no token in memory, so it asks
- * POST /auth/refresh (the httpOnly cookie) for one, then reads the live
- * account from GET /auth/me — never from anything the browser stored.
+ * POST /auth/refresh (the httpOnly cookie) for one. The answer carries the
+ * live account (the same as GET /auth/me), so a reload is one round trip
+ * (NFR-01) — never anything the browser stored.
  */
 import type { QueryClient } from "@tanstack/react-query"
 import { apiClient, refreshSession } from "./apiClient.ts"
@@ -14,9 +15,10 @@ let resuming: Promise<void> | null = null
 export function resumeSession(): Promise<void> {
   resuming ??= (async () => {
     const store = useAuthStore.getState()
-    if (!(await refreshSession())) return store.signedOut()
+    const refreshed = await refreshSession()
+    if (!refreshed) return store.signedOut()
     try {
-      store.signedIn(await apiClient.get<Me>("/auth/me"))
+      store.signedIn(refreshed.me ?? (await apiClient.get<Me>("/auth/me")))
     } catch {
       store.signedOut()
     }

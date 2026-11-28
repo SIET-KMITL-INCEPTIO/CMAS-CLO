@@ -422,8 +422,9 @@ Authorization: Bearer <accessToken>
 ### 4.2 `POST /auth/refresh`
 
 ```jsonc
-{ "refreshToken": "eyJ..." }   // → 200 { accessToken, refreshToken }
+{ "refreshToken": "eyJ..." }   // → 200 { accessToken, user }
 ```
+`user` มีรูปเดียวกับ `GET /auth/me` อ่านจากแถวจริงตอนนั้น หน้าเว็บที่โหลดใหม่จึงเริ่ม session ได้ในคำขอเดียว ไม่ต้องเรียก `/auth/me` ต่อ (NFR-01)
 `401` เมื่อ token หมดอายุ/ปลอม/บัญชีถูกปิดไปแล้ว (ตรวจ `isActive` ใหม่ทุกครั้ง — NFR-19)
 
 ### 4.3 `POST /auth/logout`

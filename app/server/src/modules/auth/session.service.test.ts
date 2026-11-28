@@ -85,6 +85,8 @@ describe("refresh", () => {
     if (r.outcome !== "ok") return
     await expect(verifyAccessToken(r.accessToken)).resolves.toEqual({ sub: "u1", role: "ADMIN" })
     expect(tokens.rotate).toHaveBeenCalledWith("t1", "u1", "f1", r.refreshToken, expect.any(Date))
+    // The controller answers with this account's live profile, so a reload skips GET /auth/me.
+    expect(r.userId).toBe("u1")
   })
 
   it("every failure is the same bare 'invalid' answer, and touches nothing it should not", async () => {
