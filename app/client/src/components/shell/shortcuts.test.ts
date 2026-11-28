@@ -6,6 +6,7 @@ describe("keyboard shortcuts", () => {
     expect(typingIn(document.createElement("input"))).toBe(true)
     expect(typingIn(document.createElement("textarea"))).toBe(true)
     expect(typingIn(document.createElement("select"))).toBe(true)
+    expect(typingIn(document.createElement("option"))).toBe(true) // a row of an open list
     expect(typingIn(document.createElement("button"))).toBe(false)
     expect(typingIn(null)).toBe(false)
   })
