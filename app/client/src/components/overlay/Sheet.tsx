@@ -46,7 +46,10 @@ function OpenSheet({
         ?.querySelector<HTMLElement>("input, select, textarea, button:not([data-close])")
         ?.focus()
     })
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close.current()
+    const onKey = (e: KeyboardEvent) => {
+      // An open dropdown list puts the focus on an <option>: that Esc closes the list only.
+      if (e.key === "Escape" && !(e.target instanceof HTMLOptionElement)) close.current()
+    }
     document.addEventListener("keydown", onKey)
     return () => {
       cancelAnimationFrame(frame)
